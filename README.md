@@ -12,7 +12,7 @@ Why CLBlast and not clBLAS or cuBLAS?
 
 Use CLBlast instead of clBLAS:
 
-* When you care about performance (and you should).
+* When you care about achieving maximum performance.
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
 * When you run on exotic OpenCL devices which you need to tune yourself.
 
@@ -89,7 +89,7 @@ Note that CLBlast's tuners are based on the CLTune auto-tuning library, which ha
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance.
 
-The tuner will output a C++ database compatible line with the results, which can be added to `include/internal/database/xxxxx.h` in the appropriate section. Or, if tuning parameters already exist for your device but you believe they can be improved, this is also the place where they can be modified. If you want the found parameters to be included in future releases of CLBlast, please post the results in the corresponding issue on GitHub or [email the main author](www.cedricnugteren.nl).
+The tuner will output a C++ database compatible line with the results, which can be added to `include/internal/database/xxxxx.h` in the appropriate section. Or, if tuning parameters already exist for your device but you believe they can be improved, this is also the place where they can be modified. If you want the found parameters to be included in future releases of CLBlast, please post the results in the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
 
 Compiling the tests (optional)
@@ -99,7 +99,7 @@ To make sure CLBlast is working correctly on your device (recommended), compile 
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](github.com/clMathLibraries/clBLAS) for correctness. However, it is not required to install clBLAS separately on your system: it is included as part of the CLBlast source code in `external/clBLAS`.
+Afterwards, executables in the form of `test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. However, it is not required to install clBLAS separately on your system: it is included as part of the CLBlast source code in `external/clBLAS`.
 
 With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
 
@@ -109,7 +109,7 @@ Performance remarks
 
 The CLBlast library provides pre-tuned parameter-values for a number of OpenCL devices. If your device is not among these, then out-of-the-box performance might be poor. Even if the device is included performance might be poor in some cases: __the preview version is not thoroughly tested for performance yet__. See above under `Using the tuners` to find out how to tune for your device.
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. The graphs of the level-3 routines (e.g. Xgemm) show the strong points of CLBlast:
+The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared against a tuned version of the clBLAS library. The graphs of the level-3 routines (Xgemm and Xsymm) show the strong points of CLBlast:
 
 * The library reaches a high peak performance for large matrix sizes, in some cases a factor 2 more than clBLAS.
 * The performance for non-power of 2 values (e.g. 1000) is roughly equal to power of 2 cases (e.g. 1024). This is not the case for clBLAS, which sometimes shows a drop of a factor 2.
@@ -193,13 +193,13 @@ Contributions are welcome in the form of tuning results for OpenCL devices previ
 
 The contributing authors so far are:
 
-* [Cedric Nugteren](www.cedricnugteren.nl)
+* [Cedric Nugteren](http://www.cedricnugteren.nl)
 
 
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](www.cedricnugteren.nl).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
 
 
 To-do list before release of version 1.0

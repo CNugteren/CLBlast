@@ -1,0 +1,7 @@
+
+Version 0.1.0
+- Initial preview version release to GitHub
+- Supported level-1 routines:
+    SAXPY/DAXPY/CAXPY/ZAXPY
+- Supported level-3 routines:
+    SGEMM/DGEMM, SSYMM/DSYMM
