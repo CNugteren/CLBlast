@@ -1,0 +1,227 @@
+;/* ************************************************************************
+; * Copyright 2013 Advanced Micro Devices, Inc.
+; *
+; * Licensed under the Apache License, Version 2.0 (the "License");
+; * you may not use this file except in compliance with the License.
+; * You may obtain a copy of the License at
+; *
+; * http://www.apache.org/licenses/LICENSE-2.0
+; *
+; * Unless required by applicable law or agreed to in writing, software
+; * distributed under the License is distributed on an "AS IS" BASIS,
+; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+; * See the License for the specific language governing permissions and
+; * limitations under the License.
+; * ************************************************************************/
+
+LIBRARY	clBLAS
+
+EXPORTS
+	clblasGetVersion
+	clblasSetup
+	clblasTeardown
+
+	clblasSgemv
+	clblasDgemv
+	clblasCgemv
+	clblasZgemv
+
+	clblasSsymv
+	clblasDsymv
+
+	clblasSgemm
+	clblasDgemm
+	clblasCgemm
+	clblasZgemm
+	;GEMMV2 is not exported
+    ;clblasSgemmV2
+	;clblasDgemmV2
+	;clblasCgemmV2
+	;clblasZgemmV2
+
+	clblasStrmm
+	clblasDtrmm
+	clblasCtrmm
+	clblasZtrmm
+
+	clblasStrsm
+	clblasDtrsm
+	clblasCtrsm
+	clblasZtrsm
+
+	clblasSsyr2k
+	clblasDsyr2k
+	clblasCsyr2k
+	clblasZsyr2k	
+
+	clblasSsyrk
+	clblasDsyrk
+	clblasCsyrk
+	clblasZsyrk
+
+	;GEMMV2 is not exported
+	;clblasSgemmExV2
+	;clblasDgemmExV2
+	;clblasCgemmExV2
+	;clblasZgemmExV2
+
+	clblasStrmv
+	clblasDtrmv
+	clblasCtrmv
+	clblasZtrmv
+	
+	clblasStrsv
+	clblasDtrsv
+	clblasCtrsv
+	clblasZtrsv
+	
+	clblasStpsv
+    clblasDtpsv
+    clblasCtpsv
+    clblasZtpsv
+    
+	clblasSsymm
+	clblasDsymm
+	clblasCsymm
+	clblasZsymm
+	
+	clblasSger
+	clblasDger
+	
+	clblasCgeru
+	clblasZgeru
+	
+	clblasCgerc
+	clblasZgerc
+	
+	clblasSsyr
+	clblasDsyr
+	
+	clblasCher
+	clblasZher
+	
+	clblasSsyr2
+	clblasDsyr2
+
+	clblasChemv
+	clblasZhemv
+	
+	clblasCher2
+	clblasZher2	
+
+	clblasChemm
+	clblasZhemm
+	
+	clblasCherk
+	clblasZherk
+	
+	clblasStpmv
+	clblasDtpmv
+	clblasCtpmv
+	clblasZtpmv
+	
+	clblasSspmv
+	clblasDspmv
+	
+	clblasChpmv
+	clblasZhpmv
+	
+	clblasSspr
+	clblasDspr
+	
+	clblasChpr
+	clblasZhpr
+	
+	clblasSspr2
+	clblasDspr2
+
+	clblasChpr2
+	clblasZhpr2
+	
+	clblasSgbmv
+	clblasDgbmv
+	clblasCgbmv
+	clblasZgbmv
+	
+	clblasStbmv
+	clblasDtbmv
+	clblasCtbmv
+	clblasZtbmv
+	
+	clblasSsbmv
+	clblasDsbmv
+	
+	clblasChbmv
+	clblasZhbmv
+	
+	clblasStbsv
+	clblasDtbsv
+	clblasCtbsv
+	clblasZtbsv
+	
+	clblasCher2k
+	clblasZher2k
+
+	clblasSswap
+	clblasDswap
+	clblasCswap
+	clblasZswap
+	
+	clblasSscal
+	clblasDscal
+	clblasCscal
+	clblasZscal
+	
+	clblasCsscal
+	clblasZdscal
+	
+	clblasScopy
+	clblasDcopy
+	clblasCcopy
+	clblasZcopy
+	
+	clblasSaxpy
+	clblasDaxpy
+	clblasCaxpy
+	clblasZaxpy
+	
+	clblasSdot
+	clblasDdot
+	clblasCdotu
+	clblasZdotu
+	clblasCdotc
+	clblasZdotc
+
+    clblasSrotg
+	clblasDrotg
+	clblasCrotg
+	clblasZrotg
+	
+	clblasSrotmg
+	clblasDrotmg
+	
+	clblasSrot
+	clblasDrot
+	clblasCsrot
+	clblasZdrot
+	
+	clblasSrotm
+	clblasDrotm
+	
+	clblasSnrm2
+	clblasDnrm2
+	clblasScnrm2
+	clblasDznrm2
+
+    clblasSasum
+    clblasDasum
+    clblasScasum
+    clblasDzasum
+
+    clblasiSamax
+    clblasiDamax
+    clblasiCamax
+    clblasiZamax
+	
+	clblasAddScratchImage
+	clblasRemoveScratchImage

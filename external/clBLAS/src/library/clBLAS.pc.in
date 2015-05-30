@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}/bin@SUFFIX_BIN@
+includedir=${prefix}/include
+libdir=${prefix}/lib@SUFFIX_LIB@
+
+Name: clBLAS
+Description: Open source OpenCL BLAS library
+Version: @clBLAS_VERSION@
+URL: https://github.com/clMathLibraries/clBLAS
+
+Cflags: -I${includedir}
+Libs: -L${libdir} -lclBLAS

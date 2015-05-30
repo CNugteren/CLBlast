@@ -1,0 +1,245 @@
+# ########################################################################
+# Copyright 2013 Advanced Micro Devices, Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ########################################################################
+
+clBLAS Readme
+
+Version:       1.10
+Release Date:  April 2013
+
+ChangeLog:
+____________
+Current Version:
+New:
+  * New Level 1 routines added (an 'x' implies all 4 precisions)
+        xSWAP, xCOPY, xSCAL, CSSCAL, ZDSCAL, xAXPY, SDOT, DDOT, 
+        CDOTU, ZDOTU, CDOTC, ZDOTC, xROTG, SROTMG, DROTMG,
+		SROT, DROT, CSROT, ZDROT, SROTM, DROTM, SNRM2, DNRM2,
+		SCNRM2, DZNRM2, ixAMAX, SASUM, DASUM, SCASUM, DZASUM
+  * Samples have been added for the new functions 
+  * This release tested using the 9.012 runtime driver and the 2.8 APPSDK
+Fixed:
+  * Failures in *trsm functions with clMAGMA tests
+Known Issues:
+  * Failures & hangs in ztrmm, *trsv, *tpsv functions on Southern Island GPU devices
+  * Failures in zgemm functions on Northern Island GPU devices
+  * Failures & hangs are expected to be fixed in the upcoming AMD graphics driver versions.
+		It is strongly recommended that users keep their graphics driver versions up to date. 
+		
+____________
+Version 1.8.291:
+Fixed:
+  * Failures in the following functions: ssyr2, ssyr2k, strsm, strsv, ssyrk, cher, 
+        ctrsv, csymm, cher2, ztrmm on Southern Island GPU devices.
+  * Failures in the following functions: dsyr, dsyr2, dgemv, dsyrk,
+        dsyr2k, zsyr2k on Trinity platforms. 
+Known Issues:
+  * Failures in *trsm functions with clMAGMA tests
+  
+____________
+Version 1.8.269 (Beta, clMAGMA support):
+New:
+  * No new routines
+  * This release tested using the 8.961 runtime driver and the 2.6 APPSDK
+
+Known Issues:
+  * The clBLASTune executable has been observed to hang on Windows.  If 
+        this happens, abort execution of the tune program; it is not required 
+        for correct operation of the BLAS routines (as of 8.872).
+  * clBLAS can return invalid results on CPU devices (as 
+        of 8.961).  The CPU device is primarily a test/debug device, and GPU 
+		devices are unaffected.
+  * clBLAS can return invalid results for double precision functions (dsyr, 
+        dsyr2, dgemv, dsyrk, dsyr2k, zsyr2k) on Trinity platforms (as of 
+        8.961).
+  * clBLAS can return invalid results (ssyr2, ssyr2k, strsm, strsv, ssyrk, cher, 
+        ctrsv, csymm, cher2, ztrmm) on Southern Island GPU devices (as of 8.961).
+
+____________
+Version 1.7 (Beta, clMAGMA support):
+New:
+  * New Level 3 routines added (an 'x' implies all 4 precisions)
+		CHER2K, ZHER2K
+  * New Level 2 routines added (an 'x' implies all 4 precisions)
+        xTPMV, xTPSV, SSPVM, DSPMV, CHPMV, ZHPMV, SSPR, DSPR, CHPR, ZHPR, 
+        SSPR2, DSPR2, CHPR2, ZHPR2, xGBMV, CHBMV, ZHBMV, SSBMV, DSBMV, 
+        xTBMV, xTBSV
+  * Samples have been added for the new functions, but are not fully tested 
+  * This release tested using the 8.951 runtime driver and the 2.6 APPSDK
+  * Note that documentation is incomplete for the new functions
+
+Known Issues:
+  * The clBLASTune executable has been observed to hang on Windows.  If 
+        this happens, abort execution of the tune program; it is not required 
+        for correct operation of the BLAS routines (as of 8.872).
+  * clBLAS can return invalid results on CPU devices that support AVX (as 
+        of 8.951).  CPU devices that support up to SSE3 are unaffected.  The 
+        CPU device is primarily a test/debug device, and GPU devices are 
+        unaffected.
+  * clBLAS can return invalid results for double precision functions (dsyr, 
+        dsyr2, dgemv, dsyrk, dsyr2k, zsyr2k) on Trinity platforms (as of 
+        8.951).
+  * clBLAS can return invalid results (ssyr, ssyr2, strsv, ctrsv, ssyrk, 
+        ssyr2k, ztrmm) on Southern Island GPU devices (as of 8.951).
+
+____________
+Version 1.6:
+New:
+  * New Level 3 routines added (an 'x' implies all 4 precisions)
+        CSYRK, ZSYRK, CSYR2K, ZSYR2K, CHEMM, ZHEMM, CHERK, ZHERK, xSYMM
+  * New Level 2 routines added (an 'x' implies all 4 precisions)
+        CGEMV, ZGEMV, xTRMV, xTRSV, CHEMV, ZHEMV, SGER, DGER, CGERU, ZGERU, 
+		CGERC, ZGERC, CHER, ZHER, CHER2, ZHER2, SSYR, DSYR, SSYR2, DSYR2
+  * For all the original functions prior to 1.6, a new API has been introduced
+        with an *Ex suffix.  These extended API's add new parameters that allow
+		users to specify an offset to a matrix argument.  This allows efficient
+		sub-matrix indexing within a clBLAS routine without requiring expensive
+		sub-matrix copy operations.
+  * Samples have been added for the new functions
+  * Preview: Support for AMD Radeon™ HD7000 series GPUs
+  * This release tested using the 8.92 runtime driver and the 2.6 APP SDK
+
+Known Issues:
+  * The clBLASTune executable has been observed to hang on Windows.  If this
+        happens, abort execution of the tune program; it is not required for 
+		correct operation of the BLAS routines (as of 8.872).
+  * The CPU device for clBLAS is not functioning for this release (as of 
+        8.872).  The CPU device is primarily a test/debug device, and GPU 
+		devices are unaffected.
+
+____________
+Version 1.4:
+New:
+  * New Level 3 routines added
+        SSYRK, DSYRK, SSYR2K, DSYR2K
+  * New Level 2 routines added
+        SGEMV, DGEMV, SSYMV, DSYMV
+  * The image support functions (clblasAddScratchImage, 
+        clblasRemoveScratchImage) have been deprecated.  Images are no 
+		longer required for the highest performance.
+  * InstallShield is now used for APPML libraries.  The default install 
+        location has changed from c:\amd\clBLAS to 
+		C:\Program Files (x86)\AMD\clBLAS.  It is recommended that previous 
+		versions of clBLAS are uninstalled first.
+  * Samples have been added for the new functions
+  * This release tested using the 8.872 runtime driver and the 2.5 APP SDK
+
+Known Issues:
+  * The clBLASTune executable has been observed to hang on Windows.  If this
+        happens, abort execution of the tune program; it is not required for 
+		correct operation of the BLAS routines (as of 8.872).
+  * The CPU device for clBLAS is not functioning for this release (as of 
+        8.872).  The CPU device is primarily a test/debug device, and GPU 
+		devices are unaffected.
+
+
+____________
+Version 1.2:
+  * The library now supports both 32- and 64-bit Windows and Linux operating 
+        systems.
+  * xTRSM routines are available in 1.2.
+  * clBLAS routines return clBLASStatus error codes, instead of native 
+        OpenCL error codes
+
+Fixed:
+  * xTRMM routines were not properly handling implicit unit diagonal 
+        elements and implicit off-diagonal zero values specified by the BLAS 
+        parameters SIDE, UPLO and DIAG.
+  * Possible crash with CPU device on 32-bit systems.
+  * clblasDgemm routine return an invalid event as its last argument.
+  * clBLAS routines return clblasStatus error codes, instead of 
+        native OpenCL error codes.
+		
+Known Issues:
+  * The clBLASTune executable has been observed to hang on Windows.  If this
+        happens, abort execution of the tune program; it is not required for 
+		correct operation of the BLAS routines (as of 8.872).
+  * The CPU device for clBLAS is not functioning for this release (as of 
+        8.872).  The CPU device is primarily a test/debug device, and GPU 
+		devices are unaffected.
+		
+____________________
+Version 1.0:
+  * Initial release
+
+Known Issues:
+  * Available only on Linux64.
+  * xTRMM routines were not properly handling implicit unit diagonal elements 
+        and implicit off-diagonal zero values specified by the BLAS parameters
+		SIDE, UPLO and DIAG
+  * clblasDgemm returned an invalid event as its last argument
+	  
+_____________
+Building the Samples:
+
+To install the Linux versions of clBLAS, uncompress the initial download, then 
+execute the install script.
+
+For example:
+
+	tar -xf clBLAS-${version}-Linux.tar.gz
+		- This installs three files into the local directory, one being an 
+            executable bash script.
+
+	sudo mkdir /opt/clBLAS-${version}
+		- This pre-creates the install directory with proper permissions 
+            in /opt if it is to be installed there. (This is the default.)
+
+	./install-clBLAS-${version}.sh
+        - This prints an EULA and uncompresses files into the chosen install 
+		directory.
+
+	cd ${installDir}/bin64
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${OpenCLLibDir}:${clBLASLibDir}
+		- Be sure to export library dependencies to resolve all external 
+            linkages to the client program; you can create a bash script to 
+			help automate this procedure.
+
+	./example_sgemm
+		- Run a simple client; one example is provided for each supported 
+                  main BLAS function family.
+
+The sample program does not ship with native build files; instead, a CMake 
+file is shipped, and the user generates a native build file for their system.
+
+For example:
+
+	cd ${installDir}
+
+	mkdir samplesBin/
+		- This creates a sister directory to the samples directory that 
+                  houses the native makefiles and the generated files from the 
+                  build.
+
+	cd samplesBin/
+	ccmake ../samples/
+		- ccmake is a curses-based cmake program; it takes a parameter 
+                  that specifies the location of the source code to compile.
+		- Hit 'c' to configure for the platform; ensure that the 
+                  dependencies to external libraries are satisfied, including 
+                  paths to 'ATI Stream SDK'.
+		- After dependencies are satisfied, hit 'c' again to finalize 
+                  configuration. Then, hit 'g' to generate a makefile and 
+                  exit ccmake.
+
+	make help
+		- Look at the options available for make.
+
+	make
+		- Build the sample client program.
+
+	./example_sgemm
+		- Run a simple client; one example is provided for each supported main 
+		BLAS function family.
