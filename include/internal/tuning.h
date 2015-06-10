@@ -38,6 +38,10 @@ using Tuner3 = std::function<void(const Arguments<T>&,
 template <typename T>
 void TunerXY(int argc, char* argv[], const Tuner2<T> &tune_function);
 
+// Tuner for matrix-vector-vector input
+template <typename T>
+void TunerAXY(int argc, char* argv[], const Tuner3<T> &tune_function);
+
 // Tuner for matrix-matrix input
 template <typename T>
 void TunerAB(int argc, char* argv[], const Tuner2<T> &tune_function);
