@@ -172,7 +172,7 @@ void TestABC<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &n
   args.c_ld = kBufferSize;
 
   // Iterates over test buffer sizes
-  const std::vector<size_t> kBufferSizes = {0, kBufferSize - 1, kBufferSize};
+  const std::vector<size_t> kBufferSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
   for (auto &a_size: kBufferSizes) {
     for (auto &b_size: kBufferSizes) {
       for (auto &c_size: kBufferSizes) {
