@@ -23,17 +23,6 @@
 namespace clblast {
 // =================================================================================================
 
-// Defines the parameters that delineate individual test-cases
-struct Parameters {
-  Layout layout;
-  Transpose a_transpose;
-  Transpose b_transpose;
-  std::string GetString() const {
-    return "Layout: "+ToString(layout)+", A: "+ToString(a_transpose)+
-                                       ", B: "+ToString(b_transpose);
-  }
-};
-
 // See comment at top of file for a description of the class
 template <typename T>
 class TestABC: public Tester<T> {
