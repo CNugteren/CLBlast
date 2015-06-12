@@ -126,6 +126,8 @@ void TestXY<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &na
 
   // Sets example test parameters
   args.n = kBufferSize;
+  args.x_offset = 0;
+  args.y_offset = 0;
 
   // Iterates over test buffer sizes
   const std::vector<size_t> kBufferSizes = {0, kBufferSize - 1, kBufferSize};
