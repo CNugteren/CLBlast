@@ -39,24 +39,90 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* ygm, const int y_offset, const int y_inc) {
 
-  // Loops over the work that needs to be done (allows for an arbitrary number of threads)
-  #pragma unroll
-  for (int id = get_global_id(0); id<m; id += get_global_size(0)) {
+  // Local memory for the vector X
+  __local real xlm[WGS];
 
-    // Loop over the elements of the matrix A
-    real acc;
-    SetToZero(acc);
-    if (a_transposed == 0) {
-      for (int k=0; k<n; ++k) {
-        MultiplyAdd(acc, agm[id + a_ld*k + a_offset], xgm[k*x_inc + x_offset]);
+  // Initializes the accumulation register
+  real acc[WPT];
+  #pragma unroll
+  for (int w=0; w<WPT; ++w) {
+    SetToZero(acc[w]);
+  }
+
+  // Divides the work in a main and tail section
+  const int n_tail = n % WGS;
+  const int n_floor = n - n_tail;
+
+  // Loops over work-group sized portions of the work
+  for (int kwg=0; kwg<n_floor; kwg+=WGS) {
+
+    // Loads the vector X into local memory
+    const int lid = get_local_id(0);
+    xlm[lid] = xgm[(kwg + lid)*x_inc + x_offset];
+
+    // Synchronizes all threads in a workgroup
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    // Loops over the work per thread
+    #pragma unroll
+    for (int w=0; w<WPT; ++w) {
+      const int gid = w*get_global_size(0) + get_global_id(0);
+
+      // Checks whether this thread is within bounds
+      // Note: placed here because of the synchronisation barriers
+      if (gid < m) {
+
+        // Main multiply-add computation (regular)
+        if (a_transposed == 0) {
+          #pragma unroll
+          for (int kl=0; kl<WGS; ++kl) {
+            const int k = kwg + kl;
+            MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xlm[kl]);
+          }
+        }
+
+        // Main multiply-add computation (transposed)
+        else {
+          #pragma unroll
+          for (int kl=0; kl<WGS; ++kl) {
+            const int k = kwg + kl;
+            MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xlm[kl]);
+          }
+        }
       }
     }
-    else {
-      for (int k=0; k<n; ++k) {
-        MultiplyAdd(acc, agm[k + a_ld*id + a_offset], xgm[k*x_inc + x_offset]);
+
+    // Synchronizes all threads in a workgroup
+    barrier(CLK_LOCAL_MEM_FENCE);
+  }
+
+  // Loops over the work per thread
+  #pragma unroll
+  for (int w=0; w<WPT; ++w) {
+    const int gid = w*get_global_size(0) + get_global_id(0);
+
+    // Checks whether this thread is within bounds
+    if (gid < m) {
+
+      // Multiply-add computation for the remaining tail (regular)
+      if (a_transposed == 0) {
+        #pragma unroll
+        for (int k=n_floor; k<n; ++k) {
+          MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xgm[k*x_inc + x_offset]);
+        }
       }
+
+      // Multiply-add computation for the remaining tail (transposed)
+      else {
+        #pragma unroll
+        for (int k=n_floor; k<n; ++k) {
+          MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xgm[k*x_inc + x_offset]);
+        }
+      }
+
+      // Stores the final result
+      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, ygm[gid*y_inc + y_offset]);
     }
-    AXPBY(ygm[id*y_inc + y_offset], alpha, acc, beta, ygm[id*y_inc + y_offset]);
   }
 }
 

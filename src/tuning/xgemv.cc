@@ -37,8 +37,8 @@ void XgemvTune(const Arguments<T> &args,
   tuner.SetReferenceFromString(sources, "Xgemv", {args.m}, {64});
 
   // Sets the tunable parameters and their possible values
-  tuner.AddParameter(id, "WGS", {64, 128});
-  tuner.AddParameter(id, "WPT", {1});
+  tuner.AddParameter(id, "WGS", {64, 128, 256, 512, 1024, 1536, 2048});
+  tuner.AddParameter(id, "WPT", {1, 2, 4});
   tuner.AddParameter(id, "VW", {1});
 
   // Tests for a specific precision
@@ -58,7 +58,7 @@ void XgemvTune(const Arguments<T> &args,
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentInput(a_mat);
   tuner.AddArgumentScalar(0);
-  tuner.AddArgumentScalar(static_cast<int>(args.n));
+  tuner.AddArgumentScalar(static_cast<int>(args.m));
   tuner.AddArgumentInput(x_vec);
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentScalar(1);
