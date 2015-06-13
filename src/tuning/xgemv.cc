@@ -55,7 +55,10 @@ void XgemvTune(const Arguments<T> &args,
   tuner.AddArgumentScalar(static_cast<int>(args.n));
   tuner.AddArgumentScalar(args.alpha);
   tuner.AddArgumentScalar(args.beta);
+  tuner.AddArgumentScalar(0);
   tuner.AddArgumentInput(a_mat);
+  tuner.AddArgumentScalar(0);
+  tuner.AddArgumentScalar(static_cast<int>(args.n));
   tuner.AddArgumentInput(x_vec);
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentScalar(1);

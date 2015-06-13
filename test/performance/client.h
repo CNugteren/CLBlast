@@ -49,6 +49,9 @@ template <typename T>
 void ClientXY(int argc, char *argv[], Routine2<T> client_routine,
               const std::vector<std::string> &options);
 template <typename T>
+void ClientAXY(int argc, char *argv[], Routine3<T> client_routine,
+               const std::vector<std::string> &options);
+template <typename T>
 void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
                const std::vector<std::string> &options);
 
@@ -57,7 +60,8 @@ void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
 // Parses all command-line arguments, filling in the arguments structure. If no command-line
 // argument is given for a particular argument, it is filled in with a default value.
 template <typename T>
-Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::string> &options);
+Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::string> &options,
+                            const std::function<size_t(const Arguments<T>)> default_ld_a);
 
 // Retrieves only the precision command-line argument, since the above function is templated based
 // on the precision

@@ -49,12 +49,6 @@ template <typename T>
 void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
   TestStart("regular behaviour", name);
 
-  // Computes whether or not the matrix is transposed. Note that we assume a default of
-  // column-major and no-transpose. If one of them is different (but not both), then rotated
-  // is considered true.
-  auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
-                   (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-
   // Iterates over the dimension for the matrix and vectors
   for (auto &m: kMatrixVectorDims) {
     args.m = m;
@@ -62,7 +56,12 @@ void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
       args.n = n;
 
       // Computes the second dimension of the matrix taking the rotation into account
-      auto a_two = (a_rotated) ? m : n;
+      auto a_two = (args.layout == Layout::kRowMajor) ? args.m : args.n;
+
+      // Computes the vector sizes in case the matrix is transposed
+      auto a_transposed = (args.a_transpose == Transpose::kYes);
+      auto m_real = (a_transposed) ? n : m;
+      auto n_real = (a_transposed) ? m : n;
 
       // Iterates over the leading-dimension values and the offsets of the matrix
       for (auto &a_ld: kMatrixVectorDims) {
@@ -82,8 +81,8 @@ void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 
                   // Computes the buffer sizes
                   auto a_size = a_two * a_ld + a_offset;
-                  auto x_size = n * x_inc + x_offset;
-                  auto y_size = n * y_inc + y_offset;
+                  auto x_size = n_real * x_inc + x_offset;
+                  auto y_size = m_real * y_inc + y_offset;
                   if (a_size < 1 || x_size < 1 || y_size < 1) { continue; }
 
                   // Creates the OpenCL buffers
@@ -124,15 +123,15 @@ void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 
                       // Checks for differences in the output
                       auto errors = size_t{0};
-                      for (auto idn=size_t{0}; idn<n; ++idn) {
-                        auto index = idn*y_inc + y_offset;
+                      for (auto idm=size_t{0}; idm<m_real; ++idm) {
+                        auto index = idm*y_inc + y_offset;
                         if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
                           errors++;
                         }
                       }
 
                       // Tests the error count (should be zero)
-                      TestErrorCount(errors, n, args);
+                      TestErrorCount(errors, m_real, args);
                     }
                   }
                 }
@@ -158,6 +157,9 @@ void TestAXY<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &n
   args.m = kBufferSize;
   args.n = kBufferSize;
   args.a_ld = kBufferSize;
+  args.a_offset = 0;
+  args.x_offset = 0;
+  args.y_offset = 0;
 
   // Iterates over test buffer sizes
   const std::vector<size_t> kMatrixSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};

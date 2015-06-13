@@ -85,7 +85,7 @@ enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
 
 // Templated-precision vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
 template <typename T>
-StatusCode Axpy(const size_t m, const T alpha,
+StatusCode Axpy(const size_t n, const T alpha,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event);
@@ -93,10 +93,21 @@ StatusCode Axpy(const size_t m, const T alpha,
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 
+// Templated-precision generalized matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+template <typename T>
+StatusCode Gemv(const Layout layout, const Transpose transpose_a,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 
-// Templated-precision generalized matrix multiplication: SGEMM/DGEMM
+// Templated-precision generalized matrix-matrix multiplication: SGEMM/DGEMM
 template <typename T>
 StatusCode Gemm(const Layout layout, const Transpose transpose_a, const Transpose transpose_b,
                 const size_t m, const size_t n, const size_t k,
@@ -107,7 +118,7 @@ StatusCode Gemm(const Layout layout, const Transpose transpose_a, const Transpos
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event);
 
-// Templated-precision symmetric matrix multiplication: SSYMM/DSYMM
+// Templated-precision symmetric matrix-matrix multiplication: SSYMM/DSYMM
 template <typename T>
 StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const size_t m, const size_t n,

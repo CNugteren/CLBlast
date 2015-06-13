@@ -26,8 +26,12 @@ template <typename T>
 void ClientXY(int argc, char *argv[], Routine2<T> client_routine,
               const std::vector<std::string> &options) {
 
+  // Function to determine how to find the default value of the leading dimension of matrix A.
+  // Note: this is not relevant for this client but given anyway.
+  auto default_ld_a = [](const Arguments<T> args) { return args.n; };
+
   // Simple command line argument parser with defaults
-  auto args = ParseArguments<T>(argc, argv, options);
+  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
   if (args.print_help) { return; }
 
   // Prints the header of the output table
@@ -81,13 +85,94 @@ template void ClientXY<double2>(int, char **, Routine2<double2>, const std::vect
 
 // =================================================================================================
 
+// This is the matrix-vector-vector variant of the set-up/tear-down client routine.
+template <typename T>
+void ClientAXY(int argc, char *argv[], Routine3<T> client_routine,
+               const std::vector<std::string> &options) {
+
+  // Function to determine how to find the default value of the leading dimension of matrix A
+  auto default_ld_a = [](const Arguments<T> args) { return args.n; };
+
+  // Simple command line argument parser with defaults
+  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
+  if (args.print_help) { return; }
+
+  // Prints the header of the output table
+  PrintTableHeader(args.silent, options);
+
+  // Initializes OpenCL and the libraries
+  auto platform = Platform(args.platform_id);
+  auto device = Device(platform, kDeviceType, args.device_id);
+  auto context = Context(device);
+  auto queue = CommandQueue(context, device);
+  if (args.compare_clblas) { clblasSetup(); }
+
+  // Iterates over all "num_step" values jumping by "step" each time
+  auto s = size_t{0};
+  while(true) {
+
+    // Computes the second dimension of the matrix taking the rotation into account
+    auto a_two = (args.layout == Layout::kRowMajor) ? args.m : args.n;
+
+    // Computes the vector sizes in case the matrix is transposed
+    auto a_transposed = (args.a_transpose == Transpose::kYes);
+    auto m_real = (a_transposed) ? args.n : args.m;
+    auto n_real = (a_transposed) ? args.m : args.n;
+
+    // Computes the data sizes
+    auto a_size = a_two * args.a_ld + args.a_offset;
+    auto x_size = n_real*args.x_inc + args.x_offset;
+    auto y_size = m_real*args.y_inc + args.y_offset;
+
+    // Populates input host vectors with random data
+    std::vector<T> a_source(a_size);
+    std::vector<T> x_source(x_size);
+    std::vector<T> y_source(y_size);
+    PopulateVector(a_source);
+    PopulateVector(x_source);
+    PopulateVector(y_source);
+
+    // Creates the vectors on the device
+    auto a_buffer = Buffer(context, CL_MEM_READ_WRITE, a_size*sizeof(T));
+    auto x_buffer = Buffer(context, CL_MEM_READ_WRITE, x_size*sizeof(T));
+    auto y_buffer = Buffer(context, CL_MEM_READ_WRITE, y_size*sizeof(T));
+    a_buffer.WriteBuffer(queue, a_size*sizeof(T), a_source);
+    x_buffer.WriteBuffer(queue, x_size*sizeof(T), x_source);
+    y_buffer.WriteBuffer(queue, y_size*sizeof(T), y_source);
+
+    // Runs the routine-specific code
+    client_routine(args, a_buffer, x_buffer, y_buffer, queue);
+
+    // Makes the jump to the next step
+    ++s;
+    if (s >= args.num_steps) { break; }
+    args.m += args.step;
+    args.n += args.step;
+    args.a_ld += args.step;
+  }
+
+  // Cleans-up and returns
+  if (args.compare_clblas) { clblasTeardown(); }
+}
+
+// Compiles the above function
+template void ClientAXY<float>(int, char **, Routine3<float>, const std::vector<std::string>&);
+template void ClientAXY<double>(int, char **, Routine3<double>, const std::vector<std::string>&);
+template void ClientAXY<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&);
+template void ClientAXY<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&);
+
+// =================================================================================================
+
 // This is the matrix-matrix-matrix variant of the set-up/tear-down client routine.
 template <typename T>
 void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
                      const std::vector<std::string> &options) {
 
+  // Function to determine how to find the default value of the leading dimension of matrix A
+  auto default_ld_a = [](const Arguments<T> args) { return args.m; };
+
   // Simple command line argument parser with defaults
-  auto args = ParseArguments<T>(argc, argv, options);
+  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
   if (args.print_help) { return; }
 
   // Prints the header of the output table
@@ -167,7 +252,8 @@ template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vec
 // applicable, but are searched for anyway to be able to create one common argument parser. All
 // arguments have a default value in case they are not found.
 template <typename T>
-Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::string> &options) {
+Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::string> &options,
+                            const std::function<size_t(const Arguments<T>)> default_ld_a) {
   auto args = Arguments<T>{};
   auto help = std::string{"Options given/available:\n"};
 
@@ -193,7 +279,7 @@ Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::strin
     if (o == kArgYOffset) { args.y_offset = GetArgument(argc, argv, help, kArgYOffset, size_t{0}); }
 
     // Matrix arguments
-    if (o == kArgALeadDim) { args.a_ld     = GetArgument(argc, argv, help, kArgALeadDim, args.k); }
+    if (o == kArgALeadDim) { args.a_ld     = GetArgument(argc, argv, help, kArgALeadDim, default_ld_a(args)); }
     if (o == kArgBLeadDim) { args.b_ld     = GetArgument(argc, argv, help, kArgBLeadDim, args.n); }
     if (o == kArgCLeadDim) { args.c_ld     = GetArgument(argc, argv, help, kArgCLeadDim, args.n); }
     if (o == kArgAOffset)  { args.a_offset = GetArgument(argc, argv, help, kArgAOffset, size_t{0}); }

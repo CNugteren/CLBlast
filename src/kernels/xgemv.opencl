@@ -34,7 +34,8 @@ R"(
 // The gemv kernel
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
 __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
-                    const __global real* restrict agm,
+                    const int a_transposed,
+                    const __global real* restrict agm, const int a_offset, const int a_ld,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* ygm, const int y_offset, const int y_inc) {
 
@@ -45,8 +46,15 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
     // Loop over the elements of the matrix A
     real acc;
     SetToZero(acc);
-    for (int k=0; k<n; ++k) {
-      MultiplyAdd(acc, agm[id + m*k], xgm[k*x_inc + x_offset]);
+    if (a_transposed == 0) {
+      for (int k=0; k<n; ++k) {
+        MultiplyAdd(acc, agm[id + a_ld*k + a_offset], xgm[k*x_inc + x_offset]);
+      }
+    }
+    else {
+      for (int k=0; k<n; ++k) {
+        MultiplyAdd(acc, agm[k + a_ld*id + a_offset], xgm[k*x_inc + x_offset]);
+      }
     }
     AXPBY(ygm[id*y_inc + y_offset], alpha, acc, beta, ygm[id*y_inc + y_offset]);
   }
