@@ -42,7 +42,7 @@ class TestAXY: public Tester<T> {
   using Tester<T>::GetExampleScalars;
 
   // Test settings for the regular test. Append to this list in case more tests are required.
-  const std::vector<size_t> kMatrixVectorDims = { 7, 64 };
+  const std::vector<size_t> kMatrixVectorDims = { 61, 512 };
   const std::vector<size_t> kOffsets = { 0, 10 };
   const std::vector<size_t> kIncrements = { 1, 2 };
   const std::vector<T> kAlphaValues = GetExampleScalars();
