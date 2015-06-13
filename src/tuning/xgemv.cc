@@ -33,29 +33,33 @@ void XgemvTune(const Arguments<T> &args,
   std::string kernel_source =
   #include "../src/kernels/xgemv.opencl"
   auto sources = common_source + kernel_source;
-  auto id = tuner.AddKernelFromString(sources, "Xgemv", {args.m}, {1});
+  auto id = tuner.AddKernelFromString(sources, "XgemvFast", {args.m}, {1});
   tuner.SetReferenceFromString(sources, "Xgemv", {args.m}, {64});
 
   // Sets the tunable parameters and their possible values
   tuner.AddParameter(id, "WGS", {64, 128, 256, 512, 1024, 1536, 2048});
-  tuner.AddParameter(id, "WPT", {1, 2, 4});
-  tuner.AddParameter(id, "VW", {1});
+  tuner.AddParameter(id, "WPT", {1, 2, 4, 8});
+  tuner.AddParameter(id, "VW", {1, 2, 4, 8});
 
   // Tests for a specific precision
   tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
   tuner.AddParameterReference("PRECISION", static_cast<size_t>(args.precision));
 
+  // Sets the constraints
+  auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
+  tuner.AddConstraint(id, MultipleOfX, {"WGS", "VW"});
+  tuner.AddConstraint(id, MultipleOfX, {"WPT", "VW"});
+
   // Modifies the thread-sizes (local) based on the parameters
   tuner.MulLocalSize(id, {"WGS"});
   tuner.DivGlobalSize(id, {"WPT"});
-  tuner.DivGlobalSize(id, {"VW"});
 
   // Sets the function's arguments
   tuner.AddArgumentScalar(static_cast<int>(args.m));
   tuner.AddArgumentScalar(static_cast<int>(args.n));
   tuner.AddArgumentScalar(args.alpha);
   tuner.AddArgumentScalar(args.beta);
-  tuner.AddArgumentScalar(0);
+  tuner.AddArgumentScalar(static_cast<int>(args.layout));
   tuner.AddArgumentInput(a_mat);
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentScalar(static_cast<int>(args.m));

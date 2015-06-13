@@ -87,6 +87,7 @@ void TunerAXY(int argc, char* argv[], const Tuner3<T> &tune_function) {
   args.n           = GetArgument(argc, argv, help, kArgN, size_t{1024});
   args.alpha       = GetArgument(argc, argv, help, kArgAlpha, GetScalar<T>());
   args.beta        = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>());
+  args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kColMajor);
   fprintf(stdout, "%s\n", help.c_str());
 
   // Creates input buffers with random data

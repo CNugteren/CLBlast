@@ -30,7 +30,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     },
     { // Intel GPUs
       CL_DEVICE_TYPE_GPU, "Intel", {
-        { "Iris",             { {"WGS",256}, {"WPT",2}, {"VW",1} } },
+        { "Iris",             { {"WGS",128}, {"WPT",4}, {"VW",4} } },
       }
     },
     { // Default

@@ -69,10 +69,19 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   status = TestVectorY(m_real, y_buffer, y_offset, y_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
 
+  // Determines whether or not the fast-version can be used
+  bool use_fast_kernel = (a_offset == 0) &&
+                         IsMultiple(m, db_["WGS"]*db_["WPT"]) &&
+                         IsMultiple(n, db_["WGS"]) &&
+                         IsMultiple(a_ld, db_["VW"]);
+
+  // If possible, run the fast-version of the kernel
+  auto kernel_name = (use_fast_kernel) ? "XgemvFast" : "Xgemv";
+
   // Retrieves the Xgemv kernel from the compiled binary
   try {
     auto program = GetProgramFromCache();
-    auto kernel = Kernel(program, "Xgemv");
+    auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(m_real));
