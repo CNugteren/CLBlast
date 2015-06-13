@@ -31,6 +31,48 @@ R"(
 
 // =================================================================================================
 
+// The multiply-add function for the main part (divisable by WGS)
+inline void MatrixVectorMain(const __global real* restrict agm, __local real* xlm, real acc[WPT],
+                             const int gid, const int w, const int kwg,
+                             const int a_ld, const int a_offset, const int a_transposed) {
+  if (a_transposed == 0) { // Not transposed
+    #pragma unroll
+    for (int kl=0; kl<WGS; ++kl) {
+      const int k = kwg + kl;
+      MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xlm[kl]);
+    }
+  }
+  else { // Transposed
+    #pragma unroll
+    for (int kl=0; kl<WGS; ++kl) {
+      const int k = kwg + kl;
+      MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xlm[kl]);
+    }
+  }
+}
+
+// The multiply-add function for the remainder part (not divisable by WGS)
+inline void MatrixVectorRemainder(const __global real* restrict agm,
+                                  const __global real* restrict xgm, real acc[WPT],
+                                  const int gid, const int w, const int n_floor, const int n,
+                                  const int a_ld, const int a_offset, const int a_transposed,
+                                  const int x_inc, const int x_offset) {
+  if (a_transposed == 0) { // Not transposed
+    #pragma unroll
+    for (int k=n_floor; k<n; ++k) {
+      MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xgm[k*x_inc + x_offset]);
+    }
+  }
+  else { // Transposed
+    #pragma unroll
+    for (int k=n_floor; k<n; ++k) {
+      MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xgm[k*x_inc + x_offset]);
+    }
+  }
+}
+
+// =================================================================================================
+
 // The gemv kernel
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
 __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
@@ -63,32 +105,12 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
     // Synchronizes all threads in a workgroup
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    // Loops over the work per thread
+    // Loops over the work per thread, and checks whether in bounds
     #pragma unroll
     for (int w=0; w<WPT; ++w) {
       const int gid = w*get_global_size(0) + get_global_id(0);
-
-      // Checks whether this thread is within bounds
-      // Note: placed here because of the synchronisation barriers
       if (gid < m) {
-
-        // Main multiply-add computation (regular)
-        if (a_transposed == 0) {
-          #pragma unroll
-          for (int kl=0; kl<WGS; ++kl) {
-            const int k = kwg + kl;
-            MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xlm[kl]);
-          }
-        }
-
-        // Main multiply-add computation (transposed)
-        else {
-          #pragma unroll
-          for (int kl=0; kl<WGS; ++kl) {
-            const int k = kwg + kl;
-            MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xlm[kl]);
-          }
-        }
+        MatrixVectorMain(agm, xlm, acc, gid, w, kwg, a_ld, a_offset, a_transposed);
       }
     }
 
@@ -96,29 +118,13 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
     barrier(CLK_LOCAL_MEM_FENCE);
   }
 
-  // Loops over the work per thread
+  // Loops over the work per thread, and checks whether in bounds
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int gid = w*get_global_size(0) + get_global_id(0);
-
-    // Checks whether this thread is within bounds
     if (gid < m) {
-
-      // Multiply-add computation for the remaining tail (regular)
-      if (a_transposed == 0) {
-        #pragma unroll
-        for (int k=n_floor; k<n; ++k) {
-          MultiplyAdd(acc[w], agm[gid + a_ld*k + a_offset], xgm[k*x_inc + x_offset]);
-        }
-      }
-
-      // Multiply-add computation for the remaining tail (transposed)
-      else {
-        #pragma unroll
-        for (int k=n_floor; k<n; ++k) {
-          MultiplyAdd(acc[w], agm[k + a_ld*gid + a_offset], xgm[k*x_inc + x_offset]);
-        }
-      }
+      MatrixVectorRemainder(agm, xgm, acc, gid, w, n_floor, n,
+                            a_ld, a_offset, a_transposed, x_inc, x_offset);
 
       // Stores the final result
       AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, ygm[gid*y_inc + y_offset]);
