@@ -100,8 +100,8 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
     kernel.SetArgument(13, static_cast<int>(y_inc));
 
     // Launches the kernel
-    auto m_ceiled = Ceil(m_real, db_["WGS"]);
-    auto global = std::vector<size_t>{CeilDiv(m_ceiled, db_["WPT"])};
+    auto m_ceiled = Ceil(m_real, db_["WGS"]*db_["WPT"]);
+    auto global = std::vector<size_t>{m_ceiled / db_["WPT"]};
     auto local = std::vector<size_t>{db_["WGS"]};
     status = RunKernel(kernel, global, local);
     if (ErrorIn(status)) { return status; }
