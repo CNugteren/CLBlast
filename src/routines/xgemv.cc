@@ -70,13 +70,30 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used
-  bool use_fast_kernel = (a_offset == 0) &&
-                         IsMultiple(m, db_["WGS"]*db_["WPT"]) &&
-                         IsMultiple(n, db_["WGS"]) &&
-                         IsMultiple(a_ld, db_["VW"]);
+  bool use_fast_kernel = (a_offset == 0) && (a_rotated == 0) &&
+                         IsMultiple(m, db_["WGS2"]*db_["WPT2"]) &&
+                         IsMultiple(n, db_["WGS2"]) &&
+                         IsMultiple(a_ld, db_["VW2"]);
+  bool use_fast_kernel_rot = (a_offset == 0) && (a_rotated == 1) &&
+                             IsMultiple(m, db_["WGS3"]*db_["WPT3"]) &&
+                             IsMultiple(n, db_["WGS3"]) &&
+                             IsMultiple(a_ld, db_["VW3"]);
 
-  // If possible, run the fast-version of the kernel
-  auto kernel_name = (use_fast_kernel) ? "XgemvFast" : "Xgemv";
+  // If possible, run the fast-version (rotated or non-rotated) of the kernel
+  auto kernel_name = "Xgemv";
+  auto m_ceiled = Ceil(m_real, db_["WGS1"]*db_["WPT1"]);
+  auto global_size = m_ceiled / db_["WPT1"];
+  auto local_size = db_["WGS1"];
+  if (use_fast_kernel) {
+    kernel_name = "XgemvFast";
+    global_size = m_real / db_["WPT2"];
+    local_size = db_["WGS2"];
+  }
+  if (use_fast_kernel_rot) {
+    kernel_name = "XgemvFastRot";
+    global_size = m_real / db_["WPT3"];
+    local_size = db_["WGS3"];
+  }
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
@@ -100,9 +117,8 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
     kernel.SetArgument(13, static_cast<int>(y_inc));
 
     // Launches the kernel
-    auto m_ceiled = Ceil(m_real, db_["WGS"]*db_["WPT"]);
-    auto global = std::vector<size_t>{m_ceiled / db_["WPT"]};
-    auto local = std::vector<size_t>{db_["WGS"]};
+    auto global = std::vector<size_t>{global_size};
+    auto local = std::vector<size_t>{local_size};
     status = RunKernel(kernel, global, local);
     if (ErrorIn(status)) { return status; }
 
