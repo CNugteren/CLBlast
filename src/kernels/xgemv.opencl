@@ -133,7 +133,8 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
       }
 
       // Stores the final result
-      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, ygm[gid*y_inc + y_offset]);
+      real yval = ygm[gid*y_inc + y_offset];
+      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
     }
   }
 }
@@ -239,7 +240,8 @@ __kernel void XgemvFast(const int m, const int n, const real alpha, const real b
   #pragma unroll
   for (int w=0; w<WPT2; ++w) {
     const int gid = WPT2*get_global_id(0) + w;
-    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, ygm[gid*y_inc + y_offset]);
+    real yval = ygm[gid*y_inc + y_offset];
+    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
   }
 }
 
@@ -345,7 +347,8 @@ __kernel void XgemvFastRot(const int m, const int n, const real alpha, const rea
   #pragma unroll
   for (int w=0; w<WPT3; ++w) {
     const int gid = WPT3*get_global_id(0) + w;
-    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, ygm[gid*y_inc + y_offset]);
+    real yval = ygm[gid*y_inc + y_offset];
+    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
   }
 }
 
