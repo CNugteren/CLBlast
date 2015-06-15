@@ -20,7 +20,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
       CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
         { "GeForce GTX 480",  { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
         { "Tesla K20m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K40m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+        { "Tesla K40m",       { {"WGS1",256}, {"WPT1",1}, {"WGS2",256}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",4} } },
       }
     },
     { // AMD GPUs
@@ -86,7 +86,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
     },
     { // Intel GPUs
       CL_DEVICE_TYPE_GPU, "Intel", {
-        { "Iris",             { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+        { "Iris",             { {"WGS1",256}, {"WPT1",1}, {"WGS2",64}, {"WPT2",4}, {"VW2",2}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
       }
     },
     { // Default
