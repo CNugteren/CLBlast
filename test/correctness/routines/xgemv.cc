@@ -85,9 +85,9 @@ void XgemvTest(int argc, char *argv[], const bool silent, const std::string &nam
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   clblast::XgemvTest<float>(argc, argv, false, "SGEMV");
-  //clblast::XgemvTest<double>(argc, argv, true, "DGEMV");
-  //clblast::XgemvTest<clblast::float2>(argc, argv, true, "CGEMV");
-  //clblast::XgemvTest<clblast::double2>(argc, argv, true, "ZGEMV");
+  clblast::XgemvTest<double>(argc, argv, true, "DGEMV");
+  clblast::XgemvTest<clblast::float2>(argc, argv, true, "CGEMV");
+  clblast::XgemvTest<clblast::double2>(argc, argv, true, "ZGEMV");
   return 0;
 }
 
