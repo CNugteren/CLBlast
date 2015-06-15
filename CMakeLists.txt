@@ -93,11 +93,12 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy pad transpose padtranspose xaxpy xgemm)
+set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
 set(SAMPLE_PROGRAMS sgemm)
 set(ROUTINES_XY xaxpy)
+set(ROUTINES_AXY xgemv)
 set(ROUTINES_ABC xgemm xsymm)
-set(ROUTINES ${ROUTINES_XY} ${ROUTINES_ABC})
+set(ROUTINES ${ROUTINES_XY} ${ROUTINES_AXY} ${ROUTINES_ABC})
 
 # ==================================================================================================
 
@@ -169,6 +170,7 @@ if(TESTS)
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT test/correctness/tester.cc)
   add_library(test_correctness_xy OBJECT test/correctness/testxy.cc)
+  add_library(test_correctness_axy OBJECT test/correctness/testaxy.cc)
   add_library(test_correctness_abc OBJECT test/correctness/testabc.cc)
 
   # Compiles the correctness-tests
@@ -176,6 +178,14 @@ if(TESTS)
     add_executable(test_${ROUTINE}
                    $<TARGET_OBJECTS:test_correctness_common>
                    $<TARGET_OBJECTS:test_correctness_xy>
+                   test/correctness/routines/${ROUTINE}.cc)
+    target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
+    install(TARGETS test_${ROUTINE} DESTINATION bin)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES_AXY})
+    add_executable(test_${ROUTINE}
+                   $<TARGET_OBJECTS:test_correctness_common>
+                   $<TARGET_OBJECTS:test_correctness_axy>
                    test/correctness/routines/${ROUTINE}.cc)
     target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
     install(TARGETS test_${ROUTINE} DESTINATION bin)

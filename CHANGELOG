@@ -1,4 +1,8 @@
 
+Development version (next release)
+- Added level-2 routines:
+    SGEMV/DGEMV/CGEMV/ZGEMV
+
 Version 0.1.0
 - Initial preview version release to GitHub
 - Supported level-1 routines:

@@ -660,7 +660,7 @@ checkMatrixSizes(
 
     // Note: this is a hack to get the xsymm tests to work.
     // TODO: Find out why "memUsed" is set to 0 in some cases!
-    memUsed = matrSize;
+    memUsed = offA + matrSize;
     //printf("%lu required but found %lu\n", memUsed/tsize, memSize/tsize);
 
     if (( memUsed > memSize ) || (offA + matrSize < offA)) {

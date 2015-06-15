@@ -88,8 +88,8 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
       status = RunKernel(kernel, global, local);
     }
     else {
-      auto n_ceiled = Ceil(n, db_["WGS"]);
-      auto global = std::vector<size_t>{CeilDiv(n_ceiled, db_["WPT"])};
+      auto n_ceiled = Ceil(n, db_["WGS"]*db_["WPT"]);
+      auto global = std::vector<size_t>{n_ceiled/db_["WPT"]};
       auto local = std::vector<size_t>{db_["WGS"]};
       status = RunKernel(kernel, global, local);
     }
