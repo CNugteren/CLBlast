@@ -68,6 +68,7 @@ void PadTransposeTune(const Arguments<T> &args,
   tuner.AddArgumentScalar(static_cast<int>(args.n));
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentOutput(b_mat);
+  tuner.AddArgumentScalar(0);
 }
 
 // =================================================================================================

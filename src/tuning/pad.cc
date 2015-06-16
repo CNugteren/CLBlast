@@ -63,6 +63,7 @@ void PadTune(const Arguments<T> &args,
   tuner.AddArgumentScalar(static_cast<int>(args.m));
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentOutput(b_mat);
+  tuner.AddArgumentScalar(0);
 }
 
 // =================================================================================================
