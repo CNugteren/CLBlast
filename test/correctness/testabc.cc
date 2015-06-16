@@ -18,16 +18,6 @@
 namespace clblast {
 // =================================================================================================
 
-// The layouts and transpose-options to test with
-template <typename T>
-const std::vector<Layout> TestABC<T>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
-template <> const std::vector<Transpose> TestABC<float>::kTransposes = {Transpose::kNo, Transpose::kYes};
-template <> const std::vector<Transpose> TestABC<double>::kTransposes = {Transpose::kNo, Transpose::kYes};
-template <> const std::vector<Transpose> TestABC<float2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
-template <> const std::vector<Transpose> TestABC<double2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
-
-// =================================================================================================
-
 // Constructor, initializes the base class tester and input data
 template <typename T>
 TestABC<T>::TestABC(const size_t platform_id, const size_t device_id,

@@ -32,6 +32,8 @@ class TestAXY: public Tester<T> {
   using Tester<T>::context_;
   using Tester<T>::queue_;
   using Tester<T>::kErrorMargin;
+  using Tester<T>::kLayouts;
+  using Tester<T>::kTransposes;
 
   // Uses several helper functions from the Tester class
   using Tester<T>::TestStart;
