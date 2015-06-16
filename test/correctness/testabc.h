@@ -50,6 +50,10 @@ class TestABC: public Tester<T> {
   // Test settings for the invalid test
   const size_t kBufferSize = 64;
 
+  // The layouts and transpose-options to test with
+  static const std::vector<Layout> kLayouts;
+  static const std::vector<Transpose> kTransposes;
+
   // Shorthand for a BLAS routine
   using Routine = std::function<StatusCode(const Arguments<T>&,
                                            const Buffer&, const Buffer&, const Buffer&,
