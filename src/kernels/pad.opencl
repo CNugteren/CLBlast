@@ -47,7 +47,8 @@ __kernel void PadMatrix(const int src_one, const int src_two,
                         __global const real* restrict src,
                         const int dest_one, const int dest_two,
                         const int dest_ld, const int dest_offset,
-                        __global real* dest) {
+                        __global real* dest,
+                        const int do_conjugate) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -67,6 +68,7 @@ __kernel void PadMatrix(const int src_one, const int src_two,
         }
 
         // Stores the value in the destination matrix
+        if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
         dest[id_two*dest_ld + id_one + dest_offset] = value;
       }
     }

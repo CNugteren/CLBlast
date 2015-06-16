@@ -40,7 +40,8 @@ __kernel void PadTransposeMatrix(const int src_one, const int src_two,
                                  __global const real* restrict src,
                                  const int dest_one, const int dest_two,
                                  const int dest_ld, const int dest_offset,
-                                 __global real* dest) {
+                                 __global real* dest,
+                                 const int do_conjugate) {
 
   // Local memory to store a tile of the matrix (for coalescing)
   __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
@@ -83,11 +84,14 @@ __kernel void PadTransposeMatrix(const int src_one, const int src_two,
       // Stores the transposed value in the destination matrix
       if ((id_dest_one < dest_one) && (id_dest_two < dest_two)) {
         real value = tile[get_local_id(0)*PADTRA_WPT + w_two][get_local_id(1)*PADTRA_WPT + w_one];
+        if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
         dest[id_dest_two*dest_ld + id_dest_one + dest_offset] = value;
       }
     }
   }
 }
+
+// =================================================================================================
 
 // Same as UnPadCopyMatrix, but now also does the transpose
 __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))

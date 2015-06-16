@@ -112,6 +112,13 @@ R"(
   #define AXPBY(e, a, b, c, d) e = a*b + c*d
 #endif
 
+// The complex conjugate operation for complex transforms
+#if PRECISION == 3232 || PRECISION == 6464
+  #define COMPLEX_CONJUGATE(value) value.x = value.x; value.y = -value.y
+#else
+  #define COMPLEX_CONJUGATE(value) value = value
+#endif
+
 // =================================================================================================
 
 // End of the C++11 raw string literal
