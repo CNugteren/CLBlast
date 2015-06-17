@@ -90,6 +90,7 @@ void XgemvTune(const Arguments<T> &args, const size_t variation,
   tuner.AddArgumentOutput(y_vec);
   tuner.AddArgumentScalar(0);
   tuner.AddArgumentScalar(1);
+  tuner.AddArgumentScalar(0); // Conjugate transpose
 }
 
 // =================================================================================================

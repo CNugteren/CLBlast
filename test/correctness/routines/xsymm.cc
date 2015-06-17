@@ -73,7 +73,7 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
   TestABC<T> tester{platform_id, device_id, name, options, clblast_lambda, clblas_lambda};
 
   // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: {Layout::kRowMajor, Layout::kColMajor}) {
+  for (auto &layout: tester.kLayouts) {
     args.layout = layout;
     for (auto &side: {Side::kLeft, Side::kRight}) {
       args.side = side;
@@ -96,8 +96,8 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 int main(int argc, char *argv[]) {
   clblast::XsymmTest<float>(argc, argv, false, "SSYMM");
   clblast::XsymmTest<double>(argc, argv, true, "DSYMM");
-  //clblast::XsymmTest<float2>(argc, argv, true, "CSYMM");
-  //clblast::XsymmTest<double2>(argc, argv, true, "ZSYMM");
+  clblast::XsymmTest<clblast::float2>(argc, argv, true, "CSYMM");
+  clblast::XsymmTest<clblast::double2>(argc, argv, true, "ZSYMM");
   return 0;
 }
 

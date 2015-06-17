@@ -170,7 +170,6 @@ template StatusCode Gemm<double>(const Layout, const Transpose, const Transpose,
                                  const cl_mem, const size_t, const size_t, const double,
                                  cl_mem, const size_t, const size_t,
                                  cl_command_queue*, cl_event*);
-/*
 template StatusCode Gemm<float2>(const Layout, const Transpose, const Transpose,
                                  const size_t, const size_t, const size_t, const float2,
                                  const cl_mem, const size_t, const size_t,
@@ -183,7 +182,6 @@ template StatusCode Gemm<double2>(const Layout, const Transpose, const Transpose
                                   const cl_mem, const size_t, const size_t, const double2,
                                   cl_mem, const size_t, const size_t,
                                   cl_command_queue*, cl_event*);
-*/
 
 // =================================================================================================
 
@@ -232,7 +230,6 @@ template StatusCode Symm<double>(const Layout, const Side, const Triangle,
                                  const cl_mem, const size_t, const size_t, const double,
                                  cl_mem, const size_t, const size_t,
                                  cl_command_queue*, cl_event*);
-/*
 template StatusCode Symm<float2>(const Layout, const Side, const Triangle,
                                  const size_t, const size_t, const float2,
                                  const cl_mem, const size_t, const size_t,
@@ -245,7 +242,6 @@ template StatusCode Symm<double2>(const Layout, const Side, const Triangle,
                                   const cl_mem, const size_t, const size_t, const double2,
                                   cl_mem, const size_t, const size_t,
                                   cl_command_queue*, cl_event*);
-*/
 
 // =================================================================================================
 } // namespace clblast

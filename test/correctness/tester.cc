@@ -22,6 +22,16 @@
 namespace clblast {
 // =================================================================================================
 
+// The layouts and transpose-options to test with (data-type dependent)
+template <typename T>
+const std::vector<Layout> Tester<T>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
+template <> const std::vector<Transpose> Tester<float>::kTransposes = {Transpose::kNo, Transpose::kYes};
+template <> const std::vector<Transpose> Tester<double>::kTransposes = {Transpose::kNo, Transpose::kYes};
+template <> const std::vector<Transpose> Tester<float2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
+template <> const std::vector<Transpose> Tester<double2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
+
+// =================================================================================================
+
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T>

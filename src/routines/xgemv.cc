@@ -54,12 +54,15 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   auto a_two = (a_altlayout) ? m : n;
 
   // Swap m and n if the matrix is transposed
-  auto a_transposed = (a_transpose == Transpose::kYes);
+  auto a_transposed = (a_transpose != Transpose::kNo);
   auto m_real = (a_transposed) ? n : m;
   auto n_real = (a_transposed) ? m : n;
 
   // Determines whether the kernel needs to perform rotated access ('^' is the XOR operator)
   auto a_rotated = a_transposed ^ a_altlayout;
+
+  // In case of complex data-types, the transpose can also become a conjugate transpose
+  auto a_conjugate = (a_transpose == Transpose::kConjugate);
 
   // Tests the matrix and the vectors for validity
   auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
@@ -70,11 +73,11 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used
-  bool use_fast_kernel = (a_offset == 0) && (a_rotated == 0) &&
+  bool use_fast_kernel = (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
                          IsMultiple(m, db_["WGS2"]*db_["WPT2"]) &&
                          IsMultiple(n, db_["WGS2"]) &&
                          IsMultiple(a_ld, db_["VW2"]);
-  bool use_fast_kernel_rot = (a_offset == 0) && (a_rotated == 1) &&
+  bool use_fast_kernel_rot = (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
                              IsMultiple(m, db_["WGS3"]*db_["WPT3"]) &&
                              IsMultiple(n, db_["WGS3"]) &&
                              IsMultiple(a_ld, db_["VW3"]);
@@ -115,6 +118,7 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
     kernel.SetArgument(11, y_buffer());
     kernel.SetArgument(12, static_cast<int>(y_offset));
     kernel.SetArgument(13, static_cast<int>(y_inc));
+    kernel.SetArgument(14, static_cast<int>(a_conjugate));
 
     // Launches the kernel
     auto global = std::vector<size_t>{global_size};

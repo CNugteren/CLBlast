@@ -175,8 +175,8 @@ CLBlast is in active development and currently does not support the full set of 
 
 | Level-3  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
-| xGEMM    |`x`|`x`|   |   |         |
-| xSYMM    |`x`|`x`|   |   |         |
+| xGEMM    |`x`|`x`|`x`|`x`|         |
+| xSYMM    |`x`|`x`|`x`|`x`|         |
 | xHEMM    | - | - |   |   |         |
 | xSYRK    |   |   |   |   |         |
 | xHERK    | - | - |   |   |         |

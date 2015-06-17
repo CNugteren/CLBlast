@@ -66,9 +66,9 @@ void XgemvTest(int argc, char *argv[], const bool silent, const std::string &nam
   TestAXY<T> tester{platform_id, device_id, name, options, clblast_lambda, clblas_lambda};
 
   // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: {Layout::kRowMajor, Layout::kColMajor}) {
+  for (auto &layout: tester.kLayouts) {
     args.layout = layout;
-    for (auto &a_transpose: {Transpose::kNo, Transpose::kYes}) {
+    for (auto &a_transpose: tester.kTransposes) {
       args.a_transpose = a_transpose;
       const auto case_name = ToString(layout)+" "+ToString(a_transpose);
 
