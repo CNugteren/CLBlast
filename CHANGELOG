@@ -1,11 +1,16 @@
 
 Development version (next release)
+- Added support for complex conjugate transpose
 - Added level-2 routines:
     SGEMV/DGEMV/CGEMV/ZGEMV
+- Added level-3 routines:
+    CGEMM/ZGEMM
+    CSYMM/ZSYMM
 
 Version 0.1.0
 - Initial preview version release to GitHub
 - Supported level-1 routines:
     SAXPY/DAXPY/CAXPY/ZAXPY
 - Supported level-3 routines:
-    SGEMM/DGEMM, SSYMM/DSYMM
+    SGEMM/DGEMM
+    SSYMM/DSYMM
