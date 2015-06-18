@@ -308,7 +308,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
 
 // Queries the cache and retrieves a matching program. Assumes that the match is available, throws
 // otherwise.
-Program Routine::GetProgramFromCache() const {
+const Program& Routine::GetProgramFromCache() const {
   for (auto &cached_program: program_cache_) {
     if (cached_program.MatchInCache(device_name_, precision_, routines_)) {
       return cached_program.program;

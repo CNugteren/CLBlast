@@ -296,16 +296,6 @@ class Program: public ObjectWithState {
     swap(*this, other);
     return *this;
   }
-  /*
-  TODO: Implement move construction/assignment?
-  Program(Program &&other) {
-    clRetainProgram(program_);
-    swap(*this, other);
-  }
-  Program& operator=(Program &&other) {
-    swap(*this, other);
-    return *this;
-  }*/
   friend void swap(Program &first, Program &second) {
     std::swap(first.length_, second.length_);
     std::swap(first.source_, second.source_);
@@ -327,8 +317,7 @@ class Program: public ObjectWithState {
   }
 
   // Accessors to the private data-member
-  cl_program operator()() const { return program_; }
-  cl_program& operator()() { return program_; }
+  const cl_program& operator()() const { return program_; }
  private:
   size_t length_;
   std::vector<char> source_;
@@ -382,8 +371,7 @@ class Kernel: public ObjectWithState {
   }
 
   // Accessors to the private data-member
-  cl_kernel operator()() const { return kernel_; }
-  cl_kernel& operator()() { return kernel_; }
+  const cl_kernel& operator()() const { return kernel_; }
  private:
   cl_kernel kernel_;
 };

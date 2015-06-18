@@ -33,7 +33,7 @@ class Routine {
   const std::string kKhronosHalfPrecision = "cl_khr_fp16";
   const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 
-  // New data-type:tThe cache of compiled OpenCL programs, along with some meta-data
+  // The cache of compiled OpenCL programs, along with some meta-data
   struct ProgramCache {
     Program program;
     std::string device_name;
@@ -101,7 +101,7 @@ class Routine {
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.
   // The first assumes that the program is available in the cache and will throw an exception
   // otherwise.
-  Program GetProgramFromCache() const;
+  const Program& GetProgramFromCache() const;
   bool ProgramIsInCache() const;
 
   // Non-static variable for the precision. Note that the same variable (but static) might exist in

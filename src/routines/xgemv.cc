@@ -100,7 +100,7 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    auto program = GetProgramFromCache();
+    auto& program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

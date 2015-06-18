@@ -102,7 +102,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, m_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
-    auto program = GetProgramFromCache();
+    auto& program = GetProgramFromCache();
 
     // Runs the pre-processing kernels. This transposes the matrices, but also pads zeros to fill
     // them up until they reach a certain multiple of size (kernel parameter dependent).
