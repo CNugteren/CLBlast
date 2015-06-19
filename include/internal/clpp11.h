@@ -134,8 +134,7 @@ class Platform: public Object {
   }
 
   // Accessors to the private data-member
-  cl_platform_id operator()() const { return platform_; }
-  cl_platform_id& operator()() { return platform_; }
+  const cl_platform_id& operator()() const { return platform_; }
  private:
   cl_platform_id platform_;
 };
@@ -193,8 +192,7 @@ class Device: public Object {
   }
 
   // Accessors to the private data-member
-  cl_device_id operator()() const { return device_; }
-  cl_device_id& operator()() { return device_; }
+  const cl_device_id& operator()() const { return device_; }
  private:
 
   // Helper functions
@@ -259,8 +257,7 @@ class Context: public ObjectWithState {
   }
 
   // Accessors to the private data-member
-  cl_context operator()() const { return context_; }
-  cl_context& operator()() { return context_; }
+  const cl_context& operator()() const { return context_; }
  private:
   cl_context context_;
 };
@@ -433,8 +430,7 @@ class CommandQueue: public ObjectWithState {
   }
 
   // Accessors to the private data-member
-  cl_command_queue operator()() const { return queue_; }
-  cl_command_queue& operator()() { return queue_; }
+  const cl_command_queue& operator()() const { return queue_; }
  private:
   cl_command_queue queue_;
 };
@@ -499,8 +495,7 @@ class Buffer: public ObjectWithState {
   }
 
   // Accessors to the private data-member
-  cl_mem operator()() const { return buffer_; }
-  cl_mem& operator()() { return buffer_; }
+  const cl_mem& operator()() const { return buffer_; }
  private:
   cl_mem buffer_;
 };
