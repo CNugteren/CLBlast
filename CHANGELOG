@@ -1,6 +1,7 @@
 
 Development version (next release)
 - Added support for complex conjugate transpose
+- Some host-code performance improvements
 - Added level-2 routines:
     SGEMV/DGEMV/CGEMV/ZGEMV
 - Added level-3 routines:
