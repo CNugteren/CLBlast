@@ -29,10 +29,6 @@ namespace clblast {
 class Routine {
  public:
 
-  // Khronos OpenCL extensions
-  const std::string kKhronosHalfPrecision = "cl_khr_fp16";
-  const std::string kKhronosDoublePrecision = "cl_khr_fp64";
-
   // The cache of compiled OpenCL programs, along with some meta-data
   struct ProgramCache {
     Program program;

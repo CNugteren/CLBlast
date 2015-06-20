@@ -17,7 +17,6 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include <limits>
 
 namespace clblast {
 // =================================================================================================
@@ -35,25 +34,41 @@ template <> const std::vector<Transpose> Tester<double2>::kTransposes = {Transpo
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T>
-Tester<T>::Tester(const size_t platform_id, const size_t device_id,
+Tester<T>::Tester(int argc, char *argv[], const bool silent,
                   const std::string &name, const std::vector<std::string> &options):
-    platform_(Platform(platform_id)),
-    device_(Device(platform_, kDeviceType, device_id)),
+    help_("Options given/available:\n"),
+    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, size_t{0}))),
+    device_(Device(platform_, kDeviceType, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
     context_(Context(device_)),
     queue_(CommandQueue(context_, device_)),
+    full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
-    num_errors_{0},
+    num_failed_{0},
     print_count_{0},
-    tests_failed_{0},
     tests_passed_{0},
+    tests_skipped_{0},
+    tests_failed_{0},
     options_{options} {
+
+  // Prints the help message (command-line arguments)
+  if (!silent) { fprintf(stdout, "\n* %s\n", help_.c_str()); }
 
   // Prints the header
   fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
-  fprintf(stdout, "* Starting tests for the %s'%s'%s routine. Legend:\n",
+  fprintf(stdout, "* Starting tests for the %s'%s'%s routine.",
           kPrintMessage.c_str(), name.c_str(), kPrintEnd.c_str());
+
+  // Checks whether the precision is supported
+  if (!PrecisionSupported()) {
+    fprintf(stdout, "\n* All tests skipped: %sUnsupported precision%s\n",
+            kPrintWarning.c_str(), kPrintEnd.c_str());
+    return;
+  }
+
+  // Prints the legend
+  fprintf(stdout, " Legend:\n");
   fprintf(stdout, "   %s -> Test produced correct results\n", kSuccessData.c_str());
   fprintf(stdout, "   %s -> Test returned the correct error code\n", kSuccessStatus.c_str());
   fprintf(stdout, "   %s -> Test produced incorrect results\n", kErrorData.c_str());
@@ -73,14 +88,13 @@ Tester<T>::Tester(const size_t platform_id, const size_t device_id,
 // Destructor prints the summary of the test cases and cleans-up the clBLAS library
 template <typename T>
 Tester<T>::~Tester() {
-  fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
-  fprintf(stdout, "   %lu test(s) succeeded\n", tests_passed_);
-  if (tests_failed_ != 0) {
-    fprintf(stdout, "   %s%lu test(s) failed%s\n",
-            kPrintError.c_str(), tests_failed_, kPrintEnd.c_str());
-  }
-  else {
-    fprintf(stdout, "   %lu test(s) failed\n", tests_failed_);
+  if (PrecisionSupported()) {
+    fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
+    fprintf(stdout, "   %lu test(s) passed\n", tests_passed_);
+    if (tests_skipped_ > 0) { fprintf(stdout, "%s", kPrintWarning.c_str()); }
+    fprintf(stdout, "   %lu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
+    if (tests_failed_ > 0) { fprintf(stdout, "%s", kPrintError.c_str()); }
+    fprintf(stdout, "   %lu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
   }
   fprintf(stdout, "\n");
   clblasTeardown();
@@ -103,7 +117,7 @@ void Tester<T>::TestStart(const std::string &test_name, const std::string &test_
   error_log_.clear();
   num_passed_ = 0;
   num_skipped_ = 0;
-  num_errors_ = 0;
+  num_failed_ = 0;
   print_count_ = 0;
 }
 
@@ -112,7 +126,9 @@ void Tester<T>::TestStart(const std::string &test_name, const std::string &test_
 template <typename T>
 void Tester<T>::TestEnd() {
   fprintf(stdout, "\n");
-  if (error_log_.size() == 0) { tests_passed_++; } else { tests_failed_++; }
+  tests_passed_ += num_passed_;
+  tests_failed_ += num_skipped_;
+  tests_failed_ += num_failed_;
 
   // Prints details of all error occurences for these tests
   for (auto &entry: error_log_) {
@@ -146,7 +162,7 @@ void Tester<T>::TestEnd() {
   }
 
   // Prints a test summary
-  auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_errors_);
+  auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
   fprintf(stdout, "   Pass rate %s%5.1lf%%%s:", kPrintMessage.c_str(), pass_rate, kPrintEnd.c_str());
   fprintf(stdout, " %lu passed /", num_passed_);
   if (num_skipped_ != 0) {
@@ -155,11 +171,11 @@ void Tester<T>::TestEnd() {
   else {
     fprintf(stdout, " %lu skipped /", num_skipped_);
   }
-  if (num_errors_ != 0) {
-    fprintf(stdout, " %s%lu failed%s\n", kPrintError.c_str(), num_errors_, kPrintEnd.c_str());
+  if (num_failed_ != 0) {
+    fprintf(stdout, " %s%lu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
   }
   else {
-    fprintf(stdout, " %lu failed\n", num_errors_);
+    fprintf(stdout, " %lu failed\n", num_failed_);
   }
 }
 
@@ -168,34 +184,34 @@ void Tester<T>::TestEnd() {
 // Compares two floating point values and returns whether they are within an acceptable error
 // margin. This replaces GTest's EXPECT_NEAR().
 template <typename T>
-bool Tester<T>::TestSimilarity(const T val1, const T val2, const double margin) {
+bool Tester<T>::TestSimilarity(const T val1, const T val2) {
   const auto difference = std::fabs(val1 - val2);
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
-  // The values are zero or both are extremely close to it relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < std::numeric_limits<T>::min()) {
-    return difference < (static_cast<T>(margin) * std::numeric_limits<T>::min());
+  // The values are zero or very small: the relative error is less meaningful
+  else if (val1 == 0 || val2 == 0 || difference < static_cast<T>(kErrorMarginAbsolute)) {
+    return (difference < static_cast<T>(kErrorMarginAbsolute));
   }
   // Use relative error
   else {
-    return (difference / (std::fabs(val1) + std::fabs(val2))) < static_cast<T>(margin);
+    return (difference / (std::fabs(val1)+std::fabs(val2))) < static_cast<T>(kErrorMarginRelative);
   }
 }
 
 // Specialisations for complex data-types
 template <>
-bool Tester<float2>::TestSimilarity(const float2 val1, const float2 val2, const double margin) {
-  auto real = Tester<float>::TestSimilarity(val1.real(), val2.real(), margin);
-  auto imag = Tester<float>::TestSimilarity(val1.imag(), val2.imag(), margin);
+bool Tester<float2>::TestSimilarity(const float2 val1, const float2 val2) {
+  auto real = Tester<float>::TestSimilarity(val1.real(), val2.real());
+  auto imag = Tester<float>::TestSimilarity(val1.imag(), val2.imag());
   return (real && imag);
 }
 template <>
-bool Tester<double2>::TestSimilarity(const double2 val1, const double2 val2, const double margin) {
-  auto real = Tester<double>::TestSimilarity(val1.real(), val2.real(), margin);
-  auto imag = Tester<double>::TestSimilarity(val1.imag(), val2.imag(), margin);
+bool Tester<double2>::TestSimilarity(const double2 val1, const double2 val2) {
+  auto real = Tester<double>::TestSimilarity(val1.real(), val2.real());
+  auto imag = Tester<double>::TestSimilarity(val1.imag(), val2.imag());
   return (real && imag);
 }
 
@@ -258,19 +274,43 @@ void Tester<T>::TestErrorCodes(const StatusCode clblas_status, const StatusCode 
 // routines. This function is specialised for the different data-types.
 template <>
 const std::vector<float> Tester<float>::GetExampleScalars() {
-  return {0.0f, 1.0f, 3.14f};
+  if (full_test_) { return {0.0f, 1.0f, 3.14f}; }
+  else { return {3.14f}; }
 }
 template <>
 const std::vector<double> Tester<double>::GetExampleScalars() {
-  return {0.0, 1.0, 3.14};
+  if (full_test_) { return {0.0, 1.0, 3.14}; }
+  else { return {3.14}; }
 }
 template <>
 const std::vector<float2> Tester<float2>::GetExampleScalars() {
-  return {{0.0f, 0.0f}, {1.0f, 1.3f}, {2.42f, 3.14f}};
+  if (full_test_) { return {{0.0f, 0.0f}, {1.0f, 1.3f}, {2.42f, 3.14f}}; }
+  else { return {{2.42f, 3.14f}}; }
 }
 template <>
 const std::vector<double2> Tester<double2>::GetExampleScalars() {
-  return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}};
+  if (full_test_) { return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}}; }
+  else { return {{2.42, 3.14}}; }
+}
+
+// Retrieves the offset values to test with
+template <typename T>
+const std::vector<size_t> Tester<T>::GetOffsets() {
+  if (full_test_) { return {0, 10}; }
+  else { return {0}; }
+}
+
+// =================================================================================================
+
+template <> bool Tester<float>::PrecisionSupported() const { return true; }
+template <> bool Tester<float2>::PrecisionSupported() const { return true; }
+template <> bool Tester<double>::PrecisionSupported() const {
+  auto extensions = device_.Extensions();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+}
+template <> bool Tester<double2>::PrecisionSupported() const {
+  auto extensions = device_.Extensions();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
 }
 
 // =================================================================================================
@@ -287,7 +327,7 @@ void Tester<T>::ReportSkipped() {
 template <typename T>
 void Tester<T>::ReportError(const ErrorLogEntry &error_log_entry) {
   error_log_.push_back(error_log_entry);
-  num_errors_++;
+  num_failed_++;
 }
 
 // =================================================================================================

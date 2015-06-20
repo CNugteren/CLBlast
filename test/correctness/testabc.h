@@ -31,7 +31,6 @@ class TestABC: public Tester<T> {
   // Uses several variables from the Tester class
   using Tester<T>::context_;
   using Tester<T>::queue_;
-  using Tester<T>::kErrorMargin;
   using Tester<T>::kLayouts;
   using Tester<T>::kTransposes;
 
@@ -42,10 +41,12 @@ class TestABC: public Tester<T> {
   using Tester<T>::TestErrorCount;
   using Tester<T>::TestErrorCodes;
   using Tester<T>::GetExampleScalars;
+  using Tester<T>::GetOffsets;
+  using Tester<T>::PrecisionSupported;
 
   // Test settings for the regular test. Append to this list in case more tests are required.
   const std::vector<size_t> kMatrixDims = { 7, 64 };
-  const std::vector<size_t> kOffsets = { 0 };
+  const std::vector<size_t> kOffsets = GetOffsets();
   const std::vector<T> kAlphaValues = GetExampleScalars();
   const std::vector<T> kBetaValues = GetExampleScalars();
 
@@ -58,7 +59,7 @@ class TestABC: public Tester<T> {
                                            CommandQueue&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestABC(const size_t platform_id, const size_t device_id,
+  TestABC(int argc, char *argv[], const bool silent,
           const std::string &name, const std::vector<std::string> &options,
           const Routine clblast_lambda, const Routine clblas_lambda);
 

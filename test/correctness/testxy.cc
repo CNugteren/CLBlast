@@ -20,10 +20,10 @@ namespace clblast {
 
 // Constructor, initializes the base class tester and input data
 template <typename T>
-TestXY<T>::TestXY(const size_t platform_id, const size_t device_id,
+TestXY<T>::TestXY(int argc, char *argv[], const bool silent,
                   const std::string &name, const std::vector<std::string> &options,
                   const Routine clblast_lambda, const Routine clblas_lambda):
-    Tester<T>{platform_id, device_id, name, options},
+    Tester<T>{argc, argv, silent, name, options},
     clblast_lambda_(clblast_lambda),
     clblas_lambda_(clblas_lambda) {
 
@@ -44,6 +44,7 @@ TestXY<T>::TestXY(const size_t platform_id, const size_t device_id,
 // Tests the routine for a wide variety of parameters
 template <typename T>
 void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
   // Iterates over the vector dimension
@@ -100,7 +101,7 @@ void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
               auto errors = size_t{0};
               for (auto idn=size_t{0}; idn<n; ++idn) {
                 auto index = idn*y_inc + y_offset;
-                if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
+                if (!TestSimilarity(r_result[index], s_result[index])) {
                   errors++;
                 }
               }
@@ -122,6 +123,7 @@ void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 // does not test for results (if any).
 template <typename T>
 void TestXY<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Sets example test parameters

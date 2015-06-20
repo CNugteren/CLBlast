@@ -159,16 +159,21 @@ Precision GetPrecision(const int argc, char *argv[]) {
 bool CheckArgument(const int argc, char *argv[], std::string &help,
                    const std::string &option) {
 
-  // Updates the help message
-  help += "    -"+option+"\n";
-
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
+  auto return_value = false;
   for (int c=0; c<argc; ++c) {
     auto item = std::string{argv[c]};
-    if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) { ++c; return true; }
+    if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) {
+      ++c;
+      return_value = true;
+    }
   }
-  return false;
+
+  // Updates the help message and returns
+  help += "    -"+option+" ";
+  help += (return_value) ? "[true]\n" : "[false]\n";
+  return return_value;
 }
 
 // =================================================================================================
@@ -182,8 +187,10 @@ unsigned int GetRandomSeed() {
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
 void PopulateVector(std::vector<T> &vector) {
+  auto lower_limit = static_cast<T>(kTestDataLowerLimit);
+  auto upper_limit = static_cast<T>(kTestDataUpperLimit);
   std::mt19937 mt(GetRandomSeed());
-  std::uniform_real_distribution<T> dist(static_cast<T>(-2.0), static_cast<T>(2.0));
+  std::uniform_real_distribution<T> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = dist(mt); }
 }
 template void PopulateVector<float>(std::vector<float>&);
@@ -192,14 +199,18 @@ template void PopulateVector<double>(std::vector<double>&);
 // Specialized versions of the above for complex data-types
 template <>
 void PopulateVector(std::vector<float2> &vector) {
+  auto lower_limit = static_cast<float>(kTestDataLowerLimit);
+  auto upper_limit = static_cast<float>(kTestDataUpperLimit);
   std::mt19937 mt(GetRandomSeed());
-  std::uniform_real_distribution<float> dist(-2.0f, 2.0f);
+  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 template <>
 void PopulateVector(std::vector<double2> &vector) {
+  auto lower_limit = static_cast<double>(kTestDataLowerLimit);
+  auto upper_limit = static_cast<double>(kTestDataUpperLimit);
   std::mt19937 mt(GetRandomSeed());
-  std::uniform_real_distribution<double> dist(-2.0, 2.0);
+  std::uniform_real_distribution<double> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 

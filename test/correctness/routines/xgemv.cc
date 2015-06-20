@@ -50,20 +50,14 @@ void XgemvTest(int argc, char *argv[], const bool silent, const std::string &nam
     return static_cast<StatusCode>(status);
   };
 
-  // Selects the platform and device on which to test (command-line options)
-  auto help = std::string{"Options given/available:\n"};
-  const auto platform_id = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
-  const auto device_id = GetArgument(argc, argv, help, kArgDevice, size_t{0});
-  if (!silent) { fprintf(stdout, "\n* %s\n", help.c_str()); }
-
-  // Initializes the other arguments relevant for this routine
+  // Initializes the arguments relevant for this routine
   auto args = Arguments<T>{};
   const auto options = std::vector<std::string>{kArgM, kArgN, kArgLayout, kArgATransp,
                                                 kArgALeadDim, kArgXInc, kArgYInc,
                                                 kArgAOffset, kArgXOffset, kArgYOffset};
 
   // Creates a tester
-  TestAXY<T> tester{platform_id, device_id, name, options, clblast_lambda, clblas_lambda};
+  TestAXY<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
 
   // Loops over the test-cases from a data-layout point of view
   for (auto &layout: tester.kLayouts) {
