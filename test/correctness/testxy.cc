@@ -100,7 +100,7 @@ void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
               auto errors = size_t{0};
               for (auto idn=size_t{0}; idn<n; ++idn) {
                 auto index = idn*y_inc + y_offset;
-                if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
+                if (!TestSimilarity(r_result[index], s_result[index])) {
                   errors++;
                 }
               }

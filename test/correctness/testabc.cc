@@ -133,7 +133,7 @@ void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
                             auto index = (args.layout == Layout::kRowMajor) ?
                                           idm*args.c_ld + idn + args.c_offset:
                                           idn*args.c_ld + idm + args.c_offset;
-                            if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
+                            if (!TestSimilarity(r_result[index], s_result[index])) {
                               errors++;
                             }
                           }

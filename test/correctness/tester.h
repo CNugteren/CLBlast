@@ -44,7 +44,8 @@ class Tester {
   static constexpr auto kStatusError = -1.0f;
 
   // Set the allowed error margin for floating-point comparisons
-  static constexpr auto kErrorMargin = 1.0e-2;
+  static constexpr auto kErrorMarginRelative = 1.0e-2;
+  static constexpr auto kErrorMarginAbsolute = 1.0e-10;
 
   // Constants holding start and end strings for terminal-output in colour
   const std::string kPrintError{"\x1b[31m"};
@@ -84,7 +85,7 @@ class Tester {
   void TestEnd();
 
   // Compares two floating point values for similarity. Allows for a certain relative error margin.
-  static bool TestSimilarity(const T val1, const T val2, const double margin);
+  static bool TestSimilarity(const T val1, const T val2);
 
   // Tests either an error count (should be zero) or two error codes (must match)
   void TestErrorCount(const size_t errors, const size_t size, const Arguments<T> &args);

@@ -31,7 +31,6 @@ class TestABC: public Tester<T> {
   // Uses several variables from the Tester class
   using Tester<T>::context_;
   using Tester<T>::queue_;
-  using Tester<T>::kErrorMargin;
   using Tester<T>::kLayouts;
   using Tester<T>::kTransposes;
 

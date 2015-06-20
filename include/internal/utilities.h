@@ -143,6 +143,10 @@ bool CheckArgument(const int argc, char *argv[], std::string &help, const std::s
 // Returns a random number to be used as a seed
 unsigned int GetRandomSeed();
 
+// Test/example data lower and upper limit
+constexpr auto kTestDataLowerLimit = -2.0;
+constexpr auto kTestDataUpperLimit = 2.0;
+
 // Populates a vector with random data
 template <typename T>
 void PopulateVector(std::vector<T> &vector);

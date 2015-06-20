@@ -125,7 +125,7 @@ void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
                       auto errors = size_t{0};
                       for (auto idm=size_t{0}; idm<m_real; ++idm) {
                         auto index = idm*y_inc + y_offset;
-                        if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
+                        if (!TestSimilarity(r_result[index], s_result[index])) {
                           errors++;
                         }
                       }

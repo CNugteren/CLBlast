@@ -17,7 +17,6 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include <limits>
 
 namespace clblast {
 // =================================================================================================
@@ -168,34 +167,34 @@ void Tester<T>::TestEnd() {
 // Compares two floating point values and returns whether they are within an acceptable error
 // margin. This replaces GTest's EXPECT_NEAR().
 template <typename T>
-bool Tester<T>::TestSimilarity(const T val1, const T val2, const double margin) {
+bool Tester<T>::TestSimilarity(const T val1, const T val2) {
   const auto difference = std::fabs(val1 - val2);
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
-  // The values are zero or both are extremely close to it relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < std::numeric_limits<T>::min()) {
-    return difference < (static_cast<T>(margin) * std::numeric_limits<T>::min());
+  // The values are zero or very small: the relative error is less meaningful
+  else if (val1 == 0 || val2 == 0 || difference < static_cast<T>(kErrorMarginAbsolute)) {
+    return (difference < static_cast<T>(kErrorMarginAbsolute));
   }
   // Use relative error
   else {
-    return (difference / (std::fabs(val1) + std::fabs(val2))) < static_cast<T>(margin);
+    return (difference / (std::fabs(val1)+std::fabs(val2))) < static_cast<T>(kErrorMarginRelative);
   }
 }
 
 // Specialisations for complex data-types
 template <>
-bool Tester<float2>::TestSimilarity(const float2 val1, const float2 val2, const double margin) {
-  auto real = Tester<float>::TestSimilarity(val1.real(), val2.real(), margin);
-  auto imag = Tester<float>::TestSimilarity(val1.imag(), val2.imag(), margin);
+bool Tester<float2>::TestSimilarity(const float2 val1, const float2 val2) {
+  auto real = Tester<float>::TestSimilarity(val1.real(), val2.real());
+  auto imag = Tester<float>::TestSimilarity(val1.imag(), val2.imag());
   return (real && imag);
 }
 template <>
-bool Tester<double2>::TestSimilarity(const double2 val1, const double2 val2, const double margin) {
-  auto real = Tester<double>::TestSimilarity(val1.real(), val2.real(), margin);
-  auto imag = Tester<double>::TestSimilarity(val1.imag(), val2.imag(), margin);
+bool Tester<double2>::TestSimilarity(const double2 val1, const double2 val2) {
+  auto real = Tester<double>::TestSimilarity(val1.real(), val2.real());
+  auto imag = Tester<double>::TestSimilarity(val1.imag(), val2.imag());
   return (real && imag);
 }
 
