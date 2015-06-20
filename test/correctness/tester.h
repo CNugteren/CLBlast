@@ -97,6 +97,9 @@ class Tester {
   // Retrieves a list of example scalars of the right type
   const std::vector<T> GetExampleScalars();
 
+  // Retrieves a list of offset values to test
+  const std::vector<size_t> GetOffsets();
+
   // The help-message
   std::string help_;
 
@@ -108,7 +111,6 @@ class Tester {
 
  private:
 
-
   // Internal methods to report a passed, skipped, or failed test
   void ReportPass();
   void ReportSkipped();
@@ -116,6 +118,9 @@ class Tester {
 
   // Prints the error or success symbol to screen
   void PrintTestResult(const std::string &message);
+
+  // Whether or not to run the full test-suite or just a smoke test
+  bool full_test_;
 
   // Logging and counting occurrences of errors
   std::vector<ErrorLogEntry> error_log_;

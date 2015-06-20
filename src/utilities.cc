@@ -159,16 +159,21 @@ Precision GetPrecision(const int argc, char *argv[]) {
 bool CheckArgument(const int argc, char *argv[], std::string &help,
                    const std::string &option) {
 
-  // Updates the help message
-  help += "    -"+option+"\n";
-
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
+  auto return_value = false;
   for (int c=0; c<argc; ++c) {
     auto item = std::string{argv[c]};
-    if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) { ++c; return true; }
+    if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) {
+      ++c;
+      return_value = true;
+    }
   }
-  return false;
+
+  // Updates the help message and returns
+  help += "    -"+option+" ";
+  help += (return_value) ? "[true]\n" : "[false]\n";
+  return return_value;
 }
 
 // =================================================================================================

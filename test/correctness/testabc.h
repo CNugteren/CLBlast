@@ -41,10 +41,11 @@ class TestABC: public Tester<T> {
   using Tester<T>::TestErrorCount;
   using Tester<T>::TestErrorCodes;
   using Tester<T>::GetExampleScalars;
+  using Tester<T>::GetOffsets;
 
   // Test settings for the regular test. Append to this list in case more tests are required.
   const std::vector<size_t> kMatrixDims = { 7, 64 };
-  const std::vector<size_t> kOffsets = { 0 };
+  const std::vector<size_t> kOffsets = GetOffsets();
   const std::vector<T> kAlphaValues = GetExampleScalars();
   const std::vector<T> kBetaValues = GetExampleScalars();
 

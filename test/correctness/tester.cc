@@ -41,6 +41,7 @@ Tester<T>::Tester(int argc, char *argv[], const bool silent,
     device_(Device(platform_, kDeviceType, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
     context_(Context(device_)),
     queue_(CommandQueue(context_, device_)),
+    full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
@@ -261,19 +262,30 @@ void Tester<T>::TestErrorCodes(const StatusCode clblas_status, const StatusCode 
 // routines. This function is specialised for the different data-types.
 template <>
 const std::vector<float> Tester<float>::GetExampleScalars() {
-  return {0.0f, 1.0f, 3.14f};
+  if (full_test_) { return {0.0f, 1.0f, 3.14f}; }
+  else { return {3.14f}; }
 }
 template <>
 const std::vector<double> Tester<double>::GetExampleScalars() {
-  return {0.0, 1.0, 3.14};
+  if (full_test_) { return {0.0, 1.0, 3.14}; }
+  else { return {3.14}; }
 }
 template <>
 const std::vector<float2> Tester<float2>::GetExampleScalars() {
-  return {{0.0f, 0.0f}, {1.0f, 1.3f}, {2.42f, 3.14f}};
+  if (full_test_) { return {{0.0f, 0.0f}, {1.0f, 1.3f}, {2.42f, 3.14f}}; }
+  else { return {{2.42f, 3.14f}}; }
 }
 template <>
 const std::vector<double2> Tester<double2>::GetExampleScalars() {
-  return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}};
+  if (full_test_) { return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}}; }
+  else { return {{2.42, 3.14}}; }
+}
+
+// Retrieves the offset values to test with
+template <typename T>
+const std::vector<size_t> Tester<T>::GetOffsets() {
+  if (full_test_) { return {0, 10}; }
+  else { return {0}; }
 }
 
 // =================================================================================================

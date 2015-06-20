@@ -64,6 +64,9 @@ constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
 
+// The client-specific arguments in string form
+constexpr auto kArgFullTest = "full_test";
+
 // The common arguments in string form
 constexpr auto kArgPlatform = "platform";
 constexpr auto kArgDevice = "device";
@@ -105,6 +108,8 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  // Tester-specific arguments
+  bool full_test = false;
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
