@@ -225,5 +225,4 @@ To-do list before release of version 1.0
 - Further reduce the likelihood of crashes:
   * Add checks for proper command-line arguments in the tuner, tester and client
   * Add checks for valid database parameters
-  * Distinguish between short (smoke) and long tests
   * Test in multi-threaded environments

@@ -45,10 +45,11 @@ Tester<T>::Tester(int argc, char *argv[], const bool silent,
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
-    num_errors_{0},
+    num_failed_{0},
     print_count_{0},
-    tests_failed_{0},
     tests_passed_{0},
+    tests_skipped_{0},
+    tests_failed_{0},
     options_{options} {
 
   // Prints the help message (command-line arguments)
@@ -61,7 +62,7 @@ Tester<T>::Tester(int argc, char *argv[], const bool silent,
 
   // Checks whether the precision is supported
   if (!PrecisionSupported()) {
-    fprintf(stdout, "\n* Tests skipped: %sUnsupported precision%s\n",
+    fprintf(stdout, "\n* All tests skipped: %sUnsupported precision%s\n",
             kPrintWarning.c_str(), kPrintEnd.c_str());
     return;
   }
@@ -87,14 +88,13 @@ Tester<T>::Tester(int argc, char *argv[], const bool silent,
 // Destructor prints the summary of the test cases and cleans-up the clBLAS library
 template <typename T>
 Tester<T>::~Tester() {
-  fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
-  fprintf(stdout, "   %lu test(s) succeeded\n", tests_passed_);
-  if (tests_failed_ != 0) {
-    fprintf(stdout, "   %s%lu test(s) failed%s\n",
-            kPrintError.c_str(), tests_failed_, kPrintEnd.c_str());
-  }
-  else {
-    fprintf(stdout, "   %lu test(s) failed\n", tests_failed_);
+  if (PrecisionSupported()) {
+    fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
+    fprintf(stdout, "   %lu test(s) passed\n", tests_passed_);
+    if (tests_skipped_ > 0) { fprintf(stdout, "%s", kPrintWarning.c_str()); }
+    fprintf(stdout, "   %lu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
+    if (tests_failed_ > 0) { fprintf(stdout, "%s", kPrintError.c_str()); }
+    fprintf(stdout, "   %lu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
   }
   fprintf(stdout, "\n");
   clblasTeardown();
@@ -117,7 +117,7 @@ void Tester<T>::TestStart(const std::string &test_name, const std::string &test_
   error_log_.clear();
   num_passed_ = 0;
   num_skipped_ = 0;
-  num_errors_ = 0;
+  num_failed_ = 0;
   print_count_ = 0;
 }
 
@@ -126,7 +126,9 @@ void Tester<T>::TestStart(const std::string &test_name, const std::string &test_
 template <typename T>
 void Tester<T>::TestEnd() {
   fprintf(stdout, "\n");
-  if (error_log_.size() == 0) { tests_passed_++; } else { tests_failed_++; }
+  tests_passed_ += num_passed_;
+  tests_failed_ += num_skipped_;
+  tests_failed_ += num_failed_;
 
   // Prints details of all error occurences for these tests
   for (auto &entry: error_log_) {
@@ -160,7 +162,7 @@ void Tester<T>::TestEnd() {
   }
 
   // Prints a test summary
-  auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_errors_);
+  auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
   fprintf(stdout, "   Pass rate %s%5.1lf%%%s:", kPrintMessage.c_str(), pass_rate, kPrintEnd.c_str());
   fprintf(stdout, " %lu passed /", num_passed_);
   if (num_skipped_ != 0) {
@@ -169,11 +171,11 @@ void Tester<T>::TestEnd() {
   else {
     fprintf(stdout, " %lu skipped /", num_skipped_);
   }
-  if (num_errors_ != 0) {
-    fprintf(stdout, " %s%lu failed%s\n", kPrintError.c_str(), num_errors_, kPrintEnd.c_str());
+  if (num_failed_ != 0) {
+    fprintf(stdout, " %s%lu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
   }
   else {
-    fprintf(stdout, " %lu failed\n", num_errors_);
+    fprintf(stdout, " %lu failed\n", num_failed_);
   }
 }
 
@@ -325,7 +327,7 @@ void Tester<T>::ReportSkipped() {
 template <typename T>
 void Tester<T>::ReportError(const ErrorLogEntry &error_log_entry) {
   error_log_.push_back(error_log_entry);
-  num_errors_++;
+  num_failed_++;
 }
 
 // =================================================================================================

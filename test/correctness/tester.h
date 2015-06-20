@@ -129,14 +129,15 @@ class Tester {
   std::vector<ErrorLogEntry> error_log_;
   size_t num_passed_;
   size_t num_skipped_;
-  size_t num_errors_;
+  size_t num_failed_;
 
   // Counting the amount of errors printed on this row
   size_t print_count_;
 
   // Counting the number of test-cases with and without failures
-  size_t tests_failed_;
   size_t tests_passed_;
+  size_t tests_skipped_;
+  size_t tests_failed_;
 
   // Arguments relevant for a specific routine
   std::vector<std::string> options_;
