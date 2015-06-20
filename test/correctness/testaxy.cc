@@ -47,6 +47,7 @@ TestAXY<T>::TestAXY(int argc, char *argv[], const bool silent,
 // Tests the routine for a wide variety of parameters
 template <typename T>
 void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
   // Iterates over the dimension for the matrix and vectors
@@ -151,6 +152,7 @@ void TestAXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 // does not test for results (if any).
 template <typename T>
 void TestAXY<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Sets example test parameters

@@ -31,6 +31,10 @@ namespace clblast {
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;
 
+// Khronos OpenCL extensions
+const std::string kKhronosHalfPrecision = "cl_khr_fp16";
+const std::string kKhronosDoublePrecision = "cl_khr_fp64";
+
 // =================================================================================================
 
 // The routine-specific arguments in string form

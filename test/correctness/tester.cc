@@ -56,8 +56,18 @@ Tester<T>::Tester(int argc, char *argv[], const bool silent,
 
   // Prints the header
   fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
-  fprintf(stdout, "* Starting tests for the %s'%s'%s routine. Legend:\n",
+  fprintf(stdout, "* Starting tests for the %s'%s'%s routine.",
           kPrintMessage.c_str(), name.c_str(), kPrintEnd.c_str());
+
+  // Checks whether the precision is supported
+  if (!PrecisionSupported()) {
+    fprintf(stdout, "\n* Tests skipped: %sUnsupported precision%s\n",
+            kPrintWarning.c_str(), kPrintEnd.c_str());
+    return;
+  }
+
+  // Prints the legend
+  fprintf(stdout, " Legend:\n");
   fprintf(stdout, "   %s -> Test produced correct results\n", kSuccessData.c_str());
   fprintf(stdout, "   %s -> Test returned the correct error code\n", kSuccessStatus.c_str());
   fprintf(stdout, "   %s -> Test produced incorrect results\n", kErrorData.c_str());
@@ -286,6 +296,19 @@ template <typename T>
 const std::vector<size_t> Tester<T>::GetOffsets() {
   if (full_test_) { return {0, 10}; }
   else { return {0}; }
+}
+
+// =================================================================================================
+
+template <> bool Tester<float>::PrecisionSupported() const { return true; }
+template <> bool Tester<float2>::PrecisionSupported() const { return true; }
+template <> bool Tester<double>::PrecisionSupported() const {
+  auto extensions = device_.Extensions();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+}
+template <> bool Tester<double2>::PrecisionSupported() const {
+  auto extensions = device_.Extensions();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
 }
 
 // =================================================================================================

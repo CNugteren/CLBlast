@@ -44,6 +44,7 @@ TestXY<T>::TestXY(int argc, char *argv[], const bool silent,
 // Tests the routine for a wide variety of parameters
 template <typename T>
 void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
   // Iterates over the vector dimension
@@ -122,6 +123,7 @@ void TestXY<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 // does not test for results (if any).
 template <typename T>
 void TestXY<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Sets example test parameters

@@ -100,6 +100,9 @@ class Tester {
   // Retrieves a list of offset values to test
   const std::vector<size_t> GetOffsets();
 
+  // Returns false is this precision is not supported by the device
+  bool PrecisionSupported() const;
+
   // The help-message
   std::string help_;
 

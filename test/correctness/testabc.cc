@@ -46,6 +46,7 @@ TestABC<T>::TestABC(int argc, char *argv[], const bool silent,
 // Tests the routine for a wide variety of parameters
 template <typename T>
 void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
   // Computes whether or not the matrices are transposed. Note that we assume a default of
@@ -161,6 +162,7 @@ void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 // does not test for results (if any).
 template <typename T>
 void TestABC<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Sets example test parameters
