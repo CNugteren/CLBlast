@@ -76,7 +76,7 @@ class Tester {
 
   // Creates an instance of the tester, running on a particular OpenCL platform and device. It
   // takes the routine's names as an additional parameter.
-  explicit Tester(const size_t platform_id, const size_t device_id,
+  explicit Tester(int argc, char *argv[], const bool silent,
                   const std::string &name, const std::vector<std::string> &options);
   ~Tester();
 
@@ -97,6 +97,9 @@ class Tester {
   // Retrieves a list of example scalars of the right type
   const std::vector<T> GetExampleScalars();
 
+  // The help-message
+  std::string help_;
+
   // The OpenCL objects (accessible by derived classes)
   Platform platform_;
   Device device_;
@@ -104,6 +107,7 @@ class Tester {
   CommandQueue queue_;
 
  private:
+
 
   // Internal methods to report a passed, skipped, or failed test
   void ReportPass();

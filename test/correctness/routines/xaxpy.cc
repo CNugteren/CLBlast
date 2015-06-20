@@ -46,19 +46,13 @@ void XaxpyTest(int argc, char *argv[], const bool silent, const std::string &nam
     return static_cast<StatusCode>(status);
   };
 
-  // Selects the platform and device on which to test (command-line options)
-  auto help = std::string{"Options given/available:\n"};
-  const auto platform_id = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
-  const auto device_id = GetArgument(argc, argv, help, kArgDevice, size_t{0});
-  if (!silent) { fprintf(stdout, "\n* %s\n", help.c_str()); }
-
-  // Initializes the other arguments relevant for this routine
+  // Initializes the arguments relevant for this routine
   auto args = Arguments<T>{};
   const auto options = std::vector<std::string>{kArgN, kArgXInc, kArgYInc,
                                                 kArgXOffset, kArgYOffset, kArgAlpha};
 
   // Creates a tester
-  TestXY<T> tester{platform_id, device_id, name, options, clblast_lambda, clblas_lambda};
+  TestXY<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
 
   // Runs the tests
   const auto case_name = "default";

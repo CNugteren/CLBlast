@@ -59,7 +59,7 @@ class TestAXY: public Tester<T> {
                                            CommandQueue&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestAXY(const size_t platform_id, const size_t device_id,
+  TestAXY(int argc, char *argv[], const bool silent,
           const std::string &name, const std::vector<std::string> &options,
           const Routine clblast_lambda, const Routine clblas_lambda);
 

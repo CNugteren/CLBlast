@@ -20,10 +20,10 @@ namespace clblast {
 
 // Constructor, initializes the base class tester and input data
 template <typename T>
-TestABC<T>::TestABC(const size_t platform_id, const size_t device_id,
+TestABC<T>::TestABC(int argc, char *argv[], const bool silent,
                     const std::string &name, const std::vector<std::string> &options,
                     const Routine clblast_lambda, const Routine clblas_lambda):
-    Tester<T>{platform_id, device_id, name, options},
+    Tester<T>{argc, argv, silent, name, options},
     clblast_lambda_(clblast_lambda),
     clblas_lambda_(clblas_lambda) {
 

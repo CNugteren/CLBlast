@@ -34,10 +34,11 @@ template <> const std::vector<Transpose> Tester<double2>::kTransposes = {Transpo
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T>
-Tester<T>::Tester(const size_t platform_id, const size_t device_id,
+Tester<T>::Tester(int argc, char *argv[], const bool silent,
                   const std::string &name, const std::vector<std::string> &options):
-    platform_(Platform(platform_id)),
-    device_(Device(platform_, kDeviceType, device_id)),
+    help_("Options given/available:\n"),
+    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, size_t{0}))),
+    device_(Device(platform_, kDeviceType, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
     context_(Context(device_)),
     queue_(CommandQueue(context_, device_)),
     error_log_{},
@@ -48,6 +49,9 @@ Tester<T>::Tester(const size_t platform_id, const size_t device_id,
     tests_failed_{0},
     tests_passed_{0},
     options_{options} {
+
+  // Prints the help message (command-line arguments)
+  if (!silent) { fprintf(stdout, "\n* %s\n", help_.c_str()); }
 
   // Prints the header
   fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
