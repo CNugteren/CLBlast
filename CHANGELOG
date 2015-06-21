@@ -1,5 +1,5 @@
 
-Development version (next release)
+Version 0.2.0
 - Added support for complex conjugate transpose
 - Several host-code performance improvements
 - Improved testing infrastructure and coverage
