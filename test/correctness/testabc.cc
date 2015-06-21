@@ -20,10 +20,10 @@ namespace clblast {
 
 // Constructor, initializes the base class tester and input data
 template <typename T>
-TestABC<T>::TestABC(const size_t platform_id, const size_t device_id,
+TestABC<T>::TestABC(int argc, char *argv[], const bool silent,
                     const std::string &name, const std::vector<std::string> &options,
                     const Routine clblast_lambda, const Routine clblas_lambda):
-    Tester<T>{platform_id, device_id, name, options},
+    Tester<T>{argc, argv, silent, name, options},
     clblast_lambda_(clblast_lambda),
     clblas_lambda_(clblas_lambda) {
 
@@ -46,6 +46,7 @@ TestABC<T>::TestABC(const size_t platform_id, const size_t device_id,
 // Tests the routine for a wide variety of parameters
 template <typename T>
 void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
   // Computes whether or not the matrices are transposed. Note that we assume a default of
@@ -133,7 +134,7 @@ void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
                             auto index = (args.layout == Layout::kRowMajor) ?
                                           idm*args.c_ld + idn + args.c_offset:
                                           idn*args.c_ld + idm + args.c_offset;
-                            if (!TestSimilarity(r_result[index], s_result[index], kErrorMargin)) {
+                            if (!TestSimilarity(r_result[index], s_result[index])) {
                               errors++;
                             }
                           }
@@ -161,6 +162,7 @@ void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
 // does not test for results (if any).
 template <typename T>
 void TestABC<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &name) {
+  if (!PrecisionSupported()) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Sets example test parameters
@@ -170,9 +172,12 @@ void TestABC<T>::TestInvalidBufferSizes(Arguments<T> &args, const std::string &n
   args.a_ld = kBufferSize;
   args.b_ld = kBufferSize;
   args.c_ld = kBufferSize;
+  args.a_offset = 0;
+  args.b_offset = 0;
+  args.c_offset = 0;
 
   // Iterates over test buffer sizes
-  const std::vector<size_t> kBufferSizes = {0, kBufferSize - 1, kBufferSize};
+  const std::vector<size_t> kBufferSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
   for (auto &a_size: kBufferSizes) {
     for (auto &b_size: kBufferSizes) {
       for (auto &c_size: kBufferSizes) {

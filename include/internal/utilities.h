@@ -31,6 +31,10 @@ namespace clblast {
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;
 
+// Khronos OpenCL extensions
+const std::string kKhronosHalfPrecision = "cl_khr_fp16";
+const std::string kKhronosDoublePrecision = "cl_khr_fp64";
+
 // =================================================================================================
 
 // The routine-specific arguments in string form
@@ -63,6 +67,9 @@ constexpr auto kArgCompareclblas = "clblas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
+
+// The client-specific arguments in string form
+constexpr auto kArgFullTest = "full_test";
 
 // The common arguments in string form
 constexpr auto kArgPlatform = "platform";
@@ -105,6 +112,8 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  // Tester-specific arguments
+  bool full_test = false;
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
@@ -142,6 +151,10 @@ bool CheckArgument(const int argc, char *argv[], std::string &help, const std::s
 
 // Returns a random number to be used as a seed
 unsigned int GetRandomSeed();
+
+// Test/example data lower and upper limit
+constexpr auto kTestDataLowerLimit = -2.0;
+constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>

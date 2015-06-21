@@ -73,6 +73,69 @@ template void TunerXY<double2>(int, char**, const Tuner2<double2>&);
 // =================================================================================================
 
 // Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
+// the results. Used for matrix-vector-vector routines.
+template <typename T>
+void TunerAXY(int argc, char* argv[], const size_t num_variations,
+              const Tuner3V<T> &tune_function) {
+
+  // Sets the parameters and platform/device for which to tune (command-line options)
+  auto help = std::string{"* Options given/available:\n"};
+  auto args = Arguments<T>{};
+  args.platform_id = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
+  args.device_id   = GetArgument(argc, argv, help, kArgDevice, size_t{0});
+  args.precision   = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
+  args.m           = GetArgument(argc, argv, help, kArgM, size_t{2048});
+  args.n           = GetArgument(argc, argv, help, kArgN, size_t{2048});
+  args.alpha       = GetArgument(argc, argv, help, kArgAlpha, GetScalar<T>());
+  args.beta        = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>());
+  fprintf(stdout, "%s\n", help.c_str());
+
+  // Creates input buffers with random data
+  auto a_mat = std::vector<T>(args.m * args.n);
+  auto x_vec = std::vector<T>(args.n);
+  auto y_vec = std::vector<T>(args.m);
+  PopulateVector(a_mat);
+  PopulateVector(x_vec);
+  PopulateVector(y_vec);
+
+  // Loop over the different variations of the kernel
+  for (auto variation=size_t{1}; variation<=num_variations; ++variation) {
+
+    // Initializes the tuner for the chosen device
+    cltune::Tuner tuner(args.platform_id, args.device_id);
+
+    // Use full-search to explore all parameter combinations.
+    tuner.UseFullSearch();
+
+    // Configures the tuning parameters (kernel specific)
+    tune_function(args, variation, a_mat, x_vec, y_vec, tuner);
+
+    // Starts the tuning process
+    tuner.Tune();
+
+    // Prints the results to screen
+    auto time_ms = tuner.PrintToScreen();
+    tuner.PrintFormatted();
+
+    // Also prints the performance of the best-case in terms of GB/s and GFLOPS
+    const auto mega_bytes = ((args.m*args.n + 2*args.m + args.n)*GetBytes(args.precision)) * 1.0e-6;
+    const auto mega_flops = (2*args.m*args.n) * 1.0e-6;
+    if (time_ms != 0.0) {
+      printf("[ -------> ] %.1lf ms or %.1lf GB/s or %.1lf GFLOPS\n",
+             time_ms, mega_bytes/time_ms, mega_flops/time_ms);
+    }
+  }
+}
+
+// Compiles the above function
+template void TunerAXY<float>(int, char**, const size_t, const Tuner3V<float>&);
+template void TunerAXY<double>(int, char**, const size_t, const Tuner3V<double>&);
+template void TunerAXY<float2>(int, char**, const size_t, const Tuner3V<float2>&);
+template void TunerAXY<double2>(int, char**, const size_t, const Tuner3V<double2>&);
+
+// =================================================================================================
+
+// Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
 // the results. Used for matrix-matrix routines.
 template <typename T>
 void TunerAB(int argc, char* argv[], const Tuner2<T> &tune_function) {

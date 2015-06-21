@@ -209,11 +209,11 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
                                            const size_t dest_one, const size_t dest_two,
                                            const size_t dest_ld, const size_t dest_offset,
                                            const Buffer &dest,
-                                           const bool do_transpose, const bool pad,
-                                           const Program &program) {
+                                           const bool do_transpose, const bool do_conjugate,
+                                           const bool pad, const Program &program) {
 
   // Determines whether or not the fast-version could potentially be used
-  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) &&
+  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
                          (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld);
 
   // Determines the right kernel
@@ -264,6 +264,9 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
       kernel.SetArgument(7, static_cast<int>(dest_ld));
       kernel.SetArgument(8, static_cast<int>(dest_offset));
       kernel.SetArgument(9, dest());
+      if (pad) {
+        kernel.SetArgument(10, static_cast<int>(do_conjugate));
+      }
     }
 
     // Launches the kernel and returns the error code. Uses global and local thread sizes based on
@@ -305,7 +308,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
 
 // Queries the cache and retrieves a matching program. Assumes that the match is available, throws
 // otherwise.
-Program Routine::GetProgramFromCache() const {
+const Program& Routine::GetProgramFromCache() const {
   for (auto &cached_program: program_cache_) {
     if (cached_program.MatchInCache(device_name_, precision_, routines_)) {
       return cached_program.program;

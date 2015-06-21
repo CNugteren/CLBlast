@@ -63,6 +63,10 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   auto b_do_transpose = !b_rotated;
   auto c_do_transpose =  c_rotated;
 
+  // In case of complex data-types, the transpose can also become a conjugate transpose
+  auto a_conjugate = (a_transpose == Transpose::kConjugate);
+  auto b_conjugate = (b_transpose == Transpose::kConjugate);
+
   // Computes the first and second dimensions of the 3 matrices taking into account whether the
   // matrices are rotated or not
   auto a_one = (a_rotated) ? k : m;
@@ -98,24 +102,24 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, m_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
-    auto program = GetProgramFromCache();
+    auto& program = GetProgramFromCache();
 
     // Runs the pre-processing kernels. This transposes the matrices, but also pads zeros to fill
     // them up until they reach a certain multiple of size (kernel parameter dependent).
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     m_ceiled, k_ceiled, m_ceiled, 0, temp_a,
-                                    a_do_transpose, true, program);
+                                    a_do_transpose, a_conjugate, true, program);
     if (ErrorIn(status)) { return status; }
     status = PadCopyTransposeMatrix(b_one, b_two, b_ld, b_offset, b_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    b_do_transpose, true, program);
+                                    b_do_transpose, b_conjugate, true, program);
     if (ErrorIn(status)) { return status; }
 
     // Only necessary for matrix C if it used both as input and output
     if (beta != static_cast<T>(0)) {
       status = PadCopyTransposeMatrix(c_one, c_two, c_ld, c_offset, c_buffer,
                                       m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
-                                      c_do_transpose, true, program);
+                                      c_do_transpose, false, true, program);
       if (ErrorIn(status)) { return status; }
     }
 
@@ -147,7 +151,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       // Runs the post-processing kernel
       status = PadCopyTransposeMatrix(m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
                                       c_one, c_two, c_ld, c_offset, c_buffer,
-                                      c_do_transpose, false, program);
+                                      c_do_transpose, false, false, program);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation

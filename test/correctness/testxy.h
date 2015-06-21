@@ -31,7 +31,6 @@ class TestXY: public Tester<T> {
   // Uses several variables from the Tester class
   using Tester<T>::context_;
   using Tester<T>::queue_;
-  using Tester<T>::kErrorMargin;
 
   // Uses several helper functions from the Tester class
   using Tester<T>::TestStart;
@@ -40,11 +39,13 @@ class TestXY: public Tester<T> {
   using Tester<T>::TestErrorCount;
   using Tester<T>::TestErrorCodes;
   using Tester<T>::GetExampleScalars;
+  using Tester<T>::GetOffsets;
+  using Tester<T>::PrecisionSupported;
 
   // Test settings for the regular test. Append to this list in case more tests are required.
   const std::vector<size_t> kVectorDims = { 7, 93, 4096 };
-  const std::vector<size_t> kOffsets = { 0, 10 };
-  const std::vector<size_t> kIncrements = { 1, 2 };
+  const std::vector<size_t> kOffsets = GetOffsets();
+  const std::vector<size_t> kIncrements = { 1, 2, 7 };
   const std::vector<T> kAlphaValues = GetExampleScalars();
 
   // Test settings for the invalid test
@@ -57,7 +58,7 @@ class TestXY: public Tester<T> {
                                            CommandQueue&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestXY(const size_t platform_id, const size_t device_id,
+  TestXY(int argc, char *argv[], const bool silent,
          const std::string &name, const std::vector<std::string> &options,
          const Routine clblast_lambda, const Routine clblas_lambda);
 

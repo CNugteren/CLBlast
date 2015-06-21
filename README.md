@@ -4,7 +4,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 
-__Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version supports only a minimal amount of routines (including `sgemm` and `dgemm`): others will be added in due time. It also lacks extensive tuning and testing on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
+__Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version supports only a minimal amount of routines (including `gemm` and `gemv`): others will be added in due time. It also lacks extensive tuning and testing on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -147,7 +147,7 @@ CLBlast is in active development and currently does not support the full set of 
 
 | Level-2  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
-| xGEMV    |   |   |   |   |         |
+| xGEMV    |`x`|`x`|`x`|`x`|         |
 | xGBMV    |   |   |   |   |         |
 | xHEMV    | - | - |   |   |         |
 | xHBMV    | - | - |   |   |         |
@@ -175,8 +175,8 @@ CLBlast is in active development and currently does not support the full set of 
 
 | Level-3  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
-| xGEMM    |`x`|`x`|   |   |         |
-| xSYMM    |`x`|`x`|   |   |         |
+| xGEMM    |`x`|`x`|`x`|`x`|         |
+| xSYMM    |`x`|`x`|`x`|`x`|         |
 | xHEMM    | - | - |   |   |         |
 | xSYRK    |   |   |   |   |         |
 | xHERK    | - | - |   |   |         |
@@ -225,5 +225,4 @@ To-do list before release of version 1.0
 - Further reduce the likelihood of crashes:
   * Add checks for proper command-line arguments in the tuner, tester and client
   * Add checks for valid database parameters
-  * Distinguish between short (smoke) and long tests
   * Test in multi-threaded environments

@@ -82,6 +82,7 @@ main <- function(routine_name, precision, test_names, test_values,
       # Runs the client and captures the result
       params_string <- paste(parameters, params_values[[command_id]], collapse=" ")
       arguments <- paste(devices_string, params_string, options_string, sep=" ")
+      print(paste("Running", executable, arguments, sep=" "))
       result_string <- system2(command=executable, args=arguments, stdout=TRUE)
 
       # Reads the result into a dataframe

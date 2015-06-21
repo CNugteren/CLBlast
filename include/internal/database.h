@@ -54,6 +54,7 @@ class Database {
 
   // The database consists of separate database entries, stored together in a vector
   static const DatabaseEntry XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;
+  static const DatabaseEntry XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble;
   static const DatabaseEntry XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble;
   static const DatabaseEntry CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
   static const DatabaseEntry PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;

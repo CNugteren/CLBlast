@@ -7,13 +7,13 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file tests any mat-mat-mat (A,B,C) routine. It contains two types of tests: one testing
+// This file tests any mat-vec-vec (A,X,Y) routine. It contains two types of tests: one testing
 // all sorts of input combinations, and one deliberatly testing with invalid values.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_CORRECTNESS_TESTABC_H_
-#define CLBLAST_TEST_CORRECTNESS_TESTABC_H_
+#ifndef CLBLAST_TEST_CORRECTNESS_TESTAXY_H_
+#define CLBLAST_TEST_CORRECTNESS_TESTAXY_H_
 
 #include <vector>
 #include <string>
@@ -25,7 +25,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestABC: public Tester<T> {
+class TestAXY: public Tester<T> {
  public:
 
   // Uses several variables from the Tester class
@@ -45,12 +45,14 @@ class TestABC: public Tester<T> {
   using Tester<T>::PrecisionSupported;
 
   // Test settings for the regular test. Append to this list in case more tests are required.
-  const std::vector<size_t> kMatrixDims = { 7, 64 };
+  const std::vector<size_t> kMatrixVectorDims = { 61, 512 };
   const std::vector<size_t> kOffsets = GetOffsets();
+  const std::vector<size_t> kIncrements = { 1, 2 };
   const std::vector<T> kAlphaValues = GetExampleScalars();
   const std::vector<T> kBetaValues = GetExampleScalars();
 
   // Test settings for the invalid test
+  const std::vector<size_t> kInvalidIncrements = { 0, 1 };
   const size_t kBufferSize = 64;
 
   // Shorthand for a BLAS routine
@@ -59,7 +61,7 @@ class TestABC: public Tester<T> {
                                            CommandQueue&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestABC(int argc, char *argv[], const bool silent,
+  TestAXY(int argc, char *argv[], const bool silent,
           const std::string &name, const std::vector<std::string> &options,
           const Routine clblast_lambda, const Routine clblas_lambda);
 
@@ -71,8 +73,8 @@ class TestABC: public Tester<T> {
 
   // Source data to test with
   std::vector<T> a_source_;
-  std::vector<T> b_source_;
-  std::vector<T> c_source_;
+  std::vector<T> x_source_;
+  std::vector<T> y_source_;
   
   // The routines to test
   Routine clblast_lambda_;
@@ -82,5 +84,5 @@ class TestABC: public Tester<T> {
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_CORRECTNESS_TESTABC_H_
+// CLBLAST_TEST_CORRECTNESS_TESTAXY_H_
 #endif

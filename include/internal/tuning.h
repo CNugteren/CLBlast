@@ -34,9 +34,19 @@ using Tuner3 = std::function<void(const Arguments<T>&,
                                   const std::vector<T>&, const std::vector<T>&, std::vector<T>&,
                                   cltune::Tuner&)>;
 
+// As above, but now with an additional ID for the variation
+template <typename T>
+using Tuner3V = std::function<void(const Arguments<T>&, const size_t,
+                                   const std::vector<T>&, const std::vector<T>&, std::vector<T>&,
+                                   cltune::Tuner&)>;
+
 // Tuner for vector-vector input
 template <typename T>
 void TunerXY(int argc, char* argv[], const Tuner2<T> &tune_function);
+
+// Tuner for matrix-vector-vector input
+template <typename T>
+void TunerAXY(int argc, char* argv[], const size_t num_variations, const Tuner3V<T> &tune_function);
 
 // Tuner for matrix-matrix input
 template <typename T>
