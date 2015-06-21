@@ -98,8 +98,8 @@ void ClientXsymm(int argc, char *argv[]) {
     case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
     case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXsymm<float>, o); break;
     case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXsymm<double>, o); break;
-    case Precision::kComplexSingle: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kComplexDouble: throw std::runtime_error("Unsupported precision mode");
+    case Precision::kComplexSingle: ClientABC<float2>(argc, argv, PerformanceXsymm<float2>, o); break;
+    case Precision::kComplexDouble: ClientABC<double2>(argc, argv, PerformanceXsymm<double2>, o); break;
   }
 }
 
