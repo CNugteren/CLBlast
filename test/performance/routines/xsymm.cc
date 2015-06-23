@@ -72,7 +72,7 @@ void PerformanceXsymm(const Arguments<T> &args,
 
   // Prints the performance of both libraries
   const auto flops = 2 * args.m * args.n * args.m;
-  const auto bytes = (args.m*args.m + args.m*args.n + args.m*args.n) * sizeof(T);
+  const auto bytes = (args.m*args.m + args.m*args.n + 2*args.m*args.n) * sizeof(T);
   const auto output_ints = std::vector<size_t>{args.m, args.n,
                                                static_cast<size_t>(args.layout),
                                                static_cast<size_t>(args.triangle),

@@ -72,7 +72,7 @@ void PerformanceXgemm(const Arguments<T> &args,
 
   // Prints the performance of both libraries
   const auto flops = 2 * args.m * args.n * args.k;
-  const auto bytes = (args.m*args.k + args.k*args.n + args.m*args.n) * sizeof(T);
+  const auto bytes = (args.m*args.k + args.k*args.n + 2*args.m*args.n) * sizeof(T);
   const auto output_ints = std::vector<size_t>{args.m, args.n, args.k,
                                                static_cast<size_t>(args.layout),
                                                static_cast<size_t>(args.a_transpose),
