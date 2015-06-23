@@ -86,7 +86,8 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
                           __global const real* restrict src,
                           const int dest_one, const int dest_two,
                           const int dest_ld, const int dest_offset,
-                          __global real* dest) {
+                          __global real* dest,
+                          const int upper, const int lower) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -95,11 +96,18 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
     #pragma unroll
     for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
       const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
-      if (id_two < dest_two && id_one < dest_one) {
+
+      // Masking in case of triangular matrices: updates only the upper or lower part
+      bool condition = true;
+      if (upper == 1) { condition = (id_two >= id_one); }
+      else if (lower == 1) { condition = (id_two <= id_one); }
+      if (condition) {
 
         // Copies the value into the destination matrix. This is always within bounds of the source
         // matrix, as we know that the destination matrix is smaller than the source.
-        dest[id_two*dest_ld + id_one + dest_offset] = src[id_two*src_ld + id_one + src_offset];
+        if (id_two < dest_two && id_one < dest_one) {
+          dest[id_two*dest_ld + id_one + dest_offset] = src[id_two*src_ld + id_one + src_offset];
+        }
       }
     }
   }

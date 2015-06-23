@@ -100,7 +100,8 @@ __kernel void UnPadTransposeMatrix(const int src_one, const int src_two,
                                    __global const real* restrict src,
                                    const int dest_one, const int dest_two,
                                    const int dest_ld, const int dest_offset,
-                                   __global real* dest) {
+                                   __global real* dest,
+                                   const int upper, const int lower) {
 
   // Local memory to store a tile of the matrix (for coalescing)
   __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
@@ -137,10 +138,17 @@ __kernel void UnPadTransposeMatrix(const int src_one, const int src_two,
       const int id_dest_one = (get_group_id(0)*PADTRA_WPT + w_one) * PADTRA_TILE + get_local_id(0);
       const int id_dest_two = (get_group_id(1)*PADTRA_WPT + w_two) * PADTRA_TILE + get_local_id(1);
 
-      // Stores the transposed value in the destination matrix
-      if ((id_dest_one < dest_one) && (id_dest_two < dest_two)) {
-        real value = tile[get_local_id(0)*PADTRA_WPT + w_two][get_local_id(1)*PADTRA_WPT + w_one];
-        dest[id_dest_two*dest_ld + id_dest_one + dest_offset] = value;
+      // Masking in case of triangular matrices: updates only the upper or lower part
+      bool condition = true;
+      if (upper == 1) { condition = (id_dest_one >= id_dest_two); }
+      else if (lower == 1) { condition = (id_dest_one <= id_dest_two); }
+      if (condition) {
+
+        // Stores the transposed value in the destination matrix
+        if ((id_dest_one < dest_one) && (id_dest_two < dest_two)) {
+          real value = tile[get_local_id(0)*PADTRA_WPT + w_two][get_local_id(1)*PADTRA_WPT + w_one];
+          dest[id_dest_two*dest_ld + id_dest_one + dest_offset] = value;
+        }
       }
     }
   }
