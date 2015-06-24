@@ -26,6 +26,7 @@
 // BLAS level-3 includes
 #include "internal/routines/xgemm.h"
 #include "internal/routines/xsymm.h"
+#include "internal/routines/xsyrk.h"
 
 namespace clblast {
 // =================================================================================================
@@ -254,7 +255,6 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose tr
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = CommandQueue(*queue);
   auto event_cpp = Event(*event);
-  /*
   auto routine = Xsyrk<T>(queue_cpp, event_cpp);
 
   // Loads the kernel source-code as an include (C++11 raw string literal)
@@ -276,8 +276,6 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose tr
   return routine.DoSyrk(layout, triangle, transpose_a, n, k, alpha,
                         Buffer(a_buffer), a_offset, a_ld, beta,
                         Buffer(c_buffer), c_offset, c_ld);
-  */
-  return StatusCode::kSuccess;
 }
 template StatusCode Syrk<float>(const Layout, const Triangle, const Transpose,
                                 const size_t, const size_t, const float,

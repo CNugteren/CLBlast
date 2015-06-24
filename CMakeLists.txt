@@ -99,7 +99,7 @@ set(ROUTINES_XY xaxpy)
 set(ROUTINES_AXY xgemv)
 set(ROUTINES_ABC xgemm xsymm)
 set(ROUTINES_AB )
-set(ROUTINES_AC )
+set(ROUTINES_AC xsyrk)
 set(ROUTINES ${ROUTINES_XY} ${ROUTINES_AXY} ${ROUTINES_ABC} ${ROUTINES_AB} ${ROUTINES_AC})
 
 # ==================================================================================================
