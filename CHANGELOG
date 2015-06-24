@@ -1,4 +1,8 @@
 
+Development version (next release)
+- Added level-3 routines:
+  * SSYRK/DSYRK/CSYRK/ZSYRK
+
 Version 0.2.0
 - Added support for complex conjugate transpose
 - Several host-code performance improvements

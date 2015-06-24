@@ -178,7 +178,7 @@ CLBlast is in active development and currently does not support the full set of 
 | xGEMM    |`x`|`x`|`x`|`x`|         |
 | xSYMM    |`x`|`x`|`x`|`x`|         |
 | xHEMM    | - | - |   |   |         |
-| xSYRK    |   |   |   |   |         |
+| xSYRK    |`x`|`x`|`x`|`x`|         |
 | xHERK    | - | - |   |   |         |
 | xSYR2K   |   |   |   |   |         |
 | xHER2K   | - | - |   |   |         |
