@@ -86,12 +86,15 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     // Loads the program from the database
     auto& program = GetProgramFromCache();
 
-    // Runs the pre-processing kernel. This transposes the matrices A and B, but also pads zeros to
+    // Runs the pre-processing kernel. This transposes the matrix A, but also pads zeros to
     // fill them up until they reach a certain multiple of size (kernel parameter dependent).
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
                                     a_rotated, a_conjugate, true, false, false, program);
     if (ErrorIn(status)) { return status; }
+
+    // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
+    // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
                                     c_rotated, false, true, false, false, program);
