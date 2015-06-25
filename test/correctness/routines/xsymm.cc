@@ -76,7 +76,7 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
         const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
 
         // Runs the tests
-        tester.TestRegular(args, case_name);
+        tester.TestRegular(args, case_name, true);
         tester.TestInvalidBufferSizes(args, case_name);
       }
     }

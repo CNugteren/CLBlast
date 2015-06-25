@@ -64,7 +64,7 @@ class TestABC: public Tester<T> {
           const Routine clblast_lambda, const Routine clblas_lambda);
 
   // The test functions, taking no inputs
-  void TestRegular(Arguments<T> &args, const std::string &name);
+  void TestRegular(Arguments<T> &args, const std::string &name, const bool symmetric);
   void TestInvalidBufferSizes(Arguments<T> &args, const std::string &name);
 
  private:
