@@ -96,10 +96,10 @@ void ClientXgemm(int argc, char *argv[]) {
                                           kArgAlpha, kArgBeta};
   switch(GetPrecision(argc, argv)) {
     case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXgemm<float>, o); break;
-    case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXgemm<double>, o); break;
-    case Precision::kComplexSingle: ClientABC<float2>(argc, argv, PerformanceXgemm<float2>, o); break;
-    case Precision::kComplexDouble: ClientABC<double2>(argc, argv, PerformanceXgemm<double2>, o); break;
+    case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXgemm<float>, o, false); break;
+    case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXgemm<double>, o, false); break;
+    case Precision::kComplexSingle: ClientABC<float2>(argc, argv, PerformanceXgemm<float2>, o, false); break;
+    case Precision::kComplexDouble: ClientABC<double2>(argc, argv, PerformanceXgemm<double2>, o, false); break;
   }
 }
 

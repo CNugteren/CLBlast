@@ -239,14 +239,15 @@ template void ClientAC<double2>(int, char **, Routine2<double2>, const std::vect
 // This is the matrix-matrix-matrix variant of the set-up/tear-down client routine.
 template <typename T>
 void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
-               const std::vector<std::string> &options) {
+               const std::vector<std::string> &options, const bool symmetric) {
 
   // Function to determine how to find the default value of the leading dimension of matrix A
-  auto default_ld_a = [](const Arguments<T> args) { return args.m; };
+  auto default_ld_a = [&symmetric](const Arguments<T> args) { return (symmetric) ? args.n : args.m; };
 
   // Simple command line argument parser with defaults
   auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
   if (args.print_help) { return; }
+  if (symmetric) { args.m = args.n; }
 
   // Prints the header of the output table
   PrintTableHeader(args.silent, options);
@@ -314,10 +315,10 @@ void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
 }
 
 // Compiles the above function
-template void ClientABC<float>(int, char **, Routine3<float>, const std::vector<std::string>&);
-template void ClientABC<double>(int, char **, Routine3<double>, const std::vector<std::string>&);
-template void ClientABC<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&);
-template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&);
+template void ClientABC<float>(int, char **, Routine3<float>, const std::vector<std::string>&, const bool);
+template void ClientABC<double>(int, char **, Routine3<double>, const std::vector<std::string>&, const bool);
+template void ClientABC<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&, const bool);
+template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&, const bool);
 
 // =================================================================================================
 

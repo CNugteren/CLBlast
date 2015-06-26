@@ -56,7 +56,7 @@ void ClientAC(int argc, char *argv[], Routine2<T> client_routine,
               const std::vector<std::string> &options);
 template <typename T>
 void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
-               const std::vector<std::string> &options);
+               const std::vector<std::string> &options, const bool symmetric);
 
 // =================================================================================================
 
