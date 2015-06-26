@@ -180,7 +180,7 @@ CLBlast is in active development and currently does not support the full set of 
 | xHEMM    | - | - |   |   |         |
 | xSYRK    |`x`|`x`|`x`|`x`|         |
 | xHERK    | - | - |   |   |         |
-| xSYR2K   |   |   |   |   |         |
+| xSYR2K   |`x`|`x`|`x`|`x`|         |
 | xHER2K   | - | - |   |   |         |
 | xTRMM    |   |   |   |   |         |
 | xTRSM    |   |   |   |   |         |

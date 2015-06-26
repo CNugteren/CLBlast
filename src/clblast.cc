@@ -27,6 +27,7 @@
 #include "internal/routines/xgemm.h"
 #include "internal/routines/xsymm.h"
 #include "internal/routines/xsyrk.h"
+#include "internal/routines/xsyr2k.h"
 
 namespace clblast {
 // =================================================================================================
@@ -310,7 +311,6 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose t
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = CommandQueue(*queue);
   auto event_cpp = Event(*event);
-  /*
   auto routine = Xsyr2k<T>(queue_cpp, event_cpp);
 
   // Loads the kernel source-code as an include (C++11 raw string literal)
@@ -333,8 +333,6 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose t
                          Buffer(a_buffer), a_offset, a_ld,
                          Buffer(b_buffer), b_offset, b_ld, beta,
                          Buffer(c_buffer), c_offset, c_ld);
-  */
-  return StatusCode::kSuccess;
 }
 template StatusCode Syr2k<float>(const Layout, const Triangle, const Transpose,
                                  const size_t, const size_t, const float,
