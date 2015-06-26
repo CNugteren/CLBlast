@@ -45,7 +45,7 @@ TestABC<T>::TestABC(int argc, char *argv[], const bool silent,
 
 // Tests the routine for a wide variety of parameters
 template <typename T>
-void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
+void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name, const bool symmetric) {
   if (!PrecisionSupported()) { return; }
   TestStart("regular behaviour", name);
 
@@ -63,6 +63,7 @@ void TestABC<T>::TestRegular(Arguments<T> &args, const std::string &name) {
     args.m = m;
     for (auto &n: kMatrixDims) {
       args.n = n;
+      if (symmetric && m != n) { continue; }
       for (auto &k: kMatrixDims) {
         args.k = k;
 

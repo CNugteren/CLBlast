@@ -115,7 +115,7 @@ void ClientAXY(int argc, char *argv[], Routine3<T> client_routine,
     auto a_two = (args.layout == Layout::kRowMajor) ? args.m : args.n;
 
     // Computes the vector sizes in case the matrix is transposed
-    auto a_transposed = (args.a_transpose == Transpose::kYes);
+    auto a_transposed = (args.a_transpose != Transpose::kNo);
     auto m_real = (a_transposed) ? args.n : args.m;
     auto n_real = (a_transposed) ? args.m : args.n;
 
@@ -163,13 +163,13 @@ template void ClientAXY<double2>(int, char **, Routine3<double2>, const std::vec
 
 // =================================================================================================
 
-// This is the matrix-matrix-matrix variant of the set-up/tear-down client routine.
+// This is the matrix-matrix variant of the set-up/tear-down client routine.
 template <typename T>
-void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
-                     const std::vector<std::string> &options) {
+void ClientAC(int argc, char *argv[], Routine2<T> client_routine,
+              const std::vector<std::string> &options) {
 
   // Function to determine how to find the default value of the leading dimension of matrix A
-  auto default_ld_a = [](const Arguments<T> args) { return args.m; };
+  auto default_ld_a = [](const Arguments<T> args) { return args.k; };
 
   // Simple command line argument parser with defaults
   auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
@@ -188,9 +188,83 @@ void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
   // Computes whether or not the matrices are transposed. Note that we assume a default of
   // column-major and no-transpose. If one of them is different (but not both), then rotated
   // is considered true.
-  auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose == Transpose::kYes) ||
+  auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
                    (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-  auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose == Transpose::kYes) ||
+
+  // Iterates over all "num_step" values jumping by "step" each time
+  auto s = size_t{0};
+  while(true) {
+
+    // Computes the data sizes
+    auto a_two = (a_rotated) ? args.n : args.k;
+    auto a_size = a_two * args.a_ld + args.a_offset;
+    auto c_size = args.n * args.c_ld + args.c_offset;
+
+    // Populates input host matrices with random data
+    std::vector<T> a_source(a_size);
+    std::vector<T> c_source(c_size);
+    PopulateVector(a_source);
+    PopulateVector(c_source);
+
+    // Creates the matrices on the device
+    auto a_buffer = Buffer(context, CL_MEM_READ_WRITE, a_size*sizeof(T));
+    auto c_buffer = Buffer(context, CL_MEM_READ_WRITE, c_size*sizeof(T));
+    a_buffer.WriteBuffer(queue, a_size*sizeof(T), a_source);
+    c_buffer.WriteBuffer(queue, c_size*sizeof(T), c_source);
+
+    // Runs the routine-specific code
+    client_routine(args, a_buffer, c_buffer, queue);
+
+    // Makes the jump to the next step
+    ++s;
+    if (s >= args.num_steps) { break; }
+    args.n += args.step;
+    args.k += args.step;
+    args.a_ld += args.step;
+    args.c_ld += args.step;
+  }
+
+  // Cleans-up and returns
+  if (args.compare_clblas) { clblasTeardown(); }
+}
+
+// Compiles the above function
+template void ClientAC<float>(int, char **, Routine2<float>, const std::vector<std::string>&);
+template void ClientAC<double>(int, char **, Routine2<double>, const std::vector<std::string>&);
+template void ClientAC<float2>(int, char **, Routine2<float2>, const std::vector<std::string>&);
+template void ClientAC<double2>(int, char **, Routine2<double2>, const std::vector<std::string>&);
+
+// =================================================================================================
+
+// This is the matrix-matrix-matrix variant of the set-up/tear-down client routine.
+template <typename T>
+void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
+               const std::vector<std::string> &options, const bool symmetric) {
+
+  // Function to determine how to find the default value of the leading dimension of matrix A
+  auto default_ld_a = [&symmetric](const Arguments<T> args) { return (symmetric) ? args.n : args.m; };
+
+  // Simple command line argument parser with defaults
+  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
+  if (args.print_help) { return; }
+  if (symmetric) { args.m = args.n; }
+
+  // Prints the header of the output table
+  PrintTableHeader(args.silent, options);
+
+  // Initializes OpenCL and the libraries
+  auto platform = Platform(args.platform_id);
+  auto device = Device(platform, kDeviceType, args.device_id);
+  auto context = Context(device);
+  auto queue = CommandQueue(context, device);
+  if (args.compare_clblas) { clblasSetup(); }
+
+  // Computes whether or not the matrices are transposed. Note that we assume a default of
+  // column-major and no-transpose. If one of them is different (but not both), then rotated
+  // is considered true.
+  auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
+                   (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
+  auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose != Transpose::kNo) ||
                    (args.layout == Layout::kRowMajor && args.b_transpose == Transpose::kNo);
   auto c_rotated = (args.layout == Layout::kRowMajor);
 
@@ -241,10 +315,10 @@ void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
 }
 
 // Compiles the above function
-template void ClientABC<float>(int, char **, Routine3<float>, const std::vector<std::string>&);
-template void ClientABC<double>(int, char **, Routine3<double>, const std::vector<std::string>&);
-template void ClientABC<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&);
-template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&);
+template void ClientABC<float>(int, char **, Routine3<float>, const std::vector<std::string>&, const bool);
+template void ClientABC<double>(int, char **, Routine3<double>, const std::vector<std::string>&, const bool);
+template void ClientABC<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&, const bool);
+template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&, const bool);
 
 // =================================================================================================
 

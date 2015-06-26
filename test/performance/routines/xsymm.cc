@@ -72,7 +72,7 @@ void PerformanceXsymm(const Arguments<T> &args,
 
   // Prints the performance of both libraries
   const auto flops = 2 * args.m * args.n * args.m;
-  const auto bytes = (args.m*args.m + args.m*args.n + args.m*args.n) * sizeof(T);
+  const auto bytes = (args.m*args.m + args.m*args.n + 2*args.m*args.n) * sizeof(T);
   const auto output_ints = std::vector<size_t>{args.m, args.n,
                                                static_cast<size_t>(args.layout),
                                                static_cast<size_t>(args.triangle),
@@ -96,10 +96,10 @@ void ClientXsymm(int argc, char *argv[]) {
                                           kArgAlpha, kArgBeta};
   switch(GetPrecision(argc, argv)) {
     case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXsymm<float>, o); break;
-    case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXsymm<double>, o); break;
-    case Precision::kComplexSingle: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kComplexDouble: throw std::runtime_error("Unsupported precision mode");
+    case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXsymm<float>, o, false); break;
+    case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXsymm<double>, o, false); break;
+    case Precision::kComplexSingle: ClientABC<float2>(argc, argv, PerformanceXsymm<float2>, o, false); break;
+    case Precision::kComplexDouble: ClientABC<double2>(argc, argv, PerformanceXsymm<double2>, o, false); break;
   }
 }
 

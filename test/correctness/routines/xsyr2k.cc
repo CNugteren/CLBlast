@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsymm routine. It is based on the TestABC class.
+// This file implements the tests for the Xsyr2k routine. It is based on the TestABC class.
 //
 // =================================================================================================
 
@@ -19,7 +19,7 @@ namespace clblast {
 
 // The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
 template <typename T>
-void XsymmTest(int argc, char *argv[], const bool silent, const std::string &name) {
+void Xsyr2kTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates the CLBlast lambda
   auto clblast_lambda = [](const Arguments<T> &args,
@@ -27,14 +27,14 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
                            CommandQueue &queue) -> StatusCode {
     auto queue_plain = queue();
     auto event = cl_event{};
-    return Symm(args.layout, args.side, args.triangle,
-                args.m, args.n,
-                args.alpha,
-                a_mat(), args.a_offset, args.a_ld,
-                b_mat(), args.b_offset, args.b_ld,
-                args.beta,
-                c_mat(), args.c_offset, args.c_ld,
-                &queue_plain, &event);
+    return Syr2k(args.layout, args.triangle, args.a_transpose,
+                 args.n, args.k,
+                 args.alpha,
+                 a_mat(), args.a_offset, args.a_ld,
+                 b_mat(), args.b_offset, args.b_ld,
+                 args.beta,
+                 c_mat(), args.c_offset, args.c_ld,
+                 &queue_plain, &event);
   };
 
   // Creates the clBLAS lambda (for comparison)
@@ -43,23 +43,23 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
                           CommandQueue &queue) -> StatusCode {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = clblasXsymm(static_cast<clblasOrder>(args.layout),
-                              static_cast<clblasSide>(args.side),
-                              static_cast<clblasUplo>(args.triangle),
-                              args.m, args.n,
-                              args.alpha,
-                              a_mat(), args.a_offset, args.a_ld,
-                              b_mat(), args.b_offset, args.b_ld,
-                              args.beta,
-                              c_mat(), args.c_offset, args.c_ld,
-                              1, &queue_plain, 0, nullptr, &event);
+    auto status = clblasXsyr2k(static_cast<clblasOrder>(args.layout),
+                               static_cast<clblasUplo>(args.triangle),
+                               static_cast<clblasTranspose>(args.a_transpose),
+                               args.n, args.k,
+                               args.alpha,
+                               a_mat(), args.a_offset, args.a_ld,
+                               b_mat(), args.b_offset, args.b_ld,
+                               args.beta,
+                               c_mat(), args.c_offset, args.c_ld,
+                               1, &queue_plain, 0, nullptr, &event);
     return static_cast<StatusCode>(status);
   };
 
   // Initializes the arguments relevant for this routine
   auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgM, kArgN, kArgLayout,
-                                                kArgSide, kArgTriangle,
+  const auto options = std::vector<std::string>{kArgN, kArgK, kArgLayout,
+                                                kArgTriangle, kArgATransp,
                                                 kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
                                                 kArgAOffset, kArgBOffset, kArgCOffset};
 
@@ -69,11 +69,12 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
   // Loops over the test-cases from a data-layout point of view
   for (auto &layout: tester.kLayouts) {
     args.layout = layout;
-    for (auto &side: {Side::kLeft, Side::kRight}) {
-      args.side = side;
-      for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
-        args.triangle = triangle;
-        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
+    for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
+      args.triangle = triangle;
+      for (auto &ab_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it is
+        args.a_transpose = ab_transpose;                            // not supported by clBLAS
+        args.b_transpose = ab_transpose;
+        const auto case_name = ToString(layout)+" "+ToString(triangle)+" "+ToString(ab_transpose);
 
         // Runs the tests
         tester.TestRegular(args, case_name, true);
@@ -88,10 +89,10 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::XsymmTest<float>(argc, argv, false, "SSYMM");
-  clblast::XsymmTest<double>(argc, argv, true, "DSYMM");
-  clblast::XsymmTest<clblast::float2>(argc, argv, true, "CSYMM");
-  clblast::XsymmTest<clblast::double2>(argc, argv, true, "ZSYMM");
+  clblast::Xsyr2kTest<float>(argc, argv, false, "SSYR2K");
+  clblast::Xsyr2kTest<double>(argc, argv, true, "DSYR2K");
+  clblast::Xsyr2kTest<clblast::float2>(argc, argv, true, "CSYR2K");
+  clblast::Xsyr2kTest<clblast::double2>(argc, argv, true, "ZSYR2K");
   return 0;
 }
 

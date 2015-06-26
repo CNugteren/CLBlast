@@ -92,7 +92,8 @@ class Routine {
                                     const size_t dest_ld, const size_t dest_offset,
                                     const Buffer &dest,
                                     const bool do_transpose, const bool do_conjugate,
-                                    const bool pad, const Program &program);
+                                    const bool pad, const bool upper, const bool lower,
+                                    const Program &program);
   
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.
   // The first assumes that the program is available in the cache and will throw an exception
