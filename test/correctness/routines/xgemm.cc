@@ -76,7 +76,7 @@ void XgemmTest(int argc, char *argv[], const bool silent, const std::string &nam
         const auto case_name = ToString(layout)+" "+ToString(a_transpose)+" "+ToString(b_transpose);
 
         // Runs the tests
-        tester.TestRegular(args, case_name);
+        tester.TestRegular(args, case_name, false);
         tester.TestInvalidBufferSizes(args, case_name);
       }
     }

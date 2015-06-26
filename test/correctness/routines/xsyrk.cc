@@ -7,31 +7,30 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsymm routine. It is based on the TestABC class.
+// This file implements the tests for the Xsyrk routine. It is based on the TestAC class.
 //
 // =================================================================================================
 
 #include "wrapper_clblas.h"
-#include "correctness/testabc.h"
+#include "correctness/testac.h"
 
 namespace clblast {
 // =================================================================================================
 
 // The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
 template <typename T>
-void XsymmTest(int argc, char *argv[], const bool silent, const std::string &name) {
+void XsyrkTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates the CLBlast lambda
   auto clblast_lambda = [](const Arguments<T> &args,
-                           const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
+                           const Buffer &a_mat, const Buffer &c_mat,
                            CommandQueue &queue) -> StatusCode {
     auto queue_plain = queue();
     auto event = cl_event{};
-    return Symm(args.layout, args.side, args.triangle,
-                args.m, args.n,
+    return Syrk(args.layout, args.triangle, args.a_transpose,
+                args.n, args.k,
                 args.alpha,
                 a_mat(), args.a_offset, args.a_ld,
-                b_mat(), args.b_offset, args.b_ld,
                 args.beta,
                 c_mat(), args.c_offset, args.c_ld,
                 &queue_plain, &event);
@@ -39,17 +38,16 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 
   // Creates the clBLAS lambda (for comparison)
   auto clblas_lambda = [](const Arguments<T> &args,
-                          const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
+                          const Buffer &a_mat, const Buffer &c_mat,
                           CommandQueue &queue) -> StatusCode {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = clblasXsymm(static_cast<clblasOrder>(args.layout),
-                              static_cast<clblasSide>(args.side),
+    auto status = clblasXsyrk(static_cast<clblasOrder>(args.layout),
                               static_cast<clblasUplo>(args.triangle),
-                              args.m, args.n,
+                              static_cast<clblasTranspose>(args.a_transpose),
+                              args.n, args.k,
                               args.alpha,
                               a_mat(), args.a_offset, args.a_ld,
-                              b_mat(), args.b_offset, args.b_ld,
                               args.beta,
                               c_mat(), args.c_offset, args.c_ld,
                               1, &queue_plain, 0, nullptr, &event);
@@ -58,25 +56,25 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 
   // Initializes the arguments relevant for this routine
   auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgM, kArgN, kArgLayout,
-                                                kArgSide, kArgTriangle,
-                                                kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
-                                                kArgAOffset, kArgBOffset, kArgCOffset};
+  const auto options = std::vector<std::string>{kArgN, kArgK, kArgLayout,
+                                                kArgTriangle, kArgATransp,
+                                                kArgALeadDim, kArgCLeadDim,
+                                                kArgAOffset, kArgCOffset};
 
   // Creates a tester
-  TestABC<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
+  TestAC<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
 
   // Loops over the test-cases from a data-layout point of view
   for (auto &layout: tester.kLayouts) {
     args.layout = layout;
-    for (auto &side: {Side::kLeft, Side::kRight}) {
-      args.side = side;
-      for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
-        args.triangle = triangle;
-        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
+    for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
+      args.triangle = triangle;
+      for (auto &a_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it is
+        args.a_transpose = a_transpose;                            // not supported by clBLAS
+        const auto case_name = ToString(layout)+" "+ToString(triangle)+" "+ToString(a_transpose);
 
         // Runs the tests
-        tester.TestRegular(args, case_name, true);
+        tester.TestRegular(args, case_name);
         tester.TestInvalidBufferSizes(args, case_name);
       }
     }
@@ -88,10 +86,10 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::XsymmTest<float>(argc, argv, false, "SSYMM");
-  clblast::XsymmTest<double>(argc, argv, true, "DSYMM");
-  clblast::XsymmTest<clblast::float2>(argc, argv, true, "CSYMM");
-  clblast::XsymmTest<clblast::double2>(argc, argv, true, "ZSYMM");
+  clblast::XsyrkTest<float>(argc, argv, false, "SSYRK");
+  clblast::XsyrkTest<double>(argc, argv, true, "DSYRK");
+  clblast::XsyrkTest<clblast::float2>(argc, argv, true, "CSYRK");
+  clblast::XsyrkTest<clblast::double2>(argc, argv, true, "ZSYRK");
   return 0;
 }
 

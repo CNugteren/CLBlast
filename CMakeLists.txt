@@ -97,8 +97,10 @@ set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
 set(SAMPLE_PROGRAMS sgemm)
 set(ROUTINES_XY xaxpy)
 set(ROUTINES_AXY xgemv)
-set(ROUTINES_ABC xgemm xsymm)
-set(ROUTINES ${ROUTINES_XY} ${ROUTINES_AXY} ${ROUTINES_ABC})
+set(ROUTINES_ABC xgemm xsymm xsyr2k)
+set(ROUTINES_AB )
+set(ROUTINES_AC xsyrk)
+set(ROUTINES ${ROUTINES_XY} ${ROUTINES_AXY} ${ROUTINES_ABC} ${ROUTINES_AB} ${ROUTINES_AC})
 
 # ==================================================================================================
 
@@ -172,6 +174,8 @@ if(TESTS)
   add_library(test_correctness_xy OBJECT test/correctness/testxy.cc)
   add_library(test_correctness_axy OBJECT test/correctness/testaxy.cc)
   add_library(test_correctness_abc OBJECT test/correctness/testabc.cc)
+  add_library(test_correctness_ab OBJECT test/correctness/testab.cc)
+  add_library(test_correctness_ac OBJECT test/correctness/testac.cc)
 
   # Compiles the correctness-tests
   foreach(ROUTINE ${ROUTINES_XY})
@@ -179,22 +183,32 @@ if(TESTS)
                    $<TARGET_OBJECTS:test_correctness_common>
                    $<TARGET_OBJECTS:test_correctness_xy>
                    test/correctness/routines/${ROUTINE}.cc)
-    target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
-    install(TARGETS test_${ROUTINE} DESTINATION bin)
   endforeach()
   foreach(ROUTINE ${ROUTINES_AXY})
     add_executable(test_${ROUTINE}
                    $<TARGET_OBJECTS:test_correctness_common>
                    $<TARGET_OBJECTS:test_correctness_axy>
                    test/correctness/routines/${ROUTINE}.cc)
-    target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
-    install(TARGETS test_${ROUTINE} DESTINATION bin)
   endforeach()
   foreach(ROUTINE ${ROUTINES_ABC})
     add_executable(test_${ROUTINE}
                    $<TARGET_OBJECTS:test_correctness_common>
                    $<TARGET_OBJECTS:test_correctness_abc>
                    test/correctness/routines/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES_AB})
+    add_executable(test_${ROUTINE}
+                   $<TARGET_OBJECTS:test_correctness_common>
+                   $<TARGET_OBJECTS:test_correctness_ab>
+                   test/correctness/routines/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES_AC})
+    add_executable(test_${ROUTINE}
+                   $<TARGET_OBJECTS:test_correctness_common>
+                   $<TARGET_OBJECTS:test_correctness_ac>
+                   test/correctness/routines/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES})
     target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
     install(TARGETS test_${ROUTINE} DESTINATION bin)
   endforeach()

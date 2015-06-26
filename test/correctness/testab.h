@@ -7,13 +7,13 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file tests any mat-mat-mat (A,B,C) routine. It contains two types of tests: one testing
+// This file tests any mat-mat (A,B) routine. It contains two types of tests: one testing
 // all sorts of input combinations, and one deliberatly testing with invalid values.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_CORRECTNESS_TESTABC_H_
-#define CLBLAST_TEST_CORRECTNESS_TESTABC_H_
+#ifndef CLBLAST_TEST_CORRECTNESS_TESTAB_H_
+#define CLBLAST_TEST_CORRECTNESS_TESTAB_H_
 
 #include <vector>
 #include <string>
@@ -25,7 +25,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestABC: public Tester<T> {
+class TestAB: public Tester<T> {
  public:
 
   // Uses several variables from the Tester class
@@ -55,16 +55,16 @@ class TestABC: public Tester<T> {
 
   // Shorthand for a BLAS routine
   using Routine = std::function<StatusCode(const Arguments<T>&,
-                                           const Buffer&, const Buffer&, const Buffer&,
+                                           const Buffer&, const Buffer&,
                                            CommandQueue&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestABC(int argc, char *argv[], const bool silent,
-          const std::string &name, const std::vector<std::string> &options,
-          const Routine clblast_lambda, const Routine clblas_lambda);
+  TestAB(int argc, char *argv[], const bool silent,
+         const std::string &name, const std::vector<std::string> &options,
+         const Routine clblast_lambda, const Routine clblas_lambda);
 
   // The test functions, taking no inputs
-  void TestRegular(Arguments<T> &args, const std::string &name, const bool symmetric);
+  void TestRegular(Arguments<T> &args, const std::string &name);
   void TestInvalidBufferSizes(Arguments<T> &args, const std::string &name);
 
  private:
@@ -72,7 +72,6 @@ class TestABC: public Tester<T> {
   // Source data to test with
   std::vector<T> a_source_;
   std::vector<T> b_source_;
-  std::vector<T> c_source_;
   
   // The routines to test
   Routine clblast_lambda_;
@@ -82,5 +81,5 @@ class TestABC: public Tester<T> {
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_CORRECTNESS_TESTABC_H_
+// CLBLAST_TEST_CORRECTNESS_TESTAB_H_
 #endif

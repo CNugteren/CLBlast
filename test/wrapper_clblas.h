@@ -201,7 +201,7 @@ clblasStatus clblasXgemm(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
-// This calls {clblasSsymm, clblasDsymm} with the arguments forwarded.
+// This calls {clblasSsymm, clblasDsymm, clblasCsymm, clblasZsymm} with the arguments forwarded.
 clblasStatus clblasXsymm(
   clblasOrder layout, clblasSide side, clblasUplo triangle,
   size_t m, size_t n, float alpha,
@@ -265,6 +265,130 @@ clblasStatus clblasXsymm(
                        b_mat, b_offset, b_ld, cl_beta,
                        c_mat, c_offset, c_ld,
                        num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// This calls {clblasSsyrk, clblasDsyrk, clblasCsyrk, clblasZsyrk} with the arguments forwarded.
+clblasStatus clblasXsyrk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_a,
+  size_t n, size_t k, float alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, float beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasSsyrk(layout, triangle, tran_a,
+                       n, k, alpha,
+                       a_mat, a_offset, a_ld, beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyrk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_a,
+  size_t n, size_t k, double alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, double beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDsyrk(layout, triangle, tran_a,
+                       n, k, alpha,
+                       a_mat, a_offset, a_ld, beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyrk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_a,
+  size_t n, size_t k, float2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, float2 beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_float2{{beta.real(), beta.imag()}};
+    return clblasCsyrk(layout, triangle, tran_a,
+                       n, k, cl_alpha,
+                       a_mat, a_offset, a_ld, cl_beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyrk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_a,
+  size_t n, size_t k, double2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, double2 beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_double2{{beta.real(), beta.imag()}};
+    return clblasZsyrk(layout, triangle, tran_a,
+                       n, k, cl_alpha,
+                       a_mat, a_offset, a_ld, cl_beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// This calls {clblasSsyr2k, clblasDsyr2k, clblasCsyr2k, clblasZsyr2k} with the arguments forwarded.
+clblasStatus clblasXsyr2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_ab,
+  size_t n, size_t k, float alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, float beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasSsyr2k(layout, triangle, tran_ab,
+                        n, k, alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyr2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_ab,
+  size_t n, size_t k, double alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, double beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDsyr2k(layout, triangle, tran_ab,
+                        n, k, alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyr2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_ab,
+  size_t n, size_t k, float2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, float2 beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_float2{{beta.real(), beta.imag()}};
+    return clblasCsyr2k(layout, triangle, tran_ab,
+                        n, k, cl_alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, cl_beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyr2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose tran_ab,
+  size_t n, size_t k, double2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, double2 beta,
+  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_double2{{beta.real(), beta.imag()}};
+    return clblasZsyr2k(layout, triangle, tran_ab,
+                        n, k, cl_alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, cl_beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
 // =================================================================================================

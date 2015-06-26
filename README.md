@@ -124,7 +124,7 @@ These graphs can be generated automatically on your own device. First, compile C
 Supported routines
 -------------
 
-CLBlast is in active development and currently does not support the full set of BLAS routines. The currently supported routines are marked with `x` in the following tables:
+CLBlast is in active development and currently does not support the full set of BLAS routines. The currently supported routines are marked with '✔' in the following tables:
 
 | Level-1  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
@@ -135,7 +135,7 @@ CLBlast is in active development and currently does not support the full set of 
 | xSWAP    |   |   |   |   |         |
 | xSCAL    |   |   |   |   | +CS +ZD |
 | xCOPY    |   |   |   |   |         |
-| xAXPY    |`x`|`x`|`x`|`x`|         |
+| xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xDOT     |   |   | - | - | +DS     |
 | xDOTU    | - | - |   |   |         |
 | xDOTC    | - | - |   |   |         |
@@ -147,7 +147,7 @@ CLBlast is in active development and currently does not support the full set of 
 
 | Level-2  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
-| xGEMV    |`x`|`x`|`x`|`x`|         |
+| xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
 | xGBMV    |   |   |   |   |         |
 | xHEMV    | - | - |   |   |         |
 | xHBMV    | - | - |   |   |         |
@@ -175,12 +175,12 @@ CLBlast is in active development and currently does not support the full set of 
 
 | Level-3  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
-| xGEMM    |`x`|`x`|`x`|`x`|         |
-| xSYMM    |`x`|`x`|`x`|`x`|         |
+| xGEMM    | ✔ | ✔ | ✔ | ✔ |         |
+| xSYMM    | ✔ | ✔ | ✔ | ✔ |         |
 | xHEMM    | - | - |   |   |         |
-| xSYRK    |   |   |   |   |         |
+| xSYRK    | ✔ | ✔ | ✔ | ✔ |         |
 | xHERK    | - | - |   |   |         |
-| xSYR2K   |   |   |   |   |         |
+| xSYR2K   | ✔ | ✔ | ✔ | ✔ |         |
 | xHER2K   | - | - |   |   |         |
 | xTRMM    |   |   |   |   |         |
 | xTRSM    |   |   |   |   |         |
