@@ -7,57 +7,63 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xaxpy routine. It is based on the TestXY class.
+// This file implements the tests for the Xaxpy routine.
 //
 // =================================================================================================
 
-#include "wrapper_clblas.h"
-#include "correctness/testxy.h"
+#include "correctness/testblas.h"
+#include "routines/xaxpy.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
+// The correctness tester
 template <typename T>
-void XaxpyTest(int argc, char *argv[], const bool silent, const std::string &name) {
-
-  // Creates the CLBlast lambda
-  auto clblast_lambda = [](const Arguments<T> &args,
-                           const Buffer &x_vec, const Buffer &y_vec,
-                           CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    return Axpy(args.n, args.alpha,
-                x_vec(), args.x_offset, args.x_inc,
-                y_vec(), args.y_offset, args.y_inc,
-                &queue_plain, &event);
-  };
-
-  // Creates the clBLAS lambda (for comparison)
-  auto clblas_lambda = [](const Arguments<T> &args,
-                          const Buffer &x_vec, const Buffer &y_vec,
-                          CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXaxpy(args.n, args.alpha,
-                              x_vec(), args.x_offset, args.x_inc,
-                              y_vec(), args.y_offset, args.y_inc,
-                              1, &queue_plain, 0, nullptr, &event);
-    return static_cast<StatusCode>(status);
-  };
-
-  // Initializes the arguments relevant for this routine
-  auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgN, kArgXInc, kArgYInc,
-                                                kArgXOffset, kArgYOffset, kArgAlpha};
+void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestXY<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
+  TestBlas<T> tester{argc, argv, silent, name, TestXaxpy<T>::GetOptions(),
+                     TestXaxpy<T>::RunRoutine, TestXaxpy<T>::RunReference,
+                     TestXaxpy<T>::DownloadResult, TestXaxpy<T>::GetResultIndex,
+                     TestXaxpy<T>::ResultID1, TestXaxpy<T>::ResultID2};
+
+  // This variable holds the arguments relevant for this routine
+  auto args = Arguments<T>{};
+
+  // Creates the arguments vector for the regular tests
+  auto regular_test_vector = std::vector<Arguments<T>>{};
+  for (auto &n: tester.kVectorDims) { args.n = n;
+    for (auto &x_inc: tester.kIncrements) { args.x_inc = x_inc;
+      for (auto &x_offset: tester.kOffsets) { args.x_offset = x_offset;
+        for (auto &y_inc: tester.kIncrements) { args.y_inc = y_inc;
+          for (auto &y_offset: tester.kOffsets) { args.y_offset = y_offset;
+            for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
+              args.x_size = TestXaxpy<T>::GetSizeX(args);
+              args.y_size = TestXaxpy<T>::GetSizeY(args);
+              if (args.x_size<1 || args.y_size<1) { continue; }
+              regular_test_vector.push_back(args);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Creates the arguments vector for the invalid-buffer tests
+  auto invalid_test_vector = std::vector<Arguments<T>>{};
+  args.n = tester.kBufferSize;
+  args.x_inc = args.y_inc = 1;
+  args.x_offset = args.y_offset = 0;
+  for (auto &x_size: tester.kVecSizes) { args.x_size = x_size;
+    for (auto &y_size: tester.kVecSizes) { args.y_size = y_size;
+      invalid_test_vector.push_back(args);
+    }
+  }
 
   // Runs the tests
   const auto case_name = "default";
-  tester.TestRegular(args, case_name);
-  tester.TestInvalidBufferSizes(args, case_name);
+  tester.TestRegular(regular_test_vector, case_name);
+  tester.TestInvalid(invalid_test_vector, case_name);
 }
 
 // =================================================================================================
@@ -65,10 +71,10 @@ void XaxpyTest(int argc, char *argv[], const bool silent, const std::string &nam
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::XaxpyTest<float>(argc, argv, false, "SAXPY");
-  clblast::XaxpyTest<double>(argc, argv, true, "DAXPY");
-  clblast::XaxpyTest<clblast::float2>(argc, argv, true, "CAXPY");
-  clblast::XaxpyTest<clblast::double2>(argc, argv, true, "ZAXPY");
+  clblast::RunTest<float>(argc, argv, false, "SAXPY");
+  clblast::RunTest<double>(argc, argv, true, "DAXPY");
+  clblast::RunTest<clblast::float2>(argc, argv, true, "CAXPY");
+  clblast::RunTest<clblast::double2>(argc, argv, true, "ZAXPY");
   return 0;
 }
 

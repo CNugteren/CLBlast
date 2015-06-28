@@ -7,68 +7,79 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xgemv routine. It is based on the TestAXY class.
+// This file implements the tests for the Xgemv routine.
 //
 // =================================================================================================
 
-#include "wrapper_clblas.h"
-#include "correctness/testaxy.h"
+#include "correctness/testblas.h"
+#include "routines/xgemv.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
+// The correctness tester
 template <typename T>
-void XgemvTest(int argc, char *argv[], const bool silent, const std::string &name) {
-
-  // Creates the CLBlast lambda
-  auto clblast_lambda = [](const Arguments<T> &args,
-                           const Buffer &a_mat, const Buffer &x_vec, const Buffer &y_vec,
-                           CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    return Gemv(args.layout, args.a_transpose, args.m, args.n, args.alpha,
-                a_mat(), args.a_offset, args.a_ld,
-                x_vec(), args.x_offset, args.x_inc, args.beta,
-                y_vec(), args.y_offset, args.y_inc,
-                &queue_plain, &event);
-  };
-
-  // Creates the clBLAS lambda (for comparison)
-  auto clblas_lambda = [](const Arguments<T> &args,
-                          const Buffer &a_mat, const Buffer &x_vec, const Buffer &y_vec,
-                          CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXgemv(static_cast<clblasOrder>(args.layout),
-                              static_cast<clblasTranspose>(args.a_transpose),
-                              args.m, args.n, args.alpha,
-                              a_mat(), args.a_offset, args.a_ld,
-                              x_vec(), args.x_offset, args.x_inc, args.beta,
-                              y_vec(), args.y_offset, args.y_inc,
-                              1, &queue_plain, 0, nullptr, &event);
-    return static_cast<StatusCode>(status);
-  };
-
-  // Initializes the arguments relevant for this routine
-  auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgM, kArgN, kArgLayout, kArgATransp,
-                                                kArgALeadDim, kArgXInc, kArgYInc,
-                                                kArgAOffset, kArgXOffset, kArgYOffset};
+void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestAXY<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
+  TestBlas<T> tester{argc, argv, silent, name, TestXgemv<T>::GetOptions(),
+                     TestXgemv<T>::RunRoutine, TestXgemv<T>::RunReference,
+                     TestXgemv<T>::DownloadResult, TestXgemv<T>::GetResultIndex,
+                     TestXgemv<T>::ResultID1, TestXgemv<T>::ResultID2};
+
+  // This variable holds the arguments relevant for this routine
+  auto args = Arguments<T>{};
 
   // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: tester.kLayouts) {
-    args.layout = layout;
-    for (auto &a_transpose: tester.kTransposes) {
-      args.a_transpose = a_transpose;
-      const auto case_name = ToString(layout)+" "+ToString(a_transpose);
+  for (auto &layout: tester.kLayouts) { args.layout = layout;
+    for (auto &a_transpose: tester.kTransposes) { args.a_transpose = a_transpose;
+
+      // Creates the arguments vector for the regular tests
+      auto regular_test_vector = std::vector<Arguments<T>>{};
+      for (auto &m: tester.kMatrixVectorDims) { args.m = m;
+        for (auto &n: tester.kMatrixVectorDims) { args.n = n;
+          for (auto &a_ld: tester.kMatrixVectorDims) { args.a_ld = a_ld;
+            for (auto &a_offset: tester.kOffsets) { args.a_offset = a_offset;
+              for (auto &x_inc: tester.kIncrements) { args.x_inc = x_inc;
+                for (auto &x_offset: tester.kOffsets) { args.x_offset = x_offset;
+                  for (auto &y_inc: tester.kIncrements) { args.y_inc = y_inc;
+                    for (auto &y_offset: tester.kOffsets) { args.y_offset = y_offset;
+                      for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
+                        for (auto &beta: tester.kBetaValues) { args.beta = beta;
+                          args.a_size = TestXgemv<T>::GetSizeA(args);
+                          args.x_size = TestXgemv<T>::GetSizeX(args);
+                          args.y_size = TestXgemv<T>::GetSizeY(args);
+                          if (args.a_size<1 || args.x_size<1 || args.y_size<1) { continue; }
+                          regular_test_vector.push_back(args);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Creates the arguments vector for the invalid-buffer tests
+      auto invalid_test_vector = std::vector<Arguments<T>>{};
+      args.m = args.n = tester.kBufferSize;
+      args.a_ld = tester.kBufferSize;
+      args.x_inc = args.y_inc = 1;
+      args.a_offset = args.x_offset = args.y_offset = 0;
+      for (auto &a_size: tester.kMatSizes) { args.a_size = a_size;
+        for (auto &x_size: tester.kVecSizes) { args.x_size = x_size;
+          for (auto &y_size: tester.kVecSizes) { args.y_size = y_size;
+            invalid_test_vector.push_back(args);
+          }
+        }
+      }
 
       // Runs the tests
-      tester.TestRegular(args, case_name);
-      tester.TestInvalidBufferSizes(args, case_name);
+      const auto case_name = ToString(layout)+" "+ToString(a_transpose);
+      tester.TestRegular(regular_test_vector, case_name);
+      tester.TestInvalid(invalid_test_vector, case_name);
     }
   }
 }
@@ -78,10 +89,10 @@ void XgemvTest(int argc, char *argv[], const bool silent, const std::string &nam
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::XgemvTest<float>(argc, argv, false, "SGEMV");
-  clblast::XgemvTest<double>(argc, argv, true, "DGEMV");
-  clblast::XgemvTest<clblast::float2>(argc, argv, true, "CGEMV");
-  clblast::XgemvTest<clblast::double2>(argc, argv, true, "ZGEMV");
+  clblast::RunTest<float>(argc, argv, false, "SGEMV");
+  clblast::RunTest<double>(argc, argv, true, "DGEMV");
+  clblast::RunTest<clblast::float2>(argc, argv, true, "CGEMV");
+  clblast::RunTest<clblast::double2>(argc, argv, true, "ZGEMV");
   return 0;
 }
 

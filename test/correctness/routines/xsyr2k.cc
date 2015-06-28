@@ -7,78 +7,81 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsyr2k routine. It is based on the TestABC class.
+// This file implements the tests for the Xsyr2k routine.
 //
 // =================================================================================================
 
-#include "wrapper_clblas.h"
-#include "correctness/testabc.h"
+#include "correctness/testblas.h"
+#include "routines/xsyr2k.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
+// The correctness tester
 template <typename T>
-void Xsyr2kTest(int argc, char *argv[], const bool silent, const std::string &name) {
-
-  // Creates the CLBlast lambda
-  auto clblast_lambda = [](const Arguments<T> &args,
-                           const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
-                           CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    return Syr2k(args.layout, args.triangle, args.a_transpose,
-                 args.n, args.k,
-                 args.alpha,
-                 a_mat(), args.a_offset, args.a_ld,
-                 b_mat(), args.b_offset, args.b_ld,
-                 args.beta,
-                 c_mat(), args.c_offset, args.c_ld,
-                 &queue_plain, &event);
-  };
-
-  // Creates the clBLAS lambda (for comparison)
-  auto clblas_lambda = [](const Arguments<T> &args,
-                          const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
-                          CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXsyr2k(static_cast<clblasOrder>(args.layout),
-                               static_cast<clblasUplo>(args.triangle),
-                               static_cast<clblasTranspose>(args.a_transpose),
-                               args.n, args.k,
-                               args.alpha,
-                               a_mat(), args.a_offset, args.a_ld,
-                               b_mat(), args.b_offset, args.b_ld,
-                               args.beta,
-                               c_mat(), args.c_offset, args.c_ld,
-                               1, &queue_plain, 0, nullptr, &event);
-    return static_cast<StatusCode>(status);
-  };
-
-  // Initializes the arguments relevant for this routine
-  auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgN, kArgK, kArgLayout,
-                                                kArgTriangle, kArgATransp,
-                                                kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
-                                                kArgAOffset, kArgBOffset, kArgCOffset};
+void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestABC<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
+  TestBlas<T> tester{argc, argv, silent, name, TestXsyr2k<T>::GetOptions(),
+                     TestXsyr2k<T>::RunRoutine, TestXsyr2k<T>::RunReference,
+                     TestXsyr2k<T>::DownloadResult, TestXsyr2k<T>::GetResultIndex,
+                     TestXsyr2k<T>::ResultID1, TestXsyr2k<T>::ResultID2};
+
+  // This variable holds the arguments relevant for this routine
+  auto args = Arguments<T>{};
 
   // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: tester.kLayouts) {
-    args.layout = layout;
-    for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
-      args.triangle = triangle;
-      for (auto &ab_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it is
-        args.a_transpose = ab_transpose;                            // not supported by clBLAS
+  for (auto &layout: tester.kLayouts) { args.layout = layout;
+    for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
+      for (auto &ab_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it
+        args.a_transpose = ab_transpose;                            // is not supported by clBLAS
         args.b_transpose = ab_transpose;
-        const auto case_name = ToString(layout)+" "+ToString(triangle)+" "+ToString(ab_transpose);
+
+        // Creates the arguments vector for the regular tests
+        auto regular_test_vector = std::vector<Arguments<T>>{};
+        for (auto &n: tester.kMatrixDims) { args.n = n;
+          for (auto &k: tester.kMatrixDims) { args.k = k;
+            for (auto &a_ld: tester.kMatrixDims) { args.a_ld = a_ld;
+              for (auto &a_offset: tester.kOffsets) { args.a_offset = a_offset;
+                for (auto &b_ld: tester.kMatrixDims) { args.b_ld = b_ld;
+                  for (auto &b_offset: tester.kOffsets) { args.b_offset = b_offset;
+                    for (auto &c_ld: tester.kMatrixDims) { args.c_ld = c_ld;
+                      for (auto &c_offset: tester.kOffsets) { args.c_offset = c_offset;
+                        for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
+                          for (auto &beta: tester.kBetaValues) { args.beta = beta;
+                            args.a_size = TestXsyr2k<T>::GetSizeA(args);
+                            args.b_size = TestXsyr2k<T>::GetSizeB(args);
+                            args.c_size = TestXsyr2k<T>::GetSizeC(args);
+                            if (args.a_size<1 || args.b_size<1 || args.c_size<1) { continue; }
+                            regular_test_vector.push_back(args);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Creates the arguments vector for the invalid-buffer tests
+        auto invalid_test_vector = std::vector<Arguments<T>>{};
+        args.n = args.k = tester.kBufferSize;
+        args.a_ld = args.b_ld = args.c_ld = tester.kBufferSize;
+        args.a_offset = args.b_offset = args.c_offset = 0;
+        for (auto &a_size: tester.kMatSizes) { args.a_size = a_size;
+          for (auto &b_size: tester.kMatSizes) { args.b_size = b_size;
+            for (auto &c_size: tester.kMatSizes) { args.c_size = c_size;
+              invalid_test_vector.push_back(args);
+            }
+          }
+        }
 
         // Runs the tests
-        tester.TestRegular(args, case_name, true);
-        tester.TestInvalidBufferSizes(args, case_name);
+        const auto case_name = ToString(layout)+" "+ToString(triangle)+" "+ToString(ab_transpose);
+        tester.TestRegular(regular_test_vector, case_name);
+        tester.TestInvalid(invalid_test_vector, case_name);
       }
     }
   }
@@ -89,10 +92,10 @@ void Xsyr2kTest(int argc, char *argv[], const bool silent, const std::string &na
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::Xsyr2kTest<float>(argc, argv, false, "SSYR2K");
-  clblast::Xsyr2kTest<double>(argc, argv, true, "DSYR2K");
-  clblast::Xsyr2kTest<clblast::float2>(argc, argv, true, "CSYR2K");
-  clblast::Xsyr2kTest<clblast::double2>(argc, argv, true, "ZSYR2K");
+  clblast::RunTest<float>(argc, argv, false, "SSYR2K");
+  clblast::RunTest<double>(argc, argv, true, "DSYR2K");
+  clblast::RunTest<clblast::float2>(argc, argv, true, "CSYR2K");
+  clblast::RunTest<clblast::double2>(argc, argv, true, "ZSYR2K");
   return 0;
 }
 
