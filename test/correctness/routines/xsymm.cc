@@ -1,83 +1,85 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under the MIT license. This
+// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
 // project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
 // width of 100 characters per line.
 //
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsymm routine. It is based on the TestABC class.
+// This file implements the tests for the Xsymm routine.
 //
 // =================================================================================================
 
-#include "wrapper_clblas.h"
-#include "correctness/testabc.h"
+#include "correctness/testblas.h"
+#include "routines/xsymm.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The correctness tester, containing the function calls to CLBlast and to clBLAS for comparison.
+// The correctness tester
 template <typename T>
-void XsymmTest(int argc, char *argv[], const bool silent, const std::string &name) {
-
-  // Creates the CLBlast lambda
-  auto clblast_lambda = [](const Arguments<T> &args,
-                           const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
-                           CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    return Symm(args.layout, args.side, args.triangle,
-                args.m, args.n,
-                args.alpha,
-                a_mat(), args.a_offset, args.a_ld,
-                b_mat(), args.b_offset, args.b_ld,
-                args.beta,
-                c_mat(), args.c_offset, args.c_ld,
-                &queue_plain, &event);
-  };
-
-  // Creates the clBLAS lambda (for comparison)
-  auto clblas_lambda = [](const Arguments<T> &args,
-                          const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
-                          CommandQueue &queue) -> StatusCode {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXsymm(static_cast<clblasOrder>(args.layout),
-                              static_cast<clblasSide>(args.side),
-                              static_cast<clblasUplo>(args.triangle),
-                              args.m, args.n,
-                              args.alpha,
-                              a_mat(), args.a_offset, args.a_ld,
-                              b_mat(), args.b_offset, args.b_ld,
-                              args.beta,
-                              c_mat(), args.c_offset, args.c_ld,
-                              1, &queue_plain, 0, nullptr, &event);
-    return static_cast<StatusCode>(status);
-  };
-
-  // Initializes the arguments relevant for this routine
-  auto args = Arguments<T>{};
-  const auto options = std::vector<std::string>{kArgM, kArgN, kArgLayout,
-                                                kArgSide, kArgTriangle,
-                                                kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
-                                                kArgAOffset, kArgBOffset, kArgCOffset};
+void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestABC<T> tester{argc, argv, silent, name, options, clblast_lambda, clblas_lambda};
+  TestBlas<T> tester{argc, argv, silent, name, TestXsymm<T>::GetOptions(),
+                     TestXsymm<T>::RunRoutine, TestXsymm<T>::RunReference,
+                     TestXsymm<T>::DownloadResult, TestXsymm<T>::GetResultIndex,
+                     TestXsymm<T>::ResultID1, TestXsymm<T>::ResultID2};
+
+  // This variable holds the arguments relevant for this routine
+  auto args = Arguments<T>{};
 
   // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: tester.kLayouts) {
-    args.layout = layout;
-    for (auto &side: {Side::kLeft, Side::kRight}) {
-      args.side = side;
-      for (auto &triangle: {Triangle::kUpper, Triangle::kLower}) {
-        args.triangle = triangle;
-        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
+  for (auto &layout: tester.kLayouts) { args.layout = layout;
+    for (auto &side: tester.kSides) { args.side = side;
+      for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
+
+        // Creates the arguments vector for the regular tests
+        auto regular_test_vector = std::vector<Arguments<T>>{};
+        for (auto &m: tester.kMatrixDims) { args.m = m;
+          for (auto &n: tester.kMatrixDims) { args.n = n;
+            for (auto &a_ld: tester.kMatrixDims) { args.a_ld = a_ld;
+              for (auto &a_offset: tester.kOffsets) { args.a_offset = a_offset;
+                for (auto &b_ld: tester.kMatrixDims) { args.b_ld = b_ld;
+                  for (auto &b_offset: tester.kOffsets) { args.b_offset = b_offset;
+                    for (auto &c_ld: tester.kMatrixDims) { args.c_ld = c_ld;
+                      for (auto &c_offset: tester.kOffsets) { args.c_offset = c_offset;
+                        for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
+                          for (auto &beta: tester.kBetaValues) { args.beta = beta;
+                            args.a_size = TestXsymm<T>::GetSizeA(args);
+                            args.b_size = TestXsymm<T>::GetSizeB(args);
+                            args.c_size = TestXsymm<T>::GetSizeC(args);
+                            if (args.a_size<1 || args.b_size<1 || args.c_size<1) { continue; }
+                            regular_test_vector.push_back(args);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Creates the arguments vector for the invalid-buffer tests
+        auto invalid_test_vector = std::vector<Arguments<T>>{};
+        args.m = args.n = tester.kBufferSize;
+        args.a_ld = args.b_ld = args.c_ld = tester.kBufferSize;
+        args.a_offset = args.b_offset = args.c_offset = 0;
+        for (auto &a_size: tester.kMatSizes) { args.a_size = a_size;
+          for (auto &b_size: tester.kMatSizes) { args.b_size = b_size;
+            for (auto &c_size: tester.kMatSizes) { args.c_size = c_size;
+              invalid_test_vector.push_back(args);
+            }
+          }
+        }
 
         // Runs the tests
-        tester.TestRegular(args, case_name, true);
-        tester.TestInvalidBufferSizes(args, case_name);
+        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
+        tester.TestRegular(regular_test_vector, case_name);
+        tester.TestInvalid(invalid_test_vector, case_name);
       }
     }
   }
@@ -88,10 +90,10 @@ void XsymmTest(int argc, char *argv[], const bool silent, const std::string &nam
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::XsymmTest<float>(argc, argv, false, "SSYMM");
-  clblast::XsymmTest<double>(argc, argv, true, "DSYMM");
-  clblast::XsymmTest<clblast::float2>(argc, argv, true, "CSYMM");
-  clblast::XsymmTest<clblast::double2>(argc, argv, true, "ZSYMM");
+  clblast::RunTest<float>(argc, argv, false, "SSYMM");
+  clblast::RunTest<double>(argc, argv, true, "DSYMM");
+  clblast::RunTest<clblast::float2>(argc, argv, true, "CSYMM");
+  clblast::RunTest<clblast::double2>(argc, argv, true, "ZSYMM");
   return 0;
 }
 

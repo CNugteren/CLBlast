@@ -62,10 +62,6 @@ class Tester {
   const std::string kSkippedCompilation{kPrintWarning + "\\" + kPrintEnd};
   const std::string kUnsupportedPrecision{kPrintWarning + "o" + kPrintEnd};
 
-  // The layouts and transpose-options to test with
-  static const std::vector<Layout> kLayouts;
-  static const std::vector<Transpose> kTransposes;
-
   // This structure combines the above log-entry with a status code an error percentage
   struct ErrorLogEntry {
     StatusCode status_expect;
