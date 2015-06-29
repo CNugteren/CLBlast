@@ -1,6 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under the MIT license. This
+// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
 // project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
 // width of 100 characters per line.
 //
@@ -57,6 +57,18 @@ class TestXgemm {
     return c_two * args.c_ld + args.c_offset;
   }
 
+  // Describes how to set the sizes of all the buffers
+  static void SetSizes(Arguments<T> &args) {
+    args.a_size = GetSizeA(args);
+    args.b_size = GetSizeB(args);
+    args.c_size = GetSizeC(args);
+  }
+
+  // Describes what the default values of the leading dimensions of the matrices are
+  static size_t DefaultLDA(const Arguments<T> &args) { return args.k; }
+  static size_t DefaultLDB(const Arguments<T> &args) { return args.n; }
+  static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
+
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers &buffers,
                                CommandQueue &queue) {
@@ -104,6 +116,14 @@ class TestXgemm {
     return (args.layout == Layout::kRowMajor) ?
            id1*args.c_ld + id2 + args.c_offset:
            id2*args.c_ld + id1 + args.c_offset;
+  }
+
+  // Describes how to compute performance metrics
+  static size_t GetFlops(const Arguments<T> &args) {
+    return 2 * args.m * args.n * args.m;
+  }
+  static size_t GetBytes(const Arguments<T> &args) {
+    return (args.m*args.m + args.m*args.n + 2*args.m*args.n) * sizeof(T);
   }
 };
 

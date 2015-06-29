@@ -7,108 +7,29 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xgemm command-line interface tester.
+// This file implements the Xgemm command-line interface performance tester.
 //
 // =================================================================================================
 
-#include <string>
-#include <vector>
-#include <exception>
-
-#include "wrapper_clblas.h"
 #include "performance/client.h"
-
-namespace clblast {
-// =================================================================================================
-
-// The client, used for performance testing. It contains the function calls to CLBlast and to other
-// libraries to compare against.
-template <typename T>
-void PerformanceXgemm(const Arguments<T> &args,
-                      const Buffer &a_mat, const Buffer &b_mat, const Buffer &c_mat,
-                      CommandQueue &queue) {
-
-  // Creates the CLBlast lambda
-  auto clblast_lambda = [&args, &a_mat, &b_mat, &c_mat, &queue]() {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                       args.m, args.n, args.k,
-                       args.alpha,
-                       a_mat(), args.a_offset, args.a_ld,
-                       b_mat(), args.b_offset, args.b_ld,
-                       args.beta,
-                       c_mat(), args.c_offset, args.c_ld,
-                       &queue_plain, &event);
-    clWaitForEvents(1, &event);
-    if (status != StatusCode::kSuccess) {
-      throw std::runtime_error("CLBlast error: "+ToString(static_cast<int>(status)));
-    }
-  };
-
-  // Creates the clBLAS lambda (for comparison)
-  auto clblas_lambda = [&args, &a_mat, &b_mat, &c_mat, &queue]() {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXgemm(static_cast<clblasOrder>(args.layout),
-                              static_cast<clblasTranspose>(args.a_transpose),
-                              static_cast<clblasTranspose>(args.b_transpose),
-                              args.m, args.n, args.k,
-                              args.alpha,
-                              a_mat(), args.a_offset, args.a_ld,
-                              b_mat(), args.b_offset, args.b_ld,
-                              args.beta,
-                              c_mat(), args.c_offset, args.c_ld,
-                              1, &queue_plain, 0, nullptr, &event);
-    clWaitForEvents(1, &event);
-    if (status != CL_SUCCESS) {
-      throw std::runtime_error("clBLAS error: "+ToString(static_cast<int>(status)));
-    }
-  };
-
-  // Runs the routines and collect the timings
-  auto ms_clblast = TimedExecution(args.num_runs, clblast_lambda);
-  auto ms_clblas = TimedExecution(args.num_runs, clblas_lambda);
-
-  // Prints the performance of both libraries
-  const auto flops = 2 * args.m * args.n * args.k;
-  const auto bytes = (args.m*args.k + args.k*args.n + 2*args.m*args.n) * sizeof(T);
-  const auto output_ints = std::vector<size_t>{args.m, args.n, args.k,
-                                               static_cast<size_t>(args.layout),
-                                               static_cast<size_t>(args.a_transpose),
-                                               static_cast<size_t>(args.b_transpose),
-                                               args.a_ld, args.b_ld, args.c_ld,
-                                               args.a_offset, args.b_offset, args.c_offset};
-  const auto output_strings = std::vector<std::string>{ToString(args.alpha),
-                                                       ToString(args.beta)};
-  PrintTableRow(output_ints, output_strings, args.no_abbrv,
-                ms_clblast, ms_clblas, flops, bytes);
-}
+#include "routines/xgemm.h"
 
 // =================================================================================================
-
-// Main function which calls the common client code with the routine-specific function as argument.
-void ClientXgemm(int argc, char *argv[]) {
-  const auto o = std::vector<std::string>{kArgM, kArgN, kArgK, kArgLayout,
-                                          kArgATransp, kArgBTransp,
-                                          kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
-                                          kArgAOffset, kArgBOffset, kArgCOffset,
-                                          kArgAlpha, kArgBeta};
-  switch(GetPrecision(argc, argv)) {
-    case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kSingle: ClientABC<float>(argc, argv, PerformanceXgemm<float>, o, false); break;
-    case Precision::kDouble: ClientABC<double>(argc, argv, PerformanceXgemm<double>, o, false); break;
-    case Precision::kComplexSingle: ClientABC<float2>(argc, argv, PerformanceXgemm<float2>, o, false); break;
-    case Precision::kComplexDouble: ClientABC<double2>(argc, argv, PerformanceXgemm<double2>, o, false); break;
-  }
-}
-
-// =================================================================================================
-} // namespace clblast
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::ClientXgemm(argc, argv);
+  switch(clblast::GetPrecision(argc, argv)) {
+    case clblast::Precision::kHalf:
+      throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kSingle:
+      clblast::RunClient<clblast::TestXgemm<float>, float>(argc, argv); break;
+    case clblast::Precision::kDouble:
+      clblast::RunClient<clblast::TestXgemm<double>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle:
+      clblast::RunClient<clblast::TestXgemm<clblast::float2>, clblast::float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble:
+      clblast::RunClient<clblast::TestXgemm<clblast::double2>, clblast::double2>(argc, argv); break;
+  }
   return 0;
 }
 

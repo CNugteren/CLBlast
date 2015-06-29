@@ -1,6 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under the MIT license. This
+// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
 // project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
 // width of 100 characters per line.
 //
@@ -48,12 +48,24 @@ class TestXsyr2k {
   static size_t GetSizeB(const Arguments<T> &args) {
     auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose != Transpose::kNo) ||
                      (args.layout == Layout::kRowMajor && args.b_transpose == Transpose::kNo);
-    auto b_two = (b_rotated) ? args.k : args.n;
+    auto b_two = (b_rotated) ? args.n : args.k;
     return b_two * args.b_ld + args.b_offset;
   }
   static size_t GetSizeC(const Arguments<T> &args) {
     return args.n * args.c_ld + args.c_offset;
   }
+
+  // Describes how to set the sizes of all the buffers
+  static void SetSizes(Arguments<T> &args) {
+    args.a_size = GetSizeA(args);
+    args.b_size = GetSizeB(args);
+    args.c_size = GetSizeC(args);
+  }
+
+  // Describes what the default values of the leading dimensions of the matrices are
+  static size_t DefaultLDA(const Arguments<T> &args) { return args.k; }
+  static size_t DefaultLDB(const Arguments<T> &args) { return args.k; }
+  static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers &buffers,
@@ -100,6 +112,14 @@ class TestXsyr2k {
   static size_t ResultID2(const Arguments<T> &args) { return args.n; }
   static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t id2) {
     return id1*args.c_ld + id2 + args.c_offset;
+  }
+
+  // Describes how to compute performance metrics
+  static size_t GetFlops(const Arguments<T> &args) {
+    return 2 * args.n * args.n * args.k;
+  }
+  static size_t GetBytes(const Arguments<T> &args) {
+    return (args.n*args.k + args.n*args.n) * sizeof(T);
   }
 };
 
