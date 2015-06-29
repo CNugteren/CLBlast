@@ -1,5 +1,6 @@
 
 Development version (next release)
+- Re-organized test/client infrastructure to avoid code duplication
 - Added level-3 routines:
   * SSYRK/DSYRK/CSYRK/ZSYRK
   * SSYR2K/DSYR2K/CSYR2K/ZSYR2K
