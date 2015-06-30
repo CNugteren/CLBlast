@@ -141,7 +141,7 @@ clblasStatus clblasXgemm(
   size_t m, size_t n, size_t k, float alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasSgemm(layout, a_transpose, b_transpose,
@@ -156,7 +156,7 @@ clblasStatus clblasXgemm(
   size_t m, size_t n, size_t k, double alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasDgemm(layout, a_transpose, b_transpose,
@@ -171,7 +171,7 @@ clblasStatus clblasXgemm(
   size_t m, size_t n, size_t k, float2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
@@ -188,7 +188,7 @@ clblasStatus clblasXgemm(
   size_t m, size_t n, size_t k, double2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
@@ -207,7 +207,7 @@ clblasStatus clblasXsymm(
   size_t m, size_t n, float alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasSsymm(layout, side, triangle,
@@ -222,7 +222,7 @@ clblasStatus clblasXsymm(
   size_t m, size_t n, double alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasDsymm(layout, side, triangle,
@@ -237,7 +237,7 @@ clblasStatus clblasXsymm(
   size_t m, size_t n, float2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
@@ -254,7 +254,7 @@ clblasStatus clblasXsymm(
   size_t m, size_t n, double2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
@@ -272,7 +272,7 @@ clblasStatus clblasXsyrk(
   clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
   size_t n, size_t k, float alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld, float beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasSsyrk(layout, triangle, a_transpose,
@@ -285,7 +285,7 @@ clblasStatus clblasXsyrk(
   clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
   size_t n, size_t k, double alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld, double beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasDsyrk(layout, triangle, a_transpose,
@@ -298,7 +298,7 @@ clblasStatus clblasXsyrk(
   clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
   size_t n, size_t k, float2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld, float2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
@@ -313,7 +313,7 @@ clblasStatus clblasXsyrk(
   clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
   size_t n, size_t k, double2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld, double2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
@@ -331,7 +331,7 @@ clblasStatus clblasXsyr2k(
   size_t n, size_t k, float alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasSsyr2k(layout, triangle, ab_transpose,
@@ -346,7 +346,7 @@ clblasStatus clblasXsyr2k(
   size_t n, size_t k, double alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     return clblasDsyr2k(layout, triangle, ab_transpose,
@@ -361,7 +361,7 @@ clblasStatus clblasXsyr2k(
   size_t n, size_t k, float2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, float2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
@@ -378,7 +378,7 @@ clblasStatus clblasXsyr2k(
   size_t n, size_t k, double2 alpha,
   const cl_mem a_mat, size_t a_offset, size_t a_ld,
   const cl_mem b_mat, size_t b_offset, size_t b_ld, double2 beta,
-  cl_mem c_mat, size_t c_offset, size_t c_ld,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
   cl_uint num_queues, cl_command_queue *queues,
   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
     auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
