@@ -42,14 +42,14 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
 
   // Computes the k dimension. This is based on whether or not the symmetric matrix is A (on the
   // left) or B (on the right) in the Xgemm routine.
-  size_t k = (side == Side::kLeft) ? m : n;
+  auto k = (side == Side::kLeft) ? m : n;
 
   // Checks for validity of the squared A matrix
   auto status = TestMatrixA(k, k, a_buffer, a_offset, a_ld, sizeof(T));
   if (ErrorIn(status)) { return status; }
 
   // Determines which kernel to run based on the layout (the Xgemm kernel assumes column-major as
-  // default) and on whether we are dealing with an upper or lower triangle of the symmetrix matrix
+  // default) and on whether we are dealing with an upper or lower triangle of the symmetric matrix
   bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   auto kernel_name = (is_upper) ? "SymmUpperToSquared" : "SymmLowerToSquared";
@@ -75,7 +75,7 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
       kernel.SetArgument(7, temp_symm());
 
       // Uses the common padding kernel's thread configuration. This is allowed, since the
-      // symmetry-to-squared kernel uses the same parameters.
+      // symmetric-to-squared kernel uses the same parameters.
       auto global = std::vector<size_t>{Ceil(CeilDiv(k, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
                                         Ceil(CeilDiv(k, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
       auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
