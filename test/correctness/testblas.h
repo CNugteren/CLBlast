@@ -61,6 +61,7 @@ class TestBlas: public Tester<T> {
   const std::vector<Layout> kLayouts = {Layout::kRowMajor, Layout::kColMajor};
   const std::vector<Triangle> kTriangles = {Triangle::kUpper, Triangle::kLower};
   const std::vector<Side> kSides = {Side::kLeft, Side::kRight};
+  const std::vector<Diagonal> kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester

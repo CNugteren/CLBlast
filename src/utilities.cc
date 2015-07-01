@@ -79,6 +79,13 @@ std::string ToString(Triangle value) {
   }
 }
 template <>
+std::string ToString(Diagonal value) {
+  switch(value) {
+    case Diagonal::kUnit: return ToString(static_cast<int>(value))+" (unit)";
+    case Diagonal::kNonUnit: return ToString(static_cast<int>(value))+" (non-unit)";
+  }
+}
+template <>
 std::string ToString(Precision value) {
   switch(value) {
     case Precision::kHalf: return ToString(static_cast<int>(value))+" (half)";
@@ -143,6 +150,7 @@ template Layout GetArgument<Layout>(const int, char **, std::string&, const std:
 template Transpose GetArgument<Transpose>(const int, char **, std::string&, const std::string&, const Transpose);
 template Side GetArgument<Side>(const int, char **, std::string&, const std::string&, const Side);
 template Triangle GetArgument<Triangle>(const int, char **, std::string&, const std::string&, const Triangle);
+template Diagonal GetArgument<Diagonal>(const int, char **, std::string&, const std::string&, const Diagonal);
 template Precision GetArgument<Precision>(const int, char **, std::string&, const std::string&, const Precision);
 
 // =================================================================================================

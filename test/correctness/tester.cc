@@ -137,6 +137,7 @@ void Tester<T>::TestEnd() {
       if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
       if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
       if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
+      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
       if (o == kArgXInc)     { fprintf(stdout, "%s=%lu ", kArgXInc, entry.args.x_inc);}
       if (o == kArgYInc)     { fprintf(stdout, "%s=%lu ", kArgYInc, entry.args.y_inc);}
       if (o == kArgXOffset)  { fprintf(stdout, "%s=%lu ", kArgXOffset, entry.args.x_offset);}

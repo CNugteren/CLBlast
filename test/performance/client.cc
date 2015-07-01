@@ -58,6 +58,7 @@ Arguments<T> Client<T>::ParseArguments(int argc, char *argv[], const GetMetric d
     if (o == kArgBTransp)  { args.b_transpose = GetArgument(argc, argv, help, kArgBTransp, Transpose::kNo); }
     if (o == kArgSide)     { args.side        = GetArgument(argc, argv, help, kArgSide, Side::kLeft); }
     if (o == kArgTriangle) { args.triangle    = GetArgument(argc, argv, help, kArgTriangle, Triangle::kUpper); }
+    if (o == kArgDiagonal) { args.diagonal    = GetArgument(argc, argv, help, kArgDiagonal, Diagonal::kUnit); }
 
     // Vector arguments
     if (o == kArgXInc)    { args.x_inc    = GetArgument(argc, argv, help, kArgXInc, size_t{1}); }
@@ -224,6 +225,7 @@ void Client<T>::PrintTableRow(const Arguments<T>& args, const double ms_clblast,
     else if (o == kArgTriangle) { integers.push_back(static_cast<size_t>(args.triangle)); }
     else if (o == kArgATransp) {  integers.push_back(static_cast<size_t>(args.a_transpose)); }
     else if (o == kArgBTransp) {  integers.push_back(static_cast<size_t>(args.b_transpose)); }
+    else if (o == kArgDiagonal) { integers.push_back(static_cast<size_t>(args.diagonal)); }
     else if (o == kArgXInc) {     integers.push_back(args.x_inc); }
     else if (o == kArgYInc) {     integers.push_back(args.y_inc); }
     else if (o == kArgXOffset) {  integers.push_back(args.x_offset); }

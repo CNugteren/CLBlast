@@ -46,6 +46,7 @@ constexpr auto kArgATransp = "transA";
 constexpr auto kArgBTransp = "transB";
 constexpr auto kArgSide = "side";
 constexpr auto kArgTriangle = "triangle";
+constexpr auto kArgDiagonal = "diagonal";
 constexpr auto kArgXInc = "incx";
 constexpr auto kArgYInc = "incy";
 constexpr auto kArgXOffset = "offx";
@@ -93,6 +94,7 @@ struct Arguments {
   Transpose b_transpose = Transpose::kNo;
   Side side = Side::kLeft;
   Triangle triangle = Triangle::kUpper;
+  Diagonal diagonal = Diagonal::kUnit;
   size_t x_inc = 1;
   size_t y_inc = 1;
   size_t x_offset = 0;
