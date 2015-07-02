@@ -19,7 +19,7 @@ source(file.path(dirname(thisfile), "common.r"))
 
 # Settings
 routine_name <- "xsymm"
-parameters <- c("-m","-n","-layout","-triangle","-side",
+parameters <- c("-m","-n","-layout","-side","-triangle",
                 "-num_steps","-step","-runs","-precision")
 precision <- 32
 
@@ -29,7 +29,7 @@ test_names <- list(
   "multiples of 128 (+1)",
   "around m=n=512",
   "around m=n=2048",
-  "layouts and triangle/side (m=n=1024)",
+  "layouts and side/triangle (m=n=1024)",
   "powers of 2"
 )
 
@@ -70,7 +70,7 @@ test_xlabels <- list(
   "matrix sizes (m=n)",
   "matrix sizes (m=n)",
   "matrix sizes (m=n)",
-  "layout (row/col), triangle (up/lo), side (l/r)",
+  "layout (row/col), side (l/r), triangle (up/lo)",
   "matrix sizes (m=n)"
 )
 
@@ -80,8 +80,8 @@ test_xaxis <- list(
   c("m", ""),
   c("m", ""),
   c("m", ""),
-  list(1:8, c("row,up,l", "row,up,r", "row,lo,l", "row,lo,r",
-              "col,up,l", "col,up,r", "col,lo,l", "col,lo,r")),
+  list(1:8, c("row,l,up", "row,r,up", "row,l,lo", "row,r,lo",
+              "col,l,up", "col,r,up", "col,l,lo", "col,r,lo")),
   c("m", "x")
 )
 
