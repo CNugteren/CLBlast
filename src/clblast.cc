@@ -28,6 +28,7 @@
 #include "internal/routines/xsymm.h"
 #include "internal/routines/xsyrk.h"
 #include "internal/routines/xsyr2k.h"
+#include "internal/routines/xtrmm.h"
 
 namespace clblast {
 // =================================================================================================
@@ -372,7 +373,6 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = CommandQueue(*queue);
   auto event_cpp = Event(*event);
-  /*
   auto routine = Xtrmm<T>(queue_cpp, event_cpp);
 
   // Loads the kernel source-code as an include (C++11 raw string literal)
@@ -394,8 +394,6 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
   return routine.DoTrmm(layout, side, triangle, a_transpose, diagonal, m, n, alpha,
                         Buffer(a_buffer), a_offset, a_ld,
                         Buffer(b_buffer), b_offset, b_ld);
-  */
-  return StatusCode::kSuccess;
 }
 template StatusCode Trmm<float>(const Layout, const Side, const Triangle,
                                 const Transpose, const Diagonal,
