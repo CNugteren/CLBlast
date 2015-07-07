@@ -87,7 +87,8 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
                           const int dest_one, const int dest_two,
                           const int dest_ld, const int dest_offset,
                           __global real* dest,
-                          const int upper, const int lower) {
+                          const int upper, const int lower,
+                          const int diagonal_imag_zero) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -106,7 +107,9 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
         // Copies the value into the destination matrix. This is always within bounds of the source
         // matrix, as we know that the destination matrix is smaller than the source.
         if (id_two < dest_two && id_one < dest_one) {
-          dest[id_two*dest_ld + id_one + dest_offset] = src[id_two*src_ld + id_one + src_offset];
+          real value = src[id_two*src_ld + id_one + src_offset];
+          if (diagonal_imag_zero == 1 && id_one == id_two) { ImagToZero(value); }
+          dest[id_two*dest_ld + id_one + dest_offset] = value;
         }
       }
     }

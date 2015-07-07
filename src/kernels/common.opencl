@@ -92,6 +92,13 @@ R"(
   #define SetToZero(a) a = ZERO
 #endif
 
+// Sets a variable to zero (only the imaginary part)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define ImagToZero(a) a.y = ZERO
+#else
+  #define ImagToZero(a) 
+#endif
+
 // Sets a variable to one
 #if PRECISION == 3232 || PRECISION == 6464
   #define SetToOne(a) a.x = ONE; a.y = ZERO
