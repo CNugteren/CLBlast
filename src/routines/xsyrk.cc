@@ -53,9 +53,6 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
                    (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
   auto c_rotated = (layout == Layout::kRowMajor);
 
-  // In case of complex data-types, the transpose can also become a conjugate transpose
-  auto a_conjugate = (a_transpose == Transpose::kConjugate);
-
   // Computes the first and second dimensions of the A matrix taking the layout into account
   auto a_one = (a_rotated) ? k : n;
   auto a_two = (a_rotated) ? n : k;
@@ -87,17 +84,17 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     auto& program = GetProgramFromCache();
 
     // Runs the pre-processing kernel. This transposes the matrix A, but also pads zeros to
-    // fill them up until they reach a certain multiple of size (kernel parameter dependent).
+    // fill it up until it reaches a certain multiple of size (kernel parameter dependent).
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
-                                    a_rotated, a_conjugate, true, false, false, program);
+                                    a_rotated, false, true, false, false, false, program);
     if (ErrorIn(status)) { return status; }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
-                                    c_rotated, false, true, false, false, program);
+                                    c_rotated, false, true, false, false, false, program);
     if (ErrorIn(status)) { return status; }
 
     // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
@@ -129,7 +126,7 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       auto lower = (triangle == Triangle::kLower);
       status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      c_rotated, false, false, upper, lower, program);
+                                      c_rotated, false, false, upper, lower, false, program);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation
