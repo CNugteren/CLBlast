@@ -22,10 +22,10 @@ template <typename T>
 void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestBlas<T> tester{argc, argv, silent, name, TestXtrmm<T>::GetOptions(),
-                     TestXtrmm<T>::RunRoutine, TestXtrmm<T>::RunReference,
-                     TestXtrmm<T>::DownloadResult, TestXtrmm<T>::GetResultIndex,
-                     TestXtrmm<T>::ResultID1, TestXtrmm<T>::ResultID2};
+  TestBlas<T,T> tester{argc, argv, silent, name, TestXtrmm<T>::GetOptions(),
+                       TestXtrmm<T>::RunRoutine, TestXtrmm<T>::RunReference,
+                       TestXtrmm<T>::DownloadResult, TestXtrmm<T>::GetResultIndex,
+                       TestXtrmm<T>::ResultID1, TestXtrmm<T>::ResultID2};
 
   // This variable holds the arguments relevant for this routine
   auto args = Arguments<T>{};

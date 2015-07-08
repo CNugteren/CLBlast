@@ -19,21 +19,23 @@ namespace clblast {
 // =================================================================================================
 
 // The transpose-options to test with (data-type dependent)
-template <> const std::vector<Transpose> TestBlas<float>::kTransposes = {Transpose::kNo, Transpose::kYes};
-template <> const std::vector<Transpose> TestBlas<double>::kTransposes = {Transpose::kNo, Transpose::kYes};
-template <> const std::vector<Transpose> TestBlas<float2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
-template <> const std::vector<Transpose> TestBlas<double2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
+template <> const std::vector<Transpose> TestBlas<float,float>::kTransposes = {Transpose::kNo, Transpose::kYes};
+template <> const std::vector<Transpose> TestBlas<double,double>::kTransposes = {Transpose::kNo, Transpose::kYes};
+template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
+template <> const std::vector<Transpose> TestBlas<double2,double2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
+template <> const std::vector<Transpose> TestBlas<float2,float>::kTransposes = {Transpose::kNo, Transpose::kConjugate};
+template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes = {Transpose::kNo, Transpose::kConjugate};
 
 // =================================================================================================
 
 // Constructor, initializes the base class tester and input data
-template <typename T>
-TestBlas<T>::TestBlas(int argc, char *argv[], const bool silent,
-                      const std::string &name, const std::vector<std::string> &options,
-                      const Routine run_routine, const Routine run_reference,
-                      const ResultGet get_result, const ResultIndex get_index,
-                      const ResultIterator get_id1, const ResultIterator get_id2):
-    Tester<T>{argc, argv, silent, name, options},
+template <typename T, typename U>
+TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
+                        const std::string &name, const std::vector<std::string> &options,
+                        const Routine run_routine, const Routine run_reference,
+                        const ResultGet get_result, const ResultIndex get_index,
+                        const ResultIterator get_id1, const ResultIterator get_id2):
+    Tester<T,U>{argc, argv, silent, name, options},
     run_routine_(run_routine),
     run_reference_(run_reference),
     get_result_(get_result),
@@ -65,9 +67,9 @@ TestBlas<T>::TestBlas(int argc, char *argv[], const bool silent,
 // ===============================================================================================
 
 // Tests the routine for a wide variety of parameters
-template <typename T>
-void TestBlas<T>::TestRegular(std::vector<Arguments<T>> &test_vector, const std::string &name) {
-  if (!PrecisionSupported()) { return; }
+template <typename T, typename U>
+void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const std::string &name) {
+  if (!PrecisionSupported<T>(device_)) { return; }
   TestStart("regular behaviour", name);
 
   // Iterates over all the to-be-tested combinations of arguments
@@ -132,9 +134,9 @@ void TestBlas<T>::TestRegular(std::vector<Arguments<T>> &test_vector, const std:
 
 // Tests the routine for cases with invalid OpenCL memory buffer sizes. Tests only on return-types,
 // does not test for results (if any).
-template <typename T>
-void TestBlas<T>::TestInvalid(std::vector<Arguments<T>> &test_vector, const std::string &name) {
-  if (!PrecisionSupported()) { return; }
+template <typename T, typename U>
+void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const std::string &name) {
+  if (!PrecisionSupported<T>(device_)) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Iterates over all the to-be-tested combinations of arguments
@@ -176,10 +178,12 @@ void TestBlas<T>::TestInvalid(std::vector<Arguments<T>> &test_vector, const std:
 // =================================================================================================
 
 // Compiles the templated class
-template class TestBlas<float>;
-template class TestBlas<double>;
-template class TestBlas<float2>;
-template class TestBlas<double2>;
+template class TestBlas<float, float>;
+template class TestBlas<double, double>;
+template class TestBlas<float2, float2>;
+template class TestBlas<double2, double2>;
+template class TestBlas<float2, float>;
+template class TestBlas<double2, double>;
 
 // =================================================================================================
 } // namespace clblast
