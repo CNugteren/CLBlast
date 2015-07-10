@@ -517,6 +517,7 @@ template StatusCode Trmm<double2>(const Layout, const Side, const Triangle,
 // =================================================================================================
 
 // TRSM
+/*
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
                 const Transpose a_transpose, const Diagonal diagonal,
@@ -527,7 +528,6 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = CommandQueue(*queue);
   auto event_cpp = Event(*event);
-  /*
   auto routine = Xtrsm<T>(queue_cpp, event_cpp);
 
   // Loads the kernel source-code as an include (C++11 raw string literal)
@@ -549,8 +549,6 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
   return routine.DoTrsm(layout, side, triangle, a_transpose, diagonal, m, n, alpha,
                         Buffer(a_buffer), a_offset, a_ld,
                         Buffer(b_buffer), b_offset, b_ld);
-  */
-  return StatusCode::kNotImplemented;
 }
 template StatusCode Trsm<float>(const Layout, const Side, const Triangle,
                                 const Transpose, const Diagonal,
@@ -576,6 +574,6 @@ template StatusCode Trsm<double2>(const Layout, const Side, const Triangle,
                                   const cl_mem, const size_t, const size_t,
                                   cl_mem, const size_t, const size_t,
                                   cl_command_queue*, cl_event*);
-
+*/
 // =================================================================================================
 } // namespace clblast

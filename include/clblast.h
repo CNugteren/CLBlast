@@ -183,6 +183,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
                 cl_command_queue* queue, cl_event* event);
 
 // Templated-precision matrix equation solver: STRSM/DTRSM/CTRSM/ZTRSM
+/*
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
                 const Transpose a_transpose, const Diagonal diagonal,
@@ -191,6 +192,7 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event);
+*/
 
 // =================================================================================================
 } // namespace clblast
