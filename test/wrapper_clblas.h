@@ -419,6 +419,40 @@ clblasStatus clblasXsyr2k(
                         num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// This calls {clblasCher2k, clblasZher2k} with the arguments forwarded.
+clblasStatus clblasXher2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose ab_transpose,
+  size_t n, size_t k, float2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, float beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    return clblasCher2k(layout, triangle, ab_transpose,
+                        n, k, cl_alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXher2k(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose ab_transpose,
+  size_t n, size_t k, double2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, double beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    return clblasZher2k(layout, triangle, ab_transpose,
+                        n, k, cl_alpha,
+                        a_mat, a_offset, a_ld,
+                        b_mat, b_offset, b_ld, beta,
+                        c_mat, c_offset, c_ld,
+                        num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // This calls {clblasStrmm, clblasDtrmm, clblasCtrmm, clblasZtrmm} with the arguments forwarded.
 clblasStatus clblasXtrmm(
   clblasOrder layout, clblasSide side, clblasUplo triangle,

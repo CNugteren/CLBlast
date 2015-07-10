@@ -161,6 +161,17 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event);
 
+// Templated-precision rank-2K update of a hermitian matrix: CHER2K/ZHER2K
+template <typename T, typename U>
+StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                 const size_t n, const size_t k,
+                 const T alpha,
+                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                 const U beta,
+                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                 cl_command_queue* queue, cl_event* event);
+
 // Templated-precision triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
 template <typename T>
 StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,

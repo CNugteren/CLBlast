@@ -29,6 +29,7 @@
 #include "internal/routines/xsyrk.h"
 #include "internal/routines/xherk.h"
 #include "internal/routines/xsyr2k.h"
+#include "internal/routines/xher2k.h"
 #include "internal/routines/xtrmm.h"
 
 namespace clblast {
@@ -350,11 +351,11 @@ template StatusCode Herk<double>(const Layout, const Triangle, const Transpose,
 // SYR2K
 template <typename T>
 StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                const size_t n, const size_t k, const T alpha,
-                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
-                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event) {
+                 const size_t n, const size_t k, const T alpha,
+                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
+                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = CommandQueue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xsyr2k<T>(queue_cpp, event_cpp);
@@ -404,6 +405,54 @@ template StatusCode Syr2k<double2>(const Layout, const Triangle, const Transpose
                                    const cl_mem, const size_t, const size_t, const double2,
                                    cl_mem, const size_t, const size_t,
                                    cl_command_queue*, cl_event*);
+
+// =================================================================================================
+
+// SYR2K
+template <typename T, typename U>
+StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                 const size_t n, const size_t k, const T alpha,
+                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const U beta,
+                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                 cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = CommandQueue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xher2k<T,U>(queue_cpp, event_cpp);
+
+  // Loads the kernel source-code as an include (C++11 raw string literal)
+  std::string common_source1 =
+  #include "kernels/copy.opencl"
+  std::string common_source2 =
+  #include "kernels/pad.opencl"
+  std::string common_source3 =
+  #include "kernels/transpose.opencl"
+  std::string common_source4 =
+  #include "kernels/padtranspose.opencl"
+  std::string kernel_source =
+  #include "kernels/xgemm.opencl"
+  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
+                              kernel_source);
+  if (status != StatusCode::kSuccess) { return status; }
+
+  // Runs the routine
+  return routine.DoHer2k(layout, triangle, ab_transpose, n, k, alpha,
+                         Buffer(a_buffer), a_offset, a_ld,
+                         Buffer(b_buffer), b_offset, b_ld, beta,
+                         Buffer(c_buffer), c_offset, c_ld);
+}
+template StatusCode Her2k<float2,float>(const Layout, const Triangle, const Transpose,
+                                        const size_t, const size_t, const float2,
+                                        const cl_mem, const size_t, const size_t,
+                                        const cl_mem, const size_t, const size_t, const float,
+                                        cl_mem, const size_t, const size_t,
+                                        cl_command_queue*, cl_event*);
+template StatusCode Her2k<double2,double>(const Layout, const Triangle, const Transpose,
+                                          const size_t, const size_t, const double2,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t, const double,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 
