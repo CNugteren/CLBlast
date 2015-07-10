@@ -22,10 +22,10 @@ namespace clblast {
 // =================================================================================================
 
 // Constructor
-template <typename T>
-Client<T>::Client(const Routine run_routine, const Routine run_reference,
-                  const std::vector<std::string> &options,
-                  const GetMetric get_flops, const GetMetric get_bytes):
+template <typename T, typename U>
+Client<T,U>::Client(const Routine run_routine, const Routine run_reference,
+                    const std::vector<std::string> &options,
+                    const GetMetric get_flops, const GetMetric get_bytes):
   run_routine_(run_routine),
   run_reference_(run_reference),
   options_(options),
@@ -38,10 +38,10 @@ Client<T>::Client(const Routine run_routine, const Routine run_reference,
 // Parses all arguments available for the CLBlast client testers. Some arguments might not be
 // applicable, but are searched for anyway to be able to create one common argument parser. All
 // arguments have a default value in case they are not found.
-template <typename T>
-Arguments<T> Client<T>::ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
-                                       const GetMetric default_b_ld, const GetMetric default_c_ld) {
-  auto args = Arguments<T>{};
+template <typename T, typename U>
+Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
+                                         const GetMetric default_b_ld, const GetMetric default_c_ld) {
+  auto args = Arguments<U>{};
   auto help = std::string{"Options given/available:\n"};
 
   // These are the options which are not for every client: they are optional
@@ -75,8 +75,8 @@ Arguments<T> Client<T>::ParseArguments(int argc, char *argv[], const GetMetric d
     if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
 
     // Scalar values 
-    if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<T>()); }
-    if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
+    if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
+    if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
   }
 
   // These are the options common to all routines
@@ -102,8 +102,8 @@ Arguments<T> Client<T>::ParseArguments(int argc, char *argv[], const GetMetric d
 // =================================================================================================
 
 // This is main performance tester
-template <typename T>
-void Client<T>::PerformanceTest(Arguments<T> &args, const SetMetric set_sizes) {
+template <typename T, typename U>
+void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes) {
 
   // Prints the header of the output table
   PrintTableHeader(args.silent, options_);
@@ -174,10 +174,10 @@ void Client<T>::PerformanceTest(Arguments<T> &args, const SetMetric set_sizes) {
 // Creates a vector of timing results, filled with execution times of the 'main computation'. The
 // timing is performed using the milliseconds chrono functions. The function returns the minimum
 // value found in the vector of timing results. The return value is in milliseconds.
-template <typename T>
-double Client<T>::TimedExecution(const size_t num_runs, const Arguments<T> &args,
-                                 const Buffers &buffers, CommandQueue &queue,
-                                 Routine run_blas, const std::string &library_name) {
+template <typename T, typename U>
+double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
+                                   const Buffers &buffers, CommandQueue &queue,
+                                   Routine run_blas, const std::string &library_name) {
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {
     auto start_time = std::chrono::steady_clock::now();
@@ -198,8 +198,8 @@ double Client<T>::TimedExecution(const size_t num_runs, const Arguments<T> &args
 // =================================================================================================
 
 // Prints the header of the performance table
-template <typename T>
-void Client<T>::PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
+template <typename T, typename U>
+void Client<T,U>::PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
   if (!silent) {
     for (auto i=size_t{0}; i<args.size(); ++i) { fprintf(stdout, "%9s ", ""); }
     fprintf(stdout, " | <--       CLBlast       --> | <--      clBLAS      --> |\n");
@@ -210,9 +210,9 @@ void Client<T>::PrintTableHeader(const bool silent, const std::vector<std::strin
 }
 
 // Print a performance-result row
-template <typename T>
-void Client<T>::PrintTableRow(const Arguments<T>& args, const double ms_clblast,
-                              const double ms_clblas) {
+template <typename T, typename U>
+void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblast,
+                                const double ms_clblas) {
 
   // Creates a vector of relevant variables
   auto integers = std::vector<size_t>{};
@@ -276,10 +276,12 @@ void Client<T>::PrintTableRow(const Arguments<T>& args, const double ms_clblast,
 // =================================================================================================
 
 // Compiles the templated class
-template class Client<float>;
-template class Client<double>;
-template class Client<float2>;
-template class Client<double2>;
+template class Client<float,float>;
+template class Client<double,double>;
+template class Client<float2,float2>;
+template class Client<double2,double2>;
+template class Client<float2,float>;
+template class Client<double2,double>;
 
 // =================================================================================================
 } // namespace clblast
