@@ -325,6 +325,34 @@ clblasStatus clblasXsyrk(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// This calls {clblasCherk, clblasZherk} with the arguments forwarded.
+clblasStatus clblasXherk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
+  size_t n, size_t k, float alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, float beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasCherk(layout, triangle, a_transpose,
+                       n, k, alpha,
+                       a_mat, a_offset, a_ld, beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXherk(
+  clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,
+  size_t n, size_t k, double alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld, double beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasZherk(layout, triangle, a_transpose,
+                       n, k, alpha,
+                       a_mat, a_offset, a_ld, beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // This calls {clblasSsyr2k, clblasDsyr2k, clblasCsyr2k, clblasZsyr2k} with the arguments forwarded.
 clblasStatus clblasXsyr2k(
   clblasOrder layout, clblasUplo triangle, clblasTranspose ab_transpose,
