@@ -177,12 +177,12 @@ CLBlast is in active development and currently does not support the full set of 
 | ---------|---|---|---|---|---------|
 | xGEMM    | ✔ | ✔ | ✔ | ✔ |         |
 | xSYMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xHEMM    | - | - |   |   |         |
+| xHEMM    | - | - | ✔ | ✔ |         |
 | xSYRK    | ✔ | ✔ | ✔ | ✔ |         |
-| xHERK    | - | - |   |   |         |
+| xHERK    | - | - | ✔ | ✔ |         |
 | xSYR2K   | ✔ | ✔ | ✔ | ✔ |         |
-| xHER2K   | - | - |   |   |         |
-| xTRMM    |   |   |   |   |         |
+| xHER2K   | - | - | ✔ | ✔ |         |
+| xTRMM    | ✔ | ✔ | ✔ | ✔ |         |
 | xTRSM    |   |   |   |   |         |
 
 
