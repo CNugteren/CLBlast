@@ -93,6 +93,7 @@ class Routine {
                                     const Buffer &dest,
                                     const bool do_transpose, const bool do_conjugate,
                                     const bool pad, const bool upper, const bool lower,
+                                    const bool diagonal_imag_zero,
                                     const Program &program);
   
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.

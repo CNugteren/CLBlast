@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xsyrk class (see the header for information about the class).
+// This file implements the Xher2k class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "internal/routines/xsyrk.h"
+#include "internal/routines/xher2k.h"
 
 #include <string>
 #include <vector>
@@ -20,50 +20,56 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xsyrk<float>::precision_ = Precision::kSingle;
-template <> const Precision Xsyrk<double>::precision_ = Precision::kDouble;
-template <> const Precision Xsyrk<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xsyrk<double2>::precision_ = Precision::kComplexDouble;
+template <> const Precision Xher2k<float2,float>::precision_ = Precision::kComplexSingle;
+template <> const Precision Xher2k<double2,double>::precision_ = Precision::kComplexDouble;
 
 // =================================================================================================
 
 // Constructor: forwards to base class constructor
-template <typename T>
-Xsyrk<T>::Xsyrk(CommandQueue &queue, Event &event):
+template <typename T, typename U>
+Xher2k<T,U>::Xher2k(CommandQueue &queue, Event &event):
     Routine(queue, event, {"Copy", "Pad", "Transpose", "PadTranspose", "Xgemm"}, precision_) {
 }
 
 // =================================================================================================
 
 // The main routine
-template <typename T>
-StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                            const size_t n, const size_t k,
-                            const T alpha,
-                            const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const T beta,
-                            const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+template <typename T, typename U>
+StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                const size_t n, const size_t k,
+                                const T alpha,
+                                const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
+                                const Buffer &b_buffer, const size_t b_offset, const size_t b_ld,
+                                const U beta,
+                                const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((n == 0) || (k == 0) ) { return StatusCode::kInvalidDimension; }
 
+  // Determines whether to apply the conjugate transpose to matrix B (argument: no transpose) or
+  // to matrix A (argument: conjugate transpose)
+  auto ab_conjugate = (ab_transpose != Transpose::kNo);
+
   // Computes whether or not the matrices are transposed in memory. This is based on their layout
   // (row or column-major) and whether or not they are requested to be pre-transposed.
-  auto a_rotated = (layout == Layout::kColMajor && a_transpose != Transpose::kNo) ||
-                   (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
+  auto ab_rotated = (layout == Layout::kColMajor && ab_conjugate) ||
+                    (layout == Layout::kRowMajor && !ab_conjugate);
   auto c_rotated = (layout == Layout::kRowMajor);
 
-  // Computes the first and second dimensions of the A matrix taking the layout into account
-  auto a_one = (a_rotated) ? k : n;
-  auto a_two = (a_rotated) ? n : k;
+  // Computes the first and second dimensions of the A and B matrices taking the layout into account
+  auto ab_one = (ab_rotated) ? k : n;
+  auto ab_two = (ab_rotated) ? n : k;
 
-  // Tests the two matrices (A, C) for validity, first from a perspective of the OpenCL buffers and
+  // Tests the matrices (A, B, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. n, k). Tests whether the
   // OpenCL buffers are valid and non-zero and whether the OpenCL buffers have sufficient storage
   // space. Also tests that the leading dimensions of:
   //    matrix A cannot be less than N when rotated, or less than K when not-rotated
+  //    matrix B cannot be less than N when rotated, or less than K when not-rotated
   //    matrix C cannot be less than N
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = TestMatrixA(ab_one, ab_two, a_buffer, a_offset, a_ld, sizeof(T));
+  if (ErrorIn(status)) { return status; }
+  status = TestMatrixB(ab_one, ab_two, b_buffer, b_offset, b_ld, sizeof(T));
   if (ErrorIn(status)) { return status; }
   status = TestMatrixC(n, n, c_buffer, c_offset, c_ld, sizeof(T));
   if (ErrorIn(status)) { return status; }
@@ -77,17 +83,31 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
 
   // Allocates space on the device for padded and/or transposed input and output matrices.
   try {
-    auto temp_a = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto temp_a1 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto temp_b1 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto temp_a2 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto temp_b2 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
     auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
     auto& program = GetProgramFromCache();
 
-    // Runs the pre-processing kernel. This transposes the matrix A, but also pads zeros to
-    // fill it up until it reaches a certain multiple of size (kernel parameter dependent).
-    status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
-                                    a_rotated, false, true, false, false, false, program);
+    // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
+    // fill them up until they reach a certain multiple of size (kernel parameter dependent).
+    status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a1,
+                                    ab_rotated, ab_conjugate, true, false, false, false, program);
+    if (ErrorIn(status)) { return status; }
+    status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a2,
+                                    ab_rotated, !ab_conjugate, true, false, false, false, program);
+    if (ErrorIn(status)) { return status; }
+    status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b1,
+                                    ab_rotated, ab_conjugate, true, false, false, false, program);
+    status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b2,
+                                    ab_rotated, !ab_conjugate, true, false, false, false, program);
     if (ErrorIn(status)) { return status; }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
@@ -102,12 +122,13 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       auto kernel = Kernel(program, kernel_name);
 
       // Sets the kernel arguments
+      auto complex_beta = T{beta, static_cast<U>(0.0)};
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
       kernel.SetArgument(2, alpha);
-      kernel.SetArgument(3, beta);
-      kernel.SetArgument(4, temp_a());
-      kernel.SetArgument(5, temp_a());
+      kernel.SetArgument(3, complex_beta);
+      kernel.SetArgument(4, temp_a1());
+      kernel.SetArgument(5, temp_b2());
       kernel.SetArgument(6, temp_c());
 
       // Computes the global and local thread sizes
@@ -121,12 +142,24 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       status = RunKernel(kernel, global, local);
       if (ErrorIn(status)) { return status; }
 
+      // Swaps the arguments for matrices A and B, sets 'beta' to 1, and conjugate alpha
+      auto conjugate_alpha = T{alpha.real(), -alpha.imag()};
+      auto complex_one = T{static_cast<U>(1.0), static_cast<U>(0.0)};
+      kernel.SetArgument(2, conjugate_alpha);
+      kernel.SetArgument(3, complex_one);
+      kernel.SetArgument(4, temp_b1());
+      kernel.SetArgument(5, temp_a2());
+
+      // Runs the kernel again
+      status = RunKernel(kernel, global, local);
+      if (ErrorIn(status)) { return status; }
+
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
       status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      c_rotated, false, false, upper, lower, false, program);
+                                      c_rotated, false, false, upper, lower, true, program);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation
@@ -138,10 +171,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
 // =================================================================================================
 
 // Compiles the templated class
-template class Xsyrk<float>;
-template class Xsyrk<double>;
-template class Xsyrk<float2>;
-template class Xsyrk<double2>;
+template class Xher2k<float2,float>;
+template class Xher2k<double2,double>;
 
 // =================================================================================================
 } // namespace clblast

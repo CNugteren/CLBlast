@@ -108,18 +108,18 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     // them up until they reach a certain multiple of size (kernel parameter dependent).
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     m_ceiled, k_ceiled, m_ceiled, 0, temp_a,
-                                    a_do_transpose, a_conjugate, true, false, false, program);
+                                    a_do_transpose, a_conjugate, true, false, false, false, program);
     if (ErrorIn(status)) { return status; }
     status = PadCopyTransposeMatrix(b_one, b_two, b_ld, b_offset, b_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    b_do_transpose, b_conjugate, true, false, false, program);
+                                    b_do_transpose, b_conjugate, true, false, false, false, program);
     if (ErrorIn(status)) { return status; }
 
     // Only necessary for matrix C if it used both as input and output
     if (beta != static_cast<T>(0)) {
       status = PadCopyTransposeMatrix(c_one, c_two, c_ld, c_offset, c_buffer,
                                       m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
-                                      c_do_transpose, false, true, false, false, program);
+                                      c_do_transpose, false, true, false, false, false, program);
       if (ErrorIn(status)) { return status; }
     }
 
@@ -151,7 +151,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       // Runs the post-processing kernel
       status = PadCopyTransposeMatrix(m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
                                       c_one, c_two, c_ld, c_offset, c_buffer,
-                                      c_do_transpose, false, false, false, false, program);
+                                      c_do_transpose, false, false, false, false, false, program);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation

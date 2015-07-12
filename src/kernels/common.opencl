@@ -39,6 +39,7 @@ R"(
   typedef float8 real8;
   typedef float16 real16;
   #define ZERO 0.0f
+  #define ONE 1.0f
 
 // Double-precision 
 #elif PRECISION == 64
@@ -48,6 +49,7 @@ R"(
   typedef double8 real8;
   typedef double16 real16;
   #define ZERO 0.0
+  #define ONE 1.0
 
 // Complex single-precision
 #elif PRECISION == 3232
@@ -61,6 +63,7 @@ R"(
                            real s8; real s9; real sA; real sB;
                            real sC; real sD; real sE; real sF;} real16;
   #define ZERO 0.0f
+  #define ONE 1.0f
 
 // Complex Double-precision
 #elif PRECISION == 6464
@@ -74,6 +77,7 @@ R"(
                             real s8; real s9; real sA; real sB;
                             real sC; real sD; real sE; real sF;} real16;
   #define ZERO 0.0
+  #define ONE 1.0
 #endif
 
 // =================================================================================================
@@ -86,6 +90,20 @@ R"(
   #define SetToZero(a) a.x = ZERO; a.y = ZERO
 #else
   #define SetToZero(a) a = ZERO
+#endif
+
+// Sets a variable to zero (only the imaginary part)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define ImagToZero(a) a.y = ZERO
+#else
+  #define ImagToZero(a) 
+#endif
+
+// Sets a variable to one
+#if PRECISION == 3232 || PRECISION == 6464
+  #define SetToOne(a) a.x = ONE; a.y = ZERO
+#else
+  #define SetToOne(a) a = ONE
 #endif
 
 // Multiply two complex variables (used in the define below)

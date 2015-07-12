@@ -7,12 +7,12 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xsyrk command-line interface performance tester.
+// This file implements the Xhemm command-line interface performance tester.
 //
 // =================================================================================================
 
 #include "performance/client.h"
-#include "routines/xsyrk.h"
+#include "routines/xhemm.h"
 
 // =================================================================================================
 
@@ -26,13 +26,13 @@ int main(int argc, char *argv[]) {
     case clblast::Precision::kHalf:
       throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kSingle:
-      clblast::RunClient<clblast::TestXsyrk<float>, float, float>(argc, argv); break;
+      throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kDouble:
-      clblast::RunClient<clblast::TestXsyrk<double>, double, double>(argc, argv); break;
+      throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kComplexSingle:
-      clblast::RunClient<clblast::TestXsyrk<float2>, float2, float2>(argc, argv); break;
+      clblast::RunClient<clblast::TestXhemm<float2>, float2, float2>(argc, argv); break;
     case clblast::Precision::kComplexDouble:
-      clblast::RunClient<clblast::TestXsyrk<double2>, double2, double2>(argc, argv); break;
+      clblast::RunClient<clblast::TestXhemm<double2>, double2, double2>(argc, argv); break;
   }
   return 0;
 }

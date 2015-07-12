@@ -211,12 +211,13 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
                                            const Buffer &dest,
                                            const bool do_transpose, const bool do_conjugate,
                                            const bool pad, const bool upper, const bool lower,
+                                           const bool diagonal_imag_zero,
                                            const Program &program) {
 
   // Determines whether or not the fast-version could potentially be used
   auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
                          (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld) &&
-                         (upper == false) && (lower == false);
+                         (upper == false) && (lower == false) && (diagonal_imag_zero == false);
 
   // Determines the right kernel
   auto kernel_name = std::string{};
@@ -272,6 +273,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
       else {
         kernel.SetArgument(10, static_cast<int>(upper));
         kernel.SetArgument(11, static_cast<int>(lower));
+        kernel.SetArgument(12, static_cast<int>(diagonal_imag_zero));
       }
     }
 

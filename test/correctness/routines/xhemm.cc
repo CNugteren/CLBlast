@@ -7,12 +7,12 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsyr2k routine.
+// This file implements the tests for the Xhemm routine.
 //
 // =================================================================================================
 
 #include "correctness/testblas.h"
-#include "routines/xsyr2k.h"
+#include "routines/xhemm.h"
 
 namespace clblast {
 // =================================================================================================
@@ -22,25 +22,23 @@ template <typename T>
 void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestBlas<T,T> tester{argc, argv, silent, name, TestXsyr2k<T>::GetOptions(),
-                       TestXsyr2k<T>::RunRoutine, TestXsyr2k<T>::RunReference,
-                       TestXsyr2k<T>::DownloadResult, TestXsyr2k<T>::GetResultIndex,
-                       TestXsyr2k<T>::ResultID1, TestXsyr2k<T>::ResultID2};
+  TestBlas<T,T> tester{argc, argv, silent, name, TestXhemm<T>::GetOptions(),
+                       TestXhemm<T>::RunRoutine, TestXhemm<T>::RunReference,
+                       TestXhemm<T>::DownloadResult, TestXhemm<T>::GetResultIndex,
+                       TestXhemm<T>::ResultID1, TestXhemm<T>::ResultID2};
 
   // This variable holds the arguments relevant for this routine
   auto args = Arguments<T>{};
 
   // Loops over the test-cases from a data-layout point of view
   for (auto &layout: tester.kLayouts) { args.layout = layout;
-    for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
-      for (auto &ab_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it
-        args.a_transpose = ab_transpose;                            // is not supported by clBLAS
-        args.b_transpose = ab_transpose;
+    for (auto &side: tester.kSides) { args.side = side;
+      for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
 
         // Creates the arguments vector for the regular tests
         auto regular_test_vector = std::vector<Arguments<T>>{};
-        for (auto &n: tester.kMatrixDims) { args.n = n;
-          for (auto &k: tester.kMatrixDims) { args.k = k;
+        for (auto &m: tester.kMatrixDims) { args.m = m;
+          for (auto &n: tester.kMatrixDims) { args.n = n;
             for (auto &a_ld: tester.kMatrixDims) { args.a_ld = a_ld;
               for (auto &a_offset: tester.kOffsets) { args.a_offset = a_offset;
                 for (auto &b_ld: tester.kMatrixDims) { args.b_ld = b_ld;
@@ -49,9 +47,9 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
                       for (auto &c_offset: tester.kOffsets) { args.c_offset = c_offset;
                         for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
                           for (auto &beta: tester.kBetaValues) { args.beta = beta;
-                            args.a_size = TestXsyr2k<T>::GetSizeA(args);
-                            args.b_size = TestXsyr2k<T>::GetSizeB(args);
-                            args.c_size = TestXsyr2k<T>::GetSizeC(args);
+                            args.a_size = TestXhemm<T>::GetSizeA(args);
+                            args.b_size = TestXhemm<T>::GetSizeB(args);
+                            args.c_size = TestXhemm<T>::GetSizeC(args);
                             if (args.a_size<1 || args.b_size<1 || args.c_size<1) { continue; }
                             regular_test_vector.push_back(args);
                           }
@@ -67,7 +65,7 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
 
         // Creates the arguments vector for the invalid-buffer tests
         auto invalid_test_vector = std::vector<Arguments<T>>{};
-        args.n = args.k = tester.kBufferSize;
+        args.m = args.n = tester.kBufferSize;
         args.a_ld = args.b_ld = args.c_ld = tester.kBufferSize;
         args.a_offset = args.b_offset = args.c_offset = 0;
         for (auto &a_size: tester.kMatSizes) { args.a_size = a_size;
@@ -79,7 +77,7 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
         }
 
         // Runs the tests
-        const auto case_name = ToString(layout)+" "+ToString(triangle)+" "+ToString(ab_transpose);
+        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
         tester.TestRegular(regular_test_vector, case_name);
         tester.TestInvalid(invalid_test_vector, case_name);
       }
@@ -92,10 +90,8 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTest<float>(argc, argv, false, "SSYR2K");
-  clblast::RunTest<double>(argc, argv, true, "DSYR2K");
-  clblast::RunTest<clblast::float2>(argc, argv, true, "CSYR2K");
-  clblast::RunTest<clblast::double2>(argc, argv, true, "ZSYR2K");
+  clblast::RunTest<clblast::float2>(argc, argv, true, "CHEMM");
+  clblast::RunTest<clblast::double2>(argc, argv, true, "ZHEMM");
   return 0;
 }
 

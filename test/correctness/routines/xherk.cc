@@ -7,37 +7,37 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsyrk routine.
+// This file implements the tests for the Xherk routine.
 //
 // =================================================================================================
 
 #include "correctness/testblas.h"
-#include "routines/xsyrk.h"
+#include "routines/xherk.h"
 
 namespace clblast {
 // =================================================================================================
 
 // The correctness tester
-template <typename T>
+template <typename T, typename U>
 void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Creates a tester
-  TestBlas<T,T> tester{argc, argv, silent, name, TestXsyrk<T>::GetOptions(),
-                       TestXsyrk<T>::RunRoutine, TestXsyrk<T>::RunReference,
-                       TestXsyrk<T>::DownloadResult, TestXsyrk<T>::GetResultIndex,
-                       TestXsyrk<T>::ResultID1, TestXsyrk<T>::ResultID2};
+  TestBlas<T,U> tester{argc, argv, silent, name, TestXherk<T,U>::GetOptions(),
+                       TestXherk<T,U>::RunRoutine, TestXherk<T,U>::RunReference,
+                       TestXherk<T,U>::DownloadResult, TestXherk<T,U>::GetResultIndex,
+                       TestXherk<T,U>::ResultID1, TestXherk<T,U>::ResultID2};
 
   // This variable holds the arguments relevant for this routine
-  auto args = Arguments<T>{};
+  auto args = Arguments<U>{};
 
   // Loops over the test-cases from a data-layout point of view
   for (auto &layout: tester.kLayouts) { args.layout = layout;
     for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
-      for (auto &a_transpose: {Transpose::kNo, Transpose::kYes}) { // No conjugate here since it
-        args.a_transpose = a_transpose;                            // is not supported by clBLAS
+      for (auto &a_transpose: {Transpose::kNo, Transpose::kConjugate}) { // Regular transpose not a
+        args.a_transpose = a_transpose;                                  // valid BLAS option
 
         // Creates the arguments vector for the regular tests
-        auto regular_test_vector = std::vector<Arguments<T>>{};
+        auto regular_test_vector = std::vector<Arguments<U>>{};
         for (auto &n: tester.kMatrixDims) { args.n = n;
           for (auto &k: tester.kMatrixDims) { args.k = k;
             for (auto &a_ld: tester.kMatrixDims) { args.a_ld = a_ld;
@@ -46,8 +46,8 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
                   for (auto &c_offset: tester.kOffsets) { args.c_offset = c_offset;
                     for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
                       for (auto &beta: tester.kBetaValues) { args.beta = beta;
-                        args.a_size = TestXsyrk<T>::GetSizeA(args);
-                        args.c_size = TestXsyrk<T>::GetSizeC(args);
+                        args.a_size = TestXherk<T,U>::GetSizeA(args);
+                        args.c_size = TestXherk<T,U>::GetSizeC(args);
                         if (args.a_size<1 || args.c_size<1) { continue; }
                         regular_test_vector.push_back(args);
                       }
@@ -60,7 +60,7 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
         }
 
         // Creates the arguments vector for the invalid-buffer tests
-        auto invalid_test_vector = std::vector<Arguments<T>>{};
+        auto invalid_test_vector = std::vector<Arguments<U>>{};
         args.n = args.k = tester.kBufferSize;
         args.a_ld = args.c_ld = tester.kBufferSize;
         args.a_offset = args.c_offset = 0;
@@ -84,10 +84,8 @@ void RunTest(int argc, char *argv[], const bool silent, const std::string &name)
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTest<float>(argc, argv, false, "SSYRK");
-  clblast::RunTest<double>(argc, argv, true, "DSYRK");
-  clblast::RunTest<clblast::float2>(argc, argv, true, "CSYRK");
-  clblast::RunTest<clblast::double2>(argc, argv, true, "ZSYRK");
+  clblast::RunTest<clblast::float2,float>(argc, argv, false, "CHERK");
+  clblast::RunTest<clblast::double2,double>(argc, argv, true, "ZHERK");
   return 0;
 }
 

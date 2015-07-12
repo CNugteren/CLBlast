@@ -10,6 +10,8 @@
 // This class implements the performance-test client. It is generic for all CLBlast routines by
 // taking a number of routine-specific functions as arguments, such as how to compute buffer sizes
 // or how to get the FLOPS count.
+// Typename T: the data-type of the routine's memory buffers (==precision)
+// Typename U: the data-type of the alpha and beta arguments
 //
 // This file also provides the common interface to the performance client (see the 'RunClient'
 // function for details).
@@ -32,7 +34,7 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-template <typename T>
+template <typename T, typename U>
 class Client {
  public:
 
@@ -40,9 +42,9 @@ class Client {
   const cl_device_type kDeviceType = CL_DEVICE_TYPE_ALL;
 
   // Shorthand for the routine-specific functions passed to the tester
-  using Routine = std::function<StatusCode(const Arguments<T>&, const Buffers&, CommandQueue&)>;
-  using SetMetric = std::function<void(Arguments<T>&)>;
-  using GetMetric = std::function<size_t(const Arguments<T>&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers&, CommandQueue&)>;
+  using SetMetric = std::function<void(Arguments<U>&)>;
+  using GetMetric = std::function<size_t(const Arguments<U>&)>;
 
   // The constructor
   Client(const Routine run_routine, const Routine run_reference,
@@ -51,24 +53,24 @@ class Client {
 
   // Parses all command-line arguments, filling in the arguments structure. If no command-line
   // argument is given for a particular argument, it is filled in with a default value.
-  Arguments<T> ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
+  Arguments<U> ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
                               const GetMetric default_b_ld, const GetMetric default_c_ld);
 
   // The main client function, setting-up arguments, matrices, OpenCL buffers, etc. After set-up, it
   // calls the client routines.
-  void PerformanceTest(Arguments<T> &args, const SetMetric set_sizes);
+  void PerformanceTest(Arguments<U> &args, const SetMetric set_sizes);
 
  private:
 
   // Runs a function a given number of times and returns the execution time of the shortest instance
-  double TimedExecution(const size_t num_runs, const Arguments<T> &args, const Buffers &buffers,
+  double TimedExecution(const size_t num_runs, const Arguments<U> &args, const Buffers &buffers,
                         CommandQueue &queue, Routine run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
   void PrintTableHeader(const bool silent, const std::vector<std::string> &args);
 
   // Prints a row of performance data, including results of two libraries
-  void PrintTableRow(const Arguments<T>& args, const double ms_clblast, const double ms_clblas);
+  void PrintTableRow(const Arguments<U>& args, const double ms_clblast, const double ms_clblas);
 
   // The routine-specific functions passed to the tester
   const Routine run_routine_;
@@ -82,12 +84,12 @@ class Client {
 
 // The interface to the performance client. This is a separate function in the header such that it
 // is automatically compiled for each routine, templated by the parameter "C".
-template <typename C, typename T>
+template <typename C, typename T, typename U>
 void RunClient(int argc, char *argv[]) {
 
   // Creates a new client
-  auto client = Client<T>(C::RunRoutine, C::RunReference, C::GetOptions(),
-                          C::GetFlops, C::GetBytes);
+  auto client = Client<T,U>(C::RunRoutine, C::RunReference, C::GetOptions(),
+                            C::GetFlops, C::GetBytes);
 
   // Simple command line argument parser with defaults
   auto args = client.ParseArguments(argc, argv, C::DefaultLDA, C::DefaultLDB, C::DefaultLDC);
