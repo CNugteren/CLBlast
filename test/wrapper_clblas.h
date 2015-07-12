@@ -267,6 +267,42 @@ clblasStatus clblasXsymm(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// This calls {clblasChemm, clblasZhemm} with the arguments forwarded.
+clblasStatus clblasXhemm(
+  clblasOrder layout, clblasSide side, clblasUplo triangle,
+  size_t m, size_t n, float2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, float2 beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_float2{{beta.real(), beta.imag()}};
+    return clblasChemm(layout, side, triangle,
+                       m, n, cl_alpha,
+                       a_mat, a_offset, a_ld,
+                       b_mat, b_offset, b_ld, cl_beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhemm(
+  clblasOrder layout, clblasSide side, clblasUplo triangle,
+  size_t m, size_t n, double2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem b_mat, size_t b_offset, size_t b_ld, double2 beta,
+  const cl_mem c_mat, size_t c_offset, size_t c_ld,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_double2{{beta.real(), beta.imag()}};
+    return clblasZhemm(layout, side, triangle,
+                       m, n, cl_alpha,
+                       a_mat, a_offset, a_ld,
+                       b_mat, b_offset, b_ld, cl_beta,
+                       c_mat, c_offset, c_ld,
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // This calls {clblasSsyrk, clblasDsyrk, clblasCsyrk, clblasZsyrk} with the arguments forwarded.
 clblasStatus clblasXsyrk(
   clblasOrder layout, clblasUplo triangle, clblasTranspose a_transpose,

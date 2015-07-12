@@ -98,7 +98,7 @@ set(SAMPLE_PROGRAMS sgemm)
 set(ROUTINES
   xaxpy
   xgemv
-  xgemm xsymm xsyrk xherk xsyr2k xher2k xtrmm)
+  xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 
 # ==================================================================================================
 

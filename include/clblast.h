@@ -130,6 +130,17 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event);
 
+// Templated-precision hermitian matrix-matrix multiplication: CHEMM/ZHEMM
+template <typename T>
+StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                const T beta,
+                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                cl_command_queue* queue, cl_event* event);
+
 // Templated-precision rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
 template <typename T>
 StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
