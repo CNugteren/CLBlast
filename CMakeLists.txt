@@ -95,17 +95,23 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
 set(SAMPLE_PROGRAMS sgemm)
-set(ROUTINES
-  xaxpy
-  xgemv
-  xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
+set(LEVEL1_ROUTINES xaxpy)
+set(LEVEL2_ROUTINES xgemv)
+set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
+set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 
 # ==================================================================================================
 
 # Gathers all source-files
 set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc)
-foreach(ROUTINE ${ROUTINES})
-  set(SOURCES ${SOURCES} src/routines/${ROUTINE}.cc)
+foreach(ROUTINE ${LEVEL1_ROUTINES})
+  set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
+endforeach()
+foreach(ROUTINE ${LEVEL2_ROUTINES})
+  set(SOURCES ${SOURCES} src/routines/level2/${ROUTINE}.cc)
+endforeach()
+foreach(ROUTINE ${LEVEL3_ROUTINES})
+  set(SOURCES ${SOURCES} src/routines/level3/${ROUTINE}.cc)
 endforeach()
 
 # Creates and links the library
@@ -172,10 +178,19 @@ if(TESTS)
               test/correctness/tester.cc test/correctness/testblas.cc)
 
   # Compiles the correctness-tests
+  foreach(ROUTINE ${LEVEL1_ROUTINES})
+    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                   test/correctness/routines/level1/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL2_ROUTINES})
+    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                   test/correctness/routines/level2/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL3_ROUTINES})
+    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                   test/correctness/routines/level3/${ROUTINE}.cc)
+  endforeach()
   foreach(ROUTINE ${ROUTINES})
-    add_executable(test_${ROUTINE}
-                   $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/${ROUTINE}.cc)
     target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
     install(TARGETS test_${ROUTINE} DESTINATION bin)
   endforeach()
@@ -184,9 +199,19 @@ if(TESTS)
   add_library(test_performance_common OBJECT test/performance/client.cc)
 
   # Compiles the performance-tests
-  foreach(ROUTINE ${ROUTINES})
+  foreach(ROUTINE ${LEVEL1_ROUTINES})
     add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/${ROUTINE}.cc)
+                   test/performance/routines/level1/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL2_ROUTINES})
+    add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/level2/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL3_ROUTINES})
+    add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/level3/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES})
     target_link_libraries(client_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
     install(TARGETS client_${ROUTINE} DESTINATION bin)
   endforeach()
