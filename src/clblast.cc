@@ -18,20 +18,20 @@
 #include "clblast.h"
 
 // BLAS level-1 includes
-#include "internal/routines/xaxpy.h"
+#include "internal/routines/level1/xaxpy.h"
 
 // BLAS level-2 includes
-#include "internal/routines/xgemv.h"
+#include "internal/routines/level2/xgemv.h"
 
 // BLAS level-3 includes
-#include "internal/routines/xgemm.h"
-#include "internal/routines/xsymm.h"
-#include "internal/routines/xhemm.h"
-#include "internal/routines/xsyrk.h"
-#include "internal/routines/xherk.h"
-#include "internal/routines/xsyr2k.h"
-#include "internal/routines/xher2k.h"
-#include "internal/routines/xtrmm.h"
+#include "internal/routines/level3/xgemm.h"
+#include "internal/routines/level3/xsymm.h"
+#include "internal/routines/level3/xhemm.h"
+#include "internal/routines/level3/xsyrk.h"
+#include "internal/routines/level3/xherk.h"
+#include "internal/routines/level3/xsyr2k.h"
+#include "internal/routines/level3/xher2k.h"
+#include "internal/routines/level3/xtrmm.h"
 
 namespace clblast {
 // =================================================================================================
