@@ -84,17 +84,18 @@ class Routine {
   StatusCode TestVectorY(const size_t n, const Buffer &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
 
-  // Copies/transposes a matrix and padds/unpads it
+  // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
+  // to symmetric and triangular matrices through optional arguments.
   StatusCode PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,
                                     const size_t src_ld, const size_t src_offset,
                                     const Buffer &src,
                                     const size_t dest_one, const size_t dest_two,
                                     const size_t dest_ld, const size_t dest_offset,
                                     const Buffer &dest,
+                                    const Program &program, const bool do_pad,
                                     const bool do_transpose, const bool do_conjugate,
-                                    const bool pad, const bool upper, const bool lower,
-                                    const bool diagonal_imag_zero,
-                                    const Program &program);
+                                    const bool upper = false, const bool lower = false,
+                                    const bool diagonal_imag_zero = false);
   
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.
   // The first assumes that the program is available in the cache and will throw an exception

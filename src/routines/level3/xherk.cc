@@ -92,18 +92,18 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
     // creates two copies: 
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
-                                    a_rotated, a_conjugate, true, false, false, false, program);
+                                    program, true, a_rotated, a_conjugate);
     if (ErrorIn(status)) { return status; }
     status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    a_rotated, b_conjugate, true, false, false, false, program);
+                                    program, true, a_rotated, b_conjugate);
     if (ErrorIn(status)) { return status; }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
-                                    c_rotated, false, true, false, false, false, program);
+                                    program, true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
 
     // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
@@ -137,7 +137,7 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
       auto lower = (triangle == Triangle::kLower);
       status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      c_rotated, false, false, upper, lower, true, program);
+                                      program, false, c_rotated, false, upper, lower, true);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation

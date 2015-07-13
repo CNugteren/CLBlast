@@ -92,18 +92,18 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     // fill them up until they reach a certain multiple of size (kernel parameter dependent).
     status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
-                                    ab_rotated, false, true, false, false, false, program);
+                                    program, true, ab_rotated, false);
     if (ErrorIn(status)) { return status; }
     status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
                                     n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    ab_rotated, false, true, false, false, false, program);
+                                    program, true, ab_rotated, false);
     if (ErrorIn(status)) { return status; }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
-                                    c_rotated, false, true, false, false, false, program);
+                                    program, true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
 
     // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
@@ -145,7 +145,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       auto lower = (triangle == Triangle::kLower);
       status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      c_rotated, false, false, upper, lower, false, program);
+                                      program, false, c_rotated, false, upper, lower, false);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation
