@@ -81,39 +81,61 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   // Decides which kernel to run: the upper-triangular or lower-triangular version
   auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
 
-  // Allocates space on the device for padded and/or transposed input and output matrices.
+  // The padded/transposed input/output matrices: if memory allocation fails, throw an exception
   try {
-    auto temp_a1 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_b1 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_a2 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_b2 = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
     auto& program = GetProgramFromCache();
 
+    // Determines whether or not temporary matrices are needed
+    auto a1_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
+                      ab_rotated == false && ab_conjugate == false;
+    auto a2_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
+                      ab_rotated == false && ab_conjugate == true;
+    auto b1_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && b_ld == n_ceiled && b_offset == 0 &&
+                      ab_rotated == false && ab_conjugate == false;
+    auto b2_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && b_ld == n_ceiled && b_offset == 0 &&
+                      ab_rotated == false && ab_conjugate == true;
+
+    // Creates the temporary matrices
+    auto a1_temp = (a1_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto a2_temp = (a2_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto b1_temp = (b1_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto b2_temp = (b2_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+
     // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
-    // fill them up until they reach a certain multiple of size (kernel parameter dependent).
-    status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a1,
-                                    program, true, ab_rotated, ab_conjugate);
-    if (ErrorIn(status)) { return status; }
-    status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a2,
-                                    program, true, ab_rotated, !ab_conjugate);
-    if (ErrorIn(status)) { return status; }
-    status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b1,
-                                    program, true, ab_rotated, ab_conjugate);
-    status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b2,
-                                    program, true, ab_rotated, !ab_conjugate);
-    if (ErrorIn(status)) { return status; }
+    // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
+    // case nothing has to be done, these kernels can be skipped.
+    if (!a1_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, a1_temp,
+                                      program, true, ab_rotated, ab_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
+    if (!a2_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, a2_temp,
+                                      program, true, ab_rotated, !ab_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
+    if (!b1_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, b1_temp,
+                                      program, true, ab_rotated, ab_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
+    if (!b2_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, b2_temp,
+                                      program, true, ab_rotated, !ab_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
-                                    n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
+                                    n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     program, true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
 
@@ -127,9 +149,9 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
       kernel.SetArgument(2, alpha);
       kernel.SetArgument(3, complex_beta);
-      kernel.SetArgument(4, temp_a1());
-      kernel.SetArgument(5, temp_b2());
-      kernel.SetArgument(6, temp_c());
+      kernel.SetArgument(4, a1_temp());
+      kernel.SetArgument(5, b2_temp());
+      kernel.SetArgument(6, c_temp());
 
       // Computes the global and local thread sizes
       auto global = std::vector<size_t>{
@@ -147,8 +169,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       auto complex_one = T{static_cast<U>(1.0), static_cast<U>(0.0)};
       kernel.SetArgument(2, conjugate_alpha);
       kernel.SetArgument(3, complex_one);
-      kernel.SetArgument(4, temp_b1());
-      kernel.SetArgument(5, temp_a2());
+      kernel.SetArgument(4, b1_temp());
+      kernel.SetArgument(5, a2_temp());
 
       // Runs the kernel again
       status = RunKernel(kernel, global, local);
@@ -157,7 +179,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
+      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       program, false, c_rotated, false, upper, lower, true);
       if (ErrorIn(status)) { return status; }

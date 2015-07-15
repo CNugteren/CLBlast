@@ -79,30 +79,43 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
   // Decides which kernel to run: the upper-triangular or lower-triangular version
   auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
 
-  // Allocates space on the device for padded and/or transposed input and output matrices.
+  // The padded/transposed input/output matrices: if memory allocation fails, throw an exception
   try {
-    auto temp_a = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_b = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
     auto& program = GetProgramFromCache();
 
+    // Determines whether or not temporary matrices are needed
+    auto a_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
+                     ab_rotated == false;
+    auto b_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && b_ld == n_ceiled && b_offset == 0 &&
+                     ab_rotated == false;
+
+    // Creates the temporary matrices
+    auto a_temp = (a_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto b_temp = (b_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+
     // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
-    // fill them up until they reach a certain multiple of size (kernel parameter dependent).
-    status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_a,
-                                    program, true, ab_rotated, false);
-    if (ErrorIn(status)) { return status; }
-    status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    program, true, ab_rotated, false);
-    if (ErrorIn(status)) { return status; }
+    // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
+    // case nothing has to be done, these kernels can be skipped.
+    if (!a_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
+                                      program, true, ab_rotated, false);
+      if (ErrorIn(status)) { return status; }
+    }
+    if (!b_no_temp) {
+      status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
+                                      program, true, ab_rotated, false);
+      if (ErrorIn(status)) { return status; }
+    }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
-                                    n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
+                                    n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     program, true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
 
@@ -115,9 +128,9 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
       kernel.SetArgument(2, alpha);
       kernel.SetArgument(3, beta);
-      kernel.SetArgument(4, temp_a());
-      kernel.SetArgument(5, temp_b());
-      kernel.SetArgument(6, temp_c());
+      kernel.SetArgument(4, a_temp());
+      kernel.SetArgument(5, b_temp());
+      kernel.SetArgument(6, c_temp());
 
       // Computes the global and local thread sizes
       auto global = std::vector<size_t>{
@@ -133,8 +146,8 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       // Swaps the arguments for matrices A and B, and sets 'beta' to 1
       auto one = static_cast<T>(1);
       kernel.SetArgument(3, one);
-      kernel.SetArgument(4, temp_b());
-      kernel.SetArgument(5, temp_a());
+      kernel.SetArgument(4, b_temp());
+      kernel.SetArgument(5, a_temp());
 
       // Runs the kernel again
       status = RunKernel(kernel, global, local);
@@ -143,7 +156,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, temp_c,
+      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       program, false, c_rotated, false, upper, lower, false);
       if (ErrorIn(status)) { return status; }

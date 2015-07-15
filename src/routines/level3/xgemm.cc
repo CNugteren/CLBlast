@@ -95,30 +95,47 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   auto n_ceiled = Ceil(n, db_["NWG"]);
   auto k_ceiled = Ceil(k, db_["KWG"]);
 
-  // Allocates space on the device for padded and/or transposed input and output matrices.
+  // The padded/transposed input/output matrices: if memory allocation fails, throw an exception
   try {
-    auto temp_a = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*m_ceiled*sizeof(T));
-    auto temp_b = Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto temp_c = Buffer(context_, CL_MEM_READ_WRITE, m_ceiled*n_ceiled*sizeof(T));
 
     // Loads the program from the database
     auto& program = GetProgramFromCache();
 
-    // Runs the pre-processing kernels. This transposes the matrices, but also pads zeros to fill
-    // them up until they reach a certain multiple of size (kernel parameter dependent).
-    status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
-                                    m_ceiled, k_ceiled, m_ceiled, 0, temp_a,
-                                    program, true, a_do_transpose, a_conjugate);
-    if (ErrorIn(status)) { return status; }
-    status = PadCopyTransposeMatrix(b_one, b_two, b_ld, b_offset, b_buffer,
-                                    n_ceiled, k_ceiled, n_ceiled, 0, temp_b,
-                                    program, true, b_do_transpose, b_conjugate);
-    if (ErrorIn(status)) { return status; }
+    // Determines whether or not temporary matrices are needed
+    auto a_no_temp = a_one == m_ceiled && a_two == k_ceiled && a_ld == m_ceiled && a_offset == 0 &&
+                     a_do_transpose == false && a_conjugate == false;
+    auto b_no_temp = b_one == n_ceiled && b_two == k_ceiled && b_ld == n_ceiled && b_offset == 0 &&
+                     b_do_transpose == false && b_conjugate == false;
+    auto c_no_temp = c_one == m_ceiled && c_two == n_ceiled && c_ld == m_ceiled && c_offset == 0 &&
+                     c_do_transpose == false;
 
-    // Only necessary for matrix C if it used both as input and output
-    if (beta != static_cast<T>(0)) {
+    // Creates the temporary matrices
+    auto a_temp = (a_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*m_ceiled*sizeof(T));
+    auto b_temp = (b_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
+    auto c_temp = (c_no_temp) ? c_buffer : Buffer(context_, CL_MEM_READ_WRITE, m_ceiled*n_ceiled*sizeof(T));
+
+    // Runs the pre-processing kernel for matrix A. This transposes the matrix, but also pads zeros
+    // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
+    // case nothing has to be done, these kernels can be skipped.
+    if (!a_no_temp) {
+      status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
+                                      m_ceiled, k_ceiled, m_ceiled, 0, a_temp,
+                                      program, true, a_do_transpose, a_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
+
+    // As above, but now for matrix B
+    if (!b_no_temp) {
+      status = PadCopyTransposeMatrix(b_one, b_two, b_ld, b_offset, b_buffer,
+                                      n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
+                                      program, true, b_do_transpose, b_conjugate);
+      if (ErrorIn(status)) { return status; }
+    }
+
+    // As above, but now for matrix C. This is only necessary if C is used both as input and output.
+    if (!c_no_temp && beta != static_cast<T>(0)) {
       status = PadCopyTransposeMatrix(c_one, c_two, c_ld, c_offset, c_buffer,
-                                      m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
+                                      m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                       program, true, c_do_transpose, false);
       if (ErrorIn(status)) { return status; }
     }
@@ -133,9 +150,9 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       kernel.SetArgument(2, static_cast<int>(k_ceiled));
       kernel.SetArgument(3, alpha);
       kernel.SetArgument(4, beta);
-      kernel.SetArgument(5, temp_a());
-      kernel.SetArgument(6, temp_b());
-      kernel.SetArgument(7, temp_c());
+      kernel.SetArgument(5, a_temp());
+      kernel.SetArgument(6, b_temp());
+      kernel.SetArgument(7, c_temp());
 
       // Computes the global and local thread sizes
       auto global = std::vector<size_t>{
@@ -148,11 +165,13 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       status = RunKernel(kernel, global, local);
       if (ErrorIn(status)) { return status; }
 
-      // Runs the post-processing kernel
-      status = PadCopyTransposeMatrix(m_ceiled, n_ceiled, m_ceiled, 0, temp_c,
-                                      c_one, c_two, c_ld, c_offset, c_buffer,
-                                      program, false, c_do_transpose, false);
-      if (ErrorIn(status)) { return status; }
+      // Runs the post-processing kernel if needed
+      if (!c_no_temp) {
+        status = PadCopyTransposeMatrix(m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
+                                        c_one, c_two, c_ld, c_offset, c_buffer,
+                                        program, false, c_do_transpose, false);
+        if (ErrorIn(status)) { return status; }
+      }
 
       // Successfully finished the computation
       return StatusCode::kSuccess;
