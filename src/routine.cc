@@ -202,17 +202,17 @@ StatusCode Routine::TestVectorY(const size_t n, const Buffer &buffer, const size
 
 // =================================================================================================
 
-// Copies a matrix and pads it with zeros
+// Copies or transposes a matrix and pads/unpads it with zeros
 StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,
                                            const size_t src_ld, const size_t src_offset,
                                            const Buffer &src,
                                            const size_t dest_one, const size_t dest_two,
                                            const size_t dest_ld, const size_t dest_offset,
                                            const Buffer &dest,
+                                           const Program &program, const bool do_pad,
                                            const bool do_transpose, const bool do_conjugate,
-                                           const bool pad, const bool upper, const bool lower,
-                                           const bool diagonal_imag_zero,
-                                           const Program &program) {
+                                           const bool upper, const bool lower,
+                                           const bool diagonal_imag_zero) {
 
   // Determines whether or not the fast-version could potentially be used
   auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
@@ -230,7 +230,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
     }
     else {
       use_fast_kernel = false;
-      kernel_name = (pad) ? "PadTransposeMatrix" : "UnPadTransposeMatrix";
+      kernel_name = (do_pad) ? "PadTransposeMatrix" : "UnPadTransposeMatrix";
     }
   }
   else {
@@ -242,7 +242,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
     }
     else {
       use_fast_kernel = false;
-      kernel_name = (pad) ? "PadMatrix" : "UnPadMatrix";
+      kernel_name = (do_pad) ? "PadMatrix" : "UnPadMatrix";
     }
   }
 
@@ -267,7 +267,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
       kernel.SetArgument(7, static_cast<int>(dest_ld));
       kernel.SetArgument(8, static_cast<int>(dest_offset));
       kernel.SetArgument(9, dest());
-      if (pad) {
+      if (do_pad) {
         kernel.SetArgument(10, static_cast<int>(do_conjugate));
       }
       else {
