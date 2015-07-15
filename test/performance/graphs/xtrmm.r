@@ -35,10 +35,10 @@ test_names <- list(
 
 # Defines the test-cases
 test_values <- list(
-  list(c(128, 128, 0, 0, 0, 0, 0, 16, 128, num_runs, precision)),
-  list(c(129, 129, 0, 0, 0, 0, 0, 16, 128, num_runs, precision)),
-  list(c(512, 512, 0, 0, 0, 0, 0, 16, 1, num_runs, precision)),
-  list(c(2048, 2048, 0, 0, 0, 0, 0, 16, 1, num_runs, precision)),
+  list(c( 128,  128, 1, 0, 0, 0, 0, 16, 128, num_runs, precision)),
+  list(c( 129,  129, 1, 0, 0, 0, 0, 16, 128, num_runs, precision)),
+  list(c( 512,  512, 1, 0, 0, 0, 0, 16, 1, num_runs, precision)),
+  list(c(2048, 2048, 1, 0, 0, 0, 0, 16, 1, num_runs, precision)),
   list(
     c(1024, 1024, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
     c(1024, 1024, 0, 0, 0, 0, 1, 1, 0, num_runs, precision),
@@ -58,14 +58,14 @@ test_values <- list(
     c(1024, 1024, 0, 1, 1, 1, 0, 1, 0, num_runs, precision),
     c(1024, 1024, 0, 1, 1, 1, 1, 1, 0, num_runs, precision),
 
-    c(1024, 1024, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 0, 0, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 0, 1, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 0, 1, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 1, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 1, 0, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 1, 1, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 1, 1, 1, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 0, 1, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 1, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 1, 1, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 1, 0, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 1, 0, 1, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 1, 1, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 1, 1, 1, 1, 0, num_runs, precision),
 
     c(1024, 1024, 1, 1, 0, 0, 0, 1, 0, num_runs, precision),
     c(1024, 1024, 1, 1, 0, 0, 1, 1, 0, num_runs, precision),
@@ -77,17 +77,17 @@ test_values <- list(
     c(1024, 1024, 1, 1, 1, 1, 1, 1, 0, num_runs, precision)
   ),
   list(
-    c(8, 8, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(16, 16, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(32, 32, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(64, 64, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(128, 128, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(256, 256, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(512, 512, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(2048, 2048, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(4096, 4096, 0, 0, 0, 0, 0, 1, 0, num_runs, precision),
-    c(8192, 8192, 0, 0, 0, 0, 0, 1, 0, num_runs, precision)
+    c(   8,    8, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(  16,   16, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(  32,   32, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(  64,   64, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c( 128,  128, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c( 256,  256, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c( 512,  512, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(2048, 2048, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(4096, 4096, 1, 0, 0, 0, 0, 1, 0, num_runs, precision),
+    c(8192, 8192, 1, 0, 0, 0, 0, 1, 0, num_runs, precision)
   )
 )
 
