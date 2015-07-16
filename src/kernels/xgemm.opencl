@@ -486,13 +486,13 @@ inline void StoreResults(__global realM* cgm, realM cpm[NWI][MWI/VWM], const int
 // Main body of the matrix-multiplication algorithm. It calls the (inlined) functions above.
 inline void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                       const __global realM* restrict agm, const __global realN* restrict bgm,
-                      __global realM* cgm, realM cpm[NWI][MWI/VWM],
+                      __global realM* cgm, realM cpm[NWI][MWI/VWM]
                       #if SA == 1 && SB == 1
-                        __local realM* alm, __local realN* blm
+                        , __local realM* alm, __local realN* blm
                       #elif SA == 1
-                        __local realM* alm
+                        , __local realM* alm
                       #elif SB == 1
-                        __local realN* blm
+                        , __local realN* blm
                       #endif
                       ) {
 
