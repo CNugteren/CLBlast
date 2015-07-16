@@ -68,6 +68,14 @@ StatusCode Routine::SetUp(const std::string &routine_source) {
     // Collects the parameters for this device in the form of defines, and adds the precision
     auto defines = db_.GetDefines();
     defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
+
+    // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
+    // performance, but might result in a reduced accuracy.
+    if (device_.Vendor() == "AMD") {
+      defines += "#define USE_CL_MAD 1\n";
+    }
+
+    // Combines everything together into a single source string
     auto source_string = defines + common_header + routine_source;
 
     // Compiles the kernel

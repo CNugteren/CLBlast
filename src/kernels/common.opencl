@@ -82,8 +82,11 @@ R"(
 
 // =================================================================================================
 
-// Don't use the non-IEEE754 compliant OpenCL built-in mad() instruction
-#define USE_CL_MAD 0
+// Don't use the non-IEEE754 compliant OpenCL built-in mad() instruction per default. For specific
+// devices, this is enabled (see src/routine.cc).
+#ifndef USE_CL_MAD
+  #define USE_CL_MAD 0
+#endif
 
 // Sets a variable to zero
 #if PRECISION == 3232 || PRECISION == 6464
