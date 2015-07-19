@@ -34,20 +34,14 @@ class Routine {
     Program program;
     std::string device_name;
     Precision precision;
-    std::vector<std::string> routines;
+    std::string routine_name_;
 
     // Finds out whether the properties match
-    bool MatchInCache(const std::string &ref_name, const Precision &ref_precision,
-                      const std::vector<std::string> &ref_routines) {
-      auto ref_size = ref_routines.size();
-      if (device_name == ref_name && precision == ref_precision && routines.size() == ref_size) {
-        auto found_match = true;
-        for (auto i=size_t{0}; i<ref_size; ++i) {
-          if (routines[i] != ref_routines[i]) { found_match = false; }
-        }
-        return found_match;
-      }
-      return false;
+    bool MatchInCache(const std::string &ref_device, const Precision &ref_precision,
+                      const std::string &ref_routine) {
+      return (device_name == ref_device &&
+              precision == ref_precision &&
+              routine_name_ == ref_routine);
     }
   };
 
@@ -125,7 +119,6 @@ class Routine {
 
   // Connection to the database for all the device-specific parameters
   const Database db_;
-  const std::vector<std::string> routines_;
 };
 
 // =================================================================================================

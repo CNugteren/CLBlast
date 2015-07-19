@@ -34,8 +34,7 @@ Routine::Routine(CommandQueue &queue, Event &event, const std::string &name,
     max_work_item_dimensions_(device_.MaxWorkItemDimensions()),
     max_work_item_sizes_(device_.MaxWorkItemSizes()),
     max_work_group_size_(device_.MaxWorkGroupSize()),
-    db_(queue_, routines, precision_),
-    routines_(routines) {
+    db_(queue_, routines, precision_) {
 }
 
 // =================================================================================================
@@ -71,6 +70,9 @@ StatusCode Routine::SetUp() {
     auto defines = db_.GetDefines();
     defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
 
+    // Adds the name of the routine as a define
+    defines += "#define ROUTINE_"+routine_name_+"\n";
+
     // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
     // performance, but might result in a reduced accuracy.
     if (device_.Vendor() == "AMD") {
@@ -95,7 +97,7 @@ StatusCode Routine::SetUp() {
       if (status == CL_INVALID_BINARY) { return StatusCode::kInvalidBinary; }
 
       // Store the compiled program in the cache
-      program_cache_.push_back({program, device_name_, precision_, routines_});
+      program_cache_.push_back({program, device_name_, precision_, routine_name_});
     } catch (...) { return StatusCode::kBuildProgramFailure; }
   }
 
@@ -328,7 +330,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
 // otherwise.
 const Program& Routine::GetProgramFromCache() const {
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routines_)) {
+    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) {
       return cached_program.program;
     }
   }
@@ -338,7 +340,7 @@ const Program& Routine::GetProgramFromCache() const {
 // Queries the cache to see whether or not the compiled kernel is already there
 bool Routine::ProgramIsInCache() const {
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routines_)) { return true; }
+    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) { return true; }
   }
   return false;
 }
