@@ -561,40 +561,8 @@ inline void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
 }
 
 // =================================================================================================
-
-// Main entry point of the kernel. This is the regular full version.
-__attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
-__kernel void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
-                    const real alpha, const real beta,
-                    const __global realM* restrict agm,
-                    const __global realN* restrict bgm,
-                    __global realM* cgm) {
-
-  // Allocates workgroup-private memory (local memory)
-  #if SA == 1
-    __local realM alm[KWG * MWG/VWM];
-  #endif
-  #if SB == 1
-    __local realN blm[KWG * NWG/VWN];
-  #endif
-
-  // Computes the matrix-multiplication and stores the result in register memory
-  realM cpm[NWI][MWI/VWM];
-  #if SA == 1 && SB == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
-  #elif SA == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm);
-  #elif SB == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, blm);
-  #else
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm);
-  #endif
-
-  // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
-  StoreResults(cgm, cpm, kSizeM, alpha, beta);
-}
-
-// =================================================================================================
+// The upper-triangular and lower-triangular kernels are only used in special cases
+#if defined(ROUTINE_SYRK) || defined(ROUTINE_HERK) || defined(ROUTINE_SYR2K) || defined(ROUTINE_HER2K)
 
 // Main entry point of the kernel. This is the upper-triangular version.
 __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
@@ -633,8 +601,6 @@ __kernel void XgemmUpper(const int kSizeN, const int kSizeK,
   StoreResults(cgm, cpm, kSizeN, alpha, beta);
 }
 
-// =================================================================================================
-
 // Main entry point of the kernel. This is the lower-triangular version.
 __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 __kernel void XgemmLower(const int kSizeN, const int kSizeK,
@@ -672,6 +638,43 @@ __kernel void XgemmLower(const int kSizeN, const int kSizeK,
   StoreResults(cgm, cpm, kSizeN, alpha, beta);
 }
 
+// =================================================================================================
+// If not using a triangular version, include the regular kernel
+#else
+
+// Main entry point of the kernel. This is the regular full version.
+__attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+__kernel void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
+                    const real alpha, const real beta,
+                    const __global realM* restrict agm,
+                    const __global realN* restrict bgm,
+                    __global realM* cgm) {
+
+  // Allocates workgroup-private memory (local memory)
+  #if SA == 1
+    __local realM alm[KWG * MWG/VWM];
+  #endif
+  #if SB == 1
+    __local realN blm[KWG * NWG/VWN];
+  #endif
+
+  // Computes the matrix-multiplication and stores the result in register memory
+  realM cpm[NWI][MWI/VWM];
+  #if SA == 1 && SB == 1
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
+  #elif SA == 1
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm);
+  #elif SB == 1
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, blm);
+  #else
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm);
+  #endif
+
+  // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
+  StoreResults(cgm, cpm, kSizeM, alpha, beta);
+}
+
+#endif
 // =================================================================================================
 
 // End of the C++11 raw string literal
