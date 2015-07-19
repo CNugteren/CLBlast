@@ -90,7 +90,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
     },
     { // Intel GPUs
       CL_DEVICE_TYPE_GPU, "Intel", {
-        { "Iris",             { {"MWG",64}, {"NWG",64}, {"KWG",32}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",8}, {"KWI",8}, {"VWM",4}, {"VWN",4}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",0} } },
+        { "Iris",             { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
       }
     },
     { // Default
