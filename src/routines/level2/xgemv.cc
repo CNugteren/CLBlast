@@ -30,7 +30,10 @@ template <> const Precision Xgemv<double2>::precision_ = Precision::kComplexDoub
 // Constructor: forwards to base class constructor
 template <typename T>
 Xgemv<T>::Xgemv(CommandQueue &queue, Event &event):
-    Routine(queue, event, {"Xgemv"}, precision_) {
+    Routine(queue, event, "Xgemv", {"Xgemv"}, precision_) {
+  source_string_ =
+    #include "../../kernels/xgemv.opencl"
+  ;
 }
 
 // =================================================================================================

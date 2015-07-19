@@ -22,9 +22,10 @@ namespace clblast {
 std::vector<Routine::ProgramCache> Routine::program_cache_;
 
 // Constructor: not much here, because no status codes can be returned
-Routine::Routine(CommandQueue &queue, Event &event,
+Routine::Routine(CommandQueue &queue, Event &event, const std::string &name,
                  const std::vector<std::string> &routines, const Precision precision):
     precision_(precision),
+    routine_name_(name),
     queue_(queue),
     event_(event),
     context_(queue_.GetContext()),
@@ -40,7 +41,7 @@ Routine::Routine(CommandQueue &queue, Event &event,
 // =================================================================================================
 
 // Separate set-up function to allow for status codes to be returned
-StatusCode Routine::SetUp(const std::string &routine_source) {
+StatusCode Routine::SetUp() {
 
   // Queries the cache to see whether or not the compiled kernel is already there. If not, it will
   // be built and added to the cache.
@@ -63,7 +64,8 @@ StatusCode Routine::SetUp(const std::string &routine_source) {
 
     // Loads the common header (typedefs and defines and such)
     std::string common_header =
-    #include "kernels/common.opencl"
+      #include "kernels/common.opencl"
+    ;
 
     // Collects the parameters for this device in the form of defines, and adds the precision
     auto defines = db_.GetDefines();
@@ -76,7 +78,7 @@ StatusCode Routine::SetUp(const std::string &routine_source) {
     }
 
     // Combines everything together into a single source string
-    auto source_string = defines + common_header + routine_source;
+    auto source_string = defines + common_header + source_string_;
 
     // Compiles the kernel
     try {

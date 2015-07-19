@@ -36,11 +36,10 @@ void XgemvTune(const Arguments<T> &args, const size_t variation,
   auto a_rotated = (variation == 3) ? 1 : 0;
 
   // This points to the Xgemv kernel as found in the CLBlast library
-  std::string common_source =
-  #include "../src/kernels/common.opencl"
-  std::string kernel_source =
-  #include "../src/kernels/xgemv.opencl"
-  auto sources = common_source + kernel_source;
+  std::string sources =
+    #include "../src/kernels/common.opencl"
+    #include "../src/kernels/xgemv.opencl"
+  ;
   auto id = tuner.AddKernelFromString(sources, kernel_name, {args.m}, {1});
   tuner.SetReferenceFromString(sources, "Xgemv", {args.m}, {64});
 

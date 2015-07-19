@@ -47,10 +47,8 @@ StatusCode Axpy(const size_t n, const T alpha,
   auto event_cpp = Event(*event);
   auto routine = Xaxpy<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string kernel_source =
-  #include "kernels/xaxpy.opencl"
-  auto status = routine.SetUp(kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -91,10 +89,8 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
   auto event_cpp = Event(*event);
   auto routine = Xgemv<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string kernel_source =
-  #include "kernels/xgemv.opencl"
-  auto status = routine.SetUp(kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -143,19 +139,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
   auto event_cpp = Event(*event);
   auto routine = Xgemm<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -203,19 +188,8 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
   auto event_cpp = Event(*event);
   auto routine = Xsymm<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -263,19 +237,8 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
   auto event_cpp = Event(*event);
   auto routine = Xhemm<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -310,19 +273,8 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
   auto event_cpp = Event(*event);
   auto routine = Xsyrk<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -364,19 +316,8 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
   auto event_cpp = Event(*event);
   auto routine = Xherk<std::complex<T>,T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -409,19 +350,8 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
   auto event_cpp = Event(*event);
   auto routine = Xsyr2k<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -469,19 +399,8 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
   auto event_cpp = Event(*event);
   auto routine = Xher2k<T,U>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -518,19 +437,8 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
   auto event_cpp = Event(*event);
   auto routine = Xtrmm<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine
@@ -579,19 +487,8 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
   auto event_cpp = Event(*event);
   auto routine = Xtrsm<T>(queue_cpp, event_cpp);
 
-  // Loads the kernel source-code as an include (C++11 raw string literal)
-  std::string common_source1 =
-  #include "kernels/copy.opencl"
-  std::string common_source2 =
-  #include "kernels/pad.opencl"
-  std::string common_source3 =
-  #include "kernels/transpose.opencl"
-  std::string common_source4 =
-  #include "kernels/padtranspose.opencl"
-  std::string kernel_source =
-  #include "kernels/xgemm.opencl"
-  auto status = routine.SetUp(common_source1 + common_source2 + common_source3 + common_source4 +
-                              kernel_source);
+  // Compiles the routine's device kernels
+  auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
 
   // Runs the routine

@@ -58,11 +58,11 @@ class Routine {
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
   // Base class constructor
-  explicit Routine(CommandQueue &queue, Event &event,
+  explicit Routine(CommandQueue &queue, Event &event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision);
 
   // Set-up phase of the kernel
-  StatusCode SetUp(const std::string &routine_source);
+  StatusCode SetUp();
 
  protected:
   
@@ -106,6 +106,10 @@ class Routine {
   // Non-static variable for the precision. Note that the same variable (but static) might exist in
   // a derived class.
   const Precision precision_;
+
+  // The routine's name and its kernel-source in string form
+  const std::string routine_name_;
+  std::string source_string_;
 
   // The OpenCL objects, accessible only from derived classes
   CommandQueue queue_;
