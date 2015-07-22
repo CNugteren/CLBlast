@@ -20,13 +20,16 @@ R"(
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
 #ifndef TRA_DIM
-  #define TRA_DIM 8    // Number of local threads in the two dimensions (x,y)
+  #define TRA_DIM 8       // Number of local threads in the two dimensions (x,y)
 #endif
 #ifndef TRA_WPT
-  #define TRA_WPT 1    // Work per thread in one dimension and vector-width in the other
+  #define TRA_WPT 1       // Work per thread in one dimension and vector-width in the other
 #endif
 #ifndef TRA_PAD
-  #define TRA_PAD 0    // Padding of the local memory to avoid bank-conflicts
+  #define TRA_PAD 0       // Padding of the local memory to avoid bank-conflicts
+#endif
+#ifndef TRA_SHUFFLE
+  #define TRA_SHUFFLE 0   // Shuffling of the global indices to avoid global memory bank-conflicts
 #endif
 
 // =================================================================================================
@@ -53,17 +56,26 @@ __kernel void TransposeMatrix(const int ld,
                               __global const realT* restrict src,
                               __global realT* dest) {
 
+  // Sets the group identifiers. They might be 'shuffled' around to distribute work in a different
+  // way over workgroups, breaking memory-bank dependencies.
+  const int gid0 = get_group_id(0);
+  #if TRA_SHUFFLE == 1
+    const int gid1 = (get_group_id(0) + get_group_id(1)) % get_num_groups(0);
+  #else
+    const int gid1 = get_group_id(1);
+  #endif
+
   // Local memory to store a tile of the matrix (for coalescing)
   __local realT tile[TRA_WPT*TRA_DIM][TRA_DIM + TRA_PAD];
 
-  // Loop over the work per thread
+  // Loops over the work per thread
   #pragma unroll
   for (int w_one=0; w_one<TRA_WPT; ++w_one) {
 
     // Computes the identifiers for the source matrix. Note that the local and global dimensions
     // do not correspond to each other!
-    const int id_one = get_group_id(1) * TRA_DIM + get_local_id(0);
-    const int id_two = (get_group_id(0) * TRA_DIM + get_local_id(1))*TRA_WPT + w_one;
+    const int id_one = gid1 * TRA_DIM + get_local_id(0);
+    const int id_two = (gid0 * TRA_DIM + get_local_id(1))*TRA_WPT + w_one;
 
     // Loads data into the local memory
     realT value = src[id_two*(ld/TRA_WPT) + id_one];
@@ -123,8 +135,8 @@ __kernel void TransposeMatrix(const int ld,
   // Stores the results into the destination matrix
   #pragma unroll
   for (int w_two=0; w_two<TRA_WPT; ++w_two) {
-    const int id_one = get_global_id(0);
-    const int id_two = get_global_id(1)*TRA_WPT + w_two;
+    const int id_one = gid0*TRA_DIM + get_local_id(0);
+    const int id_two = (gid1*TRA_DIM + get_local_id(1))*TRA_WPT + w_two;
     dest[id_two*(ld/TRA_WPT) + id_one] = results[w_two];
   }
 }

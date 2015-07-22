@@ -41,6 +41,7 @@ void TransposeTune(const Arguments<T> &args,
   tuner.AddParameter(id, "TRA_DIM", {4, 8, 16, 32, 64});
   tuner.AddParameter(id, "TRA_WPT", {1, 2, 4, 8, 16});
   tuner.AddParameter(id, "TRA_PAD", {0, 1});
+  tuner.AddParameter(id, "TRA_SHUFFLE", {0, 1});
 
   // Tests for a specific precision
   tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
