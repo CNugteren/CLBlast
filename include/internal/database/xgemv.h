@@ -24,7 +24,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
       }
     },
@@ -53,7 +53,7 @@ const Database::DatabaseEntry Database::XgemvDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
       }
     },
@@ -80,7 +80,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
       }
     },
@@ -109,7 +109,7 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
       }
     },

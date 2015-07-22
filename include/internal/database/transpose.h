@@ -24,7 +24,7 @@ const Database::DatabaseEntry Database::TraSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },
@@ -53,7 +53,7 @@ const Database::DatabaseEntry Database::TraDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },
@@ -81,7 +81,7 @@ const Database::DatabaseEntry Database::TraComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1} } },
       }
     },
@@ -110,7 +110,7 @@ const Database::DatabaseEntry Database::TraComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },

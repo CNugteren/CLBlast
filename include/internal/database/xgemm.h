@@ -25,7 +25,7 @@ const Database::DatabaseEntry Database::XgemmSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"MWG",128}, {"NWG",128}, {"KWG",32}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",32}, {"NDIMB",8}, {"KWI",2}, {"VWM",4}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
       }
     },
@@ -55,7 +55,7 @@ const Database::DatabaseEntry Database::XgemmDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"MWG",128}, {"NWG",64}, {"KWG",16}, {"MDIMC",32}, {"NDIMC",8}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",1}, {"VWN",2}, {"STRM",1}, {"STRN",0}, {"SA",0}, {"SB",0} } },
       }
     },
@@ -84,7 +84,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"MWG",16}, {"NWG",64}, {"KWG",32}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",8}, {"NDIMB",16}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",0} } },
       }
     },
@@ -114,7 +114,7 @@ const Database::DatabaseEntry Database::XgemmComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"MWG",128}, {"NWG",32}, {"KWG",16}, {"MDIMC",32}, {"NDIMC",8}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",2}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
       }
     },

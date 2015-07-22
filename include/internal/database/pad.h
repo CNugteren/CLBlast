@@ -24,7 +24,7 @@ const Database::DatabaseEntry Database::PadSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
@@ -53,7 +53,7 @@ const Database::DatabaseEntry Database::PadDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
@@ -81,7 +81,7 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
@@ -110,7 +110,7 @@ const Database::DatabaseEntry Database::PadComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
       }
     },

@@ -24,7 +24,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS",64}, {"WPT",1}, {"VW",2} } },
       }
     },
@@ -53,7 +53,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS",256}, {"WPT",1}, {"VW",1} } },
       }
     },
@@ -80,7 +80,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS",64}, {"WPT",1}, {"VW",1} } },
       }
     },
@@ -109,7 +109,7 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"WGS",64}, {"WPT",1}, {"VW",1} } },
       }
     },

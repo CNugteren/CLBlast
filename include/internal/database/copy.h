@@ -24,7 +24,7 @@ const Database::DatabaseEntry Database::CopySingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",4}, {"COPY_VW",2} } },
       }
     },
@@ -53,7 +53,7 @@ const Database::DatabaseEntry Database::CopyDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",2}, {"COPY_VW",4} } },
       }
     },
@@ -81,7 +81,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
       }
     },
@@ -110,7 +110,7 @@ const Database::DatabaseEntry Database::CopyComplexDouble = {
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "AMD", {
+      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
         { "Tahiti",           { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_WPT",4}, {"COPY_VW",2} } },
       }
     },
