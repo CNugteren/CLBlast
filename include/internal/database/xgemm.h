@@ -26,7 +26,7 @@ const Database::DatabaseEntry Database::XgemmSingle = {
     },
     { // AMD GPUs
       CL_DEVICE_TYPE_GPU, "AMD", {
-        { "Tahiti",           { {"MWG",128}, {"NWG",128}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",2}, {"VWM",8}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
+        { "Tahiti",           { {"MWG",128}, {"NWG",128}, {"KWG",32}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",32}, {"NDIMB",8}, {"KWI",2}, {"VWM",4}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
       }
     },
     { // Intel GPUs
