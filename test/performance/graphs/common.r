@@ -83,7 +83,16 @@ main <- function(routine_name, precision, test_names, test_values,
       params_string <- paste(parameters, params_values[[command_id]], collapse=" ")
       arguments <- paste(devices_string, params_string, options_string, sep=" ")
       print(paste("Running", executable, arguments, sep=" "))
-      result_string <- system2(command=executable, args=arguments, stdout=TRUE)
+      raw_result_string <- system2(command=executable, args=arguments, stdout=TRUE)
+
+      # Filter the string: only lines containing a ";" can be valid lines
+      result_string <- c()
+      for (line in raw_result_string) {
+        if (grepl(";",line)) {
+          result_string <-
+           c(result_string, line)
+        }
+      }
 
       # Reads the result into a dataframe
       command_db <- read.csv(text=result_string, sep=";")
