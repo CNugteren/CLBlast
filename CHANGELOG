@@ -1,4 +1,7 @@
 
+Development version (next release)
+-
+
 Version 0.3.0
 - Re-organized test/client infrastructure to avoid code duplication
 - Added an optional bypass for pre/post-processing kernels in level-3 routines
