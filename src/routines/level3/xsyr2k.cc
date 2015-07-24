@@ -30,7 +30,14 @@ template <> const Precision Xsyr2k<double2>::precision_ = Precision::kComplexDou
 // Constructor: forwards to base class constructor
 template <typename T>
 Xsyr2k<T>::Xsyr2k(CommandQueue &queue, Event &event):
-    Routine(queue, event, {"Copy", "Pad", "Transpose", "PadTranspose", "Xgemm"}, precision_) {
+    Routine(queue, event, "SYR2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+  source_string_ =
+    #include "../../kernels/copy.opencl"
+    #include "../../kernels/pad.opencl"
+    #include "../../kernels/transpose.opencl"
+    #include "../../kernels/padtranspose.opencl"
+    #include "../../kernels/xgemm.opencl"
+  ;
 }
 
 // =================================================================================================

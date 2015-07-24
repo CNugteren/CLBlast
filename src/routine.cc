@@ -22,9 +22,10 @@ namespace clblast {
 std::vector<Routine::ProgramCache> Routine::program_cache_;
 
 // Constructor: not much here, because no status codes can be returned
-Routine::Routine(CommandQueue &queue, Event &event,
+Routine::Routine(CommandQueue &queue, Event &event, const std::string &name,
                  const std::vector<std::string> &routines, const Precision precision):
     precision_(precision),
+    routine_name_(name),
     queue_(queue),
     event_(event),
     context_(queue_.GetContext()),
@@ -33,14 +34,13 @@ Routine::Routine(CommandQueue &queue, Event &event,
     max_work_item_dimensions_(device_.MaxWorkItemDimensions()),
     max_work_item_sizes_(device_.MaxWorkItemSizes()),
     max_work_group_size_(device_.MaxWorkGroupSize()),
-    db_(queue_, routines, precision_),
-    routines_(routines) {
+    db_(queue_, routines, precision_) {
 }
 
 // =================================================================================================
 
 // Separate set-up function to allow for status codes to be returned
-StatusCode Routine::SetUp(const std::string &routine_source) {
+StatusCode Routine::SetUp() {
 
   // Queries the cache to see whether or not the compiled kernel is already there. If not, it will
   // be built and added to the cache.
@@ -63,12 +63,24 @@ StatusCode Routine::SetUp(const std::string &routine_source) {
 
     // Loads the common header (typedefs and defines and such)
     std::string common_header =
-    #include "kernels/common.opencl"
+      #include "kernels/common.opencl"
+    ;
 
     // Collects the parameters for this device in the form of defines, and adds the precision
     auto defines = db_.GetDefines();
     defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
-    auto source_string = defines + common_header + routine_source;
+
+    // Adds the name of the routine as a define
+    defines += "#define ROUTINE_"+routine_name_+"\n";
+
+    // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
+    // performance, but might result in a reduced accuracy.
+    if (device_.Vendor() == "AMD") {
+      defines += "#define USE_CL_MAD 1\n";
+    }
+
+    // Combines everything together into a single source string
+    auto source_string = defines + common_header + source_string_;
 
     // Compiles the kernel
     try {
@@ -85,7 +97,7 @@ StatusCode Routine::SetUp(const std::string &routine_source) {
       if (status == CL_INVALID_BINARY) { return StatusCode::kInvalidBinary; }
 
       // Store the compiled program in the cache
-      program_cache_.push_back({program, device_name_, precision_, routines_});
+      program_cache_.push_back({program, device_name_, precision_, routine_name_});
     } catch (...) { return StatusCode::kBuildProgramFailure; }
   }
 
@@ -318,7 +330,7 @@ StatusCode Routine::PadCopyTransposeMatrix(const size_t src_one, const size_t sr
 // otherwise.
 const Program& Routine::GetProgramFromCache() const {
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routines_)) {
+    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) {
       return cached_program.program;
     }
   }
@@ -328,7 +340,7 @@ const Program& Routine::GetProgramFromCache() const {
 // Queries the cache to see whether or not the compiled kernel is already there
 bool Routine::ProgramIsInCache() const {
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routines_)) { return true; }
+    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) { return true; }
   }
   return false;
 }

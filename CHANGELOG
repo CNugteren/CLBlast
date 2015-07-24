@@ -1,7 +1,8 @@
 
 Development version (next release)
 - Re-organized test/client infrastructure to avoid code duplication
-- Bypasses pre/post-processing kernels if possible (in level-3 routines)
+- Added an optional bypass for pre/post-processing kernels in level-3 routines
+- Significantly improved performance of level-3 routines on AMD GPUs
 - Added level-3 routines:
   * CHEMM/ZHEMM
   * SSYRK/DSYRK/CSYRK/ZSYRK

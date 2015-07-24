@@ -4,7 +4,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 
-__Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version supports only a minimal amount of routines (including `gemm` and `gemv`): others will be added in due time. It also lacks extensive tuning and testing on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
+__Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version doesn't support all routines yet: others will be added in due time. It also lacks extensive tuning on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -109,13 +109,13 @@ Performance remarks
 
 The CLBlast library provides pre-tuned parameter-values for a number of OpenCL devices. If your device is not among these, then out-of-the-box performance might be poor. Even if the device is included performance might be poor in some cases: __the preview version is not thoroughly tested for performance yet__. See above under `Using the tuners` to find out how to tune for your device.
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared against a tuned version of the clBLAS library. The graphs of the level-3 routines (Xgemm and Xsymm) show the strong points of CLBlast:
+The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared against a tuned version of the clBLAS library. The graphs of the level-3 routines (Xgemm, Xsymm, Xsyrk) show the strong points of CLBlast:
 
 * The library reaches a high peak performance for large matrix sizes, in some cases a factor 2 more than clBLAS.
 * The performance for non-power of 2 values (e.g. 1000) is roughly equal to power of 2 cases (e.g. 1024). This is not the case for clBLAS, which sometimes shows a drop of a factor 2.
 * The performance is also constant for different layouts and transpose options. Again, this is not the case for clBLAS.
 
-The graphs also show the current weak point of CLBlast: its performance for smaller matrix sizes is not too good. Furthermore, although the GEMM kernels perform well on AMD GPUs, the supporting copy and transpose kernel do not.
+The graphs also show the current weak points of CLBlast: for small sizes the benefit is minimal or non-existent, and for some specific configurations clBLAS is still faster.
 
 These graphs can be generated automatically on your own device. First, compile CLBlast with the tests enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable. Finally, run one of the graph-scripts found in `test/performance/graphs` using R. For example, to generate the Xgemm PDF on device 1 of platform 0:
 
@@ -214,8 +214,6 @@ To-do list before release of version 1.0
 - Improve host performance:
   * Allow initialization to pre-compile kernels and store to disk
 - Improve device performance:
-  * Enable 'mad()' for AMD devices
-  * Improve the performance of the copy and transpose kernels
   * Tune for a wider range of devices
   * Allow users to define custom tuned parameters
 - Improve the tuning

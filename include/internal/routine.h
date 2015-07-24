@@ -34,20 +34,14 @@ class Routine {
     Program program;
     std::string device_name;
     Precision precision;
-    std::vector<std::string> routines;
+    std::string routine_name_;
 
     // Finds out whether the properties match
-    bool MatchInCache(const std::string &ref_name, const Precision &ref_precision,
-                      const std::vector<std::string> &ref_routines) {
-      auto ref_size = ref_routines.size();
-      if (device_name == ref_name && precision == ref_precision && routines.size() == ref_size) {
-        auto found_match = true;
-        for (auto i=size_t{0}; i<ref_size; ++i) {
-          if (routines[i] != ref_routines[i]) { found_match = false; }
-        }
-        return found_match;
-      }
-      return false;
+    bool MatchInCache(const std::string &ref_device, const Precision &ref_precision,
+                      const std::string &ref_routine) {
+      return (device_name == ref_device &&
+              precision == ref_precision &&
+              routine_name_ == ref_routine);
     }
   };
 
@@ -58,11 +52,11 @@ class Routine {
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
   // Base class constructor
-  explicit Routine(CommandQueue &queue, Event &event,
+  explicit Routine(CommandQueue &queue, Event &event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision);
 
   // Set-up phase of the kernel
-  StatusCode SetUp(const std::string &routine_source);
+  StatusCode SetUp();
 
  protected:
   
@@ -107,6 +101,10 @@ class Routine {
   // a derived class.
   const Precision precision_;
 
+  // The routine's name and its kernel-source in string form
+  const std::string routine_name_;
+  std::string source_string_;
+
   // The OpenCL objects, accessible only from derived classes
   CommandQueue queue_;
   Event event_;
@@ -121,7 +119,6 @@ class Routine {
 
   // Connection to the database for all the device-specific parameters
   const Database db_;
-  const std::vector<std::string> routines_;
 };
 
 // =================================================================================================
