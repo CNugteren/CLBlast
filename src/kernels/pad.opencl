@@ -86,7 +86,9 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
                           __global const real* restrict src,
                           const int dest_one, const int dest_two,
                           const int dest_ld, const int dest_offset,
-                          __global real* dest) {
+                          __global real* dest,
+                          const int upper, const int lower,
+                          const int diagonal_imag_zero) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -95,11 +97,20 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
     #pragma unroll
     for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
       const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
-      if (id_two < dest_two && id_one < dest_one) {
+
+      // Masking in case of triangular matrices: updates only the upper or lower part
+      bool condition = true;
+      if (upper == 1) { condition = (id_two >= id_one); }
+      else if (lower == 1) { condition = (id_two <= id_one); }
+      if (condition) {
 
         // Copies the value into the destination matrix. This is always within bounds of the source
         // matrix, as we know that the destination matrix is smaller than the source.
-        dest[id_two*dest_ld + id_one + dest_offset] = src[id_two*src_ld + id_one + src_offset];
+        if (id_two < dest_two && id_one < dest_one) {
+          real value = src[id_two*src_ld + id_one + src_offset];
+          if (diagonal_imag_zero == 1 && id_one == id_two) { ImagToZero(value); }
+          dest[id_two*dest_ld + id_one + dest_offset] = value;
+        }
       }
     }
   }
@@ -127,15 +138,15 @@ __kernel void SymmLowerToSquared(const int src_dim,
       if (id_two < dest_dim && id_one < dest_dim) {
 
         // Loads data from the lower-symmetric matrix
-        real value;
-        SetToZero(value);
+        real result;
+        SetToZero(result);
         if (id_two < src_dim && id_one < src_dim) {
-          if (id_two <= id_one) { value = src[id_two*src_ld + id_one + src_offset]; }
-          else                  { value = src[id_one*src_ld + id_two + src_offset]; }
+          if (id_two <= id_one) { result = src[id_two*src_ld + id_one + src_offset]; }
+          else                  { result = src[id_one*src_ld + id_two + src_offset]; }
         }
 
-        // Stores the value in the destination matrix
-        dest[id_two*dest_ld + id_one + dest_offset] = value;
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
       }
     }
   }
@@ -160,15 +171,171 @@ __kernel void SymmUpperToSquared(const int src_dim,
       if (id_two < dest_dim && id_one < dest_dim) {
 
         // Loads data from the upper-symmetric matrix
-        real value;
-        SetToZero(value);
+        real result;
+        SetToZero(result);
         if (id_two < src_dim && id_one < src_dim) {
-          if (id_one <= id_two) { value = src[id_two*src_ld + id_one + src_offset]; }
-          else                  { value = src[id_one*src_ld + id_two + src_offset]; }
+          if (id_one <= id_two) { result = src[id_two*src_ld + id_one + src_offset]; }
+          else                  { result = src[id_one*src_ld + id_two + src_offset]; }
         }
 
-        // Stores the value in the destination matrix
-        dest[id_two*dest_ld + id_one + dest_offset] = value;
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
+      }
+    }
+  }
+}
+
+// =================================================================================================
+#if PRECISION == 3232 || PRECISION == 6464
+
+// Kernel to populate a squared hermitian matrix, given that the triangle which holds the data is
+// stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
+__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+__kernel void HermLowerToSquared(const int src_dim,
+                                 const int src_ld, const int src_offset,
+                                 __global const real* restrict src,
+                                 const int dest_dim,
+                                 const int dest_ld, const int dest_offset,
+                                 __global real* dest) {
+
+  // Loops over the work per thread in both dimensions
+  #pragma unroll
+  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+    #pragma unroll
+    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+      if (id_two < dest_dim && id_one < dest_dim) {
+
+        // Loads data from the lower-hermitian matrix
+        real result;
+        SetToZero(result);
+        if (id_two < src_dim && id_one < src_dim) {
+          if (id_two <= id_one) {
+            result = src[id_two*src_ld + id_one + src_offset];
+            if (id_one == id_two) { result.y = ZERO; }
+          }
+          else {
+            result = src[id_one*src_ld + id_two + src_offset];
+            COMPLEX_CONJUGATE(result);
+          }
+        }
+
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
+      }
+    }
+  }
+}
+
+// Same as above, but now the matrix' data is stored in the upper-triangle
+__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+__kernel void HermUpperToSquared(const int src_dim,
+                                 const int src_ld, const int src_offset,
+                                 __global const real* restrict src,
+                                 const int dest_dim,
+                                 const int dest_ld, const int dest_offset,
+                                 __global real* dest) {
+
+  // Loops over the work per thread in both dimensions
+  #pragma unroll
+  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+    #pragma unroll
+    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+      if (id_two < dest_dim && id_one < dest_dim) {
+
+        // Loads data from the upper-hermitian matrix
+        real result;
+        SetToZero(result);
+        if (id_two < src_dim && id_one < src_dim) {
+          if (id_one <= id_two) {
+            result = src[id_two*src_ld + id_one + src_offset];
+            if (id_one == id_two) { result.y = ZERO; }
+          }
+          else {
+            result = src[id_one*src_ld + id_two + src_offset];
+            COMPLEX_CONJUGATE(result);
+          }
+        }
+
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
+      }
+    }
+  }
+}
+
+#endif
+// =================================================================================================
+
+// Kernel to populate a squared triangular matrix, given that the triangle which holds the data is
+// stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
+__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+__kernel void TrmmLowerToSquared(const int src_dim,
+                                 const int src_ld, const int src_offset,
+                                 __global const real* restrict src,
+                                 const int dest_dim,
+                                 const int dest_ld, const int dest_offset,
+                                 __global real* dest,
+                                 const int unit_diagonal) {
+
+  // Loops over the work per thread in both dimensions
+  #pragma unroll
+  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+    #pragma unroll
+    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+      if (id_two < dest_dim && id_one < dest_dim) {
+
+        // Loads data from the lower-triangular matrix
+        real result;
+        SetToZero(result);
+        if (id_two < src_dim && id_one < src_dim) {
+          if (id_two <= id_one) { result = src[id_two*src_ld + id_one + src_offset]; }
+          if (id_two == id_one && unit_diagonal) { SetToOne(result); }
+          // Else: result is zero
+        }
+
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
+      }
+    }
+  }
+}
+
+// Same as above, but now the matrix' data is stored in the upper-triangle
+__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+__kernel void TrmmUpperToSquared(const int src_dim,
+                                 const int src_ld, const int src_offset,
+                                 __global const real* restrict src,
+                                 const int dest_dim,
+                                 const int dest_ld, const int dest_offset,
+                                 __global real* dest,
+                                 const int unit_diagonal) {
+
+  // Loops over the work per thread in both dimensions
+  #pragma unroll
+  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+    #pragma unroll
+    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+      if (id_two < dest_dim && id_one < dest_dim) {
+
+        // Loads data from the upper-triangular matrix
+        real result;
+        SetToZero(result);
+        if (id_two < src_dim && id_one < src_dim) {
+          if (id_one <= id_two) { result = src[id_two*src_ld + id_one + src_offset]; }
+          if (id_one == id_two && unit_diagonal) { SetToOne(result); }
+          // Else: result is zero
+        }
+
+        // Stores the result in the destination matrix
+        dest[id_two*dest_ld + id_one + dest_offset] = result;
       }
     }
   }
@@ -177,6 +344,6 @@ __kernel void SymmUpperToSquared(const int src_dim,
 // =================================================================================================
 
 // End of the C++11 raw string literal
-)";
+)"
 
 // =================================================================================================

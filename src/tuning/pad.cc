@@ -30,11 +30,10 @@ void PadTune(const Arguments<T> &args,
   // This points to the PadMatrix kernel as found in the CLBlast library. This is just one
   // example of a pad kernel. However, all pad-kernels use the same tuning parameters, so one has
   // to be chosen as a representative.
-  std::string common_source =
-  #include "../src/kernels/common.opencl"
-  std::string kernel_source =
-  #include "../src/kernels/pad.opencl"
-  auto sources = common_source + kernel_source;
+  std::string sources =
+    #include "../src/kernels/common.opencl"
+    #include "../src/kernels/pad.opencl"
+  ;
   auto id = tuner.AddKernelFromString(sources, "PadMatrix", {args.m, args.n}, {1, 1});
   tuner.SetReferenceFromString(sources, "PadMatrix", {args.m, args.n}, {8, 8});
 

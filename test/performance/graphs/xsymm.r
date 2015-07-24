@@ -19,7 +19,7 @@ source(file.path(dirname(thisfile), "common.r"))
 
 # Settings
 routine_name <- "xsymm"
-parameters <- c("-m","-n","-layout","-triangle","-side",
+parameters <- c("-m","-n","-layout","-side","-triangle",
                 "-num_steps","-step","-runs","-precision")
 precision <- 32
 
@@ -29,16 +29,16 @@ test_names <- list(
   "multiples of 128 (+1)",
   "around m=n=512",
   "around m=n=2048",
-  "layouts and triangle/side (m=n=1024)",
+  "layouts and side/triangle (m=n=1024)",
   "powers of 2"
 )
 
 # Defines the test-cases
 test_values <- list(
-  list(c(128, 128, 0, 0, 0, 16, 128, num_runs, precision)),
-  list(c(129, 129, 0, 0, 0, 16, 128, num_runs, precision)),
-  list(c(512, 512, 0, 0, 0, 16, 1, num_runs, precision)),
-  list(c(2048, 2048, 0, 0, 0, 16, 1, num_runs, precision)),
+  list(c( 128,  128, 1, 0, 0, 16, 128, num_runs, precision)),
+  list(c( 129,  129, 1, 0, 0, 16, 128, num_runs, precision)),
+  list(c( 512,  512, 1, 0, 0, 16, 1, num_runs, precision)),
+  list(c(2048, 2048, 1, 0, 0, 16, 1, num_runs, precision)),
   list(
     c(1024, 1024, 0, 0, 0, 1, 0, num_runs, precision),
     c(1024, 1024, 0, 0, 1, 1, 0, num_runs, precision),
@@ -50,17 +50,17 @@ test_values <- list(
     c(1024, 1024, 1, 1, 1, 1, 0, num_runs, precision)
   ),
   list(
-    c(8, 8, 0, 0, 0, 1, 0, num_runs, precision),
-    c(16, 16, 0, 0, 0, 1, 0, num_runs, precision),
-    c(32, 32, 0, 0, 0, 1, 0, num_runs, precision),
-    c(64, 64, 0, 0, 0, 1, 0, num_runs, precision),
-    c(128, 128, 0, 0, 0, 1, 0, num_runs, precision),
-    c(256, 256, 0, 0, 0, 1, 0, num_runs, precision),
-    c(512, 512, 0, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 0, 1, 0, num_runs, precision),
-    c(2048, 2048, 0, 0, 0, 1, 0, num_runs, precision),
-    c(4096, 4096, 0, 0, 0, 1, 0, num_runs, precision),
-    c(8192, 8192, 0, 0, 0, 1, 0, num_runs, precision)
+    c(   8,    8, 1, 0, 0, 1, 0, num_runs, precision),
+    c(  16,   16, 1, 0, 0, 1, 0, num_runs, precision),
+    c(  32,   32, 1, 0, 0, 1, 0, num_runs, precision),
+    c(  64,   64, 1, 0, 0, 1, 0, num_runs, precision),
+    c( 128,  128, 1, 0, 0, 1, 0, num_runs, precision),
+    c( 256,  256, 1, 0, 0, 1, 0, num_runs, precision),
+    c( 512,  512, 1, 0, 0, 1, 0, num_runs, precision),
+    c(1024, 1024, 1, 0, 0, 1, 0, num_runs, precision),
+    c(2048, 2048, 1, 0, 0, 1, 0, num_runs, precision),
+    c(4096, 4096, 1, 0, 0, 1, 0, num_runs, precision),
+    c(8192, 8192, 1, 0, 0, 1, 0, num_runs, precision)
   )
 )
 
@@ -70,7 +70,7 @@ test_xlabels <- list(
   "matrix sizes (m=n)",
   "matrix sizes (m=n)",
   "matrix sizes (m=n)",
-  "layout (row/col), triangle (up/lo), side (l/r)",
+  "layout (row/col), side (l/r), triangle (up/lo)",
   "matrix sizes (m=n)"
 )
 
@@ -80,8 +80,8 @@ test_xaxis <- list(
   c("m", ""),
   c("m", ""),
   c("m", ""),
-  list(1:8, c("row,up,l", "row,up,r", "row,lo,l", "row,lo,r",
-              "col,up,l", "col,up,r", "col,lo,l", "col,lo,r")),
+  list(1:8, c("row,l,up", "row,r,up", "row,l,lo", "row,r,lo",
+              "col,l,up", "col,r,up", "col,l,lo", "col,r,lo")),
   c("m", "x")
 )
 

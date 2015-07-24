@@ -10,6 +10,8 @@
 // This file implements the Tester class, providing a test-framework. GTest was used before, but
 // was not able to handle certain cases (e.g. template type + parameters). This is its (basic)
 // custom replacement.
+// Typename T: the data-type of the routine's memory buffers (==precision)
+// Typename U: the data-type of the alpha and beta arguments
 //
 // =================================================================================================
 
@@ -30,7 +32,7 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-template <typename T>
+template <typename T, typename U>
 class Tester {
  public:
 
@@ -42,10 +44,6 @@ class Tester {
 
   // Error percentage is not applicable: error was caused by an incorrect status
   static constexpr auto kStatusError = -1.0f;
-
-  // Set the allowed error margin for floating-point comparisons
-  static constexpr auto kErrorMarginRelative = 1.0e-2;
-  static constexpr auto kErrorMarginAbsolute = 1.0e-10;
 
   // Constants holding start and end strings for terminal-output in colour
   const std::string kPrintError{"\x1b[31m"};
@@ -62,16 +60,12 @@ class Tester {
   const std::string kSkippedCompilation{kPrintWarning + "\\" + kPrintEnd};
   const std::string kUnsupportedPrecision{kPrintWarning + "o" + kPrintEnd};
 
-  // The layouts and transpose-options to test with
-  static const std::vector<Layout> kLayouts;
-  static const std::vector<Transpose> kTransposes;
-
   // This structure combines the above log-entry with a status code an error percentage
   struct ErrorLogEntry {
     StatusCode status_expect;
     StatusCode status_found;
     float error_percentage;
-    Arguments<T> args;
+    Arguments<U> args;
   };
 
   // Creates an instance of the tester, running on a particular OpenCL platform and device. It
@@ -84,24 +78,12 @@ class Tester {
   void TestStart(const std::string &test_name, const std::string &test_configuration);
   void TestEnd();
 
-  // Compares two floating point values for similarity. Allows for a certain relative error margin.
-  static bool TestSimilarity(const T val1, const T val2);
-
   // Tests either an error count (should be zero) or two error codes (must match)
-  void TestErrorCount(const size_t errors, const size_t size, const Arguments<T> &args);
+  void TestErrorCount(const size_t errors, const size_t size, const Arguments<U> &args);
   void TestErrorCodes(const StatusCode clblas_status, const StatusCode clblast_status,
-                      const Arguments<T> &args);
+                      const Arguments<U> &args);
 
  protected:
-
-  // Retrieves a list of example scalars of the right type
-  const std::vector<T> GetExampleScalars();
-
-  // Retrieves a list of offset values to test
-  const std::vector<size_t> GetOffsets();
-
-  // Returns false is this precision is not supported by the device
-  bool PrecisionSupported() const;
 
   // The help-message
   std::string help_;
@@ -112,6 +94,12 @@ class Tester {
   Context context_;
   CommandQueue queue_;
 
+  // Whether or not to run the full test-suite or just a smoke test
+  bool full_test_;
+
+  // Retrieves the offset values to test with
+  const std::vector<size_t> GetOffsets() const;
+
  private:
 
   // Internal methods to report a passed, skipped, or failed test
@@ -121,9 +109,6 @@ class Tester {
 
   // Prints the error or success symbol to screen
   void PrintTestResult(const std::string &message);
-
-  // Whether or not to run the full test-suite or just a smoke test
-  bool full_test_;
 
   // Logging and counting occurrences of errors
   std::vector<ErrorLogEntry> error_log_;
@@ -142,6 +127,25 @@ class Tester {
   // Arguments relevant for a specific routine
   std::vector<std::string> options_;
 };
+
+// =================================================================================================
+// Below are the non-member functions (separated because of otherwise required partial class
+// template specialization)
+// =================================================================================================
+
+// Compares two floating point values and returns whether they are within an acceptable error
+// margin. This replaces GTest's EXPECT_NEAR().
+template <typename T>
+bool TestSimilarity(const T val1, const T val2);
+
+// Retrieves a list of example scalar values, used for the alpha and beta arguments for the various
+// routines. This function is specialised for the different data-types.
+template <typename T>
+const std::vector<T> GetExampleScalars(const bool full_test);
+
+// Returns false is this precision is not supported by the device
+template <typename T>
+bool PrecisionSupported(const Device &device);
 
 // =================================================================================================
 } // namespace clblast

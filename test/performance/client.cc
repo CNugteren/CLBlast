@@ -21,249 +21,36 @@
 namespace clblast {
 // =================================================================================================
 
-// This is the vector-vector variant of the set-up/tear-down client routine.
-template <typename T>
-void ClientXY(int argc, char *argv[], Routine2<T> client_routine,
-              const std::vector<std::string> &options) {
-
-  // Function to determine how to find the default value of the leading dimension of matrix A.
-  // Note: this is not relevant for this client but given anyway.
-  auto default_ld_a = [](const Arguments<T> args) { return args.n; };
-
-  // Simple command line argument parser with defaults
-  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
-  if (args.print_help) { return; }
-
-  // Prints the header of the output table
-  PrintTableHeader(args.silent, options);
-
-  // Initializes OpenCL and the libraries
-  auto platform = Platform(args.platform_id);
-  auto device = Device(platform, kDeviceType, args.device_id);
-  auto context = Context(device);
-  auto queue = CommandQueue(context, device);
-  if (args.compare_clblas) { clblasSetup(); }
-
-  // Iterates over all "num_step" values jumping by "step" each time
-  auto s = size_t{0};
-  while(true) {
-
-    // Computes the data sizes
-    auto x_size = args.n*args.x_inc + args.x_offset;
-    auto y_size = args.n*args.y_inc + args.y_offset;
-
-    // Populates input host vectors with random data
-    std::vector<T> x_source(x_size);
-    std::vector<T> y_source(y_size);
-    PopulateVector(x_source);
-    PopulateVector(y_source);
-
-    // Creates the vectors on the device
-    auto x_buffer = Buffer(context, CL_MEM_READ_WRITE, x_size*sizeof(T));
-    auto y_buffer = Buffer(context, CL_MEM_READ_WRITE, y_size*sizeof(T));
-    x_buffer.WriteBuffer(queue, x_size*sizeof(T), x_source);
-    y_buffer.WriteBuffer(queue, y_size*sizeof(T), y_source);
-
-    // Runs the routine-specific code
-    client_routine(args, x_buffer, y_buffer, queue);
-
-    // Makes the jump to the next step
-    ++s;
-    if (s >= args.num_steps) { break; }
-    args.n += args.step;
-  }
-
-  // Cleans-up and returns
-  if (args.compare_clblas) { clblasTeardown(); }
+// Constructor
+template <typename T, typename U>
+Client<T,U>::Client(const Routine run_routine, const Routine run_reference,
+                    const std::vector<std::string> &options,
+                    const GetMetric get_flops, const GetMetric get_bytes):
+  run_routine_(run_routine),
+  run_reference_(run_reference),
+  options_(options),
+  get_flops_(get_flops),
+  get_bytes_(get_bytes) {
 }
-
-// Compiles the above function
-template void ClientXY<float>(int, char **, Routine2<float>, const std::vector<std::string>&);
-template void ClientXY<double>(int, char **, Routine2<double>, const std::vector<std::string>&);
-template void ClientXY<float2>(int, char **, Routine2<float2>, const std::vector<std::string>&);
-template void ClientXY<double2>(int, char **, Routine2<double2>, const std::vector<std::string>&);
-
-// =================================================================================================
-
-// This is the matrix-vector-vector variant of the set-up/tear-down client routine.
-template <typename T>
-void ClientAXY(int argc, char *argv[], Routine3<T> client_routine,
-               const std::vector<std::string> &options) {
-
-  // Function to determine how to find the default value of the leading dimension of matrix A
-  auto default_ld_a = [](const Arguments<T> args) { return args.n; };
-
-  // Simple command line argument parser with defaults
-  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
-  if (args.print_help) { return; }
-
-  // Prints the header of the output table
-  PrintTableHeader(args.silent, options);
-
-  // Initializes OpenCL and the libraries
-  auto platform = Platform(args.platform_id);
-  auto device = Device(platform, kDeviceType, args.device_id);
-  auto context = Context(device);
-  auto queue = CommandQueue(context, device);
-  if (args.compare_clblas) { clblasSetup(); }
-
-  // Iterates over all "num_step" values jumping by "step" each time
-  auto s = size_t{0};
-  while(true) {
-
-    // Computes the second dimension of the matrix taking the rotation into account
-    auto a_two = (args.layout == Layout::kRowMajor) ? args.m : args.n;
-
-    // Computes the vector sizes in case the matrix is transposed
-    auto a_transposed = (args.a_transpose == Transpose::kYes);
-    auto m_real = (a_transposed) ? args.n : args.m;
-    auto n_real = (a_transposed) ? args.m : args.n;
-
-    // Computes the data sizes
-    auto a_size = a_two * args.a_ld + args.a_offset;
-    auto x_size = n_real*args.x_inc + args.x_offset;
-    auto y_size = m_real*args.y_inc + args.y_offset;
-
-    // Populates input host vectors with random data
-    std::vector<T> a_source(a_size);
-    std::vector<T> x_source(x_size);
-    std::vector<T> y_source(y_size);
-    PopulateVector(a_source);
-    PopulateVector(x_source);
-    PopulateVector(y_source);
-
-    // Creates the vectors on the device
-    auto a_buffer = Buffer(context, CL_MEM_READ_WRITE, a_size*sizeof(T));
-    auto x_buffer = Buffer(context, CL_MEM_READ_WRITE, x_size*sizeof(T));
-    auto y_buffer = Buffer(context, CL_MEM_READ_WRITE, y_size*sizeof(T));
-    a_buffer.WriteBuffer(queue, a_size*sizeof(T), a_source);
-    x_buffer.WriteBuffer(queue, x_size*sizeof(T), x_source);
-    y_buffer.WriteBuffer(queue, y_size*sizeof(T), y_source);
-
-    // Runs the routine-specific code
-    client_routine(args, a_buffer, x_buffer, y_buffer, queue);
-
-    // Makes the jump to the next step
-    ++s;
-    if (s >= args.num_steps) { break; }
-    args.m += args.step;
-    args.n += args.step;
-    args.a_ld += args.step;
-  }
-
-  // Cleans-up and returns
-  if (args.compare_clblas) { clblasTeardown(); }
-}
-
-// Compiles the above function
-template void ClientAXY<float>(int, char **, Routine3<float>, const std::vector<std::string>&);
-template void ClientAXY<double>(int, char **, Routine3<double>, const std::vector<std::string>&);
-template void ClientAXY<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&);
-template void ClientAXY<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&);
-
-// =================================================================================================
-
-// This is the matrix-matrix-matrix variant of the set-up/tear-down client routine.
-template <typename T>
-void ClientABC(int argc, char *argv[], Routine3<T> client_routine,
-                     const std::vector<std::string> &options) {
-
-  // Function to determine how to find the default value of the leading dimension of matrix A
-  auto default_ld_a = [](const Arguments<T> args) { return args.m; };
-
-  // Simple command line argument parser with defaults
-  auto args = ParseArguments<T>(argc, argv, options, default_ld_a);
-  if (args.print_help) { return; }
-
-  // Prints the header of the output table
-  PrintTableHeader(args.silent, options);
-
-  // Initializes OpenCL and the libraries
-  auto platform = Platform(args.platform_id);
-  auto device = Device(platform, kDeviceType, args.device_id);
-  auto context = Context(device);
-  auto queue = CommandQueue(context, device);
-  if (args.compare_clblas) { clblasSetup(); }
-
-  // Computes whether or not the matrices are transposed. Note that we assume a default of
-  // column-major and no-transpose. If one of them is different (but not both), then rotated
-  // is considered true.
-  auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose == Transpose::kYes) ||
-                   (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-  auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose == Transpose::kYes) ||
-                   (args.layout == Layout::kRowMajor && args.b_transpose == Transpose::kNo);
-  auto c_rotated = (args.layout == Layout::kRowMajor);
-
-  // Iterates over all "num_step" values jumping by "step" each time
-  auto s = size_t{0};
-  while(true) {
-
-    // Computes the data sizes
-    auto a_two = (a_rotated) ? args.m : args.k;
-    auto b_two = (b_rotated) ? args.k : args.n;
-    auto c_two = (c_rotated) ? args.m : args.n;
-    auto a_size = a_two * args.a_ld + args.a_offset;
-    auto b_size = b_two * args.b_ld + args.b_offset;
-    auto c_size = c_two * args.c_ld + args.c_offset;
-
-    // Populates input host matrices with random data
-    std::vector<T> a_source(a_size);
-    std::vector<T> b_source(b_size);
-    std::vector<T> c_source(c_size);
-    PopulateVector(a_source);
-    PopulateVector(b_source);
-    PopulateVector(c_source);
-
-    // Creates the matrices on the device
-    auto a_buffer = Buffer(context, CL_MEM_READ_WRITE, a_size*sizeof(T));
-    auto b_buffer = Buffer(context, CL_MEM_READ_WRITE, b_size*sizeof(T));
-    auto c_buffer = Buffer(context, CL_MEM_READ_WRITE, c_size*sizeof(T));
-    a_buffer.WriteBuffer(queue, a_size*sizeof(T), a_source);
-    b_buffer.WriteBuffer(queue, b_size*sizeof(T), b_source);
-    c_buffer.WriteBuffer(queue, c_size*sizeof(T), c_source);
-
-    // Runs the routine-specific code
-    client_routine(args, a_buffer, b_buffer, c_buffer, queue);
-
-    // Makes the jump to the next step
-    ++s;
-    if (s >= args.num_steps) { break; }
-    args.m += args.step;
-    args.n += args.step;
-    args.k += args.step;
-    args.a_ld += args.step;
-    args.b_ld += args.step;
-    args.c_ld += args.step;
-  }
-
-  // Cleans-up and returns
-  if (args.compare_clblas) { clblasTeardown(); }
-}
-
-// Compiles the above function
-template void ClientABC<float>(int, char **, Routine3<float>, const std::vector<std::string>&);
-template void ClientABC<double>(int, char **, Routine3<double>, const std::vector<std::string>&);
-template void ClientABC<float2>(int, char **, Routine3<float2>, const std::vector<std::string>&);
-template void ClientABC<double2>(int, char **, Routine3<double2>, const std::vector<std::string>&);
 
 // =================================================================================================
 
 // Parses all arguments available for the CLBlast client testers. Some arguments might not be
 // applicable, but are searched for anyway to be able to create one common argument parser. All
 // arguments have a default value in case they are not found.
-template <typename T>
-Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::string> &options,
-                            const std::function<size_t(const Arguments<T>)> default_ld_a) {
-  auto args = Arguments<T>{};
+template <typename T, typename U>
+Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
+                                         const GetMetric default_b_ld, const GetMetric default_c_ld) {
+  auto args = Arguments<U>{};
   auto help = std::string{"Options given/available:\n"};
 
   // These are the options which are not for every client: they are optional
-  for (auto &o: options) {
+  for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM) { args.m = args.k  = GetArgument(argc, argv, help, kArgM, 512UL); }
-    if (o == kArgN) { args.n           = GetArgument(argc, argv, help, kArgN, 512UL); }
-    if (o == kArgK) { args.k           = GetArgument(argc, argv, help, kArgK, 512UL); }
+    if (o == kArgM) { args.m  = GetArgument(argc, argv, help, kArgM, 512UL); }
+    if (o == kArgN) { args.n  = GetArgument(argc, argv, help, kArgN, 512UL); }
+    if (o == kArgK) { args.k  = GetArgument(argc, argv, help, kArgK, 512UL); }
 
     // Data-layouts
     if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
@@ -271,6 +58,7 @@ Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::strin
     if (o == kArgBTransp)  { args.b_transpose = GetArgument(argc, argv, help, kArgBTransp, Transpose::kNo); }
     if (o == kArgSide)     { args.side        = GetArgument(argc, argv, help, kArgSide, Side::kLeft); }
     if (o == kArgTriangle) { args.triangle    = GetArgument(argc, argv, help, kArgTriangle, Triangle::kUpper); }
+    if (o == kArgDiagonal) { args.diagonal    = GetArgument(argc, argv, help, kArgDiagonal, Diagonal::kUnit); }
 
     // Vector arguments
     if (o == kArgXInc)    { args.x_inc    = GetArgument(argc, argv, help, kArgXInc, size_t{1}); }
@@ -279,16 +67,16 @@ Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::strin
     if (o == kArgYOffset) { args.y_offset = GetArgument(argc, argv, help, kArgYOffset, size_t{0}); }
 
     // Matrix arguments
-    if (o == kArgALeadDim) { args.a_ld     = GetArgument(argc, argv, help, kArgALeadDim, default_ld_a(args)); }
-    if (o == kArgBLeadDim) { args.b_ld     = GetArgument(argc, argv, help, kArgBLeadDim, args.n); }
-    if (o == kArgCLeadDim) { args.c_ld     = GetArgument(argc, argv, help, kArgCLeadDim, args.n); }
+    if (o == kArgALeadDim) { args.a_ld     = GetArgument(argc, argv, help, kArgALeadDim, default_a_ld(args)); }
+    if (o == kArgBLeadDim) { args.b_ld     = GetArgument(argc, argv, help, kArgBLeadDim, default_b_ld(args)); }
+    if (o == kArgCLeadDim) { args.c_ld     = GetArgument(argc, argv, help, kArgCLeadDim, default_c_ld(args)); }
     if (o == kArgAOffset)  { args.a_offset = GetArgument(argc, argv, help, kArgAOffset, size_t{0}); }
     if (o == kArgBOffset)  { args.b_offset = GetArgument(argc, argv, help, kArgBOffset, size_t{0}); }
     if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
 
     // Scalar values 
-    if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<T>()); }
-    if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
+    if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
+    if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
   }
 
   // These are the options common to all routines
@@ -313,16 +101,92 @@ Arguments<T> ParseArguments(int argc, char *argv[], const std::vector<std::strin
 
 // =================================================================================================
 
+// This is main performance tester
+template <typename T, typename U>
+void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes) {
+
+  // Prints the header of the output table
+  PrintTableHeader(args.silent, options_);
+
+  // Initializes OpenCL and the libraries
+  auto platform = Platform(args.platform_id);
+  auto device = Device(platform, kDeviceType, args.device_id);
+  auto context = Context(device);
+  auto queue = CommandQueue(context, device);
+  if (args.compare_clblas) { clblasSetup(); }
+
+  // Iterates over all "num_step" values jumping by "step" each time
+  auto s = size_t{0};
+  while(true) {
+
+    // Sets the buffer sizes (routine-specific)
+    set_sizes(args);
+
+    // Populates input host matrices with random data
+    std::vector<T> x_source(args.x_size);
+    std::vector<T> y_source(args.y_size);
+    std::vector<T> a_source(args.a_size);
+    std::vector<T> b_source(args.b_size);
+    std::vector<T> c_source(args.c_size);
+    PopulateVector(x_source);
+    PopulateVector(y_source);
+    PopulateVector(a_source);
+    PopulateVector(b_source);
+    PopulateVector(c_source);
+
+    // Creates the matrices on the device
+    auto x_vec = Buffer(context, CL_MEM_READ_WRITE, args.x_size*sizeof(T));
+    auto y_vec = Buffer(context, CL_MEM_READ_WRITE, args.y_size*sizeof(T));
+    auto a_mat = Buffer(context, CL_MEM_READ_WRITE, args.a_size*sizeof(T));
+    auto b_mat = Buffer(context, CL_MEM_READ_WRITE, args.b_size*sizeof(T));
+    auto c_mat = Buffer(context, CL_MEM_READ_WRITE, args.c_size*sizeof(T));
+    x_vec.WriteBuffer(queue, args.x_size*sizeof(T), x_source);
+    y_vec.WriteBuffer(queue, args.y_size*sizeof(T), y_source);
+    a_mat.WriteBuffer(queue, args.a_size*sizeof(T), a_source);
+    b_mat.WriteBuffer(queue, args.b_size*sizeof(T), b_source);
+    c_mat.WriteBuffer(queue, args.c_size*sizeof(T), c_source);
+    auto buffers = Buffers{x_vec, y_vec, a_mat, b_mat, c_mat};
+
+    // Runs the routines and collects the timings
+    auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
+    auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference_, "clBLAS");
+
+    // Prints the performance of both libraries
+    PrintTableRow(args, ms_clblast, ms_clblas);
+
+    // Makes the jump to the next step
+    ++s;
+    if (s >= args.num_steps) { break; }
+    args.m += args.step;
+    args.n += args.step;
+    args.k += args.step;
+    args.a_ld += args.step;
+    args.b_ld += args.step;
+    args.c_ld += args.step;
+  }
+
+  // Cleans-up and returns
+  if (args.compare_clblas) { clblasTeardown(); }
+}
+
+// =================================================================================================
+
 // Creates a vector of timing results, filled with execution times of the 'main computation'. The
 // timing is performed using the milliseconds chrono functions. The function returns the minimum
 // value found in the vector of timing results. The return value is in milliseconds.
-double TimedExecution(const size_t num_runs, std::function<void()> main_computation) {
+template <typename T, typename U>
+double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
+                                   const Buffers &buffers, CommandQueue &queue,
+                                   Routine run_blas, const std::string &library_name) {
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {
     auto start_time = std::chrono::steady_clock::now();
 
     // Executes the main computation
-    main_computation();
+    auto status = run_blas(args, buffers, queue);
+    if (status != StatusCode::kSuccess) {
+      throw std::runtime_error(library_name+" error: "+ToString(static_cast<int>(status)));
+    }
 
     // Records and stores the end-time
     auto elapsed_time = std::chrono::steady_clock::now() - start_time;
@@ -334,7 +198,8 @@ double TimedExecution(const size_t num_runs, std::function<void()> main_computat
 // =================================================================================================
 
 // Prints the header of the performance table
-void PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
+template <typename T, typename U>
+void Client<T,U>::PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
   if (!silent) {
     for (auto i=size_t{0}; i<args.size(); ++i) { fprintf(stdout, "%9s ", ""); }
     fprintf(stdout, " | <--       CLBlast       --> | <--      clBLAS      --> |\n");
@@ -345,29 +210,60 @@ void PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
 }
 
 // Print a performance-result row
-void PrintTableRow(const std::vector<size_t> &args_int, const std::vector<std::string> &args_string,
-                   const bool no_abbrv, const double ms_clblast, const double ms_clblas,
-                   const unsigned long long flops, const unsigned long long bytes) {
+template <typename T, typename U>
+void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblast,
+                                const double ms_clblas) {
+
+  // Creates a vector of relevant variables
+  auto integers = std::vector<size_t>{};
+  for (auto &o: options_) {
+    if      (o == kArgM) {        integers.push_back(args.m); }
+    if      (o == kArgN) {        integers.push_back(args.n); }
+    else if (o == kArgK) {        integers.push_back(args.k); }
+    else if (o == kArgLayout) {   integers.push_back(static_cast<size_t>(args.layout)); }
+    else if (o == kArgSide) {     integers.push_back(static_cast<size_t>(args.side)); }
+    else if (o == kArgTriangle) { integers.push_back(static_cast<size_t>(args.triangle)); }
+    else if (o == kArgATransp) {  integers.push_back(static_cast<size_t>(args.a_transpose)); }
+    else if (o == kArgBTransp) {  integers.push_back(static_cast<size_t>(args.b_transpose)); }
+    else if (o == kArgDiagonal) { integers.push_back(static_cast<size_t>(args.diagonal)); }
+    else if (o == kArgXInc) {     integers.push_back(args.x_inc); }
+    else if (o == kArgYInc) {     integers.push_back(args.y_inc); }
+    else if (o == kArgXOffset) {  integers.push_back(args.x_offset); }
+    else if (o == kArgYOffset) {  integers.push_back(args.y_offset); }
+    else if (o == kArgALeadDim) { integers.push_back(args.a_ld); }
+    else if (o == kArgBLeadDim) { integers.push_back(args.b_ld); }
+    else if (o == kArgCLeadDim) { integers.push_back(args.c_ld); }
+    else if (o == kArgAOffset) {  integers.push_back(args.a_offset); }
+    else if (o == kArgBOffset) {  integers.push_back(args.b_offset); }
+    else if (o == kArgCOffset) {  integers.push_back(args.c_offset); }
+  }
+  auto strings = std::vector<std::string>{};
+  for (auto &o: options_) {
+    if      (o == kArgAlpha) {    strings.push_back(ToString(args.alpha)); }
+    else if (o == kArgBeta) {     strings.push_back(ToString(args.beta)); }
+  }
 
   // Computes the GFLOPS and GB/s metrics
+  auto flops = get_flops_(args);
+  auto bytes = get_bytes_(args);
   auto gflops_clblast = (ms_clblast != 0.0) ? (flops*1e-6)/ms_clblast : 0;
   auto gflops_clblas = (ms_clblas != 0.0) ? (flops*1e-6)/ms_clblas: 0;
   auto gbs_clblast = (ms_clblast != 0.0) ? (bytes*1e-6)/ms_clblast : 0;
   auto gbs_clblas = (ms_clblas != 0.0) ? (bytes*1e-6)/ms_clblas: 0;
 
   // Outputs the argument values
-  for (auto &argument: args_int) {
-    if (!no_abbrv && argument >= 1024*1024 && IsMultiple(argument, 1024*1024)) {
+  for (auto &argument: integers) {
+    if (!args.no_abbrv && argument >= 1024*1024 && IsMultiple(argument, 1024*1024)) {
       fprintf(stdout, "%8luM;", argument/(1024*1024));
     }
-    else if (!no_abbrv && argument >= 1024 && IsMultiple(argument, 1024)) {
+    else if (!args.no_abbrv && argument >= 1024 && IsMultiple(argument, 1024)) {
       fprintf(stdout, "%8luK;", argument/1024);
     }
     else {
       fprintf(stdout, "%9lu;", argument);
     }
   }
-  for (auto &argument: args_string) {
+  for (auto &argument: strings) {
     fprintf(stdout, "%9s;", argument.c_str());
   }
 
@@ -376,6 +272,16 @@ void PrintTableRow(const std::vector<size_t> &args_int, const std::vector<std::s
           ms_clblast, gflops_clblast, gbs_clblast,
           ms_clblas, gflops_clblas, gbs_clblas);
 }
+
+// =================================================================================================
+
+// Compiles the templated class
+template class Client<float,float>;
+template class Client<double,double>;
+template class Client<float2,float2>;
+template class Client<double2,double2>;
+template class Client<float2,float>;
+template class Client<double2,double>;
 
 // =================================================================================================
 } // namespace clblast

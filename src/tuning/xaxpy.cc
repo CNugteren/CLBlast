@@ -34,11 +34,10 @@ void XaxpyTune(const Arguments<T> &args,
   }
 
   // This points to the XaxpyFast kernel as found in the CLBlast library
-  std::string common_source =
-  #include "../src/kernels/common.opencl"
-  std::string kernel_source =
-  #include "../src/kernels/xaxpy.opencl"
-  auto sources = common_source + kernel_source;
+  std::string sources =
+    #include "../src/kernels/common.opencl"
+    #include "../src/kernels/xaxpy.opencl"
+  ;
   auto id = tuner.AddKernelFromString(sources, "XaxpyFast", {args.n}, {1});
   tuner.SetReferenceFromString(sources, "XaxpyFast", {args.n}, {64});
 

@@ -75,6 +75,7 @@ enum class Layout { kRowMajor, kColMajor };
 enum class Transpose { kNo, kYes, kConjugate };
 enum class Side { kLeft, kRight };
 enum class Triangle { kUpper, kLower };
+enum class Diagonal { kUnit, kNonUnit };
 
 // Precision scoped enum (values in bits)
 enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
@@ -95,7 +96,7 @@ StatusCode Axpy(const size_t n, const T alpha,
 
 // Templated-precision generalized matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
 template <typename T>
-StatusCode Gemv(const Layout layout, const Transpose transpose_a,
+StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n,
                 const T alpha,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -107,9 +108,9 @@ StatusCode Gemv(const Layout layout, const Transpose transpose_a,
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 
-// Templated-precision generalized matrix-matrix multiplication: SGEMM/DGEMM
+// Templated-precision generalized matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
 template <typename T>
-StatusCode Gemm(const Layout layout, const Transpose transpose_a, const Transpose transpose_b,
+StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                 const size_t m, const size_t n, const size_t k,
                 const T alpha,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -118,7 +119,7 @@ StatusCode Gemm(const Layout layout, const Transpose transpose_a, const Transpos
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event);
 
-// Templated-precision symmetric matrix-matrix multiplication: SSYMM/DSYMM
+// Templated-precision symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM
 template <typename T>
 StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const size_t m, const size_t n,
@@ -128,6 +129,81 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event);
+
+// Templated-precision hermitian matrix-matrix multiplication: CHEMM/ZHEMM
+template <typename T>
+StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                const T beta,
+                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                cl_command_queue* queue, cl_event* event);
+
+// Templated-precision rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
+template <typename T>
+StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                const size_t n, const size_t k,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const T beta,
+                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                cl_command_queue* queue, cl_event* event);
+
+// Templated-precision rank-K update of a hermitian matrix: CHERK/ZHERK
+template <typename T>
+StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                const size_t n, const size_t k,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const T beta,
+                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                cl_command_queue* queue, cl_event* event);
+
+// Templated-precision rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+template <typename T>
+StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                 const size_t n, const size_t k,
+                 const T alpha,
+                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                 const T beta,
+                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                 cl_command_queue* queue, cl_event* event);
+
+// Templated-precision rank-2K update of a hermitian matrix: CHER2K/ZHER2K
+template <typename T, typename U>
+StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                 const size_t n, const size_t k,
+                 const T alpha,
+                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                 const U beta,
+                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                 cl_command_queue* queue, cl_event* event);
+
+// Templated-precision triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
+template <typename T>
+StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
+                const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event);
+
+// Templated-precision matrix equation solver: STRSM/DTRSM/CTRSM/ZTRSM
+/*
+template <typename T>
+StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
+                const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event);
+*/
 
 // =================================================================================================
 } // namespace clblast

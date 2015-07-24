@@ -1,4 +1,16 @@
 
+Version 0.3.0
+- Re-organized test/client infrastructure to avoid code duplication
+- Added an optional bypass for pre/post-processing kernels in level-3 routines
+- Significantly improved performance of level-3 routines on AMD GPUs
+- Added level-3 routines:
+  * CHEMM/ZHEMM
+  * SSYRK/DSYRK/CSYRK/ZSYRK
+  * CHERK/ZHERK
+  * SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+  * CHER2K/ZHER2K
+  * STRMM/DTRMM/CTRMM/ZTRMM
+
 Version 0.2.0
 - Added support for complex conjugate transpose
 - Several host-code performance improvements

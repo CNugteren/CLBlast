@@ -46,6 +46,7 @@ constexpr auto kArgATransp = "transA";
 constexpr auto kArgBTransp = "transB";
 constexpr auto kArgSide = "side";
 constexpr auto kArgTriangle = "triangle";
+constexpr auto kArgDiagonal = "diagonal";
 constexpr auto kArgXInc = "incx";
 constexpr auto kArgYInc = "incy";
 constexpr auto kArgXOffset = "offx";
@@ -93,6 +94,7 @@ struct Arguments {
   Transpose b_transpose = Transpose::kNo;
   Side side = Side::kLeft;
   Triangle triangle = Triangle::kUpper;
+  Diagonal diagonal = Diagonal::kUnit;
   size_t x_inc = 1;
   size_t y_inc = 1;
   size_t x_offset = 0;
@@ -105,6 +107,11 @@ struct Arguments {
   size_t c_offset = 0;
   T alpha = T{1.0};
   T beta = T{1.0};
+  size_t x_size = 1;
+  size_t y_size = 1;
+  size_t a_size = 1;
+  size_t b_size = 1;
+  size_t c_size = 1;
   // Tuner-specific arguments
   double fraction = 1.0;
   // Client-specific arguments
@@ -121,6 +128,15 @@ struct Arguments {
   bool print_help = false;
   bool silent = false;
   bool no_abbrv = false;
+};
+
+// Structure containing all possible buffers for test clients
+struct Buffers {
+  Buffer x_vec;
+  Buffer y_vec;
+  Buffer a_mat;
+  Buffer b_mat;
+  Buffer c_mat;
 };
 
 // =================================================================================================

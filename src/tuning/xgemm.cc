@@ -30,11 +30,10 @@ void XgemmTune(const Arguments<T> &args,
                cltune::Tuner &tuner) {
 
   // This points to the Xgemm kernel as found in the CLBlast library and its golden reference
-  std::string common_source =
-  #include "../src/kernels/common.opencl"
-  std::string kernel_source =
-  #include "../src/kernels/xgemm.opencl"
-  auto sources = common_source + kernel_source;
+  std::string sources =
+    #include "../src/kernels/common.opencl"
+    #include "../src/kernels/xgemm.opencl"
+  ;
   auto id = tuner.AddKernelFromString(sources, "Xgemm", {args.m, args.n}, {1, 1});
   tuner.SetReferenceFromString(sources, "Xgemm", {args.m, args.n}, {8, 8});
 
