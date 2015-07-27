@@ -167,6 +167,8 @@ if(TESTS)
   # This subproject uses specific flags to reduce the amount of warnings.
   set(CMAKE_CXX_FLAGS_CLBLAST ${CMAKE_CXX_FLAGS})
   set(CMAKE_CXX_FLAGS "-O3")
+  SET(BUILD_TEST OFF CACHE BOOL "Disables building the external clBLAS test-suite")
+  SET(BUILD_KTEST OFF CACHE BOOL "Disables building the external clBLAS kernel tests")
   add_subdirectory(external/clBLAS/src)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_CLBLAST})
 
