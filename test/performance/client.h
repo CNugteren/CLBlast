@@ -38,11 +38,8 @@ template <typename T, typename U>
 class Client {
  public:
 
-  // Types of devices to consider
-  const cl_device_type kDeviceType = CL_DEVICE_TYPE_ALL;
-
   // Shorthand for the routine-specific functions passed to the tester
-  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers&, CommandQueue&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers<T>&, Queue&)>;
   using SetMetric = std::function<void(Arguments<U>&)>;
   using GetMetric = std::function<size_t(const Arguments<U>&)>;
 
@@ -63,8 +60,8 @@ class Client {
  private:
 
   // Runs a function a given number of times and returns the execution time of the shortest instance
-  double TimedExecution(const size_t num_runs, const Arguments<U> &args, const Buffers &buffers,
-                        CommandQueue &queue, Routine run_blas, const std::string &library_name);
+  double TimedExecution(const size_t num_runs, const Arguments<U> &args, const Buffers<T> &buffers,
+                        Queue &queue, Routine run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
   void PrintTableHeader(const bool silent, const std::vector<std::string> &args);

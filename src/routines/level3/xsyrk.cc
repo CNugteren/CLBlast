@@ -29,8 +29,8 @@ template <> const Precision Xsyrk<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsyrk<T>::Xsyrk(CommandQueue &queue, Event &event):
-    Routine(queue, event, "SYRK", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+Xsyrk<T>::Xsyrk(Queue &queue, Event &event):
+    Routine<T>(queue, event, "SYRK", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/copy.opencl"
     #include "../../kernels/pad.opencl"
@@ -47,9 +47,9 @@ template <typename T>
 StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                             const size_t n, const size_t k,
                             const T alpha,
-                            const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                             const T beta,
-                            const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((n == 0) || (k == 0) ) { return StatusCode::kInvalidDimension; }
@@ -93,8 +93,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
                      a_rotated == false;
 
     // Creates the temporary matrices
-    auto a_temp = (a_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+    auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
     // Runs the pre-processing kernel for matrix A. This transposes the matrix, but also pads zeros
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In

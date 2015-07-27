@@ -110,9 +110,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 
   // Initializes OpenCL and the libraries
   auto platform = Platform(args.platform_id);
-  auto device = Device(platform, kDeviceType, args.device_id);
+  auto device = Device(platform, args.device_id);
   auto context = Context(device);
-  auto queue = CommandQueue(context, device);
+  auto queue = Queue(context, device);
   if (args.compare_clblas) { clblasSetup(); }
 
   // Iterates over all "num_step" values jumping by "step" each time
@@ -135,17 +135,17 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     PopulateVector(c_source);
 
     // Creates the matrices on the device
-    auto x_vec = Buffer(context, CL_MEM_READ_WRITE, args.x_size*sizeof(T));
-    auto y_vec = Buffer(context, CL_MEM_READ_WRITE, args.y_size*sizeof(T));
-    auto a_mat = Buffer(context, CL_MEM_READ_WRITE, args.a_size*sizeof(T));
-    auto b_mat = Buffer(context, CL_MEM_READ_WRITE, args.b_size*sizeof(T));
-    auto c_mat = Buffer(context, CL_MEM_READ_WRITE, args.c_size*sizeof(T));
-    x_vec.WriteBuffer(queue, args.x_size*sizeof(T), x_source);
-    y_vec.WriteBuffer(queue, args.y_size*sizeof(T), y_source);
-    a_mat.WriteBuffer(queue, args.a_size*sizeof(T), a_source);
-    b_mat.WriteBuffer(queue, args.b_size*sizeof(T), b_source);
-    c_mat.WriteBuffer(queue, args.c_size*sizeof(T), c_source);
-    auto buffers = Buffers{x_vec, y_vec, a_mat, b_mat, c_mat};
+    auto x_vec = Buffer<T>(context, args.x_size);
+    auto y_vec = Buffer<T>(context, args.y_size);
+    auto a_mat = Buffer<T>(context, args.a_size);
+    auto b_mat = Buffer<T>(context, args.b_size);
+    auto c_mat = Buffer<T>(context, args.c_size);
+    x_vec.Write(queue, args.x_size, x_source);
+    y_vec.Write(queue, args.y_size, y_source);
+    a_mat.Write(queue, args.a_size, a_source);
+    b_mat.Write(queue, args.b_size, b_source);
+    c_mat.Write(queue, args.c_size, c_source);
+    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat};
 
     // Runs the routines and collects the timings
     auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
@@ -176,7 +176,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 // value found in the vector of timing results. The return value is in milliseconds.
 template <typename T, typename U>
 double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
-                                   const Buffers &buffers, CommandQueue &queue,
+                                   const Buffers<T> &buffers, Queue &queue,
                                    Routine run_blas, const std::string &library_name) {
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {

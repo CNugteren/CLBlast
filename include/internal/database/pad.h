@@ -17,25 +17,25 @@ namespace clblast {
 const Database::DatabaseEntry Database::PadSingle = {
   "Pad", Precision::kSingle, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",4} } },
         { "Tesla K20m",       { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "Tesla K40m",       { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
         { "Iris",             { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -46,24 +46,24 @@ const Database::DatabaseEntry Database::PadSingle = {
 const Database::DatabaseEntry Database::PadDouble = {
   "Pad", Precision::kDouble, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K20m",       { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K40m",       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -74,25 +74,25 @@ const Database::DatabaseEntry Database::PadDouble = {
 const Database::DatabaseEntry Database::PadComplexSingle = {
   "Pad", Precision::kComplexSingle, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K20m",       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "Tesla K40m",       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
         { "Iris",             { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -103,24 +103,24 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
 const Database::DatabaseEntry Database::PadComplexDouble = {
   "Pad", Precision::kComplexDouble, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K20m",       { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K40m",       { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }

@@ -29,8 +29,8 @@ template <> const Precision Xgemv<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(CommandQueue &queue, Event &event):
-    Routine(queue, event, "GEMV", {"Xgemv"}, precision_) {
+Xgemv<T>::Xgemv(Queue &queue, Event &event):
+    Routine<T>(queue, event, "GEMV", {"Xgemv"}, precision_) {
   source_string_ =
     #include "../../kernels/xgemv.opencl"
   ;
@@ -43,10 +43,10 @@ template <typename T>
 StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
                             const size_t m, const size_t n,
                             const T alpha,
-                            const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer &x_buffer, const size_t x_offset, const size_t x_inc,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                             const T beta,
-                            const Buffer &y_buffer, const size_t y_offset, const size_t y_inc) {
+                            const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
   // Makes sure all dimensions are larger than zero
   if (m == 0 || n == 0) { return StatusCode::kInvalidDimension; }

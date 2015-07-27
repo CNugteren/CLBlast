@@ -131,12 +131,13 @@ struct Arguments {
 };
 
 // Structure containing all possible buffers for test clients
+template <typename T>
 struct Buffers {
-  Buffer x_vec;
-  Buffer y_vec;
-  Buffer a_mat;
-  Buffer b_mat;
-  Buffer c_mat;
+  Buffer<T> x_vec;
+  Buffer<T> y_vec;
+  Buffer<T> a_mat;
+  Buffer<T> b_mat;
+  Buffer<T> c_mat;
 };
 
 // =================================================================================================

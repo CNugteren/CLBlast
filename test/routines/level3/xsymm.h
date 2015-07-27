@@ -70,8 +70,7 @@ class TestXsymm {
   static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers &buffers,
-                               CommandQueue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Symm(args.layout, args.side, args.triangle,
@@ -85,8 +84,7 @@ class TestXsymm {
   }
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
-  static StatusCode RunReference(const Arguments<T> &args, const Buffers &buffers,
-                                 CommandQueue &queue) {
+  static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = clblasXsymm(static_cast<clblasOrder>(args.layout),
@@ -102,10 +100,9 @@ class TestXsymm {
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
-  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers &buffers,
-                                       CommandQueue &queue) {
+  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.c_size, static_cast<T>(0));
-    buffers.c_mat.ReadBuffer(queue, args.c_size*sizeof(T), result);
+    buffers.c_mat.Read(queue, args.c_size, result);
     return result;
   }
 

@@ -66,8 +66,8 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester
-  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers&, CommandQueue&)>;
-  using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers&, CommandQueue&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers<T>&, Queue&)>;
+  using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultIndex = std::function<size_t(const Arguments<U>&, const size_t, const size_t)>;
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;
 

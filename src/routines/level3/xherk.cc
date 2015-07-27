@@ -27,8 +27,8 @@ template <> const Precision Xherk<double2,double>::precision_ = Precision::kComp
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xherk<T,U>::Xherk(CommandQueue &queue, Event &event):
-    Routine(queue, event, "HERK", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+Xherk<T,U>::Xherk(Queue &queue, Event &event):
+    Routine<T>(queue, event, "HERK", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/copy.opencl"
     #include "../../kernels/pad.opencl"
@@ -45,9 +45,9 @@ template <typename T, typename U>
 StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                               const size_t n, const size_t k,
                               const U alpha,
-                              const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
+                              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                               const U beta,
-                              const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+                              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((n == 0) || (k == 0) ) { return StatusCode::kInvalidDimension; }
@@ -98,9 +98,9 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
                      a_rotated == false && b_conjugate == false;
 
     // Creates the temporary matrices
-    auto a_temp = (a_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto b_temp = (b_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+    auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
     // Runs the pre-processing kernel for matrix A. This transposes the matrix, but also pads zeros
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In

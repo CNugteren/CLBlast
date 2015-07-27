@@ -43,7 +43,7 @@ StatusCode Axpy(const size_t n, const T alpha,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xaxpy<T>(queue_cpp, event_cpp);
 
@@ -53,8 +53,8 @@ StatusCode Axpy(const size_t n, const T alpha,
 
   // Runs the routine
   return routine.DoAxpy(n, alpha,
-                        Buffer(x_buffer), x_offset, x_inc,
-                        Buffer(y_buffer), y_offset, y_inc);
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Axpy<float>(const size_t, const float,
                                 const cl_mem, const size_t, const size_t,
@@ -85,7 +85,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xgemv<T>(queue_cpp, event_cpp);
 
@@ -95,9 +95,9 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
 
   // Runs the routine
   return routine.DoGemv(layout, a_transpose, m, n, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(x_buffer), x_offset, x_inc, beta,
-                        Buffer(y_buffer), y_offset, y_inc);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc, beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Gemv<float>(const Layout, const Transpose,
                                 const size_t, const size_t, const float,
@@ -135,7 +135,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xgemm<T>(queue_cpp, event_cpp);
 
@@ -145,9 +145,9 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
 
   // Runs the routine
   return routine.DoGemm(layout, a_transpose, b_transpose, m, n, k, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(b_buffer), b_offset, b_ld, beta,
-                        Buffer(c_buffer), c_offset, c_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(b_buffer), b_offset, b_ld, beta,
+                        Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Gemm<float>(const Layout, const Transpose, const Transpose,
                                 const size_t, const size_t, const size_t, const float,
@@ -184,7 +184,7 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xsymm<T>(queue_cpp, event_cpp);
 
@@ -194,9 +194,9 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
 
   // Runs the routine
   return routine.DoSymm(layout, side, triangle, m, n, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(b_buffer), b_offset, b_ld, beta,
-                        Buffer(c_buffer), c_offset, c_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(b_buffer), b_offset, b_ld, beta,
+                        Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Symm<float>(const Layout, const Side, const Triangle,
                                 const size_t, const size_t, const float,
@@ -233,7 +233,7 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xhemm<T>(queue_cpp, event_cpp);
 
@@ -243,9 +243,9 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
 
   // Runs the routine
   return routine.DoHemm(layout, side, triangle, m, n, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(b_buffer), b_offset, b_ld, beta,
-                        Buffer(c_buffer), c_offset, c_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(b_buffer), b_offset, b_ld, beta,
+                        Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Hemm<float2>(const Layout, const Side, const Triangle,
                                  const size_t, const size_t, const float2,
@@ -269,7 +269,7 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xsyrk<T>(queue_cpp, event_cpp);
 
@@ -279,8 +279,8 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
 
   // Runs the routine
   return routine.DoSyrk(layout, triangle, a_transpose, n, k, alpha,
-                        Buffer(a_buffer), a_offset, a_ld, beta,
-                        Buffer(c_buffer), c_offset, c_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld, beta,
+                        Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Syrk<float>(const Layout, const Triangle, const Transpose,
                                 const size_t, const size_t, const float,
@@ -312,7 +312,7 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xherk<std::complex<T>,T>(queue_cpp, event_cpp);
 
@@ -322,8 +322,8 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
 
   // Runs the routine
   return routine.DoHerk(layout, triangle, a_transpose, n, k, alpha,
-                        Buffer(a_buffer), a_offset, a_ld, beta,
-                        Buffer(c_buffer), c_offset, c_ld);
+                        Buffer<std::complex<T>>(a_buffer), a_offset, a_ld, beta,
+                        Buffer<std::complex<T>>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Herk<float>(const Layout, const Triangle, const Transpose,
                                 const size_t, const size_t, const float,
@@ -346,7 +346,7 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xsyr2k<T>(queue_cpp, event_cpp);
 
@@ -356,9 +356,9 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
 
   // Runs the routine
   return routine.DoSyr2k(layout, triangle, ab_transpose, n, k, alpha,
-                         Buffer(a_buffer), a_offset, a_ld,
-                         Buffer(b_buffer), b_offset, b_ld, beta,
-                         Buffer(c_buffer), c_offset, c_ld);
+                         Buffer<T>(a_buffer), a_offset, a_ld,
+                         Buffer<T>(b_buffer), b_offset, b_ld, beta,
+                         Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Syr2k<float>(const Layout, const Triangle, const Transpose,
                                  const size_t, const size_t, const float,
@@ -395,7 +395,7 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const U beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xher2k<T,U>(queue_cpp, event_cpp);
 
@@ -405,9 +405,9 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
 
   // Runs the routine
   return routine.DoHer2k(layout, triangle, ab_transpose, n, k, alpha,
-                         Buffer(a_buffer), a_offset, a_ld,
-                         Buffer(b_buffer), b_offset, b_ld, beta,
-                         Buffer(c_buffer), c_offset, c_ld);
+                         Buffer<T>(a_buffer), a_offset, a_ld,
+                         Buffer<T>(b_buffer), b_offset, b_ld, beta,
+                         Buffer<T>(c_buffer), c_offset, c_ld);
 }
 template StatusCode Her2k<float2,float>(const Layout, const Triangle, const Transpose,
                                         const size_t, const size_t, const float2,
@@ -433,7 +433,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xtrmm<T>(queue_cpp, event_cpp);
 
@@ -443,8 +443,8 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle,
 
   // Runs the routine
   return routine.DoTrmm(layout, side, triangle, a_transpose, diagonal, m, n, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(b_buffer), b_offset, b_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(b_buffer), b_offset, b_ld);
 }
 template StatusCode Trmm<float>(const Layout, const Side, const Triangle,
                                 const Transpose, const Diagonal,
@@ -483,7 +483,7 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = CommandQueue(*queue);
+  auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xtrsm<T>(queue_cpp, event_cpp);
 
@@ -493,8 +493,8 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle,
 
   // Runs the routine
   return routine.DoTrsm(layout, side, triangle, a_transpose, diagonal, m, n, alpha,
-                        Buffer(a_buffer), a_offset, a_ld,
-                        Buffer(b_buffer), b_offset, b_ld);
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(b_buffer), b_offset, b_ld);
 }
 template StatusCode Trsm<float>(const Layout, const Side, const Triangle,
                                 const Transpose, const Diagonal,

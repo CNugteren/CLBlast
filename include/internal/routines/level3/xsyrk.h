@@ -25,17 +25,31 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xsyrk: public Routine {
+class Xsyrk: public Routine<T> {
  public:
-  Xsyrk(CommandQueue &queue, Event &event);
+
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::context_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::PadCopyTransposeMatrix;
+  using Routine<T>::TestMatrixA;
+  using Routine<T>::TestMatrixC;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
+
+  // Constructor
+  Xsyrk(Queue &queue, Event &event);
 
   // Templated-precision implementation of the routine
   StatusCode DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                     const size_t n, const size_t k,
                     const T alpha,
-                    const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                     const T beta,
-                    const Buffer &c_buffer, const size_t c_offset, const size_t c_ld);
+                    const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
 
  private:
   // Static variable to get the precision

@@ -7,18 +7,17 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a C++11 wrapper around some OpenCL C data-types, similar to Khronos' cl.hpp.
-// The main differences are modern C++11 support and a straightforward implemenation of the basic
-// needs (as required for this project). It also includes some extra functionality not available
-// in cl.hpp, such as including the sources with a Program object and querying a Kernel's validity
-// in terms of local memory usage.
+// This file implements a bunch of C++11 classes that act as wrappers around OpenCL objects and API
+// calls. The main benefits are increased abstraction, automatic memory management, and portability.
+// Portability here means that a similar header exists for CUDA with the same classes and
+// interfaces. In other words, moving from the OpenCL API to the CUDA API becomes a one-line change.
 //
-// This file is adapted from the C++ bindings from the CLTune project and therefore contains the
-// following copyright notice:
+// This file is taken from the Claduc project <https://github.com/CNugteren/Claduc> and therefore
+// contains the following header copyright notice:
 //
 // =================================================================================================
 //
-// Copyright 2014 SURFsara
+// Copyright 2015 SURFsara
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,13 +36,15 @@
 #ifndef CLBLAST_CLPP11_H_
 #define CLBLAST_CLPP11_H_
 
-#include <utility> // std::swap
+// C++
 #include <algorithm> // std::copy
-#include <string> // std::string
-#include <vector> // std::vector
+#include <string>    // std::string
+#include <vector>    // std::vector
+#include <memory>    // std::shared_ptr
 #include <stdexcept> // std::runtime_error
+#include <numeric>   // std::accumulate
 
-// Includes the normal OpenCL C header
+// OpenCL
 #if defined(__APPLE__) || defined(__MACOSX)
   #include <OpenCL/opencl.h>
 #else
@@ -53,59 +54,46 @@
 namespace clblast {
 // =================================================================================================
 
-// Base class for any object
-class Object {
- protected:
+// Error occurred in the C++11 OpenCL header (this file)
+inline void Error(const std::string &message) {
+  throw std::runtime_error("Internal OpenCL error: "+message);
+}
 
-  // Error handling (NOTE: these functions are [[noreturn]])
-  void Error(const std::string &message) const {
-    throw std::runtime_error("Internal OpenCL error: "+message);
+// Error occurred in OpenCL
+inline void CheckError(const cl_int status) {
+  if (status != CL_SUCCESS) {
+    throw std::runtime_error("Internal OpenCL error: "+std::to_string(status));
   }
-  void Error(const cl_int status) const {
-    throw std::runtime_error("Internal OpenCL error with status: "+std::to_string(status));
-  }
-};
+}
 
 // =================================================================================================
 
-// Base class for objects which require memory management
-class ObjectWithState: public Object {
-
-};
-
-// =================================================================================================
-
-// C++11 version of cl_event
-class Event: public Object {
+// C++11 version of 'cl_event'
+class Event {
  public:
 
-  // Constructor based on the plain C data-type
+  // Constructor based on the regular OpenCL data-type
   explicit Event(const cl_event event): event_(event) { }
 
-  // New event
-  Event(): event_() {}
+  // Regular constructor
+  explicit Event() { }
 
-  // Public functions
-  size_t GetProfilingStart() const {
+  // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
+  // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
+  // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
+  float GetElapsedTime() const {
+    CheckError(clWaitForEvents(1, &event_));
     auto bytes = size_t{0};
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
-    auto result = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &result, nullptr);
-    return result;
-  }
-  size_t GetProfilingEnd() const {
-    auto bytes = size_t{0};
+    auto time_start = size_t{0};
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
-    auto result = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &result, nullptr);
-    return result;
-  }
-  cl_int Wait() const {
-    return clWaitForEvents(1, &event_);
+    auto time_end = size_t{0};
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    return (time_end - time_start) * 1.0e-6f;
   }
 
-  // Accessors to the private data-member
-  cl_event operator()() const { return event_; }
+  // Accessor to the private data-member
   cl_event& operator()() { return event_; }
  private:
   cl_event event_;
@@ -113,27 +101,25 @@ class Event: public Object {
 
 // =================================================================================================
 
-// C++11 version of cl_platform_id
-class Platform: public Object {
+// C++11 version of 'cl_platform_id'
+class Platform {
  public:
 
-  // Constructor based on the plain C data-type
+  // Constructor based on the regular OpenCL data-type
   explicit Platform(const cl_platform_id platform): platform_(platform) { }
 
-  // Initialize the platform. Note that this constructor can throw exceptions!
+  // Initializes the platform
   explicit Platform(const size_t platform_id) {
     auto num_platforms = cl_uint{0};
-    auto status = clGetPlatformIDs(0, nullptr, &num_platforms);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetPlatformIDs(0, nullptr, &num_platforms));
     if (num_platforms == 0) { Error("no platforms found"); }
     auto platforms = std::vector<cl_platform_id>(num_platforms);
-    status = clGetPlatformIDs(num_platforms, platforms.data(), nullptr);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetPlatformIDs(num_platforms, platforms.data(), nullptr));
     if (platform_id >= num_platforms) { Error("invalid platform ID "+std::to_string(platform_id)); }
     platform_ = platforms[platform_id];
   }
 
-  // Accessors to the private data-member
+  // Accessor to the private data-member
   const cl_platform_id& operator()() const { return platform_; }
  private:
   cl_platform_id platform_;
@@ -141,40 +127,53 @@ class Platform: public Object {
 
 // =================================================================================================
 
-// C++11 version of cl_device_id
-class Device: public Object {
+// C++11 version of 'cl_device_id'
+class Device {
  public:
 
-  // Constructor based on the plain C data-type
+  // Constructor based on the regular OpenCL data-type
   explicit Device(const cl_device_id device): device_(device) { }
 
   // Initialize the device. Note that this constructor can throw exceptions!
-  explicit Device(const Platform &platform, const cl_device_type type, const size_t device_id) {
+  explicit Device(const Platform &platform, const size_t device_id) {
     auto num_devices = cl_uint{0};
-    auto status = clGetDeviceIDs(platform(), type, 0, nullptr, &num_devices);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetDeviceIDs(platform(), CL_DEVICE_TYPE_ALL, 0, nullptr, &num_devices));
     if (num_devices == 0) { Error("no devices found"); }
     auto devices = std::vector<cl_device_id>(num_devices);
-    status = clGetDeviceIDs(platform(), type, num_devices, devices.data(), nullptr);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetDeviceIDs(platform(), CL_DEVICE_TYPE_ALL, num_devices, devices.data(), nullptr));
     if (device_id >= num_devices) { Error("invalid device ID "+std::to_string(device_id)); }
     device_ = devices[device_id];
   }
 
-  // Public functions
-  std::string Version()     const { return GetInfoString(CL_DEVICE_VERSION); }
-  cl_device_type Type()     const { return GetInfo<cl_device_type>(CL_DEVICE_TYPE); }
-  std::string Vendor()      const { return GetInfoString(CL_DEVICE_VENDOR); }
-  std::string Name()        const { return GetInfoString(CL_DEVICE_NAME); }
-  std::string Extensions()  const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
+  // Methods to retrieve device information
+  std::string Version() const { return GetInfoString(CL_DEVICE_VERSION); }
+  std::string Vendor() const { return GetInfoString(CL_DEVICE_VENDOR); }
+  std::string Name() const { return GetInfoString(CL_DEVICE_NAME); }
+  std::string Type() const {
+    auto type = GetInfo<cl_device_type>(CL_DEVICE_TYPE);
+    switch(type) {
+      case CL_DEVICE_TYPE_CPU: return "CPU";
+      case CL_DEVICE_TYPE_GPU: return "GPU";
+      case CL_DEVICE_TYPE_ACCELERATOR: return "accelerator";
+      default: return "default";
+    }
+  }
   size_t MaxWorkGroupSize() const { return GetInfo<size_t>(CL_DEVICE_MAX_WORK_GROUP_SIZE); }
-  cl_ulong LocalMemSize()   const { return GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE); }
-  cl_uint MaxWorkItemDimensions() const {
-    return GetInfo<cl_uint>(CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS);
+  size_t MaxWorkItemDimensions() const {
+    return GetInfo(CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS);
   }
   std::vector<size_t> MaxWorkItemSizes() const {
     return GetInfoVector<size_t>(CL_DEVICE_MAX_WORK_ITEM_SIZES);
   }
+  size_t LocalMemSize() const {
+    return static_cast<size_t>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
+  }
+  std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
+  size_t CoreClock() const { return GetInfo(CL_DEVICE_MAX_CLOCK_FREQUENCY); }
+  size_t ComputeUnits() const { return GetInfo(CL_DEVICE_MAX_COMPUTE_UNITS); }
+  size_t MemorySize() const { return GetInfo(CL_DEVICE_GLOBAL_MEM_SIZE); }
+  size_t MemoryClock() const { return 0; } // Not exposed in OpenCL
+  size_t MemoryBusWidth() const { return 0; } // Not exposed in OpenCL
 
   // Configuration-validity checks
   bool IsLocalMemoryValid(const size_t local_mem_usage) const {
@@ -182,7 +181,7 @@ class Device: public Object {
   }
   bool IsThreadConfigValid(const std::vector<size_t> &local) const {
     auto local_size = size_t{1};
-    for (auto &item: local) { local_size *= item; }
+    for (const auto &item: local) { local_size *= item; }
     for (auto i=size_t{0}; i<local.size(); ++i) {
       if (local[i] > MaxWorkItemSizes()[i]) { return false; }
     }
@@ -191,313 +190,404 @@ class Device: public Object {
     return true;
   }
 
-  // Accessors to the private data-member
+  // Accessor to the private data-member
   const cl_device_id& operator()() const { return device_; }
  private:
+  cl_device_id device_;
 
-  // Helper functions
+  // Private helper functions
   template <typename T>
   T GetInfo(const cl_device_info info) const {
     auto bytes = size_t{0};
-    clGetDeviceInfo(device_, info, 0, nullptr, &bytes);
+    CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = T(0);
-    clGetDeviceInfo(device_, info, bytes, &result, nullptr);
+    CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
     return result;
+  }
+  size_t GetInfo(const cl_device_info info) const {
+    auto bytes = size_t{0};
+    CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
+    auto result = cl_uint(0);
+    CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
+    return static_cast<size_t>(result);
   }
   template <typename T>
   std::vector<T> GetInfoVector(const cl_device_info info) const {
     auto bytes = size_t{0};
-    clGetDeviceInfo(device_, info, 0, nullptr, &bytes);
+    CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = std::vector<T>(bytes/sizeof(T));
-    clGetDeviceInfo(device_, info, bytes, result.data(), nullptr);
+    CheckError(clGetDeviceInfo(device_, info, bytes, result.data(), nullptr));
     return result;
   }
   std::string GetInfoString(const cl_device_info info) const {
     auto bytes = size_t{0};
-    clGetDeviceInfo(device_, info, 0, nullptr, &bytes);
-    auto result = std::vector<char>(bytes);
-    clGetDeviceInfo(device_, info, bytes, result.data(), nullptr);
-    return std::string(result.data());
+    CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
+    auto result = std::string{};
+    result.resize(bytes);
+    CheckError(clGetDeviceInfo(device_, info, bytes, &result[0], nullptr));
+    return std::string{result.c_str()};
   }
-
-  cl_device_id device_;
 };
 
 // =================================================================================================
 
-// C++11 version of cl_context
-class Context: public ObjectWithState {
+// C++11 version of 'cl_context'
+class Context {
  public:
 
-  // Constructor based on the plain C data-type
-  explicit Context(const cl_context context): context_(context) {
-    clRetainContext(context_);
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Context(const cl_context context):
+      context_(new cl_context) {
+    *context_ = context;
   }
 
-  // Memory management
-  explicit Context(const Device &device) {
+  // Regular constructor with memory management
+  explicit Context(const Device &device):
+      context_(new cl_context, [](cl_context* c) { CheckError(clReleaseContext(*c)); delete c; }) {
     auto status = CL_SUCCESS;
     const cl_device_id dev = device();
-    context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
-    if (status != CL_SUCCESS) { Error(status); }
-  }
-  ~Context() {
-    clReleaseContext(context_);
-  }
-  Context(const Context &other):
-    context_(other.context_) {
-    clRetainContext(context_);
-  }
-  Context& operator=(Context other) {
-    swap(*this, other);
-    return *this;
-  }
-  friend void swap(Context &first, Context &second) {
-    std::swap(first.context_, second.context_);
+    *context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
+    CheckError(status);
   }
 
-  // Accessors to the private data-member
-  const cl_context& operator()() const { return context_; }
+  // Accessor to the private data-member
+  const cl_context& operator()() const { return *context_; }
  private:
-  cl_context context_;
+  std::shared_ptr<cl_context> context_;
 };
 
 // =================================================================================================
 
-// C++11 version of cl_program. Additionally holds the program's source code.
-class Program: public ObjectWithState {
+// Enumeration of build statuses of the run-time compilation process
+enum class BuildStatus { kSuccess, kError, kInvalid };
+
+// C++11 version of 'cl_program'. Additionally holds the program's source code.
+class Program {
  public:
+  // Note that there is no constructor based on the regular OpenCL data-type because of extra state
 
-  // Note that there is no constructor based on the plain C data-type because of extra state
-
-  // Memory management
-  explicit Program(const Context &context, const std::string &source):
-    length_(source.length()) {
-      std::copy(source.begin(), source.end(), back_inserter(source_));
-      source_ptr_ = source_.data();
-      auto status = CL_SUCCESS;
-      program_ = clCreateProgramWithSource(context(), 1, &source_ptr_, &length_, &status);
-      if (status != CL_SUCCESS) { Error(status); }
-    }
-  ~Program() {
-    clReleaseProgram(program_);
-  }
-  Program(const Program &other):
-      length_(other.length_),
-      source_(other.source_),
-      source_ptr_(other.source_ptr_),
-      program_(other.program_) {
-    clRetainProgram(program_);
-  }
-  Program& operator=(Program other) {
-    swap(*this, other);
-    return *this;
-  }
-  friend void swap(Program &first, Program &second) {
-    std::swap(first.length_, second.length_);
-    std::swap(first.source_, second.source_);
-    std::swap(first.source_ptr_, second.source_ptr_);
-    std::swap(first.program_, second.program_);
+  // Regular constructor with memory management
+  explicit Program(const Context &context, std::string source):
+      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      length_(source.length()),
+      source_(std::move(source)),
+      source_ptr_(&source_[0]) {
+    auto status = CL_SUCCESS;
+    *program_ = clCreateProgramWithSource(context(), 1, &source_ptr_, &length_, &status);
+    CheckError(status);
   }
 
-  // Public functions
-  cl_int Build(const Device &device, const std::string &options) {
+  // Compiles the device program and returns whether or not there where any warnings/errors
+  BuildStatus Build(const Device &device, std::vector<std::string> &options) {
+    auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
-    return clBuildProgram(program_, 1, &dev, options.c_str(), nullptr, nullptr);
+    auto status = clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr);
+    if (status == CL_BUILD_PROGRAM_FAILURE) {
+      return BuildStatus::kError;
+    }
+    else if (status == CL_INVALID_BINARY) {
+      return BuildStatus::kInvalid;
+    }
+    else {
+      CheckError(status);
+      return BuildStatus::kSuccess;
+    }
   }
+
+  // Retrieves the warning/error message from the compiler (if any)
   std::string GetBuildInfo(const Device &device) const {
     auto bytes = size_t{0};
-    clGetProgramBuildInfo(program_, device(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &bytes);
-    auto result = std::vector<char>(bytes);
-    clGetProgramBuildInfo(program_, device(), CL_PROGRAM_BUILD_LOG, bytes, result.data(), nullptr);
-    return std::string(result.data());
-  }
-
-  // Accessors to the private data-member
-  const cl_program& operator()() const { return program_; }
- private:
-  size_t length_;
-  std::vector<char> source_;
-  const char* source_ptr_;
-  cl_program program_;
-};
-
-// =================================================================================================
-
-// C++11 version of cl_kernel
-class Kernel: public ObjectWithState {
- public:
-
-  // Constructor based on the plain C data-type
-  explicit Kernel(const cl_kernel kernel): kernel_(kernel) {
-    clRetainKernel(kernel_);
-  }
-
-  // Memory management
-  explicit Kernel(const Program &program, const std::string &name) {
-    auto status = CL_SUCCESS;
-    kernel_ = clCreateKernel(program(), name.c_str(), &status);
-    if (status != CL_SUCCESS) { Error(status); }
-  }
-  ~Kernel() {
-    clReleaseKernel(kernel_);
-  }
-  Kernel(const Kernel &other):
-    kernel_(other.kernel_) {
-    clRetainKernel(kernel_);
-  }
-  Kernel& operator=(Kernel other) {
-    swap(*this, other);
-    return *this;
-  }
-  friend void swap(Kernel &first, Kernel &second) {
-    std::swap(first.kernel_, second.kernel_);
-  }
-
-  // Public functions
-  template <typename T> // Note: doesn't work with T=Buffer
-  cl_int SetArgument(const cl_uint index, const T &value) {
-    return clSetKernelArg(kernel_, index, sizeof(T), &value);
-  }
-  size_t LocalMemUsage(const Device &device) const {
-    auto bytes = size_t{0};
-    clGetKernelWorkGroupInfo(kernel_, device(), CL_KERNEL_LOCAL_MEM_SIZE, 0, nullptr, &bytes);
-    auto result = size_t{0};
-    clGetKernelWorkGroupInfo(kernel_, device(), CL_KERNEL_LOCAL_MEM_SIZE, bytes, &result, nullptr);
+    auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
+    CheckError(clGetProgramBuildInfo(*program_, device(), query, 0, nullptr, &bytes));
+    auto result = std::string{};
+    result.resize(bytes);
+    CheckError(clGetProgramBuildInfo(*program_, device(), query, bytes, &result[0], nullptr));
     return result;
   }
 
-  // Accessors to the private data-member
-  const cl_kernel& operator()() const { return kernel_; }
+  // Retrieves an intermediate representation of the compiled program
+  std::string GetIR() const {
+    auto bytes = size_t{0};
+    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
+    auto result = std::string{};
+    result.resize(bytes);
+    auto result_ptr = result.data();
+    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
+    return result;
+  }
+
+  // Accessor to the private data-member
+  const cl_program& operator()() const { return *program_; }
  private:
-  cl_kernel kernel_;
+  std::shared_ptr<cl_program> program_;
+  size_t length_;
+  std::string source_;
+  const char* source_ptr_;
 };
 
 // =================================================================================================
 
-// C++11 version of cl_command_queue
-class CommandQueue: public ObjectWithState {
+// C++11 version of 'cl_command_queue'
+class Queue {
  public:
 
-  // Constructor based on the plain C data-type
-  explicit CommandQueue(const cl_command_queue queue): queue_(queue) {
-    clRetainCommandQueue(queue_);
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Queue(const cl_command_queue queue):
+      queue_(new cl_command_queue) {
+    *queue_ = queue;
   }
 
-  // Memory management
-  explicit CommandQueue(const Context &context, const Device &device) {
+  // Regular constructor with memory management
+  explicit Queue(const Context &context, const Device &device):
+      queue_(new cl_command_queue, [](cl_command_queue* s) { CheckError(clReleaseCommandQueue(*s));
+                                                             delete s; }) {
     auto status = CL_SUCCESS;
-    queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
-    if (status != CL_SUCCESS) { Error(status); }
-  }
-  ~CommandQueue() {
-    clReleaseCommandQueue(queue_);
-  }
-  CommandQueue(const CommandQueue &other):
-    queue_(other.queue_) {
-    clRetainCommandQueue(queue_);
-  }
-  CommandQueue& operator=(CommandQueue other) {
-    swap(*this, other);
-    return *this;
-  }
-  friend void swap(CommandQueue &first, CommandQueue &second) {
-    std::swap(first.queue_, second.queue_);
+    *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
+    CheckError(status);
   }
 
-  // Public functions
-  cl_int EnqueueKernel(const Kernel &kernel, const std::vector<size_t> &global,
-                       const std::vector<size_t> &local, Event &event) {
-    return clEnqueueNDRangeKernel(queue_, kernel(), static_cast<cl_uint>(global.size()), nullptr,
-                                  global.data(), local.data(), 0, nullptr, &(event()));
+  // Synchronizes the queue
+  void Finish(Event &) const {
+    Finish();
   }
+  void Finish() const {
+    CheckError(clFinish(*queue_));
+  }
+
+  // Retrieves the corresponding context or device
   Context GetContext() const {
     auto bytes = size_t{0};
-    clGetCommandQueueInfo(queue_, CL_QUEUE_CONTEXT, 0, nullptr, &bytes);
+    CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, 0, nullptr, &bytes));
     cl_context result;
-    clGetCommandQueueInfo(queue_, CL_QUEUE_CONTEXT, bytes, &result, nullptr);
+    CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, bytes, &result, nullptr));
     return Context(result);
   }
   Device GetDevice() const {
     auto bytes = size_t{0};
-    clGetCommandQueueInfo(queue_, CL_QUEUE_DEVICE, 0, nullptr, &bytes);
+    CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, 0, nullptr, &bytes));
     cl_device_id result;
-    clGetCommandQueueInfo(queue_, CL_QUEUE_DEVICE, bytes, &result, nullptr);
+    CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, bytes, &result, nullptr));
     return Device(result);
   }
-  cl_int Finish() {
-    return clFinish(queue_);
-  }
 
-  // Accessors to the private data-member
-  const cl_command_queue& operator()() const { return queue_; }
+  // Accessor to the private data-member
+  const cl_command_queue& operator()() const { return *queue_; }
  private:
-  cl_command_queue queue_;
+  std::shared_ptr<cl_command_queue> queue_;
 };
 
 // =================================================================================================
 
-// C++11 version of cl_mem
-class Buffer: public ObjectWithState {
+// C++11 version of host memory
+template <typename T>
+class BufferHost {
  public:
 
-  // Constructor based on the plain C data-type
-  explicit Buffer(const cl_mem buffer): buffer_(buffer) {
-    clRetainMemObject(buffer_);
+  // Regular constructor with memory management
+  explicit BufferHost(const Context &, const size_t size):
+      buffer_(new std::vector<T>(size)) {
   }
 
-  // Memory management
-  explicit Buffer(const Context &context, const cl_mem_flags flags, const size_t bytes) {
+  // Retrieves the actual allocated size in bytes
+  size_t GetSize() const {
+    return buffer_->size()*sizeof(T);
+  }
+
+  // Compatibility with std::vector
+  size_t size() const { return buffer_->size(); }
+  T* begin() { return &(*buffer_)[0]; }
+  T* end() { return &(*buffer_)[buffer_->size()-1]; }
+  T& operator[](const size_t i) { return (*buffer_)[i]; }
+  T* data() { return buffer_->data(); }
+  const T* data() const { return buffer_->data(); }
+
+ private:
+  std::shared_ptr<std::vector<T>> buffer_;
+};
+
+// =================================================================================================
+
+// Enumeration of buffer access types
+enum class BufferAccess { kReadOnly, kWriteOnly, kReadWrite };
+
+// C++11 version of 'cl_mem'
+template <typename T>
+class Buffer {
+ public:
+
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Buffer(const cl_mem buffer):
+      buffer_(new cl_mem),
+      access_(BufferAccess::kReadWrite) {
+    *buffer_ = buffer;
+  }
+
+  // Regular constructor with memory management
+  explicit Buffer(const Context &context, const BufferAccess access, const size_t size):
+      buffer_(new cl_mem, [](cl_mem* m) { CheckError(clReleaseMemObject(*m)); delete m; }),
+      access_(access) {
+    auto flags = cl_mem_flags{CL_MEM_READ_WRITE};
+    if (access_ == BufferAccess::kReadOnly) { flags = CL_MEM_READ_ONLY; }
+    if (access_ == BufferAccess::kWriteOnly) { flags = CL_MEM_WRITE_ONLY; }
     auto status = CL_SUCCESS;
-    buffer_ = clCreateBuffer(context(), flags, bytes, nullptr, &status);
-    if (status != CL_SUCCESS) { Error(status); }
-  }
-  ~Buffer() {
-    clReleaseMemObject(buffer_);
-  }
-  Buffer(const Buffer &other):
-    buffer_(other.buffer_) {
-    clRetainMemObject(buffer_);
-  }
-  Buffer& operator=(Buffer other) {
-    swap(*this, other);
-    return *this;
-  }
-  friend void swap(Buffer &first, Buffer &second) {
-    std::swap(first.buffer_, second.buffer_);
+    *buffer_ = clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status);
+    CheckError(status);
   }
 
-  // Public functions
-  template <typename T>
-  cl_int ReadBuffer(const CommandQueue &queue, const size_t bytes, T* host) {
-    return clEnqueueReadBuffer(queue(), buffer_, CL_TRUE, 0, bytes, host, 0, nullptr, nullptr);
+  // As above, but now with read/write access as a default
+  explicit Buffer(const Context &context, const size_t size):
+    Buffer<T>(context, BufferAccess::kReadWrite, size) {
   }
-  template <typename T>
-  cl_int ReadBuffer(const CommandQueue &queue, const size_t bytes, std::vector<T> &host) {
-    return ReadBuffer(queue, bytes, host.data());
+
+  // Copies from device to host: reading the device buffer a-synchronously
+  void ReadAsync(const Queue &queue, const size_t size, T* host) {
+    if (access_ == BufferAccess::kWriteOnly) { Error("reading from a write-only buffer"); }
+    CheckError(clEnqueueReadBuffer(queue(), *buffer_, CL_FALSE, 0, size*sizeof(T), host, 0,
+                                   nullptr, nullptr));
   }
-  template <typename T>
-  cl_int WriteBuffer(const CommandQueue &queue, const size_t bytes, const T* host) {
-    return clEnqueueWriteBuffer(queue(), buffer_, CL_TRUE, 0, bytes, host, 0, nullptr, nullptr);
+  void ReadAsync(const Queue &queue, const size_t size, std::vector<T> &host) {
+    if (host.size() < size) { Error("target host buffer is too small"); }
+    ReadAsync(queue, size, host.data());
   }
-  template <typename T>
-  cl_int WriteBuffer(const CommandQueue &queue, const size_t bytes, const std::vector<T> &host) {
-    return WriteBuffer(queue, bytes, &host[0]);
+  void ReadAsync(const Queue &queue, const size_t size, BufferHost<T> &host) {
+    if (host.size() < size) { Error("target host buffer is too small"); }
+    ReadAsync(queue, size, host.data());
   }
+
+  // Copies from device to host: reading the device buffer
+  void Read(const Queue &queue, const size_t size, T* host) {
+    ReadAsync(queue, size, host);
+    queue.Finish();
+  }
+  void Read(const Queue &queue, const size_t size, std::vector<T> &host) {
+    Read(queue, size, host.data());
+  }
+  void Read(const Queue &queue, const size_t size, BufferHost<T> &host) {
+    Read(queue, size, host.data());
+  }
+
+  // Copies from host to device: writing the device buffer a-synchronously
+  void WriteAsync(const Queue &queue, const size_t size, const T* host) {
+    if (access_ == BufferAccess::kReadOnly) { Error("writing to a read-only buffer"); }
+    if (GetSize() < size*sizeof(T)) { Error("target device buffer is too small"); }
+    CheckError(clEnqueueWriteBuffer(queue(), *buffer_, CL_FALSE, 0, size*sizeof(T), host, 0,
+                                    nullptr, nullptr));
+  }
+  void WriteAsync(const Queue &queue, const size_t size, const std::vector<T> &host) {
+    WriteAsync(queue, size, host.data());
+  }
+  void WriteAsync(const Queue &queue, const size_t size, const BufferHost<T> &host) {
+    WriteAsync(queue, size, host.data());
+  }
+
+  // Copies from host to device: writing the device buffer
+  void Write(const Queue &queue, const size_t size, const T* host) {
+    WriteAsync(queue, size, host);
+    queue.Finish();
+  }
+  void Write(const Queue &queue, const size_t size, const std::vector<T> &host) {
+    Write(queue, size, host.data());
+  }
+  void Write(const Queue &queue, const size_t size, const BufferHost<T> &host) {
+    Write(queue, size, host.data());
+  }
+
+  // Copies the contents of this buffer into another device buffer
+  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination) {
+    CheckError(clEnqueueCopyBuffer(queue(), *buffer_, destination(), 0, 0, size*sizeof(T), 0,
+                                   nullptr, nullptr));
+  }
+  void CopyTo(const Queue &queue, const size_t size, const Buffer<T> &destination) {
+    CopyToAsync(queue, size, destination);
+    queue.Finish();
+  }
+
+  // Retrieves the actual allocated size in bytes
   size_t GetSize() const {
     auto bytes = size_t{0};
-    auto status = clGetMemObjectInfo(buffer_, CL_MEM_SIZE, 0, nullptr, &bytes);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, 0, nullptr, &bytes));
     auto result = size_t{0};
-    status = clGetMemObjectInfo(buffer_, CL_MEM_SIZE, bytes, &result, nullptr);
-    if (status != CL_SUCCESS) { Error(status); }
+    CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, bytes, &result, nullptr));
     return result;
   }
 
-  // Accessors to the private data-member
-  const cl_mem& operator()() const { return buffer_; }
+  // Accessor to the private data-member
+  const cl_mem& operator()() const { return *buffer_; }
  private:
-  cl_mem buffer_;
+  std::shared_ptr<cl_mem> buffer_;
+  const BufferAccess access_;
+};
+
+// =================================================================================================
+
+// C++11 version of 'cl_kernel'
+class Kernel {
+ public:
+
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Kernel(const cl_kernel kernel):
+      kernel_(new cl_kernel) {
+    *kernel_ = kernel;
+  }
+
+  // Regular constructor with memory management
+  explicit Kernel(const Program &program, const std::string &name):
+      kernel_(new cl_kernel, [](cl_kernel* k) { CheckError(clReleaseKernel(*k)); delete k; }) {
+    auto status = CL_SUCCESS;
+    *kernel_ = clCreateKernel(program(), name.c_str(), &status);
+    CheckError(status);
+  }
+
+  // Sets a kernel argument at the indicated position
+  template <typename T>
+  void SetArgument(const size_t index, const T &value) {
+    CheckError(clSetKernelArg(*kernel_, static_cast<cl_uint>(index), sizeof(T), &value));
+  }
+  template <typename T>
+  void SetArgument(const size_t index, Buffer<T> &value) {
+    SetArgument(index, value());
+  }
+
+  // Sets all arguments in one go using parameter packs. Note that this overwrites previously set
+  // arguments using 'SetArgument' or 'SetArguments'.
+  template <typename... Args>
+  void SetArguments(Args&... args) {
+    SetArgumentsRecursive(0, args...);
+  }
+
+  // Retrieves the amount of local memory used per work-group for this kernel
+  size_t LocalMemUsage(const Device &device) const {
+    auto bytes = size_t{0};
+    auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
+    CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, 0, nullptr, &bytes));
+    auto result = size_t{0};
+    CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, bytes, &result, nullptr));
+    return result;
+  }
+
+  // Launches a kernel onto the specified queue
+  void Launch(const Queue &queue, const std::vector<size_t> &global,
+              const std::vector<size_t> &local, Event &event) {
+    CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
+                                      nullptr, global.data(), local.data(),
+                                      0, nullptr, &(event())));
+  }
+
+  // Accessor to the private data-member
+  const cl_kernel& operator()() const { return *kernel_; }
+ private:
+  std::shared_ptr<cl_kernel> kernel_;
+
+  // Internal implementation for the recursive SetArguments function.
+  template <typename T>
+  void SetArgumentsRecursive(const size_t index, T &first) {
+    SetArgument(index, first);
+  }
+  template <typename T, typename... Args>
+  void SetArgumentsRecursive(const size_t index, T &first, Args&... args) {
+    SetArgument(index, first);
+    SetArgumentsRecursive(index+1, args...);
+  }
 };
 
 // =================================================================================================

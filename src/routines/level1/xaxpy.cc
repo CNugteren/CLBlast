@@ -29,8 +29,8 @@ template <> const Precision Xaxpy<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xaxpy<T>::Xaxpy(CommandQueue &queue, Event &event):
-    Routine(queue, event, "AXPY", {"Xaxpy"}, precision_) {
+Xaxpy<T>::Xaxpy(Queue &queue, Event &event):
+    Routine<T>(queue, event, "AXPY", {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/xaxpy.opencl"
   ;
@@ -41,8 +41,8 @@ Xaxpy<T>::Xaxpy(CommandQueue &queue, Event &event):
 // The main routine
 template <typename T>
 StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
-                            const Buffer &x_buffer, const size_t x_offset, const size_t x_inc,
-                            const Buffer &y_buffer, const size_t y_offset, const size_t y_inc) {
+                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                            const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
   // Makes sure all dimensions are larger than zero
   if (n == 0) { return StatusCode::kInvalidDimension; }
