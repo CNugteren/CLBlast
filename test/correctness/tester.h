@@ -36,9 +36,6 @@ template <typename T, typename U>
 class Tester {
  public:
 
-  // Types of devices to consider
-  const cl_device_type kDeviceType = CL_DEVICE_TYPE_ALL;
-
   // Maximum number of test results printed on a single line
   static constexpr auto kResultsPerLine = size_t{64};
 
@@ -92,7 +89,7 @@ class Tester {
   Platform platform_;
   Device device_;
   Context context_;
-  CommandQueue queue_;
+  Queue queue_;
 
   // Whether or not to run the full test-suite or just a smoke test
   bool full_test_;

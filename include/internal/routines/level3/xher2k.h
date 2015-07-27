@@ -23,18 +23,33 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T, typename U>
-class Xher2k: public Routine {
+class Xher2k: public Routine<T> {
  public:
-  Xher2k(CommandQueue &queue, Event &event);
+
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::context_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::PadCopyTransposeMatrix;
+  using Routine<T>::TestMatrixA;
+  using Routine<T>::TestMatrixB;
+  using Routine<T>::TestMatrixC;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
+
+  // Constructor
+  Xher2k(Queue &queue, Event &event);
 
   // Templated-precision implementation of the routine
   StatusCode DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                      const size_t n, const size_t k,
                      const T alpha,
-                     const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                     const Buffer &b_buffer, const size_t b_offset, const size_t b_ld,
+                     const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                     const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                      const U beta,
-                     const Buffer &c_buffer, const size_t c_offset, const size_t c_ld);
+                     const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
 
  private:
   // Static variable to get the precision

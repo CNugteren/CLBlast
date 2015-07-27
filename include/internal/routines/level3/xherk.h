@@ -23,17 +23,31 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T, typename U>
-class Xherk: public Routine {
+class Xherk: public Routine<T> {
  public:
-  Xherk(CommandQueue &queue, Event &event);
+
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::context_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::PadCopyTransposeMatrix;
+  using Routine<T>::TestMatrixA;
+  using Routine<T>::TestMatrixC;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
+
+  // Constructor
+  Xherk(Queue &queue, Event &event);
 
   // Templated-precision implementation of the routine
   StatusCode DoHerk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                     const size_t n, const size_t k,
                     const U alpha,
-                    const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                     const U beta,
-                    const Buffer &c_buffer, const size_t c_offset, const size_t c_ld);
+                    const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
 
  private:
   // Static variable to get the precision

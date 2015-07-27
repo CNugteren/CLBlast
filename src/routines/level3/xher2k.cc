@@ -27,8 +27,8 @@ template <> const Precision Xher2k<double2,double>::precision_ = Precision::kCom
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xher2k<T,U>::Xher2k(CommandQueue &queue, Event &event):
-    Routine(queue, event, "HER2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+Xher2k<T,U>::Xher2k(Queue &queue, Event &event):
+    Routine<T>(queue, event, "HER2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/copy.opencl"
     #include "../../kernels/pad.opencl"
@@ -45,10 +45,10 @@ template <typename T, typename U>
 StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                                 const size_t n, const size_t k,
                                 const T alpha,
-                                const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                                const Buffer &b_buffer, const size_t b_offset, const size_t b_ld,
+                                const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                                const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                                 const U beta,
-                                const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+                                const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((n == 0) || (k == 0) ) { return StatusCode::kInvalidDimension; }
@@ -105,11 +105,11 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
                       ab_rotated == false && ab_conjugate == true;
 
     // Creates the temporary matrices
-    auto a1_temp = (a1_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto a2_temp = (a2_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto b1_temp = (b1_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto b2_temp = (b2_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+    auto a1_temp = (a1_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto a2_temp = (a2_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto b1_temp = (b1_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto b2_temp = (b2_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
     // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In

@@ -68,8 +68,7 @@ class TestXgemv {
   static size_t DefaultLDC(const Arguments<T> &) { return 1; } // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers &buffers,
-                               CommandQueue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Gemv(args.layout, args.a_transpose,
@@ -83,8 +82,7 @@ class TestXgemv {
   }
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
-  static StatusCode RunReference(const Arguments<T> &args, const Buffers &buffers,
-                                 CommandQueue &queue) {
+  static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = clblasXgemv(static_cast<clblasOrder>(args.layout),
@@ -99,10 +97,9 @@ class TestXgemv {
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
-  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers &buffers,
-                                       CommandQueue &queue) {
+  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.y_size, static_cast<T>(0));
-    buffers.y_vec.ReadBuffer(queue, args.y_size*sizeof(T), result);
+    buffers.y_vec.Read(queue, args.y_size, result);
     return result;
   }
 

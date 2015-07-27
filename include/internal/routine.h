@@ -26,6 +26,7 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
+template <typename T>
 class Routine {
  public:
 
@@ -52,7 +53,7 @@ class Routine {
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
   // Base class constructor
-  explicit Routine(CommandQueue &queue, Event &event, const std::string &name,
+  explicit Routine(Queue &queue, Event &event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision);
 
   // Set-up phase of the kernel
@@ -61,31 +62,31 @@ class Routine {
  protected:
   
   // Runs a kernel given the global and local thread sizes
-  StatusCode RunKernel(const Kernel &kernel, std::vector<size_t> &global,
+  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> &global,
                        const std::vector<size_t> &local);
 
   // Tests for valid inputs of matrices A, B, and C
-  StatusCode TestMatrixA(const size_t one, const size_t two, const Buffer &buffer,
+  StatusCode TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
                          const size_t offset, const size_t ld, const size_t data_size);
-  StatusCode TestMatrixB(const size_t one, const size_t two, const Buffer &buffer,
+  StatusCode TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
                          const size_t offset, const size_t ld, const size_t data_size);
-  StatusCode TestMatrixC(const size_t one, const size_t two, const Buffer &buffer,
+  StatusCode TestMatrixC(const size_t one, const size_t two, const Buffer<T> &buffer,
                          const size_t offset, const size_t ld, const size_t data_size);
 
   // Tests for valid inputs of vectors X and Y
-  StatusCode TestVectorX(const size_t n, const Buffer &buffer, const size_t offset,
+  StatusCode TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
-  StatusCode TestVectorY(const size_t n, const Buffer &buffer, const size_t offset,
+  StatusCode TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
 
   // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
   // to symmetric and triangular matrices through optional arguments.
   StatusCode PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,
                                     const size_t src_ld, const size_t src_offset,
-                                    const Buffer &src,
+                                    const Buffer<T> &src,
                                     const size_t dest_one, const size_t dest_two,
                                     const size_t dest_ld, const size_t dest_offset,
-                                    const Buffer &dest,
+                                    const Buffer<T> &dest,
                                     const Program &program, const bool do_pad,
                                     const bool do_transpose, const bool do_conjugate,
                                     const bool upper = false, const bool lower = false,
@@ -106,14 +107,14 @@ class Routine {
   std::string source_string_;
 
   // The OpenCL objects, accessible only from derived classes
-  CommandQueue queue_;
+  Queue queue_;
   Event event_;
   const Context context_;
   const Device device_;
 
   // OpenCL device properties
   const std::string device_name_;
-  const cl_uint max_work_item_dimensions_;
+  const size_t max_work_item_dimensions_;
   const std::vector<size_t> max_work_item_sizes_;
   const size_t max_work_group_size_;
 
