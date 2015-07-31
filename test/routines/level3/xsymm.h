@@ -29,6 +29,9 @@ template <typename T>
 class TestXsymm {
  public:
 
+  // The BLAS level: 1, 2, or 3
+  static size_t BLASLevel() { return 3; }
+
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgM, kArgN,
@@ -68,6 +71,11 @@ class TestXsymm {
   static size_t DefaultLDA(const Arguments<T> &args) { return args.m; }
   static size_t DefaultLDB(const Arguments<T> &args) { return args.n; }
   static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
+
+  // Describes which transpose options are relevant for this routine
+  using Transposes = std::vector<Transpose>;
+  static Transposes GetATransposes(const Transposes &) { return {}; } // N/A for this routine
+  static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
