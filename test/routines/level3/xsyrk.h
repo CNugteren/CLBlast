@@ -29,6 +29,9 @@ template <typename T>
 class TestXsyrk {
  public:
 
+  // The BLAS level: 1, 2, or 3
+  static size_t BLASLevel() { return 3; }
+
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgN, kArgK,
@@ -59,6 +62,11 @@ class TestXsyrk {
   static size_t DefaultLDA(const Arguments<T> &args) { return args.k; }
   static size_t DefaultLDB(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
+
+  // Describes which transpose options are relevant for this routine
+  using Transposes = std::vector<Transpose>;
+  static Transposes GetATransposes(const Transposes &) { return {Transpose::kNo, Transpose::kYes}; }
+  static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {

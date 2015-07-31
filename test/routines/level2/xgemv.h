@@ -29,6 +29,9 @@ template <typename T>
 class TestXgemv {
  public:
 
+  // The BLAS level: 1, 2, or 3
+  static size_t BLASLevel() { return 2; }
+
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgM, kArgN,
@@ -39,11 +42,6 @@ class TestXgemv {
   }
 
   // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeA(const Arguments<T> &args) {
-    auto a_rotated = (args.layout == Layout::kRowMajor);
-    auto a_two = (a_rotated) ? args.m : args.n;
-    return a_two * args.a_ld + args.a_offset;
-  }
   static size_t GetSizeX(const Arguments<T> &args) {
     auto a_transposed = (args.a_transpose != Transpose::kNo);
     auto n_real = (a_transposed) ? args.m : args.n;
@@ -53,6 +51,11 @@ class TestXgemv {
     auto a_transposed = (args.a_transpose != Transpose::kNo);
     auto m_real = (a_transposed) ? args.n : args.m;
     return m_real * args.y_inc + args.y_offset;
+  }
+  static size_t GetSizeA(const Arguments<T> &args) {
+    auto a_rotated = (args.layout == Layout::kRowMajor);
+    auto a_two = (a_rotated) ? args.m : args.n;
+    return a_two * args.a_ld + args.a_offset;
   }
 
   // Describes how to set the sizes of all the buffers
@@ -66,6 +69,11 @@ class TestXgemv {
   static size_t DefaultLDA(const Arguments<T> &args) { return args.n; }
   static size_t DefaultLDB(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t DefaultLDC(const Arguments<T> &) { return 1; } // N/A for this routine
+
+  // Describes which transpose options are relevant for this routine
+  using Transposes = std::vector<Transpose>;
+  static Transposes GetATransposes(const Transposes &all) { return all; }
+  static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
