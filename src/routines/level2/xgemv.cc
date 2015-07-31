@@ -32,7 +32,7 @@ template <typename T>
 Xgemv<T>::Xgemv(Queue &queue, Event &event):
     Routine<T>(queue, event, "GEMV", {"Pad", "Xgemv"}, precision_) {
   source_string_ =
-    #include "../../kernels/pad.opencl" // For SymmUpperToSquared and SymmLowerToSquared (for SYMV)
+    #include "../../kernels/pad.opencl" // For {Herm,Symm}{Upper,Lower}ToSquared (for HEMV/SYMV)
     #include "../../kernels/xgemv.opencl"
   ;
 }

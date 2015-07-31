@@ -132,6 +132,38 @@ clblasStatus clblasXgemv(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Calls {clblasChemv, clblasZhemv} with the arguments forwarded.
+clblasStatus clblasXhemv(
+  clblasOrder layout, clblasUplo triangle, size_t n, float2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc, float2 beta,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_float2{{beta.real(), beta.imag()}};
+    return clblasChemv(layout, triangle, n, cl_alpha,
+                       a_mat, a_offset, a_ld,
+                       x_vec, x_offset, static_cast<int>(x_inc), cl_beta,
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhemv(
+  clblasOrder layout, clblasUplo triangle, size_t n, double2 alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc, double2 beta,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    auto cl_beta = cl_double2{{beta.real(), beta.imag()}};
+    return clblasZhemv(layout, triangle, n, cl_alpha,
+                       a_mat, a_offset, a_ld,
+                       x_vec, x_offset, static_cast<int>(x_inc), cl_beta,
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // Calls {clblasSsymv, clblasDsymv} with the arguments forwarded.
 clblasStatus clblasXsymv(
   clblasOrder layout, clblasUplo triangle, size_t n, float alpha,

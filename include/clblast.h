@@ -105,6 +105,17 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event);
 
+// Templated-precision hermitian matrix-vector multiplication: SHEMV/DHEMV
+template <typename T>
+StatusCode Hemv(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
 // Templated-precision symmetric matrix-vector multiplication: SSYMV/DSYMV
 template <typename T>
 StatusCode Symv(const Layout layout, const Triangle triangle,
