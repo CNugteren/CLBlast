@@ -99,7 +99,7 @@ To make sure CLBlast is working correctly on your device (recommended), compile 
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. However, it is not required to install clBLAS separately on your system: it is included as part of the CLBlast source code in `external/clBLAS`.
+Afterwards, executables in the form of `test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. The library clBLAS is therefore required to be installed on your system for the CLBlast tests.
 
 With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
 

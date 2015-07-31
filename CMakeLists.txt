@@ -85,6 +85,15 @@ if(TUNERS)
   endif()
 endif()
 
+# Locates the clBLAS library in case the tests need to be compiled. "FindclBLAS.cmake" is included.
+if(TESTS)
+  find_package(clBLAS)
+  if(NOT CLBLAS_FOUND)
+    message(STATUS "Could NOT find clBLAS, disabling the compilation of the tests")
+    set(TESTS OFF)
+  endif()
+endif()
+
 # ==================================================================================================
 
 # Includes directories: CLBlast and OpenCL
@@ -160,18 +169,11 @@ endif()
 # ==================================================================================================
 
 # Down from here is all test (performance and correctness) related. Note that these tests require
-# the compilation of the clBLAS library to act as a reference.
+# the presence of the clBLAS library to act as a reference.
 if(TESTS)
 
-  # Enables clBLAS to provide as reference for the tests (source-code is shipped with the project).
-  # This subproject uses specific flags to reduce the amount of warnings.
-  set(CMAKE_CXX_FLAGS_CLBLAST ${CMAKE_CXX_FLAGS})
-  set(CMAKE_CXX_FLAGS "-O3")
-  add_subdirectory(external/clBLAS/src)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_CLBLAST})
-
   # Adds new include directories for the reference clBLAS
-  include_directories(${clblast_SOURCE_DIR}/test ${clBLAS_SOURCE_DIR})
+  include_directories(${clblast_SOURCE_DIR}/test ${CLBLAS_INCLUDE_DIRS})
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
@@ -191,7 +193,7 @@ if(TESTS)
                    test/correctness/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(test_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
+    target_link_libraries(test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS test_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -212,7 +214,7 @@ if(TESTS)
                    test/performance/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(client_${ROUTINE} clBLAS clblast ${OPENCL_LIBRARIES})
+    target_link_libraries(client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS client_${ROUTINE} DESTINATION bin)
   endforeach()
 
