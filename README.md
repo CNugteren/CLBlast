@@ -149,10 +149,10 @@ CLBlast is in active development and currently does not support the full set of 
 | ---------|---|---|---|---|---------|
 | xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
 | xGBMV    |   |   |   |   |         |
-| xHEMV    | - | - |   |   |         |
+| xHEMV    | - | - | ✔ | ✔ |         |
 | xHBMV    | - | - |   |   |         |
 | xHPMV    | - | - |   |   |         |
-| xSYMV    |   |   | - | - |         |
+| xSYMV    | ✔ | ✔ | - | - |         |
 | xSBMV    |   |   | - | - |         |
 | xSPMV    |   |   | - | - |         |
 | xTRMV    |   |   |   |   |         |
