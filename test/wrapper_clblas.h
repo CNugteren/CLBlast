@@ -132,6 +132,34 @@ clblasStatus clblasXgemv(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Calls {clblasSsymv, clblasDsymv} with the arguments forwarded.
+clblasStatus clblasXsymv(
+  clblasOrder layout, clblasUplo triangle, size_t n, float alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc, float beta,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasSsymv(layout, triangle, n, alpha,
+                       a_mat, a_offset, a_ld,
+                       x_vec, x_offset, static_cast<int>(x_inc), beta,
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsymv(
+  clblasOrder layout, clblasUplo triangle, size_t n, double alpha,
+  const cl_mem a_mat, size_t a_offset, size_t a_ld,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc, double beta,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDsymv(layout, triangle, n, alpha,
+                       a_mat, a_offset, a_ld,
+                       x_vec, x_offset, static_cast<int>(x_inc), beta,
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 

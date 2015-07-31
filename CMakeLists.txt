@@ -105,7 +105,7 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
 set(SAMPLE_PROGRAMS sgemm)
 set(LEVEL1_ROUTINES xaxpy)
-set(LEVEL2_ROUTINES xgemv)
+set(LEVEL2_ROUTINES xgemv xsymv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 
