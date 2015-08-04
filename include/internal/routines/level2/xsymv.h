@@ -7,53 +7,52 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xgemv routine. The precision is implemented using a template argument.
+// This file implements the Xsymv routine. It is based on the generalized mat-vec multiplication
+// routine (Xgemv). The Xsymv class inherits from the templated class Xgemv, allowing it to call the
+// "DoGemm" function directly. The "DoSymv" function first preprocesses the symmetric matrix by
+// transforming it into a general matrix, and then calls the regular GEMV code.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_ROUTINES_XGEMV_H_
-#define CLBLAST_ROUTINES_XGEMV_H_
+#ifndef CLBLAST_ROUTINES_XSYMV_H_
+#define CLBLAST_ROUTINES_XSYMV_H_
 
-#include "internal/routine.h"
+#include "internal/routines/level2/xgemv.h"
 
 namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xgemv: public Routine<T> {
+class Xsymv: public Xgemv<T> {
  public:
 
   // Members and methods from the base class
   using Routine<T>::db_;
-  using Routine<T>::source_string_;
-  using Routine<T>::queue_;
+  using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestVectorX;
-  using Routine<T>::TestVectorY;
   using Routine<T>::TestMatrixA;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 
+  // Uses the regular Xgemv routine
+  using Xgemv<T>::DoGemv;
+
   // Constructor
-  Xgemv(Queue &queue, Event &event, const std::string &name = "GEMV");
+  Xsymv(Queue &queue, Event &event, const std::string &name = "SYMV");
 
   // Templated-precision implementation of the routine
-  StatusCode DoGemv(const Layout layout, const Transpose a_transpose,
-                    const size_t m, const size_t n,
+  StatusCode DoSymv(const Layout layout, const Triangle triangle,
+                    const size_t n,
                     const T alpha,
                     const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                     const T beta,
                     const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_ROUTINES_XGEMV_H_
+// CLBLAST_ROUTINES_XSYMV_H_
 #endif

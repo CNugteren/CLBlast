@@ -2,6 +2,9 @@
 Development version (next release)
 - Now using the Claduc C++11 interface to OpenCL
 - Removed clBLAS sources, it should now be installed separately for testing
+- Added level-2 routines:
+  * CHEMV/ZHEMV
+  * SSYMV/DSYMV
 
 Version 0.3.0
 - Re-organized test/client infrastructure to avoid code duplication
