@@ -39,7 +39,7 @@ class Xsymv: public Xgemv<T> {
   using Xgemv<T>::DoGemv;
 
   // Constructor
-  Xsymv(Queue &queue, Event &event);
+  Xsymv(Queue &queue, Event &event, const std::string &name = "SYMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoSymv(const Layout layout, const Triangle triangle,

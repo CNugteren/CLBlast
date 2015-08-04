@@ -37,7 +37,7 @@ class Xhemv: public Xgemv<T> {
   using Xgemv<T>::DoGemv;
 
   // Constructor
-  Xhemv(Queue &queue, Event &event);
+  Xhemv(Queue &queue, Event &event, const std::string &name = "HEMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoHemv(const Layout layout, const Triangle triangle,

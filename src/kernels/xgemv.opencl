@@ -79,16 +79,7 @@ R"(
 #endif
 
 // =================================================================================================
-// Defines how to load the input matrix in case of a symmetric matrix
-#if defined(ROUTINE_SYMV)
-
-// =================================================================================================
-// Defines how to load the input matrix in case of a hermetian matrix
-#elif defined(ROUTINE_HEMV)
-
-// =================================================================================================
 // Defines how to load the input matrix in the regular case
-#else
 
 // Loads a scalar input value
 inline real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
@@ -106,7 +97,6 @@ inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x,
   return agm[x + a_ld*y];
 }
 
-#endif
 // =================================================================================================
 
 // Full version of the kernel

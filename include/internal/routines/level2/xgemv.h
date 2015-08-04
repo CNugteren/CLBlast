@@ -36,7 +36,7 @@ class Xgemv: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xgemv(Queue &queue, Event &event);
+  Xgemv(Queue &queue, Event &event, const std::string &name = "GEMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoGemv(const Layout layout, const Transpose a_transpose,
