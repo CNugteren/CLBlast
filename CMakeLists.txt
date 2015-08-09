@@ -154,12 +154,9 @@ if(TUNERS)
   # Includes CLTune
   include_directories(${CLTUNE_INCLUDE_DIRS})
 
-  # Creates the common tuner objects (requires CMake 2.8.8)
-  add_library(tuners_common OBJECT src/tuning/tuning.cc)
-
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(tuner_${KERNEL} $<TARGET_OBJECTS:tuners_common> src/tuning/${KERNEL}.cc)
+    add_executable(tuner_${KERNEL} src/tuning/${KERNEL}.cc)
     target_link_libraries(tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS tuner_${KERNEL} DESTINATION bin)
   endforeach()
