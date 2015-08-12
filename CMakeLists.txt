@@ -103,7 +103,7 @@ set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc)
+set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc src/clblast_c.cc)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()
@@ -121,6 +121,7 @@ target_link_libraries(clblast ${OPENCL_LIBRARIES})
 # Installs the library
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
+install(FILES include/clblast_c.h DESTINATION include)
 
 # ==================================================================================================
 
