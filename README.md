@@ -208,8 +208,6 @@ To-do list before release of version 1.0
 - Increase the functionality:
   * Support all routines supported by clBLAS
   * Allow the user control over events and synchronization
-  * Add an interface with OpenCL C++ data-types
-  * Add an old-style C compatible interface
   * Add half-precision routines (e.g. HGEMM)
 - Improve host performance:
   * Allow initialization to pre-compile kernels and store to disk
