@@ -11,7 +11,7 @@
 
 # CMake project details
 cmake_minimum_required(VERSION 2.8.10)
-project("clblast" CXX)
+project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
 set(clblast_VERSION_MINOR 3)
 set(clblast_VERSION_PATCH 0)
@@ -103,7 +103,8 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
-set(SAMPLE_PROGRAMS sgemm)
+set(SAMPLE_PROGRAMS_CPP sgemm)
+set(SAMPLE_PROGRAMS_C sgemm)
 set(LEVEL1_ROUTINES xaxpy)
 set(LEVEL2_ROUTINES xgemv xhemv xsymv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
@@ -112,7 +113,7 @@ set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc)
+set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc src/clblast_c.cc)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()
@@ -130,17 +131,25 @@ target_link_libraries(clblast ${OPENCL_LIBRARIES})
 # Installs the library
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
+install(FILES include/clblast_c.h DESTINATION include)
 
 # ==================================================================================================
 
 # This section contains all the code related to the examples
 if(SAMPLES)
 
-  # Adds sample programs
-  foreach(SAMPLE ${SAMPLE_PROGRAMS})
+  # Adds sample programs (C++)
+  foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
     add_executable(sample_${SAMPLE} samples/${SAMPLE}.cc)
     target_link_libraries(sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
     install(TARGETS sample_${SAMPLE} DESTINATION bin)
+  endforeach()
+
+  # Adds sample programs (C)
+  foreach(SAMPLE ${SAMPLE_PROGRAMS_C})
+    add_executable(sample_${SAMPLE}_c samples/${SAMPLE}.c)
+    target_link_libraries(sample_${SAMPLE}_c clblast ${OPENCL_LIBRARIES})
+    install(TARGETS sample_${SAMPLE}_c DESTINATION bin)
   endforeach()
 
 endif()
