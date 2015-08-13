@@ -108,11 +108,17 @@ void Tuner(int argc, char* argv[]) {
     printf(" or %.1lf %s\n", C::GetMetric(args)/(time_ms*1.0e6), C::PerformanceUnit().c_str());
   }
 
-  // Outputs the results as JSON to disk
-  tuner.PrintJSON("clblast_"+C::KernelFamily()+".json", {
+  // Outputs the results as JSON to disk, including some meta-data
+  auto metadata = std::vector<std::pair<std::string,std::string>>{
     {"kernel_family", C::KernelFamily()},
     {"precision", std::to_string(static_cast<size_t>(args.precision))}
-  });
+  };
+  for (auto &o: C::GetOptions()) {
+    if (o == kArgM) { metadata.push_back({"arg_m", std::to_string(args.m)}); }
+    if (o == kArgN) { metadata.push_back({"arg_n", std::to_string(args.n)}); }
+    if (o == kArgK) { metadata.push_back({"arg_k", std::to_string(args.k)}); }
+  }
+  tuner.PrintJSON("clblast_"+C::KernelFamily()+".json", metadata);
 }
 
 // =================================================================================================
