@@ -103,7 +103,8 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
-set(SAMPLE_PROGRAMS sgemm)
+set(SAMPLE_PROGRAMS_CPP sgemm)
+set(SAMPLE_PROGRAMS_C sgemm)
 set(LEVEL1_ROUTINES xaxpy)
 set(LEVEL2_ROUTINES xgemv xhemv xsymv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
@@ -137,11 +138,18 @@ install(FILES include/clblast_c.h DESTINATION include)
 # This section contains all the code related to the examples
 if(SAMPLES)
 
-  # Adds sample programs
-  foreach(SAMPLE ${SAMPLE_PROGRAMS})
+  # Adds sample programs (C++)
+  foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
     add_executable(sample_${SAMPLE} samples/${SAMPLE}.cc)
     target_link_libraries(sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
     install(TARGETS sample_${SAMPLE} DESTINATION bin)
+  endforeach()
+
+  # Adds sample programs (C)
+  foreach(SAMPLE ${SAMPLE_PROGRAMS_C})
+    add_executable(sample_${SAMPLE}_c samples/${SAMPLE}.c)
+    target_link_libraries(sample_${SAMPLE}_c clblast ${OPENCL_LIBRARIES})
+    install(TARGETS sample_${SAMPLE}_c DESTINATION bin)
   endforeach()
 
 endif()
