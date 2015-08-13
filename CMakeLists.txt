@@ -11,7 +11,7 @@
 
 # CMake project details
 cmake_minimum_required(VERSION 2.8.10)
-project("clblast" CXX)
+project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
 set(clblast_VERSION_MINOR 3)
 set(clblast_VERSION_PATCH 0)
@@ -112,7 +112,7 @@ set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc)
+set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc src/clblast_c.cc)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()
@@ -130,6 +130,7 @@ target_link_libraries(clblast ${OPENCL_LIBRARIES})
 # Installs the library
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
+install(FILES include/clblast_c.h DESTINATION include)
 
 # ==================================================================================================
 
