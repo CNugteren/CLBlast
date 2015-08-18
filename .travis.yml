@@ -1,19 +1,31 @@
 language: cpp
-
 compiler:
   - gcc
-
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - kalakris-cmake
+    packages:
+    - gcc-4.8
+    - g++-4.8
+    - clang
+    - cmake
 before_script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build
   - mkdir install
   - cd build
   - cmake -DCMAKE_INSTALL_PREFIX:PATH=../install ..
-
-script: 
+script:
+  - make
   - make install
   - export PATH=${TRAVIS_BUILD_DIR}/install/bin:${PATH}
   - export LD_LIBRARY_PATH=${TRAVIS_BUILD_DIR}/install/lib64:${LD_LIBRARY_PATH}
-
 after_success:
   - which test_xgemm
+notifications:
+  email: false
+sudo: false
