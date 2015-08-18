@@ -1,0 +1,19 @@
+language: cpp
+
+compiler:
+  - gcc
+
+before_script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - mkdir build
+  - mkdir install
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=../install ..
+
+script: 
+  - make install
+  - export PATH=${TRAVIS_BUILD_DIR}/install/bin:${PATH}
+  - export LD_LIBRARY_PATH=${TRAVIS_BUILD_DIR}/install/lib64:${LD_LIBRARY_PATH}
+
+after_success:
+  - which test_xgemm
