@@ -14,7 +14,7 @@ addons:
     - g++-4.8
     - clang
     - cmake
-    - fglrx
+    - fglrx=2:8.960-0ubuntu1
     - opencl-headers
 before_script:
   - mkdir install
