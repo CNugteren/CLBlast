@@ -108,6 +108,7 @@ set(LEVEL1_ROUTINES xaxpy)
 set(LEVEL2_ROUTINES xgemv xhemv xsymv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
+set(PRECISIONS 32 3232 64 6464)
 
 # ==================================================================================================
 
@@ -130,6 +131,17 @@ target_link_libraries(clblast ${OPENCL_LIBRARIES})
 # Installs the library
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
+
+# ==================================================================================================
+
+# Sets a default platform and device to run tuners and/or tests on
+set(DEVICEPLATFORM )
+if(DEFINED ENV{DEFAULT_DEVICE})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{DEFAULT_DEVICE})
+endif()
+if(DEFINED ENV{DEFAULT_PLATFORM})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{DEFAULT_PLATFORM})
+endif()
 
 # ==================================================================================================
 
@@ -160,6 +172,17 @@ if(TUNERS)
     target_link_libraries(tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS tuner_${KERNEL} DESTINATION bin)
   endforeach()
+
+  # Adds 'alltuners' target: runs all tuners for all precisions
+  set(ALLTUNERS )
+  set(ALLTUNERSDEPENDS )
+  foreach(KERNEL ${KERNELS})
+    foreach(PRECISION ${PRECISIONS})
+      set(ALLTUNERS ${ALLTUNERS} COMMAND tuner_${KERNEL} -precision ${PRECISION} ${DEVICEPLATFORM})
+    endforeach()
+    set(ALLTUNERSDEPENDS tuner_${KERNEL})
+  endforeach()
+  add_custom_target(alltuners ${ALLTUNERS} DEPENDS ${ALLTUNERSDEPENDS})
 
 endif()
 
