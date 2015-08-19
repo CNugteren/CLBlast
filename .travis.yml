@@ -1,6 +1,7 @@
 language: cpp
 compiler:
   - gcc
+  - clang
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 addons:
@@ -13,19 +14,18 @@ addons:
     - g++-4.8
     - clang
     - cmake
+    - fglrx
+    - opencl-headers
 before_script:
-  - cd ${TRAVIS_BUILD_DIR}
-  - mkdir build
   - mkdir install
+  - export PATH=`pwd`/install/bin:${PATH}
+  - export LD_LIBRARY_PATH=`pwd`/install/lib64:`pwd`/install/lib:${LD_LIBRARY_PATH}
+  - mkdir build
   - cd build
   - cmake -DCMAKE_INSTALL_PREFIX:PATH=../install ..
 script:
   - make
   - make install
-  - export PATH=${TRAVIS_BUILD_DIR}/install/bin:${PATH}
-  - export LD_LIBRARY_PATH=${TRAVIS_BUILD_DIR}/install/lib64:${LD_LIBRARY_PATH}
-after_success:
-  - which test_xgemm
 notifications:
   email: false
 sudo: false
