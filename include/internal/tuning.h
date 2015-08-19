@@ -48,6 +48,16 @@ void Tuner(int argc, char* argv[]) {
   // Tests validity of the given arguments
   C::TestValidArguments(args);
 
+  // Tests for validity of the precision
+  {
+    auto platform = Platform(args.platform_id);
+    auto device = Device(platform, args.device_id);
+    if (!PrecisionSupported<T>(device)) {
+      printf("* Unsupported precision, skipping this tuning run\n\n");
+      return;
+    }
+  }
+
   // Creates input buffers with random data
   auto x_vec = std::vector<T>(C::GetSizeX(args));
   auto y_vec = std::vector<T>(C::GetSizeY(args));
