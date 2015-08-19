@@ -109,16 +109,17 @@ void Tuner(int argc, char* argv[]) {
   }
 
   // Outputs the results as JSON to disk, including some meta-data
+  auto precision_string = std::to_string(static_cast<size_t>(args.precision));
   auto metadata = std::vector<std::pair<std::string,std::string>>{
     {"kernel_family", C::KernelFamily()},
-    {"precision", std::to_string(static_cast<size_t>(args.precision))}
+    {"precision", precision_string}
   };
   for (auto &o: C::GetOptions()) {
     if (o == kArgM) { metadata.push_back({"arg_m", std::to_string(args.m)}); }
     if (o == kArgN) { metadata.push_back({"arg_n", std::to_string(args.n)}); }
     if (o == kArgK) { metadata.push_back({"arg_k", std::to_string(args.k)}); }
   }
-  tuner.PrintJSON("clblast_"+C::KernelFamily()+".json", metadata);
+  tuner.PrintJSON("clblast_"+C::KernelFamily()+"_"+precision_string+".json", metadata);
 }
 
 // =================================================================================================
