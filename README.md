@@ -2,6 +2,8 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
+[![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast)
+
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 
 __Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version doesn't support all routines yet: others will be added in due time. It also lacks extensive tuning on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
