@@ -271,4 +271,18 @@ size_t GetBytes(const Precision precision) {
 }
 
 // =================================================================================================
+
+// Returns false is this precision is not supported by the device
+template <> bool PrecisionSupported<float>(const Device &) { return true; }
+template <> bool PrecisionSupported<float2>(const Device &) { return true; }
+template <> bool PrecisionSupported<double>(const Device &device) {
+  auto extensions = device.Capabilities();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+}
+template <> bool PrecisionSupported<double2>(const Device &device) {
+  auto extensions = device.Capabilities();
+  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+}
+
+// =================================================================================================
 } // namespace clblast

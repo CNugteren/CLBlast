@@ -335,20 +335,6 @@ template <> const std::vector<double2> GetExampleScalars(const bool full_test) {
 
 // =================================================================================================
 
-// Returns false is this precision is not supported by the device
-template <> bool PrecisionSupported<float>(const Device &) { return true; }
-template <> bool PrecisionSupported<float2>(const Device &) { return true; }
-template <> bool PrecisionSupported<double>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
-}
-template <> bool PrecisionSupported<double2>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
-}
-
-// =================================================================================================
-
 // Compiles the templated class
 template class Tester<float, float>;
 template class Tester<double, double>;
