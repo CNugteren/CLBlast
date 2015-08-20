@@ -140,10 +140,6 @@ bool TestSimilarity(const T val1, const T val2);
 template <typename T>
 const std::vector<T> GetExampleScalars(const bool full_test);
 
-// Returns false is this precision is not supported by the device
-template <typename T>
-bool PrecisionSupported(const Device &device);
-
 // =================================================================================================
 } // namespace clblast
 

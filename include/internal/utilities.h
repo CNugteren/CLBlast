@@ -198,6 +198,12 @@ bool IsMultiple(const size_t a, const size_t b);
 size_t GetBytes(const Precision precision);
 
 // =================================================================================================
+
+// Returns false is this precision is not supported by the device
+template <typename T>
+bool PrecisionSupported(const Device &device);
+
+// =================================================================================================
 } // namespace clblast
 
 // CLBLAST_UTILITIES_H_

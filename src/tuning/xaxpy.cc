@@ -7,13 +7,12 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements an auto-tuner to tune the Xaxpy OpenCL kernel. It uses the CLTune library.
+// This file uses the CLTune auto-tuner to tune the xaxpy OpenCL kernels.
 //
 // =================================================================================================
 
 #include <string>
 #include <vector>
-#include <stdexcept>
 
 #include "internal/utilities.h"
 #include "internal/tuning.h"
@@ -21,66 +20,100 @@
 namespace clblast {
 // =================================================================================================
 
-// The Xaxpy auto-tuner
+// See comment at top of file for a description of the class
 template <typename T>
-void XaxpyTune(const Arguments<T> &args,
-               const std::vector<T> &x_vec, std::vector<T> &y_vec,
-               cltune::Tuner &tuner) {
+class TuneXaxpy {
+ public:
 
-  // The XaxpyFast kernel only works under certain conditions. Check here whether the condition is
-  // true for the reference kernel
-  if (!IsMultiple(args.n, 64)) {
-    throw std::runtime_error("The 'XaxpyFast' kernel requires 'n' to be a multiple of WGS*WPT*VW");
+  // The representative kernel and the source code
+  static std::string KernelFamily() { return "xaxpy"; }
+  static std::string KernelName() { return "XaxpyFast"; }
+  static std::string GetSources() {
+    return
+      #include "../src/kernels/common.opencl"
+      #include "../src/kernels/xaxpy.opencl"
+    ;
   }
 
-  // This points to the XaxpyFast kernel as found in the CLBlast library
-  std::string sources =
-    #include "../src/kernels/common.opencl"
-    #include "../src/kernels/xaxpy.opencl"
-  ;
-  auto id = tuner.AddKernelFromString(sources, "XaxpyFast", {args.n}, {1});
-  tuner.SetReferenceFromString(sources, "XaxpyFast", {args.n}, {64});
+  // The list of arguments relevant for this routine
+  static std::vector<std::string> GetOptions() { return {kArgN, kArgAlpha}; }
 
-  // Sets the tunable parameters and their possible values
-  tuner.AddParameter(id, "WGS", {64, 128, 256, 512, 1024, 2048});
-  tuner.AddParameter(id, "WPT", {1, 2, 4, 8});
-  tuner.AddParameter(id, "VW", {1, 2, 4, 8});
-
-  // Tests for a specific precision
-  tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
-  tuner.AddParameterReference("PRECISION", static_cast<size_t>(args.precision));
-
-  // Modifies the thread-sizes (local) based on the parameters
-  tuner.MulLocalSize(id, {"WGS"});
-  tuner.DivGlobalSize(id, {"WPT"});
-  tuner.DivGlobalSize(id, {"VW"});
-
-  // Sets the function's arguments
-  tuner.AddArgumentScalar(static_cast<int>(args.n));
-  tuner.AddArgumentScalar(args.alpha);
-  tuner.AddArgumentInput(x_vec);
-  tuner.AddArgumentOutput(y_vec);
-}
-
-// =================================================================================================
-
-// Main function which calls the common client code with the routine-specific function as argument.
-void TunerXaxpy(int argc, char *argv[]) {
-  switch(GetPrecision(argc, argv)) {
-    case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kSingle: TunerXY<float>(argc, argv, XaxpyTune<float>); break;
-    case Precision::kDouble: TunerXY<double>(argc, argv, XaxpyTune<double>); break;
-    case Precision::kComplexSingle: TunerXY<float2>(argc, argv, XaxpyTune<float2>); break;
-    case Precision::kComplexDouble: TunerXY<double2>(argc, argv, XaxpyTune<double2>); break;
+  // Tests for valid arguments
+  static void TestValidArguments(const Arguments<T> &args) {
+    if (!IsMultiple(args.n, 64)) {
+      throw std::runtime_error("'XaxpyFast' requires 'n' to be a multiple of WGS*WPT*VW");
+    }
   }
-}
+
+  // Sets the default values for the arguments
+  static size_t DefaultM() { return 1; } // N/A for this kernel
+  static size_t DefaultN() { return 4096*1024; }
+  static size_t DefaultK() { return 1; } // N/A for this kernel
+  static double DefaultFraction() { return 1.0; } // N/A for this kernel
+
+  // Describes how to obtain the sizes of the buffers
+  static size_t GetSizeX(const Arguments<T> &args) { return args.n; } // N/A for this kernel
+  static size_t GetSizeY(const Arguments<T> &args) { return args.n; } // N/A for this kernel
+  static size_t GetSizeA(const Arguments<T> &) { return 1; } // N/A for this kernel
+  static size_t GetSizeB(const Arguments<T> &) { return 1; } // N/A for this kernel
+  static size_t GetSizeC(const Arguments<T> &) { return 1; } // N/A for this kernel
+
+  // Sets the tuning parameters and their possible values
+  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
+    tuner.AddParameter(id, "WGS", {64, 128, 256, 512, 1024, 2048});
+    tuner.AddParameter(id, "WPT", {1, 2, 4, 8});
+    tuner.AddParameter(id, "VW", {1, 2, 4, 8});
+  }
+
+  // Sets the constraints and local memory size
+  static void SetConstraints(cltune::Tuner &, const size_t) { }
+  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+
+  // Sets the base thread configuration
+  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.n}; }
+  static std::vector<size_t> LocalSize() { return {1}; }
+  static std::vector<size_t> LocalSizeRef() { return {64}; }
+
+  // Transforms the thread configuration based on the parameters
+  using TransformVector = std::vector<std::vector<std::string>>;
+  static TransformVector MulLocal() { return {{"WGS"}}; }
+  static TransformVector DivLocal() { return {}; }
+  static TransformVector MulGlobal() { return {}; }
+  static TransformVector DivGlobal() { return {{"WPT"},{"VW"}}; }
+
+  // Sets the kernel's arguments
+  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
+                           std::vector<T> &x_vec, std::vector<T> &y_vec,
+                           std::vector<T> &, std::vector<T> &, std::vector<T> &) {
+    tuner.AddArgumentScalar(static_cast<int>(args.n));
+    tuner.AddArgumentScalar(args.alpha);
+    tuner.AddArgumentInput(x_vec);
+    tuner.AddArgumentOutput(y_vec);
+  }
+
+  // Describes how to compute the performance metrics
+  static size_t GetMetric(const Arguments<T> &args) {
+    return 3 * args.n * GetBytes(args.precision);
+  }
+  static std::string PerformanceUnit() { return "GB/s"; }
+};
 
 // =================================================================================================
 } // namespace clblast
 
+// Shortcuts to the clblast namespace
+using float2 = clblast::float2;
+using double2 = clblast::double2;
+
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::TunerXaxpy(argc, argv);
+  switch(clblast::GetPrecision(argc, argv)) {
+    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXaxpy<float>, float>(argc, argv); break;
+    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXaxpy<double>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXaxpy<float2>, float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneXaxpy<double2>, double2>(argc, argv); break;
+  }
   return 0;
 }
 

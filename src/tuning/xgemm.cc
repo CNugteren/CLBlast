@@ -7,15 +7,12 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements an auto-tuner to tune the Xgemm OpenCL kernel. It uses the CLTune library.
-// Note that this tuner uses random-search: running it multiple times or with a larger fraction
-// argument might be neccessary to obtain good results.
+// This file uses the CLTune auto-tuner to tune the xgemm OpenCL kernels.
 //
 // =================================================================================================
 
 #include <string>
 #include <vector>
-#include <stdexcept>
 
 #include "internal/utilities.h"
 #include "internal/tuning.h"
@@ -23,102 +20,136 @@
 namespace clblast {
 // =================================================================================================
 
-// The Xgemm auto-tuner
+// See comment at top of file for a description of the class
 template <typename T>
-void XgemmTune(const Arguments<T> &args,
-               const std::vector<T> &a_mat, const std::vector<T> &b_mat, std::vector<T> &c_mat,
-               cltune::Tuner &tuner) {
+class TuneXgemm {
+ public:
 
-  // This points to the Xgemm kernel as found in the CLBlast library and its golden reference
-  std::string sources =
-    #include "../src/kernels/common.opencl"
-    #include "../src/kernels/xgemm.opencl"
-  ;
-  auto id = tuner.AddKernelFromString(sources, "Xgemm", {args.m, args.n}, {1, 1});
-  tuner.SetReferenceFromString(sources, "Xgemm", {args.m, args.n}, {8, 8});
-
-  // Sets the tunable parameters and their possible values
-  tuner.AddParameter(id, "MWG", {16, 32, 64, 128});
-  tuner.AddParameter(id, "NWG", {16, 32, 64, 128});
-  tuner.AddParameter(id, "KWG", {16, 32});
-  tuner.AddParameter(id, "MDIMC", {8, 16, 32});
-  tuner.AddParameter(id, "NDIMC", {8, 16, 32});
-  tuner.AddParameter(id, "MDIMA", {8, 16, 32});
-  tuner.AddParameter(id, "NDIMB", {8, 16, 32});
-  tuner.AddParameter(id, "KWI", {2, 8});
-  tuner.AddParameter(id, "VWM", {1, 2, 4, 8});
-  tuner.AddParameter(id, "VWN", {1, 2, 4, 8});
-  tuner.AddParameter(id, "STRM", {0, 1});
-  tuner.AddParameter(id, "STRN", {0, 1});
-  tuner.AddParameter(id, "SA", {0, 1});
-  tuner.AddParameter(id, "SB", {0, 1});
-
-  // Tests for a specific precision
-  tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
-  tuner.AddParameterReference("PRECISION", static_cast<size_t>(args.precision));
-
-  // Sets the helper functions to implement the constraints below
-  auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-  auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
-  auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
-
-  // Sets constraints: Requirement for unrolling the KWG loop
-  tuner.AddConstraint(id, MultipleOfX, {"KWG", "KWI"});
-
-  // Sets constraints: Required for integer MWI and NWI
-  tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMC", "VWM"});
-  tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMC", "VWN"});
-
-  // Sets constraints: Required for integer MWIA and NWIB
-  tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMA", "VWM"});
-  tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMB", "VWN"});
-
-  // Sets constraints: KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
-  tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"});
-  tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"});
-
-  // Sets the constraints for local memory size limitations
-  auto LocalMemorySize = [args] (std::vector<size_t> v) {
-    return (((v[0]*v[1]*v[2]/v[3]) + (v[4]*v[5]*v[6]/v[7]))*GetBytes(args.precision));
-  };
-  tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG", "VWM",
-                                                  "SB", "KWG", "NWG", "VWN"});
-
-  // Modifies the thread-sizes (both global and local) based on the parameters
-  tuner.MulLocalSize(id, {"MDIMC", "NDIMC"});
-  tuner.MulGlobalSize(id, {"MDIMC", "NDIMC"});
-  tuner.DivGlobalSize(id, {"MWG", "NWG"});
-
-  // Sets the function's arguments
-  tuner.AddArgumentScalar(static_cast<int>(args.m));
-  tuner.AddArgumentScalar(static_cast<int>(args.n));
-  tuner.AddArgumentScalar(static_cast<int>(args.k));
-  tuner.AddArgumentScalar(args.alpha);
-  tuner.AddArgumentScalar(args.beta);
-  tuner.AddArgumentInput(a_mat);
-  tuner.AddArgumentInput(b_mat);
-  tuner.AddArgumentOutput(c_mat);
-}
-
-// =================================================================================================
-
-// Main function which calls the common client code with the routine-specific function as argument.
-void TunerXgemm(int argc, char *argv[]) {
-  switch(GetPrecision(argc, argv)) {
-    case Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case Precision::kSingle: TunerABC<float>(argc, argv, XgemmTune<float>); break;
-    case Precision::kDouble: TunerABC<double>(argc, argv, XgemmTune<double>); break;
-    case Precision::kComplexSingle: TunerABC<float2>(argc, argv, XgemmTune<float2>); break;
-    case Precision::kComplexDouble: TunerABC<double2>(argc, argv, XgemmTune<double2>); break;
+  // The representative kernel and the source code
+  static std::string KernelFamily() { return "xgemm"; }
+  static std::string KernelName() { return "Xgemm"; }
+  static std::string GetSources() {
+    return
+      #include "../src/kernels/common.opencl"
+      #include "../src/kernels/xgemm.opencl"
+    ;
   }
-}
+
+  // The list of arguments relevant for this routine
+  static std::vector<std::string> GetOptions() {
+    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction};
+  }
+
+  // Tests for valid arguments
+  static void TestValidArguments(const Arguments<T> &) { }
+
+  // Sets the default values for the arguments
+  static size_t DefaultM() { return 1024; }
+  static size_t DefaultN() { return 1024; }
+  static size_t DefaultK() { return 1024; }
+  static double DefaultFraction() { return 2048.0; }
+
+  // Describes how to obtain the sizes of the buffers
+  static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
+  static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
+  static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.k; }
+  static size_t GetSizeB(const Arguments<T> &args) { return args.n * args.k; }
+  static size_t GetSizeC(const Arguments<T> &args) { return args.m * args.n; }
+
+  // Sets the tuning parameters and their possible values
+  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
+    tuner.AddParameter(id, "MWG", {16, 32, 64, 128});
+    tuner.AddParameter(id, "NWG", {16, 32, 64, 128});
+    tuner.AddParameter(id, "KWG", {16, 32});
+    tuner.AddParameter(id, "MDIMC", {8, 16, 32});
+    tuner.AddParameter(id, "NDIMC", {8, 16, 32});
+    tuner.AddParameter(id, "MDIMA", {8, 16, 32});
+    tuner.AddParameter(id, "NDIMB", {8, 16, 32});
+    tuner.AddParameter(id, "KWI", {2, 8});
+    tuner.AddParameter(id, "VWM", {1, 2, 4, 8});
+    tuner.AddParameter(id, "VWN", {1, 2, 4, 8});
+    tuner.AddParameter(id, "STRM", {0, 1});
+    tuner.AddParameter(id, "STRN", {0, 1});
+    tuner.AddParameter(id, "SA", {0, 1});
+    tuner.AddParameter(id, "SB", {0, 1});
+  }
+
+  // Sets the constraints
+  static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
+    auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
+    auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
+    auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
+    // Requirement for unrolling the KWG loop
+    tuner.AddConstraint(id, MultipleOfX, {"KWG", "KWI"});
+    // Required for integer MWI and NWI
+    tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMC", "VWM"});
+    tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMC", "VWN"});
+    // Required for integer MWIA and NWIB
+    tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMA", "VWM"});
+    tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMB", "VWN"});
+    // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
+    tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"});
+    tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"});
+  }
+
+  // Sets the local memory size
+  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
+    auto LocalMemorySize = [args] (std::vector<size_t> v) {
+      return (((v[0]*v[1]*v[2]/v[3]) + (v[4]*v[5]*v[6]/v[7]))*GetBytes(args.precision));
+    };
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG", "VWM",
+                                                    "SB", "KWG", "NWG", "VWN"});
+  }
+
+  // Sets the base thread configuration
+  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
+  static std::vector<size_t> LocalSize() { return {1, 1}; }
+  static std::vector<size_t> LocalSizeRef() { return {8, 8}; }
+
+  // Transforms the thread configuration based on the parameters
+  using TransformVector = std::vector<std::vector<std::string>>;
+  static TransformVector MulLocal() { return {{"MDIMC", "NDIMC"}}; }
+  static TransformVector DivLocal() { return {}; }
+  static TransformVector MulGlobal() { return {{"MDIMC", "NDIMC"}}; }
+  static TransformVector DivGlobal() { return {{"MWG", "NWG"}}; }
+
+  // Sets the kernel's arguments
+  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
+                           std::vector<T> &, std::vector<T> &,
+                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &c_mat) {
+    tuner.AddArgumentScalar(static_cast<int>(args.m));
+    tuner.AddArgumentScalar(static_cast<int>(args.n));
+    tuner.AddArgumentScalar(static_cast<int>(args.k));
+    tuner.AddArgumentScalar(args.alpha);
+    tuner.AddArgumentScalar(args.beta);
+    tuner.AddArgumentInput(a_mat);
+    tuner.AddArgumentInput(b_mat);
+    tuner.AddArgumentOutput(c_mat);
+  }
+
+  // Describes how to compute the performance metrics
+  static size_t GetMetric(const Arguments<T> &args) {
+    return 2 * args.m * args.n * args.k;
+  }
+  static std::string PerformanceUnit() { return "GFLOPS"; }
+};
 
 // =================================================================================================
 } // namespace clblast
 
+// Shortcuts to the clblast namespace
+using float2 = clblast::float2;
+using double2 = clblast::double2;
+
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::TunerXgemm(argc, argv);
+  switch(clblast::GetPrecision(argc, argv)) {
+    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXgemm<float>, float>(argc, argv); break;
+    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXgemm<double>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXgemm<float2>, float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneXgemm<double2>, double2>(argc, argv); break;
+  }
   return 0;
 }
 
