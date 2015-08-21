@@ -136,7 +136,7 @@ install(FILES include/clblast_c.h DESTINATION include)
 
 # ==================================================================================================
 
-# Sets a default platform and device to run tuners and/or tests on
+# Sets a default platform ($DEVICEPLATFORM) and device ($DEFAULT_DEVICE) to run tuners and tests on
 set(DEVICEPLATFORM )
 if(DEFINED ENV{DEFAULT_DEVICE})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{DEFAULT_DEVICE})
@@ -152,16 +152,16 @@ if(SAMPLES)
 
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
-    add_executable(sample_${SAMPLE} samples/${SAMPLE}.cc)
-    target_link_libraries(sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
-    install(TARGETS sample_${SAMPLE} DESTINATION bin)
+    add_executable(clblast_sample_${SAMPLE} samples/${SAMPLE}.cc)
+    target_link_libraries(clblast_sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_sample_${SAMPLE} DESTINATION bin)
   endforeach()
 
   # Adds sample programs (C)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_C})
-    add_executable(sample_${SAMPLE}_c samples/${SAMPLE}.c)
-    target_link_libraries(sample_${SAMPLE}_c clblast ${OPENCL_LIBRARIES})
-    install(TARGETS sample_${SAMPLE}_c DESTINATION bin)
+    add_executable(clblast_sample_${SAMPLE}_c samples/${SAMPLE}.c)
+    target_link_libraries(clblast_sample_${SAMPLE}_c clblast ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_sample_${SAMPLE}_c DESTINATION bin)
   endforeach()
 
 endif()
@@ -177,9 +177,9 @@ if(TUNERS)
 
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(tuner_${KERNEL} src/tuning/${KERNEL}.cc)
-    target_link_libraries(tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS tuner_${KERNEL} DESTINATION bin)
+    add_executable(clblast_tuner_${KERNEL} src/tuning/${KERNEL}.cc)
+    target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
 
   # Adds 'alltuners' target: runs all tuners for all precisions
@@ -187,9 +187,9 @@ if(TUNERS)
   set(ALLTUNERSDEPENDS )
   foreach(KERNEL ${KERNELS})
     foreach(PRECISION ${PRECISIONS})
-      set(ALLTUNERS ${ALLTUNERS} COMMAND tuner_${KERNEL} -precision ${PRECISION} ${DEVICEPLATFORM})
+      set(ALLTUNERS ${ALLTUNERS} COMMAND clblast_tuner_${KERNEL} -precision ${PRECISION} ${DEVICEPLATFORM})
     endforeach()
-    set(ALLTUNERSDEPENDS tuner_${KERNEL})
+    set(ALLTUNERSDEPENDS clblast_tuner_${KERNEL})
   endforeach()
   add_custom_target(alltuners ${ALLTUNERS} DEPENDS ${ALLTUNERSDEPENDS})
 
@@ -210,41 +210,50 @@ if(TESTS)
 
   # Compiles the correctness-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
                    test/correctness/routines/level1/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
                    test/correctness/routines/level2/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
                    test/correctness/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS test_${ROUTINE} DESTINATION bin)
+    target_link_libraries(clblast_test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
   endforeach()
+
+  # Adds 'alltests' target: runs all tests
+  set(ALLTESTS )
+  set(ALLTESTSDEPENDS )
+  foreach(ROUTINE ${ROUTINES})
+    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
+  endforeach()
+  add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})
 
   # Creates the common performance-tests objects (requires CMake 2.8.8)
   add_library(test_performance_common OBJECT test/performance/client.cc)
 
   # Compiles the performance-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
                    test/performance/routines/level1/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
                    test/performance/routines/level2/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
                    test/performance/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS client_${ROUTINE} DESTINATION bin)
+    target_link_libraries(clblast_client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 
 endif()
