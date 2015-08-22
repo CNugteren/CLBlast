@@ -31,7 +31,8 @@ class TuneXaxpy {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/xaxpy.opencl"
+      #include "../src/kernels/level1/level1.opencl"
+      #include "../src/kernels/level1/xaxpy.opencl"
     ;
   }
 

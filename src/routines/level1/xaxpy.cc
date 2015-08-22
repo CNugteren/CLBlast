@@ -32,7 +32,8 @@ template <typename T>
 Xaxpy<T>::Xaxpy(Queue &queue, Event &event):
     Routine<T>(queue, event, "AXPY", {"Xaxpy"}, precision_) {
   source_string_ =
-    #include "../../kernels/xaxpy.opencl"
+    #include "../../kernels/level1/level1.opencl"
+    #include "../../kernels/level1/xaxpy.opencl"
   ;
 }
 
