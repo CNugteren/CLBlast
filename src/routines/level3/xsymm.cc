@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsymm<T>::Xsymm(CommandQueue &queue, Event &event):
+Xsymm<T>::Xsymm(Queue &queue, Event &event):
     Xgemm<T>(queue, event) {
 }
 
@@ -32,10 +32,10 @@ template <typename T>
 StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle triangle,
                             const size_t m, const size_t n,
                             const T alpha,
-                            const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer &b_buffer, const size_t b_offset, const size_t b_ld,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                             const T beta,
-                            const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0) ) { return StatusCode::kInvalidDimension; }
@@ -56,7 +56,7 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
 
   // Temporary buffer for a copy of the symmetric matrix
   try {
-    auto temp_symm = Buffer(context_, CL_MEM_READ_WRITE, k*k*sizeof(T));
+    auto temp_symm = Buffer<T>(context_, k*k);
 
     // Creates a general matrix from the symmetric matrix to be able to run the regular Xgemm
     // routine afterwards

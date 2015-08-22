@@ -21,18 +21,31 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xgemv: public Routine {
+class Xgemv: public Routine<T> {
  public:
-  Xgemv(CommandQueue &queue, Event &event);
+
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::TestVectorX;
+  using Routine<T>::TestVectorY;
+  using Routine<T>::TestMatrixA;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
+
+  // Constructor
+  Xgemv(Queue &queue, Event &event, const std::string &name = "GEMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoGemv(const Layout layout, const Transpose a_transpose,
                     const size_t m, const size_t n,
                     const T alpha,
-                    const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                    const Buffer &x_buffer, const size_t x_offset, const size_t x_inc,
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                     const T beta,
-                    const Buffer &y_buffer, const size_t y_offset, const size_t y_inc);
+                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
 
  private:
   // Static variable to get the precision

@@ -21,14 +21,26 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xaxpy: public Routine {
+class Xaxpy: public Routine<T> {
  public:
-  Xaxpy(CommandQueue &queue, Event &event);
+
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::TestVectorX;
+  using Routine<T>::TestVectorY;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
+
+  // Constructor
+  Xaxpy(Queue &queue, Event &event);
 
   // Templated-precision implementation of the routine
   StatusCode DoAxpy(const size_t n, const T alpha,
-                    const Buffer &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const Buffer &y_buffer, const size_t y_offset, const size_t y_inc);
+                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
 
  private:
   // Static variable to get the precision

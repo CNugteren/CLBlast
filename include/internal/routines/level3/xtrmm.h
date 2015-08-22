@@ -26,29 +26,27 @@ template <typename T>
 class Xtrmm: public Xgemm<T> {
  public:
 
-  // Uses several variables from the Routine class
-  using Routine::db_;
-  using Routine::context_;
-
-  // Uses several helper functions from the Routine class
-  using Routine::RunKernel;
-  using Routine::ErrorIn;
-  using Routine::TestMatrixA;
-  using Routine::GetProgramFromCache;
+  // Members and methods from the base class
+  using Routine<T>::db_;
+  using Routine<T>::context_;
+  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::TestMatrixA;
+  using Routine<T>::RunKernel;
+  using Routine<T>::ErrorIn;
 
   // Uses the regular Xgemm routine
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xtrmm(CommandQueue &queue, Event &event);
+  Xtrmm(Queue &queue, Event &event);
 
   // Templated-precision implementation of the routine
   StatusCode DoTrmm(const Layout layout, const Side side, const Triangle triangle,
                     const Transpose a_transpose, const Diagonal diagonal,
                     const size_t m, const size_t n,
                     const T alpha,
-                    const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                    const Buffer &b_buffer, const size_t b_offset, const size_t b_ld);
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                    const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld);
 };
 
 // =================================================================================================

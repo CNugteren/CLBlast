@@ -29,6 +29,9 @@ template <typename T>
 class TestXhemm {
  public:
 
+  // The BLAS level: 1, 2, or 3
+  static size_t BLASLevel() { return 3; }
+
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgM, kArgN,
@@ -69,9 +72,13 @@ class TestXhemm {
   static size_t DefaultLDB(const Arguments<T> &args) { return args.n; }
   static size_t DefaultLDC(const Arguments<T> &args) { return args.n; }
 
+  // Describes which transpose options are relevant for this routine
+  using Transposes = std::vector<Transpose>;
+  static Transposes GetATransposes(const Transposes &) { return {}; } // N/A for this routine
+  static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
+
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers &buffers,
-                               CommandQueue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Hemm(args.layout, args.side, args.triangle,
@@ -85,8 +92,7 @@ class TestXhemm {
   }
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
-  static StatusCode RunReference(const Arguments<T> &args, const Buffers &buffers,
-                                 CommandQueue &queue) {
+  static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = clblasXhemm(static_cast<clblasOrder>(args.layout),
@@ -102,10 +108,9 @@ class TestXhemm {
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
-  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers &buffers,
-                                       CommandQueue &queue) {
+  static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.c_size, static_cast<T>(0));
-    buffers.c_mat.ReadBuffer(queue, args.c_size*sizeof(T), result);
+    buffers.c_mat.Read(queue, args.c_size, result);
     return result;
   }
 

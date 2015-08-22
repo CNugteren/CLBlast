@@ -131,12 +131,13 @@ struct Arguments {
 };
 
 // Structure containing all possible buffers for test clients
+template <typename T>
 struct Buffers {
-  Buffer x_vec;
-  Buffer y_vec;
-  Buffer a_mat;
-  Buffer b_mat;
-  Buffer c_mat;
+  Buffer<T> x_vec;
+  Buffer<T> y_vec;
+  Buffer<T> a_mat;
+  Buffer<T> b_mat;
+  Buffer<T> c_mat;
 };
 
 // =================================================================================================
@@ -195,6 +196,12 @@ bool IsMultiple(const size_t a, const size_t b);
 
 // Convert the precision enum into bytes, e.g. a double takes up 8 bytes
 size_t GetBytes(const Precision precision);
+
+// =================================================================================================
+
+// Returns false is this precision is not supported by the device
+template <typename T>
+bool PrecisionSupported(const Device &device);
 
 // =================================================================================================
 } // namespace clblast

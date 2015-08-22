@@ -14,86 +14,18 @@
 #include "correctness/testblas.h"
 #include "routines/level3/xsymm.h"
 
-namespace clblast {
 // =================================================================================================
 
-// The correctness tester
-template <typename T>
-void RunTest(int argc, char *argv[], const bool silent, const std::string &name) {
-
-  // Creates a tester
-  TestBlas<T,T> tester{argc, argv, silent, name, TestXsymm<T>::GetOptions(),
-                       TestXsymm<T>::RunRoutine, TestXsymm<T>::RunReference,
-                       TestXsymm<T>::DownloadResult, TestXsymm<T>::GetResultIndex,
-                       TestXsymm<T>::ResultID1, TestXsymm<T>::ResultID2};
-
-  // This variable holds the arguments relevant for this routine
-  auto args = Arguments<T>{};
-
-  // Loops over the test-cases from a data-layout point of view
-  for (auto &layout: tester.kLayouts) { args.layout = layout;
-    for (auto &side: tester.kSides) { args.side = side;
-      for (auto &triangle: tester.kTriangles) { args.triangle = triangle;
-
-        // Creates the arguments vector for the regular tests
-        auto regular_test_vector = std::vector<Arguments<T>>{};
-        for (auto &m: tester.kMatrixDims) { args.m = m;
-          for (auto &n: tester.kMatrixDims) { args.n = n;
-            for (auto &a_ld: tester.kMatrixDims) { args.a_ld = a_ld;
-              for (auto &a_offset: tester.kOffsets) { args.a_offset = a_offset;
-                for (auto &b_ld: tester.kMatrixDims) { args.b_ld = b_ld;
-                  for (auto &b_offset: tester.kOffsets) { args.b_offset = b_offset;
-                    for (auto &c_ld: tester.kMatrixDims) { args.c_ld = c_ld;
-                      for (auto &c_offset: tester.kOffsets) { args.c_offset = c_offset;
-                        for (auto &alpha: tester.kAlphaValues) { args.alpha = alpha;
-                          for (auto &beta: tester.kBetaValues) { args.beta = beta;
-                            args.a_size = TestXsymm<T>::GetSizeA(args);
-                            args.b_size = TestXsymm<T>::GetSizeB(args);
-                            args.c_size = TestXsymm<T>::GetSizeC(args);
-                            if (args.a_size<1 || args.b_size<1 || args.c_size<1) { continue; }
-                            regular_test_vector.push_back(args);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        // Creates the arguments vector for the invalid-buffer tests
-        auto invalid_test_vector = std::vector<Arguments<T>>{};
-        args.m = args.n = tester.kBufferSize;
-        args.a_ld = args.b_ld = args.c_ld = tester.kBufferSize;
-        args.a_offset = args.b_offset = args.c_offset = 0;
-        for (auto &a_size: tester.kMatSizes) { args.a_size = a_size;
-          for (auto &b_size: tester.kMatSizes) { args.b_size = b_size;
-            for (auto &c_size: tester.kMatSizes) { args.c_size = c_size;
-              invalid_test_vector.push_back(args);
-            }
-          }
-        }
-
-        // Runs the tests
-        const auto case_name = ToString(layout)+" "+ToString(side)+" "+ToString(triangle);
-        tester.TestRegular(regular_test_vector, case_name);
-        tester.TestInvalid(invalid_test_vector, case_name);
-      }
-    }
-  }
-}
-
-// =================================================================================================
-} // namespace clblast
+// Shortcuts to the clblast namespace
+using float2 = clblast::float2;
+using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTest<float>(argc, argv, false, "SSYMM");
-  clblast::RunTest<double>(argc, argv, true, "DSYMM");
-  clblast::RunTest<clblast::float2>(argc, argv, true, "CSYMM");
-  clblast::RunTest<clblast::double2>(argc, argv, true, "ZSYMM");
+  clblast::RunTests<clblast::TestXsymm<float>, float, float>(argc, argv, false, "SSYMM");
+  clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
+  clblast::RunTests<clblast::TestXsymm<float2>, float2, float2>(argc, argv, true, "CSYMM");
+  clblast::RunTests<clblast::TestXsymm<double2>, double2, double2>(argc, argv, true, "ZSYMM");
   return 0;
 }
 

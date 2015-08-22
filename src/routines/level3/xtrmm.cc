@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xtrmm<T>::Xtrmm(CommandQueue &queue, Event &event):
+Xtrmm<T>::Xtrmm(Queue &queue, Event &event):
     Xgemm<T>(queue, event) {
 }
 
@@ -33,8 +33,8 @@ StatusCode Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle
                             const Transpose a_transpose, const Diagonal diagonal,
                             const size_t m, const size_t n,
                             const T alpha,
-                            const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer &b_buffer, const size_t b_offset, const size_t b_ld) {
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0)) { return StatusCode::kInvalidDimension; }
@@ -58,7 +58,7 @@ StatusCode Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle
 
   // Temporary buffer for a copy of the triangular matrix
   try {
-    auto temp_triangular = Buffer(context_, CL_MEM_READ_WRITE, k*k*sizeof(T));
+    auto temp_triangular = Buffer<T>(context_, k*k);
 
     // Creates a general matrix from the triangular matrix to be able to run the regular Xgemm
     // routine afterwards

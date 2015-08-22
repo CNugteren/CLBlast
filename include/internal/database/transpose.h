@@ -17,25 +17,25 @@ namespace clblast {
 const Database::DatabaseEntry Database::TraSingle = {
   "Transpose", Precision::kSingle, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
         { "Iris",             { {"TRA_DIM",8}, {"TRA_WPT",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
       }
     },
   }
@@ -46,24 +46,24 @@ const Database::DatabaseEntry Database::TraSingle = {
 const Database::DatabaseEntry Database::TraDouble = {
   "Transpose", Precision::kDouble, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"TRA_DIM",8}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
       }
     },
   }
@@ -74,25 +74,25 @@ const Database::DatabaseEntry Database::TraDouble = {
 const Database::DatabaseEntry Database::TraComplexSingle = {
   "Transpose", Precision::kComplexSingle, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
         { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
         { "Iris",             { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
       }
     },
   }
@@ -103,24 +103,24 @@ const Database::DatabaseEntry Database::TraComplexSingle = {
 const Database::DatabaseEntry Database::TraComplexDouble = {
   "Transpose", Precision::kComplexDouble, {
     { // NVIDIA GPUs
-      CL_DEVICE_TYPE_GPU, "NVIDIA Corporation", {
+      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
         { "GeForce GTX 480",  { {"TRA_DIM",8}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
         { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
       }
     },
     { // AMD GPUs
-      CL_DEVICE_TYPE_GPU, "Advanced Micro Devices, Inc.", {
+      kDeviceTypeGPU, kDeviceVendorAMD, {
         { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
       }
     },
     { // Intel GPUs
-      CL_DEVICE_TYPE_GPU, "Intel", {
+      kDeviceTypeGPU, kDeviceVendorIntel, {
       }
     },
     { // Default
-      CL_DEVICE_TYPE_ALL, kDefault, {
-        { kDefault,           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, kDeviceVendorAll, {
+        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
       }
     },
   }

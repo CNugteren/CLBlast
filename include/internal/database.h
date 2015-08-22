@@ -39,7 +39,7 @@ class Database {
     const Parameters parameters;
   };
   struct DatabaseVendor {
-    const cl_device_type type;
+    const std::string type;
     const std::string name;
     const std::vector<DatabaseDevice> devices;
   };
@@ -49,8 +49,21 @@ class Database {
     const std::vector<DatabaseVendor> vendors;
   };
 
-  // The default vendor or device
-  static constexpr auto kDefault = "Default";
+  // The OpenCL device types
+  static constexpr auto kDeviceTypeCPU = "CPU";
+  static constexpr auto kDeviceTypeGPU = "GPU";
+  static constexpr auto kDeviceTypeAccelerator = "accelerator";
+  static constexpr auto kDeviceTypeAll = "default";
+
+  // The OpenCL device vendors
+  static constexpr auto kDeviceVendorNVIDIA = "NVIDIA Corporation";
+  static constexpr auto kDeviceVendorAMD = "Advanced Micro Devices, Inc.";
+  static constexpr auto kDeviceVendorIntel = "Intel";
+  static constexpr auto kDeviceVendorAll = "default";
+
+  // The OpenCL device names
+  static constexpr auto kDefaultDevice = "default";
+
 
   // The database consists of separate database entries, stored together in a vector
   static const DatabaseEntry XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;
@@ -63,7 +76,7 @@ class Database {
   static const std::vector<DatabaseEntry> database;
 
   // The constructor
-  explicit Database(const CommandQueue &queue, const std::vector<std::string> &routines,
+  explicit Database(const Queue &queue, const std::vector<std::string> &routines,
                     const Precision precision);
 
   // Accessor of values by key
@@ -73,12 +86,9 @@ class Database {
   std::string GetDefines() const;
 
  private:
-  Parameters Search(const std::string &this_kernel, const cl_device_type this_type,
+  Parameters Search(const std::string &this_kernel, const std::string &this_type,
                     const std::string &this_vendor, const std::string &this_device,
                     const Precision this_precision) const;
-
-  // Tests equality between a database-vendor string and an OpenCL vendor string
-  bool VendorEqual(const std::string &db_vendor, const std::string &cl_vendor) const;
 
   // Found parameters suitable for this device/kernel
   Parameters parameters_;

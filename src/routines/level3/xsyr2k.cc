@@ -29,8 +29,8 @@ template <> const Precision Xsyr2k<double2>::precision_ = Precision::kComplexDou
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsyr2k<T>::Xsyr2k(CommandQueue &queue, Event &event):
-    Routine(queue, event, "SYR2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+Xsyr2k<T>::Xsyr2k(Queue &queue, Event &event):
+    Routine<T>(queue, event, "SYR2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/copy.opencl"
     #include "../../kernels/pad.opencl"
@@ -47,10 +47,10 @@ template <typename T>
 StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                               const size_t n, const size_t k,
                               const T alpha,
-                              const Buffer &a_buffer, const size_t a_offset, const size_t a_ld,
-                              const Buffer &b_buffer, const size_t b_offset, const size_t b_ld,
+                              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                              const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                               const T beta,
-                              const Buffer &c_buffer, const size_t c_offset, const size_t c_ld) {
+                              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((n == 0) || (k == 0) ) { return StatusCode::kInvalidDimension; }
@@ -99,9 +99,9 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
                      ab_rotated == false;
 
     // Creates the temporary matrices
-    auto a_temp = (a_no_temp) ? a_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto b_temp = (b_no_temp) ? b_buffer : Buffer(context_, CL_MEM_READ_WRITE, k_ceiled*n_ceiled*sizeof(T));
-    auto c_temp = Buffer(context_, CL_MEM_READ_WRITE, n_ceiled*n_ceiled*sizeof(T));
+    auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
     // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In

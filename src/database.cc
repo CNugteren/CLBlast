@@ -39,7 +39,7 @@ const std::vector<Database::DatabaseEntry> Database::database = {
 // =================================================================================================
 
 // Constructor, computing device properties and populating the parameter-vector from the database
-Database::Database(const CommandQueue &queue, const std::vector<std::string> &kernels,
+Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
                    const Precision precision):
   parameters_{} {
 
@@ -71,7 +71,7 @@ std::string Database::GetDefines() const {
 
 // Searches the database for the right kernel and precision
 Database::Parameters Database::Search(const std::string &this_kernel,
-                                      const cl_device_type this_type,
+                                      const std::string &this_type,
                                       const std::string &this_vendor,
                                       const std::string &this_device,
                                       const Precision this_precision) const {
@@ -81,13 +81,13 @@ Database::Parameters Database::Search(const std::string &this_kernel,
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.
       for (auto &vendor: db.vendors) {
-        if (VendorEqual(vendor.name, this_vendor) &&
-            (vendor.type == this_type || vendor.type == CL_DEVICE_TYPE_ALL)) {
+        if ((vendor.name == this_vendor || vendor.name == kDeviceVendorAll) &&
+            (vendor.type == this_type   || vendor.type == kDeviceTypeAll)) {
 
           // Searches for the right device. If the current device is unavailable, selects the vendor
           // default parameters. This assumes the default is last in the database.
           for (auto &device: vendor.devices) {
-            if (device.name == this_device || device.name == kDefault) {
+            if (device.name == this_device || device.name == kDefaultDevice) {
 
               // Sets the parameters accordingly
               return device.parameters;
@@ -100,14 +100,6 @@ Database::Parameters Database::Search(const std::string &this_kernel,
 
   // If we reached this point, something is wrong
   throw std::runtime_error("Database error, could not find a suitable entry");
-}
-
-// Determines the equality between two vendor names. This is implemented because vendor names can
-// be ambigious and might change between different SDK or driver versions.
-bool Database::VendorEqual(const std::string &db_vendor, const std::string &cl_vendor) const {
-  if (db_vendor == kDefault) { return true; }
-  if (db_vendor == cl_vendor) { return true; }
-  return false;
 }
 
 // =================================================================================================

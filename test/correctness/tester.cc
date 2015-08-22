@@ -28,9 +28,9 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
                     const std::string &name, const std::vector<std::string> &options):
     help_("Options given/available:\n"),
     platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, size_t{0}))),
-    device_(Device(platform_, kDeviceType, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
+    device_(Device(platform_, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
     context_(Context(device_)),
-    queue_(CommandQueue(context_, device_)),
+    queue_(Queue(context_, device_)),
     full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
     error_log_{},
     num_passed_{0},
@@ -331,20 +331,6 @@ template <> const std::vector<float2> GetExampleScalars(const bool full_test) {
 template <> const std::vector<double2> GetExampleScalars(const bool full_test) {
   if (full_test) { return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}}; }
   else { return {{2.42, 3.14}}; }
-}
-
-// =================================================================================================
-
-// Returns false is this precision is not supported by the device
-template <> bool PrecisionSupported<float>(const Device &) { return true; }
-template <> bool PrecisionSupported<float2>(const Device &) { return true; }
-template <> bool PrecisionSupported<double>(const Device &device) {
-  auto extensions = device.Extensions();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
-}
-template <> bool PrecisionSupported<double2>(const Device &device) {
-  auto extensions = device.Extensions();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
 }
 
 // =================================================================================================
