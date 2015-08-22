@@ -1,8 +1,10 @@
 
 Development version (next release)
 - Now using the Claduc C++11 interface to OpenCL
-- Removed clBLAS sources, it should now be installed separately for testing
 - Added plain C API for increased compatibility (clblast_c.h)
+- Re-organized tuner infrastructure and added JSON output
+- Removed clBLAS sources, it should now be installed separately for testing
+- Added Travis continuous integration
 - Added level-2 routines:
   * CHEMV/ZHEMV
   * SSYMV/DSYMV

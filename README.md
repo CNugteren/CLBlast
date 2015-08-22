@@ -41,10 +41,10 @@ The pre-requisites for compilation of CLBlast are:
   - Clang 3.3 or newer
   - AppleClang 5.0 or newer
   - ICC 14.0 or newer
-* An OpenCL 1.1 or newer library. CLBlast has been tested on x86-64 Linux and OS X systems with:
+* An OpenCL 1.1 or newer library, for example:
   - Apple OpenCL
-  - NVIDIA CUDA SDK (5.5, 6.5, 7.0)
-  - AMD APP SDK (2.9)
+  - NVIDIA CUDA SDK
+  - AMD APP SDK
 
 An example of an out-of-source build (starting from the root of the CLBlast folder):
 
@@ -62,11 +62,15 @@ A custom installation folder can be specified when calling CMake:
 Using the library
 -------------
 
-Like clBLAS and cuBLAS, CLBlast also requires OpenCL device buffers as arguments to its routines. This means you'll have full control over the OpenCL buffers and the host-device memory transfers. CLBlast's API is designed to resemble clBLAS's C API as much as possible, requiring little integration effort in case clBLAS was previously used. Using CLBlast starts by including the header:
+Like clBLAS and cuBLAS, CLBlast also requires OpenCL device buffers as arguments to its routines. This means you'll have full control over the OpenCL buffers and the host-device memory transfers. CLBlast's API is designed to resemble clBLAS's C API as much as possible, requiring little integration effort in case clBLAS was previously used. Using CLBlast starts by including the C++ header:
 
     #include <clblast.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file. Additionally, a couple of stand-alone sample program are included in `samples/`.
+Or alternatively the plain C version:
+
+    #include <clblast_c.h>
+
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file. Additionally, a couple of stand-alone example programs are included in `samples/`.
 
 
 Using the tuners (optional)
@@ -87,11 +91,11 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately. CLTune is available from GitHub.
+Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 1.7.0 or higher). CLTune is available from GitHub.
 
-Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance.
+Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance.
 
-The tuner will output a C++ database compatible line with the results, which can be added to `include/internal/database/xxxxx.h` in the appropriate section. Or, if tuning parameters already exist for your device but you believe they can be improved, this is also the place where they can be modified. If you want the found parameters to be included in future releases of CLBlast, please post the results in the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+The tuner will output a C++ database compatible line with the results, which can be added to `include/internal/database/xxxxx.h` in the appropriate section. Or, if tuning parameters already exist for your device but you believe they can be improved, this is also the place where they can be modified. If you want the found parameters to be included in future releases of CLBlast, please post the JSON output in the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
 
 Compiling the tests (optional)
@@ -101,9 +105,9 @@ To make sure CLBlast is working correctly on your device (recommended), compile 
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. The library clBLAS is therefore required to be installed on your system for the CLBlast tests.
+Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. The library clBLAS is therefore required to be installed on your system for the CLBlast tests.
 
-With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
+With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
 
 
 Performance remarks
