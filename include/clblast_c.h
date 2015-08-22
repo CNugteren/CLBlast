@@ -81,6 +81,60 @@ typedef enum Precision_ { kHalf = 16, kSingle = 32, kDouble = 64,
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+StatusCode CLBlastSswap(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastDswap(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastCswap(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastZswap(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+StatusCode CLBlastSscal(const size_t n,
+                        const float alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastDscal(const size_t n,
+                        const double alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastCscal(const size_t n,
+                        const cl_float2 alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastZscal(const size_t n,
+                        const cl_double2 alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event);
+
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+StatusCode CLBlastScopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastDcopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastCcopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+StatusCode CLBlastZcopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event);
+
 // Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
 StatusCode CLBlastSaxpy(const size_t n,
                         const float alpha,

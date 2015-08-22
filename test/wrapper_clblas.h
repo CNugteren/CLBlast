@@ -23,6 +23,150 @@ namespace clblast {
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
 
+// Calls {clblasSswap, clblasDswap, clblasCswap, clblasZswap} with the arguments forwarded.
+template <typename T> clblasStatus clblasXswap(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <> clblasStatus clblasXswap<float>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasSswap(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXswap<double>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDswap(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXswap<float2>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasCswap(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXswap<double2>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasZswap(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Calls {clblasSscal, clblasDscal, clblasCscal, clblasZscal} with the arguments forwarded.
+clblasStatus clblasXscal(
+  size_t n, float alpha,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasSscal(n, alpha,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXscal(
+  size_t n, double alpha,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDscal(n, alpha,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXscal(
+  size_t n, float2 alpha,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_float2{{alpha.real(), alpha.imag()}};
+    return clblasCscal(n, cl_alpha,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXscal(
+  size_t n, double2 alpha,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    auto cl_alpha = cl_double2{{alpha.real(), alpha.imag()}};
+    return clblasZscal(n, cl_alpha,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Calls {clblasScopy, clblasDcopy, clblasCcopy, clblasZcopy} with the arguments forwarded.
+template <typename T> clblasStatus clblasXcopy(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <> clblasStatus clblasXcopy<float>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasScopy(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXcopy<double>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasDcopy(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXcopy<float2>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasCcopy(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXcopy<double2>(
+  size_t n,
+  const cl_mem x_vec, size_t x_offset, size_t x_inc,
+  const cl_mem y_vec, size_t y_offset, size_t y_inc,
+  cl_uint num_queues, cl_command_queue *queues,
+  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+    return clblasZcopy(n,
+                       x_vec, x_offset, static_cast<int>(x_inc),
+                       y_vec, y_offset, static_cast<int>(y_inc),
+                       num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // Calls {clblasSaxpy, clblasDaxpy, clblasCaxpy, clblasZaxpy} with the arguments forwarded.
 clblasStatus clblasXaxpy(
   size_t n, float alpha,

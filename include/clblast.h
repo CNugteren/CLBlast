@@ -83,16 +83,40 @@ enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
+// =================================================================================================
 
-// Templated-precision vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>
-StatusCode Axpy(const size_t n, const T alpha,
+StatusCode Swap(const size_t n,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+template <typename T>
+StatusCode Scal(const size_t n,
+                const T alpha,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+template <typename T>
+StatusCode Copy(const size_t n,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+template <typename T>
+StatusCode Axpy(const size_t n,
+                const T alpha,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
+// =================================================================================================
 
 // Templated-precision generalized matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
 template <typename T>
@@ -129,6 +153,7 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
+// =================================================================================================
 
 // Templated-precision generalized matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
 template <typename T>

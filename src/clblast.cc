@@ -18,6 +18,9 @@
 #include "clblast.h"
 
 // BLAS level-1 includes
+#include "internal/routines/level1/xswap.h"
+#include "internal/routines/level1/xscal.h"
+#include "internal/routines/level1/xcopy.h"
 #include "internal/routines/level1/xaxpy.h"
 
 // BLAS level-2 includes
@@ -40,41 +43,139 @@ namespace clblast {
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// SWAP
+template <typename T>
+StatusCode Swap(const size_t n,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xswap<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSwap(n,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
+}
+template StatusCode Swap<float>(const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue* queue, cl_event* event);
+template StatusCode Swap<double>(const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Swap<float2>(const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Swap<double2>(const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue* queue, cl_event* event);
+
+// SCAL
+template <typename T>
+StatusCode Scal(const size_t n,
+                const T alpha,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xscal<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoScal(n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
+}
+template StatusCode Scal<float>(const size_t,
+                                const float,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue* queue, cl_event* event);
+template StatusCode Scal<double>(const size_t,
+                                 const double,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Scal<float2>(const size_t,
+                                 const float2,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Scal<double2>(const size_t,
+                                  const double2,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue* queue, cl_event* event);
+
+// COPY
+template <typename T>
+StatusCode Copy(const size_t n,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xcopy<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoCopy(n,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
+}
+template StatusCode Copy<float>(const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue* queue, cl_event* event);
+template StatusCode Copy<double>(const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Copy<float2>(const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Copy<double2>(const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue* queue, cl_event* event);
+
 // AXPY
 template <typename T>
-StatusCode Axpy(const size_t n, const T alpha,
+StatusCode Axpy(const size_t n,
+                const T alpha,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
   auto event_cpp = Event(*event);
   auto routine = Xaxpy<T>(queue_cpp, event_cpp);
-
-  // Compiles the routine's device kernels
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
-
-  // Runs the routine
-  return routine.DoAxpy(n, alpha,
+  return routine.DoAxpy(n,
+                        alpha,
                         Buffer<T>(x_buffer), x_offset, x_inc,
                         Buffer<T>(y_buffer), y_offset, y_inc);
 }
-template StatusCode Axpy<float>(const size_t, const float,
+template StatusCode Axpy<float>(const size_t,
+                                const float,
                                 const cl_mem, const size_t, const size_t,
                                 cl_mem, const size_t, const size_t,
-                                cl_command_queue*, cl_event*);
-template StatusCode Axpy<double>(const size_t, const double,
+                                cl_command_queue* queue, cl_event* event);
+template StatusCode Axpy<double>(const size_t,
+                                 const double,
                                  const cl_mem, const size_t, const size_t,
                                  cl_mem, const size_t, const size_t,
-                                 cl_command_queue*, cl_event*);
-template StatusCode Axpy<float2>(const size_t, const float2,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Axpy<float2>(const size_t,
+                                 const float2,
                                  const cl_mem, const size_t, const size_t,
                                  cl_mem, const size_t, const size_t,
-                                 cl_command_queue*, cl_event*);
-template StatusCode Axpy<double2>(const size_t, const double2,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Axpy<double2>(const size_t,
+                                  const double2,
                                   const cl_mem, const size_t, const size_t,
                                   cl_mem, const size_t, const size_t,
-                                  cl_command_queue*, cl_event*);
+                                  cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

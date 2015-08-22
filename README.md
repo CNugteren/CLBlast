@@ -138,9 +138,9 @@ CLBlast is in active development and currently does not support the full set of 
 | xROTMG   |   |   | - | - |         |
 | xROT     |   |   | - | - |         |
 | xROTM    |   |   | - | - |         |
-| xSWAP    |   |   |   |   |         |
-| xSCAL    |   |   |   |   | +CS +ZD |
-| xCOPY    |   |   |   |   |         |
+| xSWAP    | ✔ | ✔ | ✔ | ✔ |         |
+| xSCAL    | ✔ | ✔ | ✔ | ✔ | +CS +ZD |
+| xCOPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xDOT     |   |   | - | - | +DS     |
 | xDOTU    | - | - |   |   |         |

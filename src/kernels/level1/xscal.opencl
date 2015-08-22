@@ -7,9 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the Xaxpy kernel. It contains one fast vectorized version in case of unit
-// strides (incx=incy=1) and no offsets (offx=offy=0). Another version is more general, but doesn't
-// support vector data-types.
+// This file contains the Xscal kernel. It contains one fast vectorized version in case of unit
+// strides (incx=1) and no offsets (offx=0). Another version is more general, but doesn't support
+// vector data-types.
 //
 // This kernel uses the level-1 BLAS common tuning parameters.
 //
@@ -23,14 +23,15 @@ R"(
 
 // Full version of the kernel with offsets and strided accesses
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void Xaxpy(const int n, const real alpha,
-                    const __global real* restrict xgm, const int x_offset, const int x_inc,
-                    __global real* ygm, const int y_offset, const int y_inc) {
+__kernel void Xscal(const int n, const real alpha,
+                    __global real* xgm, const int x_offset, const int x_inc) {
 
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
   #pragma unroll
   for (int id = get_global_id(0); id<n; id += get_global_size(0)) {
-    MultiplyAdd(ygm[id*y_inc + y_offset], alpha, xgm[id*x_inc + x_offset]);
+    real result;
+    Multiply(result, alpha, xgm[id*x_inc + x_offset]);
+    xgm[id*x_inc + x_offset] = result;
   }
 }
 
@@ -39,13 +40,14 @@ __kernel void Xaxpy(const int n, const real alpha,
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void XaxpyFast(const int n, const real alpha,
-                        const __global realV* restrict xgm,
-                        __global realV* ygm) {
+__kernel void XscalFast(const int n, const real alpha,
+                        __global realV* xgm) {
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int id = w*get_global_size(0) + get_global_id(0);
-    ygm[id] = MultiplyAddVector(ygm[id], alpha, xgm[id]);
+    realV result;
+    result = MultiplyVector(result, alpha, xgm[id]);
+    xgm[id] = result;
   }
 }
 

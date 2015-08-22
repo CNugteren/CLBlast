@@ -46,6 +46,48 @@ R"(
 
 // =================================================================================================
 
+// The vectorized multiply function
+inline realV MultiplyVector(realV cvec, const real aval, const realV bvec) {
+  #if VW == 1
+    Multiply(cvec, aval, bvec);
+  #elif VW == 2
+    Multiply(cvec.x, aval, bvec.x);
+    Multiply(cvec.y, aval, bvec.y);
+  #elif VW == 4
+    Multiply(cvec.x, aval, bvec.x);
+    Multiply(cvec.y, aval, bvec.y);
+    Multiply(cvec.z, aval, bvec.z);
+    Multiply(cvec.w, aval, bvec.w);
+  #elif VW == 8
+    Multiply(cvec.s0, aval, bvec.s0);
+    Multiply(cvec.s1, aval, bvec.s1);
+    Multiply(cvec.s2, aval, bvec.s2);
+    Multiply(cvec.s3, aval, bvec.s3);
+    Multiply(cvec.s4, aval, bvec.s4);
+    Multiply(cvec.s5, aval, bvec.s5);
+    Multiply(cvec.s6, aval, bvec.s6);
+    Multiply(cvec.s7, aval, bvec.s7);
+  #elif VW == 16
+    Multiply(cvec.s0, aval, bvec.s0);
+    Multiply(cvec.s1, aval, bvec.s1);
+    Multiply(cvec.s2, aval, bvec.s2);
+    Multiply(cvec.s3, aval, bvec.s3);
+    Multiply(cvec.s4, aval, bvec.s4);
+    Multiply(cvec.s5, aval, bvec.s5);
+    Multiply(cvec.s6, aval, bvec.s6);
+    Multiply(cvec.s7, aval, bvec.s7);
+    Multiply(cvec.s8, aval, bvec.s8);
+    Multiply(cvec.s9, aval, bvec.s9);
+    Multiply(cvec.sA, aval, bvec.sA);
+    Multiply(cvec.sB, aval, bvec.sB);
+    Multiply(cvec.sC, aval, bvec.sC);
+    Multiply(cvec.sD, aval, bvec.sD);
+    Multiply(cvec.sE, aval, bvec.sE);
+    Multiply(cvec.sF, aval, bvec.sF);
+  #endif
+  return cvec;
+}
+
 // The vectorized multiply-add function
 inline realV MultiplyAddVector(realV cvec, const real aval, const realV bvec) {
   #if VW == 1
