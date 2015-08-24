@@ -42,7 +42,7 @@ template <typename T, typename U>
 Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
                                          const GetMetric default_b_ld, const GetMetric default_c_ld) {
   auto args = Arguments<U>{};
-  auto help = std::string{"Options given/available:\n"};
+  auto help = std::string{"\n* Options given/available:\n"};
 
   // These are the options which are not for every client: they are optional
   for (auto &o: options_) {
