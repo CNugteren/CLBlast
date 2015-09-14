@@ -215,6 +215,135 @@ clblasStatus clblasXaxpy(
                        num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Forwards the clBLAS calls for SDOT/DDOT
+template <typename T> clblasStatus clblasXdot(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <> clblasStatus clblasXdot<float>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n);
+  return clblasSdot(n,
+                    dot_buffer, dot_offset,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    y_buffer, y_offset, static_cast<int>(y_inc),
+                    scratch_buffer(),
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXdot<double>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n);
+  return clblasDdot(n,
+                    dot_buffer, dot_offset,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    y_buffer, y_offset, static_cast<int>(y_inc),
+                    scratch_buffer(),
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CDOTU/ZDOTU
+template <typename T> clblasStatus clblasXdotu(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <> clblasStatus clblasXdotu<float2>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasCdotu(n,
+                     dot_buffer, dot_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXdotu<double2>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasZdotu(n,
+                     dot_buffer, dot_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CDOTC/ZDOTC
+template <typename T> clblasStatus clblasXdotc(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <> clblasStatus clblasXdotc<float2>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasCdotc(n,
+                     dot_buffer, dot_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <> clblasStatus clblasXdotc<double2>(
+    const size_t n,
+    cl_mem dot_buffer, const size_t dot_offset,
+    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+    cl_uint num_queues, cl_command_queue *queues,
+    cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasZdotc(n,
+                     dot_buffer, dot_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 

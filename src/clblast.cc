@@ -22,6 +22,9 @@
 #include "internal/routines/level1/xscal.h"
 #include "internal/routines/level1/xcopy.h"
 #include "internal/routines/level1/xaxpy.h"
+#include "internal/routines/level1/xdot.h"
+#include "internal/routines/level1/xdotu.h"
+#include "internal/routines/level1/xdotc.h"
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -175,6 +178,90 @@ template StatusCode Axpy<double2>(const size_t,
                                   const double2,
                                   const cl_mem, const size_t, const size_t,
                                   cl_mem, const size_t, const size_t,
+                                  cl_command_queue* queue, cl_event* event);
+
+// DOT
+template <typename T>
+StatusCode Dot(const size_t n,
+               cl_mem dot_buffer, const size_t dot_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xdot<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoDot(n,
+                       Buffer<T>(dot_buffer), dot_offset,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(y_buffer), y_offset, y_inc);
+}
+template StatusCode Dot<float>(const size_t,
+                               cl_mem, const size_t,
+                               const cl_mem, const size_t, const size_t,
+                               const cl_mem, const size_t, const size_t,
+                               cl_command_queue* queue, cl_event* event);
+template StatusCode Dot<double>(const size_t,
+                                cl_mem, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_command_queue* queue, cl_event* event);
+
+// DOTU
+template <typename T>
+StatusCode Dotu(const size_t n,
+                cl_mem dot_buffer, const size_t dot_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xdotu<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoDotu(n,
+                        Buffer<T>(dot_buffer), dot_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
+}
+template StatusCode Dotu<float2>(const size_t,
+                                 cl_mem, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Dotu<double2>(const size_t,
+                                  cl_mem, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_command_queue* queue, cl_event* event);
+
+// DOTC
+template <typename T>
+StatusCode Dotc(const size_t n,
+                cl_mem dot_buffer, const size_t dot_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xdotc<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoDotc(n,
+                        Buffer<T>(dot_buffer), dot_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
+}
+template StatusCode Dotc<float2>(const size_t,
+                                 cl_mem, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_command_queue* queue, cl_event* event);
+template StatusCode Dotc<double2>(const size_t,
+                                  cl_mem, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
                                   cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================

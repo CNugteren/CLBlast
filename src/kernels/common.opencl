@@ -109,6 +109,13 @@ R"(
   #define SetToOne(a) a = ONE
 #endif
 
+// Adds two complex variables
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
+#else
+  #define Add(c, a, b) c = a + b
+#endif
+
 // Multiply two complex variables (used in the defines below)
 #if PRECISION == 3232 || PRECISION == 6464
   #define MulReal(a, b) a.x*b.x - a.y*b.y

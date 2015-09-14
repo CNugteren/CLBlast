@@ -203,6 +203,84 @@ StatusCode CLBlastZaxpy(const size_t n,
   return static_cast<StatusCode>(status);
 }
 
+// DOT
+StatusCode CLBlastSdot(const size_t n,
+                       cl_mem dot_buffer, const size_t dot_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dot<float>(n,
+                                    dot_buffer, dot_offset,
+                                    x_buffer, x_offset, x_inc,
+                                    y_buffer, y_offset, y_inc,
+                                    queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDdot(const size_t n,
+                       cl_mem dot_buffer, const size_t dot_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dot<double>(n,
+                                     dot_buffer, dot_offset,
+                                     x_buffer, x_offset, x_inc,
+                                     y_buffer, y_offset, y_inc,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+
+// DOTU
+StatusCode CLBlastCdotu(const size_t n,
+                        cl_mem dot_buffer, const size_t dot_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dotu<float2>(n,
+                                      dot_buffer, dot_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      y_buffer, y_offset, y_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastZdotu(const size_t n,
+                        cl_mem dot_buffer, const size_t dot_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dotu<double2>(n,
+                                       dot_buffer, dot_offset,
+                                       x_buffer, x_offset, x_inc,
+                                       y_buffer, y_offset, y_inc,
+                                       queue, event);
+  return static_cast<StatusCode>(status);
+}
+
+// DOTC
+StatusCode CLBlastCdotc(const size_t n,
+                        cl_mem dot_buffer, const size_t dot_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dotc<float2>(n,
+                                      dot_buffer, dot_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      y_buffer, y_offset, y_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastZdotc(const size_t n,
+                        cl_mem dot_buffer, const size_t dot_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dotc<double2>(n,
+                                       dot_buffer, dot_offset,
+                                       x_buffer, x_offset, x_inc,
+                                       y_buffer, y_offset, y_inc,
+                                       queue, event);
+  return static_cast<StatusCode>(status);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

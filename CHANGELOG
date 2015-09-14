@@ -4,6 +4,9 @@ Development version (next release)
   * SSWAP/DSWAP/CSWAP/ZSWAP
   * SSCAL/DSCAL/CSCAL/ZSCAL
   * SCOPY/DCOPY/CCOPY/ZCOPY
+  * SDOT/DDOT
+  * CDOTU/ZDOTU
+  * CDOTC/ZDOTC
 
 Version 0.4.0
 - Now using the Claduc C++11 interface to OpenCL
