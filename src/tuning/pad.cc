@@ -53,6 +53,7 @@ class TunePad {
   static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.n; }
   static size_t GetSizeB(const Arguments<T> &args) { return args.m * args.n; }
   static size_t GetSizeC(const Arguments<T> &) { return 1; } // N/A for this kernel
+  static size_t GetSizeTemp(const Arguments<T> &) { return 1; } // N/A for this kernel
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
@@ -68,6 +69,7 @@ class TunePad {
 
   // Sets the base thread configuration
   static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
+  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &args) { return GlobalSize(args); }
   static std::vector<size_t> LocalSize() { return {1, 1}; }
   static std::vector<size_t> LocalSizeRef() { return {8, 8}; }
 
@@ -81,7 +83,8 @@ class TunePad {
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
                            std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &) {
+                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
+                           std::vector<T> &) {
   tuner.AddArgumentScalar(static_cast<int>(args.m));
   tuner.AddArgumentScalar(static_cast<int>(args.n));
   tuner.AddArgumentScalar(static_cast<int>(args.m));

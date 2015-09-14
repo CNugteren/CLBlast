@@ -223,6 +223,21 @@ StatusCode Routine<T>::TestVectorY(const size_t n, const Buffer<T> &buffer, cons
 
 // =================================================================================================
 
+// Tests vector dot for validity: checks for a valid increment, a valid OpenCL buffer, and for a
+// sufficient buffer size.
+template <typename T>
+StatusCode Routine<T>::TestVectorDot(const size_t n, const Buffer<T> &buffer, const size_t offset,
+                                     const size_t data_size) {
+  try {
+    auto required_size = (n + offset)*data_size;
+    auto buffer_size = buffer.GetSize();
+    if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryDot; }
+  } catch (...) { return StatusCode::kInvalidVectorDot; }
+  return StatusCode::kSuccess;
+}
+
+// =================================================================================================
+
 // Copies or transposes a matrix and pads/unpads it with zeros
 template <typename T>
 StatusCode Routine<T>::PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,

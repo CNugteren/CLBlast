@@ -57,11 +57,13 @@ TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
   a_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
   b_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
   c_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  dot_source_.resize(std::max(max_mat, max_matvec) + max_offset);
   PopulateVector(x_source_);
   PopulateVector(y_source_);
   PopulateVector(a_source_);
   PopulateVector(b_source_);
   PopulateVector(c_source_);
+  PopulateVector(dot_source_);
 }
 
 // ===============================================================================================
@@ -81,12 +83,14 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto a_mat1 = Buffer<T>(context_, args.a_size);
     auto b_mat1 = Buffer<T>(context_, args.b_size);
     auto c_mat1 = Buffer<T>(context_, args.c_size);
+    auto dot1 = Buffer<T>(context_, args.dot_size);
     x_vec1.Write(queue_, args.x_size, x_source_);
     y_vec1.Write(queue_, args.y_size, y_source_);
     a_mat1.Write(queue_, args.a_size, a_source_);
     b_mat1.Write(queue_, args.b_size, b_source_);
     c_mat1.Write(queue_, args.c_size, c_source_);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1};
+    dot1.Write(queue_, args.dot_size, dot_source_);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, dot1};
     auto status1 = run_reference_(args, buffers1, queue_);
 
     // Runs the CLBlast code
@@ -95,12 +99,14 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto a_mat2 = Buffer<T>(context_, args.a_size);
     auto b_mat2 = Buffer<T>(context_, args.b_size);
     auto c_mat2 = Buffer<T>(context_, args.c_size);
+    auto dot2 = Buffer<T>(context_, args.dot_size);
     x_vec2.Write(queue_, args.x_size, x_source_);
     y_vec2.Write(queue_, args.y_size, y_source_);
     a_mat2.Write(queue_, args.a_size, a_source_);
     b_mat2.Write(queue_, args.b_size, b_source_);
     c_mat2.Write(queue_, args.c_size, c_source_);
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2};
+    dot2.Write(queue_, args.dot_size, dot_source_);
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, dot2};
     auto status2 = run_routine_(args, buffers2, queue_);
 
     // Tests for equality of the two status codes
@@ -149,25 +155,31 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
     auto a1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
     auto b1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
     auto c1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
+    auto d1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.dot_size*sizeof(T), nullptr,nullptr);
     auto x_vec1 = Buffer<T>(x1);
     auto y_vec1 = Buffer<T>(y1);
     auto a_mat1 = Buffer<T>(a1);
     auto b_mat1 = Buffer<T>(b1);
     auto c_mat1 = Buffer<T>(c1);
+    auto dot1 = Buffer<T>(d1);
     auto x2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
     auto y2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
     auto a2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
     auto b2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
     auto c2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
+    auto d2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.dot_size*sizeof(T), nullptr,nullptr);
     auto x_vec2 = Buffer<T>(x2);
     auto y_vec2 = Buffer<T>(y2);
     auto a_mat2 = Buffer<T>(a2);
     auto b_mat2 = Buffer<T>(b2);
     auto c_mat2 = Buffer<T>(c2);
+    auto dot2 = Buffer<T>(d2);
 
     // Runs the two routines
-    auto status1 = run_reference_(args, Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1}, queue_);
-    auto status2 = run_routine_(args, Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2}, queue_);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, dot1};
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, dot2};
+    auto status1 = run_reference_(args, buffers1, queue_);
+    auto status2 = run_routine_(args, buffers2, queue_);
 
     // Tests for equality of the two status codes
     TestErrorCodes(status1, status2, args);

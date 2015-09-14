@@ -68,6 +68,8 @@ enum class StatusCode {
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
+  kInvalidVectorDot          = -2043, // Vector dot is not a valid OpenCL buffer
+  kInsufficientMemoryDot     = -2042, // Vector dot's OpenCL buffer is too small
 };
 
 // Matrix layout and transpose types
@@ -83,16 +85,64 @@ enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
+// =================================================================================================
 
-// Templated-precision vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>
-StatusCode Axpy(const size_t n, const T alpha,
+StatusCode Swap(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event);
 
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+template <typename T>
+StatusCode Scal(const size_t n,
+                const T alpha,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+template <typename T>
+StatusCode Copy(const size_t n,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+template <typename T>
+StatusCode Axpy(const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Dot product of two vectors: SDOT/DDOT
+template <typename T>
+StatusCode Dot(const size_t n,
+               cl_mem dot_buffer, const size_t dot_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               cl_command_queue* queue, cl_event* event);
+
+// Dot product of two complex vectors: CDOTU/ZDOTU
+template <typename T>
+StatusCode Dotu(const size_t n,
+                cl_mem dot_buffer, const size_t dot_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
+// Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
+template <typename T>
+StatusCode Dotc(const size_t n,
+                cl_mem dot_buffer, const size_t dot_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
+// =================================================================================================
 
 // Templated-precision generalized matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
 template <typename T>
@@ -129,6 +179,7 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
+// =================================================================================================
 
 // Templated-precision generalized matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
 template <typename T>
