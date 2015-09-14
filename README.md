@@ -142,10 +142,9 @@ CLBlast is in active development and currently does not support the full set of 
 | xSCAL    | ✔ | ✔ | ✔ | ✔ | +CS +ZD |
 | xCOPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
-| xDOT     | ✔ | ✔ | - | - | +DS     |
+| xDOT     | ✔ | ✔ | - | - |         |
 | xDOTU    | - | - | ✔ | ✔ |         |
 | xDOTC    | - | - | ✔ | ✔ |         |
-| xxxDOT   | - | - | - | - | +SDS    |
 | xNRM2    |   |   | - | - | +SC +DZ |
 | xASUM    |   |   | - | - | +SC +DZ |
 | IxAMAX   |   |   |   |   |         |
