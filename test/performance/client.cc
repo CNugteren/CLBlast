@@ -74,6 +74,9 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
     if (o == kArgBOffset)  { args.b_offset = GetArgument(argc, argv, help, kArgBOffset, size_t{0}); }
     if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
 
+    // Dot arguments
+    if (o == kArgDotOffset)  { args.dot_offset = GetArgument(argc, argv, help, kArgDotOffset, size_t{0}); }
+
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
@@ -128,11 +131,13 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> a_source(args.a_size);
     std::vector<T> b_source(args.b_size);
     std::vector<T> c_source(args.c_size);
+    std::vector<T> dot_source(args.dot_size);
     PopulateVector(x_source);
     PopulateVector(y_source);
     PopulateVector(a_source);
     PopulateVector(b_source);
     PopulateVector(c_source);
+    PopulateVector(dot_source);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);
@@ -140,12 +145,14 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto a_mat = Buffer<T>(context, args.a_size);
     auto b_mat = Buffer<T>(context, args.b_size);
     auto c_mat = Buffer<T>(context, args.c_size);
+    auto dot = Buffer<T>(context, args.dot_size);
     x_vec.Write(queue, args.x_size, x_source);
     y_vec.Write(queue, args.y_size, y_source);
     a_mat.Write(queue, args.a_size, a_source);
     b_mat.Write(queue, args.b_size, b_source);
     c_mat.Write(queue, args.c_size, c_source);
-    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat};
+    dot.Write(queue, args.dot_size, dot_source);
+    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, dot};
 
     // Runs the routines and collects the timings
     auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
@@ -236,6 +243,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
     else if (o == kArgAOffset) {  integers.push_back(args.a_offset); }
     else if (o == kArgBOffset) {  integers.push_back(args.b_offset); }
     else if (o == kArgCOffset) {  integers.push_back(args.c_offset); }
+    else if (o == kArgDotOffset) {integers.push_back(args.dot_offset); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

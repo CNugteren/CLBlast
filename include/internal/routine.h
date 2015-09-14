@@ -78,6 +78,8 @@ class Routine {
                          const size_t inc, const size_t data_size);
   StatusCode TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
+  StatusCode TestVectorDot(const size_t n, const Buffer<T> &buffer, const size_t offset,
+                           const size_t data_size);
 
   // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
   // to symmetric and triangular matrices through optional arguments.
