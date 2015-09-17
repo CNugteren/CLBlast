@@ -85,19 +85,19 @@ typedef enum Precision_ { kHalf = 16, kSingle = 32, kDouble = 64,
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 StatusCode CLBlastSswap(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event);
 StatusCode CLBlastDswap(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event);
 StatusCode CLBlastCswap(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event);
 StatusCode CLBlastZswap(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event);
 
