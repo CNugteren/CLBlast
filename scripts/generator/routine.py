@@ -12,6 +12,9 @@
 #
 # ==================================================================================================
 
+# System modules
+from itertools import chain
+
 # Translates an option name to a CLBlast data-type
 def OptionToCLBlast(x):
 	return {
@@ -35,6 +38,9 @@ def OptionToWrapper(x):
 	    'triangle': "clblasUplo",
 	    'diagonal': "clblasDiag",
 	}[x]
+
+# Buffers without 'ld' or 'inc' parameter
+NO_LD_INC = ["dot","ap"]
 
 # ==================================================================================================
 
@@ -71,6 +77,16 @@ class Routine():
 	def ShortNames(self):
 		return "/".join([f.name+self.name.upper() for f in self.flavours])
 
+	# Determines which buffers go first (between alpha and beta) and which ones go after
+	def BuffersFirst(self):
+		if self.level == "2b":
+			return ["x","y"]
+		return ["ap","a","b","x"]
+	def BuffersSecond(self):
+		if self.level == "2b":
+			return ["ap","a","b","c"]
+		return ["y","c"]
+
 	# ==============================================================================================
 
 	# Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')
@@ -78,7 +94,7 @@ class Routine():
 		if (name in self.inputs) or (name in self.outputs):
 			a = [name+"_buffer"]
 			b = [name+"_offset"]
-			c = [name+"_"+self.Postfix(name)] if (name not in ["dot"]) else []
+			c = [name+"_"+self.Postfix(name)] if (name not in NO_LD_INC) else []
 			return [", ".join(a+b+c)]
 		return []
 
@@ -88,7 +104,7 @@ class Routine():
 		if (name in self.inputs) or (name in self.outputs):
 			a = [prefix+"cl_mem "+name+"_buffer"]
 			b = ["const size_t "+name+"_offset"]
-			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in ["dot"]) else []
+			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in NO_LD_INC) else []
 			return [", ".join(a+b+c)]
 		return []
 
@@ -97,7 +113,7 @@ class Routine():
 		if (name in self.inputs) or (name in self.outputs):
 			a = ["Buffer<"+self.template.buffertype+">("+name+"_buffer)"]
 			b = [name+"_offset"]
-			c = [name+"_"+self.Postfix(name)] if (name not in ["dot"]) else []
+			c = [name+"_"+self.Postfix(name)] if (name not in NO_LD_INC) else []
 			return [", ".join(a+b+c)]
 		return []
 
@@ -120,7 +136,7 @@ class Routine():
 		if (name in self.inputs) or (name in self.outputs):
 			a = [prefix+"cl_mem"]
 			b = ["const size_t"]
-			c = ["const size_t"] if (name not in ["dot"]) else []
+			c = ["const size_t"] if (name not in NO_LD_INC) else []
 			return [", ".join(a+b+c)]
 		return []
 
@@ -134,41 +150,45 @@ class Routine():
 
 	# Retrieves the use of a scalar (alpha/beta)
 	def ScalarUse(self, name, flavour):
-		if ((name == "alpha") and (name in self.scalars)):
-			return [flavour.UseAlpha()]
-		elif ((name == "beta") and (name in self.scalars)):
-			return [flavour.UseBeta()]
+		if name in self.scalars:
+			if name == "alpha":
+				return [flavour.UseAlpha()]
+			elif name == "beta":
+				return [flavour.UseBeta()]
+			return [name]
 		return []
 
 	# Retrieves the use of a scalar (alpha/beta)
 	def ScalarUseWrapper(self, name, flavour):
-		if ((name == "alpha") and (name in self.scalars)):
-			return [flavour.UseAlphaCL()]
-		elif ((name == "beta") and (name in self.scalars)):
-			return [flavour.UseBetaCL()]
+		if name in self.scalars:
+			if name == "alpha":
+				return [flavour.UseAlphaCL()]
+			elif name == "beta":
+				return [flavour.UseBetaCL()]
+			return [name]
 		return []
 
 	# Retrieves the definition of a scalar (alpha/beta)
 	def ScalarDef(self, name, flavour):
-		if ((name == "alpha") and (name in self.scalars)):
-			return ["const "+flavour.alpha_cl+" "+name]
-		elif ((name == "beta") and (name in self.scalars)):
+		if name in self.scalars:
+			if name == "alpha":
+				return ["const "+flavour.alpha_cl+" "+name]
 			return ["const "+flavour.beta_cl+" "+name]
 		return []
 
 	# As above, but without 'cl_' prefix
 	def ScalarDefPlain(self, name, flavour):
-		if ((name == "alpha") and (name in self.scalars)):
-			return ["const "+flavour.alpha_cpp+" "+name]
-		elif ((name == "beta") and (name in self.scalars)):
+		if name in self.scalars:
+			if name == "alpha":
+				return ["const "+flavour.alpha_cpp+" "+name]
 			return ["const "+flavour.beta_cpp+" "+name]
 		return []
 
 	# Retrieves the type of a scalar (alpha/beta)
 	def ScalarType(self, name, flavour):
-		if ((name == "alpha") and (name in self.scalars)):
-			return ["const "+flavour.alpha_cpp]
-		elif ((name == "beta") and (name in self.scalars)):
+		if name in self.scalars:
+			if name == "alpha":
+				return ["const "+flavour.alpha_cpp]
 			return ["const "+flavour.beta_cpp]
 		return []
 
@@ -234,43 +254,55 @@ class Routine():
 	def ArgumentsCladuc(self, flavour, indent):
 		return (self.Options() + self.Sizes() + self.BufferCladuc("dot") +
 		        self.Scalar("alpha") +
-		        self.BufferCladuc("a") + self.BufferCladuc("b") + self.BufferCladuc("x") +
-		        self.Scalar("beta") + self.BufferCladuc("y") + self.BufferCladuc("c"))
+		        list(chain(*[self.BufferCladuc(b) for b in self.BuffersFirst()])) +
+		        self.Scalar("beta") +
+		        list(chain(*[self.BufferCladuc(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.Scalar(s) for s in ["d1","d2","a","b","c","s"]])))
 
 	# Retrieves a combination of all the argument names, with CLBlast casts
 	def ArgumentsCast(self, flavour, indent):
 		return (self.OptionsCast(indent) + self.Sizes() + self.Buffer("dot") +
 		        self.ScalarUse("alpha", flavour) +
-		        self.Buffer("a") + self.Buffer("b") + self.Buffer("x") +
-		        self.ScalarUse("beta", flavour) + self.Buffer("y") + self.Buffer("c"))
+		        list(chain(*[self.Buffer(b) for b in self.BuffersFirst()])) +
+		        self.ScalarUse("beta", flavour) +
+		        list(chain(*[self.Buffer(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.ScalarUse(s, flavour) for s in ["d1","d2","a","b","c","s"]])))
 
 	# As above, but for the clBLAS wrapper
 	def ArgumentsWrapper(self, flavour):
 		return (self.Options() + self.Sizes() + self.BufferWrapper("dot") +
 		        self.ScalarUseWrapper("alpha", flavour) +
-		        self.BufferWrapper("a") + self.BufferWrapper("b") + self.BufferWrapper("x") +
-		        self.ScalarUseWrapper("beta", flavour) + self.BufferWrapper("y") + self.BufferWrapper("c"))
+		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersFirst()])) +
+		        self.ScalarUseWrapper("beta", flavour) +
+		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.ScalarUseWrapper(s, flavour) for s in ["d1","d2","a","b","c","s"]])))
 
 	# Retrieves a combination of all the argument definitions
 	def ArgumentsDef(self, flavour):
 		return (self.OptionsDef() + self.SizesDef() + self.BufferDef("dot") +
 		        self.ScalarDef("alpha", flavour) +
-		        self.BufferDef("a") + self.BufferDef("b") + self.BufferDef("x") +
-		        self.ScalarDef("beta", flavour) + self.BufferDef("y") + self.BufferDef("c"))
+		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
+		        self.ScalarDef("beta", flavour) +
+		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.ScalarDef(s, flavour) for s in ["d1","d2","a","b","c","s"]])))
 
 	# As above, but clBLAS wrapper plain datatypes
 	def ArgumentsDefWrapper(self, flavour):
 		return (self.OptionsDefWrapper() + self.SizesDef() + self.BufferDef("dot") +
 		        self.ScalarDefPlain("alpha", flavour) +
-		        self.BufferDef("a") + self.BufferDef("b") + self.BufferDef("x") +
-		        self.ScalarDefPlain("beta", flavour) + self.BufferDef("y") + self.BufferDef("c"))
+		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
+		        self.ScalarDefPlain("beta", flavour) +
+		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in ["d1","d2","a","b","c","s"]])))
 	
 	# Retrieves a combination of all the argument types
 	def ArgumentsType(self, flavour):
 		return (self.OptionsType() + self.SizesType() + self.BufferType("dot") +
 		        self.ScalarType("alpha", flavour) +
-		        self.BufferType("a") + self.BufferType("b") + self.BufferType("x") +
-		        self.ScalarType("beta", flavour) + self.BufferType("y") + self.BufferType("c"))
+		        list(chain(*[self.BufferType(b) for b in self.BuffersFirst()])) +
+		        self.ScalarType("beta", flavour) +
+		        list(chain(*[self.BufferType(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.ScalarType(s, flavour) for s in ["d1","d2","a","b","c","s"]])))
 
 
 	# ==============================================================================================
@@ -290,7 +322,7 @@ class Routine():
 		result = "template <"+self.template.name+">\n"
 		result += "StatusCode "+self.name.capitalize()+"("
 		result += (",\n"+indent).join([a for a in self.ArgumentsType(self.template)])
-		result += ",\n"+indent+"cl_command_queue* queue, cl_event* event)"
+		result += ",\n"+indent+"cl_command_queue*, cl_event*)"
 		return result
 
 	# As above, but now for C

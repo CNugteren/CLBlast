@@ -428,6 +428,80 @@ clblasStatus clblasXgemv(const clblasOrder layout, const clblasTranspose a_trans
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Forwards the clBLAS calls for SGBMV/DGBMV/CGBMV/ZGBMV
+clblasStatus clblasXgbmv(const clblasOrder layout, const clblasTranspose a_transpose,
+                         const size_t m, const size_t n, const size_t kl, const size_t ku,
+                         const float alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSgbmv(layout, a_transpose,
+                     m, n, kl, ku,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXgbmv(const clblasOrder layout, const clblasTranspose a_transpose,
+                         const size_t m, const size_t n, const size_t kl, const size_t ku,
+                         const double alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDgbmv(layout, a_transpose,
+                     m, n, kl, ku,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXgbmv(const clblasOrder layout, const clblasTranspose a_transpose,
+                         const size_t m, const size_t n, const size_t kl, const size_t ku,
+                         const float2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCgbmv(layout, a_transpose,
+                     m, n, kl, ku,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_float2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXgbmv(const clblasOrder layout, const clblasTranspose a_transpose,
+                         const size_t m, const size_t n, const size_t kl, const size_t ku,
+                         const double2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZgbmv(layout, a_transpose,
+                     m, n, kl, ku,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_double2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // Forwards the clBLAS calls for CHEMV/ZHEMV
 clblasStatus clblasXhemv(const clblasOrder layout, const clblasUplo triangle,
                          const size_t n,
@@ -460,6 +534,82 @@ clblasStatus clblasXhemv(const clblasOrder layout, const clblasUplo triangle,
                      n,
                      cl_double2{{alpha.real(), alpha.imag()}},
                      a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_double2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHBMV/ZHBMV
+clblasStatus clblasXhbmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n, const size_t k,
+                         const float2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasChbmv(layout, triangle,
+                     n, k,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_float2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhbmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n, const size_t k,
+                         const double2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZhbmv(layout, triangle,
+                     n, k,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_double2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHPMV/ZHPMV
+clblasStatus clblasXhpmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float2 alpha,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasChpmv(layout, triangle,
+                     n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     cl_float2{{beta.real(), beta.imag()}},
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhpmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double2 alpha,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double2 beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZhpmv(layout, triangle,
+                     n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     ap_buffer, ap_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
                      cl_double2{{beta.real(), beta.imag()}},
                      y_buffer, y_offset, static_cast<int>(y_inc),
@@ -501,6 +651,854 @@ clblasStatus clblasXsymv(const clblasOrder layout, const clblasUplo triangle,
                      x_buffer, x_offset, static_cast<int>(x_inc),
                      beta,
                      y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSBMV/DSBMV
+clblasStatus clblasXsbmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n, const size_t k,
+                         const float alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSsbmv(layout, triangle,
+                     n, k,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsbmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n, const size_t k,
+                         const double alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDsbmv(layout, triangle,
+                     n, k,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSPMV/DSPMV
+clblasStatus clblasXspmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float alpha,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const float beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSspmv(layout, triangle,
+                     n,
+                     alpha,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXspmv(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double alpha,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const double beta,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDspmv(layout, triangle,
+                     n,
+                     alpha,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     beta,
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STRMV/DTRMV/CTRMV/ZTRMV
+template <typename T>
+clblasStatus clblasXtrmv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtrmv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n);
+  return clblasStrmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrmv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n);
+  return clblasDtrmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrmv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasCtrmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrmv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n,
+                                  const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasZtrmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STBMV/DTBMV/CTBMV/ZTBMV
+template <typename T>
+clblasStatus clblasXtbmv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n, const size_t k,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtbmv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n, const size_t k,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n);
+  return clblasStbmv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbmv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n, const size_t k,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n);
+  return clblasDtbmv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbmv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n, const size_t k,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasCtbmv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbmv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n, const size_t k,
+                                  const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasZtbmv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STPMV/DTPMV/CTPMV/ZTPMV
+template <typename T>
+clblasStatus clblasXtpmv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtpmv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n,
+                                const cl_mem ap_buffer, const size_t ap_offset,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n);
+  return clblasStpmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpmv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem ap_buffer, const size_t ap_offset,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n);
+  return clblasDtpmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpmv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem ap_buffer, const size_t ap_offset,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasCtpmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpmv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n,
+                                  const cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasZtpmv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STRSV/DTRSV/CTRSV/ZTRSV
+template <typename T>
+clblasStatus clblasXtrsv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtrsv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasStrsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrsv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDtrsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrsv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCtrsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtrsv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n,
+                                  const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZtrsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STBSV/DTBSV/CTBSV/ZTBSV
+template <typename T>
+clblasStatus clblasXtbsv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n, const size_t k,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtbsv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n, const size_t k,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasStbsv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbsv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n, const size_t k,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDtbsv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbsv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n, const size_t k,
+                                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCtbsv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtbsv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n, const size_t k,
+                                  const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZtbsv(layout, triangle, a_transpose, diagonal,
+                     n, k,
+                     a_buffer, a_offset, a_ld,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STPSV/DTPSV/CTPSV/ZTPSV
+template <typename T>
+clblasStatus clblasXtpsv(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t n,
+                         const cl_mem ap_buffer, const size_t ap_offset,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXtpsv<float>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                const size_t n,
+                                const cl_mem ap_buffer, const size_t ap_offset,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasStpsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpsv<double>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem ap_buffer, const size_t ap_offset,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDtpsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpsv<float2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                 const size_t n,
+                                 const cl_mem ap_buffer, const size_t ap_offset,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCtpsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXtpsv<double2>(const clblasOrder layout, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                                  const size_t n,
+                                  const cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZtpsv(layout, triangle, a_transpose, diagonal,
+                     n,
+                     ap_buffer, ap_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SGER/DGER
+clblasStatus clblasXger(const clblasOrder layout,
+                        const size_t m, const size_t n,
+                        const float alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSger(layout,
+                    m, n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    y_buffer, y_offset, static_cast<int>(y_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXger(const clblasOrder layout,
+                        const size_t m, const size_t n,
+                        const double alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDger(layout,
+                    m, n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    y_buffer, y_offset, static_cast<int>(y_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CGERU/ZGERU
+clblasStatus clblasXgeru(const clblasOrder layout,
+                         const size_t m, const size_t n,
+                         const float2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCgeru(layout,
+                     m, n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXgeru(const clblasOrder layout,
+                         const size_t m, const size_t n,
+                         const double2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZgeru(layout,
+                     m, n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CGERC/ZGERC
+clblasStatus clblasXgerc(const clblasOrder layout,
+                         const size_t m, const size_t n,
+                         const float2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCgerc(layout,
+                     m, n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXgerc(const clblasOrder layout,
+                         const size_t m, const size_t n,
+                         const double2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZgerc(layout,
+                     m, n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHER/ZHER
+clblasStatus clblasXher(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const float alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCher(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXher(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const double alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZher(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHPR/ZHPR
+clblasStatus clblasXhpr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const float alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem ap_buffer, const size_t ap_offset,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasChpr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    ap_buffer, ap_offset,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhpr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const double alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem ap_buffer, const size_t ap_offset,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZhpr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    ap_buffer, ap_offset,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHER2/ZHER2
+clblasStatus clblasXher2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCher2(layout, triangle,
+                     n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXher2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZher2(layout, triangle,
+                     n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for CHPR2/ZHPR2
+clblasStatus clblasXhpr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem ap_buffer, const size_t ap_offset,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasChpr2(layout, triangle,
+                     n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     ap_buffer, ap_offset,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXhpr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double2 alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem ap_buffer, const size_t ap_offset,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZhpr2(layout, triangle,
+                     n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     ap_buffer, ap_offset,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSYR/DSYR
+clblasStatus clblasXsyr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const float alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSsyr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const double alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDsyr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    a_buffer, a_offset, a_ld,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSPR/DSPR
+clblasStatus clblasXspr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const float alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem ap_buffer, const size_t ap_offset,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSspr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    ap_buffer, ap_offset,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXspr(const clblasOrder layout, const clblasUplo triangle,
+                        const size_t n,
+                        const double alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem ap_buffer, const size_t ap_offset,
+                        cl_uint num_queues, cl_command_queue *queues,
+                        cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDspr(layout, triangle,
+                    n,
+                    alpha,
+                    x_buffer, x_offset, static_cast<int>(x_inc),
+                    ap_buffer, ap_offset,
+                    num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSYR2/DSYR2
+clblasStatus clblasXsyr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSsyr2(layout, triangle,
+                     n,
+                     alpha,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXsyr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDsyr2(layout, triangle,
+                     n,
+                     alpha,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     a_buffer, a_offset, a_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SSPR2/DSPR2
+clblasStatus clblasXspr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const float alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem ap_buffer, const size_t ap_offset,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSspr2(layout, triangle,
+                     n,
+                     alpha,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     ap_buffer, ap_offset,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXspr2(const clblasOrder layout, const clblasUplo triangle,
+                         const size_t n,
+                         const double alpha,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem ap_buffer, const size_t ap_offset,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDspr2(layout, triangle,
+                     n,
+                     alpha,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     ap_buffer, ap_offset,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
@@ -957,6 +1955,64 @@ clblasStatus clblasXtrmm(const clblasOrder layout, const clblasSide side, const 
                          cl_uint num_queues, cl_command_queue *queues,
                          cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   return clblasZtrmm(layout, side, triangle, a_transpose, diagonal,
+                     m, n,
+                     cl_double2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for STRSM/DTRSM/CTRSM/ZTRSM
+clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t m, const size_t n,
+                         const float alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasStrsm(layout, side, triangle, a_transpose, diagonal,
+                     m, n,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t m, const size_t n,
+                         const double alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDtrsm(layout, side, triangle, a_transpose, diagonal,
+                     m, n,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t m, const size_t n,
+                         const float2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasCtrsm(layout, side, triangle, a_transpose, diagonal,
+                     m, n,
+                     cl_float2{{alpha.real(), alpha.imag()}},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
+                         const size_t m, const size_t n,
+                         const double2 alpha,
+                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                         cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasZtrsm(layout, side, triangle, a_transpose, diagonal,
                      m, n,
                      cl_double2{{alpha.real(), alpha.imag()}},
                      a_buffer, a_offset, a_ld,

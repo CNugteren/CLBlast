@@ -269,7 +269,7 @@ template StatusCode Dotc<double2>(const size_t,
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
 
-// Generalized matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
 template <typename T>
 StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n,
@@ -325,6 +325,51 @@ template StatusCode Gemv<double2>(const Layout, const Transpose,
                                   cl_mem, const size_t, const size_t,
                                   cl_command_queue*, cl_event*);
 
+// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
+template <typename T>
+StatusCode Gbmv(const Layout, const Transpose,
+                const size_t, const size_t, const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                const T,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Gbmv<float>(const Layout, const Transpose,
+                                const size_t, const size_t, const size_t, const size_t,
+                                const float,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                const float,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Gbmv<double>(const Layout, const Transpose,
+                                 const size_t, const size_t, const size_t, const size_t,
+                                 const double,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const double,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Gbmv<float2>(const Layout, const Transpose,
+                                 const size_t, const size_t, const size_t, const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const float2,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Gbmv<double2>(const Layout, const Transpose,
+                                  const size_t, const size_t, const size_t, const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  const double2,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
 StatusCode Hemv(const Layout layout, const Triangle triangle,
@@ -360,6 +405,64 @@ template StatusCode Hemv<double2>(const Layout, const Triangle,
                                   const size_t,
                                   const double2,
                                   const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  const double2,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Hermitian banded matrix-vector multiplication: CHBMV/ZHBMV
+template <typename T>
+StatusCode Hbmv(const Layout, const Triangle,
+                const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                const T,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Hbmv<float2>(const Layout, const Triangle,
+                                 const size_t, const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const float2,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Hbmv<double2>(const Layout, const Triangle,
+                                  const size_t, const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  const double2,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
+template <typename T>
+StatusCode Hpmv(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t,
+                const cl_mem, const size_t, const size_t,
+                const T,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Hpmv<float2>(const Layout, const Triangle,
+                                 const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const float2,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Hpmv<double2>(const Layout, const Triangle,
+                                  const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t,
                                   const cl_mem, const size_t, const size_t,
                                   const double2,
                                   cl_mem, const size_t, const size_t,
@@ -405,11 +508,523 @@ template StatusCode Symv<double>(const Layout, const Triangle,
                                  cl_mem, const size_t, const size_t,
                                  cl_command_queue*, cl_event*);
 
+// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
+template <typename T>
+StatusCode Sbmv(const Layout, const Triangle,
+                const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                const T,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Sbmv<float>(const Layout, const Triangle,
+                                const size_t, const size_t,
+                                const float,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                const float,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Sbmv<double>(const Layout, const Triangle,
+                                 const size_t, const size_t,
+                                 const double,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const double,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+
+// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
+template <typename T>
+StatusCode Spmv(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t,
+                const cl_mem, const size_t, const size_t,
+                const T,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Spmv<float>(const Layout, const Triangle,
+                                const size_t,
+                                const float,
+                                const cl_mem, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                const float,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Spmv<double>(const Layout, const Triangle,
+                                 const size_t,
+                                 const double,
+                                 const cl_mem, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 const double,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+
+// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
+template <typename T>
+StatusCode Trmv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Trmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Trmv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trmv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trmv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
+template <typename T>
+StatusCode Tbmv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Tbmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Tbmv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tbmv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tbmv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
+template <typename T>
+StatusCode Tpmv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t,
+                const cl_mem, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Tpmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t,
+                                const cl_mem, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Tpmv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tpmv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tpmv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t,
+                                  const cl_mem, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
+template <typename T>
+StatusCode Trsv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Trsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Trsv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trsv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trsv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Solves a banded triangular system of equations: STBSV/DTBSV/CTBSV/ZTBSV
+template <typename T>
+StatusCode Tbsv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Tbsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Tbsv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tbsv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tbsv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Solves a packed triangular system of equations: STPSV/DTPSV/CTPSV/ZTPSV
+template <typename T>
+StatusCode Tpsv(const Layout, const Triangle, const Transpose, const Diagonal,
+                const size_t,
+                const cl_mem, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Tpsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                const size_t,
+                                const cl_mem, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Tpsv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tpsv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                 const size_t,
+                                 const cl_mem, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Tpsv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                  const size_t,
+                                  const cl_mem, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// General rank-1 matrix update: SGER/DGER
+template <typename T>
+StatusCode Ger(const Layout,
+               const size_t, const size_t,
+               const T,
+               const cl_mem, const size_t, const size_t,
+               const cl_mem, const size_t, const size_t,
+               cl_mem, const size_t, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Ger<float>(const Layout,
+                               const size_t, const size_t,
+                               const float,
+                               const cl_mem, const size_t, const size_t,
+                               const cl_mem, const size_t, const size_t,
+                               cl_mem, const size_t, const size_t,
+                               cl_command_queue*, cl_event*);
+template StatusCode Ger<double>(const Layout,
+                                const size_t, const size_t,
+                                const double,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+
+// General rank-1 complex matrix update: CGERU/ZGERU
+template <typename T>
+StatusCode Geru(const Layout,
+                const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Geru<float2>(const Layout,
+                                 const size_t, const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Geru<double2>(const Layout,
+                                  const size_t, const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// General rank-1 complex conjugated matrix update: CGERC/ZGERC
+template <typename T>
+StatusCode Gerc(const Layout,
+                const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Gerc<float2>(const Layout,
+                                 const size_t, const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Gerc<double2>(const Layout,
+                                  const size_t, const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Hermitian rank-1 matrix update: CHER/ZHER
+template <typename T>
+StatusCode Her(const Layout, const Triangle,
+               const size_t,
+               const T,
+               const cl_mem, const size_t, const size_t,
+               cl_mem, const size_t, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Her<float>(const Layout, const Triangle,
+                               const size_t,
+                               const float,
+                               const cl_mem, const size_t, const size_t,
+                               cl_mem, const size_t, const size_t,
+                               cl_command_queue*, cl_event*);
+template StatusCode Her<double>(const Layout, const Triangle,
+                                const size_t,
+                                const double,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+
+// Hermitian packed rank-1 matrix update: CHPR/ZHPR
+template <typename T>
+StatusCode Hpr(const Layout, const Triangle,
+               const size_t,
+               const T,
+               const cl_mem, const size_t, const size_t,
+               cl_mem, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Hpr<float>(const Layout, const Triangle,
+                               const size_t,
+                               const float,
+                               const cl_mem, const size_t, const size_t,
+                               cl_mem, const size_t,
+                               cl_command_queue*, cl_event*);
+template StatusCode Hpr<double>(const Layout, const Triangle,
+                                const size_t,
+                                const double,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t,
+                                cl_command_queue*, cl_event*);
+
+// Hermitian rank-2 matrix update: CHER2/ZHER2
+template <typename T>
+StatusCode Her2(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Her2<float2>(const Layout, const Triangle,
+                                 const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Her2<double2>(const Layout, const Triangle,
+                                  const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
+template <typename T>
+StatusCode Hpr2(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Hpr2<float2>(const Layout, const Triangle,
+                                 const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Hpr2<double2>(const Layout, const Triangle,
+                                  const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Symmetric rank-1 matrix update: SSYR/DSYR
+template <typename T>
+StatusCode Syr(const Layout, const Triangle,
+               const size_t,
+               const T,
+               const cl_mem, const size_t, const size_t,
+               cl_mem, const size_t, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Syr<float>(const Layout, const Triangle,
+                               const size_t,
+                               const float,
+                               const cl_mem, const size_t, const size_t,
+                               cl_mem, const size_t, const size_t,
+                               cl_command_queue*, cl_event*);
+template StatusCode Syr<double>(const Layout, const Triangle,
+                                const size_t,
+                                const double,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+
+// Symmetric packed rank-1 matrix update: SSPR/DSPR
+template <typename T>
+StatusCode Spr(const Layout, const Triangle,
+               const size_t,
+               const T,
+               const cl_mem, const size_t, const size_t,
+               cl_mem, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Spr<float>(const Layout, const Triangle,
+                               const size_t,
+                               const float,
+                               const cl_mem, const size_t, const size_t,
+                               cl_mem, const size_t,
+                               cl_command_queue*, cl_event*);
+template StatusCode Spr<double>(const Layout, const Triangle,
+                                const size_t,
+                                const double,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t,
+                                cl_command_queue*, cl_event*);
+
+// Symmetric rank-2 matrix update: SSYR2/DSYR2
+template <typename T>
+StatusCode Syr2(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Syr2<float>(const Layout, const Triangle,
+                                const size_t,
+                                const float,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Syr2<double>(const Layout, const Triangle,
+                                 const size_t,
+                                 const double,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+template <typename T>
+StatusCode Spr2(const Layout, const Triangle,
+                const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Spr2<float>(const Layout, const Triangle,
+                                const size_t,
+                                const float,
+                                const cl_mem, const size_t, const size_t,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Spr2<double>(const Layout, const Triangle,
+                                 const size_t,
+                                 const double,
+                                 const cl_mem, const size_t, const size_t,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t,
+                                 cl_command_queue*, cl_event*);
+
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 // =================================================================================================
 
-// Generalized matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
+// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
 template <typename T>
 StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -781,6 +1396,41 @@ template StatusCode Trmm<float2>(const Layout, const Side, const Triangle, const
                                  cl_mem, const size_t, const size_t,
                                  cl_command_queue*, cl_event*);
 template StatusCode Trmm<double2>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                  const size_t, const size_t,
+                                  const double2,
+                                  const cl_mem, const size_t, const size_t,
+                                  cl_mem, const size_t, const size_t,
+                                  cl_command_queue*, cl_event*);
+
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+template <typename T>
+StatusCode Trsm(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                const size_t, const size_t,
+                const T,
+                const cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode Trsm<float>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                const size_t, const size_t,
+                                const float,
+                                const cl_mem, const size_t, const size_t,
+                                cl_mem, const size_t, const size_t,
+                                cl_command_queue*, cl_event*);
+template StatusCode Trsm<double>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const double,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trsm<float2>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                 const size_t, const size_t,
+                                 const float2,
+                                 const cl_mem, const size_t, const size_t,
+                                 cl_mem, const size_t, const size_t,
+                                 cl_command_queue*, cl_event*);
+template StatusCode Trsm<double2>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
                                   const size_t, const size_t,
                                   const double2,
                                   const cl_mem, const size_t, const size_t,
