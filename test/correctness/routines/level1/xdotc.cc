@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xdotc routine.
-//
 // =================================================================================================
 
 #include "correctness/testblas.h"
 #include "routines/level1/xdotc.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -22,7 +18,7 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXdotc<float2>, float2, float2>(argc, argv, true, "CDOTC");
+  clblast::RunTests<clblast::TestXdotc<float2>, float2, float2>(argc, argv, false, "CDOTC");
   clblast::RunTests<clblast::TestXdotc<double2>, double2, double2>(argc, argv, true, "ZDOTC");
   return 0;
 }

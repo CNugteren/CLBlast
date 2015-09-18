@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xsyrk routine.
-//
 // =================================================================================================
 
 #include "correctness/testblas.h"
 #include "routines/level3/xsyrk.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

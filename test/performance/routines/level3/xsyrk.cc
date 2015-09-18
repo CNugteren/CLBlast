@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xsyrk command-line interface performance tester.
-//
 // =================================================================================================
 
 #include "performance/client.h"
 #include "routines/level3/xsyrk.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -23,8 +19,7 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf:
-      throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kSingle:
       clblast::RunClient<clblast::TestXsyrk<float>, float, float>(argc, argv); break;
     case clblast::Precision::kDouble:

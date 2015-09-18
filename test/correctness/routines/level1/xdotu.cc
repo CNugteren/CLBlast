@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xdotu routine.
-//
 // =================================================================================================
 
 #include "correctness/testblas.h"
 #include "routines/level1/xdotu.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -22,7 +18,7 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXdotu<float2>, float2, float2>(argc, argv, true, "CDOTU");
+  clblast::RunTests<clblast::TestXdotu<float2>, float2, float2>(argc, argv, false, "CDOTU");
   clblast::RunTests<clblast::TestXdotu<double2>, double2, double2>(argc, argv, true, "ZDOTU");
   return 0;
 }
