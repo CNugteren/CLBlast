@@ -1,5 +1,6 @@
 
 Development version (next release)
+- Improved structure and performance of level-2 routines (xSYMV/xHEMV)
 - Added level-1 routines:
   * SSWAP/DSWAP/CSWAP/ZSWAP
   * SSCAL/DSCAL/CSCAL/ZSCAL

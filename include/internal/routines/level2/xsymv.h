@@ -9,8 +9,7 @@
 //
 // This file implements the Xsymv routine. It is based on the generalized mat-vec multiplication
 // routine (Xgemv). The Xsymv class inherits from the templated class Xgemv, allowing it to call the
-// "DoGemm" function directly. The "DoSymv" function first preprocesses the symmetric matrix by
-// transforming it into a general matrix, and then calls the regular GEMV code.
+// "MatVec" function directly.
 //
 // =================================================================================================
 
@@ -27,16 +26,8 @@ template <typename T>
 class Xsymv: public Xgemv<T> {
  public:
 
-  // Members and methods from the base class
-  using Routine<T>::db_;
-  using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestMatrixA;
-  using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
-
-  // Uses the regular Xgemv routine
-  using Xgemv<T>::DoGemv;
+  // Uses the generic matrix-vector routine
+  using Xgemv<T>::MatVec;
 
   // Constructor
   Xsymv(Queue &queue, Event &event, const std::string &name = "SYMV");

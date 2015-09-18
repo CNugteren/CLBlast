@@ -37,72 +37,22 @@ StatusCode Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
                             const T beta,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
-  // Makes sure all dimensions are larger than zero
-  if (n == 0 || m == 0) { return StatusCode::kInvalidDimension; }
-
-  //
+  // Reverses the upper and lower band count
   auto rotated = (layout == Layout::kRowMajor);
-  auto t_one = (rotated) ? n : m;
-  auto t_two = (rotated) ? m : n;
-  auto a_one = kl+ku+1;
-  auto a_two = (rotated) ? m : n;
+  auto kl_real = (rotated) ? ku : kl;
+  auto ku_real = (rotated) ? kl : ku;
 
-  // Checks for validity of the A matrix
-  auto status = StatusCode::kSuccess;
-  if (a_ld < a_one) { return StatusCode::kInvalidLeadDimA; }
-  try {
-    auto required_size = (a_ld*a_two + a_offset)*sizeof(T);
-    auto buffer_size = a_buffer.GetSize();
-    if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
-  } catch (...) { return StatusCode::kInvalidMatrixA; }
-
-  // Temporary buffer to generalize the input matrix
-  try {
-    auto t_buffer = Buffer<T>(context_, t_one*t_two);
-
-    // Creates a general matrix from the input to be able to run the regular Xgemv routine
-    try {
-      auto& program = GetProgramFromCache();
-      auto kernel = Kernel(program, "GeneralBandedToGeneral");
-
-      // Sets the arguments for the matrix transform kernel
-      kernel.SetArgument(0, static_cast<int>(a_one));
-      kernel.SetArgument(1, static_cast<int>(a_two));
-      kernel.SetArgument(2, static_cast<int>(a_ld));
-      kernel.SetArgument(3, static_cast<int>(a_offset));
-      kernel.SetArgument(4, a_buffer());
-      kernel.SetArgument(5, static_cast<int>(t_one));
-      kernel.SetArgument(6, static_cast<int>(t_two));
-      kernel.SetArgument(7, static_cast<int>(t_one));
-      kernel.SetArgument(8, static_cast<int>(0));
-      kernel.SetArgument(9, t_buffer());
-      kernel.SetArgument(10, static_cast<int>(layout));
-      if (rotated) {
-        kernel.SetArgument(11, static_cast<int>(ku));
-        kernel.SetArgument(12, static_cast<int>(kl));
-      }
-      else {
-        kernel.SetArgument(11, static_cast<int>(kl));
-        kernel.SetArgument(12, static_cast<int>(ku));
-      }
-
-      // Uses the common matrix-transforms thread configuration
-      auto global = std::vector<size_t>{Ceil(CeilDiv(t_one, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
-                                        Ceil(CeilDiv(t_two, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
-      auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
-      status = RunKernel(kernel, global, local);
-      if (ErrorIn(status)) { return status; }
-
-      // Runs the regular Xgemv code
-      status = DoGemv(layout, a_transpose, m, n, alpha,
-                      t_buffer, 0, t_one,
-                      x_buffer, x_offset, x_inc, beta,
-                      y_buffer, y_offset, y_inc);
-
-      // Return the status of the Xgemv routine
-      return status;
-    } catch (...) { return StatusCode::kInvalidKernel; }
-  } catch (...) { return StatusCode::kTempBufferAllocFailure; }
+  // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
+  // The specific hermitian matrix-accesses are implemented in the kernel guarded by the
+  // ROUTINE_GBMV define.
+  bool fast_kernels = false;
+  return MatVec(layout, a_transpose,
+                m, n, alpha,
+                a_buffer, a_offset, a_ld,
+                x_buffer, x_offset, x_inc, beta,
+                y_buffer, y_offset, y_inc,
+                fast_kernels, fast_kernels,
+                false, kl_real, ku_real);
 }
 
 // =================================================================================================
