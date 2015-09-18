@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xhemv routine.
-//
 // =================================================================================================
 
 #include "correctness/testblas.h"
 #include "routines/level2/xhemv.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

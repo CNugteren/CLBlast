@@ -29,7 +29,7 @@ class DataType():
 		self.beta_cpp = scalars[1]
 		self.alpha_cl = scalars[2]
 		self.beta_cl = scalars[3]
-		self.buffertype = buffertype # Only used for template types
+		self.buffertype = buffertype
 
 	# Outputs the name of the data-type (alpha/beta), possibly transforming into the right type
 	def UseAlpha(self):
@@ -50,5 +50,12 @@ class DataType():
 		if self.beta_cpp in [FLT2, DBL2]:
 			return self.beta_cl+"{{beta.real(), beta.imag()}}"
 		return "beta"
+
+	# Returns the template as used in the correctness/performance tests
+	def TestTemplate(self):
+		if self.buffertype != self.beta_cpp:
+			return "<"+self.buffertype+","+self.beta_cpp+">, "+self.buffertype+", "+self.beta_cpp
+		return "<"+self.buffertype+">, "+self.buffertype+", "+self.beta_cpp
+
 
 # ==================================================================================================

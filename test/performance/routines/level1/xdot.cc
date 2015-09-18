@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xdot command-line interface performance tester.
-//
 // =================================================================================================
 
 #include "performance/client.h"
 #include "routines/level1/xdot.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -23,16 +19,13 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf:
-      throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kSingle:
       clblast::RunClient<clblast::TestXdot<float>, float, float>(argc, argv); break;
     case clblast::Precision::kDouble:
       clblast::RunClient<clblast::TestXdot<double>, double, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle:
-      throw std::runtime_error("Unsupported precision mode");
-    case clblast::Precision::kComplexDouble:
-      throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kComplexSingle: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kComplexDouble: throw std::runtime_error("Unsupported precision mode");
   }
   return 0;
 }
