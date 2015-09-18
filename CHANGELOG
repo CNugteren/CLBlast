@@ -7,6 +7,8 @@ Development version (next release)
   * SDOT/DDOT
   * CDOTU/ZDOTU
   * CDOTC/ZDOTC
+- Added level-2 routines:
+  * SGBMV/DGBMV/CGBMV/ZGBMV
 
 Version 0.4.0
 - Now using the Claduc C++11 interface to OpenCL

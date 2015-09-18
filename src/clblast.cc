@@ -28,6 +28,7 @@
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
+#include "internal/routines/level2/xgbmv.h"
 #include "internal/routines/level2/xhemv.h"
 #include "internal/routines/level2/xsymv.h"
 
@@ -327,15 +328,26 @@ template StatusCode Gemv<double2>(const Layout, const Transpose,
 
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
 template <typename T>
-StatusCode Gbmv(const Layout, const Transpose,
-                const size_t, const size_t, const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                const T,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
+                const size_t m, const size_t n, const size_t kl, const size_t ku,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xgbmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGbmv(layout, a_transpose,
+                        m, n, kl, ku,
+                        alpha,
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Gbmv<float>(const Layout, const Transpose,
                                 const size_t, const size_t, const size_t, const size_t,

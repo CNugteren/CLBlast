@@ -48,9 +48,11 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM) { args.m  = GetArgument(argc, argv, help, kArgM, 512UL); }
-    if (o == kArgN) { args.n  = GetArgument(argc, argv, help, kArgN, 512UL); }
-    if (o == kArgK) { args.k  = GetArgument(argc, argv, help, kArgK, 512UL); }
+    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, 512UL); }
+    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, 512UL); }
+    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, 512UL); }
+    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, 128UL); }
+    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, 128UL); }
 
     // Data-layouts
     if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
@@ -225,8 +227,10 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
   auto integers = std::vector<size_t>{};
   for (auto &o: options_) {
     if      (o == kArgM) {        integers.push_back(args.m); }
-    if      (o == kArgN) {        integers.push_back(args.n); }
+    else if (o == kArgN) {        integers.push_back(args.n); }
     else if (o == kArgK) {        integers.push_back(args.k); }
+    else if (o == kArgKU) {       integers.push_back(args.ku); }
+    else if (o == kArgKL) {       integers.push_back(args.kl); }
     else if (o == kArgLayout) {   integers.push_back(static_cast<size_t>(args.layout)); }
     else if (o == kArgSide) {     integers.push_back(static_cast<size_t>(args.side)); }
     else if (o == kArgTriangle) { integers.push_back(static_cast<size_t>(args.triangle)); }

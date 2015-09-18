@@ -153,7 +153,7 @@ CLBlast is in active development and currently does not support the full set of 
 | Level-2  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
 | xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xGBMV    |   |   |   |   |         |
+| xGBMV    | ✔ | ✔ | ✔ | ✔ |         |
 | xHEMV    | - | - | ✔ | ✔ |         |
 | xHBMV    | - | - |   |   |         |
 | xHPMV    | - | - |   |   |         |

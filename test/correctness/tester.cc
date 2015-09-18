@@ -132,6 +132,8 @@ void Tester<T,U>::TestEnd() {
       if (o == kArgM)        { fprintf(stdout, "%s=%lu ", kArgM, entry.args.m); }
       if (o == kArgN)        { fprintf(stdout, "%s=%lu ", kArgN, entry.args.n); }
       if (o == kArgK)        { fprintf(stdout, "%s=%lu ", kArgK, entry.args.k); }
+      if (o == kArgKU)       { fprintf(stdout, "%s=%lu ", kArgKU, entry.args.ku); }
+      if (o == kArgKL)       { fprintf(stdout, "%s=%lu ", kArgKL, entry.args.kl); }
       if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
       if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
       if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
