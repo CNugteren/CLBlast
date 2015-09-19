@@ -7,14 +7,14 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a class with static methods to describe the Xhpmv routine. Examples of
+// This file implements a class with static methods to describe the Xspmv routine. Examples of
 // such 'descriptions' are how to calculate the size a of buffer or how to run the routine. These
 // static methods are used by the correctness tester and the performance tester.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_ROUTINES_XHPMV_H_
-#define CLBLAST_TEST_ROUTINES_XHPMV_H_
+#ifndef CLBLAST_TEST_ROUTINES_XSPMV_H_
+#define CLBLAST_TEST_ROUTINES_XSPMV_H_
 
 #include <vector>
 #include <string>
@@ -26,7 +26,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestXhpmv {
+class TestXspmv {
  public:
 
   // The BLAS level: 1, 2, or 3
@@ -73,7 +73,7 @@ class TestXhpmv {
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = Hpmv(args.layout, args.triangle,
+    auto status = Spmv(args.layout, args.triangle,
                        args.n, args.alpha,
                        buffers.ap_mat(), args.ap_offset,
                        buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
@@ -87,7 +87,7 @@ class TestXhpmv {
   static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = clblasXhpmv(static_cast<clblasOrder>(args.layout),
+    auto status = clblasXspmv(static_cast<clblasOrder>(args.layout),
                               static_cast<clblasUplo>(args.triangle),
                               args.n, args.alpha,
                               buffers.ap_mat(), args.ap_offset,
@@ -126,5 +126,5 @@ class TestXhpmv {
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_ROUTINES_XHPMV_H_
+// CLBLAST_TEST_ROUTINES_XSPMV_H_
 #endif

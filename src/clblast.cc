@@ -33,6 +33,8 @@
 #include "internal/routines/level2/xhbmv.h"
 #include "internal/routines/level2/xhpmv.h"
 #include "internal/routines/level2/xsymv.h"
+#include "internal/routines/level2/xsbmv.h"
+#include "internal/routines/level2/xspmv.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -546,15 +548,26 @@ template StatusCode Symv<double>(const Layout, const Triangle,
 
 // Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
 template <typename T>
-StatusCode Sbmv(const Layout, const Triangle,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                const T,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Sbmv(const Layout layout, const Triangle triangle,
+                const size_t n, const size_t k,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xsbmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSbmv(layout, triangle,
+                        n, k,
+                        alpha,
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Sbmv<float>(const Layout, const Triangle,
                                 const size_t, const size_t,
@@ -575,15 +588,26 @@ template StatusCode Sbmv<double>(const Layout, const Triangle,
 
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
 template <typename T>
-StatusCode Spmv(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t,
-                const cl_mem, const size_t, const size_t,
-                const T,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Spmv(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem ap_buffer, const size_t ap_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xspmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSpmv(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(ap_buffer), ap_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Spmv<float>(const Layout, const Triangle,
                                 const size_t,

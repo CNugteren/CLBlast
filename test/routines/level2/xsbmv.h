@@ -7,14 +7,14 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a class with static methods to describe the Xhpmv routine. Examples of
+// This file implements a class with static methods to describe the Xsbmv routine. Examples of
 // such 'descriptions' are how to calculate the size a of buffer or how to run the routine. These
 // static methods are used by the correctness tester and the performance tester.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_ROUTINES_XHPMV_H_
-#define CLBLAST_TEST_ROUTINES_XHPMV_H_
+#ifndef CLBLAST_TEST_ROUTINES_XSBMV_H_
+#define CLBLAST_TEST_ROUTINES_XSBMV_H_
 
 #include <vector>
 #include <string>
@@ -26,7 +26,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestXhpmv {
+class TestXsbmv {
  public:
 
   // The BLAS level: 1, 2, or 3
@@ -34,10 +34,10 @@ class TestXhpmv {
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
-    return {kArgN,
+    return {kArgN, kArgKL,
             kArgLayout, kArgTriangle,
-            kArgXInc, kArgYInc,
-            kArgAPOffset, kArgXOffset, kArgYOffset,
+            kArgALeadDim, kArgXInc, kArgYInc,
+            kArgAOffset, kArgXOffset, kArgYOffset,
             kArgAlpha, kArgBeta};
   }
 
@@ -48,19 +48,19 @@ class TestXhpmv {
   static size_t GetSizeY(const Arguments<T> &args) {
     return args.n * args.y_inc + args.y_offset;
   }
-  static size_t GetSizeAP(const Arguments<T> &args) {
-    return ((args.n*(args.n+1)) / 2) + args.ap_offset;
+  static size_t GetSizeA(const Arguments<T> &args) {
+    return args.n * args.a_ld + args.a_offset;
   }
 
   // Describes how to set the sizes of all the buffers
   static void SetSizes(Arguments<T> &args) {
-    args.ap_size = GetSizeAP(args);
+    args.a_size = GetSizeA(args);
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
-  static size_t DefaultLDA(const Arguments<T> &) { return 1; } // N/A for this routine
+  static size_t DefaultLDA(const Arguments<T> &args) { return args.n; }
   static size_t DefaultLDB(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t DefaultLDC(const Arguments<T> &) { return 1; } // N/A for this routine
 
@@ -73,9 +73,9 @@ class TestXhpmv {
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = Hpmv(args.layout, args.triangle,
-                       args.n, args.alpha,
-                       buffers.ap_mat(), args.ap_offset,
+    auto status = Sbmv(args.layout, args.triangle,
+                       args.n, args.kl, args.alpha,
+                       buffers.a_mat(), args.a_offset, args.a_ld,
                        buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
                        buffers.y_vec(), args.y_offset, args.y_inc,
                        &queue_plain, &event);
@@ -87,10 +87,10 @@ class TestXhpmv {
   static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = clblasXhpmv(static_cast<clblasOrder>(args.layout),
+    auto status = clblasXsbmv(static_cast<clblasOrder>(args.layout),
                               static_cast<clblasUplo>(args.triangle),
-                              args.n, args.alpha,
-                              buffers.ap_mat(), args.ap_offset,
+                              args.n, args.kl, args.alpha,
+                              buffers.a_mat(), args.a_offset, args.a_ld,
                               buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
                               buffers.y_vec(), args.y_offset, args.y_inc,
                               1, &queue_plain, 0, nullptr, &event);
@@ -119,12 +119,12 @@ class TestXhpmv {
     return 2 * args.n * args.n;
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    return (((args.n*(args.n+1)) / 2) + 2*args.n + args.n) * sizeof(T);
+    return ((args.kl+args.kl+1)*args.n + 2*args.n + args.n) * sizeof(T);
   }
 };
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_ROUTINES_XHPMV_H_
+// CLBLAST_TEST_ROUTINES_XSBMV_H_
 #endif

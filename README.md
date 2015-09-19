@@ -158,8 +158,8 @@ CLBlast is in active development and currently does not support the full set of 
 | xHBMV    | - | - | ✔ | ✔ |         |
 | xHPMV    | - | - | ✔ | ✔ |         |
 | xSYMV    | ✔ | ✔ | - | - |         |
-| xSBMV    |   |   | - | - |         |
-| xSPMV    |   |   | - | - |         |
+| xSBMV    | ✔ | ✔ | - | - |         |
+| xSPMV    | ✔ | ✔ | - | - |         |
 | xTRMV    |   |   |   |   |         |
 | xTBMV    |   |   |   |   |         |
 | xTPMV    |   |   |   |   |         |

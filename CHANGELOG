@@ -12,6 +12,8 @@ Development version (next release)
   * SGBMV/DGBMV/CGBMV/ZGBMV
   * CHBMV/ZHBMV
   * CHPMV/ZHPMV
+  * SSBMV/DSBMV
+  * SSPMV/DSPMV
 
 Version 0.4.0
 - Now using the Claduc C++11 interface to OpenCL

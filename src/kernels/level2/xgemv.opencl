@@ -92,31 +92,39 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
     if (x >= y-ku && x < y+kl+1) { result = agm[a_ld*y + k + x + a_offset]; }
     else { SetToZero(result); }
 
-  // For hermitian matrices
-  #elif defined(ROUTINE_HEMV)
+  // For symmetric/hermitian matrices
+  #elif defined(ROUTINE_HEMV) || defined(ROUTINE_SYMV)
     if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {
       result = agm[a_ld*y + x + a_offset];
-      if (x == y) { result.y = ZERO; }
+      #if defined(ROUTINE_HEMV)
+        if (x == y) { result.y = ZERO; }
+      #endif
     }
     else {
       result = agm[a_ld*x + y + a_offset];
-      COMPLEX_CONJUGATE(result);
+      #if defined(ROUTINE_HEMV)
+        COMPLEX_CONJUGATE(result);
+      #endif
     }
 
-  // For hermitian banded matrices
-  #elif defined(ROUTINE_HBMV)
+  // For symmetric/hermitian banded matrices
+  #elif defined(ROUTINE_HBMV) || defined(ROUTINE_SBMV)
     if (parameter == 1) {
       if (x <= y) {
         const int m = kl - y;
         if (x >= y-kl && x <= y) { result = agm[a_ld*y + m + x + a_offset]; }
         else { SetToZero(result); }
-        if (x == y) { result.y = ZERO; }
+        #if defined(ROUTINE_HBMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
       }
       else {
         const int m = kl - x;
         if (y >= x-kl && y <= x) { result = agm[a_ld*x + m + y + a_offset]; }
         else { SetToZero(result); }
-        COMPLEX_CONJUGATE(result);
+        #if defined(ROUTINE_HBMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
       }
     }
     else {
@@ -124,46 +132,49 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
         const int m = -y;
         if (x >= y && x < y+kl+1) { result = agm[a_ld*y + m + x + a_offset]; }
         else { SetToZero(result); }
-        if (x == y) { result.y = ZERO; }
+        #if defined(ROUTINE_HBMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
       }
       else {
         const int m = -x;
         if (y >= x && y < x+kl+1) { result = agm[a_ld*x + m + y + a_offset]; }
         else { SetToZero(result); }
-        COMPLEX_CONJUGATE(result);
+        #if defined(ROUTINE_HBMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
       }
     }
 
-  // For hermitian packed matrices
-  #elif defined(ROUTINE_HPMV)
+  // For symmetric/hermitian packed matrices
+  #elif defined(ROUTINE_HPMV) || defined(ROUTINE_SPMV)
     if (parameter == 1) {
       if (x <= y) {
         result = agm[((y+1)*y)/2 + x + a_offset];
-        if (x == y) { result.y = ZERO; }
+        #if defined(ROUTINE_HPMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
       }
       else {
         result = agm[((x+1)*x)/2 + y + a_offset];
-        COMPLEX_CONJUGATE(result);
+        #if defined(ROUTINE_HPMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
       }
     }
     else {
       if (x >= y) {
         result = agm[((2*a_ld-(y+1))*y)/2 + x + a_offset];
-        if (x == y) { result.y = ZERO; }
+        #if defined(ROUTINE_HPMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
       }
       else {
         result = agm[((2*a_ld-(x+1))*x)/2 + y + a_offset];
-        COMPLEX_CONJUGATE(result);
+        #if defined(ROUTINE_HPMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
       }
-    }
-
-  // For symmetric matrices
-  #elif defined(ROUTINE_SYMV)
-    if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {
-      result = agm[y*a_ld + x + a_offset];
-    }
-    else {
-      result = agm[x*a_ld + y + a_offset];
     }
 
   // For general matrices
