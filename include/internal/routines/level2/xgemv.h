@@ -55,7 +55,7 @@ class Xgemv: public Routine<T> {
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                     const T beta,
                     const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                    bool fast_kernel, bool fast_kernel_rot, bool reversed,
+                    bool fast_kernel, bool fast_kernel_rot, const size_t parameter,
                     const size_t kl, const size_t ku);
 
  private:

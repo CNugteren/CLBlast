@@ -30,6 +30,7 @@
 #include "internal/routines/level2/xgemv.h"
 #include "internal/routines/level2/xgbmv.h"
 #include "internal/routines/level2/xhemv.h"
+#include "internal/routines/level2/xhbmv.h"
 #include "internal/routines/level2/xsymv.h"
 
 // BLAS level-3 includes
@@ -424,15 +425,26 @@ template StatusCode Hemv<double2>(const Layout, const Triangle,
 
 // Hermitian banded matrix-vector multiplication: CHBMV/ZHBMV
 template <typename T>
-StatusCode Hbmv(const Layout, const Triangle,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                const T,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hbmv(const Layout layout, const Triangle triangle,
+                const size_t n, const size_t k,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhbmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHbmv(layout, triangle,
+                        n, k,
+                        alpha,
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Hbmv<float2>(const Layout, const Triangle,
                                  const size_t, const size_t,

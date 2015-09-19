@@ -38,8 +38,8 @@ StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
   // The data is either in the upper or lower triangle
-  bool reversed = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                   (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+  size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
+                     (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
   // The specific hermitian matrix-accesses are implemented in the kernel guarded by the
@@ -51,7 +51,7 @@ StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 fast_kernels, fast_kernels,
-                reversed, 0, 0);
+                is_upper, 0, 0);
 }
 
 // =================================================================================================

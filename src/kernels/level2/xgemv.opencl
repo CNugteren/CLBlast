@@ -82,38 +82,65 @@ R"(
 
 // Defines how to load the input matrix in the non-vectorized case
 inline real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
-                        const int a_ld, const int a_offset, const int reversed,
+                        const int a_ld, const int a_offset, const int parameter,
                         const int kl, const int ku) {
   real result;
 
-  // For symmetric matrices
-  #if defined(ROUTINE_SYMV)
-    if ((reversed == 0 && y <= x) || (reversed == 1 && x <= y)) {
-      result = agm[y*a_ld + x + a_offset];
-    }
-    else {
-      result = agm[x*a_ld + y + a_offset];
-    }
+  // For banded matrices
+  #if defined(ROUTINE_GBMV)
+    const int k = ku - y;
+    if (x >= y-ku && x < y+kl+1) { result = agm[a_ld*y + k + x + a_offset]; }
+    else { SetToZero(result); }
 
   // For hermitian matrices
   #elif defined(ROUTINE_HEMV)
-    if ((reversed == 0 && y <= x) || (reversed == 1 && x <= y)) {
-      result = agm[y*a_ld + x + a_offset];
+    if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {
+      result = agm[a_ld*y + x + a_offset];
       if (x == y) { result.y = ZERO; }
     }
     else {
-      result = agm[x*a_ld + y + a_offset];
+      result = agm[a_ld*x + y + a_offset];
       COMPLEX_CONJUGATE(result);
     }
 
-  // For banded matrices
-  #elif defined(ROUTINE_GBMV)
-    const int k = ku-y+x;
-    if (x >= y-ku && x < y+kl+1) {
-      result = agm[a_ld*y + k + a_offset];
+  // For hermitian banded matrices
+  #elif defined(ROUTINE_HBMV)
+    if (parameter == 1) {
+      if (x <= y) {
+        const int m = kl - y;
+        if (x >= y-kl && x <= y) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (x == y) { result.y = ZERO; }
+      }
+      else {
+        const int m = kl - x;
+        if (y >= x-kl && y <= x) { result = agm[a_ld*x + m + y + a_offset]; }
+        else { SetToZero(result); }
+        COMPLEX_CONJUGATE(result);
+      }
     }
     else {
-      SetToZero(result);
+      if (x >= y) {
+        const int m = -y;
+        if (x >= y && x < y+kl+1) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (x == y) { result.y = ZERO; }
+      }
+      else {
+        const int m = -x;
+        if (y >= x && y < x+kl+1) { result = agm[a_ld*x + m + y + a_offset]; }
+        else { SetToZero(result); }
+        COMPLEX_CONJUGATE(result);
+      }
+    }
+
+  // For symmetric matrices
+  #elif defined(ROUTINE_SYMV)
+    if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {
+      result = agm[y*a_ld + x + a_offset];
+    }
+    else {
+      result = agm[x*a_ld + y + a_offset];
     }
 
   // For general matrices
@@ -145,7 +172,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
                     const __global real* restrict agm, const int a_offset, const int a_ld,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* ygm, const int y_offset, const int y_inc,
-                    const int do_conjugate, const int reversed,
+                    const int do_conjugate, const int parameter,
                     const int kl, const int ku) {
 
   // Local memory for the vector X
@@ -183,7 +210,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
           #pragma unroll
           for (int kloop=0; kloop<WGS1; ++kloop) {
             const int k = kwg + kloop;
-            real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, reversed, kl, ku);
+            real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
             if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
             MultiplyAdd(acc[w], xlm[kloop], value);
           }
@@ -192,7 +219,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
           #pragma unroll
           for (int kloop=0; kloop<WGS1; ++kloop) {
             const int k = kwg + kloop;
-            real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, reversed, kl, ku);
+            real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
             if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
             MultiplyAdd(acc[w], xlm[kloop], value);
           }
@@ -214,7 +241,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
       if (a_rotated == 0) { // Not rotated
         #pragma unroll
         for (int k=n_floor; k<n; ++k) {
-          real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, reversed, kl, ku);
+          real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
           MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
         }
@@ -222,7 +249,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
       else { // Transposed
         #pragma unroll
         for (int k=n_floor; k<n; ++k) {
-          real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, reversed, kl, ku);
+          real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
           MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
         }
@@ -249,7 +276,7 @@ __kernel void XgemvFast(const int m, const int n, const real alpha, const real b
                         const __global realVF* restrict agm, const int a_offset, const int a_ld,
                         const __global real* restrict xgm, const int x_offset, const int x_inc,
                         __global real* ygm, const int y_offset, const int y_inc,
-                        const int do_conjugate, const int reversed,
+                        const int do_conjugate, const int parameter,
                         const int kl, const int ku) {
   // Local memory for the vector X
   __local real xlm[WGS2];
@@ -346,7 +373,7 @@ __kernel void XgemvFastRot(const int m, const int n, const real alpha, const rea
                            const __global realVFR* restrict agm, const int a_offset, const int a_ld,
                            const __global real* restrict xgm, const int x_offset, const int x_inc,
                            __global real* ygm, const int y_offset, const int y_inc,
-                           const int do_conjugate, const int reversed,
+                           const int do_conjugate, const int parameter,
                            const int kl, const int ku) {
   // Local memory for the vector X
   __local real xlm[WGS3];

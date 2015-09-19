@@ -55,7 +55,7 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 true, true,
-                false, 0, 0); // N/A for this routine
+                0, 0, 0); // N/A for this routine
 }
 
 // =================================================================================================
@@ -69,7 +69,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                             const T beta,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                            bool fast_kernel, bool fast_kernel_rot, bool reversed,
+                            bool fast_kernel, bool fast_kernel_rot, const size_t parameter,
                             const size_t kl, const size_t ku) {
 
   // Makes sure all dimensions are larger than zero
@@ -151,9 +151,9 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     kernel.SetArgument(12, static_cast<int>(y_offset));
     kernel.SetArgument(13, static_cast<int>(y_inc));
     kernel.SetArgument(14, static_cast<int>(a_conjugate));
-    kernel.SetArgument(15, static_cast<int>(reversed)); // only used for SYMV/HEMV routines
-    kernel.SetArgument(16, static_cast<int>(kl)); // only used for GBMV routines
-    kernel.SetArgument(17, static_cast<int>(ku)); // only used for GBMV routines
+    kernel.SetArgument(15, static_cast<int>(parameter)); // extra parameter used for symm/herm
+    kernel.SetArgument(16, static_cast<int>(kl)); // only used for banded matrices
+    kernel.SetArgument(17, static_cast<int>(ku)); // only used for banded matrices
 
     // Launches the kernel
     auto global = std::vector<size_t>{global_size};

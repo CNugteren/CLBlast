@@ -52,7 +52,7 @@ StatusCode Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 fast_kernels, fast_kernels,
-                false, kl_real, ku_real);
+                0, kl_real, ku_real);
 }
 
 // =================================================================================================
