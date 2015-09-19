@@ -67,7 +67,7 @@ routines = [
   Routine(True,  "2a", "gbmv",  T,  [S,D,C,Z], ["m","n","kl","ku"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], False, "General banded matrix-vector multiplication"),
   Routine(True,  "2a", "hemv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Hermitian matrix-vector multiplication"),
   Routine(True,  "2a", "hbmv",  T,  [C,Z],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Hermitian banded matrix-vector multiplication"),
-  Routine(False, "2a", "hpmv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], False, "Hermitian packed matrix-vector multiplication"),
+  Routine(True,  "2a", "hpmv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], False, "Hermitian packed matrix-vector multiplication"),
   Routine(True,  "2a", "symv",  T,  [S,D],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Symmetric matrix-vector multiplication"),
   Routine(False, "2a", "sbmv",  T,  [S,D],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Symmetric banded matrix-vector multiplication"),
   Routine(False, "2a", "spmv",  T,  [S,D],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], False, "Symmetric packed matrix-vector multiplication"),
@@ -237,7 +237,7 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 46, 80, 24, 22]
+header_lines = [84, 47, 80, 24, 22]
 footer_lines = [6, 3, 5, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

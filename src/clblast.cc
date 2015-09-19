@@ -31,6 +31,7 @@
 #include "internal/routines/level2/xgbmv.h"
 #include "internal/routines/level2/xhemv.h"
 #include "internal/routines/level2/xhbmv.h"
+#include "internal/routines/level2/xhpmv.h"
 #include "internal/routines/level2/xsymv.h"
 
 // BLAS level-3 includes
@@ -465,15 +466,26 @@ template StatusCode Hbmv<double2>(const Layout, const Triangle,
 
 // Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
 template <typename T>
-StatusCode Hpmv(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t,
-                const cl_mem, const size_t, const size_t,
-                const T,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hpmv(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem ap_buffer, const size_t ap_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const T beta,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhpmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHpmv(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(ap_buffer), ap_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        beta,
+                        Buffer<T>(y_buffer), y_offset, y_inc);
 }
 template StatusCode Hpmv<float2>(const Layout, const Triangle,
                                  const size_t,

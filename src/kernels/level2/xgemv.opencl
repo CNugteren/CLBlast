@@ -134,6 +134,29 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
       }
     }
 
+  // For hermitian packed matrices
+  #elif defined(ROUTINE_HPMV)
+    if (parameter == 1) {
+      if (x <= y) {
+        result = agm[((y+1)*y)/2 + x + a_offset];
+        if (x == y) { result.y = ZERO; }
+      }
+      else {
+        result = agm[((x+1)*x)/2 + y + a_offset];
+        COMPLEX_CONJUGATE(result);
+      }
+    }
+    else {
+      if (x >= y) {
+        result = agm[((2*a_ld-(y+1))*y)/2 + x + a_offset];
+        if (x == y) { result.y = ZERO; }
+      }
+      else {
+        result = agm[((2*a_ld-(x+1))*x)/2 + y + a_offset];
+        COMPLEX_CONJUGATE(result);
+      }
+    }
+
   // For symmetric matrices
   #elif defined(ROUTINE_SYMV)
     if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {

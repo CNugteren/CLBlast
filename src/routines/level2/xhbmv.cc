@@ -51,7 +51,7 @@ StatusCode Xhbmv<T>::DoHbmv(const Layout layout, const Triangle triangle,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 fast_kernels, fast_kernels,
-                is_upper, k, 0);
+                is_upper, false, k, 0);
 }
 
 // =================================================================================================

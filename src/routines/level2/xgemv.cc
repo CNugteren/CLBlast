@@ -55,7 +55,7 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 true, true,
-                0, 0, 0); // N/A for this routine
+                0, false, 0, 0); // N/A for this routine
 }
 
 // =================================================================================================
@@ -69,7 +69,8 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                             const T beta,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                            bool fast_kernel, bool fast_kernel_rot, const size_t parameter,
+                            bool fast_kernel, bool fast_kernel_rot,
+                            const size_t parameter, const bool packed,
                             const size_t kl, const size_t ku) {
 
   // Makes sure all dimensions are larger than zero
@@ -97,7 +98,9 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   auto a_conjugate = (a_transpose == Transpose::kConjugate);
 
   // Tests the matrix and the vectors for validity
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = StatusCode::kSuccess;
+  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
+  else { status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T)); }
   if (ErrorIn(status)) { return status; }
   status = TestVectorX(n_real, x_buffer, x_offset, x_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
