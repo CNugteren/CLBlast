@@ -59,6 +59,7 @@ constexpr auto kArgCLeadDim = "ldc";
 constexpr auto kArgAOffset = "offa";
 constexpr auto kArgBOffset = "offb";
 constexpr auto kArgCOffset = "offc";
+constexpr auto kArgAPOffset = "offap";
 constexpr auto kArgDotOffset = "offdot";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
@@ -110,6 +111,7 @@ struct Arguments {
   size_t a_offset = 0;
   size_t b_offset = 0;
   size_t c_offset = 0;
+  size_t ap_offset = 0;
   size_t dot_offset = 0;
   T alpha = T{1.0};
   T beta = T{1.0};
@@ -118,6 +120,7 @@ struct Arguments {
   size_t a_size = 1;
   size_t b_size = 1;
   size_t c_size = 1;
+  size_t ap_size = 1;
   size_t dot_size = 1;
   // Tuner-specific arguments
   double fraction = 1.0;
@@ -145,6 +148,7 @@ struct Buffers {
   Buffer<T> a_mat;
   Buffer<T> b_mat;
   Buffer<T> c_mat;
+  Buffer<T> ap_mat;
   Buffer<T> dot;
 };
 

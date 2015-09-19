@@ -91,6 +91,7 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> a_source_;
   std::vector<T> b_source_;
   std::vector<T> c_source_;
+  std::vector<T> ap_source_;
   std::vector<T> dot_source_;
   
   // The routine-specific functions passed to the tester
@@ -140,6 +141,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto a_offsets = std::vector<size_t>{args.a_offset};
   auto b_offsets = std::vector<size_t>{args.b_offset};
   auto c_offsets = std::vector<size_t>{args.c_offset};
+  auto ap_offsets = std::vector<size_t>{args.ap_offset};
   auto dot_offsets = std::vector<size_t>{args.dot_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
@@ -148,6 +150,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto a_sizes = std::vector<size_t>{args.a_size};
   auto b_sizes = std::vector<size_t>{args.b_size};
   auto c_sizes = std::vector<size_t>{args.c_size};
+  auto ap_sizes = std::vector<size_t>{args.ap_size};
 
   // Sets the dimensions of the matrices or vectors depending on the BLAS level
   auto dimensions = (C::BLASLevel() == 3) ? tester.kMatrixDims :
@@ -177,6 +180,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgAOffset) { a_offsets = tester.kOffsets; }
     if (option == kArgBOffset) { b_offsets = tester.kOffsets; }
     if (option == kArgCOffset) { c_offsets = tester.kOffsets; }
+    if (option == kArgAPOffset) { ap_offsets = tester.kOffsets; }
     if (option == kArgDotOffset) { dot_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
@@ -186,6 +190,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgAOffset) { a_sizes = tester.kMatSizes; }
     if (option == kArgBOffset) { b_sizes = tester.kMatSizes; }
     if (option == kArgCOffset) { c_sizes = tester.kMatSizes; }
+    if (option == kArgAPOffset) { ap_sizes = tester.kMatSizes; }
   }
 
   // Loops over the test-cases from a data-layout point of view
@@ -214,11 +219,13 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
                                       for (auto &b_offset: b_offsets) { r_args.b_offset = b_offset;
                                         for (auto &c_ld: c_lds) { r_args.c_ld = c_ld;
                                           for (auto &c_offset: c_offsets) { r_args.c_offset = c_offset;
-                                            for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
-                                              for (auto &alpha: alphas) { r_args.alpha = alpha;
-                                                for (auto &beta: betas) { r_args.beta = beta;
-                                                  C::SetSizes(r_args);
-                                                  regular_test_vector.push_back(r_args);
+                                            for (auto &ap_offset: ap_offsets) { r_args.ap_offset = ap_offset;
+                                              for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
+                                                for (auto &alpha: alphas) { r_args.alpha = alpha;
+                                                  for (auto &beta: betas) { r_args.beta = beta;
+                                                    C::SetSizes(r_args);
+                                                    regular_test_vector.push_back(r_args);
+                                                  }
                                                 }
                                               }
                                             }
@@ -248,7 +255,9 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
                   for (auto &a_size: a_sizes) { i_args.a_size = a_size;
                     for (auto &b_size: b_sizes) { i_args.b_size = b_size;
                       for (auto &c_size: c_sizes) { i_args.c_size = c_size;
-                        invalid_test_vector.push_back(i_args);
+                        for (auto &ap_size: ap_sizes) { i_args.ap_size = ap_size;
+                          invalid_test_vector.push_back(i_args);
+                        }
                       }
                     }
                   }

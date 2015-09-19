@@ -72,6 +72,8 @@ class Routine {
                          const size_t offset, const size_t ld, const size_t data_size);
   StatusCode TestMatrixC(const size_t one, const size_t two, const Buffer<T> &buffer,
                          const size_t offset, const size_t ld, const size_t data_size);
+  StatusCode TestMatrixAP(const size_t n, const Buffer<T> &buffer,
+                          const size_t offset, const size_t data_size);
 
   // Tests for valid inputs of vectors X and Y
   StatusCode TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,

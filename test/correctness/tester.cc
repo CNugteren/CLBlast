@@ -150,6 +150,7 @@ void Tester<T,U>::TestEnd() {
       if (o == kArgAOffset)  { fprintf(stdout, "%s=%lu ", kArgAOffset, entry.args.a_offset);}
       if (o == kArgBOffset)  { fprintf(stdout, "%s=%lu ", kArgBOffset, entry.args.b_offset);}
       if (o == kArgCOffset)  { fprintf(stdout, "%s=%lu ", kArgCOffset, entry.args.c_offset);}
+      if (o == kArgAPOffset) { fprintf(stdout, "%s=%lu ", kArgAPOffset, entry.args.ap_offset);}
       if (o == kArgDotOffset){ fprintf(stdout, "%s=%lu ", kArgDotOffset, entry.args.dot_offset);}
     }
     fprintf(stdout, "\n");
