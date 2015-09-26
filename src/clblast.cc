@@ -35,6 +35,9 @@
 #include "internal/routines/level2/xsymv.h"
 #include "internal/routines/level2/xsbmv.h"
 #include "internal/routines/level2/xspmv.h"
+#include "internal/routines/level2/xtrmv.h"
+#include "internal/routines/level2/xtbmv.h"
+#include "internal/routines/level2/xtpmv.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -628,12 +631,20 @@ template StatusCode Spmv<double>(const Layout, const Triangle,
 
 // Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
 template <typename T>
-StatusCode Trmv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xtrmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoTrmv(layout, triangle, a_transpose, diagonal,
+                        n,
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode Trmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                 const size_t,
@@ -658,12 +669,20 @@ template StatusCode Trmv<double2>(const Layout, const Triangle, const Transpose,
 
 // Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
 template <typename T>
-StatusCode Tbmv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n, const size_t k,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xtbmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoTbmv(layout, triangle, a_transpose, diagonal,
+                        n, k,
+                        Buffer<T>(a_buffer), a_offset, a_ld,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode Tbmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                 const size_t, const size_t,
@@ -688,12 +707,20 @@ template StatusCode Tbmv<double2>(const Layout, const Triangle, const Transpose,
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
 template <typename T>
-StatusCode Tpmv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t,
-                const cl_mem, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem ap_buffer, const size_t ap_offset,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xtpmv<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoTpmv(layout, triangle, a_transpose, diagonal,
+                        n,
+                        Buffer<T>(ap_buffer), ap_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode Tpmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                 const size_t,

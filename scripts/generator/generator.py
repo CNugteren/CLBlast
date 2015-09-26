@@ -71,9 +71,9 @@ routines = [
   Routine(True,  "2a", "symv",  T,  [S,D],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Symmetric matrix-vector multiplication"),
   Routine(True,  "2a", "sbmv",  T,  [S,D],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], False, "Symmetric banded matrix-vector multiplication"),
   Routine(True,  "2a", "spmv",  T,  [S,D],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], False, "Symmetric packed matrix-vector multiplication"),
-  Routine(False, "2a", "trmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], True, "Triangular matrix-vector multiplication"),
-  Routine(False, "2a", "tbmv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], True, "Triangular banded matrix-vector multiplication"),
-  Routine(False, "2a", "tpmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], True, "Triangular packed matrix-vector multiplication"),
+  Routine(True,  "2a", "trmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], True, "Triangular matrix-vector multiplication"),
+  Routine(True,  "2a", "tbmv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], True, "Triangular banded matrix-vector multiplication"),
+  Routine(True,  "2a", "tpmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], True, "Triangular packed matrix-vector multiplication"),
   Routine(False, "2a", "trsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], False, "Solves a triangular system of equations"),
   Routine(False, "2a", "tbsv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], False, "Solves a banded triangular system of equations"),
   Routine(False, "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], False, "Solves a packed triangular system of equations"),
@@ -213,7 +213,7 @@ def wrapper_clblas(routines):
 			if routine.scratch:
 				result += "  auto queue = Queue(queues[0]);\n"
 				result += "  auto context = queue.GetContext();\n"
-				result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, n);\n"
+				result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, n*x_inc + x_offset);\n"
 				arguments += ["scratch_buffer()"]
 			result += "  return clblas"+flavour.name+routine.name+"("
 			result += (",\n"+indent).join([a for a in arguments])
@@ -237,7 +237,7 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 49, 80, 24, 22]
+header_lines = [84, 52, 80, 24, 22]
 footer_lines = [6, 3, 5, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

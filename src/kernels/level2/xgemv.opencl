@@ -107,6 +107,19 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
       #endif
     }
 
+  // For triangular matrices
+  #elif defined(ROUTINE_TRMV)
+    if (((parameter == 0 || parameter == 2) && y <= x) ||
+        ((parameter == 1 || parameter == 3) && x <= y)) {
+      result = agm[a_ld*y + x + a_offset];
+      if (parameter >= 2 && y == x) {
+        SetToOne(result);
+      }
+    }
+    else {
+      SetToZero(result);
+    }
+
   // For symmetric/hermitian banded matrices
   #elif defined(ROUTINE_HBMV) || defined(ROUTINE_SBMV)
     if (parameter == 1) {
@@ -146,6 +159,35 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
       }
     }
 
+  // For triangular banded matrices
+  #elif defined(ROUTINE_TBMV)
+    if (parameter == 1 || parameter == 3) {
+      if (x <= y) {
+        const int m = kl - y;
+        if (x >= y-kl && x <= y) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+    else {
+      if (x >= y) {
+        const int m = -y;
+        if (x >= y && x < y+kl+1) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+
   // For symmetric/hermitian packed matrices
   #elif defined(ROUTINE_HPMV) || defined(ROUTINE_SPMV)
     if (parameter == 1) {
@@ -174,6 +216,31 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
         #if defined(ROUTINE_HPMV)
           COMPLEX_CONJUGATE(result);
         #endif
+      }
+    }
+
+  // For triangular packed matrices
+  #elif defined(ROUTINE_TPMV)
+    if (parameter == 1 || parameter == 3) {
+      if (x <= y) {
+        result = agm[((y+1)*y)/2 + x + a_offset];
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+    else {
+      if (x >= y) {
+        result = agm[((2*a_ld-(y+1))*y)/2 + x + a_offset];
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
       }
     }
 
