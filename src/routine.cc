@@ -191,6 +191,18 @@ StatusCode Routine<T>::TestMatrixC(const size_t one, const size_t two, const Buf
   return StatusCode::kSuccess;
 }
 
+// Tests matrix AP for validity: checks for a valid OpenCL buffer and for a sufficient buffer size
+template <typename T>
+StatusCode Routine<T>::TestMatrixAP(const size_t n, const Buffer<T> &buffer,
+                                    const size_t offset, const size_t data_size) {
+  try {
+    auto required_size = (((n*(n+1))/2) + offset)*data_size;
+    auto buffer_size = buffer.GetSize();
+    if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
+  } catch (...) { return StatusCode::kInvalidMatrixA; }
+  return StatusCode::kSuccess;
+}
+
 // =================================================================================================
 
 // Tests vector X for validity: checks for a valid increment, a valid OpenCL buffer, and for a

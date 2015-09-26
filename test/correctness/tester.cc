@@ -132,6 +132,8 @@ void Tester<T,U>::TestEnd() {
       if (o == kArgM)        { fprintf(stdout, "%s=%lu ", kArgM, entry.args.m); }
       if (o == kArgN)        { fprintf(stdout, "%s=%lu ", kArgN, entry.args.n); }
       if (o == kArgK)        { fprintf(stdout, "%s=%lu ", kArgK, entry.args.k); }
+      if (o == kArgKU)       { fprintf(stdout, "%s=%lu ", kArgKU, entry.args.ku); }
+      if (o == kArgKL)       { fprintf(stdout, "%s=%lu ", kArgKL, entry.args.kl); }
       if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
       if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
       if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
@@ -148,6 +150,7 @@ void Tester<T,U>::TestEnd() {
       if (o == kArgAOffset)  { fprintf(stdout, "%s=%lu ", kArgAOffset, entry.args.a_offset);}
       if (o == kArgBOffset)  { fprintf(stdout, "%s=%lu ", kArgBOffset, entry.args.b_offset);}
       if (o == kArgCOffset)  { fprintf(stdout, "%s=%lu ", kArgCOffset, entry.args.c_offset);}
+      if (o == kArgAPOffset) { fprintf(stdout, "%s=%lu ", kArgAPOffset, entry.args.ap_offset);}
       if (o == kArgDotOffset){ fprintf(stdout, "%s=%lu ", kArgDotOffset, entry.args.dot_offset);}
     }
     fprintf(stdout, "\n");

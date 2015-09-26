@@ -34,7 +34,7 @@ class TuneXgemv {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/xgemv.opencl"
+      #include "../src/kernels/level2/xgemv.opencl"
     ;
   }
 

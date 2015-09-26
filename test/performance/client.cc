@@ -48,9 +48,11 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM) { args.m  = GetArgument(argc, argv, help, kArgM, 512UL); }
-    if (o == kArgN) { args.n  = GetArgument(argc, argv, help, kArgN, 512UL); }
-    if (o == kArgK) { args.k  = GetArgument(argc, argv, help, kArgK, 512UL); }
+    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, 512UL); }
+    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, 512UL); }
+    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, 512UL); }
+    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, 128UL); }
+    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, 128UL); }
 
     // Data-layouts
     if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
@@ -73,6 +75,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
     if (o == kArgAOffset)  { args.a_offset = GetArgument(argc, argv, help, kArgAOffset, size_t{0}); }
     if (o == kArgBOffset)  { args.b_offset = GetArgument(argc, argv, help, kArgBOffset, size_t{0}); }
     if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
+    if (o == kArgAPOffset) { args.ap_offset= GetArgument(argc, argv, help, kArgAPOffset, size_t{0}); }
 
     // Dot arguments
     if (o == kArgDotOffset)  { args.dot_offset = GetArgument(argc, argv, help, kArgDotOffset, size_t{0}); }
@@ -131,12 +134,14 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> a_source(args.a_size);
     std::vector<T> b_source(args.b_size);
     std::vector<T> c_source(args.c_size);
+    std::vector<T> ap_source(args.ap_size);
     std::vector<T> dot_source(args.dot_size);
     PopulateVector(x_source);
     PopulateVector(y_source);
     PopulateVector(a_source);
     PopulateVector(b_source);
     PopulateVector(c_source);
+    PopulateVector(ap_source);
     PopulateVector(dot_source);
 
     // Creates the matrices on the device
@@ -145,14 +150,16 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto a_mat = Buffer<T>(context, args.a_size);
     auto b_mat = Buffer<T>(context, args.b_size);
     auto c_mat = Buffer<T>(context, args.c_size);
+    auto ap_mat = Buffer<T>(context, args.ap_size);
     auto dot = Buffer<T>(context, args.dot_size);
     x_vec.Write(queue, args.x_size, x_source);
     y_vec.Write(queue, args.y_size, y_source);
     a_mat.Write(queue, args.a_size, a_source);
     b_mat.Write(queue, args.b_size, b_source);
     c_mat.Write(queue, args.c_size, c_source);
+    ap_mat.Write(queue, args.ap_size, ap_source);
     dot.Write(queue, args.dot_size, dot_source);
-    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, dot};
+    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, dot};
 
     // Runs the routines and collects the timings
     auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
@@ -225,8 +232,10 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
   auto integers = std::vector<size_t>{};
   for (auto &o: options_) {
     if      (o == kArgM) {        integers.push_back(args.m); }
-    if      (o == kArgN) {        integers.push_back(args.n); }
+    else if (o == kArgN) {        integers.push_back(args.n); }
     else if (o == kArgK) {        integers.push_back(args.k); }
+    else if (o == kArgKU) {       integers.push_back(args.ku); }
+    else if (o == kArgKL) {       integers.push_back(args.kl); }
     else if (o == kArgLayout) {   integers.push_back(static_cast<size_t>(args.layout)); }
     else if (o == kArgSide) {     integers.push_back(static_cast<size_t>(args.side)); }
     else if (o == kArgTriangle) { integers.push_back(static_cast<size_t>(args.triangle)); }
@@ -243,6 +252,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
     else if (o == kArgAOffset) {  integers.push_back(args.a_offset); }
     else if (o == kArgBOffset) {  integers.push_back(args.b_offset); }
     else if (o == kArgCOffset) {  integers.push_back(args.c_offset); }
+    else if (o == kArgAPOffset) { integers.push_back(args.ap_offset); }
     else if (o == kArgDotOffset) {integers.push_back(args.dot_offset); }
   }
   auto strings = std::vector<std::string>{};

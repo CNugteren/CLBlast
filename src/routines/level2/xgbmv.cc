@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xhemv class (see the header for information about the class).
+// This file implements the Xgbmv class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xhemv.h"
+#include "internal/routines/level2/xgbmv.h"
 
 #include <string>
 #include <vector>
@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xhemv<T>::Xhemv(Queue &queue, Event &event, const std::string &name):
+Xgbmv<T>::Xgbmv(Queue &queue, Event &event, const std::string &name):
     Xgemv<T>(queue, event, name) {
 }
 
@@ -29,36 +29,39 @@ Xhemv<T>::Xhemv(Queue &queue, Event &event, const std::string &name):
 
 // The main routine
 template <typename T>
-StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
-                            const size_t n,
+StatusCode Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                             const T alpha,
                             const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                             const T beta,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
-  // The data is either in the upper or lower triangle
-  size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                     (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+  // Reverses the upper and lower band count
+  auto rotated = (layout == Layout::kRowMajor);
+  auto kl_real = (rotated) ? ku : kl;
+  auto ku_real = (rotated) ? kl : ku;
 
   // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
   // The specific hermitian matrix-accesses are implemented in the kernel guarded by the
-  // ROUTINE_HEMV define.
+  // ROUTINE_GBMV define.
   bool fast_kernels = false;
-  return MatVec(layout, Transpose::kNo,
-                n, n, alpha,
+  return MatVec(layout, a_transpose,
+                m, n, alpha,
                 a_buffer, a_offset, a_ld,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 fast_kernels, fast_kernels,
-                is_upper, false, 0, 0);
+                0, false, kl_real, ku_real);
 }
 
 // =================================================================================================
 
 // Compiles the templated class
-template class Xhemv<float2>;
-template class Xhemv<double2>;
+template class Xgbmv<float>;
+template class Xgbmv<double>;
+template class Xgbmv<float2>;
+template class Xgbmv<double2>;
 
 // =================================================================================================
 } // namespace clblast

@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xhemv class (see the header for information about the class).
+// This file implements the Xhbmv class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xhemv.h"
+#include "internal/routines/level2/xhbmv.h"
 
 #include <string>
 #include <vector>
@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xhemv<T>::Xhemv(Queue &queue, Event &event, const std::string &name):
+Xhbmv<T>::Xhbmv(Queue &queue, Event &event, const std::string &name):
     Xgemv<T>(queue, event, name) {
 }
 
@@ -29,8 +29,8 @@ Xhemv<T>::Xhemv(Queue &queue, Event &event, const std::string &name):
 
 // The main routine
 template <typename T>
-StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
-                            const size_t n,
+StatusCode Xhbmv<T>::DoHbmv(const Layout layout, const Triangle triangle,
+                            const size_t n, const size_t k,
                             const T alpha,
                             const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
@@ -42,8 +42,8 @@ StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
                      (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
-  // The specific hermitian matrix-accesses are implemented in the kernel guarded by the
-  // ROUTINE_HEMV define.
+  // The specific hermitian banded matrix-accesses are implemented in the kernel guarded by the
+  // ROUTINE_HBMV define.
   bool fast_kernels = false;
   return MatVec(layout, Transpose::kNo,
                 n, n, alpha,
@@ -51,14 +51,14 @@ StatusCode Xhemv<T>::DoHemv(const Layout layout, const Triangle triangle,
                 x_buffer, x_offset, x_inc, beta,
                 y_buffer, y_offset, y_inc,
                 fast_kernels, fast_kernels,
-                is_upper, false, 0, 0);
+                is_upper, false, k, 0);
 }
 
 // =================================================================================================
 
 // Compiles the templated class
-template class Xhemv<float2>;
-template class Xhemv<double2>;
+template class Xhbmv<float2>;
+template class Xhbmv<double2>;
 
 // =================================================================================================
 } // namespace clblast

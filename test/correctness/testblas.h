@@ -49,6 +49,7 @@ class TestBlas: public Tester<T,U> {
   const std::vector<size_t> kIncrements = { 1, 2, 7 };
   const std::vector<size_t> kMatrixDims = { 7, 64 };
   const std::vector<size_t> kMatrixVectorDims = { 61, 512 };
+  const std::vector<size_t> kBandSizes = { 4, 19 };
   const std::vector<size_t> kOffsets = GetOffsets();
   const std::vector<U> kAlphaValues = GetExampleScalars<U>(full_test_);
   const std::vector<U> kBetaValues = GetExampleScalars<U>(full_test_);
@@ -90,6 +91,7 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> a_source_;
   std::vector<T> b_source_;
   std::vector<T> c_source_;
+  std::vector<T> ap_source_;
   std::vector<T> dot_source_;
   
   // The routine-specific functions passed to the tester
@@ -121,6 +123,8 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto ms = std::vector<size_t>{args.m};
   auto ns = std::vector<size_t>{args.n};
   auto ks = std::vector<size_t>{args.k};
+  auto kus = std::vector<size_t>{args.ku};
+  auto kls = std::vector<size_t>{args.kl};
   auto layouts = std::vector<Layout>{args.layout};
   auto a_transposes = std::vector<Transpose>{args.a_transpose};
   auto b_transposes = std::vector<Transpose>{args.b_transpose};
@@ -137,6 +141,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto a_offsets = std::vector<size_t>{args.a_offset};
   auto b_offsets = std::vector<size_t>{args.b_offset};
   auto c_offsets = std::vector<size_t>{args.c_offset};
+  auto ap_offsets = std::vector<size_t>{args.ap_offset};
   auto dot_offsets = std::vector<size_t>{args.dot_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
@@ -145,6 +150,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto a_sizes = std::vector<size_t>{args.a_size};
   auto b_sizes = std::vector<size_t>{args.b_size};
   auto c_sizes = std::vector<size_t>{args.c_size};
+  auto ap_sizes = std::vector<size_t>{args.ap_size};
 
   // Sets the dimensions of the matrices or vectors depending on the BLAS level
   auto dimensions = (C::BLASLevel() == 3) ? tester.kMatrixDims :
@@ -156,6 +162,8 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgM) { ms = dimensions; }
     if (option == kArgN) { ns = dimensions; }
     if (option == kArgK) { ks = dimensions; }
+    if (option == kArgKU) { kus = tester.kBandSizes; }
+    if (option == kArgKL) { kls = tester.kBandSizes; }
     if (option == kArgLayout) { layouts = tester.kLayouts; }
     if (option == kArgATransp) { a_transposes = C::GetATransposes(tester.kTransposes); }
     if (option == kArgBTransp) { b_transposes = C::GetBTransposes(tester.kTransposes); }
@@ -172,6 +180,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgAOffset) { a_offsets = tester.kOffsets; }
     if (option == kArgBOffset) { b_offsets = tester.kOffsets; }
     if (option == kArgCOffset) { c_offsets = tester.kOffsets; }
+    if (option == kArgAPOffset) { ap_offsets = tester.kOffsets; }
     if (option == kArgDotOffset) { dot_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
@@ -181,6 +190,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgAOffset) { a_sizes = tester.kMatSizes; }
     if (option == kArgBOffset) { b_sizes = tester.kMatSizes; }
     if (option == kArgCOffset) { c_sizes = tester.kMatSizes; }
+    if (option == kArgAPOffset) { ap_sizes = tester.kMatSizes; }
   }
 
   // Loops over the test-cases from a data-layout point of view
@@ -197,21 +207,27 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
               for (auto &m: ms) { r_args.m = m;
                 for (auto &n: ns) { r_args.n = n;
                   for (auto &k: ks) { r_args.k = k;
-                    for (auto &x_inc: x_incs) { r_args.x_inc = x_inc;
-                      for (auto &x_offset: x_offsets) { r_args.x_offset = x_offset;
-                        for (auto &y_inc: y_incs) { r_args.y_inc = y_inc;
-                          for (auto &y_offset: y_offsets) { r_args.y_offset = y_offset;
-                            for (auto &a_ld: a_lds) { r_args.a_ld = a_ld;
-                              for (auto &a_offset: a_offsets) { r_args.a_offset = a_offset;
-                                for (auto &b_ld: b_lds) { r_args.b_ld = b_ld;
-                                  for (auto &b_offset: b_offsets) { r_args.b_offset = b_offset;
-                                    for (auto &c_ld: c_lds) { r_args.c_ld = c_ld;
-                                      for (auto &c_offset: c_offsets) { r_args.c_offset = c_offset;
-                                        for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
-                                          for (auto &alpha: alphas) { r_args.alpha = alpha;
-                                            for (auto &beta: betas) { r_args.beta = beta;
-                                              C::SetSizes(r_args);
-                                              regular_test_vector.push_back(r_args);
+                    for (auto &ku: kus) { r_args.ku = ku;
+                      for (auto &kl: kls) { r_args.kl = kl;
+                        for (auto &x_inc: x_incs) { r_args.x_inc = x_inc;
+                          for (auto &x_offset: x_offsets) { r_args.x_offset = x_offset;
+                            for (auto &y_inc: y_incs) { r_args.y_inc = y_inc;
+                              for (auto &y_offset: y_offsets) { r_args.y_offset = y_offset;
+                                for (auto &a_ld: a_lds) { r_args.a_ld = a_ld;
+                                  for (auto &a_offset: a_offsets) { r_args.a_offset = a_offset;
+                                    for (auto &b_ld: b_lds) { r_args.b_ld = b_ld;
+                                      for (auto &b_offset: b_offsets) { r_args.b_offset = b_offset;
+                                        for (auto &c_ld: c_lds) { r_args.c_ld = c_ld;
+                                          for (auto &c_offset: c_offsets) { r_args.c_offset = c_offset;
+                                            for (auto &ap_offset: ap_offsets) { r_args.ap_offset = ap_offset;
+                                              for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
+                                                for (auto &alpha: alphas) { r_args.alpha = alpha;
+                                                  for (auto &beta: betas) { r_args.beta = beta;
+                                                    C::SetSizes(r_args);
+                                                    regular_test_vector.push_back(r_args);
+                                                  }
+                                                }
+                                              }
                                             }
                                           }
                                         }
@@ -232,14 +248,16 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
               // Creates the arguments vector for the invalid-buffer tests
               auto invalid_test_vector = std::vector<Arguments<U>>{};
               auto i_args = args;
-              i_args.m = i_args.n = i_args.k = tester.kBufferSize;
+              i_args.m = i_args.n = i_args.k = i_args.kl = i_args.ku = tester.kBufferSize;
               i_args.a_ld = i_args.b_ld = i_args.c_ld = tester.kBufferSize;
               for (auto &x_size: x_sizes) { i_args.x_size = x_size;
                 for (auto &y_size: y_sizes) { i_args.y_size = y_size;
                   for (auto &a_size: a_sizes) { i_args.a_size = a_size;
                     for (auto &b_size: b_sizes) { i_args.b_size = b_size;
                       for (auto &c_size: c_sizes) { i_args.c_size = c_size;
-                        invalid_test_vector.push_back(i_args);
+                        for (auto &ap_size: ap_sizes) { i_args.ap_size = ap_size;
+                          invalid_test_vector.push_back(i_args);
+                        }
                       }
                     }
                   }
