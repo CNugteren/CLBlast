@@ -27,8 +27,8 @@ template <> const Precision Xher2k<double2,double>::precision_ = Precision::kCom
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xher2k<T,U>::Xher2k(Queue &queue, Event &event):
-    Routine<T>(queue, event, "HER2K", {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
+Xher2k<T,U>::Xher2k(Queue &queue, Event &event, const std::string &name):
+    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","PadTranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/level3/copy.opencl"
     #include "../../kernels/level3/pad.opencl"

@@ -35,7 +35,7 @@ class Xswap: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xswap(Queue &queue, Event &event);
+  Xswap(Queue &queue, Event &event, const std::string &name = "SWAP");
 
   // Templated-precision implementation of the routine
   StatusCode DoSwap(const size_t n,

@@ -40,7 +40,7 @@ class Xher2k: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xher2k(Queue &queue, Event &event);
+  Xher2k(Queue &queue, Event &event, const std::string &name = "HER2K");
 
   // Templated-precision implementation of the routine
   StatusCode DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,

@@ -29,8 +29,8 @@ template <> const Precision Xswap<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xswap<T>::Xswap(Queue &queue, Event &event):
-    Routine<T>(queue, event, "SWAP", {"Xaxpy"}, precision_) {
+Xswap<T>::Xswap(Queue &queue, Event &event, const std::string &name):
+    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xswap.opencl"

@@ -38,7 +38,7 @@ class Xgemm: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xgemm(Queue &queue, Event &event);
+  Xgemm(Queue &queue, Event &event, const std::string &name = "GEMM");
 
   // Templated-precision implementation of the routine
   StatusCode DoGemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
