@@ -79,22 +79,189 @@ R"(
 #endif
 
 // =================================================================================================
-// Defines how to load the input matrix in the regular case
 
-// Loads a scalar input value
+// Defines how to load the input matrix in the non-vectorized case
 inline real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
-                        const int a_ld, const int a_offset) {
-  return agm[x + a_ld*y + a_offset];
+                        const int a_ld, const int a_offset, const int parameter,
+                        const int kl, const int ku) {
+  real result;
+
+  // For banded matrices
+  #if defined(ROUTINE_GBMV)
+    const int k = ku - y;
+    if (x >= y-ku && x < y+kl+1) { result = agm[a_ld*y + k + x + a_offset]; }
+    else { SetToZero(result); }
+
+  // For symmetric/hermitian matrices
+  #elif defined(ROUTINE_HEMV) || defined(ROUTINE_SYMV)
+    if ((parameter == 0 && y <= x) || (parameter == 1 && x <= y)) {
+      result = agm[a_ld*y + x + a_offset];
+      #if defined(ROUTINE_HEMV)
+        if (x == y) { result.y = ZERO; }
+      #endif
+    }
+    else {
+      result = agm[a_ld*x + y + a_offset];
+      #if defined(ROUTINE_HEMV)
+        COMPLEX_CONJUGATE(result);
+      #endif
+    }
+
+  // For triangular matrices
+  #elif defined(ROUTINE_TRMV)
+    if (((parameter == 0 || parameter == 2) && y <= x) ||
+        ((parameter == 1 || parameter == 3) && x <= y)) {
+      result = agm[a_ld*y + x + a_offset];
+      if (parameter >= 2 && y == x) {
+        SetToOne(result);
+      }
+    }
+    else {
+      SetToZero(result);
+    }
+
+  // For symmetric/hermitian banded matrices
+  #elif defined(ROUTINE_HBMV) || defined(ROUTINE_SBMV)
+    if (parameter == 1) {
+      if (x <= y) {
+        const int m = kl - y;
+        if (x >= y-kl && x <= y) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        #if defined(ROUTINE_HBMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
+      }
+      else {
+        const int m = kl - x;
+        if (y >= x-kl && y <= x) { result = agm[a_ld*x + m + y + a_offset]; }
+        else { SetToZero(result); }
+        #if defined(ROUTINE_HBMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
+      }
+    }
+    else {
+      if (x >= y) {
+        const int m = -y;
+        if (x >= y && x < y+kl+1) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        #if defined(ROUTINE_HBMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
+      }
+      else {
+        const int m = -x;
+        if (y >= x && y < x+kl+1) { result = agm[a_ld*x + m + y + a_offset]; }
+        else { SetToZero(result); }
+        #if defined(ROUTINE_HBMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
+      }
+    }
+
+  // For triangular banded matrices
+  #elif defined(ROUTINE_TBMV)
+    if (parameter == 1 || parameter == 3) {
+      if (x <= y) {
+        const int m = kl - y;
+        if (x >= y-kl && x <= y) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+    else {
+      if (x >= y) {
+        const int m = -y;
+        if (x >= y && x < y+kl+1) { result = agm[a_ld*y + m + x + a_offset]; }
+        else { SetToZero(result); }
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+
+  // For symmetric/hermitian packed matrices
+  #elif defined(ROUTINE_HPMV) || defined(ROUTINE_SPMV)
+    if (parameter == 1) {
+      if (x <= y) {
+        result = agm[((y+1)*y)/2 + x + a_offset];
+        #if defined(ROUTINE_HPMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
+      }
+      else {
+        result = agm[((x+1)*x)/2 + y + a_offset];
+        #if defined(ROUTINE_HPMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
+      }
+    }
+    else {
+      if (x >= y) {
+        result = agm[((2*a_ld-(y+1))*y)/2 + x + a_offset];
+        #if defined(ROUTINE_HPMV)
+          if (x == y) { result.y = ZERO; }
+        #endif
+      }
+      else {
+        result = agm[((2*a_ld-(x+1))*x)/2 + y + a_offset];
+        #if defined(ROUTINE_HPMV)
+          COMPLEX_CONJUGATE(result);
+        #endif
+      }
+    }
+
+  // For triangular packed matrices
+  #elif defined(ROUTINE_TPMV)
+    if (parameter == 1 || parameter == 3) {
+      if (x <= y) {
+        result = agm[((y+1)*y)/2 + x + a_offset];
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+    else {
+      if (x >= y) {
+        result = agm[((2*a_ld-(y+1))*y)/2 + x + a_offset];
+        if (parameter >= 2 && y == x) {
+          SetToOne(result);
+        }
+      }
+      else {
+        SetToZero(result);
+      }
+    }
+
+  // For general matrices
+  #else
+    result = agm[a_ld*y + x + a_offset];
+  #endif
+
+  return result;
 }
+
 // Loads a vector input value (1/2)
 inline realVF LoadMatrixAVF(const __global realVF* restrict agm, const int x, const int y,
                             const int a_ld) {
-  return agm[x + a_ld*y];
+  return agm[a_ld*y + x];
 }
+
 // Loads a vector input value (2/2): as before, but different data-type
 inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x, const int y,
                               const int a_ld) {
-  return agm[x + a_ld*y];
+  return agm[a_ld*y + x];
 }
 
 // =================================================================================================
@@ -106,7 +273,8 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
                     const __global real* restrict agm, const int a_offset, const int a_ld,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* ygm, const int y_offset, const int y_inc,
-                    const int do_conjugate) {
+                    const int do_conjugate, const int parameter,
+                    const int kl, const int ku) {
 
   // Local memory for the vector X
   __local real xlm[WGS1];
@@ -141,20 +309,20 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
         // The multiply-add function for the main part (divisable by WGS1)
         if (a_rotated == 0) { // Not rotated
           #pragma unroll
-          for (int kl=0; kl<WGS1; ++kl) {
-            const int k = kwg + kl;
-            real value = LoadMatrixA(agm, gid, k, a_ld, a_offset);
+          for (int kloop=0; kloop<WGS1; ++kloop) {
+            const int k = kwg + kloop;
+            real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
             if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-            MultiplyAdd(acc[w], xlm[kl], value);
+            MultiplyAdd(acc[w], xlm[kloop], value);
           }
         }
         else { // Transposed
           #pragma unroll
-          for (int kl=0; kl<WGS1; ++kl) {
-            const int k = kwg + kl;
-            real value = LoadMatrixA(agm, k, gid, a_ld, a_offset);
+          for (int kloop=0; kloop<WGS1; ++kloop) {
+            const int k = kwg + kloop;
+            real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
             if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-            MultiplyAdd(acc[w], xlm[kl], value);
+            MultiplyAdd(acc[w], xlm[kloop], value);
           }
         }
       }
@@ -174,7 +342,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
       if (a_rotated == 0) { // Not rotated
         #pragma unroll
         for (int k=n_floor; k<n; ++k) {
-          real value = LoadMatrixA(agm, gid, k, a_ld, a_offset);
+          real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
           MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
         }
@@ -182,7 +350,7 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
       else { // Transposed
         #pragma unroll
         for (int k=n_floor; k<n; ++k) {
-          real value = LoadMatrixA(agm, k, gid, a_ld, a_offset);
+          real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
           MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
         }
@@ -209,7 +377,8 @@ __kernel void XgemvFast(const int m, const int n, const real alpha, const real b
                         const __global realVF* restrict agm, const int a_offset, const int a_ld,
                         const __global real* restrict xgm, const int x_offset, const int x_inc,
                         __global real* ygm, const int y_offset, const int y_inc,
-                        const int do_conjugate) {
+                        const int do_conjugate, const int parameter,
+                        const int kl, const int ku) {
   // Local memory for the vector X
   __local real xlm[WGS2];
 
@@ -305,7 +474,8 @@ __kernel void XgemvFastRot(const int m, const int n, const real alpha, const rea
                            const __global realVFR* restrict agm, const int a_offset, const int a_ld,
                            const __global real* restrict xgm, const int x_offset, const int x_inc,
                            __global real* ygm, const int y_offset, const int y_inc,
-                           const int do_conjugate) {
+                           const int do_conjugate, const int parameter,
+                           const int kl, const int ku) {
   // Local memory for the vector X
   __local real xlm[WGS3];
 

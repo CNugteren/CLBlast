@@ -7,8 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xhemv routine. It is based on the generalized matrix multiplication
-// routine (Xgemv). The implementation is very similar to the Xsymv routine.
+// This file implements the Xhemv routine. It is based on the generalized mat-vec multiplication
+// routine (Xgemv). The Xhemv class inherits from the templated class Xgemv, allowing it to call the
+// "MatVec" function directly.
 //
 // =================================================================================================
 
@@ -25,16 +26,8 @@ template <typename T>
 class Xhemv: public Xgemv<T> {
  public:
 
-  // Members and methods from the base class
-  using Routine<T>::db_;
-  using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestMatrixA;
-  using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
-
-  // Uses the regular Xgemv routine
-  using Xgemv<T>::DoGemv;
+  // Uses the generic matrix-vector routine
+  using Xgemv<T>::MatVec;
 
   // Constructor
   Xhemv(Queue &queue, Event &event, const std::string &name = "HEMV");

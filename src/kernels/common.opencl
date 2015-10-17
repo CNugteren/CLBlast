@@ -109,10 +109,24 @@ R"(
   #define SetToOne(a) a = ONE
 #endif
 
-// Multiply two complex variables (used in the define below)
+// Adds two complex variables
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
+#else
+  #define Add(c, a, b) c = a + b
+#endif
+
+// Multiply two complex variables (used in the defines below)
 #if PRECISION == 3232 || PRECISION == 6464
   #define MulReal(a, b) a.x*b.x - a.y*b.y
   #define MulImag(a, b) a.x*b.y + a.y*b.x
+#endif
+
+// The scalar multiply function
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Multiply(c, a, b) c.x = MulReal(a,b); c.y = MulImag(a,b)
+#else
+  #define Multiply(c, a, b) c = a * b
 #endif
 
 // The scalar multiply-add function

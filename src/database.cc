@@ -13,6 +13,7 @@
 
 #include "internal/database.h"
 #include "internal/database/xaxpy.h"
+#include "internal/database/xdot.h"
 #include "internal/database/xgemv.h"
 #include "internal/database/xgemm.h"
 #include "internal/database/copy.h"
@@ -28,6 +29,7 @@ namespace clblast {
 // Initializes the database
 const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
+  XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,

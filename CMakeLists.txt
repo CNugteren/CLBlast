@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 2.8.10)
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 4)
+set(clblast_VERSION_MINOR 5)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -102,11 +102,11 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy pad transpose padtranspose xaxpy xgemv xgemm)
+set(KERNELS copy pad transpose padtranspose xaxpy xdot xgemv xgemm)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sgemm)
-set(LEVEL1_ROUTINES xaxpy)
-set(LEVEL2_ROUTINES xgemv xhemv xsymv)
+set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc)
+set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 set(PRECISIONS 32 3232 64 6464)

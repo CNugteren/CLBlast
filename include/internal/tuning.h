@@ -64,11 +64,13 @@ void Tuner(int argc, char* argv[]) {
   auto a_mat = std::vector<T>(C::GetSizeA(args));
   auto b_mat = std::vector<T>(C::GetSizeB(args));
   auto c_mat = std::vector<T>(C::GetSizeC(args));
+  auto temp = std::vector<T>(C::GetSizeTemp(args));
   PopulateVector(x_vec);
   PopulateVector(y_vec);
   PopulateVector(a_mat);
   PopulateVector(b_mat);
   PopulateVector(c_mat);
+  PopulateVector(temp);
 
   // Initializes the tuner for the chosen device
   cltune::Tuner tuner(args.platform_id, args.device_id);
@@ -85,7 +87,7 @@ void Tuner(int argc, char* argv[]) {
   // Loads the kernel sources and defines the kernel to tune
   auto sources = C::GetSources();
   auto id = tuner.AddKernelFromString(sources, C::KernelName(), C::GlobalSize(args), C::LocalSize());
-  tuner.SetReferenceFromString(sources, C::KernelName(), C::GlobalSize(args), C::LocalSizeRef());
+  tuner.SetReferenceFromString(sources, C::KernelName(), C::GlobalSizeRef(args), C::LocalSizeRef());
 
   // Sets the tunable parameters and their possible values
   C::SetParameters(tuner, id);
@@ -103,7 +105,7 @@ void Tuner(int argc, char* argv[]) {
   for (auto &parameters: C::DivGlobal()) { tuner.DivGlobalSize(id, parameters); }
 
   // Sets the function's arguments
-  C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat);
+  C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat, temp);
 
   // Starts the tuning process
   tuner.Tune();

@@ -21,5 +21,9 @@ before_script:
 script:
   - make
   - make install
+branches:
+  only:
+    - master
+    - development
 notifications:
   email: false

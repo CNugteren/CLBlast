@@ -7,14 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the tests for the Xhemm routine.
-//
 // =================================================================================================
 
 #include "correctness/testblas.h"
 #include "routines/level3/xhemm.h"
-
-// =================================================================================================
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -22,7 +18,7 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXhemm<float2>, float2, float2>(argc, argv, true, "CHEMM");
+  clblast::RunTests<clblast::TestXhemm<float2>, float2, float2>(argc, argv, false, "CHEMM");
   clblast::RunTests<clblast::TestXhemm<double2>, double2, double2>(argc, argv, true, "ZHEMM");
   return 0;
 }

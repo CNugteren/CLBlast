@@ -41,6 +41,8 @@ const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 constexpr auto kArgM = "m";
 constexpr auto kArgN = "n";
 constexpr auto kArgK = "k";
+constexpr auto kArgKL = "kl";
+constexpr auto kArgKU = "ku";
 constexpr auto kArgLayout = "layout";
 constexpr auto kArgATransp = "transA";
 constexpr auto kArgBTransp = "transB";
@@ -57,6 +59,8 @@ constexpr auto kArgCLeadDim = "ldc";
 constexpr auto kArgAOffset = "offa";
 constexpr auto kArgBOffset = "offb";
 constexpr auto kArgCOffset = "offc";
+constexpr auto kArgAPOffset = "offap";
+constexpr auto kArgDotOffset = "offdot";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 
@@ -86,9 +90,11 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 template <typename T>
 struct Arguments {
   // Routine-specific arguments
-  size_t m = 0;
-  size_t n = 0;
-  size_t k = 0;
+  size_t m = 1;
+  size_t n = 1;
+  size_t k = 1;
+  size_t ku = 1;
+  size_t kl = 1;
   Layout layout = Layout::kRowMajor;
   Transpose a_transpose = Transpose::kNo;
   Transpose b_transpose = Transpose::kNo;
@@ -99,12 +105,14 @@ struct Arguments {
   size_t y_inc = 1;
   size_t x_offset = 0;
   size_t y_offset = 0;
-  size_t a_ld = 0;
-  size_t b_ld = 0;
-  size_t c_ld = 0;
+  size_t a_ld = 1;
+  size_t b_ld = 1;
+  size_t c_ld = 1;
   size_t a_offset = 0;
   size_t b_offset = 0;
   size_t c_offset = 0;
+  size_t ap_offset = 0;
+  size_t dot_offset = 0;
   T alpha = T{1.0};
   T beta = T{1.0};
   size_t x_size = 1;
@@ -112,6 +120,8 @@ struct Arguments {
   size_t a_size = 1;
   size_t b_size = 1;
   size_t c_size = 1;
+  size_t ap_size = 1;
+  size_t dot_size = 1;
   // Tuner-specific arguments
   double fraction = 1.0;
   // Client-specific arguments
@@ -138,6 +148,8 @@ struct Buffers {
   Buffer<T> a_mat;
   Buffer<T> b_mat;
   Buffer<T> c_mat;
+  Buffer<T> ap_mat;
+  Buffer<T> dot;
 };
 
 // =================================================================================================

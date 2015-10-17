@@ -32,8 +32,7 @@ template <typename T>
 Xgemv<T>::Xgemv(Queue &queue, Event &event, const std::string &name):
     Routine<T>(queue, event, name, {"Pad", "Xgemv"}, precision_) {
   source_string_ =
-    #include "../../kernels/pad.opencl" // For {Herm,Symm}{Upper,Lower}ToSquared (for HEMV/SYMV)
-    #include "../../kernels/xgemv.opencl"
+    #include "../../kernels/level2/xgemv.opencl"
   ;
 }
 
@@ -49,6 +48,31 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
                             const T beta,
                             const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
 
+  // Performs the matrix-vector multiplication
+  return MatVec(layout, a_transpose,
+                m, n, alpha,
+                a_buffer, a_offset, a_ld,
+                x_buffer, x_offset, x_inc, beta,
+                y_buffer, y_offset, y_inc,
+                true, true,
+                0, false, 0, 0); // N/A for this routine
+}
+
+// =================================================================================================
+
+// The generic implementation, also suited for other (non general) matrix-vector multiplications
+template <typename T>
+StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const T alpha,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                            const T beta,
+                            const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
+                            bool fast_kernel, bool fast_kernel_rot,
+                            const size_t parameter, const bool packed,
+                            const size_t kl, const size_t ku) {
+
   // Makes sure all dimensions are larger than zero
   if (m == 0 || n == 0) { return StatusCode::kInvalidDimension; }
 
@@ -62,6 +86,11 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   auto m_real = (a_transposed) ? n : m;
   auto n_real = (a_transposed) ? m : n;
 
+  // Special adjustments for banded matrices
+  if (kl != 0 || ku != 0) {
+    a_one = kl+ku+1;
+  }
+
   // Determines whether the kernel needs to perform rotated access ('^' is the XOR operator)
   auto a_rotated = a_transposed ^ a_altlayout;
 
@@ -69,7 +98,9 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   auto a_conjugate = (a_transpose == Transpose::kConjugate);
 
   // Tests the matrix and the vectors for validity
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = StatusCode::kSuccess;
+  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
+  else { status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T)); }
   if (ErrorIn(status)) { return status; }
   status = TestVectorX(n_real, x_buffer, x_offset, x_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
@@ -77,26 +108,26 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used
-  bool use_fast_kernel = (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
-                         IsMultiple(m, db_["WGS2"]*db_["WPT2"]) &&
-                         IsMultiple(n, db_["WGS2"]) &&
-                         IsMultiple(a_ld, db_["VW2"]);
-  bool use_fast_kernel_rot = (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
-                             IsMultiple(m, db_["WGS3"]*db_["WPT3"]) &&
-                             IsMultiple(n, db_["WGS3"]) &&
-                             IsMultiple(a_ld, db_["VW3"]);
+  fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
+                IsMultiple(m, db_["WGS2"]*db_["WPT2"]) &&
+                IsMultiple(n, db_["WGS2"]) &&
+                IsMultiple(a_ld, db_["VW2"]);
+  fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
+                    IsMultiple(m, db_["WGS3"]*db_["WPT3"]) &&
+                    IsMultiple(n, db_["WGS3"]) &&
+                    IsMultiple(a_ld, db_["VW3"]);
 
   // If possible, run the fast-version (rotated or non-rotated) of the kernel
   auto kernel_name = "Xgemv";
   auto m_ceiled = Ceil(m_real, db_["WGS1"]*db_["WPT1"]);
   auto global_size = m_ceiled / db_["WPT1"];
   auto local_size = db_["WGS1"];
-  if (use_fast_kernel) {
+  if (fast_kernel) {
     kernel_name = "XgemvFast";
     global_size = m_real / db_["WPT2"];
     local_size = db_["WGS2"];
   }
-  if (use_fast_kernel_rot) {
+  if (fast_kernel_rot) {
     kernel_name = "XgemvFastRot";
     global_size = m_real / db_["WPT3"];
     local_size = db_["WGS3"];
@@ -123,6 +154,9 @@ StatusCode Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
     kernel.SetArgument(12, static_cast<int>(y_offset));
     kernel.SetArgument(13, static_cast<int>(y_inc));
     kernel.SetArgument(14, static_cast<int>(a_conjugate));
+    kernel.SetArgument(15, static_cast<int>(parameter)); // extra parameter used for symm/herm
+    kernel.SetArgument(16, static_cast<int>(kl)); // only used for banded matrices
+    kernel.SetArgument(17, static_cast<int>(ku)); // only used for banded matrices
 
     // Launches the kernel
     auto global = std::vector<size_t>{global_size};

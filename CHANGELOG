@@ -1,4 +1,24 @@
 
+Version 0.5.0
+- Improved structure and performance of level-2 routines (xSYMV/xHEMV)
+- Reduced compilation time of level-3 OpenCL kernels
+- Added level-1 routines:
+  * SSWAP/DSWAP/CSWAP/ZSWAP
+  * SSCAL/DSCAL/CSCAL/ZSCAL
+  * SCOPY/DCOPY/CCOPY/ZCOPY
+  * SDOT/DDOT
+  * CDOTU/ZDOTU
+  * CDOTC/ZDOTC
+- Added level-2 routines:
+  * SGBMV/DGBMV/CGBMV/ZGBMV
+  * CHBMV/ZHBMV
+  * CHPMV/ZHPMV
+  * SSBMV/DSBMV
+  * SSPMV/DSPMV
+  * STRMV/DTRMV/CTRMV/ZTRMV
+  * STBMV/DTBMV/CTBMV/ZTBMV
+  * STPMV/DTPMV/CTPMV/ZTPMV
+
 Version 0.4.0
 - Now using the Claduc C++11 interface to OpenCL
 - Added plain C API for increased compatibility (clblast_c.h)

@@ -41,7 +41,7 @@ class Xsyrk: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xsyrk(Queue &queue, Event &event);
+  Xsyrk(Queue &queue, Event &event, const std::string &name = "SYRK");
 
   // Templated-precision implementation of the routine
   StatusCode DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
