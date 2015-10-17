@@ -1,5 +1,5 @@
 
-Development version (next release)
+Version 0.5.0
 - Improved structure and performance of level-2 routines (xSYMV/xHEMV)
 - Reduced compilation time of level-3 OpenCL kernels
 - Added level-1 routines:
