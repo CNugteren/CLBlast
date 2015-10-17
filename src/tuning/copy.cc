@@ -31,7 +31,7 @@ class TuneCopy {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/copy.opencl"
+      #include "../src/kernels/level3/copy.opencl"
     ;
   }
 

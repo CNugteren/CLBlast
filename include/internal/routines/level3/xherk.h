@@ -39,7 +39,7 @@ class Xherk: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xherk(Queue &queue, Event &event);
+  Xherk(Queue &queue, Event &event, const std::string &name = "HERK");
 
   // Templated-precision implementation of the routine
   StatusCode DoHerk(const Layout layout, const Triangle triangle, const Transpose a_transpose,

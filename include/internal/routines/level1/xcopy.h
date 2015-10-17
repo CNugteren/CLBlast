@@ -35,7 +35,7 @@ class Xcopy: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xcopy(Queue &queue, Event &event);
+  Xcopy(Queue &queue, Event &event, const std::string &name = "COPY");
 
   // Templated-precision implementation of the routine
   StatusCode DoCopy(const size_t n,

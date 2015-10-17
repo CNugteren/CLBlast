@@ -31,7 +31,7 @@ class TunePadTranspose {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/padtranspose.opencl"
+      #include "../src/kernels/level3/padtranspose.opencl"
     ;
   }
 

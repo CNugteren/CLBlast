@@ -40,7 +40,7 @@ class Xsyr2k: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xsyr2k(Queue &queue, Event &event);
+  Xsyr2k(Queue &queue, Event &event, const std::string &name = "SYR2K");
 
   // Templated-precision implementation of the routine
   StatusCode DoSyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,

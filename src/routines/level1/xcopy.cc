@@ -29,8 +29,8 @@ template <> const Precision Xcopy<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xcopy<T>::Xcopy(Queue &queue, Event &event):
-    Routine<T>(queue, event, "COPY", {"Xaxpy"}, precision_) {
+Xcopy<T>::Xcopy(Queue &queue, Event &event, const std::string &name):
+    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xcopy.opencl"

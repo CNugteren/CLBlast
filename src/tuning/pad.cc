@@ -31,7 +31,7 @@ class TunePad {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/pad.opencl"
+      #include "../src/kernels/level3/pad.opencl"
     ;
   }
 

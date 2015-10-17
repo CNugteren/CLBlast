@@ -117,6 +117,7 @@ __kernel void UnPadMatrix(const int src_one, const int src_two,
 }
 
 // =================================================================================================
+#if defined(ROUTINE_SYMM)
 
 // Kernel to populate a squared symmetric matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
@@ -185,8 +186,9 @@ __kernel void SymmUpperToSquared(const int src_dim,
   }
 }
 
+#endif
 // =================================================================================================
-#if PRECISION == 3232 || PRECISION == 6464
+#if defined(ROUTINE_HEMM) && (PRECISION == 3232 || PRECISION == 6464)
 
 // Kernel to populate a squared hermitian matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
@@ -269,6 +271,7 @@ __kernel void HermUpperToSquared(const int src_dim,
 
 #endif
 // =================================================================================================
+#if defined(ROUTINE_TRMM)
 
 // Kernel to populate a squared triangular matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
@@ -341,6 +344,7 @@ __kernel void TrmmUpperToSquared(const int src_dim,
   }
 }
 
+#endif
 // =================================================================================================
 
 // End of the C++11 raw string literal

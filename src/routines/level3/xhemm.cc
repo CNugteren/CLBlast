@@ -21,8 +21,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xhemm<T>::Xhemm(Queue &queue, Event &event):
-    Xgemm<T>(queue, event) {
+Xhemm<T>::Xhemm(Queue &queue, Event &event, const std::string &name):
+    Xgemm<T>(queue, event, name) {
 }
 
 // =================================================================================================

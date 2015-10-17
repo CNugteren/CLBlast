@@ -35,7 +35,7 @@ class Xaxpy: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xaxpy(Queue &queue, Event &event);
+  Xaxpy(Queue &queue, Event &event, const std::string &name = "AXPY");
 
   // Templated-precision implementation of the routine
   StatusCode DoAxpy(const size_t n, const T alpha,

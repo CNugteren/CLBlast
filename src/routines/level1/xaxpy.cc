@@ -29,8 +29,8 @@ template <> const Precision Xaxpy<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xaxpy<T>::Xaxpy(Queue &queue, Event &event):
-    Routine<T>(queue, event, "AXPY", {"Xaxpy"}, precision_) {
+Xaxpy<T>::Xaxpy(Queue &queue, Event &event, const std::string &name):
+    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xaxpy.opencl"

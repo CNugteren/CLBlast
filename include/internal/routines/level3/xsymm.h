@@ -39,7 +39,7 @@ class Xsymm: public Xgemm<T> {
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xsymm(Queue &queue, Event &event);
+  Xsymm(Queue &queue, Event &event, const std::string &name = "SYMM");
 
   // Templated-precision implementation of the routine
   StatusCode DoSymm(const Layout layout, const Side side, const Triangle triangle,

@@ -31,7 +31,7 @@ class TuneTranspose {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/transpose.opencl"
+      #include "../src/kernels/level3/transpose.opencl"
     ;
   }
 
