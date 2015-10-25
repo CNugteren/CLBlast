@@ -108,6 +108,9 @@ class TuneXgemv {
     tuner.AddArgumentScalar(0);
     tuner.AddArgumentScalar(1);
     tuner.AddArgumentScalar(0); // Conjugate transpose
+    tuner.AddArgumentScalar(0); // Additional parameter
+    tuner.AddArgumentScalar(0); // Banded 'kl'
+    tuner.AddArgumentScalar(0); // Banded 'ku'
   }
 
   // Describes how to compute the performance metrics
