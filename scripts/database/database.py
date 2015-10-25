@@ -20,7 +20,9 @@ import json
 import pandas as pd
 
 # Constants
-ATTRIBUTES = ["device", "type", "vendor", "precision", "kernel_family", "arg_m", "arg_n", "arg_k"]
+ATTRIBUTES = ["device", "device_vendor", "device_type", "device_core_clock", "device_compute_units",
+              "precision", "kernel_family",
+              "arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
 
 # Pandas options
 pd.set_option('display.width', 1000)
@@ -125,8 +127,8 @@ def PrintData(df):
 		# Loops over the different entries for this family and prints their headers
 		for precision, dfprecision in dffamily.groupby(["precision"]):
 			f.write(GetPrecision(family, precision))
-			for vendor, dfvendor in dfprecision.groupby(["vendor"]):
-				for devtype, dfdevtype in dfvendor.groupby(["type"]):
+			for vendor, dfvendor in dfprecision.groupby(["device_vendor"]):
+				for devtype, dfdevtype in dfvendor.groupby(["device_type"]):
 					f.write(GetDeviceVendor(vendor, devtype))
 					for device, dfdevice in dfdevtype.groupby(["device"]):
 						devicename = "\"%s\"," % device
@@ -158,7 +160,7 @@ if len(sys.argv) != 3:
 # Parses the command-line arguments
 path_json = sys.argv[1]
 path_clblast = sys.argv[2]
-file_db = path_clblast+"/src/database.db"
+file_db = path_clblast+"/scripts/database/database.db"
 glob_json = path_json+"/*.json"
 
 # Checks whether the command-line arguments are valid; exists otherwise
