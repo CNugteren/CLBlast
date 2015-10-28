@@ -72,7 +72,10 @@ class TuneXgemv {
       tuner.AddConstraint(id, MultipleOfX, {"WPT"+std::to_string(V), "VW"+std::to_string(V)});
     }
   }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
+    auto LocalMemorySize = [args] (std::vector<size_t> v) { return v[0]*GetBytes(args.precision); };
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V)});
+  }
 
   // Sets the base thread configuration
   static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m}; }
