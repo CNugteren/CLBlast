@@ -20,9 +20,11 @@ import json
 import pandas as pd
 
 # Constants
-ATTRIBUTES = ["device", "device_vendor", "device_type", "device_core_clock", "device_compute_units",
-              "precision", "kernel_family",
-              "arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
+DEVICETYPE_ATTRIBUTES = ["device_vendor", "device_type"]
+DEVICE_ATTRIBUTES = ["device", "device_core_clock", "device_compute_units"]
+KERNEL_ATTRIBUTES = ["precision", "kernel_family",
+                     "arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
+ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES
 
 # Pandas options
 pd.set_option('display.width', 1000)
@@ -62,7 +64,7 @@ def ConcatenateData(df1, df2):
 def RemoveDuplicates(df):
 	return df.drop_duplicates()
 
-# Bests
+# Retrieves the results with the lowest execution times
 def GetBestResults(df):
 	dfbest = pd.DataFrame()
 	grouped = df.groupby(ATTRIBUTES+["kernel"])
@@ -70,6 +72,21 @@ def GetBestResults(df):
 		bestcase = dfgroup.loc[[dfgroup["time"].idxmin()]]
 		dfbest = ConcatenateData(dfbest, bestcase)
 	return dfbest
+
+# Sets defaults for devices of the same type/vendor based on the smallest values of all know
+# entries. The average might be better for performance but some parameters might not be supported
+# on other devices.
+def CalculateDefaults(df):
+	dfdefault = pd.DataFrame()
+	grouped = df.groupby(DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES)
+	for name, dfgroup in grouped:
+		defaultValues = dfgroup.min(axis=0)
+		defaultValues["device"] = "default"
+		defaultValues["device_compute_units"] = 0
+		defaultValues["device_core_clock"] = 0
+		defaultValues["time"] = 0.0
+		dfdefault = dfdefault.append(defaultValues, ignore_index=True)
+	return dfdefault
 
 # ==================================================================================================
 # C++ header generation
@@ -112,7 +129,7 @@ def GetPrecision(family, precision):
 
 # The C++ device type and vendor
 def GetDeviceVendor(vendor, devtype):
-	return("    { // %s %ss\n      kDeviceType%s, kDeviceVendor%s, {\n"
+	return("    { // %s %ss\n      kDeviceType%s, \"%s\", {\n"
 	       % (vendor, devtype, devtype, vendor))
 
 # Prints the data to a C++ database
@@ -132,7 +149,7 @@ def PrintData(df):
 					f.write(GetDeviceVendor(vendor, devtype))
 					for device, dfdevice in dfdevtype.groupby(["device"]):
 						devicename = "\"%s\"," % device
-						f.write("        { %-20s { " % devicename)
+						f.write("        { %-48s { " % devicename)
 
 						# Collects the paramaters for this case and prints them
 						parameters = []
@@ -200,9 +217,9 @@ SaveDatabase(database, file_db)
 # Retrieves the best performing results
 bests = GetBestResults(database)
 
-# TODO: Determines the defaults for other vendors and per vendor
-#defaults = CalculateDefaults(bests)
-#bests = ConcatenateData(bests, defaults)
+# Determines the defaults for other vendors and per vendor
+defaults = CalculateDefaults(bests)
+bests = ConcatenateData(bests, defaults)
 
 # Outputs the data as a C++ database
 PrintData(bests)
