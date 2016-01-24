@@ -64,6 +64,9 @@ def ConcatenateData(df1, df2):
 def RemoveDuplicates(df):
 	return df.drop_duplicates()
 
+def RemoveEntriesByDevice(df, devicename):
+	return df[df["device"] != devicename]
+
 # Retrieves the results with the lowest execution times
 def GetBestResults(df):
 	dfbest = pd.DataFrame()
@@ -80,12 +83,12 @@ def CalculateDefaults(df):
 	dfdefault = pd.DataFrame()
 	grouped = df.groupby(DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES)
 	for name, dfgroup in grouped:
-		defaultValues = dfgroup.min(axis=0)
-		defaultValues["device"] = "default"
-		defaultValues["device_compute_units"] = 0
-		defaultValues["device_core_clock"] = 0
-		defaultValues["time"] = 0.0
-		dfdefault = dfdefault.append(defaultValues, ignore_index=True)
+		default_values = dfgroup.min(axis=0)
+		default_values["device"] = "default"
+		default_values["device_compute_units"] = 0
+		default_values["device_core_clock"] = 0
+		default_values["time"] = 0.0
+		dfdefault = dfdefault.append(default_values, ignore_index=True)
 	return dfdefault
 
 # ==================================================================================================
@@ -133,12 +136,12 @@ def GetDeviceVendor(vendor, devtype):
 	       % (vendor, devtype, devtype, vendor))
 
 # Prints the data to a C++ database
-def PrintData(df):
+def PrintData(df, outputdir):
 
 	# Iterates over the kernel families: creates a new file per family
 	for family, dffamily in df.groupby(["kernel_family"]):
 		dffamily = dffamily.dropna(axis=1, how='all')
-		f = open(family+'.h', 'w+')
+		f = open(os.path.join(outputdir, family+'.h'), 'w+')
 		f.write(GetHeader(family))
 
 		# Loops over the different entries for this family and prints their headers
@@ -177,17 +180,16 @@ if len(sys.argv) != 3:
 # Parses the command-line arguments
 path_json = sys.argv[1]
 path_clblast = sys.argv[2]
-file_db = path_clblast+"/scripts/database/database.db"
-glob_json = path_json+"/*.json"
+file_db = os.path.join(path_clblast, "scripts", "database", "database.db")
+glob_json = os.path.join(path_json, "*.json")
 
 # Checks whether the command-line arguments are valid; exists otherwise
-clblast_h = path_clblast+"/include/clblast.h" # Not used but just for validation
+clblast_h = os.path.join(path_clblast, "include", "clblast.h") # Not used but just for validation
 if not os.path.isfile(clblast_h):
 	print "[ERROR] The path '"+path_clblast+"' does not point to the root of the CLBlast library"
 	sys.exit()
 if len(glob.glob(glob_json)) < 1:
-	print "[ERROR] The path '"+path_json+"' does not contain any JSON files"
-	sys.exit()
+	print "## The path '"+path_json+"' does not contain any JSON files"
 
 # ==================================================================================================
 # The main body of the script
@@ -222,6 +224,8 @@ defaults = CalculateDefaults(bests)
 bests = ConcatenateData(bests, defaults)
 
 # Outputs the data as a C++ database
-PrintData(bests)
+path_cpp_database = os.path.join(path_clblast, "include", "internal", "database")
+print "## Producing a C++ database in '"+path_cpp_database+"'"
+PrintData(bests, ".")
 
 # ==================================================================================================
