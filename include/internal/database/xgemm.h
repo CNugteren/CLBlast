@@ -5,9 +5,9 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Xgemm kernels.
+// This file populates the database with best-found tuning parameters for the 'Xgemm' kernels.
 //
 // =================================================================================================
 
@@ -16,56 +16,21 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::XgemmSingle = {
   "Xgemm", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"MWG",128}, {"NWG",64}, {"KWG",32}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",2}, {"VWM",2}, {"VWN",2}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-        { "Tesla K20m",       { {"MWG",128}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",32}, {"KWI",2}, {"VWM",4}, {"VWN",1}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-        { "Tesla K40m",       { {"MWG",128}, {"NWG",128}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",2}, {"VWN",1}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-        { kDefaultDevice,     { {"MWG",128}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",2}, {"VWM",2}, {"VWN",1}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"MWG",128}, {"NWG",128}, {"KWG",32}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",32}, {"NDIMB",8}, {"KWI",2}, {"VWM",4}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-      }
-    },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"MWG",64}, {"NWG",64}, {"KWG",32}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",8}, {"KWI",8}, {"VWM",4}, {"VWN",4}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",0} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",1} } },
+        { "default",                                       { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",1} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
+        { "default",                                       { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
-      }
-    },
-  }
-};
-
-// =================================================================================================
-
-const Database::DatabaseEntry Database::XgemmDouble = {
-  "Xgemm", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",32}, {"KWI",2}, {"VWM",1}, {"VWN",2}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-        { "Tesla K20m",       { {"MWG",64}, {"NWG",128}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",32}, {"MDIMA",32}, {"NDIMB",32}, {"KWI",8}, {"VWM",2}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-        { "Tesla K40m",       { {"MWG",64}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",32}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",1} } },
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",16}, {"MDIMA",16}, {"NDIMB",32}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"MWG",128}, {"NWG",64}, {"KWG",16}, {"MDIMC",32}, {"NDIMC",8}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",1}, {"VWN",2}, {"STRM",1}, {"STRN",0}, {"SA",0}, {"SB",0} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-      }
-    },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
       }
     },
   }
@@ -75,27 +40,39 @@ const Database::DatabaseEntry Database::XgemmDouble = {
 
 const Database::DatabaseEntry Database::XgemmComplexSingle = {
   "Xgemm", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-        { "Tesla K20m",       { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",8}, {"MDIMA",8}, {"NDIMB",8}, {"KWI",8}, {"VWM",2}, {"VWN",2}, {"STRM",1}, {"STRN",0}, {"SA",1}, {"SB",0} } },
-        { "Tesla K40m",       { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",32}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",1}, {"VWN",1}, {"STRM",0}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",64}, {"KWG",16}, {"MDIMC",16}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"MWG",16}, {"NWG",64}, {"KWG",32}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",8}, {"NDIMB",16}, {"KWI",2}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",0} } },
-      }
-    },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"KWG",32}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
+        { "default",                                       { {"KWG",32}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
+        { "default",                                       { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::XgemmDouble = {
+  "Xgemm", Precision::kDouble, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",4} } },
+        { "default",                                       { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",4} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",4} } },
       }
     },
   }
@@ -105,29 +82,19 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
 
 const Database::DatabaseEntry Database::XgemmComplexDouble = {
   "Xgemm", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"MWG",16}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",8}, {"KWI",2}, {"VWM",1}, {"VWN",4}, {"STRM",1}, {"STRN",0}, {"SA",0}, {"SB",0} } },
-        { "Tesla K20m",       { {"MWG",16}, {"NWG",128}, {"KWG",32}, {"MDIMC",8}, {"NDIMC",32}, {"MDIMA",8}, {"NDIMB",32}, {"KWI",2}, {"VWM",1}, {"VWN",4}, {"STRM",1}, {"STRN",1}, {"SA",1}, {"SB",0} } },
-        { "Tesla K40m",       { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",32}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",32}, {"KWI",8}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",1} } },
-        { kDefaultDevice,     { {"MWG",16}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",8}, {"KWI",2}, {"VWM",1}, {"VWN",4}, {"STRM",1}, {"STRN",0}, {"SA",0}, {"SB",0} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"MWG",128}, {"NWG",32}, {"KWG",16}, {"MDIMC",32}, {"NDIMC",8}, {"MDIMA",32}, {"NDIMB",16}, {"KWI",8}, {"VWM",2}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"KWG",16}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
+        { "default",                                       { {"KWG",16}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"MWG",32}, {"NWG",32}, {"KWG",16}, {"MDIMC",8}, {"NDIMC",8}, {"MDIMA",16}, {"NDIMB",16}, {"KWI",1}, {"VWM",1}, {"VWN",1}, {"STRM",1}, {"STRN",1}, {"SA",0}, {"SB",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"KWG",16}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
   }
 };
+
 // =================================================================================================
 } // namespace clblast

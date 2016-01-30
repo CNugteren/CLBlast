@@ -20,6 +20,11 @@ import json
 import pandas as pd
 
 # Constants
+VENDOR_DEFAULT = "default"
+DEVICETYPE_DEFAULT = "All"
+DEVICENAME_DEFAULT = "default"
+
+# Attributes
 DEVICETYPE_ATTRIBUTES = ["device_vendor", "device_type"]
 DEVICE_ATTRIBUTES = ["device", "device_core_clock", "device_compute_units"]
 KERNEL_ATTRIBUTES = ["precision", "kernel_family",
@@ -67,13 +72,17 @@ def RemoveDuplicates(df):
 def RemoveEntriesByDevice(df, devicename):
 	return df[df["device"] != devicename]
 
+def GetEntriesByField(df, field, value):
+	return df[df[field] == value]
+
 # Retrieves the results with the lowest execution times
 def GetBestResults(df):
 	dfbest = pd.DataFrame()
 	grouped = df.groupby(ATTRIBUTES+["kernel"])
 	for name, dfgroup in grouped:
-		bestcase = dfgroup.loc[[dfgroup["time"].idxmin()]]
-		dfbest = ConcatenateData(dfbest, bestcase)
+		besttime = dfgroup["time"].min()
+		bestcase = dfgroup[dfgroup["time"] == besttime].iloc[0]
+		dfbest = dfbest.append(bestcase, ignore_index=True)
 	return dfbest
 
 # Sets defaults for devices of the same type/vendor based on the smallest values of all know
@@ -81,14 +90,30 @@ def GetBestResults(df):
 # on other devices.
 def CalculateDefaults(df):
 	dfdefault = pd.DataFrame()
-	grouped = df.groupby(DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES)
-	for name, dfgroup in grouped:
+
+	# Defaults per type/vendor
+	groups = df.groupby(DEVICETYPE_ATTRIBUTES+KERNEL_ATTRIBUTES+["kernel"])
+	for name, dfgroup in groups:
 		default_values = dfgroup.min(axis=0)
-		default_values["device"] = "default"
+		default_values["device"] = DEVICENAME_DEFAULT
 		default_values["device_compute_units"] = 0
 		default_values["device_core_clock"] = 0
 		default_values["time"] = 0.0
 		dfdefault = dfdefault.append(default_values, ignore_index=True)
+	
+	# Defaults in general
+	groups = df.groupby(KERNEL_ATTRIBUTES+["kernel"])
+	for name, dfgroup in groups:
+		default_values = dfgroup.min(axis=0)
+		default_values["device_vendor"] = VENDOR_DEFAULT
+		default_values["device_type"] = DEVICETYPE_DEFAULT
+		default_values["device"] = DEVICENAME_DEFAULT
+		default_values["device_compute_units"] = 0
+		default_values["device_core_clock"] = 0
+		default_values["time"] = 0.0
+		dfdefault = dfdefault.append(default_values, ignore_index=True)
+	
+	# Database with both types of defaults only
 	return dfdefault
 
 # ==================================================================================================
@@ -132,8 +157,9 @@ def GetPrecision(family, precision):
 
 # The C++ device type and vendor
 def GetDeviceVendor(vendor, devtype):
-	return("    { // %s %ss\n      kDeviceType%s, \"%s\", {\n"
-	       % (vendor, devtype, devtype, vendor))
+	if vendor == VENDOR_DEFAULT and devtype == DEVICETYPE_DEFAULT:
+		return("    { // Default\n      kDeviceType%s, \"%s\", {\n" % (devtype, vendor))
+	return("    { // %s %ss\n      kDeviceType%s, \"%s\", {\n" % (vendor, devtype, devtype, vendor))
 
 # Prints the data to a C++ database
 def PrintData(df, outputdir):
@@ -226,6 +252,6 @@ bests = ConcatenateData(bests, defaults)
 # Outputs the data as a C++ database
 path_cpp_database = os.path.join(path_clblast, "include", "internal", "database")
 print "## Producing a C++ database in '"+path_cpp_database+"'"
-PrintData(bests, ".")
+PrintData(bests, path_cpp_database)
 
 # ==================================================================================================

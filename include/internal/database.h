@@ -56,14 +56,7 @@ class Database {
   static constexpr auto kDeviceTypeAll = "default";
 
   // The OpenCL device vendors
-  static constexpr auto kDeviceVendorNVIDIA = "NVIDIA Corporation";
-  static constexpr auto kDeviceVendorAMD = "Advanced Micro Devices, Inc.";
-  static constexpr auto kDeviceVendorIntel = "Intel";
   static constexpr auto kDeviceVendorAll = "default";
-
-  // The OpenCL device names
-  static constexpr auto kDefaultDevice = "default";
-
 
   // The database consists of separate database entries, stored together in a vector
   static const DatabaseEntry XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;
@@ -72,8 +65,8 @@ class Database {
   static const DatabaseEntry XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble;
   static const DatabaseEntry CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
   static const DatabaseEntry PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
-  static const DatabaseEntry TraSingle, TraDouble, TraComplexSingle, TraComplexDouble;
-  static const DatabaseEntry PadTraSingle, PadTraDouble, PadTraComplexSingle, PadTraComplexDouble;
+  static const DatabaseEntry TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble;
+  static const DatabaseEntry PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble;
   static const std::vector<DatabaseEntry> database;
 
   // The constructor
