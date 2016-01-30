@@ -5,37 +5,32 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the PadTranspose kernels.
+// This file populates the database with best-found tuning parameters for the 'Padtranspose' kernels.
 //
 // =================================================================================================
 
 namespace clblast {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadTraSingle = {
-  "PadTranspose", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",1} } },
-        { "Tesla K20m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",1} } },
-        { "Tesla K40m",       { {"PADTRA_TILE",32}, {"PADTRA_WPT",2}, {"PADTRA_PAD",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"PADTRA_TILE",16}, {"PADTRA_WPT",4}, {"PADTRA_PAD",0} } },
-      }
-    },
+const Database::DatabaseEntry Database::PadtransposeSingle = {
+  "Padtranspose", Precision::kSingle, {
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",0} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
       }
     },
   }
@@ -43,27 +38,23 @@ const Database::DatabaseEntry Database::PadTraSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadTraDouble = {
-  "PadTranspose", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K20m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K40m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"PADTRA_TILE",8}, {"PADTRA_WPT",4}, {"PADTRA_PAD",0} } },
-      }
-    },
+const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
+  "Padtranspose", Precision::kComplexSingle, {
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "default",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
   }
@@ -71,28 +62,17 @@ const Database::DatabaseEntry Database::PadTraDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadTraComplexSingle = {
-  "PadTranspose", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K20m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K40m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",0} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",0} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"PADTRA_TILE",16}, {"PADTRA_WPT",2}, {"PADTRA_PAD",0} } },
+const Database::DatabaseEntry Database::PadtransposeDouble = {
+  "Padtranspose", Precision::kDouble, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
   }
@@ -100,27 +80,17 @@ const Database::DatabaseEntry Database::PadTraComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadTraComplexDouble = {
-  "PadTranspose", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K20m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-        { "Tesla K40m",       { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"PADTRA_TILE",8}, {"PADTRA_WPT",2}, {"PADTRA_PAD",1} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
+  "Padtranspose", Precision::kComplexDouble, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"PADTRA_TILE",16}, {"PADTRA_WPT",1}, {"PADTRA_PAD",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
       }
     },
   }

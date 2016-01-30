@@ -34,8 +34,8 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
-  TraSingle, TraDouble, TraComplexSingle, TraComplexDouble,
-  PadTraSingle, PadTraDouble, PadTraComplexSingle, PadTraComplexDouble
+  TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
+  PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
 };
 
 // =================================================================================================
@@ -78,6 +78,7 @@ Database::Parameters Database::Search(const std::string &this_kernel,
                                       const std::string &this_device,
                                       const Precision this_precision) const {
   for (auto &db: database) {
+
     if (db.kernel == this_kernel && db.precision == this_precision) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
@@ -89,7 +90,8 @@ Database::Parameters Database::Search(const std::string &this_kernel,
           // Searches for the right device. If the current device is unavailable, selects the vendor
           // default parameters. This assumes the default is last in the database.
           for (auto &device: vendor.devices) {
-            if (device.name == this_device || device.name == kDefaultDevice) {
+
+            if (device.name == this_device || device.name == "default") {
 
               // Sets the parameters accordingly
               return device.parameters;

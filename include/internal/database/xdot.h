@@ -5,9 +5,9 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Xdot kernels.
+// This file populates the database with best-found tuning parameters for the 'Xdot' kernels.
 //
 // =================================================================================================
 
@@ -16,22 +16,45 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::XdotSingle = {
   "Xdot", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-      }
-    },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"WGS1",512}, {"WGS2",512} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"VW",1}, {"WGS1",512}, {"WGS2",32} } },
+        { "default",                                       { {"VW",1}, {"WGS1",512}, {"WGS2",32} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WGS2",64} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",32} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::XdotComplexSingle = {
+  "Xdot", Precision::kComplexSingle, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"VW",1}, {"WGS1",512}, {"WGS2",1024} } },
+        { "default",                                       { {"VW",1}, {"WGS1",512}, {"WGS2",1024} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
       }
     },
   }
@@ -41,45 +64,15 @@ const Database::DatabaseEntry Database::XdotSingle = {
 
 const Database::DatabaseEntry Database::XdotDouble = {
   "Xdot", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"VW",1}, {"WGS1",256}, {"WGS2",1024} } },
+        { "default",                                       { {"VW",1}, {"WGS1",256}, {"WGS2",1024} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WGS2",64} } },
-      }
-    },
-  }
-};
-// =================================================================================================
-
-const Database::DatabaseEntry Database::XdotComplexSingle = {
-  "Xdot", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"WGS1",512}, {"WGS2",512} } },
-      }
-    },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WGS2",64} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"VW",1}, {"WGS1",256}, {"WGS2",1024} } },
       }
     },
   }
@@ -89,21 +82,15 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
 
 const Database::DatabaseEntry Database::XdotComplexDouble = {
   "Xdot", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WGS2",64} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",1024} } },
       }
     },
   }

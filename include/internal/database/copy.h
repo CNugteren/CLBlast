@@ -5,9 +5,9 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Copy kernels.
+// This file populates the database with best-found tuning parameters for the 'Copy' kernels.
 //
 // =================================================================================================
 
@@ -16,54 +16,21 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::CopySingle = {
   "Copy", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-        { "Tesla K20m",       { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_WPT",2}, {"COPY_VW",4} } },
-        { "Tesla K40m",       { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_WPT",4}, {"COPY_VW",4} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",4}, {"COPY_VW",2} } },
-      }
-    },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",4} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "default",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",2} } },
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",2} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-      }
-    },
-  }
-};
-
-// =================================================================================================
-
-const Database::DatabaseEntry Database::CopyDouble = {
-  "Copy", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-        { "Tesla K40m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",2}, {"COPY_VW",4} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-      }
-    },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
       }
     },
   }
@@ -73,26 +40,39 @@ const Database::DatabaseEntry Database::CopyDouble = {
 
 const Database::DatabaseEntry Database::CopyComplexSingle = {
   "Copy", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",2}, {"COPY_VW",1} } },
-        { "Tesla K40m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-      }
-    },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                          { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "default",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+      }
+    },
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::CopyDouble = {
+  "Copy", Precision::kDouble, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
       }
     },
   }
@@ -102,25 +82,15 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
 
 const Database::DatabaseEntry Database::CopyComplexDouble = {
   "Copy", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K40m",       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_WPT",4}, {"COPY_VW",2} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // NVIDIA Corporation GPUs
+      kDeviceTypeGPU, "NVIDIA Corporation", {
+        { "Tesla K40m",                                    { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }
