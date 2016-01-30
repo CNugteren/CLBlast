@@ -63,7 +63,7 @@ main <- function(routine_name, precision, test_names, test_values,
   if (precision == 64) { display_name <- gsub("^X","D",display_name); }
   if (precision == 3232) { display_name <- gsub("^X","C",display_name); }
   if (precision == 6464) { display_name <- gsub("^X","Z",display_name); }
-  executable <- paste("./client_", routine_name, sep="")
+  executable <- paste("./clblast_client_", routine_name, sep="")
 
   # Configures the outputfile
   pdf(paste(display_name, ".pdf", sep=""), height=8, width=13)
