@@ -48,11 +48,11 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, 512UL); }
-    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, 512UL); }
-    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, 512UL); }
-    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, 128UL); }
-    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, 128UL); }
+    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, size_t{512}); }
+    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, size_t{512}); }
+    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, size_t{512}); }
+    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, size_t{128}); }
+    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, size_t{128}); }
 
     // Data-layouts
     if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
