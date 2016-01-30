@@ -57,6 +57,7 @@ endif()
 # C++ compiler settings
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(FLAGS "/Ox")
+  set(FLAGS "${FLAGS} /wd4715")
 else ()
   set(FLAGS "-O3 -std=c++11")
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
