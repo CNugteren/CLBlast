@@ -27,6 +27,9 @@ R"(
 #ifndef WPT1
   #define WPT1 1      // The amount of work-per-thread
 #endif
+#ifndef UNROLL1
+  #define UNROLL1 32  // Unroll factor (must be a divider of WGS1)
+#endif
 
 // 2: For the fast version
 #ifndef WGS2
@@ -301,28 +304,31 @@ __kernel void Xgemv(const int m, const int n, const real alpha, const real beta,
     barrier(CLK_LOCAL_MEM_FENCE);
 
     // Loops over the work per thread, and checks whether in bounds
-    #pragma unroll
     for (int w=0; w<WPT1; ++w) {
       const int gid = w*get_global_size(0) + get_global_id(0);
       if (gid < m) {
 
         // The multiply-add function for the main part (divisable by WGS1)
         if (a_rotated == 0) { // Not rotated
-          #pragma unroll
-          for (int kloop=0; kloop<WGS1; ++kloop) {
-            const int k = kwg + kloop;
-            real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
-            if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-            MultiplyAdd(acc[w], xlm[kloop], value);
+          for (int kloop=0; kloop<WGS1; kloop+=UNROLL1) {
+            #pragma unroll
+            for (int kunroll=0; kunroll<UNROLL1; ++kunroll) {
+              const int k = kwg + kloop + kunroll;
+              real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
+              if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
+              MultiplyAdd(acc[w], xlm[kloop + kunroll], value);
+            }
           }
         }
         else { // Transposed
-          #pragma unroll
-          for (int kloop=0; kloop<WGS1; ++kloop) {
-            const int k = kwg + kloop;
-            real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
-            if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-            MultiplyAdd(acc[w], xlm[kloop], value);
+          for (int kloop=0; kloop<WGS1; kloop+=UNROLL1) {
+            #pragma unroll
+            for (int kunroll=0; kunroll<UNROLL1; ++kunroll) {
+              const int k = kwg + kloop + kunroll;
+              real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
+              if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
+              MultiplyAdd(acc[w], xlm[kloop + kunroll], value);
+            }
           }
         }
       }
@@ -563,3 +569,4 @@ __kernel void XgemvFastRot(const int m, const int n, const real alpha, const rea
 )"
 
 // =================================================================================================
+
