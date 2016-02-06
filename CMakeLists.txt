@@ -107,14 +107,14 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy pad transpose padtranspose xaxpy xdot xgemv xgemm)
+set(KERNELS copy pad transpose padtranspose xaxpy xdot xgemm xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sgemm)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
-set(PRECISIONS 32 3232 64 6464)
+set(PRECISIONS 32 64 3232 6464)
 
 # ==================================================================================================
 
