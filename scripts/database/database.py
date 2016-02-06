@@ -200,7 +200,7 @@ def PrintData(df, outputdir):
 
 # Checks for the number of command-line arguments
 if len(sys.argv) != 3:
-	print "[ERROR] Usage: database.py <folder_with_json_files> <root_of_clblast>"
+	print("[ERROR] Usage: database.py <folder_with_json_files> <root_of_clblast>")
 	sys.exit()
 
 # Parses the command-line arguments
@@ -212,10 +212,10 @@ glob_json = os.path.join(path_json, "*.json")
 # Checks whether the command-line arguments are valid; exists otherwise
 clblast_h = os.path.join(path_clblast, "include", "clblast.h") # Not used but just for validation
 if not os.path.isfile(clblast_h):
-	print "[ERROR] The path '"+path_clblast+"' does not point to the root of the CLBlast library"
+	print("[ERROR] The path '"+path_clblast+"' does not point to the root of the CLBlast library")
 	sys.exit()
 if len(glob.glob(glob_json)) < 1:
-	print "## The path '"+path_json+"' does not contain any JSON files"
+	print("## The path '"+path_json+"' does not contain any JSON files")
 
 # ==================================================================================================
 # The main body of the script
@@ -229,7 +229,7 @@ database = LoadDatabase(file_db) if db_exists else pd.DataFrame()
 for file_json in glob.glob(glob_json):
 
 	# Loads the newly imported data
-	print "## Processing '"+file_json+"'",
+	sys.stdout.write("## Processing '"+file_json+"'")
 	imported_data = ImportDataFromFile(file_json)
 
 	# Adds the new data to the database
@@ -237,7 +237,7 @@ for file_json in glob.glob(glob_json):
 	database = ConcatenateData(database, imported_data)
 	database = RemoveDuplicates(database)
 	new_size = len(database.index)
-	print "with "+str(new_size-old_size)+" new items"
+	print("with "+str(new_size-old_size)+" new items")
 
 # Stores the new database back to disk
 SaveDatabase(database, file_db)
@@ -251,7 +251,7 @@ bests = ConcatenateData(bests, defaults)
 
 # Outputs the data as a C++ database
 path_cpp_database = os.path.join(path_clblast, "include", "internal", "database")
-print "## Producing a C++ database in '"+path_cpp_database+"'"
+print("## Producing a C++ database in '"+path_cpp_database+"'")
 PrintData(bests, path_cpp_database)
 
 # ==================================================================================================
