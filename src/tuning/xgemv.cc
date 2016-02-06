@@ -60,7 +60,7 @@ class TuneXgemv {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "WGS"+std::to_string(V), {64, 128, 256, 512});
+    tuner.AddParameter(id, "WGS"+std::to_string(V), {64, 128, 256});
     tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
     if (V==2 || V==3) { tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8}); }
   }
