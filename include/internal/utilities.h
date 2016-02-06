@@ -125,7 +125,7 @@ struct Arguments {
   // Tuner-specific arguments
   double fraction = 1.0;
   // Client-specific arguments
-  bool compare_clblas = 1;
+  int compare_clblas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;

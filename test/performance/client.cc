@@ -89,7 +89,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   args.platform_id    = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
   args.device_id      = GetArgument(argc, argv, help, kArgDevice, size_t{0});
   args.precision      = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
-  args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, true);
+  args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, 1);
   args.step           = GetArgument(argc, argv, help, kArgStepSize, size_t{1});
   args.num_steps      = GetArgument(argc, argv, help, kArgNumSteps, size_t{0});
   args.num_runs       = GetArgument(argc, argv, help, kArgNumRuns, size_t{10});
