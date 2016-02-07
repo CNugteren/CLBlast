@@ -38,6 +38,14 @@ KERNEL_ATTRIBUTES = ["precision", "kernel_family",
                      "arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
 ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES
 
+# OpenCL vendor names and their short name
+VENDOR_NAMES = { "device_vendor": {
+  "GenuineIntel": "Intel",
+  "Intel(R) Corporation": "Intel",
+  "Advanced Micro Devices, Inc.": "AMD",
+  "NVIDIA Corporation": "NVIDIA",
+}}
+
 # Pandas options
 pd.set_option('display.width', 1000)
 
@@ -90,6 +98,11 @@ def RemoveEntriesByDevice(df, devicename):
 
 def GetEntriesByField(df, field, value):
 	return df[df[field] == value]
+
+# Fixes the problem that some vendors use multiple different names
+def SanitizeVendorNames(df):
+	df = df.replace(VENDOR_NAMES)
+	return df
 
 # Retrieves the results with the lowest execution times
 def GetBestResults(df):
@@ -175,7 +188,7 @@ def GetPrecision(family, precision):
 def GetDeviceVendor(vendor, devtype):
 	if vendor == VENDOR_DEFAULT and devtype == DEVICETYPE_DEFAULT:
 		return("    { // Default\n      kDeviceType%s, \"%s\", {\n" % (devtype, vendor))
-	return("    { // %s %ss\n      kDeviceType%s, \"%s\", {\n" % (vendor, devtype, devtype, vendor))
+	return("    { // %s %ss\n      kDeviceType%s, \"%s\", {\n" % (vendor, devtype, devtype[0].upper() + devtype[1:], vendor))
 
 # Prints the data to a C++ database
 def PrintData(df, outputdir):
@@ -243,6 +256,7 @@ if not db_exists:
 	DownloadDatabase(file_db)
 
 # Loads the database from disk
+print("## Loading the database from disk...")
 database = LoadDatabase(file_db)
 
 # Loops over all JSON files in the supplied folder
@@ -259,10 +273,14 @@ for file_json in glob.glob(glob_json):
 	new_size = len(database.index)
 	print("with "+str(new_size-old_size)+" new items")
 
-# Stores the new database back to disk
-SaveDatabase(database, file_db)
+	database = SanitizeVendorNames(database)
+
+	# Stores the modified database back to disk
+	print("## Storing the database to disk...")
+	SaveDatabase(database, file_db)
 
 # Retrieves the best performing results
+print("## Calculting the best results per device/kernel...")
 bests = GetBestResults(database)
 
 # Determines the defaults for other vendors and per vendor
@@ -271,7 +289,9 @@ bests = ConcatenateData(bests, defaults)
 
 # Outputs the data as a C++ database
 path_cpp_database = os.path.join(path_clblast, "include", "internal", "database")
-print("## Producing a C++ database in '"+path_cpp_database+"'")
+print("## Producing a C++ database in '"+path_cpp_database+"'...")
 PrintData(bests, path_cpp_database)
+
+print("## All done")
 
 # ==================================================================================================

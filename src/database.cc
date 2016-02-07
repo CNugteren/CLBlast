@@ -77,15 +77,23 @@ Database::Parameters Database::Search(const std::string &this_kernel,
                                       const std::string &this_vendor,
                                       const std::string &this_device,
                                       const Precision this_precision) const {
-  for (auto &db: database) {
+  // Set the short vendor name
+  auto this_short_vendor = this_vendor;
+  for (auto &combination : kVendorNames) {
+    if (this_vendor == combination.first) {
+      this_short_vendor = combination.second;
+    }
+  }
 
+  // Selects the right kernel
+  for (auto &db: database) {
     if (db.kernel == this_kernel && db.precision == this_precision) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.
       for (auto &vendor: db.vendors) {
-        if ((vendor.name == this_vendor || vendor.name == kDeviceVendorAll) &&
-            (vendor.type == this_type   || vendor.type == kDeviceTypeAll)) {
+        if ((vendor.name == this_short_vendor || vendor.name == kDeviceVendorAll) &&
+            (vendor.type == this_type || vendor.type == kDeviceTypeAll)) {
 
           // Searches for the right device. If the current device is unavailable, selects the vendor
           // default parameters. This assumes the default is last in the database.
