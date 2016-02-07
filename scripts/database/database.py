@@ -207,7 +207,7 @@ def PrintData(df, outputdir):
 					f.write(GetDeviceVendor(vendor, devtype))
 					for device, dfdevice in dfdevtype.groupby(["device"]):
 						devicename = "\"%s\"," % device
-						f.write("        { %-48s { " % devicename)
+						f.write("        { %-50s { " % devicename)
 
 						# Collects the paramaters for this case and prints them
 						parameters = []
@@ -265,6 +265,7 @@ for file_json in glob.glob(glob_json):
 	# Loads the newly imported data
 	sys.stdout.write("## Processing '"+file_json+"'")
 	imported_data = ImportDataFromFile(file_json)
+	imported_data = SanitizeVendorNames(imported_data)
 
 	# Adds the new data to the database
 	old_size = len(database.index)
@@ -273,9 +274,9 @@ for file_json in glob.glob(glob_json):
 	new_size = len(database.index)
 	print("with "+str(new_size-old_size)+" new items")
 
-	database = SanitizeVendorNames(database)
 
-	# Stores the modified database back to disk
+# Stores the modified database back to disk
+if len(glob.glob(glob_json)) >= 1:
 	print("## Storing the database to disk...")
 	SaveDatabase(database, file_db)
 
