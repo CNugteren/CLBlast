@@ -6,7 +6,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 
-__Note that the CLBlast library is actively being developed, and is not mature enough for production environments__. This preview-version doesn't support the less commonly used routines yet: they will be added in due time. It also lacks extensive tuning on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details.
+__Note that the CLBlast library is actively being developed, and might not be mature enough for production environments__. This preview-version doesn't support the less commonly used routines yet: they will be added in due time. It also lacks extensive tuning on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details (and how to tune yourself).
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -17,6 +17,7 @@ Use CLBlast instead of clBLAS:
 * When you care about achieving maximum performance.
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
 * When you run on exotic OpenCL devices which you need to tune yourself.
+* When you value an organized and modern C++ codebase.
 
 Use CLBlast instead of cuBLAS:
 
@@ -82,13 +83,24 @@ Using the tuners (optional)
 The CLBlast library will be tuned in the future for the most commonly used OpenCL devices. This pre-release of CLBlast is only tuned for a limited number of devices, in particular those with the following `CL_DEVICE_NAME` values:
 
 * NVIDIA GPUs:
-  - GeForce GTX480
+  - GeForce GTX 480
+  - GeForce GTX 680
+  - GeForce GTX 750 Ti
+  - GeForce GTX 980
+  - GeForce GTX Titan
+  - GeForce GTX Titan X
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
   - Tahiti
 * Intel GPUs:
   - Iris
+* Intel CPUs:
+  - Core i5-6200U
+  - Core i7-3770K
+  - Core i7-5930K
+* Other devices:
+  - Intel MIC
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should compile the library with the optional tuners:
 
@@ -96,9 +108,19 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
 Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 1.7.0 or higher). CLTune is available from GitHub.
 
-Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance.
+Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
 
-The tuner will output a C++ database compatible line with the results, which can be added to `include/internal/database/xxxxx.h` in the appropriate section. Or, if tuning parameters already exist for your device but you believe they can be improved, this is also the place where they can be modified. If you want the found parameters to be included in future releases of CLBlast, please post the JSON output in the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+The tuners output a JSON-file with the results. The best results need to be added to `include/internal/database/xxxxx.h` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+
+In summary, tuning the entire library for your device can be done as follows (starting from the root of the CLBlast folder):
+
+    mkdir build
+    cd build
+    cmake -DTUNERS=ON ..
+    make
+    make alltuners
+    python ../scripts/database/database.py . ..
+    make
 
 
 Compiling the tests (optional)

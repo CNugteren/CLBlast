@@ -16,21 +16,48 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::PadSingle = {
   "Pad", Precision::kSingle, {
-    { // Intel GPUs
-      kDeviceTypeGPU, "Intel", {
-        { "Iris",                                          { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "default",                                       { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Tahiti",                                          { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
-        { "Tesla K40m",                                    { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "default",                                       { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",4} } },
+        { "GeForce GTX 680",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN",                               { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Tesla K20m",                                      { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "Tesla K40m",                                      { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                       { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -40,21 +67,48 @@ const Database::DatabaseEntry Database::PadSingle = {
 
 const Database::DatabaseEntry Database::PadComplexSingle = {
   "Pad", Precision::kComplexSingle, {
-    { // Intel GPUs
-      kDeviceTypeGPU, "Intel", {
-        { "Iris",                                          { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
-        { "default",                                       { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Tahiti",                                          { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
-        { "Tesla K40m",                                    { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "default",                                       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 680",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN",                               { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Tesla K20m",                                      { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "Tesla K40m",                                      { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -64,15 +118,42 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
 
 const Database::DatabaseEntry Database::PadDouble = {
   "Pad", Precision::kDouble, {
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
-        { "Tesla K40m",                                    { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
-        { "default",                                       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Tahiti",                                          { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 680",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 980",                                 { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN",                               { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Tesla K20m",                                      { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Tesla K40m",                                      { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                       { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
@@ -82,15 +163,42 @@ const Database::DatabaseEntry Database::PadDouble = {
 
 const Database::DatabaseEntry Database::PadComplexDouble = {
   "Pad", Precision::kComplexDouble, {
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
-        { "Tesla K40m",                                    { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "default",                                       { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Tahiti",                                          { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 680",                                 { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX TITAN",                               { {"PAD_DIMX",8}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Tesla K20m",                                      { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "Tesla K40m",                                      { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                       { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
   }
