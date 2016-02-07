@@ -15,9 +15,16 @@ import os.path
 import glob
 import re
 import json
+try:
+	from urllib.request import urlopen # Python 3
+except ImportError:
+	from urllib2 import urlopen # Python 2
 
 # Additional modules
 import pandas as pd
+
+# Server storing a copy of the database
+DATABASE_SERVER_URL = "http://www.cedricnugteren.nl/tuning/clblast.db"
 
 # Constants
 VENDOR_DEFAULT = "default"
@@ -37,6 +44,15 @@ pd.set_option('display.width', 1000)
 # ==================================================================================================
 # Database operations
 # ==================================================================================================
+
+# Downloads the database and save it to disk
+def DownloadDatabase(filename):
+	sys.stdout.write("## Downloading database from '"+DATABASE_SERVER_URL+"'...")
+	df = urlopen(DATABASE_SERVER_URL)
+	output = open(file_db,'wb')
+	output.write(df.read())
+	output.close()
+	print("done")
 
 # Loads the database from disk
 def LoadDatabase(filename):
@@ -221,9 +237,13 @@ if len(glob.glob(glob_json)) < 1:
 # The main body of the script
 # ==================================================================================================
 
-# Loads the database if it exists. If not, a new database is initialized
+# Downloads the database if a local copy is not present
 db_exists = os.path.isfile(file_db)
-database = LoadDatabase(file_db) if db_exists else pd.DataFrame()
+if not db_exists:
+	DownloadDatabase(file_db)
+
+# Loads the database from disk
+database = LoadDatabase(file_db)
 
 # Loops over all JSON files in the supplied folder
 for file_json in glob.glob(glob_json):
