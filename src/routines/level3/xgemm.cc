@@ -36,7 +36,8 @@ Xgemm<T>::Xgemm(Queue &queue, Event &event, const std::string &name):
     #include "../../kernels/level3/pad.opencl"
     #include "../../kernels/level3/transpose.opencl"
     #include "../../kernels/level3/padtranspose.opencl"
-    #include "../../kernels/level3/xgemm.opencl"
+    #include "../../kernels/level3/xgemm_part1.opencl"
+    #include "../../kernels/level3/xgemm_part2.opencl"
   ;
 }
 

@@ -31,7 +31,8 @@ class TuneXgemm {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/xgemm.opencl"
+      #include "../src/kernels/level3/xgemm_part1.opencl"
+      #include "../src/kernels/level3/xgemm_part2.opencl"
     ;
   }
 
