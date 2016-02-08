@@ -272,13 +272,13 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
   // Outputs the argument values
   for (auto &argument: integers) {
     if (!args.no_abbrv && argument >= 1024*1024 && IsMultiple(argument, 1024*1024)) {
-      fprintf(stdout, "%8luM;", argument/(1024*1024));
+      fprintf(stdout, "%8zuM;", argument/(1024*1024));
     }
     else if (!args.no_abbrv && argument >= 1024 && IsMultiple(argument, 1024)) {
-      fprintf(stdout, "%8luK;", argument/1024);
+      fprintf(stdout, "%8zuK;", argument/1024);
     }
     else {
-      fprintf(stdout, "%9lu;", argument);
+      fprintf(stdout, "%9zu;", argument);
     }
   }
   for (auto &argument: strings) {
