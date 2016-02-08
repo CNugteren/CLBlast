@@ -35,6 +35,7 @@ class TuneXgemv {
     return
       #include "../src/kernels/common.opencl"
       #include "../src/kernels/level2/xgemv.opencl"
+      #include "../src/kernels/level2/xgemv_fast.opencl"
     ;
   }
 

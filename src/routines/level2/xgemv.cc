@@ -33,6 +33,7 @@ Xgemv<T>::Xgemv(Queue &queue, Event &event, const std::string &name):
     Routine<T>(queue, event, name, {"Pad", "Xgemv"}, precision_) {
   source_string_ =
     #include "../../kernels/level2/xgemv.opencl"
+    #include "../../kernels/level2/xgemv_fast.opencl"
   ;
 }
 
