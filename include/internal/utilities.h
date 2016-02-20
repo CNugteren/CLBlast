@@ -171,7 +171,8 @@ T GetArgument(const int argc, char *argv[], std::string &help,
               const std::string &option, const T default_value);
 
 // Returns the precision only
-Precision GetPrecision(const int argc, char *argv[]);
+Precision GetPrecision(const int argc, char *argv[],
+                       const Precision default_precision = Precision::kSingle);
 
 // As in "GetArgument", but now only checks whether an argument is given or not
 bool CheckArgument(const int argc, char *argv[], std::string &help, const std::string &option);
