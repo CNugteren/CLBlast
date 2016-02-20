@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xdotu class (see the header for information about the class).
+// This file implements the Xgeru class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xdotu.h"
+#include "internal/routines/level2/xgeru.h"
 
 #include <string>
 
@@ -20,29 +20,33 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xdotu<T>::Xdotu(Queue &queue, Event &event, const std::string &name):
-    Xdot<T>(queue, event, name) {
+Xgeru<T>::Xgeru(Queue &queue, Event &event, const std::string &name):
+    Xger<T>(queue, event, name) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-StatusCode Xdotu<T>::DoDotu(const size_t n,
-                            const Buffer<T> &dot_buffer, const size_t dot_offset,
+StatusCode Xgeru<T>::DoGeru(const Layout layout,
+                            const size_t m, const size_t n,
+                            const T alpha,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                            const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
-  return DoDot(n, dot_buffer, dot_offset,
+                            const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
+
+  // Regular Ger operation on complex data
+  return DoGer(layout, m, n, alpha,
                x_buffer, x_offset, x_inc,
                y_buffer, y_offset, y_inc,
-               false);
+               a_buffer, a_offset, a_ld);
 }
 
 // =================================================================================================
 
 // Compiles the templated class
-template class Xdotu<float2>;
-template class Xdotu<double2>;
+template class Xgeru<float2>;
+template class Xgeru<double2>;
 
 // =================================================================================================
 } // namespace clblast

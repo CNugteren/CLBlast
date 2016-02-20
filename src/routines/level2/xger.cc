@@ -22,6 +22,8 @@ namespace clblast {
 // Specific implementations to get the memory-type based on a template argument
 template <> const Precision Xger<float>::precision_ = Precision::kSingle;
 template <> const Precision Xger<double>::precision_ = Precision::kDouble;
+template <> const Precision Xger<float2>::precision_ = Precision::kComplexSingle;
+template <> const Precision Xger<double2>::precision_ = Precision::kComplexDouble;
 
 // =================================================================================================
 
@@ -102,6 +104,8 @@ StatusCode Xger<T>::DoGer(const Layout layout,
 // Compiles the templated class
 template class Xger<float>;
 template class Xger<double>;
+template class Xger<float2>;
+template class Xger<double2>;
 
 // =================================================================================================
 } // namespace clblast

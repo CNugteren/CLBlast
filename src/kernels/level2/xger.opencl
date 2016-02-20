@@ -62,6 +62,9 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
       const int id1 = w*get_global_size(0) + get_global_id(0);
       if (id1 < max_one) {
         yvalues[w] = ygm[id1*y_inc + y_offset];
+        #if defined(ROUTINE_GERC)
+          COMPLEX_CONJUGATE(yvalues[w]);
+        #endif
       }
     }
 
@@ -110,6 +113,9 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
       const int id2 = w*get_global_size(1) + get_global_id(1);
       if (id2 < max_two) {
         yvalues[w] = ygm[id2*y_inc + y_offset];
+        #if defined(ROUTINE_GERC)
+          COMPLEX_CONJUGATE(yvalues[w]);
+        #endif
       }
     }
 

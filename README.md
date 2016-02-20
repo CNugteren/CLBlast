@@ -155,7 +155,7 @@ These graphs can be generated automatically on your own device. First, compile C
 Supported routines
 -------------
 
-CLBlast is in active development but already supports the majority of BLAS routines. The currently supported routines are marked with '✔' in the following tables:
+CLBlast is in active development but already supports almost all the BLAS routines. The currently supported routines are marked with '✔' in the following tables:
 
 | Level-1  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
@@ -191,9 +191,9 @@ CLBlast is in active development but already supports the majority of BLAS routi
 | xTRSV    |   |   |   |   |         |
 | xTBSV    |   |   |   |   |         |
 | xTPSV    |   |   |   |   |         |
-| xGER     |   |   | - | - |         |
-| xGERU    | - | - |   |   |         |
-| xGERC    | - | - |   |   |         |
+| xGER     | ✔ | ✔ | - | - |         |
+| xGERU    | - | - | ✔ | ✔ |         |
+| xGERC    | - | - | ✔ | ✔ |         |
 | xHER     | - | - |   |   |         |
 | xHPR     | - | - |   |   |         |
 | xHER2    | - | - |   |   |         |

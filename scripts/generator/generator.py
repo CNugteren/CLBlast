@@ -79,8 +79,8 @@ routines = [
   Routine(False, "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], False, "Solves a packed triangular system of equations"),
   # Level 2: matrix update
   Routine(True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 matrix update"),
-  Routine(False, "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex matrix update"),
-  Routine(False, "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex conjugated matrix update"),
+  Routine(True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex matrix update"),
+  Routine(True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex conjugated matrix update"),
   Routine(False, "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Hermitian rank-1 matrix update"),
   Routine(False, "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Hermitian packed rank-1 matrix update"),
   Routine(False, "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Hermitian rank-2 matrix update"),

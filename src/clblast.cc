@@ -39,6 +39,8 @@
 #include "internal/routines/level2/xtbmv.h"
 #include "internal/routines/level2/xtpmv.h"
 #include "internal/routines/level2/xger.h"
+#include "internal/routines/level2/xgeru.h"
+#include "internal/routines/level2/xgerc.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -872,14 +874,24 @@ template StatusCode Ger<double>(const Layout,
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
-StatusCode Geru(const Layout,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Geru(const Layout layout,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xgeru<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGeru(layout,
+                        m, n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Geru<float2>(const Layout,
                                  const size_t, const size_t,
@@ -898,14 +910,24 @@ template StatusCode Geru<double2>(const Layout,
 
 // General rank-1 complex conjugated matrix update: CGERC/ZGERC
 template <typename T>
-StatusCode Gerc(const Layout,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Gerc(const Layout layout,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xgerc<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGerc(layout,
+                        m, n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Gerc<float2>(const Layout,
                                  const size_t, const size_t,
