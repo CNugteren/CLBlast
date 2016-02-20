@@ -38,6 +38,7 @@
 #include "internal/routines/level2/xtrmv.h"
 #include "internal/routines/level2/xtbmv.h"
 #include "internal/routines/level2/xtpmv.h"
+#include "internal/routines/level2/xger.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -835,14 +836,24 @@ template StatusCode Tpsv<double2>(const Layout, const Triangle, const Transpose,
 
 // General rank-1 matrix update: SGER/DGER
 template <typename T>
-StatusCode Ger(const Layout,
-               const size_t, const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Ger(const Layout layout,
+               const size_t m, const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xger<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGer(layout,
+                       m, n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(y_buffer), y_offset, y_inc,
+                       Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Ger<float>(const Layout,
                                const size_t, const size_t,

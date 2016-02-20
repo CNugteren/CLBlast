@@ -73,6 +73,7 @@ class Database {
   static const DatabaseEntry XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;
   static const DatabaseEntry XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble;
   static const DatabaseEntry XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble;
+  static const DatabaseEntry XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble;
   static const DatabaseEntry XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble;
   static const DatabaseEntry CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
   static const DatabaseEntry PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
