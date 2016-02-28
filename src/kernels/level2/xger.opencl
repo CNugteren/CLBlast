@@ -58,7 +58,7 @@ __kernel void Xger(const int max1, const int max2, const real alpha,
 
         // Loads A, performs the operation, and stores the result into A
         MatrixUpdate(id1, id2, max1, max2, agm, a_offset, a_ld,
-                     alpha, xvalues[w2], yvalues[w1]);
+                     alpha, xvalues[w2], yvalues[w1], false);
       }
     }
   }
@@ -92,7 +92,7 @@ __kernel void Xger(const int max1, const int max2, const real alpha,
 
         // Loads A, performs the operation, and stores the result into A
         MatrixUpdate(id1, id2, max1, max2, agm, a_offset, a_ld,
-                     alpha, xvalues[w1], yvalues[w2]);
+                     alpha, xvalues[w1], yvalues[w2], false);
       }
     }
   }

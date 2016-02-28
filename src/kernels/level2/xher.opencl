@@ -59,7 +59,7 @@ __kernel void Xher(const int n, const real alpha,
 
       // Loads A, performs the operation, and stores the result into A
       else {
-        MatrixUpdate(id1, id2, n, n, agm, a_offset, a_ld, alpha, xvalues[w2], xtvalues[w1]);
+        MatrixUpdate(id1, id2, n, n, agm, a_offset, a_ld, alpha, xvalues[w2], xtvalues[w1], is_upper);
       }
     }
   }

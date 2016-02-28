@@ -74,6 +74,9 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
   status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
 
+  // If alpha is zero an update is not required
+  if (alpha == U{0}) { return StatusCode::kSuccess; }
+
   // Retrieves the Xgemv kernel from the compiled binary
   try {
     auto& program = GetProgramFromCache();

@@ -34,7 +34,7 @@ R"(
 
 // Returns an element from a vector
 inline real LoadVector(const int id, const int max,
-                       __global real* restrict gm, const int offset, const int inc,
+                       __global real* gm, const int offset, const int inc,
                        const int do_conjugate) {
   if (id < max) {
     real result = gm[id*inc + offset];
@@ -42,7 +42,7 @@ inline real LoadVector(const int id, const int max,
       #if defined(ROUTINE_GERC)
         COMPLEX_CONJUGATE(result);
       #endif
-      #if defined(ROUTINE_HER)
+      #if defined(ROUTINE_HER) || defined(ROUTINE_HPR)
         COMPLEX_CONJUGATE(result);
       #endif
     }
@@ -57,14 +57,22 @@ inline real LoadVector(const int id, const int max,
 
 // Performs the rank-1 matrix update
 inline void MatrixUpdate(const int id1, const int id2, const int max1, const int max2,
-                         __global real* restrict agm, const int a_offset, const int a_ld,
-                         const real alpha, const real xvalue, const real yvalue) {
+                         __global real* agm, const int a_offset, const int a_ld,
+                         const real alpha, const real xvalue, const real yvalue,
+                         const int is_upper) {
 
   // Bounds of a regular matrix
   if (id1 < max1 && id2 < max2) {
 
     #if defined(ROUTINE_SPR) || defined(ROUTINE_HPR)
-      const int a_index = (id1 <= id2) ? ((id2+1)*id2)/2 + id1 + a_offset : ((id1+1)*id1)/2 + id2 + a_offset;
+      int a_index;
+      if (is_upper) {
+        a_index = (id1 <= id2) ? ((id2+1)*id2)/2 + id1 : ((id1+1)*id1)/2 + id2;
+      }
+      else {
+        a_index = (id1 >= id2) ? ((2*a_ld-(id2+1))*id2)/2 + id1 : ((2*a_ld-(id1+1))*id1)/2 + id2;
+      }
+      a_index += a_offset;
     #else
       const int a_index = id2*a_ld + id1 + a_offset;
     #endif
