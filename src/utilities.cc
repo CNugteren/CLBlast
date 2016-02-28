@@ -161,9 +161,9 @@ template Precision GetArgument<Precision>(const int, char **, std::string&, cons
 // =================================================================================================
 
 // Returns only the precision argument
-Precision GetPrecision(const int argc, char *argv[]) {
+Precision GetPrecision(const int argc, char *argv[], const Precision default_precision) {
   auto dummy = std::string{};
-  return GetArgument(argc, argv, dummy, kArgPrecision, Precision::kSingle);
+  return GetArgument(argc, argv, dummy, kArgPrecision, default_precision);
 }
 
 // =================================================================================================

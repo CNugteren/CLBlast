@@ -14,7 +14,6 @@
 #include "internal/routines/level1/xdotu.h"
 
 #include <string>
-#include <vector>
 
 namespace clblast {
 // =================================================================================================

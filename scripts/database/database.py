@@ -281,7 +281,7 @@ if len(glob.glob(glob_json)) >= 1:
 	SaveDatabase(database, file_db)
 
 # Retrieves the best performing results
-print("## Calculting the best results per device/kernel...")
+print("## Calculating the best results per device/kernel...")
 bests = GetBestResults(database)
 
 # Determines the defaults for other vendors and per vendor

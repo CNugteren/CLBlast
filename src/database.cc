@@ -15,6 +15,7 @@
 #include "internal/database/xaxpy.h"
 #include "internal/database/xdot.h"
 #include "internal/database/xgemv.h"
+#include "internal/database/xger.h"
 #include "internal/database/xgemm.h"
 #include "internal/database/copy.h"
 #include "internal/database/pad.h"
@@ -31,6 +32,7 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
   XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
+  XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,

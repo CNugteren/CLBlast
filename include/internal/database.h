@@ -57,22 +57,20 @@ class Database {
 
   // The OpenCL device vendors
   static constexpr auto kDeviceVendorAll = "default";
-  static constexpr auto kDeviceVendorIntel = "Intel";
-  static constexpr auto kDeviceVendorAMD = "AMD";
-  static constexpr auto kDeviceVendorNVIDIA = "NVIDIA";
 
-  // Alternative names for the above vendors
+  // Alternative names for some OpenCL vendors
   const std::unordered_map<std::string,std::string> kVendorNames {
-    {"Intel(R) Corporation", kDeviceVendorIntel},
-    {"GenuineIntel", kDeviceVendorIntel},
-    {"Advanced Micro Devices, Inc.", kDeviceVendorAMD},
-    {"NVIDIA Corporation", kDeviceVendorNVIDIA},
+    {"Intel(R) Corporation", "Intel"},
+    {"GenuineIntel", "Intel"},
+    {"Advanced Micro Devices, Inc.", "AMD"},
+    {"NVIDIA Corporation", "NVIDIA"},
   };
 
   // The database consists of separate database entries, stored together in a vector
   static const DatabaseEntry XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;
   static const DatabaseEntry XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble;
   static const DatabaseEntry XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble;
+  static const DatabaseEntry XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble;
   static const DatabaseEntry XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble;
   static const DatabaseEntry CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
   static const DatabaseEntry PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
