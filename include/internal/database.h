@@ -57,16 +57,13 @@ class Database {
 
   // The OpenCL device vendors
   static constexpr auto kDeviceVendorAll = "default";
-  static constexpr auto kDeviceVendorIntel = "Intel";
-  static constexpr auto kDeviceVendorAMD = "AMD";
-  static constexpr auto kDeviceVendorNVIDIA = "NVIDIA";
 
-  // Alternative names for the above vendors
+  // Alternative names for some OpenCL vendors
   const std::unordered_map<std::string,std::string> kVendorNames {
-    {"Intel(R) Corporation", kDeviceVendorIntel},
-    {"GenuineIntel", kDeviceVendorIntel},
-    {"Advanced Micro Devices, Inc.", kDeviceVendorAMD},
-    {"NVIDIA Corporation", kDeviceVendorNVIDIA},
+    {"Intel(R) Corporation", "Intel"},
+    {"GenuineIntel", "Intel"},
+    {"Advanced Micro Devices, Inc.", "AMD"},
+    {"NVIDIA Corporation", "NVIDIA"},
   };
 
   // The database consists of separate database entries, stored together in a vector
