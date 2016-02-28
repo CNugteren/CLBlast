@@ -32,6 +32,7 @@ template <typename T>
 Xger<T>::Xger(Queue &queue, Event &event, const std::string &name):
     Routine<T>(queue, event, name, {"Xger"}, precision_) {
   source_string_ =
+    #include "../../kernels/level2/level2.opencl"
     #include "../../kernels/level2/xger.opencl"
   ;
 }

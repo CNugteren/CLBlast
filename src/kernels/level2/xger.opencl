@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the Xger kernel (generic version) for rank-1 matrix update.
+// This file contains the Xger kernels for rank-1 matrix update.
 //
 // =================================================================================================
 
@@ -17,24 +17,9 @@ R"(
 
 // =================================================================================================
 
-// Parameters set by the tuner or by the database. Here they are given a basic default value in case
-// this kernel file is used outside of the CLBlast library.
-
-#ifndef WGS1
-  #define WGS1 8    // The local work-group size in first dimension
-#endif
-#ifndef WGS2
-  #define WGS2 8    // The local work-group size in second dimension
-#endif
-#ifndef WPT
-  #define WPT 1     // The amount of work-per-thread in both dimensions
-#endif
-
-// =================================================================================================
-
-// Row-major version of the kernel
+// Regular version of the rank-1 matrix update kernel (GER, GERU, GERC)
 __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
-__kernel void Xger(const int max_one, const int max_two, const real alpha,
+__kernel void Xger(const int max1, const int max2, const real alpha,
                    const __global real* restrict xgm, const int x_offset, const int x_inc,
                    const __global real* ygm, const int y_offset, const int y_inc,
                    __global real* restrict agm, const int a_offset, const int a_ld,
@@ -51,21 +36,14 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
     #pragma unroll
     for (int w=0; w<WPT; ++w) {
       const int id2 = w*get_global_size(1) + get_global_id(1);
-      if (id2 < max_two) {
-        xvalues[w] = xgm[id2*x_inc + x_offset];
-      }
+      xvalues[w] = LoadVector(id2, max2, xgm, x_offset, x_inc, false);
     }
 
     // Loads the Y-vector
     #pragma unroll
     for (int w=0; w<WPT; ++w) {
       const int id1 = w*get_global_size(0) + get_global_id(0);
-      if (id1 < max_one) {
-        yvalues[w] = ygm[id1*y_inc + y_offset];
-        #if defined(ROUTINE_GERC)
-          COMPLEX_CONJUGATE(yvalues[w]);
-        #endif
-      }
+      yvalues[w] = LoadVector(id1, max1, ygm, y_offset, y_inc, true);
     }
 
     // Loops over the work per thread twice
@@ -78,19 +56,9 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
         const int id1 = w1*get_global_size(0) + get_global_id(0);
         const int id2 = w2*get_global_size(1) + get_global_id(1);
 
-        if (id1 < max_one && id2 < max_two) {
-
-          // Loads the current value of the A matrix
-          const int a_index = id2*a_ld + id1 + a_offset;
-          const real avalue = agm[a_index];
-
-          // Computes result = alpha * x[i] * y[j] + a[i][j]
-          real result;
-          GER(result, alpha, xvalues[w2], yvalues[w1], avalue);
-          
-          // Stores the final result
-          agm[a_index] = result;
-        }
+        // Loads A, performs the operation, and stores the result into A
+        MatrixUpdate(id1, id2, max1, max2, agm, a_offset, a_ld,
+                     alpha, xvalues[w2], yvalues[w1]);
       }
     }
   }
@@ -102,21 +70,14 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
     #pragma unroll
     for (int w=0; w<WPT; ++w) {
       const int id1 = w*get_global_size(0) + get_global_id(0);
-      if (id1 < max_one) {
-        xvalues[w] = xgm[id1*x_inc + x_offset];
-      }
+      xvalues[w] = LoadVector(id1, max1, xgm, x_offset, x_inc, false);
     }
 
     // Loads the Y-vector
     #pragma unroll
     for (int w=0; w<WPT; ++w) {
       const int id2 = w*get_global_size(1) + get_global_id(1);
-      if (id2 < max_two) {
-        yvalues[w] = ygm[id2*y_inc + y_offset];
-        #if defined(ROUTINE_GERC)
-          COMPLEX_CONJUGATE(yvalues[w]);
-        #endif
-      }
+      yvalues[w] = LoadVector(id2, max2, ygm, y_offset, y_inc, true);
     }
 
     // Loops over the work per thread twice
@@ -129,19 +90,9 @@ __kernel void Xger(const int max_one, const int max_two, const real alpha,
         const int id1 = w1*get_global_size(0) + get_global_id(0);
         const int id2 = w2*get_global_size(1) + get_global_id(1);
 
-        if (id1 < max_one && id2 < max_two) {
-
-          // Loads the current value of the A matrix
-          const int a_index = id2*a_ld + id1 + a_offset;
-          const real avalue = agm[a_index];
-
-          // Computes result = alpha * x[i] * y[j] + a[i][j]
-          real result;
-          GER(result, alpha, xvalues[w1], yvalues[w2], avalue);
-          
-          // Stores the final result
-          agm[a_index] = result;
-        }
+        // Loads A, performs the operation, and stores the result into A
+        MatrixUpdate(id1, id2, max1, max2, agm, a_offset, a_ld,
+                     alpha, xvalues[w1], yvalues[w2]);
       }
     }
   }

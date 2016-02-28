@@ -194,12 +194,12 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xGER     | ✔ | ✔ | - | - |         |
 | xGERU    | - | - | ✔ | ✔ |         |
 | xGERC    | - | - | ✔ | ✔ |         |
-| xHER     | - | - |   |   |         |
-| xHPR     | - | - |   |   |         |
+| xHER     | - | - | ✔ | ✔ |         |
+| xHPR     | - | - | ✔ | ✔ |         |
 | xHER2    | - | - |   |   |         |
 | xHPR2    | - | - |   |   |         |
-| xSYR     |   |   | - | - |         |
-| xSPR     |   |   | - | - |         |
+| xSYR     | ✔ | ✔ | - | - |         |
+| xSPR     | ✔ | ✔ | - | - |         |
 | xSYR2    |   |   | - | - |         |
 | xSPR2    |   |   | - | - |         |
 

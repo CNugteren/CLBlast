@@ -81,12 +81,12 @@ routines = [
   Routine(True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 matrix update"),
   Routine(True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex matrix update"),
   Routine(True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex conjugated matrix update"),
-  Routine(False, "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Hermitian rank-1 matrix update"),
-  Routine(False, "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Hermitian packed rank-1 matrix update"),
+  Routine(True,  "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Hermitian rank-1 matrix update"),
+  Routine(True,  "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Hermitian packed rank-1 matrix update"),
   Routine(False, "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Hermitian rank-2 matrix update"),
   Routine(False, "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Hermitian packed rank-2 matrix update"),
-  Routine(False, "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Symmetric rank-1 matrix update"),
-  Routine(False, "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Symmetric packed rank-1 matrix update"),
+  Routine(True,  "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Symmetric rank-1 matrix update"),
+  Routine(True,  "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Symmetric packed rank-1 matrix update"),
   Routine(False, "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Symmetric rank-2 matrix update"),
   Routine(False, "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Symmetric packed rank-2 matrix update"),
 ],
@@ -247,7 +247,7 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 55, 80, 24, 22]
+header_lines = [84, 59, 80, 24, 22]
 footer_lines = [6, 3, 5, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

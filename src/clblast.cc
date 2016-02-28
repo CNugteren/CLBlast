@@ -41,6 +41,10 @@
 #include "internal/routines/level2/xger.h"
 #include "internal/routines/level2/xgeru.h"
 #include "internal/routines/level2/xgerc.h"
+#include "internal/routines/level2/xher.h"
+#include "internal/routines/level2/xhpr.h"
+#include "internal/routines/level2/xsyr.h"
+#include "internal/routines/level2/xspr.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -946,13 +950,22 @@ template StatusCode Gerc<double2>(const Layout,
 
 // Hermitian rank-1 matrix update: CHER/ZHER
 template <typename T>
-StatusCode Her(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Her(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xher<std::complex<T>,T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHer(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                       Buffer<std::complex<T>>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Her<float>(const Layout, const Triangle,
                                const size_t,
@@ -969,13 +982,22 @@ template StatusCode Her<double>(const Layout, const Triangle,
 
 // Hermitian packed rank-1 matrix update: CHPR/ZHPR
 template <typename T>
-StatusCode Hpr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hpr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem ap_buffer, const size_t ap_offset,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhpr<std::complex<T>,T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHpr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                       Buffer<std::complex<T>>(ap_buffer), ap_offset);
 }
 template StatusCode Hpr<float>(const Layout, const Triangle,
                                const size_t,
@@ -1044,13 +1066,22 @@ template StatusCode Hpr2<double2>(const Layout, const Triangle,
 
 // Symmetric rank-1 matrix update: SSYR/DSYR
 template <typename T>
-StatusCode Syr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Syr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xsyr<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSyr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Syr<float>(const Layout, const Triangle,
                                const size_t,
@@ -1067,13 +1098,22 @@ template StatusCode Syr<double>(const Layout, const Triangle,
 
 // Symmetric packed rank-1 matrix update: SSPR/DSPR
 template <typename T>
-StatusCode Spr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Spr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem ap_buffer, const size_t ap_offset,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xspr<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSpr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Spr<float>(const Layout, const Triangle,
                                const size_t,

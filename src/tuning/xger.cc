@@ -31,6 +31,7 @@ class TuneXger {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
+      #include "../src/kernels/level2/level2.opencl"
       #include "../src/kernels/level2/xger.opencl"
     ;
   }
