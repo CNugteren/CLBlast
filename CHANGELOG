@@ -3,6 +3,14 @@ Development version (next release)
 - Added support for MSVC (Visual Studio) 2015
 - Added tuned parameters for various devices (see README)
 - Now automatically generates C++ code from JSON tuning results
+- Added level-2 routines:
+  * SGER/DGER
+  * CGERU/ZGERU
+  * CGERC/ZGERC
+  * CHER/ZHER
+  * CHPR/ZHPR
+  * CSYR/ZSYR
+  * CSPR/ZSPR
 
 Version 0.5.0
 - Improved structure and performance of level-2 routines (xSYMV/xHEMV)
