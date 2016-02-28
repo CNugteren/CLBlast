@@ -18,8 +18,9 @@ const Database::DatabaseEntry Database::XaxpySingle = {
   "Xaxpy", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
-        { "default",                                         { {"VW",2}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
     { // Intel CPUs
@@ -33,6 +34,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "Iris Pro",                                        { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
@@ -69,6 +71,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
   "Xaxpy", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
@@ -84,7 +87,8 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"VW",2}, {"WGS",128}, {"WPT",1} } },
-        { "default",                                         { {"VW",2}, {"WGS",128}, {"WPT",1} } },
+        { "Iris Pro",                                        { {"VW",1}, {"WGS",256}, {"WPT",8} } },
+        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
     { // Intel accelerators
@@ -120,6 +124,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
   "Xaxpy", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
@@ -165,6 +170,7 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
   "Xaxpy", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }

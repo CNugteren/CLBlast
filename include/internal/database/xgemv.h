@@ -18,8 +18,9 @@ const Database::DatabaseEntry Database::XgemvSingle = {
   "Xgemv", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Intel CPUs
@@ -32,7 +33,8 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",8} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",8} } },
+        { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
       }
     },
     { // Intel accelerators
@@ -68,6 +70,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
   "Xgemv", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
@@ -82,7 +85,8 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Iris Pro",                                        { {"WGS1",64}, {"WPT1",1}, {"VW2",4}, {"WGS2",128}, {"WPT2",4}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Intel accelerators
@@ -114,8 +118,9 @@ const Database::DatabaseEntry Database::XgemvDouble = {
   "Xgemv", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Intel CPUs
@@ -158,8 +163,9 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
   "Xgemv", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Intel CPUs

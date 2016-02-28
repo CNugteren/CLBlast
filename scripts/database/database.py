@@ -55,12 +55,11 @@ pd.set_option('display.width', 1000)
 
 # Downloads the database and save it to disk
 def DownloadDatabase(filename):
-	sys.stdout.write("## Downloading database from '"+DATABASE_SERVER_URL+"'...")
+	print("## Downloading database from '"+DATABASE_SERVER_URL+"'...")
 	df = urlopen(DATABASE_SERVER_URL)
 	output = open(file_db,'wb')
 	output.write(df.read())
 	output.close()
-	print("done")
 
 # Loads the database from disk
 def LoadDatabase(filename):
@@ -263,7 +262,7 @@ database = LoadDatabase(file_db)
 for file_json in glob.glob(glob_json):
 
 	# Loads the newly imported data
-	sys.stdout.write("## Processing '"+file_json+"'")
+	sys.stdout.write("## Processing '"+file_json+"' ")
 	imported_data = ImportDataFromFile(file_json)
 	imported_data = SanitizeVendorNames(imported_data)
 

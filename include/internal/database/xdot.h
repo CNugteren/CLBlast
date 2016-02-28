@@ -18,8 +18,9 @@ const Database::DatabaseEntry Database::XdotSingle = {
   "Xdot", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",256}, {"WGS2",256} } },
-        { "default",                                         { {"VW",1}, {"WGS1",256}, {"WGS2",256} } },
+        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
       }
     },
     { // Intel CPUs
@@ -33,7 +34,8 @@ const Database::DatabaseEntry Database::XdotSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"VW",1}, {"WGS1",512}, {"WGS2",32} } },
-        { "default",                                         { {"VW",1}, {"WGS1",512}, {"WGS2",32} } },
+        { "Iris Pro",                                        { {"VW",1}, {"WGS1",128}, {"WGS2",512} } },
+        { "default",                                         { {"VW",1}, {"WGS1",128}, {"WGS2",32} } },
       }
     },
     { // Intel accelerators
@@ -69,8 +71,9 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
   "Xdot", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
-        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
+        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -84,7 +87,8 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Iris",                                            { {"VW",1}, {"WGS1",512}, {"WGS2",1024} } },
-        { "default",                                         { {"VW",1}, {"WGS1",512}, {"WGS2",1024} } },
+        { "Iris Pro",                                        { {"VW",1}, {"WGS1",256}, {"WGS2",1024} } },
+        { "default",                                         { {"VW",1}, {"WGS1",256}, {"WGS2",1024} } },
       }
     },
     { // Intel accelerators
@@ -120,8 +124,9 @@ const Database::DatabaseEntry Database::XdotDouble = {
   "Xdot", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
-        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
+        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
       }
     },
     { // Intel CPUs
@@ -165,8 +170,9 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
   "Xdot", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
-        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
+        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -198,7 +204,7 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS1",32}, {"WGS2",64} } },
+        { "default",                                         { {"VW",1}, {"WGS1",32}, {"WGS2",32} } },
       }
     },
   }
