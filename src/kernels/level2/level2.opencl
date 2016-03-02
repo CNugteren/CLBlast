@@ -39,10 +39,7 @@ inline real LoadVector(const int id, const int max,
   if (id < max) {
     real result = gm[id*inc + offset];
     if (do_conjugate) {
-      #if defined(ROUTINE_GERC)
-        COMPLEX_CONJUGATE(result);
-      #endif
-      #if defined(ROUTINE_HER) || defined(ROUTINE_HPR)
+      #if defined(ROUTINE_GERC) || defined(ROUTINE_HER) || defined(ROUTINE_HPR) || defined(ROUTINE_HER2) || defined(ROUTINE_HPR2)
         COMPLEX_CONJUGATE(result);
       #endif
     }
@@ -81,14 +78,62 @@ inline void MatrixUpdate(const int id1, const int id2, const int max1, const int
     const real avalue = agm[a_index];
 
     // Computes result = alpha * x[i] * y[j] + a[i][j]
-    real result;
-    GER(result, alpha, xvalue, yvalue, avalue);
+    #if PRECISION == 3232 || PRECISION == 6464
+      real ax;
+      ax.x = MulReal(alpha, xvalue);
+      ax.y = MulImag(alpha, xvalue);
+      real result;
+      result.x = MulReal(ax, yvalue) + avalue.x;
+      result.y = MulImag(ax, yvalue) + avalue.y;
+    #else
+      real result = alpha * xvalue * yvalue + avalue;
+    #endif
 
     // For hermetian matrices
     #if defined(ROUTINE_HER) || defined(ROUTINE_HPR)
       if (id1 == id2) { result.y = ZERO; }
     #endif
     
+    // Stores the final result
+    agm[a_index] = result;
+  }
+}
+
+// Performs the rank-2 matrix update
+inline void MatrixUpdate2(const int id1, const int id2, const int max1, const int max2,
+                          __global real* agm, const int a_offset, const int a_ld,
+                          const real alpha1, const real xvalue, const real yvalue,
+                          const real alpha2, const real xtvalue, const real ytvalue,
+                          const int is_upper) {
+
+  // Bounds of a regular matrix
+  if (id1 < max1 && id2 < max2) {
+
+    const int a_index = id2*a_ld + id1 + a_offset;
+
+    // Loads the current value of the A matrix
+    const real avalue = agm[a_index];
+
+    // Computes result = alpha * x[i] * y[j] + alpha * x[j] * y[i] + a[i][j]
+    #if PRECISION == 3232 || PRECISION == 6464
+      real ax;
+      ax.x = MulReal(alpha2, xvalue);
+      ax.y = MulImag(alpha2, xvalue);
+      real atx;
+      atx.x = MulReal(alpha1, xtvalue);
+      atx.y = MulImag(alpha1, xtvalue);
+      real result;
+      result.x = MulReal(ax, yvalue) + MulReal(atx, ytvalue) + avalue.x;
+      result.y = MulImag(ax, yvalue) + MulImag(atx, ytvalue) + avalue.y;
+    #else
+      real result = alpha1 * xvalue * yvalue + alpha2 * xtvalue * ytvalue + avalue;
+    #endif
+
+    // For hermetian matrices
+    #if defined(ROUTINE_HER2) || defined(ROUTINE_HPR2)
+      if (id1 == id2) { result.y = ZERO; }
+    #endif
+
     // Stores the final result
     agm[a_index] = result;
   }

@@ -43,8 +43,10 @@
 #include "internal/routines/level2/xgerc.h"
 #include "internal/routines/level2/xher.h"
 #include "internal/routines/level2/xhpr.h"
+#include "internal/routines/level2/xher2.h"
 #include "internal/routines/level2/xsyr.h"
 #include "internal/routines/level2/xspr.h"
+#include "internal/routines/level2/xsyr2.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -1014,14 +1016,24 @@ template StatusCode Hpr<double>(const Layout, const Triangle,
 
 // Hermitian rank-2 matrix update: CHER2/ZHER2
 template <typename T>
-StatusCode Her2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Her2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xher2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHer2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Her2<float2>(const Layout, const Triangle,
                                  const size_t,
@@ -1130,14 +1142,24 @@ template StatusCode Spr<double>(const Layout, const Triangle,
 
 // Symmetric rank-2 matrix update: SSYR2/DSYR2
 template <typename T>
-StatusCode Syr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Syr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xsyr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSyr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Syr2<float>(const Layout, const Triangle,
                                 const size_t,

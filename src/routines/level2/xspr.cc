@@ -34,7 +34,7 @@ StatusCode Xspr<T>::DoSpr(const Layout layout, const Triangle triangle,
                           const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                           const Buffer<T> &ap_buffer, const size_t ap_offset) {
 
-  // 
+  // Specific Xspr functionality is implemented in the kernel using defines
   return DoHer(layout, triangle, n, alpha,
                x_buffer, x_offset, x_inc,
                ap_buffer, ap_offset, n, true);
