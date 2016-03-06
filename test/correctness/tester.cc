@@ -280,21 +280,21 @@ bool TestSimilarity(const T val1, const T val2) {
   const auto difference = std::fabs(val1 - val2);
 
   // Set the allowed error margin for floating-point comparisons
-  constexpr auto kErrorMarginRelative = 1.0e-2;
-  constexpr auto kErrorMarginAbsolute = 1.0e-10;
+  constexpr auto kErrorMarginRelative = T{0.025};
+  constexpr auto kErrorMarginAbsolute = T{1.0e-6};
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
   // The values are zero or very small: the relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < static_cast<T>(kErrorMarginAbsolute)) {
-    return (difference < static_cast<T>(kErrorMarginAbsolute));
+  else if (val1 == 0 || val2 == 0 || difference < kErrorMarginAbsolute) {
+    return (difference < kErrorMarginAbsolute);
   }
   // Use relative error
   else {
     const auto absolute_sum = std::fabs(val1) + std::fabs(val2);
-    return (difference / absolute_sum) < static_cast<T>(kErrorMarginRelative);
+    return (difference / absolute_sum) < kErrorMarginRelative;
   }
 }
 
