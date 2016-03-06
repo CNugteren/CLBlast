@@ -176,7 +176,6 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xASUM    |   |   | - | - | +SC +DZ |
 | IxAMAX   |   |   |   |   |         |
 
-
 | Level-2  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
 | xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
@@ -198,12 +197,12 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xGERC    | - | - | ✔ | ✔ |         |
 | xHER     | - | - | ✔ | ✔ |         |
 | xHPR     | - | - | ✔ | ✔ |         |
-| xHER2    | - | - |   |   |         |
-| xHPR2    | - | - |   |   |         |
+| xHER2    | - | - | ✔ | ✔ |         |
+| xHPR2    | - | - | ✔ | ✔ |         |
 | xSYR     | ✔ | ✔ | - | - |         |
 | xSPR     | ✔ | ✔ | - | - |         |
-| xSYR2    |   |   | - | - |         |
-| xSPR2    |   |   | - | - |         |
+| xSYR2    | ✔ | ✔ | - | - |         |
+| xSPR2    | ✔ | ✔ | - | - |         |
 
 | Level-3  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
@@ -246,11 +245,8 @@ To-do list before release of version 1.0
 - Improve device performance:
   * Tune for a wider range of devices
   * Allow users to define custom tuned parameters
-- Improve the tuning
-  * Make the tuners upload their data to a central server
 - Improve the performance comparisons:
   * Enable comparison against optionally: ViennaCL, cuBLAS, MAGMA OpenCL
 - Further reduce the likelihood of crashes:
   * Add checks for proper command-line arguments in the tuner, tester and client
-  * Add checks for valid database parameters
   * Test in multi-threaded environments

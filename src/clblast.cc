@@ -44,9 +44,11 @@
 #include "internal/routines/level2/xher.h"
 #include "internal/routines/level2/xhpr.h"
 #include "internal/routines/level2/xher2.h"
+#include "internal/routines/level2/xhpr2.h"
 #include "internal/routines/level2/xsyr.h"
 #include "internal/routines/level2/xspr.h"
 #include "internal/routines/level2/xsyr2.h"
+#include "internal/routines/level2/xspr2.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -1052,14 +1054,24 @@ template StatusCode Her2<double2>(const Layout, const Triangle,
 
 // Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
 template <typename T>
-StatusCode Hpr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hpr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem ap_buffer, const size_t ap_offset,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhpr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHpr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Hpr2<float2>(const Layout, const Triangle,
                                  const size_t,
@@ -1178,14 +1190,24 @@ template StatusCode Syr2<double>(const Layout, const Triangle,
 
 // Symmetric packed rank-2 matrix update: SSPR2/DSPR2
 template <typename T>
-StatusCode Spr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Spr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem ap_buffer, const size_t ap_offset,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xspr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSpr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Spr2<float>(const Layout, const Triangle,
                                 const size_t,

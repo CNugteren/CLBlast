@@ -109,7 +109,18 @@ inline void MatrixUpdate2(const int id1, const int id2, const int max1, const in
   // Bounds of a regular matrix
   if (id1 < max1 && id2 < max2) {
 
-    const int a_index = id2*a_ld + id1 + a_offset;
+    #if defined(ROUTINE_SPR2) || defined(ROUTINE_HPR2)
+      int a_index;
+      if (is_upper) {
+        a_index = (id1 <= id2) ? ((id2+1)*id2)/2 + id1 : ((id1+1)*id1)/2 + id2;
+      }
+      else {
+        a_index = (id1 >= id2) ? ((2*a_ld-(id2+1))*id2)/2 + id1 : ((2*a_ld-(id1+1))*id1)/2 + id2;
+      }
+      a_index += a_offset;
+    #else
+      const int a_index = id2*a_ld + id1 + a_offset;
+    #endif
 
     // Loads the current value of the A matrix
     const real avalue = agm[a_index];

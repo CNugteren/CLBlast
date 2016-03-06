@@ -37,7 +37,8 @@ StatusCode Xhpr<T,U>::DoHpr(const Layout layout, const Triangle triangle,
   // Specific Xhpr functionality is implemented in the kernel using defines
   return DoHer(layout, triangle, n, alpha,
                x_buffer, x_offset, x_inc,
-               ap_buffer, ap_offset, n, true);
+               ap_buffer, ap_offset, n,
+               true); // packed matrix
 }
 
 // =================================================================================================

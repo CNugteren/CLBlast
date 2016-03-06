@@ -112,7 +112,7 @@ set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sgemm)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
-                    xger xgeru xgerc xher xhpr xher2 xsyr xspr xsyr2)
+                    xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
 set(PRECISIONS 32 64 3232 6464)

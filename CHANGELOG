@@ -9,8 +9,12 @@ Development version (next release)
   * CGERC/ZGERC
   * CHER/ZHER
   * CHPR/ZHPR
+  * CHER2/ZHER2
+  * CHPR2/ZHPR2
   * CSYR/ZSYR
   * CSPR/ZSPR
+  * CSYR2/ZSYR2
+  * CSPR2/ZSPR2
 
 Version 0.5.0
 - Improved structure and performance of level-2 routines (xSYMV/xHEMV)
