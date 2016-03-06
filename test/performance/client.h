@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 // The libraries to test
 #include <clBLAS.h>
@@ -64,10 +65,11 @@ class Client {
                         Queue &queue, Routine run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
-  void PrintTableHeader(const bool silent, const std::vector<std::string> &args);
+  void PrintTableHeader(const Arguments<U>& args);
 
   // Prints a row of performance data, including results of two libraries
-  void PrintTableRow(const Arguments<U>& args, const double ms_clblast, const double ms_clblas);
+  void PrintTableRow(const Arguments<U>& args,
+                     const std::vector<std::pair<std::string, double>>& timings);
 
   // The routine-specific functions passed to the tester
   const Routine run_routine_;
