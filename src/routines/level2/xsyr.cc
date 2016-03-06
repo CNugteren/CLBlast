@@ -34,7 +34,7 @@ StatusCode Xsyr<T>::DoSyr(const Layout layout, const Triangle triangle,
                           const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                           const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
 
-  // 
+  // Specific Xsyr functionality is implemented in the kernel using defines
   return DoHer(layout, triangle, n, alpha,
                x_buffer, x_offset, x_inc,
                a_buffer, a_offset, a_ld);

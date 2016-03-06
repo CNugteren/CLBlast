@@ -147,13 +147,6 @@ R"(
   #define AXPBY(e, a, b, c, d) e = a*b + c*d
 #endif
 
-// The scalar GER function
-#if PRECISION == 3232 || PRECISION == 6464
-  #define GER(e, a, b, c, d) real ab; ab.x = MulReal(a,b); ab.y = MulImag(a,b); e.x = MulReal(ab,c) + d.x; e.y = MulImag(ab,c) + d.y
-#else
-  #define GER(e, a, b, c, d) e = a*b*c + d
-#endif
-
 // The complex conjugate operation for complex transforms
 #if PRECISION == 3232 || PRECISION == 6464
   #define COMPLEX_CONJUGATE(value) value.x = value.x; value.y = -value.y
