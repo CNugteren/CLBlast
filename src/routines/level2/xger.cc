@@ -85,8 +85,8 @@ StatusCode Xger<T>::DoGer(const Layout layout,
     kernel.SetArgument(12, static_cast<int>(a_is_rowmajor));
 
     // Launches the kernel
-    auto a_one_ceiled = CeilDiv(Ceil(a_one, db_["WGS1"]), db_["WPT"]);
-    auto a_two_ceiled = CeilDiv(Ceil(a_two, db_["WGS2"]), db_["WPT"]);
+    auto a_one_ceiled = Ceil(CeilDiv(a_one, db_["WPT"]), db_["WGS1"]);
+    auto a_two_ceiled = Ceil(CeilDiv(a_two, db_["WPT"]), db_["WGS2"]);
     auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
     auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
     status = RunKernel(kernel, global, local);

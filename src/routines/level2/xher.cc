@@ -95,8 +95,8 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
     kernel.SetArgument(9, static_cast<int>(is_rowmajor));
 
     // Launches the kernel
-    auto global_one = CeilDiv(Ceil(n, db_["WGS1"]), db_["WPT"]);
-    auto global_two = CeilDiv(Ceil(n, db_["WGS2"]), db_["WPT"]);
+    auto global_one = Ceil(CeilDiv(n, db_["WPT"]), db_["WGS1"]);
+    auto global_two = Ceil(CeilDiv(n, db_["WPT"]), db_["WGS2"]);
     auto global = std::vector<size_t>{global_one, global_two};
     auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
     status = RunKernel(kernel, global, local);
