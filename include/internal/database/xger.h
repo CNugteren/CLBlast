@@ -22,6 +22,12 @@ const Database::DatabaseEntry Database::XgerSingle = {
         { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"WGS1",64}, {"WGS2",4}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",4} } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",128}, {"WGS2",2}, {"WPT",4} } },
@@ -52,6 +58,12 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
         { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"WGS1",128}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",1}, {"WPT",1} } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",512}, {"WGS2",8}, {"WPT",2} } },
@@ -66,7 +78,7 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",16}, {"WGS2",1}, {"WPT",1} } },
       }
     },
   }
@@ -80,6 +92,12 @@ const Database::DatabaseEntry Database::XgerDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
       }
     },
     { // Intel CPUs
@@ -104,6 +122,12 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"WGS1",64}, {"WGS2",2}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",4} } },
       }
     },
     { // Intel CPUs

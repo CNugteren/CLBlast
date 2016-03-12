@@ -23,6 +23,12 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",256} } },
+        { "default",                                         { {"VW",1}, {"WGS1",128}, {"WGS2",256} } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",1}, {"WGS1",512}, {"WGS2",1024} } },
@@ -74,6 +80,12 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
         { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"VW",1}, {"WGS1",128}, {"WGS2",512} } },
+        { "default",                                         { {"VW",1}, {"WGS1",128}, {"WGS2",512} } },
       }
     },
     { // Intel CPUs
@@ -129,6 +141,12 @@ const Database::DatabaseEntry Database::XdotDouble = {
         { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",128} } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"VW",1}, {"WGS1",64}, {"WGS2",512} } },
+        { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",512} } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",1}, {"WGS1",512}, {"WGS2",512} } },
@@ -173,6 +191,12 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS1",64}, {"WGS2",256} } },
         { "default",                                         { {"VW",1}, {"WGS1",64}, {"WGS2",32} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"VW",1}, {"WGS1",32}, {"WGS2",64} } },
+        { "default",                                         { {"VW",1}, {"WGS1",32}, {"WGS2",64} } },
       }
     },
     { // Intel CPUs
