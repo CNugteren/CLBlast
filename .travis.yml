@@ -32,19 +32,21 @@ install:
   - if [ ${TRAVIS_OS_NAME} == "linux" ]; then
       mkdir -p ${OPENCL_ROOT};
       pushd ${OPENCL_ROOT};
-      wget ${OPENCL_REGISTRY}/specs/opencl-icd-1.2.11.0.tgz;
-      tar -xf opencl-icd-1.2.11.0.tgz;
-      mv ./icd/* .;
-      mkdir -p inc/CL;
+      travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git;
+      mv ./OpenCL-ICD-Loader/* .;
+      travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL;
       pushd inc/CL;
-      wget -r -w 1 -np -nd -nv -A h,hpp https://www.khronos.org/registry/cl/api/1.2/;
-      wget -w 1 -np -nd -nv -A h,hpp https://www.khronos.org/registry/cl/api/2.1/cl.hpp;
+      travis_retry wget -w 1 -np -nd -nv -A h,hpp ${OPENCL_REGISTRY}/api/2.1/cl.hpp;
       popd;
       mkdir -p lib;
       pushd lib;
       cmake -G "Unix Makefiles" ..;
       make;
-      cp ../bin/libOpenCL.so .;
+      cp ./bin/libOpenCL.so .;
+      popd;
+      pushd inc/CL;
+      travis_retry git fetch origin opencl12:opencl12;
+      git checkout opencl12;
       popd;
       mv inc/ include/;
       popd;
