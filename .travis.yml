@@ -1,29 +1,67 @@
 language: cpp
+sudo: required
+dist: trusty
+
 compiler:
   - gcc
   - clang
+
+addons:
+  apt:
+    sources:
+      # kubuntu-backports contains newer versions of cmake to install
+      - kubuntu-backports
+    packages:
+      - cmake
+
+env:
+  global:
+    - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/make/release
+    - OPENCL_REGISTRY=https://www.khronos.org/registry/cl
+    - OPENCL_ROOT=${TRAVIS_BUILD_DIR}/bin/opencl
+
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository -y ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq gcc-4.8 g++-4.8 clang
-  - sudo apt-get install -qq fglrx opencl-headers
-  - sudo apt-get install -qq cmake
+  - cmake --version;
+  - ${CC} --version;
+  - ${CXX} --version;
+
 install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  # The following linux logic is necessary because of Travis's move to the GCE platform, which does not
+  # currently contain packages for fglrx: https://github.com/travis-ci/travis-ci/issues/5221
+  # We build our own linkable .so file
+  - if [ ${TRAVIS_OS_NAME} == "linux" ]; then
+      mkdir -p ${OPENCL_ROOT};
+      pushd ${OPENCL_ROOT};
+      wget ${OPENCL_REGISTRY}/specs/opencl-icd-1.2.11.0.tgz;
+      tar -xf opencl-icd-1.2.11.0.tgz;
+      mv ./icd/* .;
+      mkdir -p inc/CL;
+      pushd inc/CL;
+      wget -r -w 1 -np -nd -nv -A h,hpp https://www.khronos.org/registry/cl/api/1.2/;
+      wget -w 1 -np -nd -nv -A h,hpp https://www.khronos.org/registry/cl/api/2.1/cl.hpp;
+      popd;
+      mkdir -p lib;
+      pushd lib;
+      cmake -G "Unix Makefiles" ..;
+      make;
+      cp ../bin/libOpenCL.so .;
+      popd;
+      mv inc/ include/;
+      popd;
+    fi
+
 before_script:
-  - mkdir install
-  - export PATH=`pwd`/install/bin:${PATH}
-  - export LD_LIBRARY_PATH=`pwd`/install/lib64:`pwd`/install/lib:${LD_LIBRARY_PATH}
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_INSTALL_PREFIX:PATH=../install ..
+  - mkdir -p ${CLBLAST_ROOT}
+  - pushd ${CLBLAST_ROOT}
+  - cmake -DOPENCL_ROOT=${OPENCL_ROOT} ${TRAVIS_BUILD_DIR}
+
 script:
   - make
-  - make install
+
 branches:
   only:
     - master
     - development
+
 notifications:
   email: false
