@@ -1,5 +1,5 @@
 
-Development version (next release)
+Version 0.6.0
 - Added support for MSVC (Visual Studio) 2015
 - Added tuned parameters for various devices (see README)
 - Now automatically generates C++ code from JSON tuning results
