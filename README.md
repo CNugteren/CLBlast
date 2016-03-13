@@ -17,7 +17,9 @@ Use CLBlast instead of clBLAS:
 * When you care about achieving maximum performance.
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
 * When you run on exotic OpenCL devices which you need to tune yourself.
+* When you are still running on OpenCL 1.1 hardware.
 * When you value an organized and modern C++ codebase.
+* When you target Intel CPUs and GPUs or embedded devices
 
 Use CLBlast instead of cuBLAS:
 
@@ -102,6 +104,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Core i7-3770K
   - Core i7-5930K
 * Other devices:
+  - ARM Mali-T628 GPU
   - Intel MIC
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should compile the library with the optional tuners:
@@ -154,10 +157,11 @@ These graphs can be generated automatically on your own device. First, compile C
 
     Rscript path/to/test/performance/graphs/xgemm.r 0 1
 
+
 Supported routines
 -------------
 
-CLBlast is in active development but already supports almost all the BLAS routines. The currently supported routines are marked with '✔' in the following tables:
+CLBlast is in active development but already supports almost all the BLAS routines. The currently supported routines are marked with '✔' in the following tables. Empty boxes represent routines that still need to be implemented in a future release, whereas routines marked with '-' are not part of BLAS at all.
 
 | Level-1  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
@@ -226,6 +230,12 @@ The contributing authors so far are:
 
 * [Cedric Nugteren](http://www.cedricnugteren.nl)
 
+Tuning and testing on a variety of OpenCL devices was made possible by:
+
+* [TU/e ES research group](http://www.es.ele.tue.nl/)
+* [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
+* [Dividiti](http://www.dividiti.com)
+* [SURFsara HPC center](http://www.surfsara.com)
 
 Support us
 -------------
@@ -236,17 +246,8 @@ This project started in March 2015 as an evenings and weekends free-time project
 To-do list before release of version 1.0
 -------------
 
-- Increase the functionality:
-  * Support all routines supported by clBLAS
-  * Allow the user control over events and synchronization
-  * Add half-precision routines (e.g. HGEMM)
-- Improve host performance:
-  * Allow initialization to pre-compile kernels and store to disk
-- Improve device performance:
-  * Tune for a wider range of devices
-  * Allow users to define custom tuned parameters
-- Improve the performance comparisons:
-  * Enable comparison against optionally: ViennaCL, cuBLAS, MAGMA OpenCL
-- Further reduce the likelihood of crashes:
-  * Add checks for proper command-line arguments in the tuner, tester and client
-  * Test in multi-threaded environments
+- Support all routines supported by clBLAS
+- Allow the user control over events and synchronization
+- Add half-precision routines (e.g. HGEMM)
+- Enable correctness and performance testing against a CPU-based BLAS library
+- Test in multi-threaded environments
