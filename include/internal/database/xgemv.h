@@ -5,9 +5,9 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Xgemv kernels.
+// This file populates the database with best-found tuning parameters for the 'Xgemv' kernels.
 //
 // =================================================================================================
 
@@ -16,26 +16,97 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::XgemvSingle = {
   "Xgemv", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K20m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K40m",       { {"WGS1",256}, {"WPT1",1}, {"WGS2",256}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",4} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1}, {"VW2",4}, {"WGS2",128}, {"WPT2",4}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4}, {"VW2",1}, {"WGS2",64}, {"WPT2",4}, {"VW3",2}, {"WGS3",64}, {"WPT3",4} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",4}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"WGS1",256}, {"WPT1",2}, {"WGS2",64}, {"WPT2",4}, {"VW2",4}, {"WGS3",256}, {"WPT3",2}, {"VW3",8} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",8} } },
+        { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "GeForce GTX 680",                                 { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",128}, {"WPT3",2} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",4}, {"WGS3",128}, {"WPT3",4} } },
+        { "GeForce GTX 980",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+        { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Tesla K20m",                                      { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+        { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::XgemvComplexSingle = {
+  "Xgemv", Precision::kComplexSingle, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Tahiti",                                          { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",2}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4}, {"VW2",4}, {"WGS2",64}, {"WPT2",4}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",2}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Iris Pro",                                        { {"WGS1",64}, {"WPT1",1}, {"VW2",4}, {"WGS2",128}, {"WPT2",4}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 680",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
   }
@@ -45,53 +116,42 @@ const Database::DatabaseEntry Database::XgemvSingle = {
 
 const Database::DatabaseEntry Database::XgemvDouble = {
   "Xgemv", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K20m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K40m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
     { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",2}, {"VW2",4}, {"WGS2",128}, {"WPT2",4}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4}, {"VW2",1}, {"WGS2",64}, {"WPT2",4}, {"VW3",1}, {"WGS3",64}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",2}, {"VW2",1}, {"WGS2",64}, {"WPT2",4}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 680",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",128}, {"WPT3",2} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",2}, {"WGS3",256}, {"WPT3",2} } },
+        { "GeForce GTX 980",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+        { "GeForce GTX TITAN X",                             { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Tesla K20m",                                      { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
-  }
-};
-// =================================================================================================
-
-const Database::DatabaseEntry Database::XgemvComplexSingle = {
-  "Xgemv", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K20m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K40m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"WGS1",256}, {"WPT1",1}, {"WGS2",64}, {"WPT2",4}, {"VW2",2}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
   }
@@ -101,25 +161,35 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
 
 const Database::DatabaseEntry Database::XgemvComplexDouble = {
   "Xgemv", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K20m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-        { "Tesla K40m",       { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
-      }
-    },
     { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",4}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4}, {"VW2",4}, {"WGS2",64}, {"WPT2",4}, {"VW3",2}, {"WGS3",256}, {"WPT3",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",4}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"WGS1",64}, {"WPT1",1}, {"WGS2",64}, {"WPT2",1}, {"VW2",1}, {"WGS3",64}, {"WPT3",1}, {"VW3",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
   }

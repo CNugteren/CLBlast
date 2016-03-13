@@ -78,17 +78,17 @@ routines = [
   Routine(False, "2a", "tbsv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], False, "Solves a banded triangular system of equations"),
   Routine(False, "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], False, "Solves a packed triangular system of equations"),
   # Level 2: matrix update
-  Routine(False, "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 matrix update"),
-  Routine(False, "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex matrix update"),
-  Routine(False, "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex conjugated matrix update"),
-  Routine(False, "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Hermitian rank-1 matrix update"),
-  Routine(False, "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Hermitian packed rank-1 matrix update"),
-  Routine(False, "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Hermitian rank-2 matrix update"),
-  Routine(False, "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Hermitian packed rank-2 matrix update"),
-  Routine(False, "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Symmetric rank-1 matrix update"),
-  Routine(False, "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Symmetric packed rank-1 matrix update"),
-  Routine(False, "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Symmetric rank-2 matrix update"),
-  Routine(False, "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Symmetric packed rank-2 matrix update"),
+  Routine(True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 matrix update"),
+  Routine(True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex matrix update"),
+  Routine(True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], False, "General rank-1 complex conjugated matrix update"),
+  Routine(True,  "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Hermitian rank-1 matrix update"),
+  Routine(True,  "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Hermitian packed rank-1 matrix update"),
+  Routine(True,  "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Hermitian rank-2 matrix update"),
+  Routine(True,  "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Hermitian packed rank-2 matrix update"),
+  Routine(True,  "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], False, "Symmetric rank-1 matrix update"),
+  Routine(True,  "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], False, "Symmetric packed rank-1 matrix update"),
+  Routine(True,  "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], False, "Symmetric rank-2 matrix update"),
+  Routine(True,  "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], False, "Symmetric packed rank-2 matrix update"),
 ],
 [ # Level 3: matrix-matrix
   Routine(True,  "3", "gemm",  T,  [S,D,C,Z], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], False, "General matrix-matrix multiplication"),
@@ -103,7 +103,17 @@ routines = [
 ]]
 
 # ==================================================================================================
+# Translates an option name to a CLBlast data-type
+def PrecisionToFullName(x):
+	return {
+		'H': "Half",
+		'S': "Single",
+		'D': "Double",
+		'C': "ComplexSingle",
+		'Z': "ComplexDouble",
+	}[x]
 
+# ==================================================================================================
 # Separators for the BLAS levels
 separators = ["""
 // =================================================================================================
@@ -237,7 +247,7 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 52, 80, 24, 22]
+header_lines = [84, 63, 80, 24, 22]
 footer_lines = [6, 3, 5, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
@@ -315,16 +325,10 @@ for level in [1,2,3]:
 			body += "using double2 = clblast::double2;\n\n"
 			body += "// Main function (not within the clblast namespace)\n"
 			body += "int main(int argc, char *argv[]) {\n"
-			body += "  switch(clblast::GetPrecision(argc, argv)) {\n"
+			default = PrecisionToFullName(routine.flavours[0].name)
+			body += "  switch(clblast::GetPrecision(argc, argv, clblast::Precision::k"+default+")) {\n"
 			for precision in ["H","S","D","C","Z"]:
-				enum = {
-				    'H': "Half",
-				    'S': "Single",
-				    'D': "Double",
-				    'C': "ComplexSingle",
-				    'Z': "ComplexDouble",
-				}[precision]
-				body += "    case clblast::Precision::k"+enum+":"
+				body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"
 				found = False
 				for flavour in routine.flavours:
 					if flavour.name == precision:

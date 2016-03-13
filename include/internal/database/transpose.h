@@ -5,37 +5,67 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Transpose kernels.
+// This file populates the database with best-found tuning parameters for the 'Transpose' kernels.
 //
 // =================================================================================================
 
 namespace clblast {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TraSingle = {
+const Database::DatabaseEntry Database::TransposeSingle = {
   "Transpose", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",8} } },
+        { "Tahiti",                                          { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
       }
     },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
       }
     },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"TRA_DIM",8}, {"TRA_WPT",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Iris Pro",                                        { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "GeForce GTX 680",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
+        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "GeForce GTX 980",                                 { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "GeForce GTX TITAN X",                             { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Tesla K20m",                                      { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Tesla K40m",                                      { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
   }
@@ -43,56 +73,52 @@ const Database::DatabaseEntry Database::TraSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TraDouble = {
-  "Transpose", Precision::kDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"TRA_DIM",8}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-      }
-    },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
-      }
-    },
-  }
-};
-
-// =================================================================================================
-
-const Database::DatabaseEntry Database::TraComplexSingle = {
+const Database::DatabaseEntry Database::TransposeComplexSingle = {
   "Transpose", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "Tahiti",                                          { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
       }
     },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",2}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1} } },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
       }
     },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "Iris Pro",                                        { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 680",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX TITAN X",                             { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "Tesla K20m",                                      { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "Tesla K40m",                                      { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
   }
@@ -100,27 +126,97 @@ const Database::DatabaseEntry Database::TraComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TraComplexDouble = {
-  "Transpose", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"TRA_DIM",8}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K20m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-        { "Tesla K40m",       { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0} } },
-      }
-    },
+const Database::DatabaseEntry Database::TransposeDouble = {
+  "Transpose", Precision::kDouble, {
     { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1} } },
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "Tahiti",                                          { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
       }
     },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "GeForce GTX 680",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
+        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "GeForce GTX TITAN",                               { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "GeForce GTX TITAN X",                             { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "Tesla K20m",                                      { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "Tesla K40m",                                      { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"TRA_DIM",16}, {"TRA_WPT",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::TransposeComplexDouble = {
+  "Transpose", Precision::kComplexDouble, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
+        { "Tahiti",                                          { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"TRA_DIM",4}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 680",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX TITAN X",                             { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "Tesla K20m",                                      { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "Tesla K40m",                                      { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
   }

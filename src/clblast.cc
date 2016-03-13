@@ -38,6 +38,17 @@
 #include "internal/routines/level2/xtrmv.h"
 #include "internal/routines/level2/xtbmv.h"
 #include "internal/routines/level2/xtpmv.h"
+#include "internal/routines/level2/xger.h"
+#include "internal/routines/level2/xgeru.h"
+#include "internal/routines/level2/xgerc.h"
+#include "internal/routines/level2/xher.h"
+#include "internal/routines/level2/xhpr.h"
+#include "internal/routines/level2/xher2.h"
+#include "internal/routines/level2/xhpr2.h"
+#include "internal/routines/level2/xsyr.h"
+#include "internal/routines/level2/xspr.h"
+#include "internal/routines/level2/xsyr2.h"
+#include "internal/routines/level2/xspr2.h"
 
 // BLAS level-3 includes
 #include "internal/routines/level3/xgemm.h"
@@ -835,14 +846,24 @@ template StatusCode Tpsv<double2>(const Layout, const Triangle, const Transpose,
 
 // General rank-1 matrix update: SGER/DGER
 template <typename T>
-StatusCode Ger(const Layout,
-               const size_t, const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Ger(const Layout layout,
+               const size_t m, const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xger<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGer(layout,
+                       m, n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(y_buffer), y_offset, y_inc,
+                       Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Ger<float>(const Layout,
                                const size_t, const size_t,
@@ -861,14 +882,24 @@ template StatusCode Ger<double>(const Layout,
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
-StatusCode Geru(const Layout,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Geru(const Layout layout,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xgeru<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGeru(layout,
+                        m, n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Geru<float2>(const Layout,
                                  const size_t, const size_t,
@@ -887,14 +918,24 @@ template StatusCode Geru<double2>(const Layout,
 
 // General rank-1 complex conjugated matrix update: CGERC/ZGERC
 template <typename T>
-StatusCode Gerc(const Layout,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Gerc(const Layout layout,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xgerc<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoGerc(layout,
+                        m, n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Gerc<float2>(const Layout,
                                  const size_t, const size_t,
@@ -913,13 +954,22 @@ template StatusCode Gerc<double2>(const Layout,
 
 // Hermitian rank-1 matrix update: CHER/ZHER
 template <typename T>
-StatusCode Her(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Her(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xher<std::complex<T>,T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHer(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                       Buffer<std::complex<T>>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Her<float>(const Layout, const Triangle,
                                const size_t,
@@ -936,13 +986,22 @@ template StatusCode Her<double>(const Layout, const Triangle,
 
 // Hermitian packed rank-1 matrix update: CHPR/ZHPR
 template <typename T>
-StatusCode Hpr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hpr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem ap_buffer, const size_t ap_offset,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhpr<std::complex<T>,T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHpr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                       Buffer<std::complex<T>>(ap_buffer), ap_offset);
 }
 template StatusCode Hpr<float>(const Layout, const Triangle,
                                const size_t,
@@ -959,14 +1018,24 @@ template StatusCode Hpr<double>(const Layout, const Triangle,
 
 // Hermitian rank-2 matrix update: CHER2/ZHER2
 template <typename T>
-StatusCode Her2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Her2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xher2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHer2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Her2<float2>(const Layout, const Triangle,
                                  const size_t,
@@ -985,14 +1054,24 @@ template StatusCode Her2<double2>(const Layout, const Triangle,
 
 // Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
 template <typename T>
-StatusCode Hpr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Hpr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem ap_buffer, const size_t ap_offset,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xhpr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoHpr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Hpr2<float2>(const Layout, const Triangle,
                                  const size_t,
@@ -1011,13 +1090,22 @@ template StatusCode Hpr2<double2>(const Layout, const Triangle,
 
 // Symmetric rank-1 matrix update: SSYR/DSYR
 template <typename T>
-StatusCode Syr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Syr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xsyr<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSyr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Syr<float>(const Layout, const Triangle,
                                const size_t,
@@ -1034,13 +1122,22 @@ template StatusCode Syr<double>(const Layout, const Triangle,
 
 // Symmetric packed rank-1 matrix update: SSPR/DSPR
 template <typename T>
-StatusCode Spr(const Layout, const Triangle,
-               const size_t,
-               const T,
-               const cl_mem, const size_t, const size_t,
-               cl_mem, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Spr(const Layout layout, const Triangle triangle,
+               const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem ap_buffer, const size_t ap_offset,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xspr<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSpr(layout, triangle,
+                       n,
+                       alpha,
+                       Buffer<T>(x_buffer), x_offset, x_inc,
+                       Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Spr<float>(const Layout, const Triangle,
                                const size_t,
@@ -1057,14 +1154,24 @@ template StatusCode Spr<double>(const Layout, const Triangle,
 
 // Symmetric rank-2 matrix update: SSYR2/DSYR2
 template <typename T>
-StatusCode Syr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Syr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xsyr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSyr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(a_buffer), a_offset, a_ld);
 }
 template StatusCode Syr2<float>(const Layout, const Triangle,
                                 const size_t,
@@ -1083,14 +1190,24 @@ template StatusCode Syr2<double>(const Layout, const Triangle,
 
 // Symmetric packed rank-2 matrix update: SSPR2/DSPR2
 template <typename T>
-StatusCode Spr2(const Layout, const Triangle,
-                const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Spr2(const Layout layout, const Triangle triangle,
+                const size_t n,
+                const T alpha,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem ap_buffer, const size_t ap_offset,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(*event);
+  auto routine = Xspr2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSpr2(layout, triangle,
+                        n,
+                        alpha,
+                        Buffer<T>(x_buffer), x_offset, x_inc,
+                        Buffer<T>(y_buffer), y_offset, y_inc,
+                        Buffer<T>(ap_buffer), ap_offset);
 }
 template StatusCode Spr2<float>(const Layout, const Triangle,
                                 const size_t,

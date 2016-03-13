@@ -80,11 +80,11 @@ template <typename T, typename U>
 Tester<T,U>::~Tester() {
   if (PrecisionSupported<T>(device_)) {
     fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
-    fprintf(stdout, "   %lu test(s) passed\n", tests_passed_);
+    fprintf(stdout, "   %zu test(s) passed\n", tests_passed_);
     if (tests_skipped_ > 0) { fprintf(stdout, "%s", kPrintWarning.c_str()); }
-    fprintf(stdout, "   %lu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
+    fprintf(stdout, "   %zu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
     if (tests_failed_ > 0) { fprintf(stdout, "%s", kPrintError.c_str()); }
-    fprintf(stdout, "   %lu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
+    fprintf(stdout, "   %zu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
   }
   fprintf(stdout, "\n");
   clblasTeardown();
@@ -129,29 +129,29 @@ void Tester<T,U>::TestEnd() {
       fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
     }
     for (auto &o: options_) {
-      if (o == kArgM)        { fprintf(stdout, "%s=%lu ", kArgM, entry.args.m); }
-      if (o == kArgN)        { fprintf(stdout, "%s=%lu ", kArgN, entry.args.n); }
-      if (o == kArgK)        { fprintf(stdout, "%s=%lu ", kArgK, entry.args.k); }
-      if (o == kArgKU)       { fprintf(stdout, "%s=%lu ", kArgKU, entry.args.ku); }
-      if (o == kArgKL)       { fprintf(stdout, "%s=%lu ", kArgKL, entry.args.kl); }
+      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
+      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
+      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
+      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
+      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
       if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
       if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
       if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
       if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
       if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
       if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
-      if (o == kArgXInc)     { fprintf(stdout, "%s=%lu ", kArgXInc, entry.args.x_inc);}
-      if (o == kArgYInc)     { fprintf(stdout, "%s=%lu ", kArgYInc, entry.args.y_inc);}
-      if (o == kArgXOffset)  { fprintf(stdout, "%s=%lu ", kArgXOffset, entry.args.x_offset);}
-      if (o == kArgYOffset)  { fprintf(stdout, "%s=%lu ", kArgYOffset, entry.args.y_offset);}
-      if (o == kArgALeadDim) { fprintf(stdout, "%s=%lu ", kArgALeadDim, entry.args.a_ld);}
-      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%lu ", kArgBLeadDim, entry.args.b_ld);}
-      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%lu ", kArgCLeadDim, entry.args.c_ld);}
-      if (o == kArgAOffset)  { fprintf(stdout, "%s=%lu ", kArgAOffset, entry.args.a_offset);}
-      if (o == kArgBOffset)  { fprintf(stdout, "%s=%lu ", kArgBOffset, entry.args.b_offset);}
-      if (o == kArgCOffset)  { fprintf(stdout, "%s=%lu ", kArgCOffset, entry.args.c_offset);}
-      if (o == kArgAPOffset) { fprintf(stdout, "%s=%lu ", kArgAPOffset, entry.args.ap_offset);}
-      if (o == kArgDotOffset){ fprintf(stdout, "%s=%lu ", kArgDotOffset, entry.args.dot_offset);}
+      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
+      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
+      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
+      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
+      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
+      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
+      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
+      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
+      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
+      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
+      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
+      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
     }
     fprintf(stdout, "\n");
   }
@@ -159,18 +159,18 @@ void Tester<T,U>::TestEnd() {
   // Prints a test summary
   auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
   fprintf(stdout, "   Pass rate %s%5.1lf%%%s:", kPrintMessage.c_str(), pass_rate, kPrintEnd.c_str());
-  fprintf(stdout, " %lu passed /", num_passed_);
+  fprintf(stdout, " %zu passed /", num_passed_);
   if (num_skipped_ != 0) {
-    fprintf(stdout, " %s%lu skipped%s /", kPrintWarning.c_str(), num_skipped_, kPrintEnd.c_str());
+    fprintf(stdout, " %s%zu skipped%s /", kPrintWarning.c_str(), num_skipped_, kPrintEnd.c_str());
   }
   else {
-    fprintf(stdout, " %lu skipped /", num_skipped_);
+    fprintf(stdout, " %zu skipped /", num_skipped_);
   }
   if (num_failed_ != 0) {
-    fprintf(stdout, " %s%lu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
+    fprintf(stdout, " %s%zu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
   }
   else {
-    fprintf(stdout, " %lu failed\n", num_failed_);
+    fprintf(stdout, " %zu failed\n", num_failed_);
   }
 }
 
@@ -280,21 +280,21 @@ bool TestSimilarity(const T val1, const T val2) {
   const auto difference = std::fabs(val1 - val2);
 
   // Set the allowed error margin for floating-point comparisons
-  constexpr auto kErrorMarginRelative = 1.0e-2;
-  constexpr auto kErrorMarginAbsolute = 1.0e-10;
+  constexpr auto kErrorMarginRelative = T{0.025};
+  constexpr auto kErrorMarginAbsolute = T{1.0e-6};
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
   // The values are zero or very small: the relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < static_cast<T>(kErrorMarginAbsolute)) {
-    return (difference < static_cast<T>(kErrorMarginAbsolute));
+  else if (val1 == 0 || val2 == 0 || difference < kErrorMarginAbsolute) {
+    return (difference < kErrorMarginAbsolute);
   }
   // Use relative error
   else {
     const auto absolute_sum = std::fabs(val1) + std::fabs(val2);
-    return (difference / absolute_sum) < static_cast<T>(kErrorMarginRelative);
+    return (difference / absolute_sum) < kErrorMarginRelative;
   }
 }
 

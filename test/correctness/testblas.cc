@@ -35,7 +35,7 @@ TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
                         const Routine run_routine, const Routine run_reference,
                         const ResultGet get_result, const ResultIndex get_index,
                         const ResultIterator get_id1, const ResultIterator get_id2):
-    Tester<T,U>{argc, argv, silent, name, options},
+    Tester<T,U>(argc, argv, silent, name, options),
     run_routine_(run_routine),
     run_reference_(run_reference),
     get_result_(get_result),

@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 #include <algorithm>
 #include <chrono>
 
@@ -48,11 +49,11 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, 512UL); }
-    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, 512UL); }
-    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, 512UL); }
-    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, 128UL); }
-    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, 128UL); }
+    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, size_t{512}); }
+    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, size_t{512}); }
+    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, size_t{512}); }
+    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, size_t{128}); }
+    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, size_t{128}); }
 
     // Data-layouts
     if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
@@ -89,7 +90,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   args.platform_id    = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
   args.device_id      = GetArgument(argc, argv, help, kArgDevice, size_t{0});
   args.precision      = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
-  args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, true);
+  args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, 1);
   args.step           = GetArgument(argc, argv, help, kArgStepSize, size_t{1});
   args.num_steps      = GetArgument(argc, argv, help, kArgNumSteps, size_t{0});
   args.num_runs       = GetArgument(argc, argv, help, kArgNumRuns, size_t{10});
@@ -112,7 +113,7 @@ template <typename T, typename U>
 void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes) {
 
   // Prints the header of the output table
-  PrintTableHeader(args.silent, options_);
+  PrintTableHeader(args);
 
   // Initializes OpenCL and the libraries
   auto platform = Platform(args.platform_id);
@@ -162,11 +163,16 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, dot};
 
     // Runs the routines and collects the timings
+    auto timings = std::vector<std::pair<std::string, double>>();
     auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
-    auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference_, "clBLAS");
+    timings.push_back(std::pair<std::string, double>("CLBlast", ms_clblast));
+    if (args.compare_clblas) {
+      auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference_, "clBLAS");
+      timings.push_back(std::pair<std::string, double>("clBLAS", ms_clblas));
+    }
 
-    // Prints the performance of both libraries
-    PrintTableRow(args, ms_clblast, ms_clblas);
+    // Prints the performance of the tested libraries
+    PrintTableRow(args, timings);
 
     // Makes the jump to the next step
     ++s;
@@ -213,20 +219,27 @@ double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &ar
 
 // Prints the header of the performance table
 template <typename T, typename U>
-void Client<T,U>::PrintTableHeader(const bool silent, const std::vector<std::string> &args) {
-  if (!silent) {
-    for (auto i=size_t{0}; i<args.size(); ++i) { fprintf(stdout, "%9s ", ""); }
-    fprintf(stdout, " | <--       CLBlast       --> | <--      clBLAS      --> |\n");
+void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
+
+  // First line (optional)
+  if (!args.silent) {
+    for (auto i=size_t{0}; i<options_.size(); ++i) { fprintf(stdout, "%9s ", ""); }
+    fprintf(stdout, " | <--       CLBlast       -->");
+    if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
+    fprintf(stdout, " |\n");
   }
-  for (auto &argument: args) { fprintf(stdout, "%9s;", argument.c_str()); }
-  fprintf(stdout, "%9s;%9s;%9s;%9s;%9s;%9s\n",
-          "ms_1", "GFLOPS_1", "GBs_1", "ms_2", "GFLOPS_2", "GBs_2");
+
+  // Second line
+  for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
+  fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
+  if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
+  fprintf(stdout, "\n");
 }
 
 // Print a performance-result row
 template <typename T, typename U>
-void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblast,
-                                const double ms_clblas) {
+void Client<T,U>::PrintTableRow(const Arguments<U>& args,
+                                const std::vector<std::pair<std::string, double>>& timings) {
 
   // Creates a vector of relevant variables
   auto integers = std::vector<size_t>{};
@@ -261,34 +274,36 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args, const double ms_clblas
     else if (o == kArgBeta) {     strings.push_back(ToString(args.beta)); }
   }
 
-  // Computes the GFLOPS and GB/s metrics
-  auto flops = get_flops_(args);
-  auto bytes = get_bytes_(args);
-  auto gflops_clblast = (ms_clblast != 0.0) ? (flops*1e-6)/ms_clblast : 0;
-  auto gflops_clblas = (ms_clblas != 0.0) ? (flops*1e-6)/ms_clblas: 0;
-  auto gbs_clblast = (ms_clblast != 0.0) ? (bytes*1e-6)/ms_clblast : 0;
-  auto gbs_clblas = (ms_clblas != 0.0) ? (bytes*1e-6)/ms_clblas: 0;
-
   // Outputs the argument values
   for (auto &argument: integers) {
     if (!args.no_abbrv && argument >= 1024*1024 && IsMultiple(argument, 1024*1024)) {
-      fprintf(stdout, "%8luM;", argument/(1024*1024));
+      fprintf(stdout, "%8zuM;", argument/(1024*1024));
     }
     else if (!args.no_abbrv && argument >= 1024 && IsMultiple(argument, 1024)) {
-      fprintf(stdout, "%8luK;", argument/1024);
+      fprintf(stdout, "%8zuK;", argument/1024);
     }
     else {
-      fprintf(stdout, "%9lu;", argument);
+      fprintf(stdout, "%9zu;", argument);
     }
   }
   for (auto &argument: strings) {
     fprintf(stdout, "%9s;", argument.c_str());
   }
 
-  // Outputs the performance numbers
-  fprintf(stdout, "%9.2lf;%9.1lf;%9.1lf;%9.2lf;%9.1lf;%9.1lf\n",
-          ms_clblast, gflops_clblast, gbs_clblast,
-          ms_clblas, gflops_clblas, gbs_clblas);
+  // Loops over all tested libraries
+  for (const auto& timing : timings) {
+
+    // Computes the GFLOPS and GB/s metrics
+    auto flops = get_flops_(args);
+    auto bytes = get_bytes_(args);
+    auto gflops = (timing.second != 0.0) ? (flops*1e-6)/timing.second : 0;
+    auto gbs = (timing.second != 0.0) ? (bytes*1e-6)/timing.second : 0;
+
+    // Outputs the performance numbers
+    if (timing.first != "CLBlast") { fprintf(stdout, ";"); }
+    fprintf(stdout, "%9.2lf;%9.1lf;%9.1lf", timing.second, gflops, gbs);
+  }
+  fprintf(stdout, "\n");
 }
 
 // =================================================================================================

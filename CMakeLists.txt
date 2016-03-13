@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 2.8.10)
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 5)
+set(clblast_VERSION_MINOR 6)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -55,16 +55,21 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 # C++ compiler settings
-set(FLAGS "-O3 -std=c++11")
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set(FLAGS "${FLAGS} -Wall -Wno-comment -Wno-return-type -Wno-switch -Wno-missing-noreturn")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
-    set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(FLAGS "/Ox")
+  set(FLAGS "${FLAGS} /wd4715")
+else ()
+  set(FLAGS "-O3 -std=c++11")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(FLAGS "${FLAGS} -Wall -Wno-comment -Wno-return-type -Wno-switch -Wno-missing-noreturn")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
+      set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
+    endif()
+  elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set(FLAGS "${FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
+    set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
+    set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
   endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-  set(FLAGS "${FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
-  set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
-  set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS}")
 
@@ -102,14 +107,15 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy pad transpose padtranspose xaxpy xdot xgemv xgemm)
+set(KERNELS copy pad transpose padtranspose xaxpy xdot xger xgemm xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sgemm)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc)
-set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv)
+set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
+                    xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
-set(PRECISIONS 32 3232 64 6464)
+set(PRECISIONS 32 64 3232 6464)
 
 # ==================================================================================================
 

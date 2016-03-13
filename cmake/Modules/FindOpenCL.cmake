@@ -34,6 +34,7 @@ set(OPENCL_HINTS
 set(OPENCL_PATHS
   /usr/local/cuda
   /opt/cuda
+  /opt/intel/opencl
   /usr
   /usr/local
 )
@@ -52,7 +53,7 @@ mark_as_advanced(OPENCL_INCLUDE_DIRS)
 find_library(OPENCL_LIBRARIES
   NAMES OpenCL
   HINTS ${OPENCL_HINTS}
-  PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32 OpenCL/common/lib/x64
+  PATH_SUFFIXES lib lib64 lib/x86_64 lib/x86_64/sdk lib/x64 lib/x86 lib/Win32 OpenCL/common/lib/x64
   PATHS ${OPENCL_PATHS}
   DOC "OpenCL library"
 )

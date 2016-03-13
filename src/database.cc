@@ -15,6 +15,7 @@
 #include "internal/database/xaxpy.h"
 #include "internal/database/xdot.h"
 #include "internal/database/xgemv.h"
+#include "internal/database/xger.h"
 #include "internal/database/xgemm.h"
 #include "internal/database/copy.h"
 #include "internal/database/pad.h"
@@ -31,11 +32,12 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
   XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
+  XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
-  TraSingle, TraDouble, TraComplexSingle, TraComplexDouble,
-  PadTraSingle, PadTraDouble, PadTraComplexSingle, PadTraComplexDouble
+  TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
+  PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
 };
 
 // =================================================================================================
@@ -77,19 +79,29 @@ Database::Parameters Database::Search(const std::string &this_kernel,
                                       const std::string &this_vendor,
                                       const std::string &this_device,
                                       const Precision this_precision) const {
+  // Set the short vendor name
+  auto this_short_vendor = this_vendor;
+  for (auto &combination : kVendorNames) {
+    if (this_vendor == combination.first) {
+      this_short_vendor = combination.second;
+    }
+  }
+
+  // Selects the right kernel
   for (auto &db: database) {
     if (db.kernel == this_kernel && db.precision == this_precision) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.
       for (auto &vendor: db.vendors) {
-        if ((vendor.name == this_vendor || vendor.name == kDeviceVendorAll) &&
-            (vendor.type == this_type   || vendor.type == kDeviceTypeAll)) {
+        if ((vendor.name == this_short_vendor || vendor.name == kDeviceVendorAll) &&
+            (vendor.type == this_type || vendor.type == kDeviceTypeAll)) {
 
           // Searches for the right device. If the current device is unavailable, selects the vendor
           // default parameters. This assumes the default is last in the database.
           for (auto &device: vendor.devices) {
-            if (device.name == this_device || device.name == kDefaultDevice) {
+
+            if (device.name == this_device || device.name == "default") {
 
               // Sets the parameters accordingly
               return device.parameters;

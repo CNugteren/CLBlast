@@ -45,7 +45,7 @@ mark_as_advanced(CLBLAS_INCLUDE_DIRS)
 find_library(CLBLAS_LIBRARIES
   NAMES clBLAS
   HINTS ${CLBLAS_HINTS}
-  PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32
+  PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32 lib/import lib64/import
   PATHS ${CLBLAS_PATHS}
   DOC "clBLAS library"
 )

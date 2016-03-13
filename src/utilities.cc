@@ -103,7 +103,13 @@ std::string ToString(Precision value) {
 // both the real and imaginary parts.
 template <typename T>
 T ConvertArgument(const char* value) {
-  return static_cast<T>(std::stod(value));
+  return static_cast<T>(std::stoi(value));
+}
+template <> float ConvertArgument(const char* value) {
+  return static_cast<float>(std::stod(value));
+}
+template <> double ConvertArgument(const char* value) {
+  return static_cast<double>(std::stod(value));
 }
 template <> float2 ConvertArgument(const char* value) {
   auto val = static_cast<float>(std::stod(value));
@@ -139,7 +145,6 @@ T GetArgument(const int argc, char *argv[], std::string &help,
 }
 
 // Compiles the above function
-template bool GetArgument<bool>(const int, char **, std::string&, const std::string&, const bool);
 template int GetArgument<int>(const int, char **, std::string&, const std::string&, const int);
 template size_t GetArgument<size_t>(const int, char **, std::string&, const std::string&, const size_t);
 template float GetArgument<float>(const int, char **, std::string&, const std::string&, const float);
@@ -156,9 +161,9 @@ template Precision GetArgument<Precision>(const int, char **, std::string&, cons
 // =================================================================================================
 
 // Returns only the precision argument
-Precision GetPrecision(const int argc, char *argv[]) {
+Precision GetPrecision(const int argc, char *argv[], const Precision default_precision) {
   auto dummy = std::string{};
-  return GetArgument(argc, argv, dummy, kArgPrecision, Precision::kSingle);
+  return GetArgument(argc, argv, dummy, kArgPrecision, default_precision);
 }
 
 // =================================================================================================

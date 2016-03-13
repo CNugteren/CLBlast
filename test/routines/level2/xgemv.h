@@ -35,7 +35,7 @@ class TestXgemv {
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgM, kArgN,
-            kArgLayout, kArgATransp, 
+            kArgLayout, kArgATransp,
             kArgALeadDim, kArgXInc, kArgYInc,
             kArgAOffset, kArgXOffset, kArgYOffset,
             kArgAlpha, kArgBeta};

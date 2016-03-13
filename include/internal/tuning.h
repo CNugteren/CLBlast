@@ -127,9 +127,11 @@ void Tuner(int argc, char* argv[]) {
     {"precision", precision_string}
   };
   for (auto &o: C::GetOptions()) {
-    if (o == kArgM) { metadata.push_back({"arg_m", std::to_string(args.m)}); }
-    if (o == kArgN) { metadata.push_back({"arg_n", std::to_string(args.n)}); }
-    if (o == kArgK) { metadata.push_back({"arg_k", std::to_string(args.k)}); }
+    if (o == kArgM)     { metadata.push_back({"arg_m", std::to_string(args.m)}); }
+    if (o == kArgN)     { metadata.push_back({"arg_n", std::to_string(args.n)}); }
+    if (o == kArgK)     { metadata.push_back({"arg_k", std::to_string(args.k)}); }
+    if (o == kArgAlpha) { metadata.push_back({"arg_alpha", ToString(args.alpha)}); }
+    if (o == kArgBeta)  { metadata.push_back({"arg_beta", ToString(args.beta)}); }
   }
   tuner.PrintJSON("clblast_"+C::KernelFamily()+"_"+precision_string+".json", metadata);
 }

@@ -5,9 +5,9 @@
 // width of 100 characters per line.
 //
 // Author(s):
-//   Cedric Nugteren <www.cedricnugteren.nl>
+//   Database generator <database.py>
 //
-// This file populates the database with best-found tuning parameters for the Copy kernels.
+// This file populates the database with best-found tuning parameters for the 'Copy' kernels.
 //
 // =================================================================================================
 
@@ -16,54 +16,56 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::CopySingle = {
   "Copy", Precision::kSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-        { "Tesla K20m",       { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_WPT",2}, {"COPY_VW",4} } },
-        { "Tesla K40m",       { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_WPT",4}, {"COPY_VW",4} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "Tahiti",                                          { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",4}, {"COPY_VW",2} } },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",4} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",4} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",2} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
       }
     },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",4} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
       }
     },
-    { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
       }
     },
-  }
-};
-
-// =================================================================================================
-
-const Database::DatabaseEntry Database::CopyDouble = {
-  "Copy", Precision::kDouble, {
     { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-        { "Tesla K40m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",2} } },
-      }
-    },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",2}, {"COPY_VW",4} } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "GeForce GTX 680",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",4} } },
+        { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+        { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }
@@ -73,26 +75,100 @@ const Database::DatabaseEntry Database::CopyDouble = {
 
 const Database::DatabaseEntry Database::CopyComplexSingle = {
   "Copy", Precision::kComplexSingle, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",2}, {"COPY_VW",1} } },
-        { "Tesla K40m",       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tahiti",                                          { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
-    { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
     { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
-        { "Iris",             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeGPU, "Intel", {
+        { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",4} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",4} } },
+        { "Tesla K40m",                                      { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
+const Database::DatabaseEntry Database::CopyDouble = {
+  "Copy", Precision::kDouble, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tahiti",                                          { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+      }
+    },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",2} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 680",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }
@@ -102,25 +178,49 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
 
 const Database::DatabaseEntry Database::CopyComplexDouble = {
   "Copy", Precision::kComplexDouble, {
-    { // NVIDIA GPUs
-      kDeviceTypeGPU, kDeviceVendorNVIDIA, {
-        { "GeForce GTX 480",  { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K20m",       { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-        { "Tesla K40m",       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
-      }
-    },
     { // AMD GPUs
-      kDeviceTypeGPU, kDeviceVendorAMD, {
-        { "Tahiti",           { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_WPT",4}, {"COPY_VW",2} } },
+      kDeviceTypeGPU, "AMD", {
+        { "AMD Radeon R9 M370X Compute Engine",              { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tahiti",                                          { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
-    { // Intel GPUs
-      kDeviceTypeGPU, kDeviceVendorIntel, {
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "Mali-T628",                                       { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+      }
+    },
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+      }
+    },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "Intel(R) Many Integrated Core Acceleration Card", { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 480",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 680",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 980",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
-      kDeviceTypeAll, kDeviceVendorAll, {
-        { kDefaultDevice,     { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_WPT",1}, {"COPY_VW",1} } },
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }

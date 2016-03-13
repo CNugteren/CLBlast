@@ -125,7 +125,7 @@ struct Arguments {
   // Tuner-specific arguments
   double fraction = 1.0;
   // Client-specific arguments
-  bool compare_clblas = 1;
+  int compare_clblas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
@@ -171,7 +171,8 @@ T GetArgument(const int argc, char *argv[], std::string &help,
               const std::string &option, const T default_value);
 
 // Returns the precision only
-Precision GetPrecision(const int argc, char *argv[]);
+Precision GetPrecision(const int argc, char *argv[],
+                       const Precision default_precision = Precision::kSingle);
 
 // As in "GetArgument", but now only checks whether an argument is given or not
 bool CheckArgument(const int argc, char *argv[], std::string &help, const std::string &option);
