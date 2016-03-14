@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "internal/utilities.h"
 #include "internal/database.h"
@@ -46,8 +47,9 @@ class Routine {
     }
   };
 
-  // The actual cache, implemented as a vector of the above data-type
+  // The actual cache, implemented as a vector of the above data-type, and its mutex
   static std::vector<ProgramCache> program_cache_;
+  static std::mutex program_cache_mutex_;
 
   // Helper functions which check for errors in the status code
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }

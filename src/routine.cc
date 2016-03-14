@@ -11,14 +11,18 @@
 //
 // =================================================================================================
 
+#include <string>
+#include <vector>
+#include <mutex>
+
 #include "internal/routine.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The cache of compiled OpenCL programs
-template <typename T>
-std::vector<typename Routine<T>::ProgramCache> Routine<T>::program_cache_;
+// The cache of compiled OpenCL programs and its mutex for thread safety
+template <typename T> std::vector<typename Routine<T>::ProgramCache> Routine<T>::program_cache_;
+template <typename T> std::mutex Routine<T>::program_cache_mutex_;
 
 // Constructor: not much here, because no status codes can be returned
 template <typename T>
@@ -97,8 +101,10 @@ StatusCode Routine<T>::SetUp() {
       }
       if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
 
-      // Store the compiled program in the cache
+      // Store the compiled program in the cache (atomic for thread-safety)
+      program_cache_mutex_.lock();
       program_cache_.push_back({program, device_name_, precision_, routine_name_});
+      program_cache_mutex_.unlock();
     } catch (...) { return StatusCode::kBuildProgramFailure; }
   }
 
@@ -367,20 +373,28 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(const size_t src_one, const size_t
 // otherwise.
 template <typename T>
 const Program& Routine<T>::GetProgramFromCache() const {
+  program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
     if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) {
+      program_cache_mutex_.unlock();
       return cached_program.program;
     }
   }
+  program_cache_mutex_.unlock();
   throw std::runtime_error("Internal CLBlast error: Expected program in cache, but found none.");
 }
 
 // Queries the cache to see whether or not the compiled kernel is already there
 template <typename T>
 bool Routine<T>::ProgramIsInCache() const {
+  program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) { return true; }
+    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) {
+      program_cache_mutex_.unlock();
+      return true;
+    }
   }
+  program_cache_mutex_.unlock();
   return false;
 }
 
