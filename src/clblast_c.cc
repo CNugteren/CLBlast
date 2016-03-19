@@ -17,6 +17,7 @@ extern "C" {
   #include "clblast_c.h"
 }
 #include "clblast.h"
+#include "internal/public_api.h"
 #include "internal/utilities.h"
 
 // Shortcuts to the clblast namespace
@@ -28,40 +29,40 @@ using double2 = clblast::double2;
 // =================================================================================================
 
 // SWAP
-StatusCode CLBlastSswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Swap<float>(n,
                                      x_buffer, x_offset, x_inc,
                                      y_buffer, y_offset, y_inc,
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Swap<double>(n,
                                       x_buffer, x_offset, x_inc,
                                       y_buffer, y_offset, y_inc,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Swap<float2>(n,
                                       x_buffer, x_offset, x_inc,
                                       y_buffer, y_offset, y_inc,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Swap<double2>(n,
                                        x_buffer, x_offset, x_inc,
                                        y_buffer, y_offset, y_inc,
@@ -70,40 +71,40 @@ StatusCode CLBlastZswap(const size_t n,
 }
 
 // SCAL
-StatusCode CLBlastSscal(const size_t n,
-                        const float alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSscal(const size_t n,
+                                   const float alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Scal(n,
                               alpha,
                               x_buffer, x_offset, x_inc,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDscal(const size_t n,
-                        const double alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDscal(const size_t n,
+                                   const double alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Scal(n,
                               alpha,
                               x_buffer, x_offset, x_inc,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCscal(const size_t n,
-                        const cl_float2 alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCscal(const size_t n,
+                                   const cl_float2 alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Scal(n,
                               float2{alpha.s[0], alpha.s[1]},
                               x_buffer, x_offset, x_inc,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZscal(const size_t n,
-                        const cl_double2 alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZscal(const size_t n,
+                                   const cl_double2 alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Scal(n,
                               double2{alpha.s[0], alpha.s[1]},
                               x_buffer, x_offset, x_inc,
@@ -112,40 +113,40 @@ StatusCode CLBlastZscal(const size_t n,
 }
 
 // COPY
-StatusCode CLBlastScopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastScopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Copy<float>(n,
                                      x_buffer, x_offset, x_inc,
                                      y_buffer, y_offset, y_inc,
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDcopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Copy<double>(n,
                                       x_buffer, x_offset, x_inc,
                                       y_buffer, y_offset, y_inc,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCcopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Copy<float2>(n,
                                       x_buffer, x_offset, x_inc,
                                       y_buffer, y_offset, y_inc,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZcopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Copy<double2>(n,
                                        x_buffer, x_offset, x_inc,
                                        y_buffer, y_offset, y_inc,
@@ -154,11 +155,11 @@ StatusCode CLBlastZcopy(const size_t n,
 }
 
 // AXPY
-StatusCode CLBlastSaxpy(const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSaxpy(const size_t n,
+                                   const float alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Axpy(n,
                               alpha,
                               x_buffer, x_offset, x_inc,
@@ -166,11 +167,11 @@ StatusCode CLBlastSaxpy(const size_t n,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDaxpy(const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDaxpy(const size_t n,
+                                   const double alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Axpy(n,
                               alpha,
                               x_buffer, x_offset, x_inc,
@@ -178,11 +179,11 @@ StatusCode CLBlastDaxpy(const size_t n,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCaxpy(const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCaxpy(const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Axpy(n,
                               float2{alpha.s[0], alpha.s[1]},
                               x_buffer, x_offset, x_inc,
@@ -190,11 +191,11 @@ StatusCode CLBlastCaxpy(const size_t n,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZaxpy(const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZaxpy(const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Axpy(n,
                               double2{alpha.s[0], alpha.s[1]},
                               x_buffer, x_offset, x_inc,
@@ -204,11 +205,11 @@ StatusCode CLBlastZaxpy(const size_t n,
 }
 
 // DOT
-StatusCode CLBlastSdot(const size_t n,
-                       cl_mem dot_buffer, const size_t dot_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSdot(const size_t n,
+                                  cl_mem dot_buffer, const size_t dot_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dot<float>(n,
                                     dot_buffer, dot_offset,
                                     x_buffer, x_offset, x_inc,
@@ -216,11 +217,11 @@ StatusCode CLBlastSdot(const size_t n,
                                     queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDdot(const size_t n,
-                       cl_mem dot_buffer, const size_t dot_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDdot(const size_t n,
+                                  cl_mem dot_buffer, const size_t dot_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dot<double>(n,
                                      dot_buffer, dot_offset,
                                      x_buffer, x_offset, x_inc,
@@ -230,11 +231,11 @@ StatusCode CLBlastDdot(const size_t n,
 }
 
 // DOTU
-StatusCode CLBlastCdotu(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCdotu(const size_t n,
+                                   cl_mem dot_buffer, const size_t dot_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dotu<float2>(n,
                                       dot_buffer, dot_offset,
                                       x_buffer, x_offset, x_inc,
@@ -242,11 +243,11 @@ StatusCode CLBlastCdotu(const size_t n,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZdotu(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZdotu(const size_t n,
+                                   cl_mem dot_buffer, const size_t dot_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dotu<double2>(n,
                                        dot_buffer, dot_offset,
                                        x_buffer, x_offset, x_inc,
@@ -256,11 +257,11 @@ StatusCode CLBlastZdotu(const size_t n,
 }
 
 // DOTC
-StatusCode CLBlastCdotc(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCdotc(const size_t n,
+                                   cl_mem dot_buffer, const size_t dot_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dotc<float2>(n,
                                       dot_buffer, dot_offset,
                                       x_buffer, x_offset, x_inc,
@@ -268,11 +269,11 @@ StatusCode CLBlastCdotc(const size_t n,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZdotc(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZdotc(const size_t n,
+                                   cl_mem dot_buffer, const size_t dot_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Dotc<double2>(n,
                                        dot_buffer, dot_offset,
                                        x_buffer, x_offset, x_inc,
@@ -286,14 +287,14 @@ StatusCode CLBlastZdotc(const size_t n,
 // =================================================================================================
 
 // GEMV
-StatusCode CLBlastSgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSgemv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const float beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n,
@@ -305,14 +306,14 @@ StatusCode CLBlastSgemv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDgemv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const double beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n,
@@ -324,14 +325,14 @@ StatusCode CLBlastDgemv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCgemv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_float2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n,
@@ -343,14 +344,14 @@ StatusCode CLBlastCgemv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZgemv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n,
@@ -364,14 +365,14 @@ StatusCode CLBlastZgemv(const Layout layout, const Transpose a_transpose,
 }
 
 // GBMV
-StatusCode CLBlastSgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSgbmv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n, const size_t kl, const size_t ku,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const float beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n, kl, ku,
@@ -383,14 +384,14 @@ StatusCode CLBlastSgbmv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDgbmv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n, const size_t kl, const size_t ku,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const double beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n, kl, ku,
@@ -402,14 +403,14 @@ StatusCode CLBlastDgbmv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCgbmv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n, const size_t kl, const size_t ku,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_float2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n, kl, ku,
@@ -421,14 +422,14 @@ StatusCode CLBlastCgbmv(const Layout layout, const Transpose a_transpose,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZgbmv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n, const size_t kl, const size_t ku,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               m, n, kl, ku,
@@ -442,14 +443,14 @@ StatusCode CLBlastZgbmv(const Layout layout, const Transpose a_transpose,
 }
 
 // HEMV
-StatusCode CLBlastChemv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChemv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_float2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -461,14 +462,14 @@ StatusCode CLBlastChemv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhemv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhemv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hemv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -482,14 +483,14 @@ StatusCode CLBlastZhemv(const Layout layout, const Triangle triangle,
 }
 
 // HBMV
-StatusCode CLBlastChbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChbmv(const Layout layout, const Triangle triangle,
+                                   const size_t n, const size_t k,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_float2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n, k,
@@ -501,14 +502,14 @@ StatusCode CLBlastChbmv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhbmv(const Layout layout, const Triangle triangle,
+                                   const size_t n, const size_t k,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n, k,
@@ -522,14 +523,14 @@ StatusCode CLBlastZhbmv(const Layout layout, const Triangle triangle,
 }
 
 // HPMV
-StatusCode CLBlastChpmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChpmv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_float2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -541,14 +542,14 @@ StatusCode CLBlastChpmv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhpmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhpmv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -562,14 +563,14 @@ StatusCode CLBlastZhpmv(const Layout layout, const Triangle triangle,
 }
 
 // SYMV
-StatusCode CLBlastSsymv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsymv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const float beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -581,14 +582,14 @@ StatusCode CLBlastSsymv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsymv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsymv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const double beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -602,14 +603,14 @@ StatusCode CLBlastDsymv(const Layout layout, const Triangle triangle,
 }
 
 // SBMV
-StatusCode CLBlastSsbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsbmv(const Layout layout, const Triangle triangle,
+                                   const size_t n, const size_t k,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const float beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n, k,
@@ -621,14 +622,14 @@ StatusCode CLBlastSsbmv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsbmv(const Layout layout, const Triangle triangle,
+                                   const size_t n, const size_t k,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const double beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sbmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n, k,
@@ -642,14 +643,14 @@ StatusCode CLBlastDsbmv(const Layout layout, const Triangle triangle,
 }
 
 // SPMV
-StatusCode CLBlastSspmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSspmv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const float alpha,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const float beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -661,14 +662,14 @@ StatusCode CLBlastSspmv(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDspmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDspmv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const double alpha,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const double beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spmv(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -682,11 +683,11 @@ StatusCode CLBlastDspmv(const Layout layout, const Triangle triangle,
 }
 
 // TRMV
-StatusCode CLBlastStrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -697,11 +698,11 @@ StatusCode CLBlastStrmv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -712,11 +713,11 @@ StatusCode CLBlastDtrmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -727,11 +728,11 @@ StatusCode CLBlastCtrmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -744,11 +745,11 @@ StatusCode CLBlastZtrmv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // TBMV
-StatusCode CLBlastStbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbmv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -759,11 +760,11 @@ StatusCode CLBlastStbmv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbmv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -774,11 +775,11 @@ StatusCode CLBlastDtbmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -789,11 +790,11 @@ StatusCode CLBlastCtbmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbmv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -806,11 +807,11 @@ StatusCode CLBlastZtbmv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // TPMV
-StatusCode CLBlastStpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpmv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -821,11 +822,11 @@ StatusCode CLBlastStpmv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpmv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -836,11 +837,11 @@ StatusCode CLBlastDtpmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -851,11 +852,11 @@ StatusCode CLBlastCtpmv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpmv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -868,11 +869,11 @@ StatusCode CLBlastZtpmv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // TRSV
-StatusCode CLBlastStrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -883,11 +884,11 @@ StatusCode CLBlastStrsv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -898,11 +899,11 @@ StatusCode CLBlastDtrsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -913,11 +914,11 @@ StatusCode CLBlastCtrsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -930,11 +931,11 @@ StatusCode CLBlastZtrsv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // TBSV
-StatusCode CLBlastStbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbsv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -945,11 +946,11 @@ StatusCode CLBlastStbsv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbsv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -960,11 +961,11 @@ StatusCode CLBlastDtbsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -975,11 +976,11 @@ StatusCode CLBlastCtbsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tbsv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -992,11 +993,11 @@ StatusCode CLBlastZtbsv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // TPSV
-StatusCode CLBlastStpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpsv<float>(static_cast<clblast::Layout>(layout),
                                      static_cast<clblast::Triangle>(triangle),
                                      static_cast<clblast::Transpose>(a_transpose),
@@ -1007,11 +1008,11 @@ StatusCode CLBlastStpsv(const Layout layout, const Triangle triangle, const Tran
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpsv<double>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -1022,11 +1023,11 @@ StatusCode CLBlastDtpsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout),
                                       static_cast<clblast::Triangle>(triangle),
                                       static_cast<clblast::Transpose>(a_transpose),
@@ -1037,11 +1038,11 @@ StatusCode CLBlastCtpsv(const Layout layout, const Triangle triangle, const Tran
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Tpsv<double2>(static_cast<clblast::Layout>(layout),
                                        static_cast<clblast::Triangle>(triangle),
                                        static_cast<clblast::Transpose>(a_transpose),
@@ -1054,13 +1055,13 @@ StatusCode CLBlastZtpsv(const Layout layout, const Triangle triangle, const Tran
 }
 
 // GER
-StatusCode CLBlastSger(const Layout layout,
-                       const size_t m, const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSger(const Layout layout,
+                                  const size_t m, const size_t n,
+                                  const float alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Ger(static_cast<clblast::Layout>(layout),
                              m, n,
                              alpha,
@@ -1070,13 +1071,13 @@ StatusCode CLBlastSger(const Layout layout,
                              queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDger(const Layout layout,
-                       const size_t m, const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDger(const Layout layout,
+                                  const size_t m, const size_t n,
+                                  const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Ger(static_cast<clblast::Layout>(layout),
                              m, n,
                              alpha,
@@ -1088,13 +1089,13 @@ StatusCode CLBlastDger(const Layout layout,
 }
 
 // GERU
-StatusCode CLBlastCgeru(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCgeru(const Layout layout,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Geru(static_cast<clblast::Layout>(layout),
                               m, n,
                               float2{alpha.s[0], alpha.s[1]},
@@ -1104,13 +1105,13 @@ StatusCode CLBlastCgeru(const Layout layout,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZgeru(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZgeru(const Layout layout,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Geru(static_cast<clblast::Layout>(layout),
                               m, n,
                               double2{alpha.s[0], alpha.s[1]},
@@ -1122,13 +1123,13 @@ StatusCode CLBlastZgeru(const Layout layout,
 }
 
 // GERC
-StatusCode CLBlastCgerc(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCgerc(const Layout layout,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gerc(static_cast<clblast::Layout>(layout),
                               m, n,
                               float2{alpha.s[0], alpha.s[1]},
@@ -1138,13 +1139,13 @@ StatusCode CLBlastCgerc(const Layout layout,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZgerc(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZgerc(const Layout layout,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gerc(static_cast<clblast::Layout>(layout),
                               m, n,
                               double2{alpha.s[0], alpha.s[1]},
@@ -1156,12 +1157,12 @@ StatusCode CLBlastZgerc(const Layout layout,
 }
 
 // HER
-StatusCode CLBlastCher(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCher(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const float alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1171,12 +1172,12 @@ StatusCode CLBlastCher(const Layout layout, const Triangle triangle,
                              queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZher(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZher(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1188,12 +1189,12 @@ StatusCode CLBlastZher(const Layout layout, const Triangle triangle,
 }
 
 // HPR
-StatusCode CLBlastChpr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChpr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const float alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1203,12 +1204,12 @@ StatusCode CLBlastChpr(const Layout layout, const Triangle triangle,
                              queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhpr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhpr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1220,13 +1221,13 @@ StatusCode CLBlastZhpr(const Layout layout, const Triangle triangle,
 }
 
 // HER2
-StatusCode CLBlastCher2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCher2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1237,13 +1238,13 @@ StatusCode CLBlastCher2(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZher2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZher2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1256,13 +1257,13 @@ StatusCode CLBlastZher2(const Layout layout, const Triangle triangle,
 }
 
 // HPR2
-StatusCode CLBlastChpr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChpr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1273,13 +1274,13 @@ StatusCode CLBlastChpr2(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhpr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhpr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hpr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1292,12 +1293,12 @@ StatusCode CLBlastZhpr2(const Layout layout, const Triangle triangle,
 }
 
 // SYR
-StatusCode CLBlastSsyr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsyr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const float alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1307,12 +1308,12 @@ StatusCode CLBlastSsyr(const Layout layout, const Triangle triangle,
                              queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsyr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsyr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1324,12 +1325,12 @@ StatusCode CLBlastDsyr(const Layout layout, const Triangle triangle,
 }
 
 // SPR
-StatusCode CLBlastSspr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSspr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const float alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1339,12 +1340,12 @@ StatusCode CLBlastSspr(const Layout layout, const Triangle triangle,
                              queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDspr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDspr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spr(static_cast<clblast::Layout>(layout),
                              static_cast<clblast::Triangle>(triangle),
                              n,
@@ -1356,13 +1357,13 @@ StatusCode CLBlastDspr(const Layout layout, const Triangle triangle,
 }
 
 // SYR2
-StatusCode CLBlastSsyr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsyr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const float alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1373,13 +1374,13 @@ StatusCode CLBlastSsyr2(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsyr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsyr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const double alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1392,13 +1393,13 @@ StatusCode CLBlastDsyr2(const Layout layout, const Triangle triangle,
 }
 
 // SPR2
-StatusCode CLBlastSspr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSspr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const float alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1409,13 +1410,13 @@ StatusCode CLBlastSspr2(const Layout layout, const Triangle triangle,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDspr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDspr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const double alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Spr2(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               n,
@@ -1432,14 +1433,14 @@ StatusCode CLBlastDspr2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // GEMM
-StatusCode CLBlastSgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const float beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               static_cast<clblast::Transpose>(b_transpose),
@@ -1452,14 +1453,14 @@ StatusCode CLBlastSgemm(const Layout layout, const Transpose a_transpose, const 
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const double beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               static_cast<clblast::Transpose>(b_transpose),
@@ -1472,14 +1473,14 @@ StatusCode CLBlastDgemm(const Layout layout, const Transpose a_transpose, const 
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_float2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               static_cast<clblast::Transpose>(b_transpose),
@@ -1492,14 +1493,14 @@ StatusCode CLBlastCgemm(const Layout layout, const Transpose a_transpose, const 
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_double2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Transpose>(a_transpose),
                               static_cast<clblast::Transpose>(b_transpose),
@@ -1514,14 +1515,14 @@ StatusCode CLBlastZgemm(const Layout layout, const Transpose a_transpose, const 
 }
 
 // SYMM
-StatusCode CLBlastSsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const float beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1534,14 +1535,14 @@ StatusCode CLBlastSsymm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const double beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1554,14 +1555,14 @@ StatusCode CLBlastDsymm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_float2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1574,14 +1575,14 @@ StatusCode CLBlastCsymm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_double2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1596,14 +1597,14 @@ StatusCode CLBlastZsymm(const Layout layout, const Side side, const Triangle tri
 }
 
 // HEMM
-StatusCode CLBlastChemm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastChemm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_float2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1616,14 +1617,14 @@ StatusCode CLBlastChemm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZhemm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZhemm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_double2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Hemm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1638,13 +1639,13 @@ StatusCode CLBlastZhemm(const Layout layout, const Side side, const Triangle tri
 }
 
 // SYRK
-StatusCode CLBlastSsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const float beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1656,13 +1657,13 @@ StatusCode CLBlastSsyrk(const Layout layout, const Triangle triangle, const Tran
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const double beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1674,13 +1675,13 @@ StatusCode CLBlastDsyrk(const Layout layout, const Triangle triangle, const Tran
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_float2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1692,13 +1693,13 @@ StatusCode CLBlastCsyrk(const Layout layout, const Triangle triangle, const Tran
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_double2 beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1712,13 +1713,13 @@ StatusCode CLBlastZsyrk(const Layout layout, const Triangle triangle, const Tran
 }
 
 // HERK
-StatusCode CLBlastCherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const float beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Herk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1730,13 +1731,13 @@ StatusCode CLBlastCherk(const Layout layout, const Triangle triangle, const Tran
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const double beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Herk(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Triangle>(triangle),
                               static_cast<clblast::Transpose>(a_transpose),
@@ -1750,14 +1751,14 @@ StatusCode CLBlastZherk(const Layout layout, const Triangle triangle, const Tran
 }
 
 // SYR2K
-StatusCode CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const float alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const float beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const float alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const float beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1770,14 +1771,14 @@ StatusCode CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Tra
                                queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const double alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const double beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const double alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const double beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1790,14 +1791,14 @@ StatusCode CLBlastDsyr2k(const Layout layout, const Triangle triangle, const Tra
                                queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_float2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const cl_float2 beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_float2 alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const cl_float2 beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1810,14 +1811,14 @@ StatusCode CLBlastCsyr2k(const Layout layout, const Triangle triangle, const Tra
                                queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_double2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const cl_double2 beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_double2 alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const cl_double2 beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1832,14 +1833,14 @@ StatusCode CLBlastZsyr2k(const Layout layout, const Triangle triangle, const Tra
 }
 
 // HER2K
-StatusCode CLBlastCher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_float2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const float beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_float2 alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const float beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1852,14 +1853,14 @@ StatusCode CLBlastCher2k(const Layout layout, const Triangle triangle, const Tra
                                queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_double2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const double beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_double2 alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const double beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Her2k(static_cast<clblast::Layout>(layout),
                                static_cast<clblast::Triangle>(triangle),
                                static_cast<clblast::Transpose>(ab_transpose),
@@ -1874,12 +1875,12 @@ StatusCode CLBlastZher2k(const Layout layout, const Triangle triangle, const Tra
 }
 
 // TRMM
-StatusCode CLBlastStrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1892,12 +1893,12 @@ StatusCode CLBlastStrmm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1910,12 +1911,12 @@ StatusCode CLBlastDtrmm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1928,12 +1929,12 @@ StatusCode CLBlastCtrmm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1948,12 +1949,12 @@ StatusCode CLBlastZtrmm(const Layout layout, const Side side, const Triangle tri
 }
 
 // TRSM
-StatusCode CLBlastStrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastStrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1966,12 +1967,12 @@ StatusCode CLBlastStrsm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastDtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastDtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -1984,12 +1985,12 @@ StatusCode CLBlastDtrsm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastCtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastCtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),
@@ -2002,12 +2003,12 @@ StatusCode CLBlastCtrsm(const Layout layout, const Side side, const Triangle tri
                               queue, event);
   return static_cast<StatusCode>(status);
 }
-StatusCode CLBlastZtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
+StatusCode PUBLIC_API CLBlastZtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
                               static_cast<clblast::Side>(side),
                               static_cast<clblast::Triangle>(triangle),

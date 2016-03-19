@@ -326,9 +326,9 @@ class Routine():
 		return result
 
 	# As above, but now for C
-	def RoutineHeaderC(self, flavour, spaces):
+	def RoutineHeaderC(self, flavour, spaces, extra_qualifier):
 		indent = " "*(spaces + self.Length())
-		result = "StatusCode CLBlast"+flavour.name+self.name+"("
+		result = "StatusCode"+extra_qualifier+" CLBlast"+flavour.name+self.name+"("
 		result += (",\n"+indent).join([a for a in self.ArgumentsDef(flavour)])
 		result += ",\n"+indent+"cl_command_queue* queue, cl_event* event)"
 		return result
