@@ -22,7 +22,7 @@
 
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://www.khronos.org/registry/cl/api/1.1/cl.hpp
-#include <cl.hpp>
+#include <CL/cl.hpp>
 
 // Includes the CLBlast library
 #include <clblast.h>

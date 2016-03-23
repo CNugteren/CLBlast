@@ -73,6 +73,14 @@ else ()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS}")
 
+# C compiler settings (for the sample)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(CFLAGS "/Ox")
+else ()
+  set(CFLAGS "-O3 -std=c99")
+endif()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
+
 # ==================================================================================================
 
 # Package scripts location
