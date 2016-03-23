@@ -189,7 +189,7 @@ def clblast_c_h(routines):
 	for routine in routines:
 		result += "\n// "+routine.description+": "+routine.ShortNames()+"\n"
 		for flavour in routine.flavours:
-			result += routine.RoutineHeaderC(flavour, 20, "")+";\n"
+			result += routine.RoutineHeaderC(flavour, 31, " PUBLIC_API")+";\n"
 	return result
 
 # The C API implementation (.cc)
@@ -200,7 +200,7 @@ def clblast_c_cc(routines):
 		for flavour in routine.flavours:
 			template = "<"+flavour.template+">" if routine.NoScalars() else ""
 			indent = " "*(26 + routine.Length() + len(template))
-			result += routine.RoutineHeaderC(flavour, 31, " PUBLIC_API")+" {\n"
+			result += routine.RoutineHeaderC(flavour, 20, "")+" {\n"
 			result += "  auto status = clblast::"+routine.name.capitalize()+template+"("
 			result += (",\n"+indent).join([a for a in routine.ArgumentsCast(flavour, indent)])
 			result += ",\n"+indent+"queue, event);"
@@ -247,7 +247,7 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 64, 80, 25, 22]
+header_lines = [84, 64, 88, 24, 22]
 footer_lines = [6, 3, 5, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

@@ -8,6 +8,8 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file provides macro's to define the public API. This is needed when building a Windows DLL.
+// Note: this is only used for the C++ interface, the C interface has its own definition included in
+// the header file itself.
 //
 // =================================================================================================
 

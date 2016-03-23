@@ -1,5 +1,6 @@
 
 Development version (next release)
+- Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
 - Made the library thread-safe
 
 Version 0.6.0
