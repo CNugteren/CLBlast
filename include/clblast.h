@@ -140,7 +140,7 @@ StatusCode Dotc(const size_t n,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event);
 
-// Euclidian norm of a vector: SNRM2/DNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
 template <typename T>
 StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,

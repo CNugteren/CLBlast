@@ -285,7 +285,7 @@ template StatusCode PUBLIC_API Dotc<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Euclidian norm of a vector: SNRM2/DNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
 template <typename T>
 StatusCode Nrm2(const size_t,
                 cl_mem, const size_t,
@@ -301,6 +301,14 @@ template StatusCode PUBLIC_API Nrm2<double>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
+                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

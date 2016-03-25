@@ -22,7 +22,8 @@ D2CL = "cl_double2"
 
 # Structure holding data-type and precision information
 class DataType():
-	def __init__(self, name, template, scalars, buffertype):
+	def __init__(self, precision_name, name, template, scalars, buffertype):
+		self.precision_name = precision_name
 		self.name = name
 		self.template = template
 		self.alpha_cpp = scalars[0]

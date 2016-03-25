@@ -31,21 +31,23 @@ from datatype import DataType, FLT, DBL, FLT2, DBL2, F2CL, D2CL
 # ==================================================================================================
 
 # Regular data-types
-S = DataType("S", FLT,  [FLT,  FLT,  FLT,  FLT],  FLT ) # single (32)
-D = DataType("D", DBL,  [DBL,  DBL,  DBL,  DBL],  DBL ) # double (64)
-C = DataType("C", FLT2, [FLT2, FLT2, F2CL, F2CL], FLT2) # single-complex (3232)
-Z = DataType("Z", DBL2, [DBL2, DBL2, D2CL, D2CL], DBL2) # double-complex (6464)
+S = DataType("S", "S", FLT,  [FLT,  FLT,  FLT,  FLT],  FLT ) # single (32)
+D = DataType("D", "D", DBL,  [DBL,  DBL,  DBL,  DBL],  DBL ) # double (64)
+C = DataType("C", "C", FLT2, [FLT2, FLT2, F2CL, F2CL], FLT2) # single-complex (3232)
+Z = DataType("Z", "Z", DBL2, [DBL2, DBL2, D2CL, D2CL], DBL2) # double-complex (6464)
 
 # Special cases
-Css = DataType("C", FLT,          [FLT,  FLT,  FLT,  FLT], FLT2) # As C, but with constants from S
-Zdd = DataType("Z", DBL,          [DBL,  DBL,  DBL,  DBL], DBL2) # As Z, but with constants from D
-Ccs = DataType("C", FLT2+","+FLT, [FLT2, FLT,  F2CL, FLT], FLT2) # As C, but with one constant from S
-Zzd = DataType("Z", DBL2+","+DBL, [DBL2, DBL,  D2CL, DBL], DBL2) # As Z, but with one constant from D
+Sc = DataType("C", "Sc", FLT2,         [FLT2, FLT2, FLT2, FLT2], FLT2) # As C, but with real output
+Dz = DataType("Z", "Dz", DBL2,         [DBL2, DBL2, DBL2, DBL2], DBL2) # As Z, but with real output
+Css = DataType("C", "C", FLT,          [FLT,  FLT,  FLT,  FLT], FLT2) # As C, but with constants from S
+Zdd = DataType("Z", "Z", DBL,          [DBL,  DBL,  DBL,  DBL], DBL2) # As Z, but with constants from D
+Ccs = DataType("C", "C", FLT2+","+FLT, [FLT2, FLT,  F2CL, FLT], FLT2) # As C, but with one constant from S
+Zzd = DataType("Z", "Z", DBL2+","+DBL, [DBL2, DBL,  D2CL, DBL], DBL2) # As Z, but with one constant from D
 
 # C++ template data-types
-T = DataType("typename T", "T", ["T", "T", "T", "T"], "T") # regular routine
-Tc = DataType("typename T", "std::complex<T>,T", ["T", "T", "T", "T"], "std::complex<T>") # for herk
-TU = DataType("typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") # for her2k
+T = DataType("T", "typename T", "T", ["T", "T", "T", "T"], "T") # regular routine
+Tc = DataType("Tc", "typename T", "std::complex<T>,T", ["T", "T", "T", "T"], "std::complex<T>") # for herk
+TU = DataType("TU", "typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") # for her2k
 
 # ==================================================================================================
 
@@ -61,7 +63,7 @@ routines = [
   Routine(True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two vectors"),
   Routine(True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two complex vectors"),
   Routine(True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two complex vectors, one conjugated"),
-  Routine(False, "1", "nrm2",  T,  [S,D],     ["n"], [], ["x"], ["nrm2"], [], True, "Euclidian norm of a vector"),
+  Routine(False, "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], True, "Euclidian norm of a vector"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], False, "General matrix-vector multiplication"),
@@ -332,7 +334,7 @@ for level in [1,2,3]:
 				body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"
 				found = False
 				for flavour in routine.flavours:
-					if flavour.name == precision:
+					if flavour.precision_name == precision:
 						body += "\n      clblast::RunClient<clblast::TestX"+routine.name+flavour.TestTemplate()
 						body += ">(argc, argv); break;\n"
 						found = True
