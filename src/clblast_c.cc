@@ -279,6 +279,28 @@ StatusCode CLBlastZdotc(const size_t n,
   return static_cast<StatusCode>(status);
 }
 
+// NRM2
+StatusCode CLBlastSnrm2(const size_t n,
+                        cl_mem nrm2_buffer, const size_t nrm2_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Nrm2<float>(n,
+                                     nrm2_buffer, nrm2_offset,
+                                     x_buffer, x_offset, x_inc,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDnrm2(const size_t n,
+                        cl_mem nrm2_buffer, const size_t nrm2_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Nrm2<double>(n,
+                                      nrm2_buffer, nrm2_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

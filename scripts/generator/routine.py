@@ -40,7 +40,7 @@ def OptionToWrapper(x):
 	}[x]
 
 # Buffers without 'ld' or 'inc' parameter
-NO_LD_INC = ["dot","ap"]
+NO_LD_INC = ["dot","nrm2","ap"]
 
 # ==================================================================================================
 
@@ -252,7 +252,7 @@ class Routine():
 
 	# Retrieves a combination of all the argument names, with Claduc casts
 	def ArgumentsCladuc(self, flavour, indent):
-		return (self.Options() + self.Sizes() + self.BufferCladuc("dot") +
+		return (self.Options() + self.Sizes() + self.BufferCladuc("dot") + self.BufferCladuc("nrm2") +
 		        self.Scalar("alpha") +
 		        list(chain(*[self.BufferCladuc(b) for b in self.BuffersFirst()])) +
 		        self.Scalar("beta") +
@@ -261,7 +261,7 @@ class Routine():
 
 	# Retrieves a combination of all the argument names, with CLBlast casts
 	def ArgumentsCast(self, flavour, indent):
-		return (self.OptionsCast(indent) + self.Sizes() + self.Buffer("dot") +
+		return (self.OptionsCast(indent) + self.Sizes() + self.Buffer("dot") + self.Buffer("nrm2") +
 		        self.ScalarUse("alpha", flavour) +
 		        list(chain(*[self.Buffer(b) for b in self.BuffersFirst()])) +
 		        self.ScalarUse("beta", flavour) +
@@ -270,7 +270,7 @@ class Routine():
 
 	# As above, but for the clBLAS wrapper
 	def ArgumentsWrapper(self, flavour):
-		return (self.Options() + self.Sizes() + self.BufferWrapper("dot") +
+		return (self.Options() + self.Sizes() + self.BufferWrapper("dot") + self.BufferWrapper("nrm2") +
 		        self.ScalarUseWrapper("alpha", flavour) +
 		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersFirst()])) +
 		        self.ScalarUseWrapper("beta", flavour) +
@@ -279,7 +279,7 @@ class Routine():
 
 	# Retrieves a combination of all the argument definitions
 	def ArgumentsDef(self, flavour):
-		return (self.OptionsDef() + self.SizesDef() + self.BufferDef("dot") +
+		return (self.OptionsDef() + self.SizesDef() + self.BufferDef("dot") + self.BufferDef("nrm2") +
 		        self.ScalarDef("alpha", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
 		        self.ScalarDef("beta", flavour) +
@@ -288,7 +288,7 @@ class Routine():
 
 	# As above, but clBLAS wrapper plain datatypes
 	def ArgumentsDefWrapper(self, flavour):
-		return (self.OptionsDefWrapper() + self.SizesDef() + self.BufferDef("dot") +
+		return (self.OptionsDefWrapper() + self.SizesDef() + self.BufferDef("dot") + self.BufferDef("nrm2") +
 		        self.ScalarDefPlain("alpha", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
 		        self.ScalarDefPlain("beta", flavour) +
@@ -297,7 +297,7 @@ class Routine():
 	
 	# Retrieves a combination of all the argument types
 	def ArgumentsType(self, flavour):
-		return (self.OptionsType() + self.SizesType() + self.BufferType("dot") +
+		return (self.OptionsType() + self.SizesType() + self.BufferType("dot") + self.BufferType("nrm2") +
 		        self.ScalarType("alpha", flavour) +
 		        list(chain(*[self.BufferType(b) for b in self.BuffersFirst()])) +
 		        self.ScalarType("beta", flavour) +

@@ -350,6 +350,44 @@ clblasStatus clblasXdotc<double2>(const size_t n,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Forwards the clBLAS calls for SNRM2/DNRM2
+template <typename T>
+clblasStatus clblasXnrm2(const size_t n,
+                         cl_mem nrm2_buffer, const size_t nrm2_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXnrm2<float>(const size_t n,
+                                cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  return clblasSnrm2(n,
+                     nrm2_buffer, nrm2_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXnrm2<double>(const size_t n,
+                                 cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  return clblasDnrm2(n,
+                     nrm2_buffer, nrm2_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

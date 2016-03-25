@@ -208,6 +208,16 @@ StatusCode PUBLIC_API CLBlastZdotc(const size_t n,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
+// Euclidian norm of a vector: SNRM2/DNRM2
+StatusCode PUBLIC_API CLBlastSnrm2(const size_t n,
+                                   cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDnrm2(const size_t n,
+                                   cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

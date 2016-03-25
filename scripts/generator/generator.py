@@ -61,6 +61,7 @@ routines = [
   Routine(True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two vectors"),
   Routine(True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two complex vectors"),
   Routine(True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], True, "Dot product of two complex vectors, one conjugated"),
+  Routine(False, "1", "nrm2",  T,  [S,D],     ["n"], [], ["x"], ["nrm2"], [], True, "Euclidian norm of a vector"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], False, "General matrix-vector multiplication"),
@@ -247,8 +248,8 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 64, 88, 24, 22]
-footer_lines = [6, 3, 5, 2, 6]
+header_lines = [84, 64, 93, 22, 22]
+footer_lines = [6, 3, 9, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
 for f in files:
