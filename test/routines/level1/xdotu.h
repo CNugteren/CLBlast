@@ -54,7 +54,7 @@ class TestXdotu {
   static void SetSizes(Arguments<T> &args) {
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
-    args.dot_size = GetSizeDot(args);
+    args.scalar_size = GetSizeDot(args);
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -72,7 +72,7 @@ class TestXdotu {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Dotu<T>(args.n,
-                          buffers.dot(), args.dot_offset,
+                          buffers.scalar(), args.dot_offset,
                           buffers.x_vec(), args.x_offset, args.x_inc,
                           buffers.y_vec(), args.y_offset, args.y_inc,
                           &queue_plain, &event);
@@ -85,7 +85,7 @@ class TestXdotu {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = clblasXdotu<T>(args.n,
-                                 buffers.dot(), args.dot_offset,
+                                 buffers.scalar(), args.dot_offset,
                                  buffers.x_vec(), args.x_offset, args.x_inc,
                                  buffers.y_vec(), args.y_offset, args.y_inc,
                                  1, &queue_plain, 0, nullptr, &event);
@@ -95,8 +95,8 @@ class TestXdotu {
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    std::vector<T> result(args.dot_size, static_cast<T>(0));
-    buffers.dot.Read(queue, args.dot_size, result);
+    std::vector<T> result(args.scalar_size, static_cast<T>(0));
+    buffers.scalar.Read(queue, args.scalar_size, result);
     return result;
   }
 

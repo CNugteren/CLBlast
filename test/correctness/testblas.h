@@ -92,7 +92,7 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> b_source_;
   std::vector<T> c_source_;
   std::vector<T> ap_source_;
-  std::vector<T> dot_source_;
+  std::vector<T> scalar_source_;
   
   // The routine-specific functions passed to the tester
   Routine run_routine_;
@@ -143,6 +143,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto c_offsets = std::vector<size_t>{args.c_offset};
   auto ap_offsets = std::vector<size_t>{args.ap_offset};
   auto dot_offsets = std::vector<size_t>{args.dot_offset};
+  auto nrm2_offsets = std::vector<size_t>{args.nrm2_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
   auto x_sizes = std::vector<size_t>{args.x_size};
@@ -182,6 +183,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgCOffset) { c_offsets = tester.kOffsets; }
     if (option == kArgAPOffset) { ap_offsets = tester.kOffsets; }
     if (option == kArgDotOffset) { dot_offsets = tester.kOffsets; }
+    if (option == kArgNrm2Offset) { nrm2_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
 
@@ -221,10 +223,12 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
                                           for (auto &c_offset: c_offsets) { r_args.c_offset = c_offset;
                                             for (auto &ap_offset: ap_offsets) { r_args.ap_offset = ap_offset;
                                               for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
-                                                for (auto &alpha: alphas) { r_args.alpha = alpha;
-                                                  for (auto &beta: betas) { r_args.beta = beta;
-                                                    C::SetSizes(r_args);
-                                                    regular_test_vector.push_back(r_args);
+                                                for (auto &nrm2_offset: nrm2_offsets) { r_args.nrm2_offset = nrm2_offset;
+                                                  for (auto &alpha: alphas) { r_args.alpha = alpha;
+                                                    for (auto &beta: betas) { r_args.beta = beta;
+                                                      C::SetSizes(r_args);
+                                                      regular_test_vector.push_back(r_args);
+                                                    }
                                                   }
                                                 }
                                               }

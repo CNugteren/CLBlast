@@ -136,14 +136,14 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> b_source(args.b_size);
     std::vector<T> c_source(args.c_size);
     std::vector<T> ap_source(args.ap_size);
-    std::vector<T> dot_source(args.dot_size);
+    std::vector<T> scalar_source(args.scalar_size);
     PopulateVector(x_source);
     PopulateVector(y_source);
     PopulateVector(a_source);
     PopulateVector(b_source);
     PopulateVector(c_source);
     PopulateVector(ap_source);
-    PopulateVector(dot_source);
+    PopulateVector(scalar_source);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);
@@ -152,15 +152,15 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto b_mat = Buffer<T>(context, args.b_size);
     auto c_mat = Buffer<T>(context, args.c_size);
     auto ap_mat = Buffer<T>(context, args.ap_size);
-    auto dot = Buffer<T>(context, args.dot_size);
+    auto scalar = Buffer<T>(context, args.scalar_size);
     x_vec.Write(queue, args.x_size, x_source);
     y_vec.Write(queue, args.y_size, y_source);
     a_mat.Write(queue, args.a_size, a_source);
     b_mat.Write(queue, args.b_size, b_source);
     c_mat.Write(queue, args.c_size, c_source);
     ap_mat.Write(queue, args.ap_size, ap_source);
-    dot.Write(queue, args.dot_size, dot_source);
-    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, dot};
+    scalar.Write(queue, args.scalar_size, scalar_source);
+    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar};
 
     // Runs the routines and collects the timings
     auto timings = std::vector<std::pair<std::string, double>>();
@@ -267,6 +267,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgCOffset) {  integers.push_back(args.c_offset); }
     else if (o == kArgAPOffset) { integers.push_back(args.ap_offset); }
     else if (o == kArgDotOffset) {integers.push_back(args.dot_offset); }
+    else if (o == kArgNrm2Offset){integers.push_back(args.nrm2_offset); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

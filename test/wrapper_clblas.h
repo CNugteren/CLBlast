@@ -238,7 +238,7 @@ clblasStatus clblasXdot<float>(const size_t n,
                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float>(context, n);
   return clblasSdot(n,
                     dot_buffer, dot_offset,
                     x_buffer, x_offset, static_cast<int>(x_inc),
@@ -255,7 +255,7 @@ clblasStatus clblasXdot<double>(const size_t n,
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double>(context, n);
   return clblasDdot(n,
                     dot_buffer, dot_offset,
                     x_buffer, x_offset, static_cast<int>(x_inc),
@@ -281,7 +281,7 @@ clblasStatus clblasXdotu<float2>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, n);
   return clblasCdotu(n,
                      dot_buffer, dot_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -298,7 +298,7 @@ clblasStatus clblasXdotu<double2>(const size_t n,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, n);
   return clblasZdotu(n,
                      dot_buffer, dot_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -324,7 +324,7 @@ clblasStatus clblasXdotc<float2>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, n);
   return clblasCdotc(n,
                      dot_buffer, dot_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -341,7 +341,7 @@ clblasStatus clblasXdotc<double2>(const size_t n,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, n);
   return clblasZdotc(n,
                      dot_buffer, dot_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -365,7 +365,7 @@ clblasStatus clblasXnrm2<float>(const size_t n,
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float>(context, 2*n);
   return clblasSnrm2(n,
                      nrm2_buffer, nrm2_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -380,7 +380,7 @@ clblasStatus clblasXnrm2<double>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double>(context, 2*n);
   return clblasDnrm2(n,
                      nrm2_buffer, nrm2_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -395,7 +395,7 @@ clblasStatus clblasXnrm2<float2>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, 2*n);
   return clblasScnrm2(n,
                      nrm2_buffer, nrm2_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -410,7 +410,7 @@ clblasStatus clblasXnrm2<double2>(const size_t n,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, 2*n);
   return clblasDznrm2(n,
                      nrm2_buffer, nrm2_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -815,7 +815,7 @@ clblasStatus clblasXtrmv<float>(const clblasOrder layout, const clblasUplo trian
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float>(context, n);
   return clblasStrmv(layout, triangle, a_transpose, diagonal,
                      n,
                      a_buffer, a_offset, a_ld,
@@ -832,7 +832,7 @@ clblasStatus clblasXtrmv<double>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double>(context, n);
   return clblasDtrmv(layout, triangle, a_transpose, diagonal,
                      n,
                      a_buffer, a_offset, a_ld,
@@ -849,7 +849,7 @@ clblasStatus clblasXtrmv<float2>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, n);
   return clblasCtrmv(layout, triangle, a_transpose, diagonal,
                      n,
                      a_buffer, a_offset, a_ld,
@@ -866,7 +866,7 @@ clblasStatus clblasXtrmv<double2>(const clblasOrder layout, const clblasUplo tri
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, n);
   return clblasZtrmv(layout, triangle, a_transpose, diagonal,
                      n,
                      a_buffer, a_offset, a_ld,
@@ -892,7 +892,7 @@ clblasStatus clblasXtbmv<float>(const clblasOrder layout, const clblasUplo trian
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float>(context, n);
   return clblasStbmv(layout, triangle, a_transpose, diagonal,
                      n, k,
                      a_buffer, a_offset, a_ld,
@@ -909,7 +909,7 @@ clblasStatus clblasXtbmv<double>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double>(context, n);
   return clblasDtbmv(layout, triangle, a_transpose, diagonal,
                      n, k,
                      a_buffer, a_offset, a_ld,
@@ -926,7 +926,7 @@ clblasStatus clblasXtbmv<float2>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, n);
   return clblasCtbmv(layout, triangle, a_transpose, diagonal,
                      n, k,
                      a_buffer, a_offset, a_ld,
@@ -943,7 +943,7 @@ clblasStatus clblasXtbmv<double2>(const clblasOrder layout, const clblasUplo tri
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, n);
   return clblasZtbmv(layout, triangle, a_transpose, diagonal,
                      n, k,
                      a_buffer, a_offset, a_ld,
@@ -969,7 +969,7 @@ clblasStatus clblasXtpmv<float>(const clblasOrder layout, const clblasUplo trian
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float>(context, n);
   return clblasStpmv(layout, triangle, a_transpose, diagonal,
                      n,
                      ap_buffer, ap_offset,
@@ -986,7 +986,7 @@ clblasStatus clblasXtpmv<double>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double>(context, n);
   return clblasDtpmv(layout, triangle, a_transpose, diagonal,
                      n,
                      ap_buffer, ap_offset,
@@ -1003,7 +1003,7 @@ clblasStatus clblasXtpmv<float2>(const clblasOrder layout, const clblasUplo tria
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<float2>(context, n);
   return clblasCtpmv(layout, triangle, a_transpose, diagonal,
                      n,
                      ap_buffer, ap_offset,
@@ -1020,7 +1020,7 @@ clblasStatus clblasXtpmv<double2>(const clblasOrder layout, const clblasUplo tri
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n*x_inc + x_offset);
+  auto scratch_buffer = Buffer<double2>(context, n);
   return clblasZtpmv(layout, triangle, a_transpose, diagonal,
                      n,
                      ap_buffer, ap_offset,

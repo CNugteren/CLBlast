@@ -7,14 +7,14 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a class with static methods to describe the Xdot routine. Examples of
+// This file implements a class with static methods to describe the Xnrm2 routine. Examples of
 // such 'descriptions' are how to calculate the size a of buffer or how to run the routine. These
 // static methods are used by the correctness tester and the performance tester.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_ROUTINES_XDOT_H_
-#define CLBLAST_TEST_ROUTINES_XDOT_H_
+#ifndef CLBLAST_TEST_ROUTINES_XNRM2_H_
+#define CLBLAST_TEST_ROUTINES_XNRM2_H_
 
 #include <vector>
 #include <string>
@@ -26,7 +26,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestXdot {
+class TestXnrm2 {
  public:
 
   // The BLAS level: 1, 2, or 3
@@ -35,26 +35,22 @@ class TestXdot {
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgN,
-            kArgXInc, kArgYInc,
-            kArgXOffset, kArgYOffset, kArgDotOffset};
+            kArgXInc,
+            kArgXOffset, kArgNrm2Offset};
   }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
     return args.n * args.x_inc + args.x_offset;
   }
-  static size_t GetSizeY(const Arguments<T> &args) {
-    return args.n * args.y_inc + args.y_offset;
-  }
-  static size_t GetSizeDot(const Arguments<T> &args) {
-    return 1 + args.dot_offset;
+  static size_t GetSizeNrm2(const Arguments<T> &args) {
+    return 1 + args.nrm2_offset;
   }
 
   // Describes how to set the sizes of all the buffers
   static void SetSizes(Arguments<T> &args) {
     args.x_size = GetSizeX(args);
-    args.y_size = GetSizeY(args);
-    args.scalar_size = GetSizeDot(args);
+    args.scalar_size = GetSizeNrm2(args);
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -71,11 +67,10 @@ class TestXdot {
   static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = Dot<T>(args.n,
-                         buffers.scalar(), args.dot_offset,
-                         buffers.x_vec(), args.x_offset, args.x_inc,
-                         buffers.y_vec(), args.y_offset, args.y_inc,
-                         &queue_plain, &event);
+    auto status = Nrm2<T>(args.n,
+                          buffers.scalar(), args.nrm2_offset,
+                          buffers.x_vec(), args.x_offset, args.x_inc,
+                          &queue_plain, &event);
     clWaitForEvents(1, &event);
     return status;
   }
@@ -84,11 +79,10 @@ class TestXdot {
   static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = clblasXdot<T>(args.n,
-                                buffers.scalar(), args.dot_offset,
-                                buffers.x_vec(), args.x_offset, args.x_inc,
-                                buffers.y_vec(), args.y_offset, args.y_inc,
-                                1, &queue_plain, 0, nullptr, &event);
+    auto status = clblasXnrm2<T>(args.n,
+                                 buffers.scalar(), args.nrm2_offset,
+                                 buffers.x_vec(), args.x_offset, args.x_inc,
+                                 1, &queue_plain, 0, nullptr, &event);
     clWaitForEvents(1, &event);
     return static_cast<StatusCode>(status);
   }
@@ -104,7 +98,7 @@ class TestXdot {
   static size_t ResultID1(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t ResultID2(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t GetResultIndex(const Arguments<T> &args, const size_t, const size_t) {
-    return args.dot_offset;
+    return args.nrm2_offset;
   }
 
   // Describes how to compute performance metrics
@@ -112,12 +106,12 @@ class TestXdot {
     return 2 * args.n;
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    return ((2 * args.n) + 1) * sizeof(T);
+    return ((args.n) + 1) * sizeof(T);
   }
 };
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_ROUTINES_XDOT_H_
+// CLBLAST_TEST_ROUTINES_XNRM2_H_
 #endif
