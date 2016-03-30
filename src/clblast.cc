@@ -67,6 +67,49 @@ namespace clblast {
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// Generate plane rotation: SROTG/DROTG
+template <typename T>
+StatusCode Rotg(cl_mem, const size_t,
+                cl_mem, const size_t,
+                cl_mem, const size_t,
+                cl_mem, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Rotg<float>(cl_mem, const size_t,
+                                           cl_mem, const size_t,
+                                           cl_mem, const size_t,
+                                           cl_mem, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotg<double>(cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
+
+// Apply plane rotation: SROT/DROT
+template <typename T>
+StatusCode Rot(const size_t,
+               cl_mem, const size_t, const size_t,
+               cl_mem, const size_t, const size_t,
+               const T,
+               const T,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Rot<float>(const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          const float,
+                                          const float,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rot<double>(const size_t,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_mem, const size_t, const size_t,
+                                           const double,
+                                           const double,
+                                           cl_command_queue*, cl_event*);
+
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>
 StatusCode Swap(const size_t n,

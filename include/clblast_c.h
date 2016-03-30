@@ -96,6 +96,32 @@ typedef enum Precision_ { kHalf = 16, kSingle = 32, kDouble = 64,
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// Generate plane rotation: SROTG/DROTG
+StatusCode PUBLIC_API CLBlastSrotg(cl_mem SA_buffer, const size_t SA_offset,
+                                   cl_mem SB_buffer, const size_t SB_offset,
+                                   cl_mem C_buffer, const size_t C_offset,
+                                   cl_mem S_buffer, const size_t S_offset,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDrotg(cl_mem SA_buffer, const size_t SA_offset,
+                                   cl_mem SB_buffer, const size_t SB_offset,
+                                   cl_mem C_buffer, const size_t C_offset,
+                                   cl_mem S_buffer, const size_t S_offset,
+                                   cl_command_queue* queue, cl_event* event);
+
+// Apply plane rotation: SROT/DROT
+StatusCode PUBLIC_API CLBlastSrot(const size_t n,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  const float C,
+                                  const float S,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDrot(const size_t n,
+                                  cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  const double C,
+                                  const double S,
+                                  cl_command_queue* queue, cl_event* event);
+
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 StatusCode PUBLIC_API CLBlastSswap(const size_t n,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,

@@ -87,6 +87,23 @@ enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// Generate plane rotation: SROTG/DROTG
+template <typename T>
+StatusCode Rotg(cl_mem SA_buffer, const size_t SA_offset,
+                cl_mem SB_buffer, const size_t SB_offset,
+                cl_mem C_buffer, const size_t C_offset,
+                cl_mem S_buffer, const size_t S_offset,
+                cl_command_queue* queue, cl_event* event = nullptr);
+
+// Apply plane rotation: SROT/DROT
+template <typename T>
+StatusCode Rot(const size_t n,
+               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T C,
+               const T S,
+               cl_command_queue* queue, cl_event* event = nullptr);
+
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>
 StatusCode Swap(const size_t n,

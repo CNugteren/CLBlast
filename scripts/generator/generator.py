@@ -52,8 +52,8 @@ TU = DataType("typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") # for 
 # Populates a list of routines
 routines = [
 [ # Level 1: vector-vector
-  #Routine(False, "1", "rotg",  T,  [S,D],     [], [], [], [], ["a","b","c","s"], False, "Generate plane rotation"),
-  #Routine(False, "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["c","s"], False, "Apply plane rotation"),
+  Routine(False, "1", "rotg",  T,  [S,D],     [], [], [], ["SA","SB","C","S"], [], False, "Generate plane rotation"),
+  Routine(False, "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["C","S"], False, "Apply plane rotation"),
   Routine(True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], False, "Swap two vectors"),
   Routine(True,  "1", "scal",  T,  [S,D,C,Z], ["n"], [], [], ["x"], ["alpha"], False, "Vector scaling"),
   Routine(True,  "1", "copy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], [], False, "Vector copy"),

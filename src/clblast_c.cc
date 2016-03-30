@@ -25,6 +25,62 @@ using double2 = clblast::double2;
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
+// ROTG
+StatusCode CLBlastSrotg(cl_mem SA_buffer, const size_t SA_offset,
+                        cl_mem SB_buffer, const size_t SB_offset,
+                        cl_mem C_buffer, const size_t C_offset,
+                        cl_mem S_buffer, const size_t S_offset,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Rotg<float>(SA_buffer, SA_offset,
+                                     SB_buffer, SB_offset,
+                                     C_buffer, C_offset,
+                                     S_buffer, S_offset,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDrotg(cl_mem SA_buffer, const size_t SA_offset,
+                        cl_mem SB_buffer, const size_t SB_offset,
+                        cl_mem C_buffer, const size_t C_offset,
+                        cl_mem S_buffer, const size_t S_offset,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Rotg<double>(SA_buffer, SA_offset,
+                                      SB_buffer, SB_offset,
+                                      C_buffer, C_offset,
+                                      S_buffer, S_offset,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+
+// ROT
+StatusCode CLBlastSrot(const size_t n,
+                       cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       const float C,
+                       const float S,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Rot(n,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             C,
+                             S,
+                             queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDrot(const size_t n,
+                       cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       const double C,
+                       const double S,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Rot(n,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             C,
+                             S,
+                             queue, event);
+  return static_cast<StatusCode>(status);
+}
+
 // SWAP
 StatusCode CLBlastSswap(const size_t n,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
