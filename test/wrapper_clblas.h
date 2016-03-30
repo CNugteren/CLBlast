@@ -27,67 +27,142 @@ namespace clblast {
 
 // Forwards the clBLAS calls for SROTG/DROTG
 template <typename T>
-clblasStatus clblasXrotg(cl_mem SA_buffer, const size_t SA_offset,
-                         cl_mem SB_buffer, const size_t SB_offset,
-                         cl_mem C_buffer, const size_t C_offset,
-                         cl_mem S_buffer, const size_t S_offset,
+clblasStatus clblasXrotg(cl_mem sa_buffer, const size_t sa_offset,
+                         cl_mem sb_buffer, const size_t sb_offset,
+                         cl_mem sc_buffer, const size_t sc_offset,
+                         cl_mem ss_buffer, const size_t ss_offset,
                          cl_uint num_queues, cl_command_queue *queues,
                          cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
 template <>
-clblasStatus clblasXrotg<float>(cl_mem SA_buffer, const size_t SA_offset,
-                                cl_mem SB_buffer, const size_t SB_offset,
-                                cl_mem C_buffer, const size_t C_offset,
-                                cl_mem S_buffer, const size_t S_offset,
+clblasStatus clblasXrotg<float>(cl_mem sa_buffer, const size_t sa_offset,
+                                cl_mem sb_buffer, const size_t sb_offset,
+                                cl_mem sc_buffer, const size_t sc_offset,
+                                cl_mem ss_buffer, const size_t ss_offset,
                                 cl_uint num_queues, cl_command_queue *queues,
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
-  return clblasSrotg(SA_buffer, SA_offset,
-                     SB_buffer, SB_offset,
-                     C_buffer, C_offset,
-                     S_buffer, S_offset,
+  return clblasSrotg(sa_buffer, sa_offset,
+                     sb_buffer, sb_offset,
+                     sc_buffer, sc_offset,
+                     ss_buffer, ss_offset,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 template <>
-clblasStatus clblasXrotg<double>(cl_mem SA_buffer, const size_t SA_offset,
-                                 cl_mem SB_buffer, const size_t SB_offset,
-                                 cl_mem C_buffer, const size_t C_offset,
-                                 cl_mem S_buffer, const size_t S_offset,
+clblasStatus clblasXrotg<double>(cl_mem sa_buffer, const size_t sa_offset,
+                                 cl_mem sb_buffer, const size_t sb_offset,
+                                 cl_mem sc_buffer, const size_t sc_offset,
+                                 cl_mem ss_buffer, const size_t ss_offset,
                                  cl_uint num_queues, cl_command_queue *queues,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
-  return clblasDrotg(SA_buffer, SA_offset,
-                     SB_buffer, SB_offset,
-                     C_buffer, C_offset,
-                     S_buffer, S_offset,
+  return clblasDrotg(sa_buffer, sa_offset,
+                     sb_buffer, sb_offset,
+                     sc_buffer, sc_offset,
+                     ss_buffer, ss_offset,
                      num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SROTMG/DROTMG
+template <typename T>
+clblasStatus clblasXrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
+                          cl_mem sd2_buffer, const size_t sd2_offset,
+                          cl_mem sx1_buffer, const size_t sx1_offset,
+                          cl_mem sy1_buffer, const size_t sy1_offset,
+                          cl_mem sparam_buffer, const size_t sparam_offset,
+                          cl_uint num_queues, cl_command_queue *queues,
+                          cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXrotmg<float>(cl_mem sd1_buffer, const size_t sd1_offset,
+                                 cl_mem sd2_buffer, const size_t sd2_offset,
+                                 cl_mem sx1_buffer, const size_t sx1_offset,
+                                 cl_mem sy1_buffer, const size_t sy1_offset,
+                                 cl_mem sparam_buffer, const size_t sparam_offset,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSrotmg(sd1_buffer, sd1_offset,
+                      sd2_buffer, sd2_offset,
+                      sx1_buffer, sx1_offset,
+                      sy1_buffer, sy1_offset,
+                      sparam_buffer, sparam_offset,
+                      num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXrotmg<double>(cl_mem sd1_buffer, const size_t sd1_offset,
+                                  cl_mem sd2_buffer, const size_t sd2_offset,
+                                  cl_mem sx1_buffer, const size_t sx1_offset,
+                                  cl_mem sy1_buffer, const size_t sy1_offset,
+                                  cl_mem sparam_buffer, const size_t sparam_offset,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDrotmg(sd1_buffer, sd1_offset,
+                      sd2_buffer, sd2_offset,
+                      sx1_buffer, sx1_offset,
+                      sy1_buffer, sy1_offset,
+                      sparam_buffer, sparam_offset,
+                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
 // Forwards the clBLAS calls for SROT/DROT
 clblasStatus clblasXrot(const size_t n,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        const float C,
-                        const float S,
+                        const float cos,
+                        const float sin,
                         cl_uint num_queues, cl_command_queue *queues,
                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   return clblasSrot(n,
                     x_buffer, x_offset, static_cast<int>(x_inc),
                     y_buffer, y_offset, static_cast<int>(y_inc),
-                    C,
-                    S,
+                    cos,
+                    sin,
                     num_queues, queues, num_wait_events, wait_events, events);
 }
 clblasStatus clblasXrot(const size_t n,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        const double C,
-                        const double S,
+                        const double cos,
+                        const double sin,
                         cl_uint num_queues, cl_command_queue *queues,
                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   return clblasDrot(n,
                     x_buffer, x_offset, static_cast<int>(x_inc),
                     y_buffer, y_offset, static_cast<int>(y_inc),
-                    C,
-                    S,
+                    cos,
+                    sin,
                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
+// Forwards the clBLAS calls for SROTM/DROTM
+template <typename T>
+clblasStatus clblasXrotm(const size_t n,
+                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                         cl_mem sparam_buffer, const size_t sparam_offset,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXrotm<float>(const size_t n,
+                                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                cl_mem sparam_buffer, const size_t sparam_offset,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasSrotm(n,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     sparam_buffer, sparam_offset,
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXrotm<double>(const size_t n,
+                                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                 cl_mem sparam_buffer, const size_t sparam_offset,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  return clblasDrotm(n,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     y_buffer, y_offset, static_cast<int>(y_inc),
+                     sparam_buffer, sparam_offset,
+                     num_queues, queues, num_wait_events, wait_events, events);
 }
 
 // Forwards the clBLAS calls for SSWAP/DSWAP/CSWAP/ZSWAP

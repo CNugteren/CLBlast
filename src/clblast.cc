@@ -67,7 +67,7 @@ namespace clblast {
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
-// Generate plane rotation: SROTG/DROTG
+// Generate givens plane rotation: SROTG/DROTG
 template <typename T>
 StatusCode Rotg(cl_mem, const size_t,
                 cl_mem, const size_t,
@@ -87,7 +87,30 @@ template StatusCode PUBLIC_API Rotg<double>(cl_mem, const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
-// Apply plane rotation: SROT/DROT
+// Generate modified givens plane rotation: SROTMG/DROTMG
+template <typename T>
+StatusCode Rotmg(cl_mem, const size_t,
+                 cl_mem, const size_t,
+                 cl_mem, const size_t,
+                 cl_mem, const size_t,
+                 cl_mem, const size_t,
+                 cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Rotmg<float>(cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotmg<double>(cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_command_queue*, cl_event*);
+
+// Apply givens plane rotation: SROT/DROT
 template <typename T>
 StatusCode Rot(const size_t,
                cl_mem, const size_t, const size_t,
@@ -109,6 +132,26 @@ template StatusCode PUBLIC_API Rot<double>(const size_t,
                                            const double,
                                            const double,
                                            cl_command_queue*, cl_event*);
+
+// Apply modified givens plane rotation: SROTM/DROTM
+template <typename T>
+StatusCode Rotm(const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_mem, const size_t, const size_t,
+                cl_mem, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Rotm<float>(const size_t,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_mem, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotm<double>(const size_t,
+                                            cl_mem, const size_t, const size_t,
+                                            cl_mem, const size_t, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>

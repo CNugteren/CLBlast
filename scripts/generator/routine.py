@@ -59,12 +59,18 @@ class Routine():
 		self.description = description
 
 	# List of scalar buffers
-	def ScalarBuffers(self):
-		return ["SA","SB","C","S","dot"]
+	def ScalarBuffersFirst(self):
+		return ["dot"]
+	def ScalarBuffersSecond(self):
+		return ["sa","sb","sc","ss","sd1","sd2","sx1","sy1","sparam"]
+
+	# List of scalars other than alpha and beta
+	def OtherScalars(self):
+		return ["cos","sin"]
 
 	# List of buffers without 'inc' or 'ld'
 	def BuffersWithoutLdInc(self):
-		return self.ScalarBuffers() + ["ap"]
+		return self.ScalarBuffersFirst() + self.ScalarBuffersSecond() + ["ap"]
 
 	# Retrieves the number of characters in the routine's name
 	def Length(self):
@@ -258,62 +264,68 @@ class Routine():
 	# Retrieves a combination of all the argument names, with Claduc casts
 	def ArgumentsCladuc(self, flavour, indent):
 		return (self.Options() + self.Sizes() +
-		        list(chain(*[self.BufferCladuc(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.BufferCladuc(b) for b in self.ScalarBuffersFirst()])) +
 		        self.Scalar("alpha") +
 		        list(chain(*[self.BufferCladuc(b) for b in self.BuffersFirst()])) +
 		        self.Scalar("beta") +
 		        list(chain(*[self.BufferCladuc(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.Scalar(s) for s in ["C","S"]])))
+		        list(chain(*[self.BufferCladuc(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.Scalar(s) for s in self.OtherScalars()])))
 
 	# Retrieves a combination of all the argument names, with CLBlast casts
 	def ArgumentsCast(self, flavour, indent):
 		return (self.OptionsCast(indent) + self.Sizes() +
-		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarUse("alpha", flavour) +
 		        list(chain(*[self.Buffer(b) for b in self.BuffersFirst()])) +
 		        self.ScalarUse("beta", flavour) +
 		        list(chain(*[self.Buffer(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.ScalarUse(s, flavour) for s in ["C","S"]])))
+		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarUse(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but for the clBLAS wrapper
 	def ArgumentsWrapper(self, flavour):
 		return (self.Options() + self.Sizes() +
-		        list(chain(*[self.BufferWrapper(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.BufferWrapper(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarUseWrapper("alpha", flavour) +
 		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersFirst()])) +
 		        self.ScalarUseWrapper("beta", flavour) +
 		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.ScalarUseWrapper(s, flavour) for s in ["C","S"]])))
+		        list(chain(*[self.BufferWrapper(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarUseWrapper(s, flavour) for s in self.OtherScalars()])))
 
 	# Retrieves a combination of all the argument definitions
 	def ArgumentsDef(self, flavour):
 		return (self.OptionsDef() + self.SizesDef() +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarDef("alpha", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
 		        self.ScalarDef("beta", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.ScalarDef(s, flavour) for s in ["C","S"]])))
+		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarDef(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but clBLAS wrapper plain datatypes
 	def ArgumentsDefWrapper(self, flavour):
 		return (self.OptionsDefWrapper() + self.SizesDef() +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarDefPlain("alpha", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
 		        self.ScalarDefPlain("beta", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in ["C","S"]])))
+		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in self.OtherScalars()])))
 	
 	# Retrieves a combination of all the argument types
 	def ArgumentsType(self, flavour):
 		return (self.OptionsType() + self.SizesType() +
-		        list(chain(*[self.BufferType(b) for b in self.ScalarBuffers()])) +
+		        list(chain(*[self.BufferType(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarType("alpha", flavour) +
 		        list(chain(*[self.BufferType(b) for b in self.BuffersFirst()])) +
 		        self.ScalarType("beta", flavour) +
 		        list(chain(*[self.BufferType(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.ScalarType(s, flavour) for s in ["C","S"]])))
+		        list(chain(*[self.BufferType(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarType(s, flavour) for s in self.OtherScalars()])))
 
 
 	# ==============================================================================================

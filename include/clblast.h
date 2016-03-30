@@ -87,22 +87,39 @@ enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
 
-// Generate plane rotation: SROTG/DROTG
+// Generate givens plane rotation: SROTG/DROTG
 template <typename T>
-StatusCode Rotg(cl_mem SA_buffer, const size_t SA_offset,
-                cl_mem SB_buffer, const size_t SB_offset,
-                cl_mem C_buffer, const size_t C_offset,
-                cl_mem S_buffer, const size_t S_offset,
+StatusCode Rotg(cl_mem sa_buffer, const size_t sa_offset,
+                cl_mem sb_buffer, const size_t sb_offset,
+                cl_mem sc_buffer, const size_t sc_offset,
+                cl_mem ss_buffer, const size_t ss_offset,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Apply plane rotation: SROT/DROT
+// Generate modified givens plane rotation: SROTMG/DROTMG
+template <typename T>
+StatusCode Rotmg(cl_mem sd1_buffer, const size_t sd1_offset,
+                 cl_mem sd2_buffer, const size_t sd2_offset,
+                 cl_mem sx1_buffer, const size_t sx1_offset,
+                 cl_mem sy1_buffer, const size_t sy1_offset,
+                 cl_mem sparam_buffer, const size_t sparam_offset,
+                 cl_command_queue* queue, cl_event* event = nullptr);
+
+// Apply givens plane rotation: SROT/DROT
 template <typename T>
 StatusCode Rot(const size_t n,
                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-               const T C,
-               const T S,
+               const T cos,
+               const T sin,
                cl_command_queue* queue, cl_event* event = nullptr);
+
+// Apply modified givens plane rotation: SROTM/DROTM
+template <typename T>
+StatusCode Rotm(const size_t n,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                cl_mem sparam_buffer, const size_t sparam_offset,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
 template <typename T>
