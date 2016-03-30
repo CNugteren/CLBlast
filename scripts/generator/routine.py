@@ -308,12 +308,12 @@ class Routine():
 	# ==============================================================================================
 
 	# Retrieves the C++ templated definition for a routine
-	def RoutineHeaderCPP(self, spaces):
+	def RoutineHeaderCPP(self, spaces, default_event):
 		indent = " "*(spaces + self.Length())
 		result = "template <"+self.template.name+">\n"
 		result += "StatusCode "+self.name.capitalize()+"("
 		result += (",\n"+indent).join([a for a in self.ArgumentsDef(self.template)])
-		result += ",\n"+indent+"cl_command_queue* queue, cl_event* event)"
+		result += ",\n"+indent+"cl_command_queue* queue, cl_event* event"+default_event+")"
 		return result
 
 	# As above, but now without variable names

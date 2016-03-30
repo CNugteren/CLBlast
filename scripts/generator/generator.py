@@ -151,7 +151,7 @@ def clblast_h(routines):
 	result = ""
 	for routine in routines:
 		result += "\n// "+routine.description+": "+routine.ShortNames()+"\n"
-		result += routine.RoutineHeaderCPP(12)+";\n"
+		result += routine.RoutineHeaderCPP(12, " = nullptr")+";\n"
 	return result
 
 # The C++ API implementation (.cc)
@@ -161,9 +161,9 @@ def clblast_cc(routines):
 		indent1 = " "*(20 + routine.Length())
 		result += "\n// "+routine.description+": "+routine.ShortNames()+"\n"
 		if routine.implemented:
-			result += routine.RoutineHeaderCPP(12)+" {\n"
+			result += routine.RoutineHeaderCPP(12, "")+" {\n"
 			result += "  auto queue_cpp = Queue(*queue);\n"
-			result += "  auto event_cpp = Event(*event);\n"
+			result += "  auto event_cpp = Event(event);\n"
 			result += "  auto routine = X"+routine.name+"<"+routine.template.template+">(queue_cpp, event_cpp);\n"
 			result += "  auto status = routine.SetUp();\n"
 			result += "  if (status != StatusCode::kSuccess) { return status; }\n"
@@ -247,8 +247,8 @@ files = [
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
 ]
-header_lines = [84, 64, 88, 24, 22]
-footer_lines = [6, 3, 5, 2, 6]
+header_lines = [84, 64, 93, 22, 22]
+footer_lines = [6, 3, 9, 2, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
 for f in files:

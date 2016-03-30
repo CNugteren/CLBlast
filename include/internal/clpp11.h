@@ -75,9 +75,6 @@ class Event {
   // Constructor based on the regular OpenCL data-type
   explicit Event(cl_event* event): event_(event) { }
 
-  // Constructor based on a non-existant event
-  explicit Event(): event_(nullptr) { }
-
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
   // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
