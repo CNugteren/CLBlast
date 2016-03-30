@@ -164,6 +164,9 @@ endif()
 # This section contains all the code related to the examples
 if(SAMPLES)
 
+  # Downloads the cl.hpp file from Khronos
+  file(DOWNLOAD https://www.khronos.org/registry/cl/api/1.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
     add_executable(clblast_sample_${SAMPLE} samples/${SAMPLE}.cc)

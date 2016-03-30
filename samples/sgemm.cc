@@ -8,8 +8,8 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file demonstrates the use of the SGEMM routine. It is a stand-alone example, but it does
-// requires the Khronos C++ OpenCL API header file (not included). The example uses C++ features,
-// but CLBlast can also be used using the regular C-style OpenCL API.
+// require the Khronos C++ OpenCL API header file (downloaded by CMake). The example uses C++
+// features, but CLBlast can also be used using the regular C-style OpenCL API.
 //
 // Note that this example is meant for illustration purposes only. CLBlast provides other programs
 // for performance benchmarking ('client_xxxxx') and for correctness testing ('test_xxxxx').
@@ -22,7 +22,7 @@
 
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://www.khronos.org/registry/cl/api/1.1/cl.hpp
-#include <CL/cl.hpp>
+#include "cl.hpp"
 
 // Includes the CLBlast library
 #include <clblast.h>

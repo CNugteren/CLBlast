@@ -3,3 +3,4 @@ stash
 .*
 *.pyc
 *.db
+cl.hpp
