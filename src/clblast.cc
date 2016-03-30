@@ -74,7 +74,7 @@ StatusCode Swap(const size_t n,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xswap<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -106,7 +106,7 @@ StatusCode Scal(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xscal<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -138,7 +138,7 @@ StatusCode Copy(const size_t n,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xcopy<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -171,7 +171,7 @@ StatusCode Axpy(const size_t n,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xaxpy<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -209,7 +209,7 @@ StatusCode Dot(const size_t n,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xdot<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -237,7 +237,7 @@ StatusCode Dotu(const size_t n,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xdotu<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -265,7 +265,7 @@ StatusCode Dotc(const size_t n,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xdotc<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -300,7 +300,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xgemv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -356,7 +356,7 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xgbmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -412,7 +412,7 @@ StatusCode Hemv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhemv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -452,7 +452,7 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhbmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -492,7 +492,7 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhpmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -532,7 +532,7 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsymv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -572,7 +572,7 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsbmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -612,7 +612,7 @@ StatusCode Spmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xspmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -649,7 +649,7 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xtrmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -687,7 +687,7 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xtbmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -725,7 +725,7 @@ StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xtpmv<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -855,7 +855,7 @@ StatusCode Ger(const Layout layout,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xger<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -891,7 +891,7 @@ StatusCode Geru(const Layout layout,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xgeru<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -927,7 +927,7 @@ StatusCode Gerc(const Layout layout,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xgerc<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -962,7 +962,7 @@ StatusCode Her(const Layout layout, const Triangle triangle,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xher<std::complex<T>,T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -994,7 +994,7 @@ StatusCode Hpr(const Layout layout, const Triangle triangle,
                cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhpr<std::complex<T>,T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1027,7 +1027,7 @@ StatusCode Her2(const Layout layout, const Triangle triangle,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xher2<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1063,7 +1063,7 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle,
                 cl_mem ap_buffer, const size_t ap_offset,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhpr2<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1098,7 +1098,7 @@ StatusCode Syr(const Layout layout, const Triangle triangle,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsyr<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1130,7 +1130,7 @@ StatusCode Spr(const Layout layout, const Triangle triangle,
                cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xspr<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1163,7 +1163,7 @@ StatusCode Syr2(const Layout layout, const Triangle triangle,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsyr2<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1199,7 +1199,7 @@ StatusCode Spr2(const Layout layout, const Triangle triangle,
                 cl_mem ap_buffer, const size_t ap_offset,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xspr2<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1240,7 +1240,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xgemm<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1296,7 +1296,7 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsymm<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1352,7 +1352,7 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xhemm<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1391,7 +1391,7 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsyrk<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1441,7 +1441,7 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xherk<std::complex<T>,T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1478,7 +1478,7 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xsyr2k<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1534,7 +1534,7 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xher2k<T,U>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
@@ -1572,7 +1572,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
   auto queue_cpp = Queue(*queue);
-  auto event_cpp = Event(*event);
+  auto event_cpp = Event(event);
   auto routine = Xtrmm<T>(queue_cpp, event_cpp);
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }

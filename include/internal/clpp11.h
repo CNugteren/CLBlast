@@ -73,30 +73,30 @@ class Event {
  public:
 
   // Constructor based on the regular OpenCL data-type
-  explicit Event(const cl_event event): event_(event) { }
+  explicit Event(cl_event* event): event_(event) { }
 
-  // Regular constructor
+  // Constructor based on a non-existant event
   explicit Event(): event_(nullptr) { }
 
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
   // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
   float GetElapsedTime() const {
-    CheckError(clWaitForEvents(1, &event_));
+    CheckError(clWaitForEvents(1, event_));
     auto bytes = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
     auto time_start = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
     auto time_end = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
     return (time_end - time_start) * 1.0e-6f;
   }
 
   // Accessor to the private data-member
-  cl_event& operator()() { return event_; }
+  cl_event& operator()() { return *event_; }
  private:
-  cl_event event_;
+  cl_event* event_;
 };
 
 // =================================================================================================
