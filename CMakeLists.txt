@@ -102,7 +102,7 @@ endif()
 # ==================================================================================================
 
 # Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
+include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS} ${clblast_SOURCE_DIR}/thirdparty/clpp)
 
 # ==================================================================================================
 
