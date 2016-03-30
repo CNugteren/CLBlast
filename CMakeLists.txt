@@ -91,13 +91,7 @@ if(TUNERS)
 endif()
 
 # Locates the clBLAS library in case the tests need to be compiled. "FindclBLAS.cmake" is included.
-if(TESTS)
-  find_package(clBLAS)
-  if(NOT CLBLAS_FOUND)
-    message(STATUS "Could NOT find clBLAS, disabling the compilation of the tests")
-    set(TESTS OFF)
-  endif()
-endif()
+find_package(clBLAS)
 
 # ==================================================================================================
 
@@ -207,60 +201,68 @@ endif()
 # the presence of the clBLAS library to act as a reference.
 if(TESTS)
 
-  # Adds new include directories for the reference clBLAS
-  include_directories(${clblast_SOURCE_DIR}/test ${CLBLAS_INCLUDE_DIRS})
+  # This should be moved into unit test format, but for now ...
+  add_executable(test_xgemm_vs_cpu test/correctness/routines/level3/xgemm_vs_cpu.cpp)
+  target_link_libraries(test_xgemm_vs_cpu clblast ${OPENCL_LIBRARIES})
 
-  # Creates the common correctness-tests objects (requires CMake 2.8.8)
-  add_library(test_correctness_common OBJECT
-              test/correctness/tester.cc test/correctness/testblas.cc)
+  if(CLBLAS_FOUND)
 
-  # Compiles the correctness-tests
-  foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level1/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level2/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level3/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
-  endforeach()
+    # Adds new include directories for the reference clBLAS
+    include_directories(${clblast_SOURCE_DIR}/test ${CLBLAS_INCLUDE_DIRS})
 
-  # Adds 'alltests' target: runs all tests
-  set(ALLTESTS )
-  set(ALLTESTSDEPENDS )
-  foreach(ROUTINE ${ROUTINES})
-    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
-    set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
-  endforeach()
-  add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})
+    # Creates the common correctness-tests objects (requires CMake 2.8.8)
+    add_library(test_correctness_common OBJECT
+                test/correctness/tester.cc test/correctness/testblas.cc)
 
-  # Creates the common performance-tests objects (requires CMake 2.8.8)
-  add_library(test_performance_common OBJECT test/performance/client.cc)
+    # Compiles the correctness-tests
+    foreach(ROUTINE ${LEVEL1_ROUTINES})
+      add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                     test/correctness/routines/level1/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${LEVEL2_ROUTINES})
+      add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                     test/correctness/routines/level2/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${LEVEL3_ROUTINES})
+      add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                     test/correctness/routines/level3/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${ROUTINES})
+      target_link_libraries(clblast_test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+      install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
+    endforeach()
 
-  # Compiles the performance-tests
-  foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level1/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level2/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level3/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
-  endforeach()
+    # Adds 'alltests' target: runs all tests
+    set(ALLTESTS )
+    set(ALLTESTSDEPENDS )
+    foreach(ROUTINE ${ROUTINES})
+      set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+      set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
+    endforeach()
+    add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})
 
+    # Creates the common performance-tests objects (requires CMake 2.8.8)
+    add_library(test_performance_common OBJECT test/performance/client.cc)
+
+    # Compiles the performance-tests
+    foreach(ROUTINE ${LEVEL1_ROUTINES})
+      add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                     test/performance/routines/level1/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${LEVEL2_ROUTINES})
+      add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                     test/performance/routines/level2/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${LEVEL3_ROUTINES})
+      add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                     test/performance/routines/level3/${ROUTINE}.cc)
+    endforeach()
+    foreach(ROUTINE ${ROUTINES})
+      target_link_libraries(clblast_client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+      install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
+    endforeach()
+  else()
+    message(STATUS "Could NOT find clBLAS, disabling the compilation of many tests")
+  endif()
 endif()
 # ==================================================================================================
