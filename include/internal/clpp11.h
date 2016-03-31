@@ -230,10 +230,10 @@ class Device {
   std::string GetInfoString(const cl_device_info info) const {
     size_t bytes = 0;
     CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
-    auto result = std::string{};
+    std::string result = "";
     result.resize(bytes);
     CheckError(clGetDeviceInfo(device_, info, bytes, &result[0], nullptr));
-    return std::string{result.c_str()}; // Removes any trailing '\0'-characters
+    return result.c_str(); // Removes any trailing '\0'-characters
   }
 };
 
@@ -267,7 +267,7 @@ class Context {
 // =================================================================================================
 
 // Enumeration of build statuses of the run-time compilation process
-enum class BuildStatus { kSuccess, kError, kInvalid };
+enum BuildStatus { kSuccess, kError, kInvalid };
 
 // C++11 version of 'cl_program'. Additionally holds the program's source code.
 class Program {
@@ -287,7 +287,7 @@ class Program {
 
   // Compiles the device program and returns whether or not there where any warnings/errors
   BuildStatus Build(const Device &device, std::vector<std::string> &options) {
-    auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
+    auto options_string = std::accumulate(options.begin(), options.end(), " ");
     const cl_device_id dev = device();
     auto status = clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr);
     if (status == CL_BUILD_PROGRAM_FAILURE) {
