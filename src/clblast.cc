@@ -26,6 +26,7 @@
 #include "internal/routines/level1/xdot.h"
 #include "internal/routines/level1/xdotu.h"
 #include "internal/routines/level1/xdotc.h"
+#include "internal/routines/level1/xnrm2.h"
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -368,6 +369,38 @@ template StatusCode PUBLIC_API Dotc<float2>(const size_t,
 template StatusCode PUBLIC_API Dotc<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
+
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+template <typename T>
+StatusCode Nrm2(const size_t n,
+                cl_mem nrm2_buffer, const size_t nrm2_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto event_cpp = Event(event);
+  auto routine = Xnrm2<T>(queue_cpp, event_cpp);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoNrm2(n,
+                        Buffer<T>(nrm2_buffer), nrm2_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
+}
+template StatusCode PUBLIC_API Nrm2<float>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<double>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
+                                             cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 

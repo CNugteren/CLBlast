@@ -60,7 +60,7 @@ class Routine():
 
 	# List of scalar buffers
 	def ScalarBuffersFirst(self):
-		return ["dot"]
+		return ["dot","nrm2"]
 	def ScalarBuffersSecond(self):
 		return ["sa","sb","sc","ss","sd1","sd2","sx1","sy1","sparam"]
 
@@ -326,7 +326,6 @@ class Routine():
 		        list(chain(*[self.BufferType(b) for b in self.BuffersSecond()])) +
 		        list(chain(*[self.BufferType(b) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.ScalarType(s, flavour) for s in self.OtherScalars()])))
-
 
 	# ==============================================================================================
 
