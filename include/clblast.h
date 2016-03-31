@@ -30,7 +30,7 @@ namespace clblast {
 
 // Status codes. These codes can be returned by functions declared in this header file. The error
 // codes match either the standard OpenCL error codes or the clBLAS error codes. 
-enum class StatusCode {
+enum StatusCode {
 
   // Status codes in common with the OpenCL standard
   kSuccess                   =   0, // CL_SUCCESS
@@ -73,14 +73,14 @@ enum class StatusCode {
 };
 
 // Matrix layout and transpose types
-enum class Layout { kRowMajor, kColMajor };
-enum class Transpose { kNo, kYes, kConjugate };
-enum class Side { kLeft, kRight };
-enum class Triangle { kUpper, kLower };
-enum class Diagonal { kUnit, kNonUnit };
+enum Layout { kRowMajor, kColMajor };
+enum Transpose { kNo, kYes, kConjugate };
+enum Side { kLeft, kRight };
+enum Triangle { kUpper, kLower };
+enum Diagonal { kUnit, kNonUnit };
 
 // Precision scoped enum (values in bits)
-enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
+enum Precision { kHalf = 16, kSingle = 32, kDouble = 64,
                        kComplexSingle = 3232, kComplexDouble = 6464 };
 
 // =================================================================================================
