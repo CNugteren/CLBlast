@@ -267,7 +267,7 @@ class Context {
 // =================================================================================================
 
 // Enumeration of build statuses of the run-time compilation process
-enum BuildStatus { kSuccess, kError, kInvalid };
+enum BuildStatus { kBuildSuccess, kBuildError, kBuildInvalid };
 
 // C++11 version of 'cl_program'. Additionally holds the program's source code.
 class Program {
@@ -287,18 +287,18 @@ class Program {
 
   // Compiles the device program and returns whether or not there where any warnings/errors
   BuildStatus Build(const Device &device, std::vector<std::string> &options) {
-    auto options_string = std::accumulate(options.begin(), options.end(), " ");
+    std::string options_string = std::accumulate(options.begin(), options.end(), std::string(" "));
     const cl_device_id dev = device();
     auto status = clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr);
     if (status == CL_BUILD_PROGRAM_FAILURE) {
-      return BuildStatus::kError;
+      return BuildStatus::kBuildError;
     }
     else if (status == CL_INVALID_BINARY) {
-      return BuildStatus::kInvalid;
+      return BuildStatus::kBuildInvalid;
     }
     else {
       CheckError(status);
-      return BuildStatus::kSuccess;
+      return BuildStatus::kBuildSuccess;
     }
   }
 
