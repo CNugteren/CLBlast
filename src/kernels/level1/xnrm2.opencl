@@ -70,21 +70,6 @@ __kernel void Xnrm2(const int n,
 
 // =================================================================================================
 
-// Computes the square root
-inline real SquareRoot(const real z) {
-  #if PRECISION == 3232 || PRECISION == 6464
-    double r = sqrt(z.x * z.x + z.y * z.y);
-    real zpr; zpr.x = z.x + r; zpr.y = z.y;
-    double zprabs = sqrt(zpr.x * zpr.x + zpr.y + zpr.y);
-    real result;
-    result.x = sqrt(r) * zpr.x / zprabs;
-    result.y = sqrt(r) * zpr.y / zprabs;
-    return result;
-  #else
-    return sqrt(z);
-  #endif
-}
-
 // The epilogue reduction kernel, performing the final bit of the sum operation. This kernel has to
 // be launched with a single workgroup only.
 __attribute__((reqd_work_group_size(WGS2, 1, 1)))
@@ -108,7 +93,11 @@ __kernel void Xnrm2Epilogue(const __global real* restrict input,
 
   // Computes the square root and stores the final result
   if (lid == 0) {
-    nrm2[nrm2_offset] = SquareRoot(lm[0]);
+    #if PRECISION == 3232 || PRECISION == 6464
+      nrm2[nrm2_offset].x = sqrt(lm[0].x); // the result is a non-complex number
+    #else
+      nrm2[nrm2_offset] = sqrt(lm[0]);
+    #endif
   }
 }
 
