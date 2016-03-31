@@ -90,12 +90,12 @@ StatusCode Routine<T>::SetUp() {
       auto build_status = program.Build(device_, options);
 
       // Checks for compiler crashes/errors/warnings
-      if (build_status == BuildStatus::kError) {
+      if (build_status == BuildStatus::kBuildError) {
         auto message = program.GetBuildInfo(device_);
         fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
         return StatusCode::kBuildProgramFailure;
       }
-      if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
+      if (build_status == BuildStatus::kBuildInvalid) { return StatusCode::kInvalidBinary; }
 
       // Store the compiled program in the cache
       program_cache_.push_back({program, device_name_, precision_, routine_name_});
