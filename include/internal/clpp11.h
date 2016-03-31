@@ -83,12 +83,12 @@ class Event {
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
   float GetElapsedTime() const {
     CheckError(clWaitForEvents(1, &event_));
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
-    auto time_start = size_t{0};
+    size_t time_start = 0;
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
-    auto time_end = size_t{0};
+    size_t time_end = 0;
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
     return (time_end - time_start) * 1.0e-6f;
   }
