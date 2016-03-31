@@ -110,18 +110,18 @@ class Platform {
 
   // Initializes the platform
   explicit Platform(const size_t platform_id) {
-    auto num_platforms = cl_uint{0};
+    cl_uint num_platforms = 0;
     CheckError(clGetPlatformIDs(0, nullptr, &num_platforms));
     if (num_platforms == 0) { Error("no platforms found"); }
     auto platforms = std::vector<cl_platform_id>(num_platforms);
     CheckError(clGetPlatformIDs(num_platforms, platforms.data(), nullptr));
-    if (platform_id >= num_platforms) { Error("invalid platform ID "+std::to_string(platform_id)); }
+    if (platform_id >= num_platforms) { Error("invalid platform ID "+std::to_string((long long)platform_id)); }
     platform_ = platforms[platform_id];
   }
 
   // Returns the number of devices on this platform
   size_t NumDevices() const {
-    auto result = cl_uint{0};
+    cl_uint result = 0;
     CheckError(clGetDeviceIDs(platform_, CL_DEVICE_TYPE_ALL, 0, nullptr, &result));
     return static_cast<size_t>(result);
   }
@@ -148,7 +148,7 @@ class Device {
     auto devices = std::vector<cl_device_id>(num_devices);
     CheckError(clGetDeviceIDs(platform(), CL_DEVICE_TYPE_ALL, static_cast<cl_uint>(num_devices),
                               devices.data(), nullptr));
-    if (device_id >= num_devices) { Error("invalid device ID "+std::to_string(device_id)); }
+    if (device_id >= num_devices) { Error("invalid device ID "+std::to_string((long long)device_id)); }
     device_ = devices[device_id];
   }
 
@@ -188,9 +188,9 @@ class Device {
     return (local_mem_usage <= LocalMemSize());
   }
   bool IsThreadConfigValid(const std::vector<size_t> &local) const {
-    auto local_size = size_t{1};
+    size_t local_size = 1;
     for (const auto &item: local) { local_size *= item; }
-    for (auto i=size_t{0}; i<local.size(); ++i) {
+    for (size_t i=0; i<local.size(); ++i) {
       if (local[i] > MaxWorkItemSizes()[i]) { return false; }
     }
     if (local_size > MaxWorkGroupSize()) { return false; }
@@ -206,14 +206,14 @@ class Device {
   // Private helper functions
   template <typename T>
   T GetInfo(const cl_device_info info) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = T(0);
     CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
     return result;
   }
   size_t GetInfo(const cl_device_info info) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = cl_uint(0);
     CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
@@ -221,14 +221,14 @@ class Device {
   }
   template <typename T>
   std::vector<T> GetInfoVector(const cl_device_info info) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = std::vector<T>(bytes/sizeof(T));
     CheckError(clGetDeviceInfo(device_, info, bytes, result.data(), nullptr));
     return result;
   }
   std::string GetInfoString(const cl_device_info info) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
     auto result = std::string{};
     result.resize(bytes);
@@ -304,7 +304,7 @@ class Program {
 
   // Retrieves the warning/error message from the compiler (if any)
   std::string GetBuildInfo(const Device &device) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
     CheckError(clGetProgramBuildInfo(*program_, device(), query, 0, nullptr, &bytes));
     auto result = std::string{};
@@ -315,7 +315,7 @@ class Program {
 
   // Retrieves an intermediate representation of the compiled program
   std::string GetIR() const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
     auto result = std::string{};
     result.resize(bytes);
@@ -369,14 +369,14 @@ class Queue {
 
   // Retrieves the corresponding context or device
   Context GetContext() const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, 0, nullptr, &bytes));
     cl_context result;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, bytes, &result, nullptr));
     return Context(result);
   }
   Device GetDevice() const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, 0, nullptr, &bytes));
     cl_device_id result;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, bytes, &result, nullptr));
@@ -538,7 +538,7 @@ class Buffer {
 
   // Retrieves the actual allocated size in bytes
   size_t GetSize() const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, 0, nullptr, &bytes));
     auto result = size_t{0};
     CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, bytes, &result, nullptr));
@@ -591,7 +591,7 @@ class Kernel {
 
   // Retrieves the amount of local memory used per work-group for this kernel
   size_t LocalMemUsage(const Device &device) const {
-    auto bytes = size_t{0};
+    size_t bytes = 0;
     auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, 0, nullptr, &bytes));
     auto result = size_t{0};
