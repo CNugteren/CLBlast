@@ -32,7 +32,7 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH false) # Don't add the automatically deter
 # ==================================================================================================
 
 # Compiler-version check (requires at least CMake 2.8.10)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7)
     message(FATAL_ERROR "GCC version must be at least 4.7")
   endif()
