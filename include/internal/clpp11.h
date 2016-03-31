@@ -62,7 +62,7 @@ inline void Error(const std::string &message) {
 // Error occurred in OpenCL
 inline void CheckError(const cl_int status) {
   if (status != CL_SUCCESS) {
-    throw std::runtime_error("Internal OpenCL error: "+std::to_string((long)status));
+    throw std::runtime_error("Internal OpenCL error: "+std::to_string((long long)status));
   }
 }
 
