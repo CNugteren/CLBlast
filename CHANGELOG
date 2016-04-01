@@ -2,6 +2,9 @@
 Development version (next release)
 - Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
 - Made the library thread-safe
+- Fixed the use of events within the library
+- Added level-1 routines:
+  * SNRM2/DNRM2/ScNRM2/DzNRM2
 
 Version 0.6.0
 - Added support for MSVC (Visual Studio) 2015

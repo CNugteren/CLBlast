@@ -170,14 +170,14 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xROT     |   |   | - | - |         |
 | xROTM    |   |   | - | - |         |
 | xSWAP    | ✔ | ✔ | ✔ | ✔ |         |
-| xSCAL    | ✔ | ✔ | ✔ | ✔ | +CS +ZD |
+| xSCAL    | ✔ | ✔ | ✔ | ✔ |         |
 | xCOPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
 | xDOT     | ✔ | ✔ | - | - |         |
 | xDOTU    | - | - | ✔ | ✔ |         |
 | xDOTC    | - | - | ✔ | ✔ |         |
-| xNRM2    |   |   | - | - | +SC +DZ |
-| xASUM    |   |   | - | - | +SC +DZ |
+| xNRM2    | ✔ | ✔ | ✔ | ✔ |         |
+| xASUM    |   |   |   |   |         |
 | IxAMAX   |   |   |   |   |         |
 
 | Level-2  | S | D | C | Z | Notes   |
@@ -234,7 +234,7 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 
 * [TU/e ES research group](http://www.es.ele.tue.nl/)
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
-* [Dividiti](http://www.dividiti.com)
+* [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
 
 Support us
@@ -250,4 +250,3 @@ To-do list before release of version 1.0
 - Allow the user control over events and synchronization
 - Add half-precision routines (e.g. HGEMM)
 - Enable correctness and performance testing against a CPU-based BLAS library
-- Test in multi-threaded environments
