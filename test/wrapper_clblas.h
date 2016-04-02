@@ -65,7 +65,7 @@ template <typename T>
 clblasStatus clblasXrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
                           cl_mem sd2_buffer, const size_t sd2_offset,
                           cl_mem sx1_buffer, const size_t sx1_offset,
-                          cl_mem sy1_buffer, const size_t sy1_offset,
+                          const cl_mem sy1_buffer, const size_t sy1_offset,
                           cl_mem sparam_buffer, const size_t sparam_offset,
                           cl_uint num_queues, cl_command_queue *queues,
                           cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
@@ -73,7 +73,7 @@ template <>
 clblasStatus clblasXrotmg<float>(cl_mem sd1_buffer, const size_t sd1_offset,
                                  cl_mem sd2_buffer, const size_t sd2_offset,
                                  cl_mem sx1_buffer, const size_t sx1_offset,
-                                 cl_mem sy1_buffer, const size_t sy1_offset,
+                                 const cl_mem sy1_buffer, const size_t sy1_offset,
                                  cl_mem sparam_buffer, const size_t sparam_offset,
                                  cl_uint num_queues, cl_command_queue *queues,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
@@ -88,7 +88,7 @@ template <>
 clblasStatus clblasXrotmg<double>(cl_mem sd1_buffer, const size_t sd1_offset,
                                   cl_mem sd2_buffer, const size_t sd2_offset,
                                   cl_mem sx1_buffer, const size_t sx1_offset,
-                                  cl_mem sy1_buffer, const size_t sy1_offset,
+                                  const cl_mem sy1_buffer, const size_t sy1_offset,
                                   cl_mem sparam_buffer, const size_t sparam_offset,
                                   cl_uint num_queues, cl_command_queue *queues,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {

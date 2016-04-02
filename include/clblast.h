@@ -100,7 +100,7 @@ template <typename T>
 StatusCode Rotmg(cl_mem sd1_buffer, const size_t sd1_offset,
                  cl_mem sd2_buffer, const size_t sd2_offset,
                  cl_mem sx1_buffer, const size_t sx1_offset,
-                 cl_mem sy1_buffer, const size_t sy1_offset,
+                 const cl_mem sy1_buffer, const size_t sy1_offset,
                  cl_mem sparam_buffer, const size_t sparam_offset,
                  cl_command_queue* queue, cl_event* event = nullptr);
 

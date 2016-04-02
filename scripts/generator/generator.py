@@ -8,12 +8,13 @@
 #   Cedric Nugteren <www.cedricnugteren.nl>
 #
 # This script automatically generates the bodies of the following files, creating the full CLBlast
-# API interface and implementation (C, C++, and clBLAS wrapper):
+# API interface and implementation (C, C++, and reference BLAS wrappers):
 #    clblast.h
 #    clblast.cc
 #    clblast_c.h
 #    clblast_c.cc
 #    wrapper_clblas.h
+#    wrapper_cblas.h
 # It also generates the main functions for the correctness and performance tests as found in
 #    test/correctness/routines/levelX/xYYYY.cc
 #    test/performance/routines/levelX/xYYYY.cc
@@ -55,7 +56,7 @@ TU = DataType("TU", "typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") 
 routines = [
 [ # Level 1: vector-vector
   Routine(False, "1", "rotg",  T,  [S,D],     [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation"),
-  Routine(False, "1", "rotmg", T,  [S,D],     [], [], [], ["sd1","sd2","sx1","sy1","sparam"], [], "", "Generate modified givens plane rotation"),
+  Routine(False, "1", "rotmg", T,  [S,D],     [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation"),
   Routine(False, "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation"),
   Routine(False, "1", "rotm",  T,  [S,D],     ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation"),
   Routine(True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], "", "Swap two vectors"),
@@ -220,11 +221,11 @@ def wrapper_clblas(routines):
 	for routine in routines:
 		result += "\n// Forwards the clBLAS calls for %s\n" % (routine.ShortNames())
 		if routine.NoScalars():
-			result += routine.RoutineHeaderWrapper(routine.template, True, 21)+";\n"
+			result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
 		for flavour in routine.flavours:
 			indent = " "*(17 + routine.Length())
-			result += routine.RoutineHeaderWrapper(flavour, False, 21)+" {\n"
-			arguments = routine.ArgumentsWrapper(flavour)
+			result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
+			arguments = routine.ArgumentsWrapperCL(flavour)
 			if routine.scratch:
 				result += "  auto queue = Queue(queues[0]);\n"
 				result += "  auto context = queue.GetContext();\n"
@@ -233,6 +234,41 @@ def wrapper_clblas(routines):
 			result += "  return clblas"+flavour.name+routine.name+"("
 			result += (",\n"+indent).join([a for a in arguments])
 			result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+			result += "\n}\n"
+	return result
+
+# The wrapper to the reference CBLAS routines (for performance/correctness testing)
+def wrapper_cblas(routines):
+	result = ""
+	for routine in routines:
+		result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNames())
+		for flavour in routine.flavours:
+			indent = " "*(10 + routine.Length())
+			result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
+			arguments = routine.ArgumentsWrapperC(flavour)
+
+			# Double-precision scalars
+			for scalar in routine.scalars:
+				if flavour.IsComplex(scalar):
+					result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
+
+			# Special case for scalar outputs
+			assignment = ""
+			postfix = ""
+			extra_argument = ""
+			for output_buffer in routine.outputs:
+				if output_buffer in routine.ScalarBuffersFirst():
+					if flavour in [C,Z]:
+						postfix += "_sub"
+						indent += "    "
+						extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
+					else:
+						assignment = output_buffer+"_buffer["+output_buffer+"_offset] = "
+						indent += " "*len(assignment)
+
+			result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
+			result += (",\n"+indent).join([a for a in arguments])
+			result += extra_argument+");"
 			result += "\n}\n"
 	return result
 
@@ -251,9 +287,10 @@ files = [
   path_clblast+"/include/clblast_c.h",
   path_clblast+"/src/clblast_c.cc",
   path_clblast+"/test/wrapper_clblas.h",
+  path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 65, 93, 22, 22]
-footer_lines = [6, 3, 9, 2, 6]
+header_lines = [84, 65, 93, 22, 22, 31]
+footer_lines = [6, 3, 9, 2, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
 for f in files:
@@ -287,6 +324,8 @@ for i in xrange(0,len(files)):
 				body += clblast_c_cc(routines[level-1])
 			if i == 4:
 				body += wrapper_clblas(routines[level-1])
+			if i == 5:
+				body += wrapper_cblas(routines[level-1])
 		f.write("".join(file_header))
 		f.write(body)
 		f.write("".join(file_footer))
