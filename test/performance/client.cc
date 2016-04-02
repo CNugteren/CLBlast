@@ -24,11 +24,13 @@ namespace clblast {
 
 // Constructor
 template <typename T, typename U>
-Client<T,U>::Client(const Routine run_routine, const Routine run_reference,
+Client<T,U>::Client(const Routine run_routine,
+                    const Routine run_reference1, const Routine run_reference2,
                     const std::vector<std::string> &options,
                     const GetMetric get_flops, const GetMetric get_bytes):
   run_routine_(run_routine),
-  run_reference_(run_reference),
+  run_reference1_(run_reference1),
+  run_reference2_(run_reference2),
   options_(options),
   get_flops_(get_flops),
   get_bytes_(get_bytes) {
@@ -90,7 +92,16 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   args.platform_id    = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
   args.device_id      = GetArgument(argc, argv, help, kArgDevice, size_t{0});
   args.precision      = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
-  args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, 1);
+  #ifdef CLBLAST_REF_CLBLAS
+    args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, 1);
+  #else
+    args.compare_clblas = 0;
+  #endif
+  #ifdef CLBLAST_REF_CBLAS
+    args.compare_cblas  = GetArgument(argc, argv, help, kArgComparecblas, 1);
+  #else
+    args.compare_cblas = 0;
+  #endif
   args.step           = GetArgument(argc, argv, help, kArgStepSize, size_t{1});
   args.num_steps      = GetArgument(argc, argv, help, kArgNumSteps, size_t{0});
   args.num_runs       = GetArgument(argc, argv, help, kArgNumRuns, size_t{10});
@@ -120,7 +131,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   auto device = Device(platform, args.device_id);
   auto context = Context(device);
   auto queue = Queue(context, device);
-  if (args.compare_clblas) { clblasSetup(); }
+  #ifdef CLBLAST_REF_CLBLAS
+    if (args.compare_clblas) { clblasSetup(); }
+  #endif
 
   // Iterates over all "num_step" values jumping by "step" each time
   auto s = size_t{0};
@@ -167,8 +180,12 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
     timings.push_back(std::pair<std::string, double>("CLBlast", ms_clblast));
     if (args.compare_clblas) {
-      auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference_, "clBLAS");
+      auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference1_, "clBLAS");
       timings.push_back(std::pair<std::string, double>("clBLAS", ms_clblas));
+    }
+    if (args.compare_cblas) {
+      auto ms_cblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference2_, "CPU BLAS");
+      timings.push_back(std::pair<std::string, double>("CPU BLAS", ms_cblas));
     }
 
     // Prints the performance of the tested libraries
@@ -186,7 +203,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   }
 
   // Cleans-up and returns
-  if (args.compare_clblas) { clblasTeardown(); }
+  #ifdef CLBLAST_REF_CLBLAS
+    if (args.compare_clblas) { clblasTeardown(); }
+  #endif
 }
 
 // =================================================================================================
@@ -196,14 +215,17 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 // value found in the vector of timing results. The return value is in milliseconds.
 template <typename T, typename U>
 double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
-                                   const Buffers<T> &buffers, Queue &queue,
+                                   Buffers<T> &buffers, Queue &queue,
                                    Routine run_blas, const std::string &library_name) {
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {
     auto start_time = std::chrono::steady_clock::now();
 
     // Executes the main computation
-    auto status = run_blas(args, buffers, queue);
+    auto status = StatusCode::kSuccess;
+    try {
+      status = run_blas(args, buffers, queue);
+    } catch (...) { status = static_cast<StatusCode>(kUnknownError); }
     if (status != StatusCode::kSuccess) {
       throw std::runtime_error(library_name+" error: "+ToString(static_cast<int>(status)));
     }
@@ -226,6 +248,7 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
     for (auto i=size_t{0}; i<options_.size(); ++i) { fprintf(stdout, "%9s ", ""); }
     fprintf(stdout, " | <--       CLBlast       -->");
     if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
+    if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
     fprintf(stdout, " |\n");
   }
 
@@ -233,6 +256,7 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
   fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
   if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
+  if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }
   fprintf(stdout, "\n");
 }
 

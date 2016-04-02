@@ -79,24 +79,6 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
   // Iterates over all the to-be-tested combinations of arguments
   for (auto &args: test_vector) {
 
-    // Runs the reference clBLAS code
-    auto x_vec1 = Buffer<T>(context_, args.x_size);
-    auto y_vec1 = Buffer<T>(context_, args.y_size);
-    auto a_mat1 = Buffer<T>(context_, args.a_size);
-    auto b_mat1 = Buffer<T>(context_, args.b_size);
-    auto c_mat1 = Buffer<T>(context_, args.c_size);
-    auto ap_mat1 = Buffer<T>(context_, args.ap_size);
-    auto scalar1 = Buffer<T>(context_, args.scalar_size);
-    x_vec1.Write(queue_, args.x_size, x_source_);
-    y_vec1.Write(queue_, args.y_size, y_source_);
-    a_mat1.Write(queue_, args.a_size, a_source_);
-    b_mat1.Write(queue_, args.b_size, b_source_);
-    c_mat1.Write(queue_, args.c_size, c_source_);
-    ap_mat1.Write(queue_, args.ap_size, ap_source_);
-    scalar1.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
-    auto status1 = run_reference_(args, buffers1, queue_);
-
     // Runs the CLBlast code
     auto x_vec2 = Buffer<T>(context_, args.x_size);
     auto y_vec2 = Buffer<T>(context_, args.y_size);
@@ -114,6 +96,33 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     scalar2.Write(queue_, args.scalar_size, scalar_source_);
     auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
     auto status2 = run_routine_(args, buffers2, queue_);
+
+    #ifndef CLBLAST_REF_CLBLAS
+      // Don't continue with CBLAS if there are incorrect parameters
+      if (status2 != StatusCode::kSuccess) {
+        // TODO: Mark this as a skipped test instead of a succesfull test
+        TestErrorCodes(status2, status2, args);
+        continue;
+      }
+    #endif
+
+    // Runs the reference BLAS code
+    auto x_vec1 = Buffer<T>(context_, args.x_size);
+    auto y_vec1 = Buffer<T>(context_, args.y_size);
+    auto a_mat1 = Buffer<T>(context_, args.a_size);
+    auto b_mat1 = Buffer<T>(context_, args.b_size);
+    auto c_mat1 = Buffer<T>(context_, args.c_size);
+    auto ap_mat1 = Buffer<T>(context_, args.ap_size);
+    auto scalar1 = Buffer<T>(context_, args.scalar_size);
+    x_vec1.Write(queue_, args.x_size, x_source_);
+    y_vec1.Write(queue_, args.y_size, y_source_);
+    a_mat1.Write(queue_, args.a_size, a_source_);
+    b_mat1.Write(queue_, args.b_size, b_source_);
+    c_mat1.Write(queue_, args.c_size, c_source_);
+    ap_mat1.Write(queue_, args.ap_size, ap_source_);
+    scalar1.Write(queue_, args.scalar_size, scalar_source_);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
+    auto status1 = run_reference_(args, buffers1, queue_);
 
     // Tests for equality of the two status codes
     if (status1 != StatusCode::kSuccess || status2 != StatusCode::kSuccess) {

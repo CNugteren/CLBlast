@@ -289,7 +289,7 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 65, 93, 22, 22, 31]
+header_lines = [84, 65, 93, 22, 22, 38]
 footer_lines = [6, 3, 9, 2, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

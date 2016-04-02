@@ -69,10 +69,12 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
           kUnsupportedPrecision.c_str());
 
   // Initializes clBLAS
-  auto status = clblasSetup();
-  if (status != CL_SUCCESS) {
-    throw std::runtime_error("clBLAS setup error: "+ToString(static_cast<int>(status)));
-  }
+  #ifdef CLBLAST_REF_CLBLAS
+    auto status = clblasSetup();
+    if (status != CL_SUCCESS) {
+      throw std::runtime_error("clBLAS setup error: "+ToString(static_cast<int>(status)));
+    }
+  #endif
 }
 
 // Destructor prints the summary of the test cases and cleans-up the clBLAS library
@@ -87,7 +89,11 @@ Tester<T,U>::~Tester() {
     fprintf(stdout, "   %zu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
   }
   fprintf(stdout, "\n");
-  clblasTeardown();
+
+  // Cleans-up clBLAS
+  #ifdef CLBLAST_REF_CLBLAS
+    clblasTeardown();
+  #endif
 }
 
 // =================================================================================================

@@ -21,6 +21,13 @@
 
 namespace clblast {
 
+// Conversions from CLBlast types
+CBLAS_ORDER convertToCBLAS(const Layout v) { return (v == Layout::kRowMajor) ? CblasRowMajor : CblasColMajor; }
+CBLAS_TRANSPOSE convertToCBLAS(const Transpose v) { return (v == Transpose::kNo) ? CblasNoTrans : (v == Transpose::kYes) ? CblasTrans : CblasConjTrans; }
+CBLAS_UPLO convertToCBLAS(const Triangle v) { return (v == Triangle::kUpper) ? CblasUpper : CblasLower; }
+CBLAS_DIAG convertToCBLAS(const Diagonal v) { return (v == Diagonal::kUnit) ? CblasUnit : CblasNonUnit; }
+CBLAS_SIDE convertToCBLAS(const Side v) { return (v == Side::kLeft) ? CblasLeft : CblasRight; }
+
 // OpenBLAS is not fully Netlib CBLAS compatible
 #ifdef OPENBLAS_VERSION
   using return_pointer_float = openblas_complex_float*;
