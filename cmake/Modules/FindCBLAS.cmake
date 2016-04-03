@@ -37,7 +37,10 @@ set(CBLAS_PATHS
 find_path(CBLAS_INCLUDE_DIRS
   NAMES cblas.h
   HINTS ${CBLAS_HINTS}
-  PATH_SUFFIXES include inc include/x86_64 include/x64 openblas/include
+  PATH_SUFFIXES
+    include inc include/x86_64 include/x64
+    openblas/include include/blis blis/include blis/include/blis
+    Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Versions/Current/Headers
   PATHS ${CBLAS_PATHS}
   DOC "Netlib BLAS include header cblas.h"
 )
@@ -45,9 +48,11 @@ mark_as_advanced(CBLAS_INCLUDE_DIRS)
 
 # Finds the library
 find_library(CBLAS_LIBRARIES
-  NAMES blas openblas atlas mkl accelerate
+  NAMES blas mkl blis openblas atlas accelerate
   HINTS ${CBLAS_HINTS}
-  PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32 lib/import lib64/import openblas/lib
+  PATH_SUFFIXES
+    lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32 lib/import lib64/import
+    openblas/lib blis/lib
   PATHS ${CBLAS_PATHS}
   DOC "Netlib BLAS library"
 )
