@@ -66,7 +66,7 @@ else ()
       set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
     endif()
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    set(FLAGS "${FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
+    set(FLAGS "${FLAGS} -Wall -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
     set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
   endif()
@@ -98,11 +98,13 @@ if(TUNERS)
   endif()
 endif()
 
-# Locates the clBLAS library in case the tests need to be compiled. "FindclBLAS.cmake" is included.
+# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
+# and "FindCBLAS.cmake" are included.
 if(TESTS)
   find_package(clBLAS)
-  if(NOT CLBLAS_FOUND)
-    message(STATUS "Could NOT find clBLAS, disabling the compilation of the tests")
+  find_package(CBLAS)
+  if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
+    message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
     set(TESTS OFF)
   endif()
 endif()
@@ -215,11 +217,33 @@ endif()
 # ==================================================================================================
 
 # Down from here is all test (performance and correctness) related. Note that these tests require
-# the presence of the clBLAS library to act as a reference.
+# the presence of clBLAS and/or a BLAS library to act as a reference.
 if(TESTS)
 
-  # Adds new include directories for the reference clBLAS
-  include_directories(${clblast_SOURCE_DIR}/test ${CLBLAS_INCLUDE_DIRS})
+  # Sets the specifics for the reference BLAS libraries
+  set(REF_INCLUDES )
+  set(REF_LIBRARIES )
+  if(CLBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CLBLAS_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES})
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      add_definitions(" /DCLBLAST_REF_CLBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CLBLAS")
+    endif()
+  endif()
+  if(CBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CBLAS_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CBLAS_LIBRARIES})
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      add_definitions(" /DCLBLAST_REF_CBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CBLAS")
+    endif()
+  endif()
+
+  # Sets the include directories
+  include_directories(${clblast_SOURCE_DIR}/test ${REF_INCLUDES})
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
@@ -239,7 +263,7 @@ if(TESTS)
                    test/correctness/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -269,7 +293,7 @@ if(TESTS)
                    test/performance/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 

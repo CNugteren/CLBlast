@@ -28,7 +28,7 @@ def OptionToCLBlast(x):
 	}[x]
 
 # As above, but for clBLAS data-types
-def OptionToWrapper(x):
+def OptionToWrapperCL(x):
 	return {
 	    'layout': "clblasOrder",
 	    'a_transpose': "clblasTranspose",
@@ -37,6 +37,18 @@ def OptionToWrapper(x):
 	    'side': "clblasSide",
 	    'triangle': "clblasUplo",
 	    'diagonal': "clblasDiag",
+	}[x]
+
+# As above, but for CBLAS data-types
+def OptionToWrapperC(x):
+	return {
+	    'layout': "CBLAS_ORDER",
+	    'a_transpose': "CBLAS_TRANSPOSE",
+	    'b_transpose': "CBLAS_TRANSPOSE",
+	    'ab_transpose': "CBLAS_TRANSPOSE",
+	    'side': "CBLAS_SIDE",
+	    'triangle': "CBLAS_UPLO",
+	    'diagonal': "CBLAS_DIAG",
 	}[x]
 
 # ==================================================================================================
@@ -119,6 +131,16 @@ class Routine():
 			return [", ".join(a+b+c)]
 		return []
 
+	# As above but as vectors
+	def BufferDefVector(self, name, flavour):
+		prefix = "const " if (name in self.inputs) else ""
+		if (name in self.inputs) or (name in self.outputs):
+			a = [prefix+"std::vector<"+flavour.buffertype+">& "+name+"_buffer"]
+			b = ["const size_t "+name+"_offset"]
+			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
+			return [", ".join(a+b+c)]
+		return []
+
 	# As above but with Claduc buffers
 	def BufferCladuc(self, name):
 		if (name in self.inputs) or (name in self.outputs):
@@ -129,7 +151,7 @@ class Routine():
 		return []
 
 	# As above but with a static cast for clBLAS wrapper
-	def BufferWrapper(self, name):
+	def BufferWrapperCL(self, name):
 		if (name in self.inputs) or (name in self.outputs):
 			a = [name+"_buffer"]
 			b = [name+"_offset"]
@@ -139,6 +161,24 @@ class Routine():
 			elif (name in ["a","b","c"]):
 				c = [name+"_"+self.Postfix(name)]
 			return [", ".join(a+b+c)]
+		return []
+
+	# As above but with a static cast for CBLAS wrapper
+	def BufferWrapperC(self, name, flavour):
+		prefix = "const " if (name in self.inputs) else ""
+		if (name in self.inputs) or (name in self.outputs):
+			if name == "sy1":
+				a = [name+"_buffer["+name+"_offset]"]
+			elif flavour.precision_name in ["C","Z"]:
+				a = ["reinterpret_cast<"+prefix+flavour.buffertype[:-1]+"*>(&"+name+"_buffer["+name+"_offset])"]
+			else:
+				a = ["&"+name+"_buffer["+name+"_offset]"]
+			c = []
+			if (name in ["x","y"]):
+				c = ["static_cast<int>("+name+"_"+self.Postfix(name)+")"]
+			elif (name in ["a","b","c"]):
+				c = [name+"_"+self.Postfix(name)]
+			return [", ".join(a+c)]
 		return []
 
 	# As above, but only data-types
@@ -176,6 +216,14 @@ class Routine():
 				return [flavour.UseAlphaCL()]
 			elif name == "beta":
 				return [flavour.UseBetaCL()]
+			return [name]
+		return []
+
+	# Retrieves the use of a scalar for CBLAS (alpha/beta)
+	def ScalarUseWrapperC(self, name, flavour):
+		if name in self.scalars:
+			if flavour.IsComplex(name):
+				return [name+"_array.data()"]
 			return [name]
 		return []
 
@@ -246,9 +294,16 @@ class Routine():
 		return []
 
 	# As above, but now using clBLAS data-types
-	def OptionsDefWrapper(self):
+	def OptionsDefWrapperCL(self):
 		if self.options:
-			definitions = ["const "+OptionToWrapper(o)+" "+o for o in self.options]
+			definitions = ["const "+OptionToWrapperCL(o)+" "+o for o in self.options]
+			return [", ".join(definitions)]
+		return []
+
+	# As above, but now using CBLAS data-types
+	def OptionsDefWrapperC(self):
+		if self.options:
+			definitions = ["const "+OptionToWrapperC(o)+" "+o for o in self.options]
 			return [", ".join(definitions)]
 		return []
 
@@ -284,15 +339,25 @@ class Routine():
 		        list(chain(*[self.ScalarUse(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but for the clBLAS wrapper
-	def ArgumentsWrapper(self, flavour):
+	def ArgumentsWrapperCL(self, flavour):
 		return (self.Options() + self.Sizes() +
-		        list(chain(*[self.BufferWrapper(b) for b in self.ScalarBuffersFirst()])) +
+		        list(chain(*[self.BufferWrapperCL(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarUseWrapper("alpha", flavour) +
-		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersFirst()])) +
+		        list(chain(*[self.BufferWrapperCL(b) for b in self.BuffersFirst()])) +
 		        self.ScalarUseWrapper("beta", flavour) +
-		        list(chain(*[self.BufferWrapper(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.BufferWrapper(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.BufferWrapperCL(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferWrapperCL(b) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.ScalarUseWrapper(s, flavour) for s in self.OtherScalars()])))
+
+	# As above, but for the CBLAS wrapper
+	def ArgumentsWrapperC(self, flavour):
+		return (self.Options() + self.Sizes() +
+		        self.ScalarUseWrapperC("alpha", flavour) +
+		        list(chain(*[self.BufferWrapperC(b, flavour) for b in self.BuffersFirst()])) +
+		        self.ScalarUseWrapperC("beta", flavour) +
+		        list(chain(*[self.BufferWrapperC(b, flavour) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferWrapperC(b, flavour) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarUseWrapperC(s, flavour) for s in self.OtherScalars()])))
 
 	# Retrieves a combination of all the argument definitions
 	def ArgumentsDef(self, flavour):
@@ -306,14 +371,25 @@ class Routine():
 		        list(chain(*[self.ScalarDef(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but clBLAS wrapper plain datatypes
-	def ArgumentsDefWrapper(self, flavour):
-		return (self.OptionsDefWrapper() + self.SizesDef() +
+	def ArgumentsDefWrapperCL(self, flavour):
+		return (self.OptionsDefWrapperCL() + self.SizesDef() +
 		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarDefPlain("alpha", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
 		        self.ScalarDefPlain("beta", flavour) +
 		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
 		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in self.OtherScalars()])))
+
+	# As above, but CBLAS wrapper plain datatypes
+	def ArgumentsDefWrapperC(self, flavour):
+		return (self.OptionsDefWrapperC() + self.SizesDef() +
+		        list(chain(*[self.BufferDefVector(b, flavour) for b in self.ScalarBuffersFirst()])) +
+		        self.ScalarDefPlain("alpha", flavour) +
+		        list(chain(*[self.BufferDefVector(b, flavour) for b in self.BuffersFirst()])) +
+		        self.ScalarDefPlain("beta", flavour) +
+		        list(chain(*[self.BufferDefVector(b, flavour) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferDefVector(b, flavour) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in self.OtherScalars()])))
 	
 	# Retrieves a combination of all the argument types
@@ -356,7 +432,7 @@ class Routine():
 		return result
 
 	# As above, but now for the clBLAS wrapper
-	def RoutineHeaderWrapper(self, flavour, def_only, spaces):
+	def RoutineHeaderWrapperCL(self, flavour, def_only, spaces):
 		template = "<"+flavour.template+">" if self.NoScalars() and not def_only else ""
 		indent = " "*(spaces + self.Length() + len(template))
 		result = ""
@@ -366,9 +442,16 @@ class Routine():
 				result += flavour.name
 			result += ">\n"
 		result += "clblasStatus clblasX"+self.name+template+"("
-		result += (",\n"+indent).join([a for a in self.ArgumentsDefWrapper(flavour)])
+		result += (",\n"+indent).join([a for a in self.ArgumentsDefWrapperCL(flavour)])
 		result += ",\n"+indent+"cl_uint num_queues, cl_command_queue *queues"
 		result += ",\n"+indent+"cl_uint num_wait_events, const cl_event *wait_events, cl_event *events)"
+		return result
+
+	# As above, but now for the CBLAS wrapper
+	def RoutineHeaderWrapperC(self, flavour, def_only, spaces):
+		indent = " "*(spaces + self.Length())
+		result = "void cblasX"+self.name+"("
+		result += (",\n"+indent).join([a for a in self.ArgumentsDefWrapperC(flavour)])+")"
 		return result
 
 # ==================================================================================================

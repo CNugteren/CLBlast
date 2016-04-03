@@ -93,7 +93,7 @@ template <typename T>
 StatusCode Rotmg(cl_mem, const size_t,
                  cl_mem, const size_t,
                  cl_mem, const size_t,
-                 cl_mem, const size_t,
+                 const cl_mem, const size_t,
                  cl_mem, const size_t,
                  cl_command_queue*, cl_event*) {
   return StatusCode::kNotImplemented;
@@ -101,13 +101,13 @@ StatusCode Rotmg(cl_mem, const size_t,
 template StatusCode PUBLIC_API Rotmg<float>(cl_mem, const size_t,
                                             cl_mem, const size_t,
                                             cl_mem, const size_t,
-                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Rotmg<double>(cl_mem, const size_t,
                                              cl_mem, const size_t,
                                              cl_mem, const size_t,
-                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t,
                                              cl_mem, const size_t,
                                              cl_command_queue*, cl_event*);
 

@@ -58,5 +58,10 @@ class DataType():
 			return "<"+self.buffertype+","+self.beta_cpp+">, "+self.buffertype+", "+self.beta_cpp
 		return "<"+self.buffertype+">, "+self.buffertype+", "+self.beta_cpp
 
+	# Current scalar is complex
+	def IsComplex(self, scalar):
+		return ((scalar == "alpha" and self.alpha_cpp in [FLT2, DBL2]) or
+		        (scalar == "beta" and self.beta_cpp in [FLT2, DBL2]))
+
 
 # ==================================================================================================

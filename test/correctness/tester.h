@@ -23,7 +23,9 @@
 #include <memory>
 
 // The libraries
-#include <clBLAS.h>
+#ifdef CLBLAST_REF_CLBLAS
+  #include <clBLAS.h>
+#endif
 #include "clblast.h"
 
 #include "internal/utilities.h"
@@ -92,7 +94,7 @@ class Tester {
   Queue queue_;
 
   // Whether or not to run the full test-suite or just a smoke test
-  bool full_test_;
+  const bool full_test_;
 
   // Retrieves the offset values to test with
   const std::vector<size_t> GetOffsets() const;

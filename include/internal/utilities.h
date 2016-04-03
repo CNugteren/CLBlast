@@ -35,6 +35,9 @@ using double2 = std::complex<double>;
 const std::string kKhronosHalfPrecision = "cl_khr_fp16";
 const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 
+// Catched an unknown error
+constexpr auto kUnknownError = -999;
+
 // =================================================================================================
 
 // The routine-specific arguments in string form
@@ -70,6 +73,7 @@ constexpr auto kArgFraction = "fraction";
 
 // The client-specific arguments in string form
 constexpr auto kArgCompareclblas = "clblas";
+constexpr auto kArgComparecblas = "cblas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
@@ -128,6 +132,7 @@ struct Arguments {
   double fraction = 1.0;
   // Client-specific arguments
   int compare_clblas = 1;
+  int compare_cblas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
