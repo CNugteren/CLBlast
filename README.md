@@ -52,6 +52,14 @@ The pre-requisites for compilation of CLBlast are:
   - Intel OpenCL
   - Beignet
 
+Furthermore, to build the (optional) correctness and performance tests, another BLAS library is needed to serve as a reference. This can be either:
+
+* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS (maintained by AMD)
+* A regular CPU Netlib BLAS library, e.g.:
+  - OpenBLAS
+  - BLIS
+  - Accelerate
+
 An example of an out-of-source build (starting from the root of the CLBlast folder):
 
     mkdir build
@@ -135,9 +143,9 @@ To make sure CLBlast is working correctly on your device (recommended), compile 
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. The library clBLAS is therefore required to be installed on your system for the CLBlast tests.
+Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is best tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. If the library clBLAS is not installed on your system, it will use a regular CPU BLAS library to test against.
 
-With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
+With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against clBLAS and/or a CPU BLAS library.
 
 
 Performance remarks
@@ -249,4 +257,3 @@ To-do list before release of version 1.0
 - Support all routines supported by clBLAS
 - Allow the user control over events and synchronization
 - Add half-precision routines (e.g. HGEMM)
-- Enable correctness and performance testing against a CPU-based BLAS library
