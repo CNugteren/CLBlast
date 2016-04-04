@@ -97,9 +97,6 @@ StatusCode Xcopy<T>::DoCopy(const size_t n,
     }
     if (ErrorIn(status)) { return status; }
 
-    // Waits for all kernels to finish
-    queue_.Finish();
-
     // Succesfully finished the computation
     return StatusCode::kSuccess;
   } catch (...) { return StatusCode::kInvalidKernel; }

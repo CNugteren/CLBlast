@@ -91,9 +91,6 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
     }
     if (ErrorIn(status)) { return status; }
 
-    // Waits for all kernels to finish
-    queue_.Finish();
-
     // Succesfully finished the computation
     return StatusCode::kSuccess;
   } catch (...) { return StatusCode::kInvalidKernel; }

@@ -94,9 +94,6 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
     status = RunKernel(kernel, global, local);
     if (ErrorIn(status)) { return status; }
 
-    // Waits for all kernels to finish
-    queue_.Finish();
-
     // Succesfully finished the computation
     return StatusCode::kSuccess;
   } catch (...) { return StatusCode::kInvalidKernel; }
