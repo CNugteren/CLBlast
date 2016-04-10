@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xtrmm<T>::Xtrmm(Queue &queue, Event &event, const std::string &name):
+Xtrmm<T>::Xtrmm(Queue &queue, EventPointer event, const std::string &name):
     Xgemm<T>(queue, event, name) {
 }
 
@@ -82,8 +82,12 @@ StatusCode Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle
       auto global = std::vector<size_t>{Ceil(CeilDiv(k, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
                                         Ceil(CeilDiv(k, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
       auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
-      status = RunKernel(kernel, global, local);
+      auto kernelEvent = Event();
+      status = RunKernel(kernel, global, local, kernelEvent.pointer());
       if (ErrorIn(status)) { return status; }
+
+      // Synchronize now: 'DoGemm' does not accept a list of events to wait for
+      kernelEvent.WaitForCompletion();
 
       // Runs the regular Xgemm code with either "B := alpha*A*B" or ...
       if (side == Side::kLeft) {

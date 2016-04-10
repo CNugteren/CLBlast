@@ -28,7 +28,7 @@ class Xgerc: public Xger<T> {
   using Xger<T>::DoGer;
 
   // Constructor
-  Xgerc(Queue &queue, Event &event, const std::string &name = "GERC");
+  Xgerc(Queue &queue, EventPointer event, const std::string &name = "GERC");
 
   // Templated-precision implementation of the routine
   StatusCode DoGerc(const Layout layout,

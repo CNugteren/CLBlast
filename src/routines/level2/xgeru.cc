@@ -20,7 +20,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgeru<T>::Xgeru(Queue &queue, Event &event, const std::string &name):
+Xgeru<T>::Xgeru(Queue &queue, EventPointer event, const std::string &name):
     Xger<T>(queue, event, name) {
 }
 

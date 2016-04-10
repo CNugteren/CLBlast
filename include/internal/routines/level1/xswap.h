@@ -28,6 +28,7 @@ class Xswap: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
   using Routine<T>::TestVectorY;
@@ -35,7 +36,7 @@ class Xswap: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xswap(Queue &queue, Event &event, const std::string &name = "SWAP");
+  Xswap(Queue &queue, EventPointer event, const std::string &name = "SWAP");
 
   // Templated-precision implementation of the routine
   StatusCode DoSwap(const size_t n,

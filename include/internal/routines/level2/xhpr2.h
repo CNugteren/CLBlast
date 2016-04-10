@@ -28,7 +28,7 @@ class Xhpr2: public Xher2<T> {
   using Xher2<T>::DoHer2;
 
   // Constructor
-  Xhpr2(Queue &queue, Event &event, const std::string &name = "HPR2");
+  Xhpr2(Queue &queue, EventPointer event, const std::string &name = "HPR2");
 
   // Templated-precision implementation of the routine
   StatusCode DoHpr2(const Layout layout, const Triangle triangle,

@@ -169,8 +169,7 @@ def clblast_cc(routines):
 		if routine.implemented:
 			result += routine.RoutineHeaderCPP(12, "")+" {\n"
 			result += "  auto queue_cpp = Queue(*queue);\n"
-			result += "  auto event_cpp = Event(event);\n"
-			result += "  auto routine = X"+routine.name+"<"+routine.template.template+">(queue_cpp, event_cpp);\n"
+			result += "  auto routine = X"+routine.name+"<"+routine.template.template+">(queue_cpp, event);\n"
 			result += "  auto status = routine.SetUp();\n"
 			result += "  if (status != StatusCode::kSuccess) { return status; }\n"
 			result += "  return routine.Do"+routine.name.capitalize()+"("

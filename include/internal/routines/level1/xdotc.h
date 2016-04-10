@@ -28,7 +28,7 @@ class Xdotc: public Xdot<T> {
   using Xdot<T>::DoDot;
 
   // Constructor
-  Xdotc(Queue &queue, Event &event, const std::string &name = "DOTC");
+  Xdotc(Queue &queue, EventPointer event, const std::string &name = "DOTC");
 
   // Templated-precision implementation of the routine
   StatusCode DoDotc(const size_t n,

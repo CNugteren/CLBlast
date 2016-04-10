@@ -61,7 +61,7 @@ int main() {
   // Creates the OpenCL context, queue, and an event
   auto context = cl::Context({device});
   auto queue = cl::CommandQueue(context, device);
-  auto event = cl::Event();
+  auto event = cl_event{nullptr};
 
   // Populate host matrices with some example data
   auto host_a = std::vector<float>(m*k);
@@ -84,7 +84,6 @@ int main() {
 
   // Call the SGEMM routine. Note that the type of alpha and beta (float) determine the precision.
   auto queue_plain = queue();
-  auto event_plain = event();
   auto status = Gemm(clblast::Layout::kRowMajor,
                      clblast::Transpose::kNo, clblast::Transpose::kNo,
                      m, n, k,
@@ -93,10 +92,10 @@ int main() {
                      device_b(), 0, b_ld,
                      beta,
                      device_c(), 0, c_ld,
-                     &queue_plain, &event_plain);
+                     &queue_plain, &event);
 
   // Record the execution time
-  event.wait();
+  clWaitForEvents(1, &event);
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;
   auto time_ms = std::chrono::duration<double,std::milli>(elapsed_time).count();
 

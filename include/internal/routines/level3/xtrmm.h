@@ -38,7 +38,7 @@ class Xtrmm: public Xgemm<T> {
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xtrmm(Queue &queue, Event &event, const std::string &name = "TRMM");
+  Xtrmm(Queue &queue, EventPointer event, const std::string &name = "TRMM");
 
   // Templated-precision implementation of the routine
   StatusCode DoTrmm(const Layout layout, const Side side, const Triangle triangle,

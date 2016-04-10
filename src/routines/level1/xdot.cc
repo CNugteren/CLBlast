@@ -29,7 +29,7 @@ template <> const Precision Xdot<double2>::precision_ = Precision::kComplexDoubl
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xdot<T>::Xdot(Queue &queue, Event &event, const std::string &name):
+Xdot<T>::Xdot(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xdot"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/xdot.opencl"
@@ -78,11 +78,16 @@ StatusCode Xdot<T>::DoDot(const size_t n,
     kernel1.SetArgument(7, temp_buffer());
     kernel1.SetArgument(8, static_cast<int>(do_conjugate));
 
+    // Event waiting list
+    auto eventWaitList = std::vector<Event>();
+
     // Launches the main kernel
     auto global1 = std::vector<size_t>{db_["WGS1"]*temp_size};
     auto local1 = std::vector<size_t>{db_["WGS1"]};
-    status = RunKernel(kernel1, global1, local1);
+    auto kernelEvent = Event();
+    status = RunKernel(kernel1, global1, local1, kernelEvent.pointer());
     if (ErrorIn(status)) { return status; }
+    eventWaitList.push_back(kernelEvent);
 
     // Sets the arguments for the epilogue kernel
     kernel2.SetArgument(0, temp_buffer());
@@ -92,7 +97,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
     // Launches the epilogue kernel
     auto global2 = std::vector<size_t>{db_["WGS2"]};
     auto local2 = std::vector<size_t>{db_["WGS2"]};
-    status = RunKernel(kernel2, global2, local2);
+    status = RunKernel(kernel2, global2, local2, event_, eventWaitList);
     if (ErrorIn(status)) { return status; }
 
     // Succesfully finished the computation

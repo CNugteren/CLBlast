@@ -28,6 +28,7 @@ class Xnrm2: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
@@ -36,7 +37,7 @@ class Xnrm2: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xnrm2(Queue &queue, Event &event, const std::string &name = "NRM2");
+  Xnrm2(Queue &queue, EventPointer event, const std::string &name = "NRM2");
 
   // Templated-precision implementation of the routine
   StatusCode DoNrm2(const size_t n,

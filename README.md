@@ -255,5 +255,4 @@ To-do list before release of version 1.0
 -------------
 
 - Support all routines supported by clBLAS
-- Allow the user control over events and synchronization
 - Add half-precision routines (e.g. HGEMM)

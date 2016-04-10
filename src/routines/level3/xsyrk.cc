@@ -29,7 +29,7 @@ template <> const Precision Xsyrk<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsyrk<T>::Xsyrk(Queue &queue, Event &event, const std::string &name):
+Xsyrk<T>::Xsyrk(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/level3/copy.opencl"
@@ -97,22 +97,32 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
+    // Events of all kernels (including pre/post processing kernels)
+    auto eventWaitList = std::vector<Event>();
+    auto emptyEventList = std::vector<Event>();
+
     // Runs the pre-processing kernel for matrix A. This transposes the matrix, but also pads zeros
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
     // case nothing has to be done, these kernels can be skipped.
     if (!a_no_temp) {
-      status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
+      auto eventProcessA = Event();
+      status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
+                                      a_one, a_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
                                       program, true, a_rotated, false);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventProcessA);
     }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
-    status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
+    auto eventProcessC = Event();
+    status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
+                                    n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     program, true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
+    eventWaitList.push_back(eventProcessC);
 
     // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
     try {
@@ -135,16 +145,20 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
       // Launches the kernel
-      status = RunKernel(kernel, global, local);
+      auto eventKernel = Event();
+      status = RunKernel(kernel, global, local, eventKernel.pointer(), eventWaitList);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventKernel);
 
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
+      status = PadCopyTransposeMatrix(event_, eventWaitList,
+                                      n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       program, false, c_rotated, false, upper, lower, false);
       if (ErrorIn(status)) { return status; }
+
 
       // Successfully finished the computation
       return StatusCode::kSuccess;

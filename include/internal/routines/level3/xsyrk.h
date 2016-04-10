@@ -32,6 +32,7 @@ class Xsyrk: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
@@ -41,7 +42,7 @@ class Xsyrk: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xsyrk(Queue &queue, Event &event, const std::string &name = "SYRK");
+  Xsyrk(Queue &queue, EventPointer event, const std::string &name = "SYRK");
 
   // Templated-precision implementation of the routine
   StatusCode DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,

@@ -30,7 +30,7 @@ class Xhemv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xhemv(Queue &queue, Event &event, const std::string &name = "HEMV");
+  Xhemv(Queue &queue, EventPointer event, const std::string &name = "HEMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoHemv(const Layout layout, const Triangle triangle,

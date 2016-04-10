@@ -73,28 +73,40 @@ class Event {
  public:
 
   // Constructor based on the regular OpenCL data-type
-  explicit Event(cl_event* event): event_(event) { }
+  explicit Event(const cl_event event): event_(event) { }
+
+  // Regular constructor
+  explicit Event(): event_(nullptr) { }
+
+  // Waits for completion of this event
+  void WaitForCompletion() const {
+    CheckError(clWaitForEvents(1, &event_));
+  }
 
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
   // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
   float GetElapsedTime() const {
-    CheckError(clWaitForEvents(1, event_));
+    WaitForCompletion();
     auto bytes = size_t{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
     auto time_start = size_t{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
     auto time_end = size_t{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
     return (time_end - time_start) * 1.0e-6f;
   }
 
   // Accessor to the private data-member
-  cl_event& operator()() { return *event_; }
+  cl_event& operator()() { return event_; }
+  cl_event* pointer() { return &event_; }
  private:
-  cl_event* event_;
+  cl_event event_;
 };
+
+// Pointer to an OpenCL event
+using EventPointer = cl_event*;
 
 // =================================================================================================
 
@@ -600,17 +612,36 @@ class Kernel {
 
   // Launches a kernel onto the specified queue
   void Launch(const Queue &queue, const std::vector<size_t> &global,
-              const std::vector<size_t> &local, Event &event) {
+              const std::vector<size_t> &local, EventPointer event) {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
                                       nullptr, global.data(), local.data(),
-                                      0, nullptr, &(event())));
+                                      0, nullptr, event));
+  }
+
+  // As above, but with an event waiting list
+  void Launch(const Queue &queue, const std::vector<size_t> &global,
+              const std::vector<size_t> &local, EventPointer event,
+              std::vector<Event>& waitForEvents) {
+    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
+
+    // Builds a plain version of the events waiting list
+    auto waitForEventsPlain = std::vector<cl_event>();
+    for (auto &waitEvent : waitForEvents) {
+      waitForEventsPlain.push_back(waitEvent());
+    }
+
+    // Launches the kernel while waiting for other events
+    CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
+                                      nullptr, global.data(), local.data(),
+                                      waitForEventsPlain.size(), waitForEventsPlain.data(),
+                                      event));
   }
 
   // As above, but with the default local workgroup size
-  void Launch(const Queue &queue, const std::vector<size_t> &global, Event &event) {
+  void Launch(const Queue &queue, const std::vector<size_t> &global, EventPointer event) {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
                                       nullptr, global.data(), nullptr,
-                                      0, nullptr, &(event())));
+                                      0, nullptr, event));
   }
 
   // Accessor to the private data-member

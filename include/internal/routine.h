@@ -55,7 +55,7 @@ class Routine {
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
   // Base class constructor
-  explicit Routine(Queue &queue, Event &event, const std::string &name,
+  explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision);
 
   // Set-up phase of the kernel
@@ -65,7 +65,12 @@ class Routine {
   
   // Runs a kernel given the global and local thread sizes
   StatusCode RunKernel(Kernel &kernel, std::vector<size_t> &global,
-                       const std::vector<size_t> &local);
+                       const std::vector<size_t> &local, EventPointer event,
+                       std::vector<Event>& waitForEvents);
+
+  // As above, but without an event waiting list
+  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> &global,
+                       const std::vector<size_t> &local, EventPointer event);
 
   // Tests for valid inputs of matrices A, B, and C
   StatusCode TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
@@ -87,7 +92,8 @@ class Routine {
 
   // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
   // to symmetric and triangular matrices through optional arguments.
-  StatusCode PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,
+  StatusCode PadCopyTransposeMatrix(EventPointer event, std::vector<Event>& waitForEvents,
+                                    const size_t src_one, const size_t src_two,
                                     const size_t src_ld, const size_t src_offset,
                                     const Buffer<T> &src,
                                     const size_t dest_one, const size_t dest_two,
@@ -114,7 +120,7 @@ class Routine {
 
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
-  Event event_;
+  EventPointer event_;
   const Context context_;
   const Device device_;
 

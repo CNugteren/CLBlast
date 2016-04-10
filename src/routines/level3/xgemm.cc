@@ -29,7 +29,7 @@ template <> const Precision Xgemm<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemm<T>::Xgemm(Queue &queue, Event &event, const std::string &name):
+Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/level3/copy.opencl"
@@ -122,30 +122,43 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, m_ceiled*n_ceiled);
 
+    // Events of all kernels (including pre/post processing kernels)
+    auto eventWaitList = std::vector<Event>();
+    auto emptyEventList = std::vector<Event>();
+
     // Runs the pre-processing kernel for matrix A. This transposes the matrix, but also pads zeros
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
     // case nothing has to be done, these kernels can be skipped.
     if (!a_no_temp) {
-      status = PadCopyTransposeMatrix(a_one, a_two, a_ld, a_offset, a_buffer,
+      auto eventProcessA = Event();
+      status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
+                                      a_one, a_two, a_ld, a_offset, a_buffer,
                                       m_ceiled, k_ceiled, m_ceiled, 0, a_temp,
                                       program, true, a_do_transpose, a_conjugate);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventProcessA);
     }
 
     // As above, but now for matrix B
     if (!b_no_temp) {
-      status = PadCopyTransposeMatrix(b_one, b_two, b_ld, b_offset, b_buffer,
+      auto eventProcessB = Event();
+      status = PadCopyTransposeMatrix(eventProcessB.pointer(), emptyEventList,
+                                      b_one, b_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
                                       program, true, b_do_transpose, b_conjugate);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventProcessB);
     }
 
     // As above, but now for matrix C. This is only necessary if C is used both as input and output.
     if (!c_no_temp && beta != static_cast<T>(0)) {
-      status = PadCopyTransposeMatrix(c_one, c_two, c_ld, c_offset, c_buffer,
+      auto eventProcessC = Event();
+      status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
+                                      c_one, c_two, c_ld, c_offset, c_buffer,
                                       m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                       program, true, c_do_transpose, false);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventProcessC);
     }
 
     // Retrieves the Xgemm kernel from the compiled binary
@@ -170,12 +183,15 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
       // Launches the kernel
-      status = RunKernel(kernel, global, local);
+      auto eventKernel = Event();
+      status = RunKernel(kernel, global, local, eventKernel.pointer(), eventWaitList);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventKernel);
 
       // Runs the post-processing kernel if needed
       if (!c_no_temp) {
-        status = PadCopyTransposeMatrix(m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
+        status = PadCopyTransposeMatrix(event_, eventWaitList,
+                                        m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                         c_one, c_two, c_ld, c_offset, c_buffer,
                                         program, false, c_do_transpose, false);
         if (ErrorIn(status)) { return status; }

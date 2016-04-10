@@ -29,7 +29,7 @@ template <> const Precision Xcopy<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xcopy<T>::Xcopy(Queue &queue, Event &event, const std::string &name):
+Xcopy<T>::Xcopy(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
@@ -87,13 +87,13 @@ StatusCode Xcopy<T>::DoCopy(const size_t n,
     if (use_fast_kernel) {
       auto global = std::vector<size_t>{CeilDiv(n, db_["WPT"]*db_["VW"])};
       auto local = std::vector<size_t>{db_["WGS"]};
-      status = RunKernel(kernel, global, local);
+      status = RunKernel(kernel, global, local, event_);
     }
     else {
       auto n_ceiled = Ceil(n, db_["WGS"]*db_["WPT"]);
       auto global = std::vector<size_t>{n_ceiled/db_["WPT"]};
       auto local = std::vector<size_t>{db_["WGS"]};
-      status = RunKernel(kernel, global, local);
+      status = RunKernel(kernel, global, local, event_);
     }
     if (ErrorIn(status)) { return status; }
 

@@ -30,7 +30,7 @@ class Xsbmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xsbmv(Queue &queue, Event &event, const std::string &name = "SBMV");
+  Xsbmv(Queue &queue, EventPointer event, const std::string &name = "SBMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoSbmv(const Layout layout, const Triangle triangle,

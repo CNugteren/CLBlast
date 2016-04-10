@@ -29,7 +29,7 @@ template <> const Precision Xger<double2>::precision_ = Precision::kComplexDoubl
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xger<T>::Xger(Queue &queue, Event &event, const std::string &name):
+Xger<T>::Xger(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xger"}, precision_) {
   source_string_ =
     #include "../../kernels/level2/level2.opencl"
@@ -89,7 +89,7 @@ StatusCode Xger<T>::DoGer(const Layout layout,
     auto a_two_ceiled = Ceil(CeilDiv(a_two, db_["WPT"]), db_["WGS2"]);
     auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
     auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
-    status = RunKernel(kernel, global, local);
+    status = RunKernel(kernel, global, local, event_);
     if (ErrorIn(status)) { return status; }
 
     // Succesfully finished the computation

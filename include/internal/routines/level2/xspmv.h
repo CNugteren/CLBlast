@@ -30,7 +30,7 @@ class Xspmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xspmv(Queue &queue, Event &event, const std::string &name = "SPMV");
+  Xspmv(Queue &queue, EventPointer event, const std::string &name = "SPMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoSpmv(const Layout layout, const Triangle triangle,
