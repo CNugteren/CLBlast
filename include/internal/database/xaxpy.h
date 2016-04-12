@@ -171,12 +171,12 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
   }
