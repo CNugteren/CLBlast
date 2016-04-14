@@ -396,6 +396,31 @@ template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+template <typename T>
+StatusCode Asum(const size_t,
+                cl_mem, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Asum<float>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<double>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<double2>(const size_t,
+                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

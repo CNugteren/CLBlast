@@ -67,6 +67,7 @@ routines = [
   Routine(True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors"),
   Routine(True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated"),
   Routine(True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector"),
+  Routine(False, "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),

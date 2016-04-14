@@ -345,6 +345,32 @@ void cblasXnrm2(const size_t n,
                                          reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 
+// Forwards the Netlib BLAS calls for SASUM/DASUM/ScASUM/DzASUM
+void cblasXasum(const size_t n,
+                std::vector<float>& asum_buffer, const size_t asum_offset,
+                const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  asum_buffer[asum_offset] = cblas_sasum(n,
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
+}
+void cblasXasum(const size_t n,
+                std::vector<double>& asum_buffer, const size_t asum_offset,
+                const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  asum_buffer[asum_offset] = cblas_dasum(n,
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
+}
+void cblasXasum(const size_t n,
+                std::vector<float2>& asum_buffer, const size_t asum_offset,
+                const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  asum_buffer[asum_offset] = cblas_scasum(n,
+                                         reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+void cblasXasum(const size_t n,
+                std::vector<double2>& asum_buffer, const size_t asum_offset,
+                const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  asum_buffer[asum_offset] = cblas_dzasum(n,
+                                         reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

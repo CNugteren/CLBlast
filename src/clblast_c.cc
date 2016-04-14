@@ -433,6 +433,48 @@ StatusCode CLBlastDznrm2(const size_t n,
   return static_cast<StatusCode>(status);
 }
 
+// ASUM
+StatusCode CLBlastSasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Asum<float>(n,
+                                     asum_buffer, asum_offset,
+                                     x_buffer, x_offset, x_inc,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Asum<double>(n,
+                                      asum_buffer, asum_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastScasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Asum<float2>(n,
+                                      asum_buffer, asum_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDzasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Asum<double2>(n,
+                                       asum_buffer, asum_offset,
+                                       x_buffer, x_offset, x_inc,
+                                       queue, event);
+  return static_cast<StatusCode>(status);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

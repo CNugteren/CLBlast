@@ -558,6 +558,74 @@ clblasStatus clblasXnrm2<double2>(const size_t n,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
+// Forwards the clBLAS calls for SASUM/DASUM/ScASUM/DzASUM
+template <typename T>
+clblasStatus clblasXasum(const size_t n,
+                         cl_mem asum_buffer, const size_t asum_offset,
+                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                         cl_uint num_queues, cl_command_queue *queues,
+                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
+template <>
+clblasStatus clblasXasum<float>(const size_t n,
+                                cl_mem asum_buffer, const size_t asum_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_uint num_queues, cl_command_queue *queues,
+                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float>(context, n);
+  return clblasSasum(n,
+                     asum_buffer, asum_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXasum<double>(const size_t n,
+                                 cl_mem asum_buffer, const size_t asum_offset,
+                                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double>(context, n);
+  return clblasDasum(n,
+                     asum_buffer, asum_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXasum<float2>(const size_t n,
+                                 cl_mem asum_buffer, const size_t asum_offset,
+                                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                 cl_uint num_queues, cl_command_queue *queues,
+                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<float2>(context, n);
+  return clblasScasum(n,
+                     asum_buffer, asum_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+template <>
+clblasStatus clblasXasum<double2>(const size_t n,
+                                  cl_mem asum_buffer, const size_t asum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_uint num_queues, cl_command_queue *queues,
+                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
+  auto queue = Queue(queues[0]);
+  auto context = queue.GetContext();
+  auto scratch_buffer = Buffer<double2>(context, n);
+  return clblasDzasum(n,
+                     asum_buffer, asum_offset,
+                     x_buffer, x_offset, static_cast<int>(x_inc),
+                     scratch_buffer(),
+                     num_queues, queues, num_wait_events, wait_events, events);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
