@@ -80,8 +80,10 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
     if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
     if (o == kArgAPOffset) { args.ap_offset= GetArgument(argc, argv, help, kArgAPOffset, size_t{0}); }
 
-    // Dot arguments
+    // Scalar result arguments
     if (o == kArgDotOffset)  { args.dot_offset = GetArgument(argc, argv, help, kArgDotOffset, size_t{0}); }
+    if (o == kArgNrm2Offset)  { args.nrm2_offset = GetArgument(argc, argv, help, kArgNrm2Offset, size_t{0}); }
+    if (o == kArgAsumOffset)  { args.asum_offset = GetArgument(argc, argv, help, kArgAsumOffset, size_t{0}); }
 
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
@@ -292,6 +294,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgAPOffset) { integers.push_back(args.ap_offset); }
     else if (o == kArgDotOffset) {integers.push_back(args.dot_offset); }
     else if (o == kArgNrm2Offset){integers.push_back(args.nrm2_offset); }
+    else if (o == kArgAsumOffset){integers.push_back(args.asum_offset); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

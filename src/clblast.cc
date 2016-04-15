@@ -27,6 +27,7 @@
 #include "internal/routines/level1/xdotu.h"
 #include "internal/routines/level1/xdotc.h"
 #include "internal/routines/level1/xnrm2.h"
+#include "internal/routines/level1/xasum.h"
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -398,11 +399,17 @@ template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
 
 // Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
 template <typename T>
-StatusCode Asum(const size_t,
-                cl_mem, const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Asum(const size_t n,
+                cl_mem asum_buffer, const size_t asum_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto routine = Xasum<T>(queue_cpp, event);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoAsum(n,
+                        Buffer<T>(asum_buffer), asum_offset,
+                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Asum<float>(const size_t,
                                            cl_mem, const size_t,

@@ -109,6 +109,13 @@ R"(
   #define SetToOne(a) a = ONE
 #endif
 
+// The absolute value (component-wise)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define AbsoluteValue(value) value.x = fabs(value.x); value.y = fabs(value.y)
+#else
+  #define AbsoluteValue(value) value = fabs(value)
+#endif
+
 // Adds two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
   #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
