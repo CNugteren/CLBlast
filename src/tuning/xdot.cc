@@ -22,13 +22,13 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-template <typename T>
+template <typename T, int V>
 class TuneXdot {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return "xdot"; }
-  static std::string KernelName() { return "Xdot"; }
+  static std::string KernelFamily() { return "xdot_"+std::to_string(V); }
+  static std::string KernelName() { return (V==1) ? "Xdot" : "XdotEpilogue"; }
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
@@ -44,7 +44,7 @@ class TuneXdot {
 
   // Sets the default values for the arguments
   static size_t DefaultM() { return 1; } // N/A for this kernel
-  static size_t DefaultN() { return 4096*1024; }
+  static size_t DefaultN() { return 64*1024*1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
 
@@ -58,9 +58,7 @@ class TuneXdot {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "WGS1", {32, 64, 128, 256, 512, 1024});
-    tuner.AddParameter(id, "WGS2", {32, 64, 128, 256, 512, 1024});
-    tuner.AddParameter(id, "VW", {1});
+    tuner.AddParameter(id, "WGS"+std::to_string(V), {32, 64, 128, 256, 512, 1024});
   }
 
   // Sets the constraints and local memory size
@@ -68,16 +66,16 @@ class TuneXdot {
   static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
 
   // Sets the base thread configuration
-  static std::vector<size_t> GlobalSize(const Arguments<T> &) { return {2}; }
-  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &) { return {2*64*64}; }
+  static std::vector<size_t> GlobalSize(const Arguments<T> &) { return (V==1) ? std::vector<size_t>{2*64} : std::vector<size_t>{1}; }
+  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &) { return (V==1) ? std::vector<size_t>{2*64*64} : std::vector<size_t>{64}; }
   static std::vector<size_t> LocalSize() { return {1}; }
   static std::vector<size_t> LocalSizeRef() { return {64}; }
 
   // Transforms the thread configuration based on the parameters
   using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"WGS1"}}; }
+  static TransformVector MulLocal() { return (V==1) ? TransformVector{{"WGS1"}} : TransformVector{{"WGS2"}}; }
   static TransformVector DivLocal() { return {}; }
-  static TransformVector MulGlobal() { return {{"WGS1"},{"WGS2"}}; }
+  static TransformVector MulGlobal() { return (V==1) ? TransformVector{{"WGS1"}} : TransformVector{{"WGS2"}}; }
   static TransformVector DivGlobal() { return {}; }
 
   // Sets the kernel's arguments
@@ -85,22 +83,29 @@ class TuneXdot {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &temp) {
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentInput(x_vec);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(1);
-    tuner.AddArgumentInput(y_vec);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(1);
-    tuner.AddArgumentInput(temp); // No output checking for the result - size varies
-    tuner.AddArgumentScalar(static_cast<int>(false));
+    if (V == 1) {
+      tuner.AddArgumentScalar(static_cast<int>(args.n));
+      tuner.AddArgumentInput(x_vec);
+      tuner.AddArgumentScalar(0);
+      tuner.AddArgumentScalar(1);
+      tuner.AddArgumentInput(y_vec);
+      tuner.AddArgumentScalar(0);
+      tuner.AddArgumentScalar(1);
+      tuner.AddArgumentInput(temp); // No output checking for the result - size varies
+      tuner.AddArgumentScalar(static_cast<int>(false));
+    }
+    else {
+      tuner.AddArgumentInput(temp);
+      tuner.AddArgumentInput(x_vec); // No output checking for the result - store somewhere
+      tuner.AddArgumentScalar(0);
+    }
   }
 
   // Describes how to compute the performance metrics
   static size_t GetMetric(const Arguments<T> &args) {
-    return (2*args.n + 1) * GetBytes(args.precision);
+    return (V==1) ? (2*args.n + 1) * GetBytes(args.precision) : 1 * GetBytes(args.precision);
   }
-  static std::string PerformanceUnit() { return "GB/s"; }
+  static std::string PerformanceUnit() { return (V==1) ? "GB/s" : "N/A"; }
 };
 
 // =================================================================================================
@@ -110,15 +115,22 @@ class TuneXdot {
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 
-// Main function (not within the clblast namespace)
-int main(int argc, char *argv[]) {
+// Function to tune a specific variation V (not within the clblast namespace)
+template <int V>
+void StartVariation(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
     case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
-    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXdot<float>, float>(argc, argv); break;
-    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXdot<double>, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXdot<float2>, float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneXdot<double2>, double2>(argc, argv); break;
+    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXdot<float, V>, float>(argc, argv); break;
+    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXdot<double, V>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXdot<float2, V>, float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneXdot<double2, V>, double2>(argc, argv); break;
   }
+}
+
+// Main function (not within the clblast namespace)
+int main(int argc, char *argv[]) {
+  StartVariation<1>(argc, argv);
+  StartVariation<2>(argc, argv);
   return 0;
 }
 
