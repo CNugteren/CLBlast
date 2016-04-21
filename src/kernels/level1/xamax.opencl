@@ -7,9 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the Xnrm2 kernel. It implements a squared norm computation using reduction
-// kernels. Reduction is split in two parts. In the first (main) kernel the X vector is squared,
-// followed by a per-thread and a per-workgroup reduction. The second (epilogue) kernel
+// This file contains the Xamax kernel. It implements an index of absolute max computation using
+// reduction kernels. Reduction is split in two parts. In the first (main) kernel the X vector is
+// loaded, followed by a per-thread and a per-workgroup reduction. The second (epilogue) kernel
 // is executed with a single workgroup only, computing the final result.
 //
 // =================================================================================================
@@ -29,42 +29,53 @@ R"(
 
 // =================================================================================================
 
-// The main reduction kernel, performing the multiplication and the majority of the operation
+// The main reduction kernel, performing the loading and the majority of the operation
 __attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xnrm2(const int n,
+__kernel void Xamax(const int n,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
-                    __global real* output) {
-  __local real lm[WGS1];
+                    __global singlereal* maxgm, __global unsigned int* imaxgm) {
+  __local singlereal maxlm[WGS1];
+  __local unsigned int imaxlm[WGS1];
   const int lid = get_local_id(0);
   const int wgid = get_group_id(0);
   const int num_groups = get_num_groups(0);
 
-  // Performs multiplication and the first steps of the reduction
-  real acc;
-  SetToZero(acc);
+  // Performs loading and the first steps of the reduction
+  singlereal max = ZERO;
+  unsigned int imax = 0;
   int id = wgid*WGS1 + lid;
   while (id < n) {
-    real x1 = xgm[id*x_inc + x_offset];
-    real x2 = x1;
-    COMPLEX_CONJUGATE(x2);
-    MultiplyAdd(acc, x1, x2);
+    #if PRECISION == 3232 || PRECISION == 6464
+      singlereal x = fabs(xgm[id*x_inc + x_offset].x);
+    #else
+      singlereal x = fabs(xgm[id*x_inc + x_offset]);
+    #endif
+    if (x >= max) {
+      max = x;
+      imax = id*x_inc + x_offset;
+    }
     id += WGS1*num_groups;
   }
-  lm[lid] = acc;
+  maxlm[lid] = max;
+  imaxlm[lid] = imax;
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
   #pragma unroll
   for (int s=WGS1/2; s>0; s=s>>1) {
     if (lid < s) {
-      Add(lm[lid], lm[lid], lm[lid + s]);
+      if (maxlm[lid + s] >= maxlm[lid]) {
+        maxlm[lid] = maxlm[lid + s];
+        imaxlm[lid] = imaxlm[lid + s];
+      }
     }
     barrier(CLK_LOCAL_MEM_FENCE);
   }
 
   // Stores the per-workgroup result
   if (lid == 0) {
-    output[wgid] = lm[0];
+    maxgm[wgid] = maxlm[0];
+    imaxgm[wgid] = imaxlm[0];
   }
 }
 
@@ -73,31 +84,39 @@ __kernel void Xnrm2(const int n,
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
 __attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void Xnrm2Epilogue(const __global real* restrict input,
-                            __global real* nrm2, const int nrm2_offset) {
-  __local real lm[WGS2];
+__kernel void XamaxEpilogue(const __global singlereal* restrict maxgm,
+                            const __global unsigned int* restrict imaxgm,
+                            __global unsigned int* imax, const int imax_offset) {
+  __local singlereal maxlm[WGS2];
+  __local unsigned int imaxlm[WGS2];
   const int lid = get_local_id(0);
 
   // Performs the first step of the reduction while loading the data
-  Add(lm[lid], input[lid], input[lid + WGS2]);
+  if (maxgm[lid + WGS2] >= maxgm[lid]) {
+    maxlm[lid] = maxgm[lid + WGS2];
+    imaxlm[lid] = imaxgm[lid + WGS2];
+  }
+  else {
+    maxlm[lid] = maxgm[lid];
+    imaxlm[lid] = imaxgm[lid];
+  }
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
   #pragma unroll
   for (int s=WGS2/2; s>0; s=s>>1) {
     if (lid < s) {
-      Add(lm[lid], lm[lid], lm[lid + s]);
+      if (maxlm[lid + s] >= maxlm[lid]) {
+        maxlm[lid] = maxlm[lid + s];
+        imaxlm[lid] = imaxlm[lid + s];
+      }
     }
     barrier(CLK_LOCAL_MEM_FENCE);
   }
 
-  // Computes the square root and stores the final result
+  // Stores the final result
   if (lid == 0) {
-    #if PRECISION == 3232 || PRECISION == 6464
-      nrm2[nrm2_offset].x = sqrt(lm[0].x); // the result is a non-complex number
-    #else
-      nrm2[nrm2_offset] = sqrt(lm[0]);
-    #endif
+    imax[imax_offset] = imaxlm[0];
   }
 }
 

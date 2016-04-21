@@ -80,6 +80,15 @@ R"(
   #define ONE 1.0
 #endif
 
+// Single-element version of a complex number
+#if PRECISION == 3232
+  typedef float singlereal;
+#elif PRECISION == 6464
+  typedef double singlereal;
+#else
+  typedef real singlereal;
+#endif
+
 // =================================================================================================
 
 // Don't use the non-IEEE754 compliant OpenCL built-in mad() instruction per default. For specific
@@ -107,6 +116,13 @@ R"(
   #define SetToOne(a) a.x = ONE; a.y = ZERO
 #else
   #define SetToOne(a) a = ONE
+#endif
+
+// The absolute value (component-wise)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define AbsoluteValue(value) value.x = fabs(value.x); value.y = fabs(value.y)
+#else
+  #define AbsoluteValue(value) value = fabs(value)
 #endif
 
 // Adds two complex variables

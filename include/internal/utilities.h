@@ -65,6 +65,8 @@ constexpr auto kArgCOffset = "offc";
 constexpr auto kArgAPOffset = "offap";
 constexpr auto kArgDotOffset = "offdot";
 constexpr auto kArgNrm2Offset = "offnrm2";
+constexpr auto kArgAsumOffset = "offasum";
+constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 
@@ -119,6 +121,8 @@ struct Arguments {
   size_t ap_offset = 0;
   size_t dot_offset = 0;
   size_t nrm2_offset = 0;
+  size_t asum_offset = 0;
+  size_t imax_offset = 0;
   T alpha = T{1.0};
   T beta = T{1.0};
   size_t x_size = 1;

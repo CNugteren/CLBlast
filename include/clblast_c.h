@@ -278,6 +278,42 @@ StatusCode PUBLIC_API CLBlastDznrm2(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
 
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+StatusCode PUBLIC_API CLBlastSasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastScasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDzasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+
+// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+StatusCode PUBLIC_API CLBlastiSamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiDamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiCamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiZamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

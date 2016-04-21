@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xnrm2 class (see the header for information about the class).
+// This file implements the Xamax class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xnrm2.h"
+#include "internal/routines/level1/xamax.h"
 
 #include <string>
 #include <vector>
@@ -20,19 +20,19 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xnrm2<float>::precision_ = Precision::kSingle;
-template <> const Precision Xnrm2<double>::precision_ = Precision::kDouble;
-template <> const Precision Xnrm2<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xnrm2<double2>::precision_ = Precision::kComplexDouble;
+template <> const Precision Xamax<float>::precision_ = Precision::kSingle;
+template <> const Precision Xamax<double>::precision_ = Precision::kDouble;
+template <> const Precision Xamax<float2>::precision_ = Precision::kComplexSingle;
+template <> const Precision Xamax<double2>::precision_ = Precision::kComplexDouble;
 
 // =================================================================================================
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xnrm2<T>::Xnrm2(Queue &queue, EventPointer event, const std::string &name):
+Xamax<T>::Xamax(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xdot"}, precision_) {
   source_string_ =
-    #include "../../kernels/level1/xnrm2.opencl"
+    #include "../../kernels/level1/xamax.opencl"
   ;
 }
 
@@ -40,8 +40,8 @@ Xnrm2<T>::Xnrm2(Queue &queue, EventPointer event, const std::string &name):
 
 // The main routine
 template <typename T>
-StatusCode Xnrm2<T>::DoNrm2(const size_t n,
-                            const Buffer<T> &nrm2_buffer, const size_t nrm2_offset,
+StatusCode Xamax<T>::DoAmax(const size_t n,
+                            const Buffer<T> &imax_buffer, const size_t imax_offset,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
 
   // Makes sure all dimensions are larger than zero
@@ -50,25 +50,27 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
   // Tests the vectors for validity
   auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
-  status = TestVectorDot(1, nrm2_buffer, nrm2_offset, sizeof(T));
+  status = TestVectorDot(1, imax_buffer, imax_offset, sizeof(T));
   if (ErrorIn(status)) { return status; }
 
-  // Retrieves the Xnrm2 kernels from the compiled binary
+  // Retrieves the Xamax kernels from the compiled binary
   try {
     auto& program = GetProgramFromCache();
-    auto kernel1 = Kernel(program, "Xnrm2");
-    auto kernel2 = Kernel(program, "Xnrm2Epilogue");
+    auto kernel1 = Kernel(program, "Xamax");
+    auto kernel2 = Kernel(program, "XamaxEpilogue");
 
     // Creates the buffer for intermediate values
     auto temp_size = 2*db_["WGS2"];
-    auto temp_buffer = Buffer<T>(context_, temp_size);
+    auto temp_buffer1 = Buffer<T>(context_, temp_size);
+    auto temp_buffer2 = Buffer<unsigned int>(context_, temp_size);
 
     // Sets the kernel arguments
     kernel1.SetArgument(0, static_cast<int>(n));
     kernel1.SetArgument(1, x_buffer());
     kernel1.SetArgument(2, static_cast<int>(x_offset));
     kernel1.SetArgument(3, static_cast<int>(x_inc));
-    kernel1.SetArgument(4, temp_buffer());
+    kernel1.SetArgument(4, temp_buffer1());
+    kernel1.SetArgument(5, temp_buffer2());
 
     // Event waiting list
     auto eventWaitList = std::vector<Event>();
@@ -82,9 +84,10 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
     eventWaitList.push_back(kernelEvent);
 
     // Sets the arguments for the epilogue kernel
-    kernel2.SetArgument(0, temp_buffer());
-    kernel2.SetArgument(1, nrm2_buffer());
-    kernel2.SetArgument(2, static_cast<int>(nrm2_offset));
+    kernel2.SetArgument(0, temp_buffer1());
+    kernel2.SetArgument(1, temp_buffer2());
+    kernel2.SetArgument(2, imax_buffer());
+    kernel2.SetArgument(3, static_cast<int>(imax_offset));
 
     // Launches the epilogue kernel
     auto global2 = std::vector<size_t>{db_["WGS2"]};
@@ -100,10 +103,10 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
-template class Xnrm2<float>;
-template class Xnrm2<double>;
-template class Xnrm2<float2>;
-template class Xnrm2<double2>;
+template class Xamax<float>;
+template class Xamax<double>;
+template class Xamax<float2>;
+template class Xamax<double2>;
 
 // =================================================================================================
 } // namespace clblast

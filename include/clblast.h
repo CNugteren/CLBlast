@@ -181,6 +181,20 @@ StatusCode Nrm2(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+template <typename T>
+StatusCode Asum(const size_t n,
+                cl_mem asum_buffer, const size_t asum_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
+
+// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+template <typename T>
+StatusCode Amax(const size_t n,
+                cl_mem imax_buffer, const size_t imax_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

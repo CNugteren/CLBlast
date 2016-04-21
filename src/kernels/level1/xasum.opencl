@@ -7,8 +7,8 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the Xnrm2 kernel. It implements a squared norm computation using reduction
-// kernels. Reduction is split in two parts. In the first (main) kernel the X vector is squared,
+// This file contains the Xasum kernel. It implements a absolute sum computation using reduction
+// kernels. Reduction is split in two parts. In the first (main) kernel the X vector is loaded,
 // followed by a per-thread and a per-workgroup reduction. The second (epilogue) kernel
 // is executed with a single workgroup only, computing the final result.
 //
@@ -29,9 +29,9 @@ R"(
 
 // =================================================================================================
 
-// The main reduction kernel, performing the multiplication and the majority of the operation
+// The main reduction kernel, performing the loading and the majority of the operation
 __attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xnrm2(const int n,
+__kernel void Xasum(const int n,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* output) {
   __local real lm[WGS1];
@@ -39,15 +39,14 @@ __kernel void Xnrm2(const int n,
   const int wgid = get_group_id(0);
   const int num_groups = get_num_groups(0);
 
-  // Performs multiplication and the first steps of the reduction
+  // Performs loading and the first steps of the reduction
   real acc;
   SetToZero(acc);
   int id = wgid*WGS1 + lid;
   while (id < n) {
-    real x1 = xgm[id*x_inc + x_offset];
-    real x2 = x1;
-    COMPLEX_CONJUGATE(x2);
-    MultiplyAdd(acc, x1, x2);
+    real x = xgm[id*x_inc + x_offset];
+    AbsoluteValue(x);
+    Add(acc, acc, x);
     id += WGS1*num_groups;
   }
   lm[lid] = acc;
@@ -73,8 +72,8 @@ __kernel void Xnrm2(const int n,
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
 __attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void Xnrm2Epilogue(const __global real* restrict input,
-                            __global real* nrm2, const int nrm2_offset) {
+__kernel void XasumEpilogue(const __global real* restrict input,
+                            __global real* asum, const int asum_offset) {
   __local real lm[WGS2];
   const int lid = get_local_id(0);
 
@@ -91,12 +90,12 @@ __kernel void Xnrm2Epilogue(const __global real* restrict input,
     barrier(CLK_LOCAL_MEM_FENCE);
   }
 
-  // Computes the square root and stores the final result
+  // Computes the absolute value and stores the final result
   if (lid == 0) {
     #if PRECISION == 3232 || PRECISION == 6464
-      nrm2[nrm2_offset].x = sqrt(lm[0].x); // the result is a non-complex number
+      asum[asum_offset].x = lm[0].x + lm[0].y; // the result is a non-complex number
     #else
-      nrm2[nrm2_offset] = sqrt(lm[0]);
+      asum[asum_offset] = lm[0];
     #endif
   }
 }

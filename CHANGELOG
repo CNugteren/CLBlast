@@ -6,6 +6,8 @@ Development version (next release)
 - Fixed the use of events within the library
 - Added level-1 routines:
   * SNRM2/DNRM2/ScNRM2/DzNRM2
+  * SASUM/DASUM/ScASUM/DzASUM
+  * iSAMAX/iDAMAX/iCAMAX/iZAMAX
 
 Version 0.6.0
 - Added support for MSVC (Visual Studio) 2015
