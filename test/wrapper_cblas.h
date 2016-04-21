@@ -371,6 +371,32 @@ void cblasXasum(const size_t n,
                                          reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 
+// Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX
+void cblasXamax(const size_t n,
+                std::vector<float>& imax_buffer, const size_t imax_offset,
+                const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  imax_buffer[imax_offset] = cblas_isamax(n,
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
+}
+void cblasXamax(const size_t n,
+                std::vector<double>& imax_buffer, const size_t imax_offset,
+                const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  imax_buffer[imax_offset] = cblas_idamax(n,
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
+}
+void cblasXamax(const size_t n,
+                std::vector<float2>& imax_buffer, const size_t imax_offset,
+                const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  imax_buffer[imax_offset] = cblas_icamax(n,
+                                         reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+void cblasXamax(const size_t n,
+                std::vector<double2>& imax_buffer, const size_t imax_offset,
+                const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  imax_buffer[imax_offset] = cblas_izamax(n,
+                                         reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

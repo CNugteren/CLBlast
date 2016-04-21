@@ -40,6 +40,10 @@ Z = DataType("Z", "Z", DBL2, [DBL2, DBL2, D2CL, D2CL], DBL2) # double-complex (6
 # Special cases
 Sc = DataType("C", "Sc", FLT2,         [FLT2, FLT2, FLT2, FLT2], FLT2) # As C, but with real output
 Dz = DataType("Z", "Dz", DBL2,         [DBL2, DBL2, DBL2, DBL2], DBL2) # As Z, but with real output
+iS = DataType("S", "iS", FLT,          [FLT,  FLT,  FLT,  FLT],  FLT ) # As S, but with integer output
+iD = DataType("D", "iD", DBL,          [DBL,  DBL,  DBL,  DBL],  DBL ) # As D, but with integer output
+iC = DataType("C", "iC", FLT2,         [FLT2, FLT2, F2CL, F2CL], FLT2) # As C, but with integer output
+iZ = DataType("Z", "iZ", DBL2,         [DBL2, DBL2, D2CL, D2CL], DBL2) # As Z, but with integer output
 Css = DataType("C", "C", FLT,          [FLT,  FLT,  FLT,  FLT], FLT2) # As C, but with constants from S
 Zdd = DataType("Z", "Z", DBL,          [DBL,  DBL,  DBL,  DBL], DBL2) # As Z, but with constants from D
 Ccs = DataType("C", "C", FLT2+","+FLT, [FLT2, FLT,  F2CL, FLT], FLT2) # As C, but with one constant from S
@@ -68,6 +72,7 @@ routines = [
   Routine(True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated"),
   Routine(True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector"),
   Routine(True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector"),
+  Routine(False, "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "n", "Index of absolute maxium value in a vector"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),
@@ -369,7 +374,7 @@ for level in [1,2,3]:
 			body += "using double2 = clblast::double2;\n\n"
 			body += "// Main function (not within the clblast namespace)\n"
 			body += "int main(int argc, char *argv[]) {\n"
-			default = PrecisionToFullName(routine.flavours[0].name)
+			default = PrecisionToFullName(routine.flavours[0].precision_name)
 			body += "  switch(clblast::GetPrecision(argc, argv, clblast::Precision::k"+default+")) {\n"
 			for precision in ["H","S","D","C","Z"]:
 				body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"

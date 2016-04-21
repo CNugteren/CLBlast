@@ -428,6 +428,31 @@ template StatusCode PUBLIC_API Asum<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
+// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+template <typename T>
+StatusCode Amax(const size_t,
+                cl_mem, const size_t,
+                const cl_mem, const size_t, const size_t,
+                cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Amax<float>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<double>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<double2>(const size_t,
+                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
