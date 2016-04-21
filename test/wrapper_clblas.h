@@ -641,7 +641,7 @@ clblasStatus clblasXamax<float>(const size_t n,
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float>(context, n);
+  auto scratch_buffer = Buffer<float>(context, 2*n);
   return clblasiSamax(n,
                      imax_buffer, imax_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -656,7 +656,7 @@ clblasStatus clblasXamax<double>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double>(context, n);
+  auto scratch_buffer = Buffer<double>(context, 2*n);
   return clblasiDamax(n,
                      imax_buffer, imax_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -671,7 +671,7 @@ clblasStatus clblasXamax<float2>(const size_t n,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<float2>(context, n);
+  auto scratch_buffer = Buffer<float2>(context, 2*n);
   return clblasiCamax(n,
                      imax_buffer, imax_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),
@@ -686,7 +686,7 @@ clblasStatus clblasXamax<double2>(const size_t n,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto queue = Queue(queues[0]);
   auto context = queue.GetContext();
-  auto scratch_buffer = Buffer<double2>(context, n);
+  auto scratch_buffer = Buffer<double2>(context, 2*n);
   return clblasiZamax(n,
                      imax_buffer, imax_offset,
                      x_buffer, x_offset, static_cast<int>(x_inc),

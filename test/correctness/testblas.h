@@ -154,6 +154,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto dot_offsets = std::vector<size_t>{args.dot_offset};
   auto nrm2_offsets = std::vector<size_t>{args.nrm2_offset};
   auto asum_offsets = std::vector<size_t>{args.asum_offset};
+  auto imax_offsets = std::vector<size_t>{args.imax_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
   auto x_sizes = std::vector<size_t>{args.x_size};
@@ -195,6 +196,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgDotOffset) { dot_offsets = tester.kOffsets; }
     if (option == kArgNrm2Offset) { nrm2_offsets = tester.kOffsets; }
     if (option == kArgAsumOffset) { asum_offsets = tester.kOffsets; }
+    if (option == kArgImaxOffset) { imax_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
 
@@ -236,10 +238,12 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
                                               for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
                                                 for (auto &nrm2_offset: nrm2_offsets) { r_args.nrm2_offset = nrm2_offset;
                                                   for (auto &asum_offset: asum_offsets) { r_args.asum_offset = asum_offset;
-                                                    for (auto &alpha: alphas) { r_args.alpha = alpha;
-                                                      for (auto &beta: betas) { r_args.beta = beta;
-                                                        C::SetSizes(r_args);
-                                                        regular_test_vector.push_back(r_args);
+                                                    for (auto &imax_offset: imax_offsets) { r_args.imax_offset = imax_offset;
+                                                      for (auto &alpha: alphas) { r_args.alpha = alpha;
+                                                        for (auto &beta: betas) { r_args.beta = beta;
+                                                          C::SetSizes(r_args);
+                                                          regular_test_vector.push_back(r_args);
+                                                        }
                                                       }
                                                     }
                                                   }

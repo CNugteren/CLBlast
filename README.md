@@ -186,7 +186,7 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xDOTC    | - | - | ✔ | ✔ |         |
 | xNRM2    | ✔ | ✔ | ✔ | ✔ |         |
 | xASUM    | ✔ | ✔ | ✔ | ✔ |         |
-| IxAMAX   |   |   |   |   |         |
+| IxAMAX   | ✔ | ✔ | ✔ | ✔ |         |
 
 | Level-2  | S | D | C | Z | Notes   |
 | ---------|---|---|---|---|---------|
