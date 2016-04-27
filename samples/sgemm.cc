@@ -84,15 +84,15 @@ int main() {
 
   // Call the SGEMM routine. Note that the type of alpha and beta (float) determine the precision.
   auto queue_plain = queue();
-  auto status = Gemm(clblast::Layout::kRowMajor,
-                     clblast::Transpose::kNo, clblast::Transpose::kNo,
-                     m, n, k,
-                     alpha,
-                     device_a(), 0, a_ld,
-                     device_b(), 0, b_ld,
-                     beta,
-                     device_c(), 0, c_ld,
-                     &queue_plain, &event);
+  auto status = clblast::Gemm(clblast::Layout::kRowMajor,
+                              clblast::Transpose::kNo, clblast::Transpose::kNo,
+                              m, n, k,
+                              alpha,
+                              device_a(), 0, a_ld,
+                              device_b(), 0, b_ld,
+                              beta,
+                              device_c(), 0, c_ld,
+                              &queue_plain, &event);
 
   // Record the execution time
   clWaitForEvents(1, &event);
