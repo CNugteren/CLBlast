@@ -539,6 +539,13 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
+
+// CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
+// for the same device. This cache can be cleared to free up system memory or in case of debugging.
+StatusCode ClearCompiledProgramCache();
+
+// =================================================================================================
+
 } // namespace clblast
 
 // CLBLAST_CLBLAST_H_

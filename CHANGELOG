@@ -4,6 +4,8 @@ Development version (next release)
 - Made the library thread-safe
 - Performance and correctness tests can now (on top of clBLAS) be performed against CPU BLAS libraries
 - Fixed the use of events within the library
+- Changed the enum parameters to match the raw values of the cblas standard
+- Added a function to clear the cache of previously compiled programs
 - Added level-1 routines:
   * SNRM2/DNRM2/ScNRM2/DzNRM2
   * SASUM/DASUM/ScASUM/DzASUM

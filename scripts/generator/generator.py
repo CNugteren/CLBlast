@@ -294,8 +294,8 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 67, 93, 22, 29, 38]
-footer_lines = [6, 3, 9, 2, 6, 6]
+header_lines = [84, 68, 93, 22, 29, 38]
+footer_lines = [13, 8, 15, 9, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
 for f in files:

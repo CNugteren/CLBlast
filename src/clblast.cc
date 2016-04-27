@@ -17,6 +17,7 @@
 
 #include "clblast.h"
 #include "internal/public_api.h"
+#include "internal/cache.h"
 
 // BLAS level-1 includes
 #include "internal/routines/level1/xswap.h"
@@ -1786,6 +1787,11 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+
+// =================================================================================================
+
+// Clears the cache of stored program binaries
+StatusCode ClearCompiledProgramCache() { return cache::ClearCompiledProgramCache(); }
 
 // =================================================================================================
 } // namespace clblast

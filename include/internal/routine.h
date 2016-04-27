@@ -18,8 +18,8 @@
 
 #include <string>
 #include <vector>
-#include <mutex>
 
+#include "internal/cache.h"
 #include "internal/utilities.h"
 #include "internal/database.h"
 
@@ -30,26 +30,6 @@ namespace clblast {
 template <typename T>
 class Routine {
  public:
-
-  // The cache of compiled OpenCL programs, along with some meta-data
-  struct ProgramCache {
-    Program program;
-    std::string device_name;
-    Precision precision;
-    std::string routine_name_;
-
-    // Finds out whether the properties match
-    bool MatchInCache(const std::string &ref_device, const Precision &ref_precision,
-                      const std::string &ref_routine) {
-      return (device_name == ref_device &&
-              precision == ref_precision &&
-              routine_name_ == ref_routine);
-    }
-  };
-
-  // The actual cache, implemented as a vector of the above data-type, and its mutex
-  static std::vector<ProgramCache> program_cache_;
-  static std::mutex program_cache_mutex_;
 
   // Helper functions which check for errors in the status code
   static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
@@ -103,12 +83,21 @@ class Routine {
                                     const bool do_transpose, const bool do_conjugate,
                                     const bool upper = false, const bool lower = false,
                                     const bool diagonal_imag_zero = false);
-  
+
+  // Stores a newly compiled program into the cache
+  void StoreProgramToCache(const Program& program) const {
+    return cache::StoreProgramToCache(program, device_name_, precision_, routine_name_);
+  }
+
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.
   // The first assumes that the program is available in the cache and will throw an exception
   // otherwise.
-  const Program& GetProgramFromCache() const;
-  bool ProgramIsInCache() const;
+  const Program& GetProgramFromCache() const {
+    return cache::GetProgramFromCache(device_name_, precision_, routine_name_);
+  }
+  bool ProgramIsInCache() const {
+    return cache::ProgramIsInCache(device_name_, precision_, routine_name_);
+  }
 
   // Non-static variable for the precision. Note that the same variable (but static) might exist in
   // a derived class.

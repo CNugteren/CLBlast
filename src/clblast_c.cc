@@ -2258,3 +2258,10 @@ StatusCode CLBlastZtrsm(const Layout layout, const Side side, const Triangle tri
 }
 
 // =================================================================================================
+
+// Clears the cache of stored program binaries
+StatusCode CLBlastClearCompiledProgramCache() {
+  return static_cast<StatusCode>(clblast::ClearCompiledProgramCache());
+}
+
+// =================================================================================================
