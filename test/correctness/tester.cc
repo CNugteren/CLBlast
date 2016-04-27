@@ -299,7 +299,7 @@ bool TestSimilarity(const T val1, const T val2) {
 
   // Set the allowed error margin for floating-point comparisons
   constexpr auto kErrorMarginRelative = T{0.025};
-  constexpr auto kErrorMarginAbsolute = T{1.0e-6};
+  constexpr auto kErrorMarginAbsolute = T{1.0e-4};
 
   // Shortcut, handles infinities
   if (val1 == val2) {
