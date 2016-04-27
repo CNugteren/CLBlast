@@ -55,9 +55,10 @@ def OptionToWrapperC(x):
 
 # Class holding routine-specific information (e.g. name, which arguments, which precisions)
 class Routine():
-	def __init__(self, implemented, level, name, template, flavours, sizes, options,
+	def __init__(self, implemented, has_tests, level, name, template, flavours, sizes, options,
 	             inputs, outputs, scalars, scratch, description):
 		self.implemented = implemented
+		self.has_tests = has_tests
 		self.level = level
 		self.name = name
 		self.template = template

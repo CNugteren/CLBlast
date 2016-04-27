@@ -296,7 +296,25 @@ StatusCode PUBLIC_API CLBlastDzasum(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Sum of values in a vector: SSUM/DSUM/ScSUM/DzSUM
+StatusCode PUBLIC_API CLBlastSsum(const size_t n,
+                                  cl_mem asum_buffer, const size_t asum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDsum(const size_t n,
+                                  cl_mem asum_buffer, const size_t asum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastScsum(const size_t n,
+                                  cl_mem asum_buffer, const size_t asum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDzsum(const size_t n,
+                                  cl_mem asum_buffer, const size_t asum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
 StatusCode PUBLIC_API CLBlastiSamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -313,6 +331,24 @@ StatusCode PUBLIC_API CLBlastiZamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+
+// Index of maximum value in a vector: iSMAX/iDMAX/iCMAX/iZMAX
+StatusCode PUBLIC_API CLBlastiSmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiDmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiCmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiZmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

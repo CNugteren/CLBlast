@@ -430,7 +430,32 @@ template StatusCode PUBLIC_API Asum<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Sum of values in a vector: SSUM/DSUM/ScSUM/DzSUM
+template <typename T>
+StatusCode Sum(const size_t,
+               cl_mem, const size_t,
+               const cl_mem, const size_t, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Sum<float>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<double>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<float2>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<double2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
@@ -460,6 +485,31 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+
+// Index of maximum value in a vector: iSMAX/iDMAX/iCMAX/iZMAX
+template <typename T>
+StatusCode Max(const size_t,
+               cl_mem, const size_t,
+               const cl_mem, const size_t, const size_t,
+               cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Max<float>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<double>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<float2>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<double2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

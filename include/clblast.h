@@ -188,12 +188,26 @@ StatusCode Asum(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Index of absolute maxium value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Sum of values in a vector: SSUM/DSUM/ScSUM/DzSUM
+template <typename T>
+StatusCode Sum(const size_t n,
+               cl_mem asum_buffer, const size_t asum_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
+
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
+
+// Index of maximum value in a vector: iSMAX/iDMAX/iCMAX/iZMAX
+template <typename T>
+StatusCode Max(const size_t n,
+               cl_mem imax_buffer, const size_t imax_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

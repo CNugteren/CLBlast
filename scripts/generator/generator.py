@@ -59,59 +59,61 @@ TU = DataType("TU", "typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") 
 # Populates a list of routines
 routines = [
 [ # Level 1: vector-vector
-  Routine(False, "1", "rotg",  T,  [S,D],     [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation"),
-  Routine(False, "1", "rotmg", T,  [S,D],     [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation"),
-  Routine(False, "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation"),
-  Routine(False, "1", "rotm",  T,  [S,D],     ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation"),
-  Routine(True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], "", "Swap two vectors"),
-  Routine(True,  "1", "scal",  T,  [S,D,C,Z], ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling"),
-  Routine(True,  "1", "copy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], [], "", "Vector copy"),
-  Routine(True,  "1", "axpy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector"),
-  Routine(True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors"),
-  Routine(True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors"),
-  Routine(True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated"),
-  Routine(True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector"),
-  Routine(True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector"),
-  Routine(True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maxium value in a vector"),
+  Routine(False, True,  "1", "rotg",  T,  [S,D],     [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation"),
+  Routine(False, True,  "1", "rotmg", T,  [S,D],     [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation"),
+  Routine(False, True,  "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation"),
+  Routine(False, True,  "1", "rotm",  T,  [S,D],     ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation"),
+  Routine(True,  True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], "", "Swap two vectors"),
+  Routine(True,  True,  "1", "scal",  T,  [S,D,C,Z], ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling"),
+  Routine(True,  True,  "1", "copy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], [], "", "Vector copy"),
+  Routine(True,  True,  "1", "axpy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector"),
+  Routine(True,  True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors"),
+  Routine(True,  True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors"),
+  Routine(True,  True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated"),
+  Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector"),
+  Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector"),
+  Routine(False, False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Sum of values in a vector"),
+  Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector"),
+  Routine(False, False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector"),
 ],
 [ # Level 2: matrix-vector
-  Routine(True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),
-  Routine(True,  "2a", "gbmv",  T,  [S,D,C,Z], ["m","n","kl","ku"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General banded matrix-vector multiplication"),
-  Routine(True,  "2a", "hemv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian matrix-vector multiplication"),
-  Routine(True,  "2a", "hbmv",  T,  [C,Z],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian banded matrix-vector multiplication"),
-  Routine(True,  "2a", "hpmv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Hermitian packed matrix-vector multiplication"),
-  Routine(True,  "2a", "symv",  T,  [S,D],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric matrix-vector multiplication"),
-  Routine(True,  "2a", "sbmv",  T,  [S,D],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric banded matrix-vector multiplication"),
-  Routine(True,  "2a", "spmv",  T,  [S,D],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Symmetric packed matrix-vector multiplication"),
-  Routine(True,  "2a", "trmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular matrix-vector multiplication"),
-  Routine(True,  "2a", "tbmv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular banded matrix-vector multiplication"),
-  Routine(True,  "2a", "tpmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "n", "Triangular packed matrix-vector multiplication"),
-  Routine(False, "2a", "trsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a triangular system of equations"),
-  Routine(False, "2a", "tbsv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a banded triangular system of equations"),
-  Routine(False, "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "", "Solves a packed triangular system of equations"),
+  Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "gbmv",  T,  [S,D,C,Z], ["m","n","kl","ku"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General banded matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "hemv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "hbmv",  T,  [C,Z],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian banded matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "hpmv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Hermitian packed matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "symv",  T,  [S,D],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "sbmv",  T,  [S,D],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric banded matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "spmv",  T,  [S,D],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Symmetric packed matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "trmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "tbmv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular banded matrix-vector multiplication"),
+  Routine(True,  True,  "2a", "tpmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "n", "Triangular packed matrix-vector multiplication"),
+  Routine(False, True,  "2a", "trsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a triangular system of equations"),
+  Routine(False, True,  "2a", "tbsv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a banded triangular system of equations"),
+  Routine(False, True,  "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "", "Solves a packed triangular system of equations"),
   # Level 2: matrix update
-  Routine(True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 matrix update"),
-  Routine(True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex matrix update"),
-  Routine(True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex conjugated matrix update"),
-  Routine(True,  "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Hermitian rank-1 matrix update"),
-  Routine(True,  "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Hermitian packed rank-1 matrix update"),
-  Routine(True,  "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Hermitian rank-2 matrix update"),
-  Routine(True,  "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Hermitian packed rank-2 matrix update"),
-  Routine(True,  "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Symmetric rank-1 matrix update"),
-  Routine(True,  "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Symmetric packed rank-1 matrix update"),
-  Routine(True,  "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Symmetric rank-2 matrix update"),
-  Routine(True,  "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Symmetric packed rank-2 matrix update"),
+  Routine(True,  True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 matrix update"),
+  Routine(True,  True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex matrix update"),
+  Routine(True,  True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex conjugated matrix update"),
+  Routine(True,  True,  "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Hermitian rank-1 matrix update"),
+  Routine(True,  True,  "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Hermitian packed rank-1 matrix update"),
+  Routine(True,  True,  "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Hermitian rank-2 matrix update"),
+  Routine(True,  True,  "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Hermitian packed rank-2 matrix update"),
+  Routine(True,  True,  "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Symmetric rank-1 matrix update"),
+  Routine(True,  True,  "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Symmetric packed rank-1 matrix update"),
+  Routine(True,  True,  "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Symmetric rank-2 matrix update"),
+  Routine(True,  True,  "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Symmetric packed rank-2 matrix update"),
 ],
 [ # Level 3: matrix-matrix
-  Routine(True,  "3", "gemm",  T,  [S,D,C,Z], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication"),
-  Routine(True,  "3", "symm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication"),
-  Routine(True,  "3", "hemm",  T,  [C,Z],     ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication"),
-  Routine(True,  "3", "syrk",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix"),
-  Routine(True,  "3", "herk",  Tc, [Css,Zdd], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix"),
-  Routine(True,  "3", "syr2k", T,  [S,D,C,Z], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix"),
-  Routine(True,  "3", "her2k", TU, [Ccs,Zzd], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix"),
-  Routine(True,  "3", "trmm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication"),
-  Routine(False, "3", "trsm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations"),
+  Routine(True,  True,  "3", "gemm",  T,  [S,D,C,Z], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication"),
+  Routine(True,  True,  "3", "symm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication"),
+  Routine(True,  True,  "3", "hemm",  T,  [C,Z],     ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication"),
+  Routine(True,  True,  "3", "syrk",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix"),
+  Routine(True,  True,  "3", "herk",  Tc, [Css,Zdd], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix"),
+  Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix"),
+  Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix"),
+  Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication"),
+  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations"),
 ]]
 
 # ==================================================================================================
@@ -224,57 +226,59 @@ def clblast_c_cc(routines):
 def wrapper_clblas(routines):
 	result = ""
 	for routine in routines:
-		result += "\n// Forwards the clBLAS calls for %s\n" % (routine.ShortNames())
-		if routine.NoScalars():
-			result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
-		for flavour in routine.flavours:
-			indent = " "*(17 + routine.Length())
-			result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
-			arguments = routine.ArgumentsWrapperCL(flavour)
-			if routine.scratch:
-				result += "  auto queue = Queue(queues[0]);\n"
-				result += "  auto context = queue.GetContext();\n"
-				result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, "+routine.scratch+");\n"
-				arguments += ["scratch_buffer()"]
-			result += "  return clblas"+flavour.name+routine.name+"("
-			result += (",\n"+indent).join([a for a in arguments])
-			result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
-			result += "\n}\n"
+		if routine.has_tests:
+			result += "\n// Forwards the clBLAS calls for %s\n" % (routine.ShortNames())
+			if routine.NoScalars():
+				result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
+			for flavour in routine.flavours:
+				indent = " "*(17 + routine.Length())
+				result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
+				arguments = routine.ArgumentsWrapperCL(flavour)
+				if routine.scratch:
+					result += "  auto queue = Queue(queues[0]);\n"
+					result += "  auto context = queue.GetContext();\n"
+					result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, "+routine.scratch+");\n"
+					arguments += ["scratch_buffer()"]
+				result += "  return clblas"+flavour.name+routine.name+"("
+				result += (",\n"+indent).join([a for a in arguments])
+				result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+				result += "\n}\n"
 	return result
 
 # The wrapper to the reference CBLAS routines (for performance/correctness testing)
 def wrapper_cblas(routines):
 	result = ""
 	for routine in routines:
-		result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNames())
-		for flavour in routine.flavours:
-			indent = " "*(10 + routine.Length())
-			result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
-			arguments = routine.ArgumentsWrapperC(flavour)
+		if routine.has_tests:
+			result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNames())
+			for flavour in routine.flavours:
+				indent = " "*(10 + routine.Length())
+				result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
+				arguments = routine.ArgumentsWrapperC(flavour)
 
-			# Double-precision scalars
-			for scalar in routine.scalars:
-				if flavour.IsComplex(scalar):
-					result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
+				# Double-precision scalars
+				for scalar in routine.scalars:
+					if flavour.IsComplex(scalar):
+						result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
 
-			# Special case for scalar outputs
-			assignment = ""
-			postfix = ""
-			extra_argument = ""
-			for output_buffer in routine.outputs:
-				if output_buffer in routine.ScalarBuffersFirst():
-					if flavour in [C,Z]:
-						postfix += "_sub"
-						indent += "    "
-						extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
-					else:
-						assignment = output_buffer+"_buffer["+output_buffer+"_offset] = "
-						indent += " "*len(assignment)
+				# Special case for scalar outputs
+				assignment = ""
+				postfix = ""
+				extra_argument = ""
+				for output_buffer in routine.outputs:
+					if output_buffer in routine.ScalarBuffersFirst():
+						if flavour in [C,Z]:
+							postfix += "_sub"
+							indent += "    "
+							extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
+						else:
+							assignment = output_buffer+"_buffer["+output_buffer+"_offset] = "
+							indent += " "*len(assignment)
 
-			result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
-			result += (",\n"+indent).join([a for a in arguments])
-			result += extra_argument+");"
-			result += "\n}\n"
+				result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
+				result += (",\n"+indent).join([a for a in arguments])
+				result += extra_argument+");"
+				result += "\n}\n"
 	return result
 
 # ==================================================================================================
@@ -340,57 +344,59 @@ for i in xrange(0,len(files)):
 # Outputs all the correctness-test implementations
 for level in [1,2,3]:
 	for routine in routines[level-1]:
-		filename = path_clblast+"/test/correctness/routines/level"+str(level)+"/x"+routine.name+".cc"
-		with open(filename, "w") as f:
-			body = ""
-			body += "#include \"correctness/testblas.h\"\n"
-			body += "#include \"routines/level"+str(level)+"/x"+routine.name+".h\"\n\n"
-			body += "// Shortcuts to the clblast namespace\n"
-			body += "using float2 = clblast::float2;\n"
-			body += "using double2 = clblast::double2;\n\n"
-			body += "// Main function (not within the clblast namespace)\n"
-			body += "int main(int argc, char *argv[]) {\n"
-			not_first = "false"
-			for flavour in routine.flavours:
-				body += "  clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
-				body += ">(argc, argv, "+not_first+", \""+flavour.name+routine.name.upper()+"\");\n"
-				not_first = "true"
-			body += "  return 0;\n"
-			body += "}\n"
-			f.write(header+"\n")
-			f.write(body)
-			f.write(footer)
+		if routine.has_tests:
+			filename = path_clblast+"/test/correctness/routines/level"+str(level)+"/x"+routine.name+".cc"
+			with open(filename, "w") as f:
+				body = ""
+				body += "#include \"correctness/testblas.h\"\n"
+				body += "#include \"routines/level"+str(level)+"/x"+routine.name+".h\"\n\n"
+				body += "// Shortcuts to the clblast namespace\n"
+				body += "using float2 = clblast::float2;\n"
+				body += "using double2 = clblast::double2;\n\n"
+				body += "// Main function (not within the clblast namespace)\n"
+				body += "int main(int argc, char *argv[]) {\n"
+				not_first = "false"
+				for flavour in routine.flavours:
+					body += "  clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
+					body += ">(argc, argv, "+not_first+", \""+flavour.name+routine.name.upper()+"\");\n"
+					not_first = "true"
+				body += "  return 0;\n"
+				body += "}\n"
+				f.write(header+"\n")
+				f.write(body)
+				f.write(footer)
 
 # Outputs all the performance-test implementations
 for level in [1,2,3]:
 	for routine in routines[level-1]:
-		filename = path_clblast+"/test/performance/routines/level"+str(level)+"/x"+routine.name+".cc"
-		with open(filename, "w") as f:
-			body = ""
-			body += "#include \"performance/client.h\"\n"
-			body += "#include \"routines/level"+str(level)+"/x"+routine.name+".h\"\n\n"
-			body += "// Shortcuts to the clblast namespace\n"
-			body += "using float2 = clblast::float2;\n"
-			body += "using double2 = clblast::double2;\n\n"
-			body += "// Main function (not within the clblast namespace)\n"
-			body += "int main(int argc, char *argv[]) {\n"
-			default = PrecisionToFullName(routine.flavours[0].precision_name)
-			body += "  switch(clblast::GetPrecision(argc, argv, clblast::Precision::k"+default+")) {\n"
-			for precision in ["H","S","D","C","Z"]:
-				body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"
-				found = False
-				for flavour in routine.flavours:
-					if flavour.precision_name == precision:
-						body += "\n      clblast::RunClient<clblast::TestX"+routine.name+flavour.TestTemplate()
-						body += ">(argc, argv); break;\n"
-						found = True
-				if not found:
-					body += " throw std::runtime_error(\"Unsupported precision mode\");\n"
-			body += "  }\n"
-			body += "  return 0;\n"
-			body += "}\n"
-			f.write(header+"\n")
-			f.write(body)
-			f.write(footer)
+		if routine.has_tests:
+			filename = path_clblast+"/test/performance/routines/level"+str(level)+"/x"+routine.name+".cc"
+			with open(filename, "w") as f:
+				body = ""
+				body += "#include \"performance/client.h\"\n"
+				body += "#include \"routines/level"+str(level)+"/x"+routine.name+".h\"\n\n"
+				body += "// Shortcuts to the clblast namespace\n"
+				body += "using float2 = clblast::float2;\n"
+				body += "using double2 = clblast::double2;\n\n"
+				body += "// Main function (not within the clblast namespace)\n"
+				body += "int main(int argc, char *argv[]) {\n"
+				default = PrecisionToFullName(routine.flavours[0].precision_name)
+				body += "  switch(clblast::GetPrecision(argc, argv, clblast::Precision::k"+default+")) {\n"
+				for precision in ["H","S","D","C","Z"]:
+					body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"
+					found = False
+					for flavour in routine.flavours:
+						if flavour.precision_name == precision:
+							body += "\n      clblast::RunClient<clblast::TestX"+routine.name+flavour.TestTemplate()
+							body += ">(argc, argv); break;\n"
+							found = True
+					if not found:
+						body += " throw std::runtime_error(\"Unsupported precision mode\");\n"
+				body += "  }\n"
+				body += "  return 0;\n"
+				body += "}\n"
+				f.write(header+"\n")
+				f.write(body)
+				f.write(footer)
 
 # ==================================================================================================
