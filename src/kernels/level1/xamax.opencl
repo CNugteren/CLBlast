@@ -41,14 +41,23 @@ __kernel void Xamax(const int n,
   const int num_groups = get_num_groups(0);
 
   // Performs loading and the first steps of the reduction
-  singlereal max = ZERO;
+  #if defined(ROUTINE_MAX) // non-absolute version
+    singlereal max = SMALLEST;
+  #else
+    singlereal max = ZERO;
+  #endif
   unsigned int imax = 0;
   int id = wgid*WGS1 + lid;
   while (id < n) {
+    const int x_index = id*x_inc + x_offset;
     #if PRECISION == 3232 || PRECISION == 6464
-      singlereal x = fabs(xgm[id*x_inc + x_offset].x);
+      singlereal x = xgm[x_index].x;
     #else
-      singlereal x = fabs(xgm[id*x_inc + x_offset]);
+      singlereal x = xgm[x_index];
+    #endif
+    #if defined(ROUTINE_MAX) // non-absolute version
+    #else
+      x = fabs(x);
     #endif
     if (x >= max) {
       max = x;

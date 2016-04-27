@@ -9,7 +9,9 @@ Development version (next release)
 - Added level-1 routines:
   * SNRM2/DNRM2/ScNRM2/DzNRM2
   * SASUM/DASUM/ScASUM/DzASUM
+  * SSUM/DSUM/ScSUM/DzSUM (non-absolute version of the above xASUM BLAS routines)
   * iSAMAX/iDAMAX/iCAMAX/iZAMAX
+  * iSMAX/iDMAX/iCMAX/iZMAX (non-absolute version of the above ixAMAX BLAS routines)
 
 Version 0.6.0
 - Added support for MSVC (Visual Studio) 2015

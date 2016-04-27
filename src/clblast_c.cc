@@ -477,41 +477,41 @@ StatusCode CLBlastDzasum(const size_t n,
 
 // SUM
 StatusCode CLBlastSsum(const size_t n,
-                       cl_mem asum_buffer, const size_t asum_offset,
+                       cl_mem sum_buffer, const size_t sum_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sum<float>(n,
-                                    asum_buffer, asum_offset,
+                                    sum_buffer, sum_offset,
                                     x_buffer, x_offset, x_inc,
                                     queue, event);
   return static_cast<StatusCode>(status);
 }
 StatusCode CLBlastDsum(const size_t n,
-                       cl_mem asum_buffer, const size_t asum_offset,
+                       cl_mem sum_buffer, const size_t sum_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sum<double>(n,
-                                     asum_buffer, asum_offset,
+                                     sum_buffer, sum_offset,
                                      x_buffer, x_offset, x_inc,
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
 StatusCode CLBlastScsum(const size_t n,
-                       cl_mem asum_buffer, const size_t asum_offset,
+                       cl_mem sum_buffer, const size_t sum_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sum<float2>(n,
-                                     asum_buffer, asum_offset,
+                                     sum_buffer, sum_offset,
                                      x_buffer, x_offset, x_inc,
                                      queue, event);
   return static_cast<StatusCode>(status);
 }
 StatusCode CLBlastDzsum(const size_t n,
-                       cl_mem asum_buffer, const size_t asum_offset,
+                       cl_mem sum_buffer, const size_t sum_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Sum<double2>(n,
-                                      asum_buffer, asum_offset,
+                                      sum_buffer, sum_offset,
                                       x_buffer, x_offset, x_inc,
                                       queue, event);
   return static_cast<StatusCode>(status);

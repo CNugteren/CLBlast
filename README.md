@@ -169,64 +169,76 @@ These graphs can be generated automatically on your own device. First, compile C
 Supported routines
 -------------
 
-CLBlast is in active development but already supports almost all the BLAS routines. The currently supported routines are marked with '✔' in the following tables. Empty boxes represent routines that still need to be implemented in a future release, whereas routines marked with '-' are not part of BLAS at all.
+CLBlast is in active development but already supports almost all the BLAS routines. The supported routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all.
 
-| Level-1  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xROTG    |   |   | - | - |         |
-| xROTMG   |   |   | - | - |         |
-| xROT     |   |   | - | - |         |
-| xROTM    |   |   | - | - |         |
-| xSWAP    | ✔ | ✔ | ✔ | ✔ |         |
-| xSCAL    | ✔ | ✔ | ✔ | ✔ |         |
-| xCOPY    | ✔ | ✔ | ✔ | ✔ |         |
-| xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
-| xDOT     | ✔ | ✔ | - | - |         |
-| xDOTU    | - | - | ✔ | ✔ |         |
-| xDOTC    | - | - | ✔ | ✔ |         |
-| xNRM2    | ✔ | ✔ | ✔ | ✔ |         |
-| xASUM    | ✔ | ✔ | ✔ | ✔ |         |
-| IxAMAX   | ✔ | ✔ | ✔ | ✔ |         |
+| Level-1  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xSWAP    | ✔ | ✔ | ✔ | ✔ |
+| xSCAL    | ✔ | ✔ | ✔ | ✔ |
+| xCOPY    | ✔ | ✔ | ✔ | ✔ |
+| xAXPY    | ✔ | ✔ | ✔ | ✔ |
+| xDOT     | ✔ | ✔ | - | - |
+| xDOTU    | - | - | ✔ | ✔ |
+| xDOTC    | - | - | ✔ | ✔ |
+| xNRM2    | ✔ | ✔ | ✔ | ✔ |
+| xASUM    | ✔ | ✔ | ✔ | ✔ |
+| IxAMAX   | ✔ | ✔ | ✔ | ✔ |
 
-| Level-2  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xGBMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xHEMV    | - | - | ✔ | ✔ |         |
-| xHBMV    | - | - | ✔ | ✔ |         |
-| xHPMV    | - | - | ✔ | ✔ |         |
-| xSYMV    | ✔ | ✔ | - | - |         |
-| xSBMV    | ✔ | ✔ | - | - |         |
-| xSPMV    | ✔ | ✔ | - | - |         |
-| xTRMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTBMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTPMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTRSV    |   |   |   |   |         |
-| xTBSV    |   |   |   |   |         |
-| xTPSV    |   |   |   |   |         |
-| xGER     | ✔ | ✔ | - | - |         |
-| xGERU    | - | - | ✔ | ✔ |         |
-| xGERC    | - | - | ✔ | ✔ |         |
-| xHER     | - | - | ✔ | ✔ |         |
-| xHPR     | - | - | ✔ | ✔ |         |
-| xHER2    | - | - | ✔ | ✔ |         |
-| xHPR2    | - | - | ✔ | ✔ |         |
-| xSYR     | ✔ | ✔ | - | - |         |
-| xSPR     | ✔ | ✔ | - | - |         |
-| xSYR2    | ✔ | ✔ | - | - |         |
-| xSPR2    | ✔ | ✔ | - | - |         |
+| Level-2  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xGEMV    | ✔ | ✔ | ✔ | ✔ |
+| xGBMV    | ✔ | ✔ | ✔ | ✔ |
+| xHEMV    | - | - | ✔ | ✔ |
+| xHBMV    | - | - | ✔ | ✔ |
+| xHPMV    | - | - | ✔ | ✔ |
+| xSYMV    | ✔ | ✔ | - | - |
+| xSBMV    | ✔ | ✔ | - | - |
+| xSPMV    | ✔ | ✔ | - | - |
+| xTRMV    | ✔ | ✔ | ✔ | ✔ |
+| xTBMV    | ✔ | ✔ | ✔ | ✔ |
+| xTPMV    | ✔ | ✔ | ✔ | ✔ |
+| xGER     | ✔ | ✔ | - | - |
+| xGERU    | - | - | ✔ | ✔ |
+| xGERC    | - | - | ✔ | ✔ |
+| xHER     | - | - | ✔ | ✔ |
+| xHPR     | - | - | ✔ | ✔ |
+| xHER2    | - | - | ✔ | ✔ |
+| xHPR2    | - | - | ✔ | ✔ |
+| xSYR     | ✔ | ✔ | - | - |
+| xSPR     | ✔ | ✔ | - | - |
+| xSYR2    | ✔ | ✔ | - | - |
+| xSPR2    | ✔ | ✔ | - | - |
 
-| Level-3  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xGEMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xSYMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xHEMM    | - | - | ✔ | ✔ |         |
-| xSYRK    | ✔ | ✔ | ✔ | ✔ |         |
-| xHERK    | - | - | ✔ | ✔ |         |
-| xSYR2K   | ✔ | ✔ | ✔ | ✔ |         |
-| xHER2K   | - | - | ✔ | ✔ |         |
-| xTRMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xTRSM    |   |   |   |   |         |
+| Level-3  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xGEMM    | ✔ | ✔ | ✔ | ✔ |
+| xSYMM    | ✔ | ✔ | ✔ | ✔ |
+| xHEMM    | - | - | ✔ | ✔ |
+| xSYRK    | ✔ | ✔ | ✔ | ✔ |
+| xHERK    | - | - | ✔ | ✔ |
+| xSYR2K   | ✔ | ✔ | ✔ | ✔ |
+| xHER2K   | - | - | ✔ | ✔ |
+| xTRMM    | ✔ | ✔ | ✔ | ✔ |
+
+In addition, some non-BLAS routines are also supported by CLBlast. They are experimental and should be used with care:
+
+| Additional | S | D | C | Z |
+| -----------|---|---|---|---|
+| xSUM       | ✔ | ✔ | ✔ | ✔ |
+| IxMAX      | ✔ | ✔ | ✔ | ✔ |
+
+Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
+
+| Unsupported | S | D | C | Z |
+| ------------|---|---|---|---|
+| xROTG       |   |   | - | - |
+| xROTMG      |   |   | - | - |
+| xROT        |   |   | - | - |
+| xROTM       |   |   | - | - |
+| xTRSV       |   |   |   |   |
+| xTBSV       |   |   |   |   |
+| xTPSV       |   |   |   |   |
+| xTRSM       |   |   |   |   |
 
 
 Contributing

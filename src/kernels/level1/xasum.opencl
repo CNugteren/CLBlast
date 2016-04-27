@@ -45,7 +45,10 @@ __kernel void Xasum(const int n,
   int id = wgid*WGS1 + lid;
   while (id < n) {
     real x = xgm[id*x_inc + x_offset];
-    AbsoluteValue(x);
+    #if defined(ROUTINE_SUM) // non-absolute version
+    #else
+      AbsoluteValue(x);
+    #endif
     Add(acc, acc, x);
     id += WGS1*num_groups;
   }

@@ -72,9 +72,9 @@ routines = [
   Routine(True,  True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated"),
   Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector"),
   Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector"),
-  Routine(False, False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Sum of values in a vector"),
+  Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)"),
   Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector"),
-  Routine(False, False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector"),
+  Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),
@@ -298,7 +298,7 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 68, 93, 22, 29, 38]
+header_lines = [84, 70, 93, 22, 29, 38]
 footer_lines = [13, 8, 15, 9, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

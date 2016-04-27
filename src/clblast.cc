@@ -29,7 +29,9 @@
 #include "internal/routines/level1/xdotc.h"
 #include "internal/routines/level1/xnrm2.h"
 #include "internal/routines/level1/xasum.h"
+#include "internal/routines/level1/xsum.h" // non-BLAS function
 #include "internal/routines/level1/xamax.h"
+#include "internal/routines/level1/xmax.h" // non-BLAS function
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -430,13 +432,19 @@ template StatusCode PUBLIC_API Asum<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Sum of values in a vector: SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
 template <typename T>
-StatusCode Sum(const size_t,
-               cl_mem, const size_t,
-               const cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Sum(const size_t n,
+               cl_mem sum_buffer, const size_t sum_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto routine = Xsum<T>(queue_cpp, event);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoSum(n,
+                       Buffer<T>(sum_buffer), sum_offset,
+                       Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Sum<float>(const size_t,
                                           cl_mem, const size_t,
@@ -486,13 +494,19 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Index of maximum value in a vector: iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
 template <typename T>
-StatusCode Max(const size_t,
-               cl_mem, const size_t,
-               const cl_mem, const size_t, const size_t,
-               cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Max(const size_t n,
+               cl_mem imax_buffer, const size_t imax_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto routine = Xmax<T>(queue_cpp, event);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoMax(n,
+                       Buffer<T>(imax_buffer), imax_offset,
+                       Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Max<float>(const size_t,
                                           cl_mem, const size_t,
