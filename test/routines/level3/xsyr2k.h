@@ -99,9 +99,9 @@ class TestXsyr2k {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXsyr2k(static_cast<clblasOrder>(args.layout),
-                                 static_cast<clblasUplo>(args.triangle),
-                                 static_cast<clblasTranspose>(args.a_transpose),
+      auto status = clblasXsyr2k(convertToCLBLAS(args.layout),
+                                 convertToCLBLAS(args.triangle),
+                                 convertToCLBLAS(args.a_transpose),
                                  args.n, args.k, args.alpha,
                                  buffers.a_mat(), args.a_offset, args.a_ld,
                                  buffers.b_mat(), args.b_offset, args.b_ld, args.beta,

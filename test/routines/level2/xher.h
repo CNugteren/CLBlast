@@ -88,8 +88,8 @@ class TestXher {
     static StatusCode RunReference1(const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXher(static_cast<clblasOrder>(args.layout),
-                               static_cast<clblasUplo>(args.triangle),
+      auto status = clblasXher(convertToCLBLAS(args.layout),
+                               convertToCLBLAS(args.triangle),
                                args.n, args.alpha,
                                buffers.x_vec(), args.x_offset, args.x_inc,
                                buffers.a_mat(), args.a_offset, args.a_ld,

@@ -82,11 +82,11 @@ typedef enum StatusCode_ {
 } StatusCode;
 
 // Matrix layout and transpose types
-typedef enum Layout_ { kRowMajor, kColMajor } Layout;
-typedef enum Transpose_ { kNo, kYes, kConjugate } Transpose;
-typedef enum Side_ { kLeft, kRight } Side;
-typedef enum Triangle_ { kUpper, kLower } Triangle;
-typedef enum Diagonal_ { kUnit, kNonUnit } Diagonal;
+typedef enum Layout_ { kRowMajor = 101, kColMajor = 102 } Layout;
+typedef enum Transpose_ { kNo = 111, kYes = 112, kConjugate = 113 } Transpose;
+typedef enum Triangle_ { kUpper = 121, kLower = 122 } Triangle;
+typedef enum Diagonal_ { kNonUnit = 131, kUnit = 132 } Diagonal;
+typedef enum Side_ { kLeft = 141, kRight = 142 } Side;
 
 // Precision scoped enum (values in bits)
 typedef enum Precision_ { kHalf = 16, kSingle = 32, kDouble = 64,

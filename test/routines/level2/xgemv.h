@@ -99,8 +99,8 @@ class TestXgemv {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXgemv(static_cast<clblasOrder>(args.layout),
-                                static_cast<clblasTranspose>(args.a_transpose),
+      auto status = clblasXgemv(convertToCLBLAS(args.layout),
+                                convertToCLBLAS(args.a_transpose),
                                 args.m, args.n, args.alpha,
                                 buffers.a_mat(), args.a_offset, args.a_ld,
                                 buffers.x_vec(), args.x_offset, args.x_inc, args.beta,

@@ -87,10 +87,10 @@ class TestXtbmv {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXtbmv<T>(static_cast<clblasOrder>(args.layout),
-                                   static_cast<clblasUplo>(args.triangle),
-                                   static_cast<clblasTranspose>(args.a_transpose),
-                                   static_cast<clblasDiag>(args.diagonal),
+      auto status = clblasXtbmv<T>(convertToCLBLAS(args.layout),
+                                   convertToCLBLAS(args.triangle),
+                                   convertToCLBLAS(args.a_transpose),
+                                   convertToCLBLAS(args.diagonal),
                                    args.n, args.kl,
                                    buffers.a_mat(), args.a_offset, args.a_ld,
                                    buffers.x_vec(), args.x_offset, args.x_inc,

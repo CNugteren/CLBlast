@@ -21,6 +21,13 @@
 
 namespace clblast {
 
+// Conversions from CLBlast types
+clblasOrder convertToCLBLAS(const Layout v) { return (v == Layout::kRowMajor) ? clblasRowMajor : clblasColumnMajor; }
+clblasTranspose convertToCLBLAS(const Transpose v) { return (v == Transpose::kNo) ? clblasNoTrans : (v == Transpose::kYes) ? clblasTrans : clblasConjTrans; }
+clblasUplo convertToCLBLAS(const Triangle v) { return (v == Triangle::kUpper) ? clblasUpper : clblasLower; }
+clblasDiag convertToCLBLAS(const Diagonal v) { return (v == Diagonal::kUnit) ? clblasUnit : clblasNonUnit; }
+clblasSide convertToCLBLAS(const Side v) { return (v == Side::kLeft) ? clblasLeft : clblasRight; }
+
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================

@@ -101,9 +101,9 @@ class TestXher2k {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto alpha2 = T{args.alpha, args.alpha};
-      auto status = clblasXher2k(static_cast<clblasOrder>(args.layout),
-                                 static_cast<clblasUplo>(args.triangle),
-                                 static_cast<clblasTranspose>(args.a_transpose),
+      auto status = clblasXher2k(convertToCLBLAS(args.layout),
+                                 convertToCLBLAS(args.triangle),
+                                 convertToCLBLAS(args.a_transpose),
                                  args.n, args.k, alpha2,
                                  buffers.a_mat(), args.a_offset, args.a_ld,
                                  buffers.b_mat(), args.b_offset, args.b_ld, args.beta,

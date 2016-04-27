@@ -101,9 +101,9 @@ class TestXhemm {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXhemm(static_cast<clblasOrder>(args.layout),
-                                static_cast<clblasSide>(args.side),
-                                static_cast<clblasUplo>(args.triangle),
+      auto status = clblasXhemm(convertToCLBLAS(args.layout),
+                                convertToCLBLAS(args.side),
+                                convertToCLBLAS(args.triangle),
                                 args.m, args.n, args.alpha,
                                 buffers.a_mat(), args.a_offset, args.a_ld,
                                 buffers.b_mat(), args.b_offset, args.b_ld, args.beta,

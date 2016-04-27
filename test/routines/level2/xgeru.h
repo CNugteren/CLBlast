@@ -95,7 +95,7 @@ class TestXgeru {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXgeru(static_cast<clblasOrder>(args.layout),
+      auto status = clblasXgeru(convertToCLBLAS(args.layout),
                                 args.m, args.n, args.alpha,
                                 buffers.x_vec(), args.x_offset, args.x_inc,
                                 buffers.y_vec(), args.y_offset, args.y_inc,

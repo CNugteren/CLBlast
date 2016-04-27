@@ -73,11 +73,11 @@ enum class StatusCode {
 };
 
 // Matrix layout and transpose types
-enum class Layout { kRowMajor, kColMajor };
-enum class Transpose { kNo, kYes, kConjugate };
-enum class Side { kLeft, kRight };
-enum class Triangle { kUpper, kLower };
-enum class Diagonal { kUnit, kNonUnit };
+enum class Layout { kRowMajor = 101, kColMajor = 102 };
+enum class Transpose { kNo = 111, kYes = 112, kConjugate = 113 };
+enum class Triangle { kUpper = 121, kLower = 122 };
+enum class Diagonal { kNonUnit = 131, kUnit = 132 };
+enum class Side { kLeft = 141, kRight = 142 };
 
 // Precision scoped enum (values in bits)
 enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,

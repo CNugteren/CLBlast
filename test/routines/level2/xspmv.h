@@ -93,8 +93,8 @@ class TestXspmv {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = clblasXspmv(static_cast<clblasOrder>(args.layout),
-                                static_cast<clblasUplo>(args.triangle),
+      auto status = clblasXspmv(convertToCLBLAS(args.layout),
+                                convertToCLBLAS(args.triangle),
                                 args.n, args.alpha,
                                 buffers.ap_mat(), args.ap_offset,
                                 buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
