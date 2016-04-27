@@ -35,6 +35,7 @@ class TestBlas: public Tester<T,U> {
   using Tester<T,U>::context_;
   using Tester<T,U>::queue_;
   using Tester<T,U>::full_test_;
+  using Tester<T,U>::verbose_;
   using Tester<T,U>::device_;
 
   // Uses several helper functions from the Tester class

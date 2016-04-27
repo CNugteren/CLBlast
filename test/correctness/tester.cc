@@ -32,6 +32,7 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
     context_(Context(device_)),
     queue_(Queue(context_, device_)),
     full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
+    verbose_(CheckArgument(argc, argv, help_, kArgVerbose)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
@@ -126,41 +127,8 @@ void Tester<T,U>::TestEnd() {
   tests_failed_ += num_skipped_;
   tests_failed_ += num_failed_;
 
-  // Prints details of all error occurences for these tests
-  for (auto &entry: error_log_) {
-    if (entry.error_percentage != kStatusError) {
-      fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
-    }
-    else {
-      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
-    }
-    for (auto &o: options_) {
-      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
-      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
-      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
-      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
-      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
-      if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
-      if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
-      if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
-      if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
-      if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
-      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
-      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
-      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
-      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
-      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
-      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
-      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
-      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
-      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
-      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
-      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
-      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
-      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
-    }
-    fprintf(stdout, "\n");
-  }
+  // Prints the errors
+  PrintErrorLog(error_log_);
 
   // Prints a test summary
   auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
@@ -230,6 +198,11 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   else {
     PrintTestResult(kErrorStatus);
     ReportError({clblas_status, clblast_status, kStatusError, args});
+    if (verbose_) {
+      fprintf(stdout, "\n");
+      PrintErrorLog({{clblas_status, clblast_status, kStatusError, args}});
+      fprintf(stdout, "   ");
+    }
   }
 }
 
@@ -272,6 +245,45 @@ void Tester<T,U>::PrintTestResult(const std::string &message) {
   fprintf(stdout, "%s", message.c_str());
   std::cout << std::flush;
   print_count_++;
+}
+
+// Prints details of errors occurred in a given error log
+template <typename T, typename U>
+void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
+  for (auto &entry: error_log) {
+    if (entry.error_percentage != kStatusError) {
+      fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
+    }
+    else {
+      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
+    }
+    for (auto &o: options_) {
+      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
+      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
+      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
+      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
+      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
+      if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
+      if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
+      if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
+      if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
+      if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
+      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
+      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
+      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
+      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
+      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
+      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
+      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
+      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
+      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
+      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
+      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
+      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
+      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
+    }
+    fprintf(stdout, "\n");
+  }
 }
 
 // =================================================================================================

@@ -96,6 +96,9 @@ class Tester {
   // Whether or not to run the full test-suite or just a smoke test
   const bool full_test_;
 
+  // Whether or not to print extra information when testing
+  const bool verbose_;
+
   // Retrieves the offset values to test with
   const std::vector<size_t> GetOffsets() const;
 
@@ -108,6 +111,9 @@ class Tester {
 
   // Prints the error or success symbol to screen
   void PrintTestResult(const std::string &message);
+
+  // Prints an error log
+  void PrintErrorLog(const std::vector<ErrorLogEntry> &error_log);
 
   // Logging and counting occurrences of errors
   std::vector<ErrorLogEntry> error_log_;

@@ -12,6 +12,7 @@
 // =================================================================================================
 
 #include <algorithm>
+#include <iostream>
 
 #include "correctness/testblas.h"
 
@@ -141,9 +142,17 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         auto index = get_index_(args, id1, id2);
         if (!TestSimilarity(result1[index], result2[index])) {
           errors++;
+          if (verbose_) {
+            fprintf(stdout, "\n   Incorrect value found: ");
+            std::cout << result1[index];
+            fprintf(stdout, " (reference) versus ");
+            std::cout << result2[index];
+            fprintf(stdout, " (CLBlast)");
+          }
         }
       }
     }
+    if (verbose_ && errors > 0) { fprintf(stdout, "\n   "); }
 
     // Tests the error count (should be zero)
     TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);
