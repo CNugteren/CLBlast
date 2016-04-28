@@ -68,7 +68,7 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xher2");
 
     // Sets the kernel arguments

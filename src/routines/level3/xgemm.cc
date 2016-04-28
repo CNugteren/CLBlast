@@ -107,7 +107,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   try {
 
     // Loads the program from the database
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
 
     // Determines whether or not temporary matrices are needed
     auto a_no_temp = a_one == m_ceiled && a_two == k_ceiled && a_ld == m_ceiled && a_offset == 0 &&

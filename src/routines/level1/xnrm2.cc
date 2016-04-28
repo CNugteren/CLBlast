@@ -55,7 +55,7 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
 
   // Retrieves the Xnrm2 kernels from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel1 = Kernel(program, "Xnrm2");
     auto kernel2 = Kernel(program, "Xnrm2Epilogue");
 

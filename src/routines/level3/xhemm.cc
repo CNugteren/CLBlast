@@ -61,7 +61,7 @@ StatusCode Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle
     // Creates a general matrix from the hermitian matrix to be able to run the regular Xgemm
     // routine afterwards
     try {
-      auto& program = GetProgramFromCache();
+      const auto program = GetProgramFromCache();
       auto kernel = Kernel(program, kernel_name);
 
       // Sets the arguments for the hermitian-to-squared kernel

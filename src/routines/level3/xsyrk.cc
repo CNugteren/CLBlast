@@ -87,7 +87,7 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
   try {
 
     // Loads the program from the database
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
 
     // Determines whether or not temporary matrices are needed
     auto a_no_temp = a_one == n_ceiled && a_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&

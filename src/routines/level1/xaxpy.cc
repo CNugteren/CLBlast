@@ -64,7 +64,7 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
 
   // Retrieves the Xaxpy kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

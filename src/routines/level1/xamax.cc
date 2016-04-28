@@ -55,7 +55,7 @@ StatusCode Xamax<T>::DoAmax(const size_t n,
 
   // Retrieves the Xamax kernels from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel1 = Kernel(program, "Xamax");
     auto kernel2 = Kernel(program, "XamaxEpilogue");
 

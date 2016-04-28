@@ -55,7 +55,7 @@ StatusCode Xasum<T>::DoAsum(const size_t n,
 
   // Retrieves the Xasum kernels from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel1 = Kernel(program, "Xasum");
     auto kernel2 = Kernel(program, "XasumEpilogue");
 

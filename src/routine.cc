@@ -96,8 +96,9 @@ StatusCode Routine<T>::SetUp() {
       }
       if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
 
-      // Store the compiled program in the cache (atomic for thread-safety)
-      StoreProgramToCache(program);
+      // Store the compiled kernel in the cache
+      auto binary = program.GetIR();
+      StoreBinaryToCache(binary);
     } catch (...) { return StatusCode::kBuildProgramFailure; }
   }
 

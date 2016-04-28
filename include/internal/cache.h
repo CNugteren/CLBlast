@@ -24,9 +24,9 @@ namespace clblast {
 namespace cache {
 // =================================================================================================
 
-// The cache of compiled OpenCL programs, along with some meta-data
-struct ProgramCache {
-  Program program;
+// The cache of compiled OpenCL binaries, along with some meta-data
+struct BinaryCache {
+  std::string binary;
   std::string device_name;
   Precision precision;
   std::string routine_name_;
@@ -41,28 +41,28 @@ struct ProgramCache {
 };
 
 // The actual cache, implemented as a vector of the above data-type, and its mutex
-static std::vector<ProgramCache> program_cache_;
-static std::mutex program_cache_mutex_;
+static std::vector<BinaryCache> binary_cache_;
+static std::mutex binary_cache_mutex_;
 
 // =================================================================================================
 
-// Stores the compiled program in the cache
-void StoreProgramToCache(const Program& program, const std::string &device_name,
-                         const Precision &precision, const std::string &routine_name);
+// Stores the compiled binary in the cache
+void StoreBinaryToCache(const std::string& binary, const std::string &device_name,
+                        const Precision &precision, const std::string &routine_name);
 
-// Queries the cache and retrieves a matching program. Assumes that the match is available, throws
+// Queries the cache and retrieves a matching binary. Assumes that the match is available, throws
 // otherwise.
-const Program& GetProgramFromCache(const std::string &device_name, const Precision &precision,
-                                   const std::string &routine_name);
+const std::string& GetBinaryFromCache(const std::string &device_name, const Precision &precision,
+                                      const std::string &routine_name);
 
 // Queries the cache to see whether or not the compiled kernel is already there
-bool ProgramIsInCache(const std::string &device_name, const Precision &precision,
-                      const std::string &routine_name);
+bool BinaryIsInCache(const std::string &device_name, const Precision &precision,
+                     const std::string &routine_name);
 
 // =================================================================================================
 
-// Clears the cache of stored program binaries
-StatusCode ClearCompiledProgramCache();
+// Clears the cache of stored binaries
+StatusCode ClearCache();
 
 // =================================================================================================
 } // namespace cache

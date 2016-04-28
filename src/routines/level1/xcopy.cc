@@ -64,7 +64,7 @@ StatusCode Xcopy<T>::DoCopy(const size_t n,
 
   // Retrieves the Xcopy kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

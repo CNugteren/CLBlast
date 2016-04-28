@@ -84,19 +84,23 @@ class Routine {
                                     const bool upper = false, const bool lower = false,
                                     const bool diagonal_imag_zero = false);
 
-  // Stores a newly compiled program into the cache
-  void StoreProgramToCache(const Program& program) const {
-    return cache::StoreProgramToCache(program, device_name_, precision_, routine_name_);
+  // Stores a newly compiled binary into the cache
+  void StoreBinaryToCache(const std::string& binary) const {
+    return cache::StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
   }
 
   // Queries the cache and retrieve either a matching program or a boolean whether a match exists.
   // The first assumes that the program is available in the cache and will throw an exception
   // otherwise.
-  const Program& GetProgramFromCache() const {
-    return cache::GetProgramFromCache(device_name_, precision_, routine_name_);
+  Program GetProgramFromCache() const {
+    auto& binary = cache::GetBinaryFromCache(device_name_, precision_, routine_name_);
+    auto program = Program(device_, context_, binary);
+    auto options = std::vector<std::string>();
+    program.Build(device_, options);
+    return program;
   }
   bool ProgramIsInCache() const {
-    return cache::ProgramIsInCache(device_name_, precision_, routine_name_);
+    return cache::BinaryIsInCache(device_name_, precision_, routine_name_);
   }
 
   // Non-static variable for the precision. Note that the same variable (but static) might exist in

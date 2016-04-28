@@ -66,7 +66,7 @@ StatusCode Xger<T>::DoGer(const Layout layout,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xger");
 
     // Sets the kernel arguments

@@ -59,7 +59,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
 
   // Retrieves the Xdot kernels from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel1 = Kernel(program, "Xdot");
     auto kernel2 = Kernel(program, "XdotEpilogue");
 

@@ -1854,8 +1854,8 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
 
 // =================================================================================================
 
-// Clears the cache of stored program binaries
-StatusCode ClearCompiledProgramCache() { return cache::ClearCompiledProgramCache(); }
+// Clears the cache of stored binaries
+StatusCode ClearCache() { return cache::ClearCache(); }
 
 // =================================================================================================
 } // namespace clblast
