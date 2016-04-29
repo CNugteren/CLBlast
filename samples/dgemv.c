@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file demonstrates the use of the SGEMM routine. It is pure C99 and demonstrates the use of
+// This file demonstrates the use of the DGEMV routine. It is pure C99 and demonstrates the use of
 // the C API to the CLBlast library.
 //
 // Note that this example is meant for illustration purposes only. CLBlast provides other programs
@@ -24,22 +24,19 @@
 
 // =================================================================================================
 
-// Example use of the single-precision routine SGEMM
+// Example use of the double-precision routine DGEMV
 int main(void) {
 
   // OpenCL platform/device settings
   const size_t platform_id = 0;
   const size_t device_id = 0;
 
-  // Example SGEMM arguments
+  // Example DGEMV arguments
   const size_t m = 128;
-  const size_t n = 64;
-  const size_t k = 512;
-  const float alpha = 0.7f;
-  const float beta = 1.0f;
-  const size_t a_ld = k;
-  const size_t b_ld = n;
-  const size_t c_ld = n;
+  const size_t n = 289;
+  const double alpha = 0.7;
+  const double beta = 0.0;
+  const size_t a_ld = n;
 
   // Initializes the OpenCL platform
   cl_uint num_platforms;
@@ -60,47 +57,47 @@ int main(void) {
   cl_command_queue queue = clCreateCommandQueue(context, device, 0, NULL);
   cl_event event = NULL;
 
-  // Populate host matrices with some example data
-  float* host_a = (float*)malloc(sizeof(float)*m*k);
-  float* host_b = (float*)malloc(sizeof(float)*n*k);
-  float* host_c = (float*)malloc(sizeof(float)*m*n);
-  for (size_t i=0; i<m*k; ++i) { host_a[i] = 12.193f; }
-  for (size_t i=0; i<n*k; ++i) { host_b[i] = -8.199f; }
-  for (size_t i=0; i<m*n; ++i) { host_c[i] = 0.0f; }
+  // Populate host data structures with some example data
+  double* host_a = (double*)malloc(sizeof(double)*m*n);
+  double* host_x = (double*)malloc(sizeof(double)*n);
+  double* host_y = (double*)malloc(sizeof(double)*m);
+  for (size_t i=0; i<m*n; ++i) { host_a[i] = 12.193; }
+  for (size_t i=0; i<n; ++i) { host_x[i] = -8.199; }
+  for (size_t i=0; i<m; ++i) { host_y[i] = 0.0; }
 
-  // Copy the matrices to the device
-  cl_mem device_a = clCreateBuffer(context, CL_MEM_READ_WRITE, m*k*sizeof(float), NULL, NULL);
-  cl_mem device_b = clCreateBuffer(context, CL_MEM_READ_WRITE, n*k*sizeof(float), NULL, NULL);
-  cl_mem device_c = clCreateBuffer(context, CL_MEM_READ_WRITE, m*n*sizeof(float), NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_a, CL_TRUE, 0, m*k*sizeof(float), host_a, 0, NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_b, CL_TRUE, 0, n*k*sizeof(float), host_b, 0, NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_c, CL_TRUE, 0, m*n*sizeof(float), host_c, 0, NULL, NULL);
+  // Copy the data-structures to the device
+  cl_mem device_a = clCreateBuffer(context, CL_MEM_READ_WRITE, m*n*sizeof(double), NULL, NULL);
+  cl_mem device_x = clCreateBuffer(context, CL_MEM_READ_WRITE, n*sizeof(double), NULL, NULL);
+  cl_mem device_y = clCreateBuffer(context, CL_MEM_READ_WRITE, m*sizeof(double), NULL, NULL);
+  clEnqueueWriteBuffer(queue, device_a, CL_TRUE, 0, m*n*sizeof(double), host_a, 0, NULL, NULL);
+  clEnqueueWriteBuffer(queue, device_x, CL_TRUE, 0, n*sizeof(double), host_x, 0, NULL, NULL);
+  clEnqueueWriteBuffer(queue, device_y, CL_TRUE, 0, m*sizeof(double), host_y, 0, NULL, NULL);
 
-  // Call the SGEMM routine.
-  StatusCode status = CLBlastSgemm(kRowMajor, kNo, kNo,
-                                   m, n, k,
+  // Call the DGEMV routine.
+  StatusCode status = CLBlastDgemv(kRowMajor, kNo,
+                                   m, n,
                                    alpha,
                                    device_a, 0, a_ld,
-                                   device_b, 0, b_ld,
+                                   device_x, 0, 1,
                                    beta,
-                                   device_c, 0, c_ld,
+                                   device_y, 0, 1,
                                    &queue, &event);
 
   // Wait for completion
   clWaitForEvents(1, &event);
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
-  printf("Completed SGEMM with status %d\n", status);
+  printf("Completed DGEMV with status %d\n", status);
 
   // Clean-up
   free(platforms);
   free(devices);
   free(host_a);
-  free(host_b);
-  free(host_c);
+  free(host_x);
+  free(host_y);
   clReleaseMemObject(device_a);
-  clReleaseMemObject(device_b);
-  clReleaseMemObject(device_c);
+  clReleaseMemObject(device_x);
+  clReleaseMemObject(device_y);
   clReleaseCommandQueue(queue);
   clReleaseContext(context);
   return 0;

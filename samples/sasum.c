@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file demonstrates the use of the SGEMM routine. It is pure C99 and demonstrates the use of
+// This file demonstrates the use of the SASUM routine. It is pure C99 and demonstrates the use of
 // the C API to the CLBlast library.
 //
 // Note that this example is meant for illustration purposes only. CLBlast provides other programs
@@ -24,22 +24,16 @@
 
 // =================================================================================================
 
-// Example use of the single-precision routine SGEMM
+// Example use of the single-precision routine SASUM
 int main(void) {
 
   // OpenCL platform/device settings
   const size_t platform_id = 0;
   const size_t device_id = 0;
 
-  // Example SGEMM arguments
-  const size_t m = 128;
-  const size_t n = 64;
-  const size_t k = 512;
-  const float alpha = 0.7f;
-  const float beta = 1.0f;
-  const size_t a_ld = k;
-  const size_t b_ld = n;
-  const size_t c_ld = n;
+  // Example SASUM arguments
+  const size_t n = 1000;
+  const float input_value = -1.5f;
 
   // Initializes the OpenCL platform
   cl_uint num_platforms;
@@ -60,47 +54,40 @@ int main(void) {
   cl_command_queue queue = clCreateCommandQueue(context, device, 0, NULL);
   cl_event event = NULL;
 
-  // Populate host matrices with some example data
-  float* host_a = (float*)malloc(sizeof(float)*m*k);
-  float* host_b = (float*)malloc(sizeof(float)*n*k);
-  float* host_c = (float*)malloc(sizeof(float)*m*n);
-  for (size_t i=0; i<m*k; ++i) { host_a[i] = 12.193f; }
-  for (size_t i=0; i<n*k; ++i) { host_b[i] = -8.199f; }
-  for (size_t i=0; i<m*n; ++i) { host_c[i] = 0.0f; }
+  // Populate host data structures with some example data
+  float* host_input = (float*)malloc(sizeof(float)*n);
+  float* host_output = (float*)malloc(sizeof(float)*1);
+  for (size_t i=0; i<n; ++i) { host_input[i] = input_value; }
+  for (size_t i=0; i<1; ++i) { host_output[i] = 0.0f; }
 
-  // Copy the matrices to the device
-  cl_mem device_a = clCreateBuffer(context, CL_MEM_READ_WRITE, m*k*sizeof(float), NULL, NULL);
-  cl_mem device_b = clCreateBuffer(context, CL_MEM_READ_WRITE, n*k*sizeof(float), NULL, NULL);
-  cl_mem device_c = clCreateBuffer(context, CL_MEM_READ_WRITE, m*n*sizeof(float), NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_a, CL_TRUE, 0, m*k*sizeof(float), host_a, 0, NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_b, CL_TRUE, 0, n*k*sizeof(float), host_b, 0, NULL, NULL);
-  clEnqueueWriteBuffer(queue, device_c, CL_TRUE, 0, m*n*sizeof(float), host_c, 0, NULL, NULL);
+  // Copy the data-structures to the device
+  cl_mem device_input = clCreateBuffer(context, CL_MEM_READ_WRITE, n*sizeof(float), NULL, NULL);
+  cl_mem device_output = clCreateBuffer(context, CL_MEM_READ_WRITE, 1*sizeof(float), NULL, NULL);
+  clEnqueueWriteBuffer(queue, device_input, CL_TRUE, 0, n*sizeof(float), host_input, 0, NULL, NULL);
+  clEnqueueWriteBuffer(queue, device_output, CL_TRUE, 0, 1*sizeof(float), host_output, 0, NULL, NULL);
 
-  // Call the SGEMM routine.
-  StatusCode status = CLBlastSgemm(kRowMajor, kNo, kNo,
-                                   m, n, k,
-                                   alpha,
-                                   device_a, 0, a_ld,
-                                   device_b, 0, b_ld,
-                                   beta,
-                                   device_c, 0, c_ld,
+  // Call the SASUM routine.
+  StatusCode status = CLBlastSasum(n,
+                                   device_output, 0,
+                                   device_input, 0, 1,
                                    &queue, &event);
 
   // Wait for completion
   clWaitForEvents(1, &event);
 
+  // Copies the result back to the host
+  clEnqueueReadBuffer(queue, device_output, CL_TRUE, 0, 1*sizeof(float), host_output, 0, NULL, NULL);
+
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
-  printf("Completed SGEMM with status %d\n", status);
+  printf("Completed SASUM with status %d: %d * |%.1lf| = %.1lf\n", status, n, input_value, host_output[0]);
 
   // Clean-up
   free(platforms);
   free(devices);
-  free(host_a);
-  free(host_b);
-  free(host_c);
-  clReleaseMemObject(device_a);
-  clReleaseMemObject(device_b);
-  clReleaseMemObject(device_c);
+  free(host_input);
+  free(host_output);
+  clReleaseMemObject(device_input);
+  clReleaseMemObject(device_output);
   clReleaseCommandQueue(queue);
   clReleaseContext(context);
   return 0;

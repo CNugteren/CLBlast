@@ -52,9 +52,9 @@ int main() {
   if (platforms.size() == 0 || platform_id >= platforms.size()) { return 1; }
   auto platform = platforms[platform_id];
 
-  // Initializes the OpenCL device (note: example for GPU devices only)
+  // Initializes the OpenCL device
   auto devices = std::vector<cl::Device>();
-  platform.getDevices(CL_DEVICE_TYPE_GPU, &devices);
+  platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
   if (devices.size() == 0 || device_id >= devices.size()) { return 1; }
   auto device = devices[device_id];
 
@@ -100,7 +100,7 @@ int main() {
   auto time_ms = std::chrono::duration<double,std::milli>(elapsed_time).count();
 
   // Example completed. See "clblast.h" for status codes (0 -> success).
-  printf("Completed in %.3lf ms with status %d\n", time_ms, status);
+  printf("Completed SGEMM in %.3lf ms with status %d\n", time_ms, status);
   return 0;
 }
 
