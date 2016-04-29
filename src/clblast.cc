@@ -1857,5 +1857,67 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
 // Clears the cache of stored binaries
 StatusCode ClearCache() { return cache::ClearCache(); }
 
+// Fills the cache with all binaries for a specific device
+StatusCode FillCache(const cl_device_id device) {
+  try {
+
+    // Creates a sample context and queue to match the normal routine calling conventions
+    auto device_cpp = Device(device);
+    auto context = Context(device_cpp);
+    auto queue = Queue(context, device_cpp);
+
+    // Runs all the level 1 set-up functions
+    Xswap<float>(queue, nullptr).SetUp(); Xswap<double>(queue, nullptr).SetUp(); Xswap<float2>(queue, nullptr).SetUp(); Xswap<double2>(queue, nullptr).SetUp();
+    Xswap<float>(queue, nullptr).SetUp(); Xswap<double>(queue, nullptr).SetUp(); Xswap<float2>(queue, nullptr).SetUp(); Xswap<double2>(queue, nullptr).SetUp();
+    Xscal<float>(queue, nullptr).SetUp(); Xscal<double>(queue, nullptr).SetUp(); Xscal<float2>(queue, nullptr).SetUp(); Xscal<double2>(queue, nullptr).SetUp();
+    Xcopy<float>(queue, nullptr).SetUp(); Xcopy<double>(queue, nullptr).SetUp(); Xcopy<float2>(queue, nullptr).SetUp(); Xcopy<double2>(queue, nullptr).SetUp();
+    Xaxpy<float>(queue, nullptr).SetUp(); Xaxpy<double>(queue, nullptr).SetUp(); Xaxpy<float2>(queue, nullptr).SetUp(); Xaxpy<double2>(queue, nullptr).SetUp();
+    Xdot<float>(queue, nullptr).SetUp(); Xdot<double>(queue, nullptr).SetUp();
+    Xdotu<float2>(queue, nullptr).SetUp(); Xdotu<double2>(queue, nullptr).SetUp();
+    Xdotc<float2>(queue, nullptr).SetUp(); Xdotc<double2>(queue, nullptr).SetUp();
+    Xnrm2<float>(queue, nullptr).SetUp(); Xnrm2<double>(queue, nullptr).SetUp(); Xnrm2<float2>(queue, nullptr).SetUp(); Xnrm2<double2>(queue, nullptr).SetUp();
+    Xasum<float>(queue, nullptr).SetUp(); Xasum<double>(queue, nullptr).SetUp(); Xasum<float2>(queue, nullptr).SetUp(); Xasum<double2>(queue, nullptr).SetUp();
+    Xsum<float>(queue, nullptr).SetUp(); Xsum<double>(queue, nullptr).SetUp(); Xsum<float2>(queue, nullptr).SetUp(); Xsum<double2>(queue, nullptr).SetUp();
+    Xamax<float>(queue, nullptr).SetUp(); Xamax<double>(queue, nullptr).SetUp(); Xamax<float2>(queue, nullptr).SetUp(); Xamax<double2>(queue, nullptr).SetUp();
+    Xmax<float>(queue, nullptr).SetUp(); Xmax<double>(queue, nullptr).SetUp(); Xmax<float2>(queue, nullptr).SetUp(); Xmax<double2>(queue, nullptr).SetUp();
+
+    // Runs all the level 2 set-up functions
+    Xgemv<float>(queue, nullptr).SetUp(); Xgemv<double>(queue, nullptr).SetUp(); Xgemv<float2>(queue, nullptr).SetUp(); Xgemv<double2>(queue, nullptr).SetUp();
+    Xgbmv<float>(queue, nullptr).SetUp(); Xgbmv<double>(queue, nullptr).SetUp(); Xgbmv<float2>(queue, nullptr).SetUp(); Xgbmv<double2>(queue, nullptr).SetUp();
+    Xhemv<float2>(queue, nullptr).SetUp(); Xhemv<double2>(queue, nullptr).SetUp();
+    Xhbmv<float2>(queue, nullptr).SetUp(); Xhbmv<double2>(queue, nullptr).SetUp();
+    Xhpmv<float2>(queue, nullptr).SetUp(); Xhpmv<double2>(queue, nullptr).SetUp();
+    Xsymv<float>(queue, nullptr).SetUp(); Xsymv<double>(queue, nullptr).SetUp();
+    Xsbmv<float>(queue, nullptr).SetUp(); Xsbmv<double>(queue, nullptr).SetUp();
+    Xspmv<float>(queue, nullptr).SetUp(); Xspmv<double>(queue, nullptr).SetUp();
+    Xtrmv<float>(queue, nullptr).SetUp(); Xtrmv<double>(queue, nullptr).SetUp(); Xtrmv<float2>(queue, nullptr).SetUp(); Xtrmv<double2>(queue, nullptr).SetUp();
+    Xtbmv<float>(queue, nullptr).SetUp(); Xtbmv<double>(queue, nullptr).SetUp(); Xtbmv<float2>(queue, nullptr).SetUp(); Xtbmv<double2>(queue, nullptr).SetUp();
+    Xtpmv<float>(queue, nullptr).SetUp(); Xtpmv<double>(queue, nullptr).SetUp(); Xtpmv<float2>(queue, nullptr).SetUp(); Xtpmv<double2>(queue, nullptr).SetUp();
+    Xger<float>(queue, nullptr).SetUp(); Xger<double>(queue, nullptr).SetUp();
+    Xgeru<float2>(queue, nullptr).SetUp(); Xgeru<double2>(queue, nullptr).SetUp();
+    Xgerc<float2>(queue, nullptr).SetUp(); Xgerc<double2>(queue, nullptr).SetUp();
+    Xher<float2,float>(queue, nullptr).SetUp(); Xher<double2,double>(queue, nullptr).SetUp();
+    Xhpr<float2,float>(queue, nullptr).SetUp(); Xhpr<double2,double>(queue, nullptr).SetUp();
+    Xher2<float2>(queue, nullptr).SetUp(); Xher2<double2>(queue, nullptr).SetUp();
+    Xhpr2<float2>(queue, nullptr).SetUp(); Xhpr2<double2>(queue, nullptr).SetUp();
+    Xsyr<float>(queue, nullptr).SetUp(); Xsyr<double>(queue, nullptr).SetUp();
+    Xspr<float>(queue, nullptr).SetUp(); Xspr<double>(queue, nullptr).SetUp();
+    Xsyr2<float>(queue, nullptr).SetUp(); Xsyr2<double>(queue, nullptr).SetUp();
+    Xspr2<float>(queue, nullptr).SetUp(); Xspr2<double>(queue, nullptr).SetUp();
+
+    // Runs all the level 1 set-up functions
+    Xgemm<float>(queue, nullptr).SetUp(); Xgemm<double>(queue, nullptr).SetUp(); Xgemm<float2>(queue, nullptr).SetUp(); Xgemm<double2>(queue, nullptr).SetUp();
+    Xsymm<float>(queue, nullptr).SetUp(); Xsymm<double>(queue, nullptr).SetUp(); Xsymm<float2>(queue, nullptr).SetUp(); Xsymm<double2>(queue, nullptr).SetUp();
+    Xhemm<float2>(queue, nullptr).SetUp(); Xhemm<double2>(queue, nullptr).SetUp();
+    Xsyrk<float>(queue, nullptr).SetUp(); Xsyrk<double>(queue, nullptr).SetUp(); Xsyrk<float2>(queue, nullptr).SetUp(); Xsyrk<double2>(queue, nullptr).SetUp();
+    Xherk<float2,float>(queue, nullptr).SetUp(); Xherk<double2,double>(queue, nullptr).SetUp();
+    Xsyr2k<float>(queue, nullptr).SetUp(); Xsyr2k<double>(queue, nullptr).SetUp(); Xsyr2k<float2>(queue, nullptr).SetUp(); Xsyr2k<double2>(queue, nullptr).SetUp();
+    Xher2k<float2,float>(queue, nullptr).SetUp(); Xher2k<double2,double>(queue, nullptr).SetUp();
+    Xtrmm<float>(queue, nullptr).SetUp(); Xtrmm<double>(queue, nullptr).SetUp(); Xtrmm<float2>(queue, nullptr).SetUp(); Xtrmm<double2>(queue, nullptr).SetUp();
+
+  } catch (...) { return StatusCode::kBuildProgramFailure; }
+  return StatusCode::kSuccess;
+}
+
 // =================================================================================================
 } // namespace clblast

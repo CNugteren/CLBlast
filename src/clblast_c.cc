@@ -2348,4 +2348,9 @@ StatusCode CLBlastClearCache() {
   return static_cast<StatusCode>(clblast::ClearCache());
 }
 
+// Fills the cache with binaries for a specific device
+StatusCode CLBlastFillCache(const cl_device_id device) {
+  return static_cast<StatusCode>(clblast::FillCache(device));
+}
+
 // =================================================================================================

@@ -1076,6 +1076,10 @@ StatusCode PUBLIC_API CLBlastZtrsm(const Layout layout, const Side side, const T
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.
 StatusCode PUBLIC_API CLBlastClearCache();
 
+// The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
+// Further CLBlast routine calls will then run at maximum speed.
+StatusCode PUBLIC_API CLBlastFillCache(const cl_device_id device);
+
 // =================================================================================================
 
 #ifdef __cplusplus

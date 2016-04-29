@@ -558,6 +558,10 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.
 StatusCode ClearCache();
 
+// The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
+// Further CLBlast routine calls will then run at maximum speed.
+StatusCode FillCache(const cl_device_id device);
+
 // =================================================================================================
 
 } // namespace clblast
