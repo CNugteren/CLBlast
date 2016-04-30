@@ -601,6 +601,48 @@ StatusCode CLBlastiZmax(const size_t n,
   return static_cast<StatusCode>(status);
 }
 
+// MIN
+StatusCode CLBlastiSmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Min<float>(n,
+                                    imin_buffer, imin_offset,
+                                    x_buffer, x_offset, x_inc,
+                                    queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastiDmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Min<double>(n,
+                                     imin_buffer, imin_offset,
+                                     x_buffer, x_offset, x_inc,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastiCmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Min<float2>(n,
+                                     imin_buffer, imin_offset,
+                                     x_buffer, x_offset, x_inc,
+                                     queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastiZmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Min<double2>(n,
+                                      imin_buffer, imin_offset,
+                                      x_buffer, x_offset, x_inc,
+                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

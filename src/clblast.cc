@@ -32,6 +32,7 @@
 #include "internal/routines/level1/xsum.h" // non-BLAS function
 #include "internal/routines/level1/xamax.h"
 #include "internal/routines/level1/xmax.h" // non-BLAS function
+#include "internal/routines/level1/xmin.h" // non-BLAS function
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -521,6 +522,37 @@ template StatusCode PUBLIC_API Max<float2>(const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Max<double2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+template <typename T>
+StatusCode Min(const size_t n,
+               cl_mem imin_buffer, const size_t imin_offset,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto routine = Xmin<T>(queue_cpp, event);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoMin(n,
+                       Buffer<T>(imin_buffer), imin_offset,
+                       Buffer<T>(x_buffer), x_offset, x_inc);
+}
+template StatusCode PUBLIC_API Min<float>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<double>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<float2>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
@@ -1880,6 +1912,7 @@ StatusCode FillCache(const cl_device_id device) {
     Xsum<float>(queue, nullptr).SetUp(); Xsum<double>(queue, nullptr).SetUp(); Xsum<float2>(queue, nullptr).SetUp(); Xsum<double2>(queue, nullptr).SetUp();
     Xamax<float>(queue, nullptr).SetUp(); Xamax<double>(queue, nullptr).SetUp(); Xamax<float2>(queue, nullptr).SetUp(); Xamax<double2>(queue, nullptr).SetUp();
     Xmax<float>(queue, nullptr).SetUp(); Xmax<double>(queue, nullptr).SetUp(); Xmax<float2>(queue, nullptr).SetUp(); Xmax<double2>(queue, nullptr).SetUp();
+    Xmin<float>(queue, nullptr).SetUp(); Xmin<double>(queue, nullptr).SetUp(); Xmin<float2>(queue, nullptr).SetUp(); Xmin<double2>(queue, nullptr).SetUp();
 
     // Runs all the level 2 set-up functions
     Xgemv<float>(queue, nullptr).SetUp(); Xgemv<double>(queue, nullptr).SetUp(); Xgemv<float2>(queue, nullptr).SetUp(); Xgemv<double2>(queue, nullptr).SetUp();

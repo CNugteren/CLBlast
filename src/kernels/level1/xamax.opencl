@@ -41,7 +41,7 @@ __kernel void Xamax(const int n,
   const int num_groups = get_num_groups(0);
 
   // Performs loading and the first steps of the reduction
-  #if defined(ROUTINE_MAX) // non-absolute version
+  #if defined(ROUTINE_MAX) || defined(ROUTINE_MIN) // non-absolute version
     singlereal max = SMALLEST;
   #else
     singlereal max = ZERO;
@@ -55,7 +55,10 @@ __kernel void Xamax(const int n,
     #else
       singlereal x = xgm[x_index];
     #endif
-    #if defined(ROUTINE_MAX) // non-absolute version
+    #if defined(ROUTINE_MAX) // non-absolute maximum version
+      // nothing special here
+    #elif defined(ROUTINE_MIN) // non-absolute minimum version
+      x = -x;
     #else
       x = fabs(x);
     #endif

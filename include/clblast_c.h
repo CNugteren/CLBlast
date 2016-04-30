@@ -350,6 +350,24 @@ StatusCode PUBLIC_API CLBlastiZmax(const size_t n,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
 
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+StatusCode PUBLIC_API CLBlastiSmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiDmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiCmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiZmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================

@@ -226,6 +226,7 @@ In addition, some non-BLAS routines are also supported by CLBlast. They are expe
 | -----------|---|---|---|---|
 | xSUM       | ✔ | ✔ | ✔ | ✔ |
 | IxMAX      | ✔ | ✔ | ✔ | ✔ |
+| IxMIN      | ✔ | ✔ | ✔ | ✔ |
 
 Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
 

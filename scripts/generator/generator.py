@@ -75,6 +75,7 @@ routines = [
   Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)"),
   Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector"),
   Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)"),
+  Routine(True,  False, "1", "min",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imin"], [], "2*n", "Index of minimum value in a vector (non-BLAS function)"),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication"),
@@ -298,8 +299,8 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 70, 93, 22, 29, 38]
-footer_lines = [17, 70, 19, 14, 6, 6]
+header_lines = [84, 71, 93, 22, 29, 38]
+footer_lines = [17, 71, 19, 14, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
 for f in files:

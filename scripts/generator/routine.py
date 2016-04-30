@@ -73,7 +73,7 @@ class Routine():
 
 	# List of scalar buffers
 	def ScalarBuffersFirst(self):
-		return ["dot","nrm2","asum","sum","imax"]
+		return ["dot","nrm2","asum","sum","imax","imin"]
 	def ScalarBuffersSecond(self):
 		return ["sa","sb","sc","ss","sd1","sd2","sx1","sy1","sparam"]
 
