@@ -44,7 +44,7 @@ class TuneXdot {
 
   // Sets the default values for the arguments
   static size_t DefaultM() { return 1; } // N/A for this kernel
-  static size_t DefaultN() { return 64*1024*1024; }
+  static size_t DefaultN() { return 2*1024*1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
 
