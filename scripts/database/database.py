@@ -95,6 +95,9 @@ def RemoveDuplicates(df):
 def RemoveEntriesByDevice(df, devicename):
 	return df[df["device"] != devicename]
 
+def RemoveEntriesByKernelFamily(df, familyname):
+	return df[df["kernel_family"] != familyname]
+
 def GetEntriesByField(df, field, value):
 	return df[df[field] == value]
 
