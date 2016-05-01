@@ -42,65 +42,80 @@ Routine<T>::Routine(Queue &queue, EventPointer event, const std::string &name,
 template <typename T>
 StatusCode Routine<T>::SetUp() {
 
-  // Queries the cache to see whether or not the compiled kernel is already there. If not, it will
-  // be built and added to the cache.
-  if (!ProgramIsInCache()) {
+  // Queries the cache to see whether or not the program (context-specific) is already there
+  if (ProgramIsInCache()) { return StatusCode::kSuccess; }
 
-    // Inspects whether or not cl_khr_fp64 is supported in case of double precision
-    auto extensions = device_.Capabilities();
-    if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
-      if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
-        return StatusCode::kNoDoublePrecision;
-      }
-    }
-
-    // As above, but for cl_khr_fp16 (half precision)
-    if (precision_ == Precision::kHalf) {
-      if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
-        return StatusCode::kNoHalfPrecision;
-      }
-    }
-
-    // Loads the common header (typedefs and defines and such)
-    std::string common_header =
-      #include "kernels/common.opencl"
-    ;
-
-    // Collects the parameters for this device in the form of defines, and adds the precision
-    auto defines = db_.GetDefines();
-    defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
-
-    // Adds the name of the routine as a define
-    defines += "#define ROUTINE_"+routine_name_+"\n";
-
-    // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
-    // performance, but might result in a reduced accuracy.
-    if (device_.Vendor() == "AMD") {
-      defines += "#define USE_CL_MAD 1\n";
-    }
-
-    // Combines everything together into a single source string
-    auto source_string = defines + common_header + source_string_;
-
-    // Compiles the kernel
+  // Queries the cache to see whether or not the binary (device-specific) is already there. If it
+  // is, a program is created and stored in the cache
+  if (BinaryIsInCache()) {
     try {
-      auto program = Program(context_, source_string);
+      auto& binary = cache::GetBinaryFromCache(device_name_, precision_, routine_name_);
+      auto program = Program(device_, context_, binary);
       auto options = std::vector<std::string>();
-      auto build_status = program.Build(device_, options);
-
-      // Checks for compiler crashes/errors/warnings
-      if (build_status == BuildStatus::kError) {
-        auto message = program.GetBuildInfo(device_);
-        fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
-        return StatusCode::kBuildProgramFailure;
-      }
-      if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
-
-      // Store the compiled kernel in the cache
-      auto binary = program.GetIR();
-      StoreBinaryToCache(binary);
+      program.Build(device_, options);
+      StoreProgramToCache(program);
     } catch (...) { return StatusCode::kBuildProgramFailure; }
+    return StatusCode::kSuccess;
   }
+
+  // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
+  // program will be added to the cache.
+
+  // Inspects whether or not cl_khr_fp64 is supported in case of double precision
+  auto extensions = device_.Capabilities();
+  if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
+    if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
+      return StatusCode::kNoDoublePrecision;
+    }
+  }
+
+  // As above, but for cl_khr_fp16 (half precision)
+  if (precision_ == Precision::kHalf) {
+    if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
+      return StatusCode::kNoHalfPrecision;
+    }
+  }
+
+  // Loads the common header (typedefs and defines and such)
+  std::string common_header =
+    #include "kernels/common.opencl"
+  ;
+
+  // Collects the parameters for this device in the form of defines, and adds the precision
+  auto defines = db_.GetDefines();
+  defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
+
+  // Adds the name of the routine as a define
+  defines += "#define ROUTINE_"+routine_name_+"\n";
+
+  // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
+  // performance, but might result in a reduced accuracy.
+  if (device_.Vendor() == "AMD") {
+    defines += "#define USE_CL_MAD 1\n";
+  }
+
+  // Combines everything together into a single source string
+  auto source_string = defines + common_header + source_string_;
+
+  // Compiles the kernel
+  try {
+    auto program = Program(context_, source_string);
+    auto options = std::vector<std::string>();
+    auto build_status = program.Build(device_, options);
+
+    // Checks for compiler crashes/errors/warnings
+    if (build_status == BuildStatus::kError) {
+      auto message = program.GetBuildInfo(device_);
+      fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
+      return StatusCode::kBuildProgramFailure;
+    }
+    if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
+
+    // Store the compiled binary and program in the cache
+    const auto binary = program.GetIR();
+    StoreBinaryToCache(binary);
+    StoreProgramToCache(program);
+  } catch (...) { return StatusCode::kBuildProgramFailure; }
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;

@@ -269,9 +269,13 @@ class Context {
 
   // Accessor to the private data-member
   const cl_context& operator()() const { return *context_; }
+  cl_context* pointer() const { return &(*context_); }
  private:
   std::shared_ptr<cl_context> context_;
 };
+
+// Pointer to an OpenCL context
+using ContextPointer = cl_context*;
 
 // =================================================================================================
 

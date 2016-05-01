@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the caching functionality of compiled binaries.
+// This file implements the caching functionality of compiled binaries and programs.
 //
 // =================================================================================================
 
@@ -46,18 +46,46 @@ static std::mutex binary_cache_mutex_;
 
 // =================================================================================================
 
-// Stores the compiled binary in the cache
-void StoreBinaryToCache(const std::string& binary, const std::string &device_name,
-                        const Precision &precision, const std::string &routine_name);
+// The cache of compiled OpenCL programs, along with some meta-data
+struct ProgramCache {
+  Program program;
+  ContextPointer context_ptr;
+  Precision precision;
+  std::string routine_name_;
 
-// Queries the cache and retrieves a matching binary. Assumes that the match is available, throws
-// otherwise.
+  // Finds out whether the properties match
+  bool MatchInCache(const ContextPointer ref_context, const Precision &ref_precision,
+                    const std::string &ref_routine) {
+    return (context_ptr == ref_context &&
+            precision == ref_precision &&
+            routine_name_ == ref_routine);
+  }
+};
+
+// The actual cache, implemented as a vector of the above data-type, and its mutex
+static std::vector<ProgramCache> program_cache_;
+static std::mutex program_cache_mutex_;
+
+// =================================================================================================
+
+// Stores the compiled binary or program in the cache
+void StoreBinaryToCache(const std::string &binary, const std::string &device_name,
+                        const Precision &precision, const std::string &routine_name);
+void StoreProgramToCache(const Program &program, const Context &context,
+                         const Precision &precision, const std::string &routine_name);
+
+// Queries the cache and retrieves a matching binary or program. Assumes that the match is
+// available, throws otherwise.
 const std::string& GetBinaryFromCache(const std::string &device_name, const Precision &precision,
                                       const std::string &routine_name);
+const Program& GetProgramFromCache(const Context &context, const Precision &precision,
+                                   const std::string &routine_name);
 
 // Queries the cache to see whether or not the compiled kernel is already there
 bool BinaryIsInCache(const std::string &device_name, const Precision &precision,
                      const std::string &routine_name);
+bool ProgramIsInCache(const Context &context, const Precision &precision,
+                      const std::string &routine_name);
 
 // =================================================================================================
 
