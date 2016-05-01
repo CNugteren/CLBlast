@@ -32,7 +32,7 @@ class Xamax: public Routine<T> {
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
-  using Routine<T>::TestVectorDot;
+  using Routine<T>::TestVectorIndex;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 
@@ -41,7 +41,7 @@ class Xamax: public Routine<T> {
 
   // Templated-precision implementation of the routine
   StatusCode DoAmax(const size_t n,
-                    const Buffer<T> &imax_buffer, const size_t imax_offset,
+                    const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
 
  private:

@@ -81,6 +81,10 @@ class Routine():
 	def OtherScalars(self):
 		return ["cos","sin"]
 
+	# List of buffers with unsigned int type
+	def IndexBuffers(self):
+		return ["imax","imin"]
+
 	# List of buffers without 'inc' or 'ld'
 	def BuffersWithoutLdInc(self):
 		return self.ScalarBuffersFirst() + self.ScalarBuffersSecond() + ["ap"]
@@ -145,7 +149,8 @@ class Routine():
 	# As above but with Claduc buffers
 	def BufferCladuc(self, name):
 		if (name in self.inputs) or (name in self.outputs):
-			a = ["Buffer<"+self.template.buffertype+">("+name+"_buffer)"]
+			buffertype = "unsigned int" if (name in self.IndexBuffers()) else self.template.buffertype
+			a = ["Buffer<"+buffertype+">("+name+"_buffer)"]
 			b = [name+"_offset"]
 			c = [name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
 			return [", ".join(a+b+c)]

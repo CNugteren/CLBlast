@@ -475,7 +475,7 @@ StatusCode Amax(const size_t n,
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
   return routine.DoAmax(n,
-                        Buffer<T>(imax_buffer), imax_offset,
+                        Buffer<unsigned int>(imax_buffer), imax_offset,
                         Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Amax<float>(const size_t,
@@ -506,7 +506,7 @@ StatusCode Max(const size_t n,
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
   return routine.DoMax(n,
-                       Buffer<T>(imax_buffer), imax_offset,
+                       Buffer<unsigned int>(imax_buffer), imax_offset,
                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Max<float>(const size_t,
@@ -537,7 +537,7 @@ StatusCode Min(const size_t n,
   auto status = routine.SetUp();
   if (status != StatusCode::kSuccess) { return status; }
   return routine.DoMin(n,
-                       Buffer<T>(imin_buffer), imin_offset,
+                       Buffer<unsigned int>(imin_buffer), imin_offset,
                        Buffer<T>(x_buffer), x_offset, x_inc);
 }
 template StatusCode PUBLIC_API Min<float>(const size_t,

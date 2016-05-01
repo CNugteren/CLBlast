@@ -36,7 +36,7 @@ class Xmax: public Xamax<T> {
   // Forwards to the regular absolute version. The implementation difference is realised in the
   // kernel through a pre-processor macro based on the name of the routine.
   StatusCode DoMax(const size_t n,
-                   const Buffer<T> &imax_buffer, const size_t imax_offset,
+                   const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
     return DoAmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc);
   }

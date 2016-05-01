@@ -36,7 +36,7 @@ class Xmin: public Xamax<T> {
   // Forwards to the regular max-absolute version. The implementation difference is realised in the
   // kernel through a pre-processor macro based on the name of the routine.
   StatusCode DoMin(const size_t n,
-                   const Buffer<T> &imin_buffer, const size_t imin_offset,
+                   const Buffer<unsigned int> &imin_buffer, const size_t imin_offset,
                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
     return DoAmax(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc);
   }

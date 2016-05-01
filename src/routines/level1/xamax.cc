@@ -41,7 +41,7 @@ Xamax<T>::Xamax(Queue &queue, EventPointer event, const std::string &name):
 // The main routine
 template <typename T>
 StatusCode Xamax<T>::DoAmax(const size_t n,
-                            const Buffer<T> &imax_buffer, const size_t imax_offset,
+                            const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
 
   // Makes sure all dimensions are larger than zero
@@ -50,7 +50,7 @@ StatusCode Xamax<T>::DoAmax(const size_t n,
   // Tests the vectors for validity
   auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
-  status = TestVectorDot(1, imax_buffer, imax_offset, sizeof(T));
+  status = TestVectorIndex(1, imax_buffer, imax_offset, sizeof(unsigned int));
   if (ErrorIn(status)) { return status; }
 
   // Retrieves the Xamax kernels from the compiled binary

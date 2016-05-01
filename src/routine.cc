@@ -267,6 +267,19 @@ StatusCode Routine<T>::TestVectorDot(const size_t n, const Buffer<T> &buffer, co
   return StatusCode::kSuccess;
 }
 
+// Tests vector index for validity: checks for a valid increment, a valid OpenCL buffer, and for a
+// sufficient buffer size.
+template <typename T>
+StatusCode Routine<T>::TestVectorIndex(const size_t n, const Buffer<unsigned int> &buffer,
+                                       const size_t offset, const size_t data_size) {
+  try {
+    auto required_size = (n + offset)*data_size;
+    auto buffer_size = buffer.GetSize();
+    if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryDot; }
+  } catch (...) { return StatusCode::kInvalidVectorDot; }
+  return StatusCode::kSuccess;
+}
+
 // =================================================================================================
 
 // Copies or transposes a matrix and pads/unpads it with zeros

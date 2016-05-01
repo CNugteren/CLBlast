@@ -62,13 +62,17 @@ class Routine {
   StatusCode TestMatrixAP(const size_t n, const Buffer<T> &buffer,
                           const size_t offset, const size_t data_size);
 
-  // Tests for valid inputs of vectors X and Y
+  // Tests for valid inputs of vector X and Y
   StatusCode TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
   StatusCode TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
                          const size_t inc, const size_t data_size);
+
+  // Tests for valid inputs of other vectors
   StatusCode TestVectorDot(const size_t n, const Buffer<T> &buffer, const size_t offset,
                            const size_t data_size);
+  StatusCode TestVectorIndex(const size_t n, const Buffer<unsigned int> &buffer,
+                             const size_t offset, const size_t data_size);
 
   // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
   // to symmetric and triangular matrices through optional arguments.
