@@ -101,6 +101,8 @@ def RemoveEntriesByKernelFamily(df, familyname):
 def GetEntriesByField(df, field, value):
 	return df[df[field] == value]
 
+# Example usage:
+# df = UpdateDatabase(df, (df["kernel_family"] == "xdot") & (df["arg_n"] == "67108864"), "arg_n", "2097152")
 def UpdateDatabase(df, condition, field, value):
 	df.loc[condition, field] = value
 	return df
