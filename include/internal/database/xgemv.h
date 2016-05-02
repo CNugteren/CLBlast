@@ -19,6 +19,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "default",                                         { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
@@ -72,6 +73,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Hawaii",                                          { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
@@ -121,6 +123,7 @@ const Database::DatabaseEntry Database::XgemvDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
@@ -167,6 +170,7 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
+        { "Hawaii",                                          { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },

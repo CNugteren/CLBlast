@@ -19,6 +19,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",2} } },
         { "Pitcairn",                                        { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -79,6 +80,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
+        { "Hawaii",                                          { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -139,6 +141,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",256}, {"WPT",1} } },
+        { "Hawaii",                                          { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -192,9 +195,10 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",128}, {"WPT",1} } },
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
     { // ARM GPUs

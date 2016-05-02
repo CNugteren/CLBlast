@@ -103,6 +103,8 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tesla K40m
 * AMD GPUs:
   - Tahiti
+  - Hawaii
+  - Pitcairn
   - R9 M370X
 * Intel GPUs:
   - Iris
