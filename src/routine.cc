@@ -175,7 +175,7 @@ StatusCode Routine<T>::TestMatrixA(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimA; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
   } catch (...) { return StatusCode::kInvalidMatrixA; }
@@ -189,7 +189,7 @@ StatusCode Routine<T>::TestMatrixB(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimB; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryB; }
   } catch (...) { return StatusCode::kInvalidMatrixB; }
@@ -203,7 +203,7 @@ StatusCode Routine<T>::TestMatrixC(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimC; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryC; }
   } catch (...) { return StatusCode::kInvalidMatrixC; }
@@ -231,7 +231,7 @@ StatusCode Routine<T>::TestVectorX(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementX; }
   try {
-    auto required_size = (n*inc + offset)*data_size;
+    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryX; }
   } catch (...) { return StatusCode::kInvalidVectorX; }
@@ -245,7 +245,7 @@ StatusCode Routine<T>::TestVectorY(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementY; }
   try {
-    auto required_size = (n*inc + offset)*data_size;
+    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryY; }
   } catch (...) { return StatusCode::kInvalidVectorY; }
