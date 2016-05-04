@@ -15,7 +15,10 @@
 #ifndef CLBLAST_TEST_WRAPPER_CBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CBLAS_H_
 
-#include <cblas.h>
+extern "C"
+{
+  #include <cblas.h>
+}
 
 #include "internal/utilities.h"
 
