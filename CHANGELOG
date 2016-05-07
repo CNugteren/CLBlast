@@ -6,6 +6,7 @@ Development version (next release)
 - Fixed the use of events within the library
 - Changed the enum parameters to match the raw values of the cblas standard
 - Fixed the cache of previously compiled binaries and added a function to fill or clear it
+- Various minor fixes and enhancements
 - Added additional sample programs
 - Added tuned parameters for various devices (see README)
 - Added level-1 routines:

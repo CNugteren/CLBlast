@@ -58,6 +58,7 @@ class Tester {
   const std::string kErrorStatus{kPrintError + "/" + kPrintEnd};
   const std::string kSkippedCompilation{kPrintWarning + "\\" + kPrintEnd};
   const std::string kUnsupportedPrecision{kPrintWarning + "o" + kPrintEnd};
+  const std::string kUnsupportedReference{kPrintWarning + "." + kPrintEnd};
 
   // This structure combines the above log-entry with a status code an error percentage
   struct ErrorLogEntry {
@@ -101,6 +102,10 @@ class Tester {
 
   // Retrieves the offset values to test with
   const std::vector<size_t> GetOffsets() const;
+
+  // Testing against reference implementations
+  int compare_cblas_;
+  int compare_clblas_;
 
  private:
 

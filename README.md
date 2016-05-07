@@ -138,14 +138,14 @@ In summary, tuning the entire library for your device can be done as follows (st
     make
 
 
-Compiling the tests (optional)
+Compiling the correctness and performance tests (optional)
 -------------
 
 To make sure CLBlast is working correctly on your device (recommended), compile with the tests enabled:
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is best tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. If the library clBLAS is not installed on your system, it will use a regular CPU BLAS library to test against.
+Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is best tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. If the library clBLAS is not installed on your system, it will use a regular CPU BLAS library to test against. If both are present, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables.
 
 With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against clBLAS and/or a CPU BLAS library.
 
@@ -249,9 +249,12 @@ Contributing
 
 Contributions are welcome in the form of tuning results for OpenCL devices previously untested. Furthermore, merge requests are welcome as long as they contain unit additions or modifications. Furthermore, they should follow the CLBlast coding style, which is based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers.
 
-The contributing authors so far are:
+The contributing authors (code, pull requests, testing) so far are:
 
 * [Cedric Nugteren](http://www.cedricnugteren.nl)
+* [Anton Lokhmotov](https://github.com/psyhtest)
+* [Dragan Djuric](https://github.com/blueberry)
+* [Hugh Perkins](https://github.com/hughperkins)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -263,11 +266,11 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
 
 
 To-do list before release of version 1.0
 -------------
 
-- Support all routines supported by clBLAS
 - Add half-precision routines (e.g. HGEMM)
+- Add API documentation

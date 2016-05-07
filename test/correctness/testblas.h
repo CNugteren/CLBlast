@@ -37,6 +37,8 @@ class TestBlas: public Tester<T,U> {
   using Tester<T,U>::full_test_;
   using Tester<T,U>::verbose_;
   using Tester<T,U>::device_;
+  using Tester<T,U>::compare_clblas_;
+  using Tester<T,U>::compare_cblas_;
 
   // Uses several helper functions from the Tester class
   using Tester<T,U>::TestStart;
@@ -77,7 +79,8 @@ class TestBlas: public Tester<T,U> {
   // Constructor, initializes the base class tester and input data
   TestBlas(int argc, char *argv[], const bool silent,
            const std::string &name, const std::vector<std::string> &options,
-           const Routine run_routine, const Routine run_reference,
+           const Routine run_routine,
+           const Routine run_reference1, const Routine run_reference2,
            const ResultGet get_result, const ResultIndex get_index,
            const ResultIterator get_id1, const ResultIterator get_id2);
 
@@ -113,16 +116,21 @@ template <typename C, typename T, typename U>
 void RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Sets the reference to test against
-  #ifdef CLBLAST_REF_CLBLAS
-    const auto reference_routine = C::RunReference1; // clBLAS when available
-  #else
-    const auto reference_routine = C::RunReference2; // otherwise CBLAS
+  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
+    const auto reference_routine1 = C::RunReference1; // clBLAS
+    const auto reference_routine2 = C::RunReference2; // CBLAS
+  #elif CLBLAST_REF_CLBLAS
+    const auto reference_routine1 = C::RunReference1; // clBLAS
+    const auto reference_routine2 = C::RunReference1; // not used, dummy
+  #elif CLBLAST_REF_CBLAS
+    const auto reference_routine1 = C::RunReference2; // not used, dummy
+    const auto reference_routine2 = C::RunReference2; // CBLAS
   #endif
 
   // Creates a tester
   auto options = C::GetOptions();
   TestBlas<T,U> tester{argc, argv, silent, name, options,
-                       C::RunRoutine, reference_routine,
+                       C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 
   // This variable holds the arguments relevant for this routine
