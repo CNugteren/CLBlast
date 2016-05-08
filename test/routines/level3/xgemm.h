@@ -153,10 +153,10 @@ class TestXgemm {
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return 2 * args.m * args.n * args.m;
+    return 2 * args.m * args.n * args.k;
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    return (args.m*args.m + args.m*args.n + 2*args.m*args.n) * sizeof(T);
+    return (args.m*args.k + args.k*args.n + 2*args.m*args.n) * sizeof(T);
   }
 };
 
