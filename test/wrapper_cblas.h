@@ -338,14 +338,14 @@ void cblasXnrm2(const size_t n,
 void cblasXnrm2(const size_t n,
                 std::vector<float2>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset] = cblas_scnrm2(n,
-                                         reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  nrm2_buffer[nrm2_offset].real(cblas_scnrm2(n,
+                                            reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXnrm2(const size_t n,
                 std::vector<double2>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset] = cblas_dznrm2(n,
-                                         reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  nrm2_buffer[nrm2_offset].real(cblas_dznrm2(n,
+                                            reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 
 // Forwards the Netlib BLAS calls for SASUM/DASUM/ScASUM/DzASUM
@@ -364,14 +364,14 @@ void cblasXasum(const size_t n,
 void cblasXasum(const size_t n,
                 std::vector<float2>& asum_buffer, const size_t asum_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset] = cblas_scasum(n,
-                                         reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  asum_buffer[asum_offset].real(cblas_scasum(n,
+                                            reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXasum(const size_t n,
                 std::vector<double2>& asum_buffer, const size_t asum_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset] = cblas_dzasum(n,
-                                         reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  asum_buffer[asum_offset].real(cblas_dzasum(n,
+                                            reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 
 // Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX

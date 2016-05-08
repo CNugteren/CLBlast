@@ -266,6 +266,7 @@ def wrapper_cblas(routines):
 				# Special case for scalar outputs
 				assignment = ""
 				postfix = ""
+				endofline = ""
 				extra_argument = ""
 				for output_buffer in routine.outputs:
 					if output_buffer in routine.ScalarBuffersFirst():
@@ -274,12 +275,17 @@ def wrapper_cblas(routines):
 							indent += "    "
 							extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
 						else:
-							assignment = output_buffer+"_buffer["+output_buffer+"_offset] = "
+							assignment = output_buffer+"_buffer["+output_buffer+"_offset]"
+							if (flavour.name in ["Sc","Dz"]):
+								assignment = assignment+".real("
+								endofline += ")"
+							else:
+								assignment = assignment+" = "
 							indent += " "*len(assignment)
 
 				result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
 				result += (",\n"+indent).join([a for a in arguments])
-				result += extra_argument+");"
+				result += extra_argument+endofline+");"
 				result += "\n}\n"
 	return result
 
