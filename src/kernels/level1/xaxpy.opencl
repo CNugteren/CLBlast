@@ -30,7 +30,8 @@ __kernel void Xaxpy(const int n, const real alpha,
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
   #pragma unroll
   for (int id = get_global_id(0); id<n; id += get_global_size(0)) {
-    MultiplyAdd(ygm[id*y_inc + y_offset], alpha, xgm[id*x_inc + x_offset]);
+    real xvalue = xgm[id*x_inc + x_offset];
+    MultiplyAdd(ygm[id*y_inc + y_offset], alpha, xvalue);
   }
 }
 
@@ -45,7 +46,9 @@ __kernel void XaxpyFast(const int n, const real alpha,
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int id = w*get_global_size(0) + get_global_id(0);
-    ygm[id] = MultiplyAddVector(ygm[id], alpha, xgm[id]);
+    realV xvalue = xgm[id];
+    realV yvalue = ygm[id];
+    ygm[id] = MultiplyAddVector(yvalue, alpha, xvalue);
   }
 }
 

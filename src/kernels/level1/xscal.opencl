@@ -29,8 +29,9 @@ __kernel void Xscal(const int n, const real alpha,
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
   #pragma unroll
   for (int id = get_global_id(0); id<n; id += get_global_size(0)) {
+    real xvalue = xgm[id*x_inc + x_offset];
     real result;
-    Multiply(result, alpha, xgm[id*x_inc + x_offset]);
+    Multiply(result, alpha, xvalue);
     xgm[id*x_inc + x_offset] = result;
   }
 }
@@ -45,8 +46,9 @@ __kernel void XscalFast(const int n, const real alpha,
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int id = w*get_global_size(0) + get_global_id(0);
+    realV xvalue = xgm[id];
     realV result;
-    result = MultiplyVector(result, alpha, xgm[id]);
+    result = MultiplyVector(result, alpha, xvalue);
     xgm[id] = result;
   }
 }
