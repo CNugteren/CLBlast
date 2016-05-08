@@ -145,8 +145,8 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         if (!TestSimilarity(result1[index], result2[index])) {
           errors++;
           if (verbose_) {
-            if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %lu: ", id1); }
-            else { fprintf(stdout, "\n   Error at %lu,%lu: ", id1, id2); }
+            if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
+            else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
             std::cout << result1[index];
             fprintf(stdout, " (reference) versus ");
             std::cout << result2[index];
