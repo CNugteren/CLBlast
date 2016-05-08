@@ -274,6 +274,9 @@ def wrapper_cblas(routines):
 							postfix += "_sub"
 							indent += "    "
 							extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
+						elif output_buffer in routine.IndexBuffers():
+							assignment = "((int*)&"+output_buffer+"_buffer[0])["+output_buffer+"_offset] = "
+							indent += " "*len(assignment)
 						else:
 							assignment = output_buffer+"_buffer["+output_buffer+"_offset]"
 							if (flavour.name in ["Sc","Dz"]):
