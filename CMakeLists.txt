@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 2.8.10)
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 6)
+set(clblast_VERSION_MINOR 7)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values

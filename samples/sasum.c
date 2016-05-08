@@ -79,7 +79,7 @@ int main(void) {
   clEnqueueReadBuffer(queue, device_output, CL_TRUE, 0, 1*sizeof(float), host_output, 0, NULL, NULL);
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
-  printf("Completed SASUM with status %d: %d * |%.1lf| = %.1lf\n", status, n, input_value, host_output[0]);
+  printf("Completed SASUM with status %d: %zu * |%.1lf| = %.1lf\n", status, n, input_value, host_output[0]);
 
   // Clean-up
   free(platforms);

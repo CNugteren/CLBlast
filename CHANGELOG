@@ -1,5 +1,5 @@
 
-Development version (next release)
+Version 0.7.0
 - Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
 - Made the library thread-safe
 - Performance and correctness tests can now (on top of clBLAS) be performed against CPU BLAS libraries

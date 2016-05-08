@@ -84,7 +84,7 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file. Additionally, a couple of stand-alone example programs are included in `samples/`.
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/api.md). Additionally, a couple of stand-alone example programs are included in `samples/`.
 
 
 Using the tuners (optional)
