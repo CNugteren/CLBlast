@@ -29,7 +29,7 @@ template <> const Precision Xscal<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xscal<T>::Xscal(Queue &queue, Event &event, const std::string &name):
+Xscal<T>::Xscal(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
@@ -60,7 +60,7 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
 
   // Retrieves the Xscal kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments
@@ -81,18 +81,15 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
     if (use_fast_kernel) {
       auto global = std::vector<size_t>{CeilDiv(n, db_["WPT"]*db_["VW"])};
       auto local = std::vector<size_t>{db_["WGS"]};
-      status = RunKernel(kernel, global, local);
+      status = RunKernel(kernel, global, local, event_);
     }
     else {
       auto n_ceiled = Ceil(n, db_["WGS"]*db_["WPT"]);
       auto global = std::vector<size_t>{n_ceiled/db_["WPT"]};
       auto local = std::vector<size_t>{db_["WGS"]};
-      status = RunKernel(kernel, global, local);
+      status = RunKernel(kernel, global, local, event_);
     }
     if (ErrorIn(status)) { return status; }
-
-    // Waits for all kernels to finish
-    queue_.Finish();
 
     // Succesfully finished the computation
     return StatusCode::kSuccess;

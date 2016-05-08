@@ -11,18 +11,17 @@
 //
 // =================================================================================================
 
+#include <string>
+#include <vector>
+
 #include "internal/routine.h"
 
 namespace clblast {
 // =================================================================================================
 
-// The cache of compiled OpenCL programs
-template <typename T>
-std::vector<typename Routine<T>::ProgramCache> Routine<T>::program_cache_;
-
 // Constructor: not much here, because no status codes can be returned
 template <typename T>
-Routine<T>::Routine(Queue &queue, Event &event, const std::string &name,
+Routine<T>::Routine(Queue &queue, EventPointer event, const std::string &name,
                     const std::vector<std::string> &routines, const Precision precision):
     precision_(precision),
     routine_name_(name),
@@ -43,64 +42,80 @@ Routine<T>::Routine(Queue &queue, Event &event, const std::string &name,
 template <typename T>
 StatusCode Routine<T>::SetUp() {
 
-  // Queries the cache to see whether or not the compiled kernel is already there. If not, it will
-  // be built and added to the cache.
-  if (!ProgramIsInCache()) {
+  // Queries the cache to see whether or not the program (context-specific) is already there
+  if (ProgramIsInCache()) { return StatusCode::kSuccess; }
 
-    // Inspects whether or not cl_khr_fp64 is supported in case of double precision
-    auto extensions = device_.Capabilities();
-    if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
-      if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
-        return StatusCode::kNoDoublePrecision;
-      }
-    }
-
-    // As above, but for cl_khr_fp16 (half precision)
-    if (precision_ == Precision::kHalf) {
-      if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
-        return StatusCode::kNoHalfPrecision;
-      }
-    }
-
-    // Loads the common header (typedefs and defines and such)
-    std::string common_header =
-      #include "kernels/common.opencl"
-    ;
-
-    // Collects the parameters for this device in the form of defines, and adds the precision
-    auto defines = db_.GetDefines();
-    defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
-
-    // Adds the name of the routine as a define
-    defines += "#define ROUTINE_"+routine_name_+"\n";
-
-    // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
-    // performance, but might result in a reduced accuracy.
-    if (device_.Vendor() == "AMD") {
-      defines += "#define USE_CL_MAD 1\n";
-    }
-
-    // Combines everything together into a single source string
-    auto source_string = defines + common_header + source_string_;
-
-    // Compiles the kernel
+  // Queries the cache to see whether or not the binary (device-specific) is already there. If it
+  // is, a program is created and stored in the cache
+  if (BinaryIsInCache()) {
     try {
-      auto program = Program(context_, source_string);
+      auto& binary = cache::GetBinaryFromCache(device_name_, precision_, routine_name_);
+      auto program = Program(device_, context_, binary);
       auto options = std::vector<std::string>();
-      auto build_status = program.Build(device_, options);
-
-      // Checks for compiler crashes/errors/warnings
-      if (build_status == BuildStatus::kError) {
-        auto message = program.GetBuildInfo(device_);
-        fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
-        return StatusCode::kBuildProgramFailure;
-      }
-      if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
-
-      // Store the compiled program in the cache
-      program_cache_.push_back({program, device_name_, precision_, routine_name_});
+      program.Build(device_, options);
+      StoreProgramToCache(program);
     } catch (...) { return StatusCode::kBuildProgramFailure; }
+    return StatusCode::kSuccess;
   }
+
+  // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
+  // program will be added to the cache.
+
+  // Inspects whether or not cl_khr_fp64 is supported in case of double precision
+  auto extensions = device_.Capabilities();
+  if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
+    if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
+      return StatusCode::kNoDoublePrecision;
+    }
+  }
+
+  // As above, but for cl_khr_fp16 (half precision)
+  if (precision_ == Precision::kHalf) {
+    if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
+      return StatusCode::kNoHalfPrecision;
+    }
+  }
+
+  // Loads the common header (typedefs and defines and such)
+  std::string common_header =
+    #include "kernels/common.opencl"
+  ;
+
+  // Collects the parameters for this device in the form of defines, and adds the precision
+  auto defines = db_.GetDefines();
+  defines += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
+
+  // Adds the name of the routine as a define
+  defines += "#define ROUTINE_"+routine_name_+"\n";
+
+  // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
+  // performance, but might result in a reduced accuracy.
+  if (device_.Vendor() == "AMD") {
+    defines += "#define USE_CL_MAD 1\n";
+  }
+
+  // Combines everything together into a single source string
+  auto source_string = defines + common_header + source_string_;
+
+  // Compiles the kernel
+  try {
+    auto program = Program(context_, source_string);
+    auto options = std::vector<std::string>();
+    auto build_status = program.Build(device_, options);
+
+    // Checks for compiler crashes/errors/warnings
+    if (build_status == BuildStatus::kError) {
+      auto message = program.GetBuildInfo(device_);
+      fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
+      return StatusCode::kBuildProgramFailure;
+    }
+    if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
+
+    // Store the compiled binary and program in the cache
+    const auto binary = program.GetIR();
+    StoreBinaryToCache(binary);
+    StoreProgramToCache(program);
+  } catch (...) { return StatusCode::kBuildProgramFailure; }
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;
@@ -111,7 +126,8 @@ StatusCode Routine<T>::SetUp() {
 // Enqueues a kernel, waits for completion, and checks for errors
 template <typename T>
 StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
-                                 const std::vector<size_t> &local) {
+                                 const std::vector<size_t> &local, EventPointer event,
+                                 std::vector<Event>& waitForEvents) {
 
   // Tests for validity of the local thread sizes
   if (local.size() > max_work_item_dimensions_) {
@@ -135,16 +151,19 @@ StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
 
   // Launches the kernel (and checks for launch errors)
   try {
-    kernel.Launch(queue_, global, local, event_);
+    kernel.Launch(queue_, global, local, event, waitForEvents);
   } catch (...) { return StatusCode::kKernelLaunchError; }
-
-  // Waits for completion of the kernel
-  try {
-    queue_.Finish(event_);
-  } catch (...) { return StatusCode::kKernelRunError; }
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;
+}
+
+// As above, but without an event waiting list
+template <typename T>
+StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
+                                 const std::vector<size_t> &local, EventPointer event) {
+  auto emptyWaitingList = std::vector<Event>();
+  return RunKernel(kernel, global, local, event, emptyWaitingList);
 }
 
 // =================================================================================================
@@ -156,7 +175,7 @@ StatusCode Routine<T>::TestMatrixA(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimA; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
   } catch (...) { return StatusCode::kInvalidMatrixA; }
@@ -170,7 +189,7 @@ StatusCode Routine<T>::TestMatrixB(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimB; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryB; }
   } catch (...) { return StatusCode::kInvalidMatrixB; }
@@ -184,7 +203,7 @@ StatusCode Routine<T>::TestMatrixC(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimC; }
   try {
-    auto required_size = (ld*two + offset)*data_size;
+    auto required_size = (ld*(two-1) + one + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryC; }
   } catch (...) { return StatusCode::kInvalidMatrixC; }
@@ -212,7 +231,7 @@ StatusCode Routine<T>::TestVectorX(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementX; }
   try {
-    auto required_size = (n*inc + offset)*data_size;
+    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryX; }
   } catch (...) { return StatusCode::kInvalidVectorX; }
@@ -226,7 +245,7 @@ StatusCode Routine<T>::TestVectorY(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementY; }
   try {
-    auto required_size = (n*inc + offset)*data_size;
+    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
     auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryY; }
   } catch (...) { return StatusCode::kInvalidVectorY; }
@@ -248,11 +267,25 @@ StatusCode Routine<T>::TestVectorDot(const size_t n, const Buffer<T> &buffer, co
   return StatusCode::kSuccess;
 }
 
+// Tests vector index for validity: checks for a valid increment, a valid OpenCL buffer, and for a
+// sufficient buffer size.
+template <typename T>
+StatusCode Routine<T>::TestVectorIndex(const size_t n, const Buffer<unsigned int> &buffer,
+                                       const size_t offset, const size_t data_size) {
+  try {
+    auto required_size = (n + offset)*data_size;
+    auto buffer_size = buffer.GetSize();
+    if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryDot; }
+  } catch (...) { return StatusCode::kInvalidVectorDot; }
+  return StatusCode::kSuccess;
+}
+
 // =================================================================================================
 
 // Copies or transposes a matrix and pads/unpads it with zeros
 template <typename T>
-StatusCode Routine<T>::PadCopyTransposeMatrix(const size_t src_one, const size_t src_two,
+StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Event>& waitForEvents,
+                                              const size_t src_one, const size_t src_two,
                                               const size_t src_ld, const size_t src_offset,
                                               const Buffer<T> &src,
                                               const size_t dest_one, const size_t dest_two,
@@ -334,13 +367,13 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(const size_t src_one, const size_t
         auto global = std::vector<size_t>{dest_one / db_["TRA_WPT"],
                                           dest_two / db_["TRA_WPT"]};
         auto local = std::vector<size_t>{db_["TRA_DIM"], db_["TRA_DIM"]};
-        status = RunKernel(kernel, global, local);
+        status = RunKernel(kernel, global, local, event, waitForEvents);
       }
       else {
         auto global = std::vector<size_t>{Ceil(CeilDiv(dest_one, db_["PADTRA_WPT"]), db_["PADTRA_TILE"]),
                                           Ceil(CeilDiv(dest_two, db_["PADTRA_WPT"]), db_["PADTRA_TILE"])};
         auto local = std::vector<size_t>{db_["PADTRA_TILE"], db_["PADTRA_TILE"]};
-        status = RunKernel(kernel, global, local);
+        status = RunKernel(kernel, global, local, event, waitForEvents);
       }
     }
     else {
@@ -348,40 +381,17 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(const size_t src_one, const size_t
         auto global = std::vector<size_t>{dest_one / db_["COPY_VW"],
                                           dest_two / db_["COPY_WPT"]};
         auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
-        status = RunKernel(kernel, global, local);
+        status = RunKernel(kernel, global, local, event, waitForEvents);
       }
       else {
         auto global = std::vector<size_t>{Ceil(CeilDiv(dest_one, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
                                           Ceil(CeilDiv(dest_two, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
         auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
-        status = RunKernel(kernel, global, local);
+        status = RunKernel(kernel, global, local, event, waitForEvents);
       }
     }
     return status;
   } catch (...) { return StatusCode::kInvalidKernel; }
-}
-
-// =================================================================================================
-
-// Queries the cache and retrieves a matching program. Assumes that the match is available, throws
-// otherwise.
-template <typename T>
-const Program& Routine<T>::GetProgramFromCache() const {
-  for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) {
-      return cached_program.program;
-    }
-  }
-  throw std::runtime_error("Internal CLBlast error: Expected program in cache, but found none.");
-}
-
-// Queries the cache to see whether or not the compiled kernel is already there
-template <typename T>
-bool Routine<T>::ProgramIsInCache() const {
-  for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(device_name_, precision_, routine_name_)) { return true; }
-  }
-  return false;
 }
 
 // =================================================================================================

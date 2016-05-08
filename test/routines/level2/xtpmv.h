@@ -19,7 +19,12 @@
 #include <vector>
 #include <string>
 
-#include "wrapper_clblas.h"
+#ifdef CLBLAST_REF_CLBLAS
+  #include "wrapper_clblas.h"
+#endif
+#ifdef CLBLAST_REF_CBLAS
+  #include "wrapper_cblas.h"
+#endif
 
 namespace clblast {
 // =================================================================================================
@@ -65,7 +70,7 @@ class TestXtpmv {
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Tpmv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
@@ -78,20 +83,41 @@ class TestXtpmv {
   }
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
-  static StatusCode RunReference(const Arguments<T> &args, const Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = clblasXtpmv<T>(static_cast<clblasOrder>(args.layout),
-                                 static_cast<clblasUplo>(args.triangle),
-                                 static_cast<clblasTranspose>(args.a_transpose),
-                                 static_cast<clblasDiag>(args.diagonal),
-                                 args.n,
-                                 buffers.ap_mat(), args.ap_offset,
-                                 buffers.x_vec(), args.x_offset, args.x_inc,
-                                 1, &queue_plain, 0, nullptr, &event);
-    clWaitForEvents(1, &event);
-    return static_cast<StatusCode>(status);
-  }
+  #ifdef CLBLAST_REF_CLBLAS
+    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = clblasXtpmv<T>(convertToCLBLAS(args.layout),
+                                   convertToCLBLAS(args.triangle),
+                                   convertToCLBLAS(args.a_transpose),
+                                   convertToCLBLAS(args.diagonal),
+                                   args.n,
+                                   buffers.ap_mat(), args.ap_offset,
+                                   buffers.x_vec(), args.x_offset, args.x_inc,
+                                   1, &queue_plain, 0, nullptr, &event);
+      clWaitForEvents(1, &event);
+      return static_cast<StatusCode>(status);
+    }
+  #endif
+
+  // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CBLAS
+    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      std::vector<T> ap_mat_cpu(args.ap_size, static_cast<T>(0));
+      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
+      buffers.ap_mat.Read(queue, args.ap_size, ap_mat_cpu);
+      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+      cblasXtpmv(convertToCBLAS(args.layout),
+                 convertToCBLAS(args.triangle),
+                 convertToCBLAS(args.a_transpose),
+                 convertToCBLAS(args.diagonal),
+                 args.n,
+                 ap_mat_cpu, args.ap_offset,
+                 x_vec_cpu, args.x_offset, args.x_inc);
+      buffers.x_vec.Write(queue, args.x_size, x_vec_cpu);
+      return StatusCode::kSuccess;
+    }
+  #endif
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {

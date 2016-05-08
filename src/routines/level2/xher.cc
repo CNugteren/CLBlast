@@ -28,7 +28,7 @@ template <> const Precision Xher<double2, double>::precision_ = Precision::kComp
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xher<T,U>::Xher(Queue &queue, Event &event, const std::string &name):
+Xher<T,U>::Xher(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Xger"}, precision_) {
   source_string_ =
     #include "../../kernels/level2/level2.opencl"
@@ -79,7 +79,7 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xher");
 
     // Sets the kernel arguments
@@ -99,11 +99,8 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
     auto global_two = Ceil(CeilDiv(n, db_["WPT"]), db_["WGS2"]);
     auto global = std::vector<size_t>{global_one, global_two};
     auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
-    status = RunKernel(kernel, global, local);
+    status = RunKernel(kernel, global, local, event_);
     if (ErrorIn(status)) { return status; }
-
-    // Waits for all kernels to finish
-    queue_.Finish();
 
     // Succesfully finished the computation
     return StatusCode::kSuccess;

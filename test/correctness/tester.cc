@@ -32,6 +32,7 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
     context_(Context(device_)),
     queue_(Queue(context_, device_)),
     full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
+    verbose_(CheckArgument(argc, argv, help_, kArgVerbose)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
@@ -42,8 +43,31 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
     tests_failed_{0},
     options_{options} {
 
+  // Determines which reference to test against
+  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
+    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
+    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 0);
+  #elif CLBLAST_REF_CLBLAS
+    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
+    compare_cblas_ = 0;
+  #elif CLBLAST_REF_CBLAS
+    compare_clblas_ = 0;
+    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
+  #else
+    compare_clblas_ = 0;
+    compare_cblas_ = 0;
+  #endif
+
   // Prints the help message (command-line arguments)
   if (!silent) { fprintf(stdout, "\n* %s\n", help_.c_str()); }
+
+  // Can only test against a single reference (not two, not zero)
+  if (compare_clblas_ && compare_cblas_) {
+    throw std::runtime_error("Cannot test against both clBLAS and CBLAS references; choose one using the -cblas and -clblas arguments");
+  }
+  if (!compare_clblas_ && !compare_cblas_) {
+    throw std::runtime_error("Choose one reference (clBLAS or CBLAS) to test against using the -cblas and -clblas arguments");
+  }
 
   // Prints the header
   fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
@@ -67,12 +91,18 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
           kSkippedCompilation.c_str());
   fprintf(stdout, "   %s -> Test not executed: Unsupported precision\n",
           kUnsupportedPrecision.c_str());
+  fprintf(stdout, "   %s -> Test not completed: Reference CBLAS doesn't output error codes\n",
+          kUnsupportedReference.c_str());
 
   // Initializes clBLAS
-  auto status = clblasSetup();
-  if (status != CL_SUCCESS) {
-    throw std::runtime_error("clBLAS setup error: "+ToString(static_cast<int>(status)));
-  }
+  #ifdef CLBLAST_REF_CLBLAS
+    if (compare_clblas_) {
+      auto status = clblasSetup();
+      if (status != CL_SUCCESS) {
+        throw std::runtime_error("clBLAS setup error: "+ToString(static_cast<int>(status)));
+      }
+    }
+  #endif
 }
 
 // Destructor prints the summary of the test cases and cleans-up the clBLAS library
@@ -87,7 +117,13 @@ Tester<T,U>::~Tester() {
     fprintf(stdout, "   %zu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
   }
   fprintf(stdout, "\n");
-  clblasTeardown();
+
+  // Cleans-up clBLAS
+  #ifdef CLBLAST_REF_CLBLAS
+    if (compare_clblas_) {
+      clblasTeardown();
+    }
+  #endif
 }
 
 // =================================================================================================
@@ -117,44 +153,11 @@ template <typename T, typename U>
 void Tester<T,U>::TestEnd() {
   fprintf(stdout, "\n");
   tests_passed_ += num_passed_;
-  tests_failed_ += num_skipped_;
+  tests_skipped_ += num_skipped_;
   tests_failed_ += num_failed_;
 
-  // Prints details of all error occurences for these tests
-  for (auto &entry: error_log_) {
-    if (entry.error_percentage != kStatusError) {
-      fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
-    }
-    else {
-      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
-    }
-    for (auto &o: options_) {
-      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
-      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
-      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
-      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
-      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
-      if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
-      if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
-      if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
-      if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
-      if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
-      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
-      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
-      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
-      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
-      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
-      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
-      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
-      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
-      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
-      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
-      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
-      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
-      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
-    }
-    fprintf(stdout, "\n");
-  }
+  // Prints the errors
+  PrintErrorLog(error_log_);
 
   // Prints a test summary
   auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
@@ -200,8 +203,14 @@ template <typename T, typename U>
 void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCode clblast_status,
                                  const Arguments<U> &args) {
 
+  // Cannot compare error codes against a library other than clBLAS
+  if (compare_cblas_) {
+    PrintTestResult(kUnsupportedReference);
+    ReportSkipped();
+  }
+
   // Finished successfully
-  if (clblas_status == clblast_status) {
+  else if (clblas_status == clblast_status) {
     PrintTestResult(kSuccessStatus);
     ReportPass();
   }
@@ -224,6 +233,11 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   else {
     PrintTestResult(kErrorStatus);
     ReportError({clblas_status, clblast_status, kStatusError, args});
+    if (verbose_) {
+      fprintf(stdout, "\n");
+      PrintErrorLog({{clblas_status, clblast_status, kStatusError, args}});
+      fprintf(stdout, "   ");
+    }
   }
 }
 
@@ -268,6 +282,45 @@ void Tester<T,U>::PrintTestResult(const std::string &message) {
   print_count_++;
 }
 
+// Prints details of errors occurred in a given error log
+template <typename T, typename U>
+void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
+  for (auto &entry: error_log) {
+    if (entry.error_percentage != kStatusError) {
+      fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
+    }
+    else {
+      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
+    }
+    for (auto &o: options_) {
+      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
+      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
+      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
+      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
+      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
+      if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
+      if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
+      if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
+      if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
+      if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
+      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
+      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
+      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
+      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
+      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
+      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
+      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
+      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
+      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
+      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
+      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
+      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
+      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
+    }
+    fprintf(stdout, "\n");
+  }
+}
+
 // =================================================================================================
 // Below are the non-member functions (separated because of otherwise required partial class
 // template specialization)
@@ -280,8 +333,8 @@ bool TestSimilarity(const T val1, const T val2) {
   const auto difference = std::fabs(val1 - val2);
 
   // Set the allowed error margin for floating-point comparisons
-  constexpr auto kErrorMarginRelative = T{0.025};
-  constexpr auto kErrorMarginAbsolute = T{1.0e-6};
+  constexpr auto kErrorMarginRelative = T(0.025);
+  constexpr auto kErrorMarginAbsolute = T(1.0e-4);
 
   // Shortcut, handles infinities
   if (val1 == val2) {

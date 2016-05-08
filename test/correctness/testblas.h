@@ -35,7 +35,10 @@ class TestBlas: public Tester<T,U> {
   using Tester<T,U>::context_;
   using Tester<T,U>::queue_;
   using Tester<T,U>::full_test_;
+  using Tester<T,U>::verbose_;
   using Tester<T,U>::device_;
+  using Tester<T,U>::compare_clblas_;
+  using Tester<T,U>::compare_cblas_;
 
   // Uses several helper functions from the Tester class
   using Tester<T,U>::TestStart;
@@ -68,7 +71,7 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester
-  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers<T>&, Queue&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultIndex = std::function<size_t(const Arguments<U>&, const size_t, const size_t)>;
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;
@@ -76,8 +79,10 @@ class TestBlas: public Tester<T,U> {
   // Constructor, initializes the base class tester and input data
   TestBlas(int argc, char *argv[], const bool silent,
            const std::string &name, const std::vector<std::string> &options,
-           const Routine run_routine, const Routine run_reference, const ResultGet get_result,
-           const ResultIndex get_index, const ResultIterator get_id1, const ResultIterator get_id2);
+           const Routine run_routine,
+           const Routine run_reference1, const Routine run_reference2,
+           const ResultGet get_result, const ResultIndex get_index,
+           const ResultIterator get_id1, const ResultIterator get_id2);
 
   // The test functions, taking no inputs
   void TestRegular(std::vector<Arguments<U>> &test_vector, const std::string &name);
@@ -92,7 +97,7 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> b_source_;
   std::vector<T> c_source_;
   std::vector<T> ap_source_;
-  std::vector<T> dot_source_;
+  std::vector<T> scalar_source_;
   
   // The routine-specific functions passed to the tester
   Routine run_routine_;
@@ -110,9 +115,22 @@ class TestBlas: public Tester<T,U> {
 template <typename C, typename T, typename U>
 void RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
 
+  // Sets the reference to test against
+  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
+    const auto reference_routine1 = C::RunReference1; // clBLAS
+    const auto reference_routine2 = C::RunReference2; // CBLAS
+  #elif CLBLAST_REF_CLBLAS
+    const auto reference_routine1 = C::RunReference1; // clBLAS
+    const auto reference_routine2 = C::RunReference1; // not used, dummy
+  #elif CLBLAST_REF_CBLAS
+    const auto reference_routine1 = C::RunReference2; // not used, dummy
+    const auto reference_routine2 = C::RunReference2; // CBLAS
+  #endif
+
   // Creates a tester
   auto options = C::GetOptions();
-  TestBlas<T,U> tester{argc, argv, silent, name, options, C::RunRoutine, C::RunReference,
+  TestBlas<T,U> tester{argc, argv, silent, name, options,
+                       C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 
   // This variable holds the arguments relevant for this routine
@@ -143,6 +161,9 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
   auto c_offsets = std::vector<size_t>{args.c_offset};
   auto ap_offsets = std::vector<size_t>{args.ap_offset};
   auto dot_offsets = std::vector<size_t>{args.dot_offset};
+  auto nrm2_offsets = std::vector<size_t>{args.nrm2_offset};
+  auto asum_offsets = std::vector<size_t>{args.asum_offset};
+  auto imax_offsets = std::vector<size_t>{args.imax_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
   auto x_sizes = std::vector<size_t>{args.x_size};
@@ -182,6 +203,9 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
     if (option == kArgCOffset) { c_offsets = tester.kOffsets; }
     if (option == kArgAPOffset) { ap_offsets = tester.kOffsets; }
     if (option == kArgDotOffset) { dot_offsets = tester.kOffsets; }
+    if (option == kArgNrm2Offset) { nrm2_offsets = tester.kOffsets; }
+    if (option == kArgAsumOffset) { asum_offsets = tester.kOffsets; }
+    if (option == kArgImaxOffset) { imax_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
 
@@ -221,10 +245,16 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
                                           for (auto &c_offset: c_offsets) { r_args.c_offset = c_offset;
                                             for (auto &ap_offset: ap_offsets) { r_args.ap_offset = ap_offset;
                                               for (auto &dot_offset: dot_offsets) { r_args.dot_offset = dot_offset;
-                                                for (auto &alpha: alphas) { r_args.alpha = alpha;
-                                                  for (auto &beta: betas) { r_args.beta = beta;
-                                                    C::SetSizes(r_args);
-                                                    regular_test_vector.push_back(r_args);
+                                                for (auto &nrm2_offset: nrm2_offsets) { r_args.nrm2_offset = nrm2_offset;
+                                                  for (auto &asum_offset: asum_offsets) { r_args.asum_offset = asum_offset;
+                                                    for (auto &imax_offset: imax_offsets) { r_args.imax_offset = imax_offset;
+                                                      for (auto &alpha: alphas) { r_args.alpha = alpha;
+                                                        for (auto &beta: betas) { r_args.beta = beta;
+                                                          C::SetSizes(r_args);
+                                                          regular_test_vector.push_back(r_args);
+                                                        }
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }
@@ -246,23 +276,25 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
               }
 
               // Creates the arguments vector for the invalid-buffer tests
-              auto invalid_test_vector = std::vector<Arguments<U>>{};
-              auto i_args = args;
-              i_args.m = i_args.n = i_args.k = i_args.kl = i_args.ku = tester.kBufferSize;
-              i_args.a_ld = i_args.b_ld = i_args.c_ld = tester.kBufferSize;
-              for (auto &x_size: x_sizes) { i_args.x_size = x_size;
-                for (auto &y_size: y_sizes) { i_args.y_size = y_size;
-                  for (auto &a_size: a_sizes) { i_args.a_size = a_size;
-                    for (auto &b_size: b_sizes) { i_args.b_size = b_size;
-                      for (auto &c_size: c_sizes) { i_args.c_size = c_size;
-                        for (auto &ap_size: ap_sizes) { i_args.ap_size = ap_size;
-                          invalid_test_vector.push_back(i_args);
+              #ifdef CLBLAST_REF_CLBLAS
+                auto invalid_test_vector = std::vector<Arguments<U>>{};
+                auto i_args = args;
+                i_args.m = i_args.n = i_args.k = i_args.kl = i_args.ku = tester.kBufferSize;
+                i_args.a_ld = i_args.b_ld = i_args.c_ld = tester.kBufferSize;
+                for (auto &x_size: x_sizes) { i_args.x_size = x_size;
+                  for (auto &y_size: y_sizes) { i_args.y_size = y_size;
+                    for (auto &a_size: a_sizes) { i_args.a_size = a_size;
+                      for (auto &b_size: b_sizes) { i_args.b_size = b_size;
+                        for (auto &c_size: c_sizes) { i_args.c_size = c_size;
+                          for (auto &ap_size: ap_sizes) { i_args.ap_size = ap_size;
+                            invalid_test_vector.push_back(i_args);
+                          }
                         }
                       }
                     }
                   }
                 }
-              }
+              #endif
 
               // Sets the name of this test-case
               auto names = std::vector<std::string>{};
@@ -283,7 +315,9 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
 
               // Runs the tests
               tester.TestRegular(regular_test_vector, case_name);
-              tester.TestInvalid(invalid_test_vector, case_name);
+              #ifdef CLBLAST_REF_CLBLAS
+                tester.TestInvalid(invalid_test_vector, case_name);
+              #endif
             }
           }
         }

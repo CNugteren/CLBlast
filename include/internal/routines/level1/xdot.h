@@ -28,6 +28,7 @@ class Xdot: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
@@ -37,7 +38,7 @@ class Xdot: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xdot(Queue &queue, Event &event, const std::string &name = "DOT");
+  Xdot(Queue &queue, EventPointer event, const std::string &name = "DOT");
 
   // Templated-precision implementation of the routine
   StatusCode DoDot(const size_t n,

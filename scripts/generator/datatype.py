@@ -22,7 +22,8 @@ D2CL = "cl_double2"
 
 # Structure holding data-type and precision information
 class DataType():
-	def __init__(self, name, template, scalars, buffertype):
+	def __init__(self, precision_name, name, template, scalars, buffertype):
+		self.precision_name = precision_name
 		self.name = name
 		self.template = template
 		self.alpha_cpp = scalars[0]
@@ -56,6 +57,11 @@ class DataType():
 		if self.buffertype != self.beta_cpp:
 			return "<"+self.buffertype+","+self.beta_cpp+">, "+self.buffertype+", "+self.beta_cpp
 		return "<"+self.buffertype+">, "+self.buffertype+", "+self.beta_cpp
+
+	# Current scalar is complex
+	def IsComplex(self, scalar):
+		return ((scalar == "alpha" and self.alpha_cpp in [FLT2, DBL2]) or
+		        (scalar == "beta" and self.beta_cpp in [FLT2, DBL2]))
 
 
 # ==================================================================================================

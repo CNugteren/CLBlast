@@ -35,6 +35,9 @@ using double2 = std::complex<double>;
 const std::string kKhronosHalfPrecision = "cl_khr_fp16";
 const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 
+// Catched an unknown error
+constexpr auto kUnknownError = -999;
+
 // =================================================================================================
 
 // The routine-specific arguments in string form
@@ -61,6 +64,9 @@ constexpr auto kArgBOffset = "offb";
 constexpr auto kArgCOffset = "offc";
 constexpr auto kArgAPOffset = "offap";
 constexpr auto kArgDotOffset = "offdot";
+constexpr auto kArgNrm2Offset = "offnrm2";
+constexpr auto kArgAsumOffset = "offasum";
+constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 
@@ -69,12 +75,14 @@ constexpr auto kArgFraction = "fraction";
 
 // The client-specific arguments in string form
 constexpr auto kArgCompareclblas = "clblas";
+constexpr auto kArgComparecblas = "cblas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
 
 // The client-specific arguments in string form
 constexpr auto kArgFullTest = "full_test";
+constexpr auto kArgVerbose = "verbose";
 
 // The common arguments in string form
 constexpr auto kArgPlatform = "platform";
@@ -113,6 +121,9 @@ struct Arguments {
   size_t c_offset = 0;
   size_t ap_offset = 0;
   size_t dot_offset = 0;
+  size_t nrm2_offset = 0;
+  size_t asum_offset = 0;
+  size_t imax_offset = 0;
   T alpha = T{1.0};
   T beta = T{1.0};
   size_t x_size = 1;
@@ -121,16 +132,15 @@ struct Arguments {
   size_t b_size = 1;
   size_t c_size = 1;
   size_t ap_size = 1;
-  size_t dot_size = 1;
+  size_t scalar_size = 1;
   // Tuner-specific arguments
   double fraction = 1.0;
   // Client-specific arguments
   int compare_clblas = 1;
+  int compare_cblas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
-  // Tester-specific arguments
-  bool full_test = false;
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
@@ -149,7 +159,7 @@ struct Buffers {
   Buffer<T> b_mat;
   Buffer<T> c_mat;
   Buffer<T> ap_mat;
-  Buffer<T> dot;
+  Buffer<T> scalar;
 };
 
 // =================================================================================================

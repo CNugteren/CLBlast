@@ -15,6 +15,7 @@
 //
 // =================================================================================================
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -47,11 +48,11 @@ int main(void) {
   clGetPlatformIDs(num_platforms, platforms, NULL);
   cl_platform_id platform = platforms[platform_id];
 
-  // Initializes the OpenCL device (note: example for GPU devices only)
+  // Initializes the OpenCL device
   cl_uint num_devices;
-  clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &num_devices);
+  clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
   cl_device_id* devices = (cl_device_id*)malloc(num_devices*sizeof(cl_device_id));
-  clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, num_devices, devices, NULL);
+  clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, num_devices, devices, NULL);
   cl_device_id device = devices[device_id];
 
   // Creates the OpenCL context, queue, and an event
@@ -89,7 +90,7 @@ int main(void) {
   clWaitForEvents(1, &event);
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
-  printf("Completed with status %d\n", status);
+  printf("Completed SGEMM with status %d\n", status);
 
   // Clean-up
   free(platforms);

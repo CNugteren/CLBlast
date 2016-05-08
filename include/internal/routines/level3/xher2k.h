@@ -30,6 +30,7 @@ class Xher2k: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
@@ -40,7 +41,7 @@ class Xher2k: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xher2k(Queue &queue, Event &event, const std::string &name = "HER2K");
+  Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");
 
   // Templated-precision implementation of the routine
   StatusCode DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,

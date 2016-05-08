@@ -28,6 +28,7 @@ class Xgemm: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
@@ -38,7 +39,7 @@ class Xgemm: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xgemm(Queue &queue, Event &event, const std::string &name = "GEMM");
+  Xgemm(Queue &queue, EventPointer event, const std::string &name = "GEMM");
 
   // Templated-precision implementation of the routine
   StatusCode DoGemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,

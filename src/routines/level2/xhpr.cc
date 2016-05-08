@@ -20,7 +20,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xhpr<T,U>::Xhpr(Queue &queue, Event &event, const std::string &name):
+Xhpr<T,U>::Xhpr(Queue &queue, EventPointer event, const std::string &name):
     Xher<T,U>(queue, event, name) {
 }
 

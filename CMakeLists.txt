@@ -13,7 +13,7 @@
 cmake_minimum_required(VERSION 2.8.10)
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 6)
+set(clblast_VERSION_MINOR 7)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -66,12 +66,21 @@ else ()
       set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
     endif()
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    set(FLAGS "${FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
+    set(FLAGS "${FLAGS} -Wextra -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
     set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
+    set(FLAGS "${FLAGS} -Wno-deprecated-declarations")
   endif()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS}")
+
+# C compiler settings (for the sample)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(CFLAGS "/Ox")
+else ()
+  set(CFLAGS "-O3 -std=c99")
+endif()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 
 # ==================================================================================================
 
@@ -90,11 +99,13 @@ if(TUNERS)
   endif()
 endif()
 
-# Locates the clBLAS library in case the tests need to be compiled. "FindclBLAS.cmake" is included.
+# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
+# and "FindCBLAS.cmake" are included.
 if(TESTS)
   find_package(clBLAS)
-  if(NOT CLBLAS_FOUND)
-    message(STATUS "Could NOT find clBLAS, disabling the compilation of the tests")
+  find_package(CBLAS)
+  if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
+    message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
     set(TESTS OFF)
   endif()
 endif()
@@ -109,8 +120,8 @@ include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy pad transpose padtranspose xaxpy xdot xger xgemm xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
-set(SAMPLE_PROGRAMS_C sgemm)
-set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc)
+set(SAMPLE_PROGRAMS_C sasum dgemv sgemm cache)
+set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
@@ -120,7 +131,8 @@ set(PRECISIONS 32 64 3232 6464)
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/utilities.cc src/clblast_c.cc)
+set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/cache.cc
+            src/utilities.cc src/clblast_c.cc)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()
@@ -155,6 +167,9 @@ endif()
 
 # This section contains all the code related to the examples
 if(SAMPLES)
+
+  # Downloads the cl.hpp file from Khronos
+  file(DOWNLOAD https://www.khronos.org/registry/cl/api/1.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
 
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
@@ -204,11 +219,33 @@ endif()
 # ==================================================================================================
 
 # Down from here is all test (performance and correctness) related. Note that these tests require
-# the presence of the clBLAS library to act as a reference.
+# the presence of clBLAS and/or a BLAS library to act as a reference.
 if(TESTS)
 
-  # Adds new include directories for the reference clBLAS
-  include_directories(${clblast_SOURCE_DIR}/test ${CLBLAS_INCLUDE_DIRS})
+  # Sets the specifics for the reference BLAS libraries
+  set(REF_INCLUDES )
+  set(REF_LIBRARIES )
+  if(CLBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CLBLAS_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES})
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      add_definitions(" /DCLBLAST_REF_CLBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CLBLAS")
+    endif()
+  endif()
+  if(CBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CBLAS_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CBLAS_LIBRARIES})
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      add_definitions(" /DCLBLAST_REF_CBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CBLAS")
+    endif()
+  endif()
+
+  # Sets the include directories
+  include_directories(${clblast_SOURCE_DIR}/test ${REF_INCLUDES})
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
@@ -228,7 +265,7 @@ if(TESTS)
                    test/correctness/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_test_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -258,7 +295,7 @@ if(TESTS)
                    test/performance/routines/level3/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_client_${ROUTINE} clblast ${CLBLAS_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 

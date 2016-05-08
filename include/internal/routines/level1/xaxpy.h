@@ -28,6 +28,7 @@ class Xaxpy: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
   using Routine<T>::TestVectorY;
@@ -35,7 +36,7 @@ class Xaxpy: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xaxpy(Queue &queue, Event &event, const std::string &name = "AXPY");
+  Xaxpy(Queue &queue, EventPointer event, const std::string &name = "AXPY");
 
   // Templated-precision implementation of the routine
   StatusCode DoAxpy(const size_t n, const T alpha,

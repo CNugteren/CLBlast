@@ -34,9 +34,9 @@ DEVICENAME_DEFAULT = "default"
 # Attributes
 DEVICETYPE_ATTRIBUTES = ["device_vendor", "device_type"]
 DEVICE_ATTRIBUTES = ["device", "device_core_clock", "device_compute_units"]
-KERNEL_ATTRIBUTES = ["precision", "kernel_family",
-                     "arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
-ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES
+KERNEL_ATTRIBUTES = ["precision", "kernel_family"]
+ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
+ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICETYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ARGUMENT_ATTRIBUTES
 
 # OpenCL vendor names and their short name
 VENDOR_NAMES = { "device_vendor": {
@@ -95,8 +95,17 @@ def RemoveDuplicates(df):
 def RemoveEntriesByDevice(df, devicename):
 	return df[df["device"] != devicename]
 
+def RemoveEntriesByKernelFamily(df, familyname):
+	return df[df["kernel_family"] != familyname]
+
 def GetEntriesByField(df, field, value):
 	return df[df[field] == value]
+
+# Example usage:
+# df = UpdateDatabase(df, (df["kernel_family"] == "xdot") & (df["arg_n"] == "67108864"), "arg_n", "2097152")
+def UpdateDatabase(df, condition, field, value):
+	df.loc[condition, field] = value
+	return df
 
 # Fixes the problem that some vendors use multiple different names
 def SanitizeVendorNames(df):
@@ -120,7 +129,7 @@ def CalculateDefaults(df):
 	dfdefault = pd.DataFrame()
 
 	# Defaults per type/vendor
-	groups = df.groupby(DEVICETYPE_ATTRIBUTES+KERNEL_ATTRIBUTES+["kernel"])
+	groups = df.groupby(DEVICETYPE_ATTRIBUTES+KERNEL_ATTRIBUTES+ARGUMENT_ATTRIBUTES+["kernel"])
 	for name, dfgroup in groups:
 		default_values = dfgroup.min(axis=0)
 		default_values["device"] = DEVICENAME_DEFAULT
@@ -129,8 +138,14 @@ def CalculateDefaults(df):
 		default_values["time"] = 0.0
 		dfdefault = dfdefault.append(default_values, ignore_index=True)
 	
+	# Checks for mis-matched arguments
+	groups = dfdefault.groupby(DEVICETYPE_ATTRIBUTES+KERNEL_ATTRIBUTES+["kernel"])
+	for name, dfgroup in groups:
+		if len(dfgroup) != 1:
+			print("[WARNING] Entries for a single kernel with multiple argument values")
+			
 	# Defaults in general
-	groups = df.groupby(KERNEL_ATTRIBUTES+["kernel"])
+	groups = df.groupby(KERNEL_ATTRIBUTES+ARGUMENT_ATTRIBUTES+["kernel"])
 	for name, dfgroup in groups:
 		default_values = dfgroup.min(axis=0)
 		default_values["device_vendor"] = VENDOR_DEFAULT
@@ -272,7 +287,6 @@ for file_json in glob.glob(glob_json):
 	database = RemoveDuplicates(database)
 	new_size = len(database.index)
 	print("with "+str(new_size-old_size)+" new items")
-
 
 # Stores the modified database back to disk
 if len(glob.glob(glob_json)) >= 1:

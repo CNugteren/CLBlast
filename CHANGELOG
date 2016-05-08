@@ -1,4 +1,23 @@
 
+Version 0.7.0
+- Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
+- Made the library thread-safe
+- Performance and correctness tests can now (on top of clBLAS) be performed against CPU BLAS libraries
+- Fixed the use of events within the library
+- Changed the enum parameters to match the raw values of the cblas standard
+- Fixed the cache of previously compiled binaries and added a function to fill or clear it
+- Various minor fixes and enhancements
+- Added a preliminary version of the API documentation
+- Added additional sample programs
+- Added tuned parameters for various devices (see README)
+- Added level-1 routines:
+  * SNRM2/DNRM2/ScNRM2/DzNRM2
+  * SASUM/DASUM/ScASUM/DzASUM
+  * SSUM/DSUM/ScSUM/DzSUM (non-absolute version of the above xASUM BLAS routines)
+  * iSAMAX/iDAMAX/iCAMAX/iZAMAX
+  * iSMAX/iDMAX/iCMAX/iZMAX (non-absolute version of the above ixAMAX BLAS routines)
+  * iSMIN/iDMIN/iCMIN/iZMIN (non-absolute minimum version of the above ixAMAX BLAS routines)
+
 Version 0.6.0
 - Added support for MSVC (Visual Studio) 2015
 - Added tuned parameters for various devices (see README)

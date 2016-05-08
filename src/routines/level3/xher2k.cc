@@ -27,7 +27,7 @@ template <> const Precision Xher2k<double2,double>::precision_ = Precision::kCom
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xher2k<T,U>::Xher2k(Queue &queue, Event &event, const std::string &name):
+Xher2k<T,U>::Xher2k(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
   source_string_ =
     #include "../../kernels/level3/copy.opencl"
@@ -93,7 +93,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   try {
 
     // Loads the program from the database
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
 
     // Determines whether or not temporary matrices are needed
     auto a1_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
@@ -112,39 +112,58 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     auto b2_temp = (b2_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
+    // Events of all kernels (including pre/post processing kernels)
+    auto eventWaitList = std::vector<Event>();
+    auto emptyEventList = std::vector<Event>();
+
     // Runs the pre-processing kernels. This transposes the matrices A and B, but also pads zeros to
     // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
     // case nothing has to be done, these kernels can be skipped.
     if (!a1_no_temp) {
-      status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+      auto eventProcessA1 = Event();
+      status = PadCopyTransposeMatrix(eventProcessA1.pointer(), emptyEventList,
+                                      ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a1_temp,
                                       program, true, ab_rotated, ab_conjugate);
+      eventWaitList.push_back(eventProcessA1);
       if (ErrorIn(status)) { return status; }
     }
     if (!a2_no_temp) {
-      status = PadCopyTransposeMatrix(ab_one, ab_two, a_ld, a_offset, a_buffer,
+      auto eventProcessA2 = Event();
+      status = PadCopyTransposeMatrix(eventProcessA2.pointer(), emptyEventList,
+                                      ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a2_temp,
                                       program, true, ab_rotated, !ab_conjugate);
+      eventWaitList.push_back(eventProcessA2);
       if (ErrorIn(status)) { return status; }
     }
     if (!b1_no_temp) {
-      status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+      auto eventProcessB1 = Event();
+      status = PadCopyTransposeMatrix(eventProcessB1.pointer(), emptyEventList,
+                                      ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b1_temp,
                                       program, true, ab_rotated, ab_conjugate);
+      eventWaitList.push_back(eventProcessB1);
       if (ErrorIn(status)) { return status; }
     }
     if (!b2_no_temp) {
-      status = PadCopyTransposeMatrix(ab_one, ab_two, b_ld, b_offset, b_buffer,
+      auto eventProcessB2 = Event();
+      status = PadCopyTransposeMatrix(eventProcessB2.pointer(), emptyEventList,
+                                      ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b2_temp,
                                       program, true, ab_rotated, !ab_conjugate);
+      eventWaitList.push_back(eventProcessB2);
       if (ErrorIn(status)) { return status; }
     }
 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
-    status = PadCopyTransposeMatrix(n, n, c_ld, c_offset, c_buffer,
+    auto eventProcessC = Event();
+    status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
+                                    n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     program, true, c_rotated, false);
+    eventWaitList.push_back(eventProcessC);
     if (ErrorIn(status)) { return status; }
 
     // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
@@ -169,8 +188,10 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
       // Launches the kernel
-      status = RunKernel(kernel, global, local);
+      auto eventKernel1 = Event();
+      status = RunKernel(kernel, global, local, eventKernel1.pointer(), eventWaitList);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventKernel1);
 
       // Swaps the arguments for matrices A and B, sets 'beta' to 1, and conjugate alpha
       auto conjugate_alpha = T{alpha.real(), -alpha.imag()};
@@ -181,13 +202,16 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       kernel.SetArgument(5, a2_temp());
 
       // Runs the kernel again
-      status = RunKernel(kernel, global, local);
+      auto eventKernel2 = Event();
+      status = RunKernel(kernel, global, local, eventKernel2.pointer(), eventWaitList);
       if (ErrorIn(status)) { return status; }
+      eventWaitList.push_back(eventKernel2);
 
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
+      status = PadCopyTransposeMatrix(event_, eventWaitList,
+                                      n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       program, false, c_rotated, false, upper, lower, true);
       if (ErrorIn(status)) { return status; }

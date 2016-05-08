@@ -52,6 +52,14 @@ The pre-requisites for compilation of CLBlast are:
   - Intel OpenCL
   - Beignet
 
+Furthermore, to build the (optional) correctness and performance tests, another BLAS library is needed to serve as a reference. This can be either:
+
+* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS (maintained by AMD)
+* A regular CPU Netlib BLAS library, e.g.:
+  - OpenBLAS
+  - BLIS
+  - Accelerate
+
 An example of an out-of-source build (starting from the root of the CLBlast folder):
 
     mkdir build
@@ -76,7 +84,7 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file. Additionally, a couple of stand-alone example programs are included in `samples/`.
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/api.md). Additionally, a couple of stand-alone example programs are included in `samples/`.
 
 
 Using the tuners (optional)
@@ -95,6 +103,8 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tesla K40m
 * AMD GPUs:
   - Tahiti
+  - Hawaii
+  - Pitcairn
   - R9 M370X
 * Intel GPUs:
   - Iris
@@ -128,16 +138,16 @@ In summary, tuning the entire library for your device can be done as follows (st
     make
 
 
-Compiling the tests (optional)
+Compiling the correctness and performance tests (optional)
 -------------
 
 To make sure CLBlast is working correctly on your device (recommended), compile with the tests enabled:
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. The library clBLAS is therefore required to be installed on your system for the CLBlast tests.
+Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is best tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. If the library clBLAS is not installed on your system, it will use a regular CPU BLAS library to test against. If both are present, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables.
 
-With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run both CLBlast and clBLAS in a head-to-head performance test.
+With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against clBLAS and/or a CPU BLAS library.
 
 
 Performance remarks
@@ -161,64 +171,77 @@ These graphs can be generated automatically on your own device. First, compile C
 Supported routines
 -------------
 
-CLBlast is in active development but already supports almost all the BLAS routines. The currently supported routines are marked with '✔' in the following tables. Empty boxes represent routines that still need to be implemented in a future release, whereas routines marked with '-' are not part of BLAS at all.
+CLBlast is in active development but already supports almost all the BLAS routines. The supported routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all.
 
-| Level-1  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xROTG    |   |   | - | - |         |
-| xROTMG   |   |   | - | - |         |
-| xROT     |   |   | - | - |         |
-| xROTM    |   |   | - | - |         |
-| xSWAP    | ✔ | ✔ | ✔ | ✔ |         |
-| xSCAL    | ✔ | ✔ | ✔ | ✔ | +CS +ZD |
-| xCOPY    | ✔ | ✔ | ✔ | ✔ |         |
-| xAXPY    | ✔ | ✔ | ✔ | ✔ |         |
-| xDOT     | ✔ | ✔ | - | - |         |
-| xDOTU    | - | - | ✔ | ✔ |         |
-| xDOTC    | - | - | ✔ | ✔ |         |
-| xNRM2    |   |   | - | - | +SC +DZ |
-| xASUM    |   |   | - | - | +SC +DZ |
-| IxAMAX   |   |   |   |   |         |
+| Level-1  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xSWAP    | ✔ | ✔ | ✔ | ✔ |
+| xSCAL    | ✔ | ✔ | ✔ | ✔ |
+| xCOPY    | ✔ | ✔ | ✔ | ✔ |
+| xAXPY    | ✔ | ✔ | ✔ | ✔ |
+| xDOT     | ✔ | ✔ | - | - |
+| xDOTU    | - | - | ✔ | ✔ |
+| xDOTC    | - | - | ✔ | ✔ |
+| xNRM2    | ✔ | ✔ | ✔ | ✔ |
+| xASUM    | ✔ | ✔ | ✔ | ✔ |
+| IxAMAX   | ✔ | ✔ | ✔ | ✔ |
 
-| Level-2  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xGEMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xGBMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xHEMV    | - | - | ✔ | ✔ |         |
-| xHBMV    | - | - | ✔ | ✔ |         |
-| xHPMV    | - | - | ✔ | ✔ |         |
-| xSYMV    | ✔ | ✔ | - | - |         |
-| xSBMV    | ✔ | ✔ | - | - |         |
-| xSPMV    | ✔ | ✔ | - | - |         |
-| xTRMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTBMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTPMV    | ✔ | ✔ | ✔ | ✔ |         |
-| xTRSV    |   |   |   |   |         |
-| xTBSV    |   |   |   |   |         |
-| xTPSV    |   |   |   |   |         |
-| xGER     | ✔ | ✔ | - | - |         |
-| xGERU    | - | - | ✔ | ✔ |         |
-| xGERC    | - | - | ✔ | ✔ |         |
-| xHER     | - | - | ✔ | ✔ |         |
-| xHPR     | - | - | ✔ | ✔ |         |
-| xHER2    | - | - | ✔ | ✔ |         |
-| xHPR2    | - | - | ✔ | ✔ |         |
-| xSYR     | ✔ | ✔ | - | - |         |
-| xSPR     | ✔ | ✔ | - | - |         |
-| xSYR2    | ✔ | ✔ | - | - |         |
-| xSPR2    | ✔ | ✔ | - | - |         |
+| Level-2  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xGEMV    | ✔ | ✔ | ✔ | ✔ |
+| xGBMV    | ✔ | ✔ | ✔ | ✔ |
+| xHEMV    | - | - | ✔ | ✔ |
+| xHBMV    | - | - | ✔ | ✔ |
+| xHPMV    | - | - | ✔ | ✔ |
+| xSYMV    | ✔ | ✔ | - | - |
+| xSBMV    | ✔ | ✔ | - | - |
+| xSPMV    | ✔ | ✔ | - | - |
+| xTRMV    | ✔ | ✔ | ✔ | ✔ |
+| xTBMV    | ✔ | ✔ | ✔ | ✔ |
+| xTPMV    | ✔ | ✔ | ✔ | ✔ |
+| xGER     | ✔ | ✔ | - | - |
+| xGERU    | - | - | ✔ | ✔ |
+| xGERC    | - | - | ✔ | ✔ |
+| xHER     | - | - | ✔ | ✔ |
+| xHPR     | - | - | ✔ | ✔ |
+| xHER2    | - | - | ✔ | ✔ |
+| xHPR2    | - | - | ✔ | ✔ |
+| xSYR     | ✔ | ✔ | - | - |
+| xSPR     | ✔ | ✔ | - | - |
+| xSYR2    | ✔ | ✔ | - | - |
+| xSPR2    | ✔ | ✔ | - | - |
 
-| Level-3  | S | D | C | Z | Notes   |
-| ---------|---|---|---|---|---------|
-| xGEMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xSYMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xHEMM    | - | - | ✔ | ✔ |         |
-| xSYRK    | ✔ | ✔ | ✔ | ✔ |         |
-| xHERK    | - | - | ✔ | ✔ |         |
-| xSYR2K   | ✔ | ✔ | ✔ | ✔ |         |
-| xHER2K   | - | - | ✔ | ✔ |         |
-| xTRMM    | ✔ | ✔ | ✔ | ✔ |         |
-| xTRSM    |   |   |   |   |         |
+| Level-3  | S | D | C | Z |
+| ---------|---|---|---|---|
+| xGEMM    | ✔ | ✔ | ✔ | ✔ |
+| xSYMM    | ✔ | ✔ | ✔ | ✔ |
+| xHEMM    | - | - | ✔ | ✔ |
+| xSYRK    | ✔ | ✔ | ✔ | ✔ |
+| xHERK    | - | - | ✔ | ✔ |
+| xSYR2K   | ✔ | ✔ | ✔ | ✔ |
+| xHER2K   | - | - | ✔ | ✔ |
+| xTRMM    | ✔ | ✔ | ✔ | ✔ |
+
+In addition, some non-BLAS routines are also supported by CLBlast. They are experimental and should be used with care:
+
+| Additional | S | D | C | Z |
+| -----------|---|---|---|---|
+| xSUM       | ✔ | ✔ | ✔ | ✔ |
+| IxMAX      | ✔ | ✔ | ✔ | ✔ |
+| IxMIN      | ✔ | ✔ | ✔ | ✔ |
+
+Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
+
+| Unsupported | S | D | C | Z |
+| ------------|---|---|---|---|
+| xROTG       |   |   | - | - |
+| xROTMG      |   |   | - | - |
+| xROT        |   |   | - | - |
+| xROTM       |   |   | - | - |
+| xTRSV       |   |   |   |   |
+| xTBSV       |   |   |   |   |
+| xTPSV       |   |   |   |   |
+| xTRSM       |   |   |   |   |
 
 
 Contributing
@@ -226,28 +249,28 @@ Contributing
 
 Contributions are welcome in the form of tuning results for OpenCL devices previously untested. Furthermore, merge requests are welcome as long as they contain unit additions or modifications. Furthermore, they should follow the CLBlast coding style, which is based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers.
 
-The contributing authors so far are:
+The contributing authors (code, pull requests, testing) so far are:
 
 * [Cedric Nugteren](http://www.cedricnugteren.nl)
+* [Anton Lokhmotov](https://github.com/psyhtest)
+* [Dragan Djuric](https://github.com/blueberry)
+* [Hugh Perkins](https://github.com/hughperkins)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
 * [TU/e ES research group](http://www.es.ele.tue.nl/)
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
-* [Dividiti](http://www.dividiti.com)
+* [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
 
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
 
 
 To-do list before release of version 1.0
 -------------
 
-- Support all routines supported by clBLAS
-- Allow the user control over events and synchronization
 - Add half-precision routines (e.g. HGEMM)
-- Enable correctness and performance testing against a CPU-based BLAS library
-- Test in multi-threaded environments
+- Add API documentation

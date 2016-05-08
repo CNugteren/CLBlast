@@ -30,7 +30,7 @@ class Xgbmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xgbmv(Queue &queue, Event &event, const std::string &name = "GBMV");
+  Xgbmv(Queue &queue, EventPointer event, const std::string &name = "GBMV");
 
   // Templated-precision implementation of the routine
   StatusCode DoGbmv(const Layout layout, const Transpose a_transpose,

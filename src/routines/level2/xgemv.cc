@@ -29,7 +29,7 @@ template <> const Precision Xgemv<double2>::precision_ = Precision::kComplexDoub
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(Queue &queue, Event &event, const std::string &name):
+Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Pad", "Xgemv"}, precision_) {
   source_string_ =
     #include "../../kernels/level2/xgemv.opencl"
@@ -136,7 +136,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    auto& program = GetProgramFromCache();
+    const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments
@@ -162,11 +162,8 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     // Launches the kernel
     auto global = std::vector<size_t>{global_size};
     auto local = std::vector<size_t>{local_size};
-    status = RunKernel(kernel, global, local);
+    status = RunKernel(kernel, global, local, event_);
     if (ErrorIn(status)) { return status; }
-
-    // Waits for all kernels to finish
-    queue_.Finish();
 
     // Succesfully finished the computation
     return StatusCode::kSuccess;

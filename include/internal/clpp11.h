@@ -78,11 +78,16 @@ class Event {
   // Regular constructor
   explicit Event(): event_(nullptr) { }
 
+  // Waits for completion of this event
+  void WaitForCompletion() const {
+    CheckError(clWaitForEvents(1, &event_));
+  }
+
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
   // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
   float GetElapsedTime() const {
-    CheckError(clWaitForEvents(1, &event_));
+    WaitForCompletion();
     auto bytes = size_t{0};
     clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
     auto time_start = size_t{0};
@@ -95,9 +100,13 @@ class Event {
 
   // Accessor to the private data-member
   cl_event& operator()() { return event_; }
+  cl_event* pointer() { return &event_; }
  private:
   cl_event event_;
 };
+
+// Pointer to an OpenCL event
+using EventPointer = cl_event*;
 
 // =================================================================================================
 
@@ -260,9 +269,13 @@ class Context {
 
   // Accessor to the private data-member
   const cl_context& operator()() const { return *context_; }
+  cl_context* pointer() const { return &(*context_); }
  private:
   std::shared_ptr<cl_context> context_;
 };
+
+// Pointer to an OpenCL context
+using ContextPointer = cl_context*;
 
 // =================================================================================================
 
@@ -274,7 +287,7 @@ class Program {
  public:
   // Note that there is no constructor based on the regular OpenCL data-type because of extra state
 
-  // Regular constructor with memory management
+  // Source-based constructor with memory management
   explicit Program(const Context &context, std::string source):
       program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
       length_(source.length()),
@@ -283,6 +296,22 @@ class Program {
     auto status = CL_SUCCESS;
     *program_ = clCreateProgramWithSource(context(), 1, &source_ptr_, &length_, &status);
     CheckError(status);
+  }
+
+  // Binary-based constructor with memory management
+  explicit Program(const Device &device, const Context &context, const std::string& binary):
+      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      length_(binary.length()),
+      source_(binary),
+      source_ptr_(&source_[0]) {
+    auto status1 = CL_SUCCESS;
+    auto status2 = CL_SUCCESS;
+    const cl_device_id dev = device();
+    *program_ = clCreateProgramWithBinary(context(), 1, &dev, &length_,
+                                          reinterpret_cast<const unsigned char**>(&source_ptr_),
+                                          &status1, &status2);
+    CheckError(status1);
+    CheckError(status2);
   }
 
   // Compiles the device program and returns whether or not there where any warnings/errors
@@ -313,7 +342,7 @@ class Program {
     return result;
   }
 
-  // Retrieves an intermediate representation of the compiled program
+  // Retrieves a binary or an intermediate representation of the compiled program
   std::string GetIR() const {
     auto bytes = size_t{0};
     CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
@@ -329,7 +358,7 @@ class Program {
  private:
   std::shared_ptr<cl_program> program_;
   size_t length_;
-  std::string source_;
+  std::string source_; // Note: the source can also be a binary or IR
   const char* source_ptr_;
 };
 
@@ -468,31 +497,33 @@ class Buffer {
   }
 
   // Copies from device to host: reading the device buffer a-synchronously
-  void ReadAsync(const Queue &queue, const size_t size, T* host, const size_t offset = 0) {
+  void ReadAsync(const Queue &queue, const size_t size, T* host, const size_t offset = 0) const {
     if (access_ == BufferAccess::kWriteOnly) { Error("reading from a write-only buffer"); }
     CheckError(clEnqueueReadBuffer(queue(), *buffer_, CL_FALSE, offset*sizeof(T), size*sizeof(T),
                                    host, 0, nullptr, nullptr));
   }
   void ReadAsync(const Queue &queue, const size_t size, std::vector<T> &host,
-                 const size_t offset = 0) {
+                 const size_t offset = 0) const {
     if (host.size() < size) { Error("target host buffer is too small"); }
     ReadAsync(queue, size, host.data(), offset);
   }
   void ReadAsync(const Queue &queue, const size_t size, BufferHost<T> &host,
-                 const size_t offset = 0) {
+                 const size_t offset = 0) const {
     if (host.size() < size) { Error("target host buffer is too small"); }
     ReadAsync(queue, size, host.data(), offset);
   }
 
   // Copies from device to host: reading the device buffer
-  void Read(const Queue &queue, const size_t size, T* host, const size_t offset = 0) {
+  void Read(const Queue &queue, const size_t size, T* host, const size_t offset = 0) const {
     ReadAsync(queue, size, host, offset);
     queue.Finish();
   }
-  void Read(const Queue &queue, const size_t size, std::vector<T> &host, const size_t offset = 0) {
+  void Read(const Queue &queue, const size_t size, std::vector<T> &host,
+            const size_t offset = 0) const {
     Read(queue, size, host.data(), offset);
   }
-  void Read(const Queue &queue, const size_t size, BufferHost<T> &host, const size_t offset = 0) {
+  void Read(const Queue &queue, const size_t size, BufferHost<T> &host,
+            const size_t offset = 0) const {
     Read(queue, size, host.data(), offset);
   }
 
@@ -601,17 +632,37 @@ class Kernel {
 
   // Launches a kernel onto the specified queue
   void Launch(const Queue &queue, const std::vector<size_t> &global,
-              const std::vector<size_t> &local, Event &event) {
+              const std::vector<size_t> &local, EventPointer event) {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
                                       nullptr, global.data(), local.data(),
-                                      0, nullptr, &(event())));
+                                      0, nullptr, event));
+  }
+
+  // As above, but with an event waiting list
+  void Launch(const Queue &queue, const std::vector<size_t> &global,
+              const std::vector<size_t> &local, EventPointer event,
+              std::vector<Event>& waitForEvents) {
+    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
+
+    // Builds a plain version of the events waiting list
+    auto waitForEventsPlain = std::vector<cl_event>();
+    for (auto &waitEvent : waitForEvents) {
+      waitForEventsPlain.push_back(waitEvent());
+    }
+
+    // Launches the kernel while waiting for other events
+    CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
+                                      nullptr, global.data(), local.data(),
+                                      static_cast<cl_uint>(waitForEventsPlain.size()),
+                                      waitForEventsPlain.data(),
+                                      event));
   }
 
   // As above, but with the default local workgroup size
-  void Launch(const Queue &queue, const std::vector<size_t> &global, Event &event) {
+  void Launch(const Queue &queue, const std::vector<size_t> &global, EventPointer event) {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
                                       nullptr, global.data(), nullptr,
-                                      0, nullptr, &(event())));
+                                      0, nullptr, event));
   }
 
   // Accessor to the private data-member

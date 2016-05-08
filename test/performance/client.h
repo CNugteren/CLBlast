@@ -26,7 +26,9 @@
 #include <utility>
 
 // The libraries to test
-#include <clBLAS.h>
+#ifdef CLBLAST_REF_CLBLAS
+  #include <clBLAS.h>
+#endif
 #include "clblast.h"
 
 #include "internal/utilities.h"
@@ -40,12 +42,12 @@ class Client {
  public:
 
   // Shorthand for the routine-specific functions passed to the tester
-  using Routine = std::function<StatusCode(const Arguments<U>&, const Buffers<T>&, Queue&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using SetMetric = std::function<void(Arguments<U>&)>;
   using GetMetric = std::function<size_t(const Arguments<U>&)>;
 
   // The constructor
-  Client(const Routine run_routine, const Routine run_reference,
+  Client(const Routine run_routine, const Routine run_reference1, const Routine run_reference2,
          const std::vector<std::string> &options,
          const GetMetric get_flops, const GetMetric get_bytes);
 
@@ -61,7 +63,7 @@ class Client {
  private:
 
   // Runs a function a given number of times and returns the execution time of the shortest instance
-  double TimedExecution(const size_t num_runs, const Arguments<U> &args, const Buffers<T> &buffers,
+  double TimedExecution(const size_t num_runs, const Arguments<U> &args, Buffers<T> &buffers,
                         Queue &queue, Routine run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
@@ -73,7 +75,8 @@ class Client {
 
   // The routine-specific functions passed to the tester
   const Routine run_routine_;
-  const Routine run_reference_;
+  const Routine run_reference1_;
+  const Routine run_reference2_;
   const std::vector<std::string> options_;
   const GetMetric get_flops_;
   const GetMetric get_bytes_;
@@ -81,13 +84,31 @@ class Client {
 
 // =================================================================================================
 
+// Bogus reference function, in case a comparison library is not available
+template <typename T, typename U>
+static StatusCode ReferenceNotAvailable(const Arguments<U> &, Buffers<T> &, Queue &) {
+  return StatusCode::kNotImplemented;
+}
+
 // The interface to the performance client. This is a separate function in the header such that it
 // is automatically compiled for each routine, templated by the parameter "C".
 template <typename C, typename T, typename U>
 void RunClient(int argc, char *argv[]) {
 
+  // Sets the reference to test against
+  #ifdef CLBLAST_REF_CLBLAS
+    const auto reference1 = C::RunReference1; // clBLAS when available
+  #else
+    const auto reference1 = ReferenceNotAvailable<T,U>;
+  #endif
+  #ifdef CLBLAST_REF_CBLAS
+    const auto reference2 = C::RunReference2; // CBLAS when available
+  #else
+    const auto reference2 = ReferenceNotAvailable<T,U>;
+  #endif
+
   // Creates a new client
-  auto client = Client<T,U>(C::RunRoutine, C::RunReference, C::GetOptions(),
+  auto client = Client<T,U>(C::RunRoutine, reference1, reference2, C::GetOptions(),
                             C::GetFlops, C::GetBytes);
 
   // Simple command line argument parser with defaults

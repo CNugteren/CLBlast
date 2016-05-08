@@ -21,7 +21,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xdotc<T>::Xdotc(Queue &queue, Event &event, const std::string &name):
+Xdotc<T>::Xdotc(Queue &queue, EventPointer event, const std::string &name):
     Xdot<T>(queue, event, name) {
 }
 

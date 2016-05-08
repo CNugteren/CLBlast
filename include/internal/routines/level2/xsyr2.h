@@ -28,7 +28,7 @@ class Xsyr2: public Xher2<T> {
   using Xher2<T>::DoHer2;
 
   // Constructor
-  Xsyr2(Queue &queue, Event &event, const std::string &name = "SYR2");
+  Xsyr2(Queue &queue, EventPointer event, const std::string &name = "SYR2");
 
   // Templated-precision implementation of the routine
   StatusCode DoSyr2(const Layout layout, const Triangle triangle,

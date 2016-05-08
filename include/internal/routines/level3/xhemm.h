@@ -37,7 +37,7 @@ class Xhemm: public Xgemm<T> {
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xhemm(Queue &queue, Event &event, const std::string &name = "HEMM");
+  Xhemm(Queue &queue, EventPointer event, const std::string &name = "HEMM");
 
   // Templated-precision implementation of the routine
   StatusCode DoHemm(const Layout layout, const Side side, const Triangle triangle,

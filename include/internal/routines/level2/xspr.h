@@ -28,7 +28,7 @@ class Xspr: public Xher<T,T> {
   using Xher<T,T>::DoHer;
 
   // Constructor
-  Xspr(Queue &queue, Event &event, const std::string &name = "SPR");
+  Xspr(Queue &queue, EventPointer event, const std::string &name = "SPR");
 
   // Templated-precision implementation of the routine
   StatusCode DoSpr(const Layout layout, const Triangle triangle,

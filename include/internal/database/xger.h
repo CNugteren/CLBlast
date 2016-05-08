@@ -19,8 +19,10 @@ const Database::DatabaseEntry Database::XgerSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "Hawaii",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
+        { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -65,8 +67,10 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
+        { "Hawaii",                                          { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
+        { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -111,8 +115,10 @@ const Database::DatabaseEntry Database::XgerDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Hawaii",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -138,7 +144,7 @@ const Database::DatabaseEntry Database::XgerDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",16}, {"WGS2",1}, {"WPT",1} } },
       }
     },
   }
@@ -151,6 +157,8 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "Hawaii",                                          { {"WGS1",128}, {"WGS2",1}, {"WPT",1} } },
+        { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",1}, {"WPT",1} } },
       }

@@ -28,6 +28,7 @@ class Xher: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
   using Routine<T>::TestMatrixA;
@@ -36,7 +37,7 @@ class Xher: public Routine<T> {
   using Routine<T>::ErrorIn;
 
   // Constructor
-  Xher(Queue &queue, Event &event, const std::string &name = "HER");
+  Xher(Queue &queue, EventPointer event, const std::string &name = "HER");
 
   // Translates alpha of type 'U' into type 'T'
   T GetAlpha(const U alpha);

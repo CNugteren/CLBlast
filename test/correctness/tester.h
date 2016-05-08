@@ -23,7 +23,9 @@
 #include <memory>
 
 // The libraries
-#include <clBLAS.h>
+#ifdef CLBLAST_REF_CLBLAS
+  #include <clBLAS.h>
+#endif
 #include "clblast.h"
 
 #include "internal/utilities.h"
@@ -56,6 +58,7 @@ class Tester {
   const std::string kErrorStatus{kPrintError + "/" + kPrintEnd};
   const std::string kSkippedCompilation{kPrintWarning + "\\" + kPrintEnd};
   const std::string kUnsupportedPrecision{kPrintWarning + "o" + kPrintEnd};
+  const std::string kUnsupportedReference{kPrintWarning + "." + kPrintEnd};
 
   // This structure combines the above log-entry with a status code an error percentage
   struct ErrorLogEntry {
@@ -92,10 +95,17 @@ class Tester {
   Queue queue_;
 
   // Whether or not to run the full test-suite or just a smoke test
-  bool full_test_;
+  const bool full_test_;
+
+  // Whether or not to print extra information when testing
+  const bool verbose_;
 
   // Retrieves the offset values to test with
   const std::vector<size_t> GetOffsets() const;
+
+  // Testing against reference implementations
+  int compare_cblas_;
+  int compare_clblas_;
 
  private:
 
@@ -106,6 +116,9 @@ class Tester {
 
   // Prints the error or success symbol to screen
   void PrintTestResult(const std::string &message);
+
+  // Prints an error log
+  void PrintErrorLog(const std::vector<ErrorLogEntry> &error_log);
 
   // Logging and counting occurrences of errors
   std::vector<ErrorLogEntry> error_log_;
