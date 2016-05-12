@@ -119,6 +119,12 @@ class Routine():
 	def ShortNames(self):
 		return "/".join([f.name+self.name.upper() for f in self.flavours])
 
+	# As above, but excludes some
+	def ShortNamesTested(self):
+		names = [f.name+self.name.upper() for f in self.flavours]
+		if "H"+self.name.upper() in names: names.remove("H"+self.name.upper())
+		return "/".join(names)
+
 	# Determines which buffers go first (between alpha and beta) and which ones go after
 	def BuffersFirst(self):
 		if self.level == "2b":

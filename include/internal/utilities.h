@@ -27,6 +27,9 @@
 namespace clblast {
 // =================================================================================================
 
+// Host data-type for half-precision floating-point (16-bit)
+using half = cl_half;
+
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;

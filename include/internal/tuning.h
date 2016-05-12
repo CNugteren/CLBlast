@@ -20,6 +20,8 @@
 
 #include <cltune.h>
 
+#include "internal/utilities.h"
+
 namespace clblast {
 // =================================================================================================
 

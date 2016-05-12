@@ -397,6 +397,7 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Ev
 // =================================================================================================
 
 // Compiles the templated class
+template class Routine<half>;
 template class Routine<float>;
 template class Routine<double>;
 template class Routine<float2>;

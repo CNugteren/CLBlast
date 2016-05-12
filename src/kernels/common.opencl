@@ -19,7 +19,7 @@ R"(
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this file is used outside of the CLBlast library.
 #ifndef PRECISION
-  #define PRECISION 32      // Data-types: single or double precision, complex or regular
+  #define PRECISION 32      // Data-types: half, single or double precision, complex or regular
 #endif
 
 // =================================================================================================
@@ -31,8 +31,19 @@ R"(
   #endif
 #endif
 
+// Half-precision
+#if PRECISION == 16
+  typedef half real;
+  typedef half2 real2;
+  typedef half4 real4;
+  typedef half8 real8;
+  typedef half16 real16;
+  #define ZERO 0.0
+  #define ONE 1.0
+  #define SMALLEST -1.0e37
+
 // Single-precision
-#if PRECISION == 32
+#elif PRECISION == 32
   typedef float real;
   typedef float2 real2;
   typedef float4 real4;
@@ -68,7 +79,7 @@ R"(
   #define ONE 1.0f
   #define SMALLEST -1.0e37f
 
-// Complex Double-precision
+// Complex double-precision
 #elif PRECISION == 6464
   typedef struct cdouble {double x; double y;} real;
   typedef struct cdouble2 {real x; real y;} real2;

@@ -13,10 +13,13 @@
 # ==================================================================================================
 
 # Short-hands for data-types
+HLF = "half"
 FLT = "float"
 DBL = "double"
 FLT2 = "float2"
 DBL2 = "double2"
+
+HCL = "cl_half"
 F2CL = "cl_float2"
 D2CL = "cl_double2"
 
