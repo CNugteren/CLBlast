@@ -312,6 +312,18 @@ StatusCode CLBlastZaxpy(const size_t n,
                               queue, event);
   return static_cast<StatusCode>(status);
 }
+StatusCode CLBlastHaxpy(const size_t n,
+                        const cl_half alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Axpy(n,
+                              alpha,
+                              x_buffer, x_offset, x_inc,
+                              y_buffer, y_offset, y_inc,
+                              queue, event);
+  return static_cast<StatusCode>(status);
+}
 
 // DOT
 StatusCode CLBlastSdot(const size_t n,

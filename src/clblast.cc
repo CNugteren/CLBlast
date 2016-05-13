@@ -253,7 +253,7 @@ template StatusCode PUBLIC_API Copy<double2>(const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
 StatusCode Axpy(const size_t n,
                 const T alpha,
@@ -289,6 +289,11 @@ template StatusCode PUBLIC_API Axpy<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<half>(const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Dot product of two vectors: SDOT/DDOT
 template <typename T>

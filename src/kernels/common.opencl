@@ -25,6 +25,11 @@ R"(
 // =================================================================================================
 
 // Enable support for double-precision
+#if PRECISION == 16
+  #pragma OPENCL EXTENSION cl_khr_fp16: enable
+#endif
+
+// Enable support for double-precision
 #if PRECISION == 64 || PRECISION == 6464
   #if __OPENCL_VERSION__ <= CL_VERSION_1_1
      #pragma OPENCL EXTENSION cl_khr_fp64: enable
@@ -38,9 +43,9 @@ R"(
   typedef half4 real4;
   typedef half8 real8;
   typedef half16 real16;
-  #define ZERO 0.0
-  #define ONE 1.0
-  #define SMALLEST -1.0e37
+  #define ZERO 0.0h
+  #define ONE 1.0h
+  #define SMALLEST -1.0e37h
 
 // Single-precision
 #elif PRECISION == 32
@@ -93,6 +98,13 @@ R"(
   #define ZERO 0.0
   #define ONE 1.0
   #define SMALLEST -1.0e37
+#endif
+
+// Kernel argument scalar
+#if PRECISION == 16
+  typedef float realarg;
+#else
+  typedef real realarg;
 #endif
 
 // Single-element version of a complex number

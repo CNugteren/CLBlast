@@ -188,13 +188,20 @@ def GetFooter():
 
 # The start of a new C++ precision entry
 def GetPrecision(family, precision):
-	precisionstring = "Single"
-	if precision == "64":
+	precisionstring = ""
+	if precision == "16":
+		precisionstring = "Half"
+	elif precision == "32":
+		precisionstring = "Single"
+	elif precision == "64":
 		precisionstring = "Double"
 	elif precision == "3232":
 		precisionstring = "ComplexSingle"
 	elif precision == "6464":
 		precisionstring = "ComplexDouble"
+	else:
+		print("[ERROR] Unknown precision")
+		sys.exit()
 	return("\n\nconst Database::DatabaseEntry Database::%s%s = {\n  \"%s\", Precision::k%s, {\n"
 	       % (family.title(), precisionstring, family.title(), precisionstring))
 

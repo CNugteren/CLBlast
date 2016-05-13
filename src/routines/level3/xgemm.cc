@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xgemm<half>::precision_ = Precision::kHalf;
 template <> const Precision Xgemm<float>::precision_ = Precision::kSingle;
 template <> const Precision Xgemm<double>::precision_ = Precision::kDouble;
 template <> const Precision Xgemm<float2>::precision_ = Precision::kComplexSingle;

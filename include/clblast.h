@@ -142,7 +142,7 @@ StatusCode Copy(const size_t n,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
 StatusCode Axpy(const size_t n,
                 const T alpha,

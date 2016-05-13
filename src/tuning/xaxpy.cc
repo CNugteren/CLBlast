@@ -90,7 +90,7 @@ class TuneXaxpy {
                            std::vector<T> &, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(args.alpha);
+    tuner.AddArgumentScalar(static_cast<typename RealArg<T>::Type>(args.alpha));
     tuner.AddArgumentInput(x_vec);
     tuner.AddArgumentOutput(y_vec);
   }
@@ -106,13 +106,14 @@ class TuneXaxpy {
 } // namespace clblast
 
 // Shortcuts to the clblast namespace
+using half = clblast::half;
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXaxpy<half>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXaxpy<float>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXaxpy<double>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXaxpy<float2>, float2>(argc, argv); break;

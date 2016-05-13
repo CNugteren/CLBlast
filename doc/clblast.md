@@ -181,6 +181,11 @@ StatusCode CLBlastZaxpy(const size_t n,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHaxpy(const size_t n,
+                        const cl_half alpha,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to AXPY:

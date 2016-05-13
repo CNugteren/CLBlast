@@ -202,7 +202,7 @@ StatusCode PUBLIC_API CLBlastZcopy(const size_t n,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 StatusCode PUBLIC_API CLBlastSaxpy(const size_t n,
                                    const float alpha,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -220,6 +220,11 @@ StatusCode PUBLIC_API CLBlastCaxpy(const size_t n,
                                    cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastZaxpy(const size_t n,
                                    const cl_double2 alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHaxpy(const size_t n,
+                                   const cl_half alpha,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);

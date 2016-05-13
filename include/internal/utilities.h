@@ -229,6 +229,10 @@ size_t GetBytes(const Precision precision);
 template <typename T>
 bool PrecisionSupported(const Device &device);
 
+// Converts a scalar to a scalar fit as a kernel argument (e.g. half is not supported)
+template <typename T> struct RealArg { using Type = T; };
+template <> struct RealArg<half> { using Type = float; };
+
 // =================================================================================================
 } // namespace clblast
 

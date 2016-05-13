@@ -14,6 +14,24 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::XaxpyHalf = {
+  "Xaxpy", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",8}, {"WGS",512}, {"WPT",1} } },
+        { "default",                                         { {"VW",8}, {"WGS",512}, {"WPT",1} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"VW",8}, {"WGS",512}, {"WPT",1} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::XaxpySingle = {
   "Xaxpy", Precision::kSingle, {
     { // AMD GPUs
