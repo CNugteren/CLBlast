@@ -23,10 +23,10 @@ R"(
 
 // Full version of the kernel with offsets and strided accesses
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void Xaxpy(const int n, const realarg arg_alpha,
+__kernel void Xaxpy(const int n, const __constant real* restrict arg_alpha,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* ygm, const int y_offset, const int y_inc) {
-  const real alpha = (real)arg_alpha;
+  const real alpha = arg_alpha[0];
 
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
   #pragma unroll
@@ -41,10 +41,11 @@ __kernel void Xaxpy(const int n, const realarg arg_alpha,
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
 __attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void XaxpyFast(const int n, const realarg arg_alpha,
+__kernel void XaxpyFast(const int n, const __constant real* restrict arg_alpha,
                         const __global realV* restrict xgm,
                         __global realV* ygm) {
-  const real alpha = (real)arg_alpha;
+  const real alpha = arg_alpha[0];
+
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int id = w*get_global_size(0) + get_global_id(0);

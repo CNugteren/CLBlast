@@ -100,13 +100,6 @@ R"(
   #define SMALLEST -1.0e37
 #endif
 
-// Kernel argument scalar
-#if PRECISION == 16
-  typedef float realarg;
-#else
-  typedef real realarg;
-#endif
-
 // Single-element version of a complex number
 #if PRECISION == 3232
   typedef float singlereal;
