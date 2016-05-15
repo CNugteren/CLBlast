@@ -34,7 +34,7 @@ options("width"=170)
 # Constants
 num_runs <- 4
 devices <- c("-platform","-device")
-options_string <- "-q -no_abbrv"
+options_string <- "-q -no_abbrv -cblas 0"
 library_names <- c("CLBlast", "clBLAS")
 
 # Command-line arguments
