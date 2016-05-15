@@ -1,6 +1,6 @@
 
 Development version (next release)
--
+- Improved performance of large power-of-2 xGEMM kernels for AMD GPUs
 
 Version 0.7.0
 - Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
