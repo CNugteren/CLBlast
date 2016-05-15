@@ -1,6 +1,6 @@
 
 Development version (next release)
--
+- Added support for half-precision floating-point (fp16) routines
 
 Version 0.7.0
 - Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)

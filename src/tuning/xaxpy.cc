@@ -89,8 +89,9 @@ class TuneXaxpy {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
+    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<typename RealArg<T>::Type>(args.alpha));
+    tuner.AddArgumentInput(alpha_buffer);
     tuner.AddArgumentInput(x_vec);
     tuner.AddArgumentOutput(y_vec);
   }
@@ -106,7 +107,6 @@ class TuneXaxpy {
 } // namespace clblast
 
 // Shortcuts to the clblast namespace
-using half = clblast::half;
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 

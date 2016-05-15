@@ -22,13 +22,11 @@
 #include <complex>
 
 #include "clblast.h"
+#include "clblast_half.h"
 #include "internal/clpp11.h"
 
 namespace clblast {
 // =================================================================================================
-
-// Host data-type for half-precision floating-point (16-bit)
-using half = cl_half;
 
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
@@ -97,6 +95,16 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 
 // =================================================================================================
 
+// Returns a scalar with a default value
+template <typename T>
+T GetScalar();
+
+// Returns a scalar of value 1
+template <typename T>
+T ConstantOne();
+
+// =================================================================================================
+
 // Structure containing all possible arguments for test clients, including their default values
 template <typename T>
 struct Arguments {
@@ -127,8 +135,8 @@ struct Arguments {
   size_t nrm2_offset = 0;
   size_t asum_offset = 0;
   size_t imax_offset = 0;
-  T alpha = T{1.0};
-  T beta = T{1.0};
+  T alpha = ConstantOne<T>();
+  T beta = ConstantOne<T>();
   size_t x_size = 1;
   size_t y_size = 1;
   size_t a_size = 1;
@@ -205,12 +213,6 @@ void PopulateVector(std::vector<T> &vector);
 
 // =================================================================================================
 
-// Returns a scalar with a default value
-template <typename T>
-T GetScalar();
-
-// =================================================================================================
-
 // Rounding functions
 size_t CeilDiv(const size_t x, const size_t y);
 size_t Ceil(const size_t x, const size_t y);
@@ -228,10 +230,6 @@ size_t GetBytes(const Precision precision);
 // Returns false is this precision is not supported by the device
 template <typename T>
 bool PrecisionSupported(const Device &device);
-
-// Converts a scalar to a scalar fit as a kernel argument (e.g. half is not supported)
-template <typename T> struct RealArg { using Type = T; };
-template <> struct RealArg<half> { using Type = float; };
 
 // =================================================================================================
 } // namespace clblast

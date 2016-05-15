@@ -151,6 +151,7 @@ target_link_libraries(clblast ${OPENCL_LIBRARIES})
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
+install(FILES include/clblast_half.h DESTINATION include)
 
 # ==================================================================================================
 

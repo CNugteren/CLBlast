@@ -22,6 +22,56 @@
 namespace clblast {
 // =================================================================================================
 
+// Returns a scalar with a default value
+template <typename T>
+T GetScalar() {
+  return static_cast<T>(2.0);
+}
+template float GetScalar<float>();
+template double GetScalar<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half GetScalar() {
+  return FloatToHalf(2.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 GetScalar() {
+  return {2.0f, 0.5f};
+}
+template <>
+double2 GetScalar() {
+  return {2.0, 0.5};
+}
+
+// Returns a scalar of value 1
+template <typename T>
+T ConstantOne() {
+  return static_cast<T>(1.0);
+}
+template float ConstantOne<float>();
+template double ConstantOne<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half ConstantOne() {
+  return FloatToHalf(1.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 ConstantOne() {
+  return {1.0f, 0.0f};
+}
+template <>
+double2 ConstantOne() {
+  return {1.0, 0.0};
+}
+
+// =================================================================================================
+
 // Implements the string conversion using std::to_string if possible
 template <typename T>
 std::string ToString(T value) {
@@ -240,27 +290,6 @@ void PopulateVector(std::vector<half> &vector) {
   std::mt19937 mt(GetRandomSeed());
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = static_cast<half>(dist(mt)); }
-}
-
-// =================================================================================================
-
-// Returns a scalar with a default value
-template <typename T>
-T GetScalar() {
-  return static_cast<T>(2.0);
-}
-template half GetScalar<half>();
-template float GetScalar<float>();
-template double GetScalar<double>();
-
-// Specialized versions of the above for complex data-types
-template <>
-float2 GetScalar() {
-  return {2.0f, 0.5f};
-}
-template <>
-double2 GetScalar() {
-  return {2.0, 0.5};
 }
 
 // =================================================================================================
