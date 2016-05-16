@@ -14,6 +14,24 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::TransposeHalf = {
+  "Transpose", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",8} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",8} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",8} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::TransposeSingle = {
   "Transpose", Precision::kSingle, {
     { // AMD GPUs

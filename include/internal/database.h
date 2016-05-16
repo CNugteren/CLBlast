@@ -72,10 +72,10 @@ class Database {
   static const DatabaseEntry XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble;
   static const DatabaseEntry XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble;
   static const DatabaseEntry XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble;
-  static const DatabaseEntry CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
-  static const DatabaseEntry PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
-  static const DatabaseEntry TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble;
-  static const DatabaseEntry PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble;
+  static const DatabaseEntry CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble;
+  static const DatabaseEntry PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
+  static const DatabaseEntry TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble;
+  static const DatabaseEntry PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble;
   static const std::vector<DatabaseEntry> database;
 
   // The constructor

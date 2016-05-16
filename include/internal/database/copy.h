@@ -14,6 +14,24 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::CopyHalf = {
+  "Copy", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::CopySingle = {
   "Copy", Precision::kSingle, {
     { // AMD GPUs

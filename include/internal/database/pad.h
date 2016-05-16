@@ -14,6 +14,24 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::PadHalf = {
+  "Pad", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::PadSingle = {
   "Pad", Precision::kSingle, {
     { // AMD GPUs
