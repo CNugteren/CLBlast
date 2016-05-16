@@ -97,6 +97,12 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
+    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+    auto alpha_buffer = Buffer<T>(context_, 1);
+    auto beta_buffer = Buffer<T>(context_, 1);
+    alpha_buffer.Write(queue_, 1, &alpha);
+    beta_buffer.Write(queue_, 1, &beta);
+
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
     auto emptyEventList = std::vector<Event>();
@@ -131,8 +137,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       // Sets the kernel arguments
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
-      kernel.SetArgument(2, alpha);
-      kernel.SetArgument(3, beta);
+      kernel.SetArgument(2, alpha_buffer());
+      kernel.SetArgument(3, beta_buffer());
       kernel.SetArgument(4, a_temp());
       kernel.SetArgument(5, a_temp());
       kernel.SetArgument(6, c_temp());

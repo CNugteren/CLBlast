@@ -112,6 +112,13 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     auto b2_temp = (b2_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
+    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+    auto complex_beta = T{beta, static_cast<U>(0.0)};
+    auto alpha_buffer = Buffer<T>(context_, 1);
+    auto beta_buffer = Buffer<T>(context_, 1);
+    alpha_buffer.Write(queue_, 1, &alpha);
+    beta_buffer.Write(queue_, 1, &complex_beta);
+
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
     auto emptyEventList = std::vector<Event>();
@@ -171,11 +178,10 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       auto kernel = Kernel(program, kernel_name);
 
       // Sets the kernel arguments
-      auto complex_beta = T{beta, static_cast<U>(0.0)};
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
-      kernel.SetArgument(2, alpha);
-      kernel.SetArgument(3, complex_beta);
+      kernel.SetArgument(2, alpha_buffer());
+      kernel.SetArgument(3, beta_buffer());
       kernel.SetArgument(4, a1_temp());
       kernel.SetArgument(5, b2_temp());
       kernel.SetArgument(6, c_temp());
@@ -196,8 +202,10 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       // Swaps the arguments for matrices A and B, sets 'beta' to 1, and conjugate alpha
       auto conjugate_alpha = T{alpha.real(), -alpha.imag()};
       auto complex_one = T{static_cast<U>(1.0), static_cast<U>(0.0)};
-      kernel.SetArgument(2, conjugate_alpha);
-      kernel.SetArgument(3, complex_one);
+      alpha_buffer.Write(queue_, 1, &conjugate_alpha);
+      beta_buffer.Write(queue_, 1, &complex_one);
+      kernel.SetArgument(2, alpha_buffer());
+      kernel.SetArgument(3, beta_buffer());
       kernel.SetArgument(4, b1_temp());
       kernel.SetArgument(5, a2_temp());
 

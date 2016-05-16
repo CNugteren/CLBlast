@@ -43,9 +43,9 @@ R"(
   typedef half4 real4;
   typedef half8 real8;
   typedef half16 real16;
-  #define ZERO 0.0h
-  #define ONE 1.0h
-  #define SMALLEST -1.0e37h
+  #define ZERO 0
+  #define ONE 1
+  #define SMALLEST -1.0e14
 
 // Single-precision
 #elif PRECISION == 32

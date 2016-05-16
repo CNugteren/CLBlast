@@ -85,17 +85,17 @@ class TunePad {
                            std::vector<T> &, std::vector<T> &,
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
                            std::vector<T> &) {
-  tuner.AddArgumentScalar(static_cast<int>(args.m));
-  tuner.AddArgumentScalar(static_cast<int>(args.n));
-  tuner.AddArgumentScalar(static_cast<int>(args.m));
-  tuner.AddArgumentScalar(0);
-  tuner.AddArgumentInput(a_mat);
-  tuner.AddArgumentScalar(static_cast<int>(args.m));
-  tuner.AddArgumentScalar(static_cast<int>(args.n));
-  tuner.AddArgumentScalar(static_cast<int>(args.m));
-  tuner.AddArgumentScalar(0);
-  tuner.AddArgumentOutput(b_mat);
-  tuner.AddArgumentScalar(0);
+    tuner.AddArgumentScalar(static_cast<int>(args.m));
+    tuner.AddArgumentScalar(static_cast<int>(args.n));
+    tuner.AddArgumentScalar(static_cast<int>(args.m));
+    tuner.AddArgumentScalar(0);
+    tuner.AddArgumentInput(a_mat);
+    tuner.AddArgumentScalar(static_cast<int>(args.m));
+    tuner.AddArgumentScalar(static_cast<int>(args.n));
+    tuner.AddArgumentScalar(static_cast<int>(args.m));
+    tuner.AddArgumentScalar(0);
+    tuner.AddArgumentOutput(b_mat);
+    tuner.AddArgumentScalar(0);
   }
 
   // Describes how to compute the performance metrics
@@ -115,7 +115,7 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TunePad<half>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TunePad<float>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TunePad<double>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TunePad<float2>, float2>(argc, argv); break;

@@ -263,10 +263,13 @@ inline void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
 // Main entry point of the kernel. This is the upper-triangular version.
 __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 __kernel void XgemmUpper(const int kSizeN, const int kSizeK,
-                         const real alpha, const real beta,
+                         const __constant real* restrict arg_alpha,
+                         const __constant real* restrict arg_beta,
                          const __global realM* restrict agm,
                          const __global realN* restrict bgm,
                          __global realM* cgm) {
+  const real alpha = arg_alpha[0];
+  const real beta = arg_beta[0];
 
   // Skip these threads if they do not contain threads contributing to the upper-triangle
   if (get_group_id(1)*NWG < get_group_id(0)*MWG) {
@@ -300,10 +303,13 @@ __kernel void XgemmUpper(const int kSizeN, const int kSizeK,
 // Main entry point of the kernel. This is the lower-triangular version.
 __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 __kernel void XgemmLower(const int kSizeN, const int kSizeK,
-                         const real alpha, const real beta,
+                         const __constant real* restrict arg_alpha,
+                         const __constant real* restrict arg_beta,
                          const __global realM* restrict agm,
                          const __global realN* restrict bgm,
                          __global realM* cgm) {
+  const real alpha = arg_alpha[0];
+  const real beta = arg_beta[0];
 
   // Skip these threads if they do not contain threads contributing to the lower-triangle
   if (get_group_id(1)*NWG > get_group_id(0)*MWG) {
@@ -341,10 +347,13 @@ __kernel void XgemmLower(const int kSizeN, const int kSizeK,
 // Main entry point of the kernel. This is the regular full version.
 __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 __kernel void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
-                    const real alpha, const real beta,
+                    const __constant real* restrict arg_alpha,
+                    const __constant real* restrict arg_beta,
                     const __global realM* restrict agm,
                     const __global realN* restrict bgm,
                     __global realM* cgm) {
+  const real alpha = arg_alpha[0];
+  const real beta = arg_beta[0];
 
   // Allocates workgroup-private memory (local memory)
   #if SA == 1
