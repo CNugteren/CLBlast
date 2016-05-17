@@ -9,8 +9,13 @@
 #
 # ==================================================================================================
 
-# CMake project details
 cmake_minimum_required(VERSION 2.8.10)
+
+# Overrides for MSVC static runtime
+set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/c_flag_overrides.cmake)
+set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_flag_overrides.cmake)
+
+# CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
 set(clblast_VERSION_MINOR 7)
