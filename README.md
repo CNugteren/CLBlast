@@ -60,13 +60,19 @@ Furthermore, to build the (optional) correctness and performance tests, another 
   - BLIS
   - Accelerate
 
-An example of an out-of-source build (starting from the root of the CLBlast folder):
+An example of an out-of-source build using a command-line compiler and make (starting from the root of the CLBlast folder):
 
     mkdir build
     cd build
     cmake ..
     make
     sudo make install
+
+When using Visual Studio, the project-files can be generated as follows:
+
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 14 Win64" ..
 
 A custom installation folder can be specified when calling CMake:
 
