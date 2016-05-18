@@ -1,4 +1,7 @@
 
+Development version (next release)
+-
+
 Version 0.7.1
 - Improved performance of large power-of-2 xGEMM kernels for AMD GPUs
 - Fixed a bug in the xGEMM routine related to the event incorrectly set
