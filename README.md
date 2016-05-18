@@ -54,19 +54,25 @@ The pre-requisites for compilation of CLBlast are:
 
 Furthermore, to build the (optional) correctness and performance tests, another BLAS library is needed to serve as a reference. This can be either:
 
-* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS (maintained by AMD)
+* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS) (maintained by AMD)
 * A regular CPU Netlib BLAS library, e.g.:
   - OpenBLAS
   - BLIS
   - Accelerate
 
-An example of an out-of-source build (starting from the root of the CLBlast folder):
+An example of an out-of-source build using a command-line compiler and make (starting from the root of the CLBlast folder):
 
     mkdir build
     cd build
     cmake ..
     make
     sudo make install
+
+When using Visual Studio, the project-files can be generated as follows:
+
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 14 Win64" ..
 
 A custom installation folder can be specified when calling CMake:
 
@@ -84,7 +90,7 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/api.md). Additionally, a couple of stand-alone example programs are included in `samples/`.
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in `samples/`.
 
 
 Using the tuners (optional)
@@ -254,6 +260,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Cedric Nugteren](http://www.cedricnugteren.nl)
 * [Anton Lokhmotov](https://github.com/psyhtest)
 * [Dragan Djuric](https://github.com/blueberry)
+* [Marco Hutter](https://github.com/gpus)
 * [Hugh Perkins](https://github.com/hughperkins)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:

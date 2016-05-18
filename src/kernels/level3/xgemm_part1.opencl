@@ -199,7 +199,7 @@ inline void GlobalToLocalA(const __global realM* restrict agm, __local realM* al
 
       // Computes the indices for the global memory
       int kg = kia + la1*KWA;
-      int idm = mg + get_group_id(0)*(MWG/VWM);
+      int idm = mg + GetGroupID0() * (MWG/VWM);
       int idk = kg + kwg;
 
       // Loads the data from global memory (not transposed) into the local memory
@@ -229,7 +229,7 @@ inline void GlobalToLocalB(const __global realN* restrict bgm, __local realN* bl
 
       // Computes the indices for the global memory
       int kg = kib + lb1*KWB;
-      int idn = ng + get_group_id(1)*(NWG/VWN);
+      int idn = ng + GetGroupID1() * (NWG/VWN);
       int idk = kg + kwg;
 
       // Loads the data from global memory (transposed) into the local memory
@@ -257,7 +257,7 @@ inline void GlobalToPrivateA(const __global realM* restrict agm, realM apm[MWI/V
     #endif
 
     // Computes the indices for the global memory
-    int idm = mg + get_group_id(0)*(MWG/VWM);
+    int idm = mg + GetGroupID0() * (MWG/VWM);
 
     // Loads the data from global memory (not transposed) and stores into registers
     apm[mi] = agm[idk*(kSizeM/VWM) + idm];
@@ -280,7 +280,7 @@ inline void GlobalToPrivateB(const __global realN* restrict bgm, realN bpm[NWI/V
     #endif
 
     // Computes the indices for the global memory
-    int idn = ng + get_group_id(1)*(NWG/VWN);
+    int idn = ng + GetGroupID1() * (NWG/VWN);
 
     // Loads the data from global memory (transposed) and stores into registers
     bpm[ni] = bgm[idk*(kSizeN/VWN) + idn];
