@@ -191,12 +191,13 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
 
       // Launches the kernel
       auto eventKernel = Event();
-      status = RunKernel(kernel, global, local, eventKernel.pointer(), eventWaitList);
+      auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
+      status = RunKernel(kernel, global, local, eventPointer, eventWaitList);
       if (ErrorIn(status)) { return status; }
-      eventWaitList.push_back(eventKernel);
 
       // Runs the post-processing kernel if needed
       if (!c_no_temp) {
+        eventWaitList.push_back(eventKernel);
         status = PadCopyTransposeMatrix(event_, eventWaitList,
                                         m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                         c_one, c_two, c_ld, c_offset, c_buffer,

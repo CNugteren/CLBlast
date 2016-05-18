@@ -35,22 +35,22 @@ test_names <- list(
 
 # Defines the test-cases
 test_values <- list(
-  list(c(256, 256, 1, 1, 1, 16, 256, num_runs, precision)),
-  list(c(256+1, 256+1, 1, 1, 1, 16, 256, num_runs, precision)),
-  list(c(2*kilo, 2*kilo, 1, 1, 1, 16, 1, num_runs, precision)),
-  list(c(256, 256, 1, 1, 0, 16, 256, num_runs, precision)),
-  list(c(256+1, 256+1, 1, 1, 0, 16, 256, num_runs, precision)),
+  list(c(256, 256, 1, 1, 102, 16, 256, num_runs, precision)),
+  list(c(256+1, 256+1, 1, 1, 102, 16, 256, num_runs, precision)),
+  list(c(2*kilo, 2*kilo, 1, 1, 102, 16, 1, num_runs, precision)),
+  list(c(256, 256, 1, 1, 101, 16, 256, num_runs, precision)),
+  list(c(256+1, 256+1, 1, 1, 101, 16, 256, num_runs, precision)),
   list(
-    c(2*kilo, 2*kilo, 1, 1, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 2, 1, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 4, 1, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 8, 1, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 1, 2, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 1, 4, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 1, 8, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 2, 2, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 4, 4, 1, 1, 0, num_runs, precision),
-    c(2*kilo, 2*kilo, 8, 8, 1, 1, 0, num_runs, precision)
+    c(2*kilo, 2*kilo, 1, 1, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 2, 1, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 4, 1, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 8, 1, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 1, 2, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 1, 4, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 1, 8, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 2, 2, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 4, 4, 102, 1, 0, num_runs, precision),
+    c(2*kilo, 2*kilo, 8, 8, 102, 1, 0, num_runs, precision)
   )
 )
 

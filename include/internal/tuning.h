@@ -50,14 +50,18 @@ void Tuner(int argc, char* argv[]) {
   // Tests validity of the given arguments
   C::TestValidArguments(args);
 
-  // Tests for validity of the precision
+  // Tests for validity of the precision and retrieves properties
+  auto isAMD = false;
+  auto isGPU = false;
   {
-    auto platform = Platform(args.platform_id);
-    auto device = Device(platform, args.device_id);
+    const auto platform = Platform(args.platform_id);
+    const auto device = Device(platform, args.device_id);
     if (!PrecisionSupported<T>(device)) {
       printf("* Unsupported precision, skipping this tuning run\n\n");
       return;
     }
+    isAMD = device.Vendor() == "AMD" || device.Vendor() == "Advanced Micro Devices, Inc.";
+    isGPU = device.Type() == "GPU";
   }
 
   // Creates input buffers with random data
@@ -86,8 +90,15 @@ void Tuner(int argc, char* argv[]) {
     tuner.UseRandomSearch(1.0/args.fraction);
   }
 
+  // Set extra settings for specific defines. This mimics src/routine.cc.
+  auto defines = std::string{""};
+  if (isAMD && isGPU) {
+    defines += "#define USE_CL_MAD 1\n";
+    defines += "#define USE_STAGGERED_INDICES 1\n";
+  }
+
   // Loads the kernel sources and defines the kernel to tune
-  auto sources = C::GetSources();
+  auto sources = defines + C::GetSources();
   auto id = tuner.AddKernelFromString(sources, C::KernelName(), C::GlobalSize(args), C::LocalSize());
   tuner.SetReferenceFromString(sources, C::KernelName(), C::GlobalSizeRef(args), C::LocalSizeRef());
 

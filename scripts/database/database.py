@@ -92,6 +92,7 @@ def ConcatenateData(df1, df2):
 def RemoveDuplicates(df):
 	return df.drop_duplicates()
 
+# database = database[(database["device"] != "AMD Radeon R9 M370X Compute Engine") | (database["kernel_family"] != "xgemm") | (database["precision"] != "32")]
 def RemoveEntriesByDevice(df, devicename):
 	return df[df["device"] != devicename]
 

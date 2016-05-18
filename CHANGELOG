@@ -2,6 +2,11 @@
 Development version (next release)
 - Added support for half-precision floating-point (fp16) routines
 
+Version 0.7.1
+- Improved performance of large power-of-2 xGEMM kernels for AMD GPUs
+- Fixed a bug in the xGEMM routine related to the event incorrectly set
+- Made MSVC link the run-time libraries statically
+
 Version 0.7.0
 - Added exports to be able to create a DLL on Windows (thanks to Marco Hutter)
 - Made the library thread-safe

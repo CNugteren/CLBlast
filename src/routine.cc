@@ -88,10 +88,19 @@ StatusCode Routine<T>::SetUp() {
   // Adds the name of the routine as a define
   defines += "#define ROUTINE_"+routine_name_+"\n";
 
+  // Determines whether this is a specific device
+  const auto isAMD = device_.Vendor() == "AMD" || device_.Vendor() == "Advanced Micro Devices, Inc.";
+  const auto isGPU = device_.Type() == "GPU";
+
   // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
   // performance, but might result in a reduced accuracy.
-  if (device_.Vendor() == "AMD") {
+  if (isAMD && isGPU) {
     defines += "#define USE_CL_MAD 1\n";
+  }
+
+  // For specific devices, use staggered/shuffled workgroup indices.
+  if (isAMD && isGPU) {
+    defines += "#define USE_STAGGERED_INDICES 1\n";
   }
 
   // Combines everything together into a single source string

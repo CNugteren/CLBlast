@@ -35,32 +35,32 @@ test_names <- list(
 
 # Defines the test-cases
 test_values <- list(
-  list(c( 128,  128, 1, 0, 0, 16, 128, num_runs, precision)),
-  list(c( 129,  129, 1, 0, 0, 16, 128, num_runs, precision)),
-  list(c( 512,  512, 1, 0, 0, 16, 1, num_runs, precision)),
-  list(c(2048, 2048, 1, 0, 0, 16, 1, num_runs, precision)),
+  list(c( 128,  128, 102, 111, 111, 16, 128, num_runs, precision)),
+  list(c( 129,  129, 102, 111, 111, 16, 128, num_runs, precision)),
+  list(c( 512,  512, 102, 111, 111, 16, 1, num_runs, precision)),
+  list(c(2048, 2048, 102, 111, 111, 16, 1, num_runs, precision)),
   list(
-    c(1024, 1024, 0, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 0, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 1, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 0, 1, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 1, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 1, 0, 1, 1, 0, num_runs, precision),
-    c(1024, 1024, 1, 1, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 1, 1, 1, 1, 0, num_runs, precision)
+    c(1024, 1024, 101, 111, 111, 1, 0, num_runs, precision),
+    c(1024, 1024, 101, 111, 112, 1, 0, num_runs, precision),
+    c(1024, 1024, 101, 112, 111, 1, 0, num_runs, precision),
+    c(1024, 1024, 101, 112, 112, 1, 0, num_runs, precision),
+    c(1024, 1024, 102, 111, 111, 1, 0, num_runs, precision),
+    c(1024, 1024, 102, 111, 112, 1, 0, num_runs, precision),
+    c(1024, 1024, 102, 112, 111, 1, 0, num_runs, precision),
+    c(1024, 1024, 102, 112, 112, 1, 0, num_runs, precision)
   ),
   list(
-    c(   8,    8, 1, 0, 0, 1, 0, num_runs, precision),
-    c(  16,   16, 1, 0, 0, 1, 0, num_runs, precision),
-    c(  32,   32, 1, 0, 0, 1, 0, num_runs, precision),
-    c(  64,   64, 1, 0, 0, 1, 0, num_runs, precision),
-    c( 128,  128, 1, 0, 0, 1, 0, num_runs, precision),
-    c( 256,  256, 1, 0, 0, 1, 0, num_runs, precision),
-    c( 512,  512, 1, 0, 0, 1, 0, num_runs, precision),
-    c(1024, 1024, 1, 0, 0, 1, 0, num_runs, precision),
-    c(2048, 2048, 1, 0, 0, 1, 0, num_runs, precision),
-    c(4096, 4096, 1, 0, 0, 1, 0, num_runs, precision),
-    c(8192, 8192, 1, 0, 0, 1, 0, num_runs, precision)
+    c(   8,    8, 102, 111, 111, 1, 0, num_runs, precision),
+    c(  16,   16, 102, 111, 111, 1, 0, num_runs, precision),
+    c(  32,   32, 102, 111, 111, 1, 0, num_runs, precision),
+    c(  64,   64, 102, 111, 111, 1, 0, num_runs, precision),
+    c( 128,  128, 102, 111, 111, 1, 0, num_runs, precision),
+    c( 256,  256, 102, 111, 111, 1, 0, num_runs, precision),
+    c( 512,  512, 102, 111, 111, 1, 0, num_runs, precision),
+    c(1024, 1024, 102, 111, 111, 1, 0, num_runs, precision),
+    c(2048, 2048, 102, 111, 111, 1, 0, num_runs, precision),
+    c(4096, 4096, 102, 111, 111, 1, 0, num_runs, precision),
+    c(8192, 8192, 102, 111, 111, 1, 0, num_runs, precision)
   )
 )
 
