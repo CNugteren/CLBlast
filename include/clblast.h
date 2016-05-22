@@ -220,7 +220,7 @@ StatusCode Min(const size_t n,
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
 
-// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
 template <typename T>
 StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n,
@@ -231,7 +231,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
+// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
 StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n, const size_t kl, const size_t ku,
@@ -275,7 +275,7 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric matrix-vector multiplication: SSYMV/DSYMV
+// Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 template <typename T>
 StatusCode Symv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -286,7 +286,7 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
+// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
 template <typename T>
 StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const size_t n, const size_t k,
@@ -297,7 +297,7 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
+// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
 StatusCode Spmv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -308,7 +308,7 @@ StatusCode Spmv(const Layout layout, const Triangle triangle,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
+// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
 StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,
@@ -316,7 +316,7 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
+// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
 StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n, const size_t k,
@@ -324,7 +324,7 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
+// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
 StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,

@@ -607,7 +607,7 @@ template StatusCode PUBLIC_API Min<half>(const size_t,
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
 
-// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
 template <typename T>
 StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n,
@@ -661,8 +661,16 @@ template StatusCode PUBLIC_API Gemv<double2>(const Layout, const Transpose,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Gemv<half>(const Layout, const Transpose,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
+// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
 StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n, const size_t kl, const size_t ku,
@@ -716,6 +724,14 @@ template StatusCode PUBLIC_API Gbmv<double2>(const Layout, const Transpose,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Gbmv<half>(const Layout, const Transpose,
+                                          const size_t, const size_t, const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -834,7 +850,7 @@ template StatusCode PUBLIC_API Hpmv<double2>(const Layout, const Triangle,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Symmetric matrix-vector multiplication: SSYMV/DSYMV
+// Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 template <typename T>
 StatusCode Symv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -872,8 +888,16 @@ template StatusCode PUBLIC_API Symv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Symv<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
+// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
 template <typename T>
 StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const size_t n, const size_t k,
@@ -911,8 +935,16 @@ template StatusCode PUBLIC_API Sbmv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sbmv<half>(const Layout, const Triangle,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
+// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
 StatusCode Spmv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -950,8 +982,16 @@ template StatusCode PUBLIC_API Spmv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spmv<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
+// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
 StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,
@@ -987,8 +1027,13 @@ template StatusCode PUBLIC_API Trmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
+// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
 StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n, const size_t k,
@@ -1024,8 +1069,13 @@ template StatusCode PUBLIC_API Tbmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Tbmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
+// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
 StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,
@@ -1061,6 +1111,11 @@ template StatusCode PUBLIC_API Tpmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Tpmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t,
+                                          const cl_mem, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>

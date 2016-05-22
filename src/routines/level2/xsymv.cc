@@ -57,6 +57,7 @@ StatusCode Xsymv<T>::DoSymv(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsymv<half>;
 template class Xsymv<float>;
 template class Xsymv<double>;
 

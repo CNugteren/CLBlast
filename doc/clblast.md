@@ -731,6 +731,14 @@ StatusCode CLBlastZgemv(const Layout layout, const Transpose a_transpose,
                         const cl_double2 beta,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHgemv(const Layout layout, const Transpose a_transpose,
+                        const size_t m, const size_t n,
+                        const cl_half alpha,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_half beta,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to GEMV:
@@ -805,6 +813,14 @@ StatusCode CLBlastZgbmv(const Layout layout, const Transpose a_transpose,
                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         const cl_double2 beta,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHgbmv(const Layout layout, const Transpose a_transpose,
+                        const size_t m, const size_t n, const size_t kl, const size_t ku,
+                        const cl_half alpha,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_half beta,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
 ```
@@ -1046,6 +1062,14 @@ StatusCode CLBlastDsymv(const Layout layout, const Triangle triangle,
                         const double beta,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHsymv(const Layout layout, const Triangle triangle,
+                        const size_t n,
+                        const cl_half alpha,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_half beta,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to SYMV:
@@ -1103,6 +1127,14 @@ StatusCode CLBlastDsbmv(const Layout layout, const Triangle triangle,
                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         const double beta,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHsbmv(const Layout layout, const Triangle triangle,
+                        const size_t n, const size_t k,
+                        const cl_half alpha,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_half beta,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
 ```
@@ -1165,6 +1197,14 @@ StatusCode CLBlastDspmv(const Layout layout, const Triangle triangle,
                         const double beta,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHspmv(const Layout layout, const Triangle triangle,
+                        const size_t n,
+                        const cl_half alpha,
+                        const cl_mem ap_buffer, const size_t ap_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        const cl_half beta,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to SPMV:
@@ -1220,6 +1260,11 @@ StatusCode CLBlastCtrmv(const Layout layout, const Triangle triangle, const Tran
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastZtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                        const size_t n,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                         const size_t n,
                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1281,6 +1326,11 @@ StatusCode CLBlastZtbmv(const Layout layout, const Triangle triangle, const Tran
                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                        const size_t n, const size_t k,
+                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to TBMV:
@@ -1335,6 +1385,11 @@ StatusCode CLBlastCtpmv(const Layout layout, const Triangle triangle, const Tran
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastZtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                        const size_t n,
+                        const cl_mem ap_buffer, const size_t ap_offset,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                         const size_t n,
                         const cl_mem ap_buffer, const size_t ap_offset,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,

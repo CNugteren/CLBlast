@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xgemv<half>::precision_ = Precision::kHalf;
 template <> const Precision Xgemv<float>::precision_ = Precision::kSingle;
 template <> const Precision Xgemv<double>::precision_ = Precision::kDouble;
 template <> const Precision Xgemv<float2>::precision_ = Precision::kComplexSingle;
@@ -179,6 +180,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xgemv<half>;
 template class Xgemv<float>;
 template class Xgemv<double>;
 template class Xgemv<float2>;

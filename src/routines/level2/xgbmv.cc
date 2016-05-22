@@ -58,6 +58,7 @@ StatusCode Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xgbmv<half>;
 template class Xgbmv<float>;
 template class Xgbmv<double>;
 template class Xgbmv<float2>;

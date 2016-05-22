@@ -57,6 +57,7 @@ StatusCode Xsbmv<T>::DoSbmv(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsbmv<half>;
 template class Xsbmv<float>;
 template class Xsbmv<double>;
 
