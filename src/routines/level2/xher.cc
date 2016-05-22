@@ -19,6 +19,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xher<half, half>::precision_ = Precision::kHalf;
 template <> const Precision Xher<float, float>::precision_ = Precision::kSingle;
 template <> const Precision Xher<double, double>::precision_ = Precision::kDouble;
 template <> const Precision Xher<float2, float>::precision_ = Precision::kComplexSingle;
@@ -43,6 +44,7 @@ template <> float2 Xher<float2,float>::GetAlpha(const float alpha) { return floa
 template <> double2 Xher<double2,double>::GetAlpha(const double alpha) { return double2{alpha, 0.0}; }
 template <> float Xher<float,float>::GetAlpha(const float alpha) { return alpha; }
 template <> double Xher<double,double>::GetAlpha(const double alpha) { return alpha; }
+template <> half Xher<half,half>::GetAlpha(const half alpha) { return alpha; }
 
 // =================================================================================================
 
@@ -114,6 +116,7 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xher<half, half>;
 template class Xher<float, float>;
 template class Xher<double, double>;
 template class Xher<float2, float>;

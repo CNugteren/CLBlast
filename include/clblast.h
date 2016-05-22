@@ -356,7 +356,7 @@ StatusCode Tpsv(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// General rank-1 matrix update: SGER/DGER
+// General rank-1 matrix update: SGER/DGER/HGER
 template <typename T>
 StatusCode Ger(const Layout layout,
                const size_t m, const size_t n,
@@ -424,7 +424,7 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle,
                 cl_mem ap_buffer, const size_t ap_offset,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric rank-1 matrix update: SSYR/DSYR
+// Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 template <typename T>
 StatusCode Syr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -433,7 +433,7 @@ StatusCode Syr(const Layout layout, const Triangle triangle,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric packed rank-1 matrix update: SSPR/DSPR
+// Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 template <typename T>
 StatusCode Spr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -442,7 +442,7 @@ StatusCode Spr(const Layout layout, const Triangle triangle,
                cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric rank-2 matrix update: SSYR2/DSYR2
+// Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 template <typename T>
 StatusCode Syr2(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -452,7 +452,7 @@ StatusCode Syr2(const Layout layout, const Triangle triangle,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 template <typename T>
 StatusCode Spr2(const Layout layout, const Triangle triangle,
                 const size_t n,

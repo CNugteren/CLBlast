@@ -781,7 +781,7 @@ StatusCode PUBLIC_API CLBlastZtpsv(const Layout layout, const Triangle triangle,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// General rank-1 matrix update: SGER/DGER
+// General rank-1 matrix update: SGER/DGER/HGER
 StatusCode PUBLIC_API CLBlastSger(const Layout layout,
                                   const size_t m, const size_t n,
                                   const float alpha,
@@ -792,6 +792,13 @@ StatusCode PUBLIC_API CLBlastSger(const Layout layout,
 StatusCode PUBLIC_API CLBlastDger(const Layout layout,
                                   const size_t m, const size_t n,
                                   const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHger(const Layout layout,
+                                  const size_t m, const size_t n,
+                                  const cl_half alpha,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -889,7 +896,7 @@ StatusCode PUBLIC_API CLBlastZhpr2(const Layout layout, const Triangle triangle,
                                    cl_mem ap_buffer, const size_t ap_offset,
                                    cl_command_queue* queue, cl_event* event);
 
-// Symmetric rank-1 matrix update: SSYR/DSYR
+// Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 StatusCode PUBLIC_API CLBlastSsyr(const Layout layout, const Triangle triangle,
                                   const size_t n,
                                   const float alpha,
@@ -902,8 +909,14 @@ StatusCode PUBLIC_API CLBlastDsyr(const Layout layout, const Triangle triangle,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const cl_half alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Symmetric packed rank-1 matrix update: SSPR/DSPR
+// Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 StatusCode PUBLIC_API CLBlastSspr(const Layout layout, const Triangle triangle,
                                   const size_t n,
                                   const float alpha,
@@ -916,8 +929,14 @@ StatusCode PUBLIC_API CLBlastDspr(const Layout layout, const Triangle triangle,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_mem ap_buffer, const size_t ap_offset,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHspr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const cl_half alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Symmetric rank-2 matrix update: SSYR2/DSYR2
+// Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 StatusCode PUBLIC_API CLBlastSsyr2(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -932,8 +951,15 @@ StatusCode PUBLIC_API CLBlastDsyr2(const Layout layout, const Triangle triangle,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 StatusCode PUBLIC_API CLBlastSspr2(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -944,6 +970,13 @@ StatusCode PUBLIC_API CLBlastSspr2(const Layout layout, const Triangle triangle,
 StatusCode PUBLIC_API CLBlastDspr2(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const double alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHspr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_mem ap_buffer, const size_t ap_offset,

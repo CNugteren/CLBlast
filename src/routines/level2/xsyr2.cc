@@ -45,6 +45,7 @@ StatusCode Xsyr2<T>::DoSyr2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsyr2<half>;
 template class Xsyr2<float>;
 template class Xsyr2<double>;
 

@@ -1207,7 +1207,7 @@ template StatusCode PUBLIC_API Tpsv<double2>(const Layout, const Triangle, const
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// General rank-1 matrix update: SGER/DGER
+// General rank-1 matrix update: SGER/DGER/HGER
 template <typename T>
 StatusCode Ger(const Layout layout,
                const size_t m, const size_t n,
@@ -1241,6 +1241,13 @@ template StatusCode PUBLIC_API Ger<double>(const Layout,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Ger<half>(const Layout,
+                                         const size_t, const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
@@ -1444,7 +1451,7 @@ template StatusCode PUBLIC_API Hpr2<double2>(const Layout, const Triangle,
                                              cl_mem, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Symmetric rank-1 matrix update: SSYR/DSYR
+// Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 template <typename T>
 StatusCode Syr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -1474,8 +1481,14 @@ template StatusCode PUBLIC_API Syr<double>(const Layout, const Triangle,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syr<half>(const Layout, const Triangle,
+                                         const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Symmetric packed rank-1 matrix update: SSPR/DSPR
+// Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 template <typename T>
 StatusCode Spr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -1505,8 +1518,14 @@ template StatusCode PUBLIC_API Spr<double>(const Layout, const Triangle,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr<half>(const Layout, const Triangle,
+                                         const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Symmetric rank-2 matrix update: SSYR2/DSYR2
+// Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 template <typename T>
 StatusCode Syr2(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -1540,8 +1559,15 @@ template StatusCode PUBLIC_API Syr2<double>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syr2<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 template <typename T>
 StatusCode Spr2(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -1575,6 +1601,13 @@ template StatusCode PUBLIC_API Spr2<double>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr2<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
