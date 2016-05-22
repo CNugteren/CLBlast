@@ -18,13 +18,13 @@ const Database::DatabaseEntry Database::XaxpyHalf = {
   "Xaxpy", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",8}, {"WGS",512}, {"WPT",1} } },
-        { "default",                                         { {"VW",8}, {"WGS",512}, {"WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",4}, {"WGS",512}, {"WPT",8} } },
+        { "default",                                         { {"VW",4}, {"WGS",512}, {"WPT",8} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",8}, {"WGS",512}, {"WPT",1} } },
+        { "default",                                         { {"VW",4}, {"WGS",512}, {"WPT",8} } },
       }
     },
   }

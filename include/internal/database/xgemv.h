@@ -18,13 +18,13 @@ const Database::DatabaseEntry Database::XgemvHalf = {
   "Xgemv", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WPT1",1}, {"VW2",2}, {"WGS2",128}, {"WPT2",2}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1}, {"VW2",2}, {"WGS2",128}, {"WPT2",2}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1}, {"VW2",2}, {"WGS2",128}, {"WPT2",2}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
   }
