@@ -30,7 +30,7 @@ namespace clblast {
 // Initializes the database
 const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpyHalf, XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
-  XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
+  XdotHalf, XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
   XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
