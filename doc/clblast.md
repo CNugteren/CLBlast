@@ -34,6 +34,10 @@ StatusCode CLBlastZswap(const size_t n,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHswap(const size_t n,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to SWAP:
@@ -82,6 +86,10 @@ StatusCode CLBlastZscal(const size_t n,
                         const cl_double2 alpha,
                         cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHscal(const size_t n,
+                        const cl_half alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to SCAL:
@@ -125,6 +133,10 @@ StatusCode CLBlastCcopy(const size_t n,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastZcopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHcopy(const size_t n,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                         cl_command_queue* queue, cl_event* event)
@@ -226,6 +238,11 @@ StatusCode CLBlastSdot(const size_t n,
                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                        cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastDdot(const size_t n,
+                       cl_mem dot_buffer, const size_t dot_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHdot(const size_t n,
                        cl_mem dot_buffer, const size_t dot_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -376,6 +393,10 @@ StatusCode CLBlastDznrm2(const size_t n,
                         cl_mem nrm2_buffer, const size_t nrm2_offset,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHnrm2(const size_t n,
+                        cl_mem nrm2_buffer, const size_t nrm2_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to NRM2:
@@ -422,6 +443,10 @@ StatusCode CLBlastScasum(const size_t n,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastDzasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHasum(const size_t n,
                         cl_mem asum_buffer, const size_t asum_offset,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
@@ -474,6 +499,10 @@ StatusCode CLBlastDzsum(const size_t n,
                        cl_mem sum_buffer, const size_t sum_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHsum(const size_t n,
+                       cl_mem sum_buffer, const size_t sum_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to SUM:
@@ -520,6 +549,10 @@ StatusCode CLBlastiCamax(const size_t n,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastiZamax(const size_t n,
+                        cl_mem imax_buffer, const size_t imax_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastiHamax(const size_t n,
                         cl_mem imax_buffer, const size_t imax_offset,
                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                         cl_command_queue* queue, cl_event* event)
@@ -572,6 +605,10 @@ StatusCode CLBlastiZmax(const size_t n,
                        cl_mem imax_buffer, const size_t imax_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastiHmax(const size_t n,
+                       cl_mem imax_buffer, const size_t imax_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to MAX:
@@ -618,6 +655,10 @@ StatusCode CLBlastiCmin(const size_t n,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event)
 StatusCode CLBlastiZmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastiHmin(const size_t n,
                        cl_mem imin_buffer, const size_t imin_offset,
                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                        cl_command_queue* queue, cl_event* event)

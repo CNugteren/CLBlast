@@ -148,7 +148,7 @@ StatusCode PUBLIC_API CLBlastDrotm(const size_t n,
                                    cl_mem sparam_buffer, const size_t sparam_offset,
                                    cl_command_queue* queue, cl_event* event);
 
-// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 StatusCode PUBLIC_API CLBlastSswap(const size_t n,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -165,8 +165,12 @@ StatusCode PUBLIC_API CLBlastZswap(const size_t n,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 StatusCode PUBLIC_API CLBlastSscal(const size_t n,
                                    const float alpha,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -183,8 +187,12 @@ StatusCode PUBLIC_API CLBlastZscal(const size_t n,
                                    const cl_double2 alpha,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHscal(const size_t n,
+                                   const cl_half alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 StatusCode PUBLIC_API CLBlastScopy(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -198,6 +206,10 @@ StatusCode PUBLIC_API CLBlastCcopy(const size_t n,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastZcopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHcopy(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
@@ -229,13 +241,18 @@ StatusCode PUBLIC_API CLBlastHaxpy(const size_t n,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Dot product of two vectors: SDOT/DDOT
+// Dot product of two vectors: SDOT/DDOT/HDOT
 StatusCode PUBLIC_API CLBlastSdot(const size_t n,
                                   cl_mem dot_buffer, const size_t dot_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                   cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastDdot(const size_t n,
+                                  cl_mem dot_buffer, const size_t dot_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHdot(const size_t n,
                                   cl_mem dot_buffer, const size_t dot_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -265,7 +282,7 @@ StatusCode PUBLIC_API CLBlastZdotc(const size_t n,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 StatusCode PUBLIC_API CLBlastSnrm2(const size_t n,
                                    cl_mem nrm2_buffer, const size_t nrm2_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -282,8 +299,12 @@ StatusCode PUBLIC_API CLBlastDznrm2(const size_t n,
                                    cl_mem nrm2_buffer, const size_t nrm2_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHnrm2(const size_t n,
+                                   cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 StatusCode PUBLIC_API CLBlastSasum(const size_t n,
                                    cl_mem asum_buffer, const size_t asum_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -300,8 +321,12 @@ StatusCode PUBLIC_API CLBlastDzasum(const size_t n,
                                    cl_mem asum_buffer, const size_t asum_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 StatusCode PUBLIC_API CLBlastSsum(const size_t n,
                                   cl_mem sum_buffer, const size_t sum_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -318,8 +343,12 @@ StatusCode PUBLIC_API CLBlastDzsum(const size_t n,
                                   cl_mem sum_buffer, const size_t sum_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsum(const size_t n,
+                                  cl_mem sum_buffer, const size_t sum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 StatusCode PUBLIC_API CLBlastiSamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -336,8 +365,12 @@ StatusCode PUBLIC_API CLBlastiZamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 StatusCode PUBLIC_API CLBlastiSmax(const size_t n,
                                   cl_mem imax_buffer, const size_t imax_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -354,8 +387,12 @@ StatusCode PUBLIC_API CLBlastiZmax(const size_t n,
                                   cl_mem imax_buffer, const size_t imax_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 StatusCode PUBLIC_API CLBlastiSmin(const size_t n,
                                   cl_mem imin_buffer, const size_t imin_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -369,6 +406,10 @@ StatusCode PUBLIC_API CLBlastiCmin(const size_t n,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastiZmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHmin(const size_t n,
                                   cl_mem imin_buffer, const size_t imin_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);

@@ -121,21 +121,21 @@ StatusCode Rotm(const size_t n,
                 cl_mem sparam_buffer, const size_t sparam_offset,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
 StatusCode Swap(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 template <typename T>
 StatusCode Scal(const size_t n,
                 const T alpha,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 template <typename T>
 StatusCode Copy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -150,7 +150,7 @@ StatusCode Axpy(const size_t n,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Dot product of two vectors: SDOT/DDOT
+// Dot product of two vectors: SDOT/DDOT/HDOT
 template <typename T>
 StatusCode Dot(const size_t n,
                cl_mem dot_buffer, const size_t dot_offset,
@@ -174,42 +174,42 @@ StatusCode Dotc(const size_t n,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 template <typename T>
 StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 template <typename T>
 StatusCode Asum(const size_t n,
                 cl_mem asum_buffer, const size_t asum_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 template <typename T>
 StatusCode Sum(const size_t n,
                cl_mem sum_buffer, const size_t sum_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_command_queue* queue, cl_event* event = nullptr);
 
-// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
 StatusCode Max(const size_t n,
                cl_mem imax_buffer, const size_t imax_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_command_queue* queue, cl_event* event = nullptr);
 
-// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 template <typename T>
 StatusCode Min(const size_t n,
                cl_mem imin_buffer, const size_t imin_offset,

@@ -160,7 +160,7 @@ template StatusCode PUBLIC_API Rotm<double>(const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
-// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
 StatusCode Swap(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -190,8 +190,12 @@ template StatusCode PUBLIC_API Swap<double2>(const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Swap<half>(const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 template <typename T>
 StatusCode Scal(const size_t n,
                 const T alpha,
@@ -221,8 +225,12 @@ template StatusCode PUBLIC_API Scal<double2>(const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<half>(const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 template <typename T>
 StatusCode Copy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -252,6 +260,10 @@ template StatusCode PUBLIC_API Copy<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Copy<half>(const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
@@ -295,7 +307,7 @@ template StatusCode PUBLIC_API Axpy<half>(const size_t,
                                           cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
 
-// Dot product of two vectors: SDOT/DDOT
+// Dot product of two vectors: SDOT/DDOT/HDOT
 template <typename T>
 StatusCode Dot(const size_t n,
                cl_mem dot_buffer, const size_t dot_offset,
@@ -321,6 +333,11 @@ template StatusCode PUBLIC_API Dot<double>(const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dot<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
 template <typename T>
@@ -376,7 +393,7 @@ template StatusCode PUBLIC_API Dotc<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 template <typename T>
 StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,
@@ -406,8 +423,12 @@ template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 template <typename T>
 StatusCode Asum(const size_t n,
                 cl_mem asum_buffer, const size_t asum_offset,
@@ -437,8 +458,12 @@ template StatusCode PUBLIC_API Asum<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 template <typename T>
 StatusCode Sum(const size_t n,
                cl_mem sum_buffer, const size_t sum_offset,
@@ -468,8 +493,12 @@ template StatusCode PUBLIC_API Sum<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
@@ -499,8 +528,12 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
 StatusCode Max(const size_t n,
                cl_mem imax_buffer, const size_t imax_offset,
@@ -530,8 +563,12 @@ template StatusCode PUBLIC_API Max<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 template <typename T>
 StatusCode Min(const size_t n,
                cl_mem imin_buffer, const size_t imin_offset,
@@ -561,6 +598,10 @@ template StatusCode PUBLIC_API Min<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines

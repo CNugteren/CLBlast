@@ -374,7 +374,7 @@ void cblasXasum(const size_t n,
                                             reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 
-// Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 void cblasXamax(const size_t n,
                 std::vector<float>& imax_buffer, const size_t imax_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {

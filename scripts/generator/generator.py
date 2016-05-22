@@ -42,6 +42,7 @@ Z = DataType("Z", "Z", DBL2, [DBL2, DBL2, D2CL, D2CL], DBL2) # double-complex (6
 # Special cases
 Sc = DataType("C", "Sc", FLT2,         [FLT2, FLT2, FLT2, FLT2], FLT2) # As C, but with real output
 Dz = DataType("Z", "Dz", DBL2,         [DBL2, DBL2, DBL2, DBL2], DBL2) # As Z, but with real output
+iH = DataType("H", "iH", HLF,          [HLF,  HLF,  HLF,  HLF],  HLF ) # As H, but with integer output
 iS = DataType("S", "iS", FLT,          [FLT,  FLT,  FLT,  FLT],  FLT ) # As S, but with integer output
 iD = DataType("D", "iD", DBL,          [DBL,  DBL,  DBL,  DBL],  DBL ) # As D, but with integer output
 iC = DataType("C", "iC", FLT2,         [FLT2, FLT2, F2CL, F2CL], FLT2) # As C, but with integer output
@@ -61,23 +62,23 @@ TU = DataType("TU", "typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") 
 # Populates a list of routines
 routines = [
 [ # Level 1: vector-vector
-  Routine(False, True,  "1", "rotg",  T,  [S,D],     [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation", "", []),
-  Routine(False, True,  "1", "rotmg", T,  [S,D],     [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation", "", []),
-  Routine(False, True,  "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation", "", []),
-  Routine(False, True,  "1", "rotm",  T,  [S,D],     ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation", "", []),
-  Routine(True,  True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], "", "Swap two vectors", "Interchanges the contents of vectors x and y.", []),
-  Routine(True,  True,  "1", "scal",  T,  [S,D,C,Z], ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling", "Multiplies all elements of vector x by a scalar constant alpha.", []),
-  Routine(True,  True,  "1", "copy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], [], "", "Vector copy", "Copies the contents of vector x into vector y.", []),
-  Routine(True,  True,  "1", "axpy",  T,  [S,D,C,Z,H], ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector", "Performs the operation y = alpha * x + y, in which x and y are vectors and alpha is a scalar constant.", []),
-  Routine(True,  True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors", "Multiplies the vectors x and y element-wise and accumulates the results. The sum is stored in the dot buffer.", []),
-  Routine(True,  True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors", "See the regular xDOT routine.", []),
-  Routine(True,  True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated", "See the regular xDOT routine.", []),
-  Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector", "Accumulates the square of each element in the x vector and takes the square root. The resulting L2 norm is stored in the nrm2 buffer.", []),
-  Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector", "Accumulates the absolute value of each element in the x vector. The results are stored in the asum buffer.", []),
-  Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)", "Accumulates the values of each element in the x vector. The results are stored in the sum buffer. This routine is the non-absolute version of the xASUM BLAS routine.", []),
-  Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector", "Finds the index of the maximum of the absolute values in the x vector. The resulting integer index is stored in the imax buffer.", []),
-  Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)", "Finds the index of the maximum of the values in the x vector. The resulting integer index is stored in the imax buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.", []),
-  Routine(True,  False, "1", "min",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imin"], [], "2*n", "Index of minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the values in the x vector. The resulting integer index is stored in the imin buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.", []),
+  Routine(False, True,  "1", "rotg",  T, [S,D],            [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation", "", []),
+  Routine(False, True,  "1", "rotmg", T, [S,D],            [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation", "", []),
+  Routine(False, True,  "1", "rot",   T, [S,D],            ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation", "", []),
+  Routine(False, True,  "1", "rotm",  T, [S,D],            ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation", "", []),
+  Routine(True,  True,  "1", "swap",  T, [S,D,C,Z,H],      ["n"], [], [], ["x","y"], [], "", "Swap two vectors", "Interchanges the contents of vectors x and y.", []),
+  Routine(True,  True,  "1", "scal",  T, [S,D,C,Z,H],      ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling", "Multiplies all elements of vector x by a scalar constant alpha.", []),
+  Routine(True,  True,  "1", "copy",  T, [S,D,C,Z,H],      ["n"], [], ["x"], ["y"], [], "", "Vector copy", "Copies the contents of vector x into vector y.", []),
+  Routine(True,  True,  "1", "axpy",  T, [S,D,C,Z,H],      ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector", "Performs the operation y = alpha * x + y, in which x and y are vectors and alpha is a scalar constant.", []),
+  Routine(True,  True,  "1", "dot",   T, [S,D,H],          ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors", "Multiplies the vectors x and y element-wise and accumulates the results. The sum is stored in the dot buffer.", []),
+  Routine(True,  True,  "1", "dotu",  T, [C,Z],            ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors", "See the regular xDOT routine.", []),
+  Routine(True,  True,  "1", "dotc",  T, [C,Z],            ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated", "See the regular xDOT routine.", []),
+  Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector", "Accumulates the square of each element in the x vector and takes the square root. The resulting L2 norm is stored in the nrm2 buffer.", []),
+  Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector", "Accumulates the absolute value of each element in the x vector. The results are stored in the asum buffer.", []),
+  Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)", "Accumulates the values of each element in the x vector. The results are stored in the sum buffer. This routine is the non-absolute version of the xASUM BLAS routine.", []),
+  Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector", "Finds the index of the maximum of the absolute values in the x vector. The resulting integer index is stored in the imax buffer.", []),
+  Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)", "Finds the index of the maximum of the values in the x vector. The resulting integer index is stored in the imax buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.", []),
+  Routine(True,  False, "1", "min",   T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imin"], [], "2*n", "Index of minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the values in the x vector. The resulting integer index is stored in the imin buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.", []),
 ],
 [ # Level 2: matrix-vector
   Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication", "Performs the operation y = alpha * A * x + beta * y, in which x is an input vector, y is an input and output vector, A is an input matrix, and alpha and beta are scalars. The matrix A can optionally be transposed before performing the operation.", []),

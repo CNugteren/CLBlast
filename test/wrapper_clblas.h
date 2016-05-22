@@ -633,7 +633,7 @@ clblasStatus clblasXasum<double2>(const size_t n,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
 
-// Forwards the clBLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Forwards the clBLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 clblasStatus clblasXamax(const size_t n,
                          cl_mem imax_buffer, const size_t imax_offset,

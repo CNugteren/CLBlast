@@ -178,6 +178,16 @@ StatusCode CLBlastZswap(const size_t n,
                                        queue, event);
   return static_cast<StatusCode>(status);
 }
+StatusCode CLBlastHswap(const size_t n,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Swap<half>(n,
+                                    x_buffer, x_offset, x_inc,
+                                    y_buffer, y_offset, y_inc,
+                                    queue, event);
+  return static_cast<StatusCode>(status);
+}
 
 // SCAL
 StatusCode CLBlastSscal(const size_t n,
@@ -216,6 +226,16 @@ StatusCode CLBlastZscal(const size_t n,
                         cl_command_queue* queue, cl_event* event) {
   auto status = clblast::Scal(n,
                               double2{alpha.s[0], alpha.s[1]},
+                              x_buffer, x_offset, x_inc,
+                              queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastHscal(const size_t n,
+                        const cl_half alpha,
+                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Scal(n,
+                              alpha,
                               x_buffer, x_offset, x_inc,
                               queue, event);
   return static_cast<StatusCode>(status);
@@ -260,6 +280,16 @@ StatusCode CLBlastZcopy(const size_t n,
                                        x_buffer, x_offset, x_inc,
                                        y_buffer, y_offset, y_inc,
                                        queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastHcopy(const size_t n,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Copy<half>(n,
+                                    x_buffer, x_offset, x_inc,
+                                    y_buffer, y_offset, y_inc,
+                                    queue, event);
   return static_cast<StatusCode>(status);
 }
 
@@ -348,6 +378,18 @@ StatusCode CLBlastDdot(const size_t n,
                                      x_buffer, x_offset, x_inc,
                                      y_buffer, y_offset, y_inc,
                                      queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastHdot(const size_t n,
+                       cl_mem dot_buffer, const size_t dot_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Dot<half>(n,
+                                   dot_buffer, dot_offset,
+                                   x_buffer, x_offset, x_inc,
+                                   y_buffer, y_offset, y_inc,
+                                   queue, event);
   return static_cast<StatusCode>(status);
 }
 
@@ -444,6 +486,16 @@ StatusCode CLBlastDznrm2(const size_t n,
                                        queue, event);
   return static_cast<StatusCode>(status);
 }
+StatusCode CLBlastHnrm2(const size_t n,
+                        cl_mem nrm2_buffer, const size_t nrm2_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Nrm2<half>(n,
+                                    nrm2_buffer, nrm2_offset,
+                                    x_buffer, x_offset, x_inc,
+                                    queue, event);
+  return static_cast<StatusCode>(status);
+}
 
 // ASUM
 StatusCode CLBlastSasum(const size_t n,
@@ -484,6 +536,16 @@ StatusCode CLBlastDzasum(const size_t n,
                                        asum_buffer, asum_offset,
                                        x_buffer, x_offset, x_inc,
                                        queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastHasum(const size_t n,
+                        cl_mem asum_buffer, const size_t asum_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Asum<half>(n,
+                                    asum_buffer, asum_offset,
+                                    x_buffer, x_offset, x_inc,
+                                    queue, event);
   return static_cast<StatusCode>(status);
 }
 
@@ -528,6 +590,16 @@ StatusCode CLBlastDzsum(const size_t n,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
+StatusCode CLBlastHsum(const size_t n,
+                       cl_mem sum_buffer, const size_t sum_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Sum<half>(n,
+                                   sum_buffer, sum_offset,
+                                   x_buffer, x_offset, x_inc,
+                                   queue, event);
+  return static_cast<StatusCode>(status);
+}
 
 // AMAX
 StatusCode CLBlastiSamax(const size_t n,
@@ -568,6 +640,16 @@ StatusCode CLBlastiZamax(const size_t n,
                                        imax_buffer, imax_offset,
                                        x_buffer, x_offset, x_inc,
                                        queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastiHamax(const size_t n,
+                        cl_mem imax_buffer, const size_t imax_offset,
+                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                        cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Amax<half>(n,
+                                    imax_buffer, imax_offset,
+                                    x_buffer, x_offset, x_inc,
+                                    queue, event);
   return static_cast<StatusCode>(status);
 }
 
@@ -612,6 +694,16 @@ StatusCode CLBlastiZmax(const size_t n,
                                       queue, event);
   return static_cast<StatusCode>(status);
 }
+StatusCode CLBlastiHmax(const size_t n,
+                       cl_mem imax_buffer, const size_t imax_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Max<half>(n,
+                                   imax_buffer, imax_offset,
+                                   x_buffer, x_offset, x_inc,
+                                   queue, event);
+  return static_cast<StatusCode>(status);
+}
 
 // MIN
 StatusCode CLBlastiSmin(const size_t n,
@@ -652,6 +744,16 @@ StatusCode CLBlastiZmin(const size_t n,
                                       imin_buffer, imin_offset,
                                       x_buffer, x_offset, x_inc,
                                       queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastiHmin(const size_t n,
+                       cl_mem imin_buffer, const size_t imin_offset,
+                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                       cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Min<half>(n,
+                                   imin_buffer, imin_offset,
+                                   x_buffer, x_offset, x_inc,
+                                   queue, event);
   return static_cast<StatusCode>(status);
 }
 
