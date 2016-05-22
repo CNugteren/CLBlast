@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xamax<half>::precision_ = Precision::kHalf;
 template <> const Precision Xamax<float>::precision_ = Precision::kSingle;
 template <> const Precision Xamax<double>::precision_ = Precision::kDouble;
 template <> const Precision Xamax<float2>::precision_ = Precision::kComplexSingle;
@@ -103,6 +104,7 @@ StatusCode Xamax<T>::DoAmax(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xamax<half>;
 template class Xamax<float>;
 template class Xamax<double>;
 template class Xamax<float2>;

@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xasum<half>::precision_ = Precision::kHalf;
 template <> const Precision Xasum<float>::precision_ = Precision::kSingle;
 template <> const Precision Xasum<double>::precision_ = Precision::kDouble;
 template <> const Precision Xasum<float2>::precision_ = Precision::kComplexSingle;
@@ -100,6 +101,7 @@ StatusCode Xasum<T>::DoAsum(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xasum<half>;
 template class Xasum<float>;
 template class Xasum<double>;
 template class Xasum<float2>;

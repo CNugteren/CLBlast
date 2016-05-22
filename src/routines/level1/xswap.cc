@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xswap<half>::precision_ = Precision::kHalf;
 template <> const Precision Xswap<float>::precision_ = Precision::kSingle;
 template <> const Precision Xswap<double>::precision_ = Precision::kDouble;
 template <> const Precision Xswap<float2>::precision_ = Precision::kComplexSingle;
@@ -105,6 +106,7 @@ StatusCode Xswap<T>::DoSwap(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xswap<half>;
 template class Xswap<float>;
 template class Xswap<double>;
 template class Xswap<float2>;
