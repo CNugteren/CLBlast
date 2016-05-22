@@ -63,9 +63,6 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
                          (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   const auto is_rowmajor = (layout == Layout::kRowMajor);
 
-  // Creates a matching version of alpha
-  const auto matching_alpha = GetAlpha(alpha);
-
   // Tests the matrix and the vectors for validity
   auto status = StatusCode::kSuccess;
   if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
@@ -77,14 +74,21 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
   // If alpha is zero an update is not required
   if (alpha == U{0}) { return StatusCode::kSuccess; }
 
-  // Retrieves the Xgemv kernel from the compiled binary
+  // Creates a matching version of alpha
+  const auto matching_alpha = GetAlpha(alpha);
+
+  // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
+  auto alpha_buffer = Buffer<T>(context_, 1);
+  alpha_buffer.Write(queue_, 1, &matching_alpha);
+
+  // Retrieves the kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xher");
 
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, matching_alpha);
+    kernel.SetArgument(1, alpha_buffer());
     kernel.SetArgument(2, x_buffer());
     kernel.SetArgument(3, static_cast<int>(x_offset));
     kernel.SetArgument(4, static_cast<int>(x_inc));
