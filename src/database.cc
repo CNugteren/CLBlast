@@ -31,7 +31,7 @@ namespace clblast {
 const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpyHalf, XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
   XdotHalf, XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
-  XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
+  XgemvHalf, XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
   XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,

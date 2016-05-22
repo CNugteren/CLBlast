@@ -14,6 +14,24 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::XgemvHalf = {
+  "Xgemv", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+      }
+    },
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",64}, {"WPT2",2}, {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::XgemvSingle = {
   "Xgemv", Precision::kSingle, {
     { // AMD GPUs
