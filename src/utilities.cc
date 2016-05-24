@@ -79,7 +79,6 @@ std::string ToString(T value) {
 }
 template std::string ToString<int>(int value);
 template std::string ToString<size_t>(size_t value);
-template std::string ToString<half>(half value);
 template std::string ToString<float>(float value);
 template std::string ToString<double>(double value);
 
@@ -97,6 +96,12 @@ std::string ToString(double2 value) {
   real << std::setprecision(2) << value.real();
   imag << std::setprecision(2) << value.imag();
   return real.str()+"+"+imag.str()+"i";
+}
+
+// If not possible directly: special case for half-precision
+template <>
+std::string ToString(half value) {
+  return std::to_string(HalfToFloat(value));
 }
 
 // If not possible directly: special cases for CLBlast data-types
@@ -157,7 +162,7 @@ T ConvertArgument(const char* value) {
   return static_cast<T>(std::stoi(value));
 }
 template <> half ConvertArgument(const char* value) {
-  return static_cast<half>(std::stod(value));
+  return FloatToHalf(static_cast<float>(std::stod(value)));
 }
 template <> float ConvertArgument(const char* value) {
   return static_cast<float>(std::stod(value));
@@ -285,11 +290,11 @@ void PopulateVector(std::vector<double2> &vector) {
 // Specialized versions of the above for half-precision
 template <>
 void PopulateVector(std::vector<half> &vector) {
-  auto lower_limit = static_cast<float>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<float>(kTestDataUpperLimit);
+  const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
+  const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
   std::mt19937 mt(GetRandomSeed());
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element = static_cast<half>(dist(mt)); }
+  for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
 }
 
 // =================================================================================================

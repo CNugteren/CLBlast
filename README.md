@@ -200,7 +200,7 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | IxAMAX   | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 | Level-2  | S | D | C | Z | H |
-| ---------|---|---|---|---| --|
+| ---------|---|---|---|---|---|
 | xGEMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xGBMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xHEMV    | - | - | ✔ | ✔ | - |
