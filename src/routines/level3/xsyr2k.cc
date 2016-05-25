@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xsyr2k<half>::precision_ = Precision::kHalf;
 template <> const Precision Xsyr2k<float>::precision_ = Precision::kSingle;
 template <> const Precision Xsyr2k<double>::precision_ = Precision::kDouble;
 template <> const Precision Xsyr2k<float2>::precision_ = Precision::kComplexSingle;
@@ -203,6 +204,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsyr2k<half>;
 template class Xsyr2k<float>;
 template class Xsyr2k<double>;
 template class Xsyr2k<float2>;

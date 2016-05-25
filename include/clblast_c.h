@@ -986,7 +986,7 @@ StatusCode PUBLIC_API CLBlastHspr2(const Layout layout, const Triangle triangle,
 // BLAS level-3 (matrix-matrix) routines
 // =================================================================================================
 
-// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
+// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
 StatusCode PUBLIC_API CLBlastSgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                                    const size_t m, const size_t n, const size_t k,
                                    const float alpha,
@@ -1019,8 +1019,16 @@ StatusCode PUBLIC_API CLBlastZgemm(const Layout layout, const Transpose a_transp
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM
+// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 StatusCode PUBLIC_API CLBlastSsymm(const Layout layout, const Side side, const Triangle triangle,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -1053,6 +1061,14 @@ StatusCode PUBLIC_API CLBlastZsymm(const Layout layout, const Side side, const T
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
 // Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
 StatusCode PUBLIC_API CLBlastChemm(const Layout layout, const Side side, const Triangle triangle,
@@ -1072,7 +1088,7 @@ StatusCode PUBLIC_API CLBlastZhemm(const Layout layout, const Side side, const T
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
 
-// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
+// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 StatusCode PUBLIC_API CLBlastSsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                                    const size_t n, const size_t k,
                                    const float alpha,
@@ -1101,6 +1117,13 @@ StatusCode PUBLIC_API CLBlastZsyrk(const Layout layout, const Triangle triangle,
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 StatusCode PUBLIC_API CLBlastCherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
@@ -1118,7 +1141,7 @@ StatusCode PUBLIC_API CLBlastZherk(const Layout layout, const Triangle triangle,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
 
-// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 StatusCode PUBLIC_API CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                                     const size_t n, const size_t k,
                                     const float alpha,
@@ -1151,6 +1174,14 @@ StatusCode PUBLIC_API CLBlastZsyr2k(const Layout layout, const Triangle triangle
                                     const cl_double2 beta,
                                     cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                     cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_half alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const cl_half beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event);
 
 // Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
 StatusCode PUBLIC_API CLBlastCher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
@@ -1170,7 +1201,7 @@ StatusCode PUBLIC_API CLBlastZher2k(const Layout layout, const Triangle triangle
                                     cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                     cl_command_queue* queue, cl_event* event);
 
-// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
+// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
 StatusCode PUBLIC_API CLBlastStrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -1195,8 +1226,14 @@ StatusCode PUBLIC_API CLBlastZtrmm(const Layout layout, const Side side, const T
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
 StatusCode PUBLIC_API CLBlastStrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -1218,6 +1255,12 @@ StatusCode PUBLIC_API CLBlastCtrsm(const Layout layout, const Side side, const T
 StatusCode PUBLIC_API CLBlastZtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t m, const size_t n,
                                    const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                    cl_command_queue* queue, cl_event* event);

@@ -109,15 +109,15 @@ routines = [
   Routine(True,  True,  "2b", "spr2",  T,  [S,D,H],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Symmetric packed rank-2 matrix update", "", []),
 ],
 [ # Level 3: matrix-matrix
-  Routine(True,  True,  "3", "gemm",  T,  [S,D,C,Z], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "symm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "hemm",  T,  [C,Z],     ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "syrk",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix", "", []),
-  Routine(True,  True,  "3", "herk",  Tc, [Css,Zdd], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix", "", []),
-  Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix", "", []),
-  Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix", "", []),
-  Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication", "", []),
-  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations", "", []),
+  Routine(True,  True,  "3", "gemm",  T,  [S,D,C,Z,H], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "symm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "hemm",  T,  [C,Z],       ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "syrk",  T,  [S,D,C,Z,H], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix", "", []),
+  Routine(True,  True,  "3", "herk",  Tc, [Css,Zdd],   ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix", "", []),
+  Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z,H], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix", "", []),
+  Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd],   ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix", "", []),
+  Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication", "", []),
+  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations", "", []),
 ]]
 
 # ==================================================================================================

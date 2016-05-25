@@ -128,7 +128,7 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 2.3.0 or higher). CLTune is available from GitHub.
+Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 2.3.1 or higher). CLTune is available from GitHub.
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
 
@@ -224,16 +224,16 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xSYR2    | ✔ | ✔ | - | - | ✔ |
 | xSPR2    | ✔ | ✔ | - | - | ✔ |
 
-| Level-3  | S | D | C | Z |
-| ---------|---|---|---|---|
-| xGEMM    | ✔ | ✔ | ✔ | ✔ |
-| xSYMM    | ✔ | ✔ | ✔ | ✔ |
-| xHEMM    | - | - | ✔ | ✔ |
-| xSYRK    | ✔ | ✔ | ✔ | ✔ |
-| xHERK    | - | - | ✔ | ✔ |
-| xSYR2K   | ✔ | ✔ | ✔ | ✔ |
-| xHER2K   | - | - | ✔ | ✔ |
-| xTRMM    | ✔ | ✔ | ✔ | ✔ |
+| Level-3  | S | D | C | Z | H |
+| ---------|---|---|---|---|---|
+| xGEMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xSYMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHEMM    | - | - | ✔ | ✔ | - |
+| xSYRK    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHERK    | - | - | ✔ | ✔ | - |
+| xSYR2K   | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHER2K   | - | - | ✔ | ✔ | - |
+| xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 In addition, some non-BLAS routines are also supported by CLBlast. They are experimental and should be used with care:
 

@@ -466,7 +466,7 @@ StatusCode Spr2(const Layout layout, const Triangle triangle,
 // BLAS level-3 (matrix-matrix) routines
 // =================================================================================================
 
-// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
+// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
 template <typename T>
 StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -477,7 +477,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM
+// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
 StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const size_t m, const size_t n,
@@ -499,7 +499,7 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
+// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 template <typename T>
 StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                 const size_t n, const size_t k,
@@ -519,7 +519,7 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 template <typename T>
 StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                  const size_t n, const size_t k,
@@ -541,7 +541,7 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event = nullptr);
 
-// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
+// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
 template <typename T>
 StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
@@ -550,7 +550,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
