@@ -235,9 +235,9 @@ def wrapper_clblas(routines):
 			if routine.NoScalars():
 				result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
 			for flavour in routine.flavours:
+				indent = " "*(17 + routine.Length())
+				result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
 				if flavour.precision_name in ["S","D","C","Z"]:
-					indent = " "*(17 + routine.Length())
-					result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
 					arguments = routine.ArgumentsWrapperCL(flavour)
 					if routine.scratch:
 						result += "  auto queue = Queue(queues[0]);\n"
@@ -247,7 +247,9 @@ def wrapper_clblas(routines):
 					result += "  return clblas"+flavour.name+routine.name+"("
 					result += (",\n"+indent).join([a for a in arguments])
 					result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
-					result += "\n}\n"
+				else:
+					result += "  return clblasNotImplemented;"
+				result += "\n}\n"
 	return result
 
 # The wrapper to the reference CBLAS routines (for performance/correctness testing)
@@ -257,9 +259,9 @@ def wrapper_cblas(routines):
 		if routine.has_tests:
 			result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNamesTested())
 			for flavour in routine.flavours:
+				indent = " "*(10 + routine.Length())
+				result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
 				if flavour.precision_name in ["S","D","C","Z"]:
-					indent = " "*(10 + routine.Length())
-					result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
 					arguments = routine.ArgumentsWrapperC(flavour)
 
 					# Double-precision scalars
@@ -293,7 +295,9 @@ def wrapper_cblas(routines):
 					result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
 					result += (",\n"+indent).join([a for a in arguments])
 					result += extra_argument+endofline+");"
-					result += "\n}\n"
+				else:
+					result += "  return;"
+				result += "\n}\n"
 	return result
 
 # ==================================================================================================
@@ -402,7 +406,7 @@ for level in [1,2,3]:
 					body += "    case clblast::Precision::k"+PrecisionToFullName(precision)+":"
 					found = False
 					for flavour in routine.flavours:
-						if flavour.precision_name == precision and flavour.precision_name in ["S","D","C","Z"]:
+						if flavour.precision_name == precision:
 							body += "\n      clblast::RunClient<clblast::TestX"+routine.name+flavour.TestTemplate()
 							body += ">(argc, argv); break;\n"
 							found = True
