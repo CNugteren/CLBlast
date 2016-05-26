@@ -235,9 +235,11 @@ def wrapper_clblas(routines):
 			if routine.NoScalars():
 				result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
 			for flavour in routine.flavours:
-				indent = " "*(17 + routine.Length())
 				result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
+
+				# There is a version available in clBLAS
 				if flavour.precision_name in ["S","D","C","Z"]:
+					indent = " "*(17 + routine.Length())
 					arguments = routine.ArgumentsWrapperCL(flavour)
 					if routine.scratch:
 						result += "  auto queue = Queue(queues[0]);\n"
@@ -247,8 +249,27 @@ def wrapper_clblas(routines):
 					result += "  return clblas"+flavour.name+routine.name+"("
 					result += (",\n"+indent).join([a for a in arguments])
 					result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
-				else:
-					result += "  return clblasNotImplemented;"
+
+				# There is no clBLAS available, forward the call to one of the available functions
+				else: # Half-precision
+					indent = " "*(24 + routine.Length())
+
+					# Convert to float (note: also integer buffers are stored as half/float)
+					for buf in routine.inputs + routine.outputs:
+						result += "  auto "+buf+"_buffer_bis = HalfToFloatBuffer("+buf+"_buffer, queues[0]);\n"
+
+					# Call the float routine
+					result += "  auto status = clblasX"+routine.name+"("
+					result += (",\n"+indent).join([a for a in routine.ArgumentsHalf()])
+					result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+					result += "\n"
+
+					# Convert back to half
+					for buf in routine.outputs:
+						result += "  FloatToHalfBuffer("+buf+"_buffer, "+buf+"_buffer_bis, queues[0]);\n"
+					result += "  return status;"
+
+				# Complete
 				result += "\n}\n"
 	return result
 
@@ -336,7 +357,7 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 71, 93, 22, 29, 51]
+header_lines = [84, 71, 93, 22, 29, 41]
 footer_lines = [17, 71, 19, 14, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise

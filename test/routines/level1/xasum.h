@@ -86,8 +86,8 @@ class TestXasum {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXasum<T>(args.n,
-                                   buffers.scalar(), args.asum_offset,
-                                   buffers.x_vec(), args.x_offset, args.x_inc,
+                                   buffers.scalar, args.asum_offset,
+                                   buffers.x_vec, args.x_offset, args.x_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

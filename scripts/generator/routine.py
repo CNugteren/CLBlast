@@ -185,6 +185,16 @@ class Routine():
 			return [", ".join(a+b+c)]
 		return []
 
+	# As above but with data-types
+	def BufferDefWrapperCL(self, name, flavour):
+		prefix = "const " if (name in self.inputs) else ""
+		if (name in self.inputs) or (name in self.outputs):
+			a = [prefix+"Buffer<"+flavour.buffertype+">& "+name+"_buffer"]
+			b = ["const size_t "+name+"_offset"]
+			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
+			return [", ".join(a+b+c)]
+		return []
+
 	# As above but as vectors
 	def BufferDefVector(self, name, flavour):
 		prefix = "const " if (name in self.inputs) else ""
@@ -208,7 +218,7 @@ class Routine():
 	# As above but with a static cast for clBLAS wrapper
 	def BufferWrapperCL(self, name):
 		if (name in self.inputs) or (name in self.outputs):
-			a = [name+"_buffer"]
+			a = [name+"_buffer()"]
 			b = [name+"_offset"]
 			c = []
 			if (name in ["x","y"]):
@@ -491,12 +501,12 @@ class Routine():
 	# As above, but clBLAS wrapper plain datatypes
 	def ArgumentsDefWrapperCL(self, flavour):
 		return (self.OptionsDefWrapperCL() + self.SizesDef() +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersFirst()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarDefPlain("alpha", flavour) +
-		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.BuffersFirst()])) +
 		        self.ScalarDefPlain("beta", flavour) +
-		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but CBLAS wrapper plain datatypes

@@ -96,9 +96,9 @@ class TestXhpmv {
       auto status = clblasXhpmv(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.triangle),
                                 args.n, args.alpha,
-                                buffers.ap_mat(), args.ap_offset,
-                                buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
-                                buffers.y_vec(), args.y_offset, args.y_inc,
+                                buffers.ap_mat, args.ap_offset,
+                                buffers.x_vec, args.x_offset, args.x_inc, args.beta,
+                                buffers.y_vec, args.y_offset, args.y_inc,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

@@ -86,8 +86,8 @@ class TestXcopy {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXcopy<T>(args.n,
-                                   buffers.x_vec(), args.x_offset, args.x_inc,
-                                   buffers.y_vec(), args.y_offset, args.y_inc,
+                                   buffers.x_vec, args.x_offset, args.x_inc,
+                                   buffers.y_vec, args.y_offset, args.y_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

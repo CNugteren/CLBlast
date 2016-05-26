@@ -82,7 +82,7 @@ class TestXscal {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXscal(args.n, args.alpha,
-                                buffers.x_vec(), args.x_offset, args.x_inc,
+                                buffers.x_vec, args.x_offset, args.x_inc,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

@@ -299,6 +299,41 @@ void PopulateVector(std::vector<half> &vector) {
 
 // =================================================================================================
 
+// Conversion between half and single-precision
+std::vector<float> HalfToFloatBuffer(const std::vector<half>& source) {
+  auto result = std::vector<float>(source.size());
+  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = HalfToFloat(source[i]); }
+  return result;
+}
+void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source) {
+  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = FloatToHalf(source[i]); }
+}
+
+// As above, but now for OpenCL data-types instead of std::vectors
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw) {
+  const auto size = source.GetSize() / sizeof(half);
+  auto queue = Queue(queue_raw);
+  auto context = queue.GetContext();
+  auto source_cpu = std::vector<half>(size);
+  source.Read(queue, size, source_cpu);
+  auto result_cpu = HalfToFloatBuffer(source_cpu);
+  auto result = Buffer<float>(context, size);
+  result.Write(queue, size, result_cpu);
+  return result;
+}
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw) {
+  const auto size = source.GetSize() / sizeof(float);
+  auto queue = Queue(queue_raw);
+  auto context = queue.GetContext();
+  auto source_cpu = std::vector<float>(size);
+  source.Read(queue, size, source_cpu);
+  auto result_cpu = std::vector<half>(size);
+  FloatToHalfBuffer(result_cpu, source_cpu);
+  result.Write(queue, size, result_cpu);
+}
+
+// =================================================================================================
+
 // Rounding functions performing ceiling and division operations
 size_t CeilDiv(const size_t x, const size_t y) {
   return 1 + ((x - 1) / y);

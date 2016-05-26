@@ -170,6 +170,7 @@ template <typename T, typename U>
 void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const std::string &name) {
   if (!PrecisionSupported<T>(device_)) { return; }
   if (!compare_clblas_) { return; }
+  if (std::is_same<T, half>::value) { return; }
   TestStart("invalid buffer sizes", name);
 
   // Iterates over all the to-be-tested combinations of arguments
