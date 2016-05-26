@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXtrmv<double>, double, double>(argc, argv, true, "DTRMV");
   clblast::RunTests<clblast::TestXtrmv<float2>, float2, float2>(argc, argv, true, "CTRMV");
   clblast::RunTests<clblast::TestXtrmv<double2>, double2, double2>(argc, argv, true, "ZTRMV");
+  clblast::RunTests<clblast::TestXtrmv<half>, half, half>(argc, argv, true, "HTRMV");
   return 0;
 }
 

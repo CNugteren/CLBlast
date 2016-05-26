@@ -20,6 +20,7 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXdot<float>, float, float>(argc, argv, false, "SDOT");
   clblast::RunTests<clblast::TestXdot<double>, double, double>(argc, argv, true, "DDOT");
+  clblast::RunTests<clblast::TestXdot<half>, half, half>(argc, argv, true, "HDOT");
   return 0;
 }
 

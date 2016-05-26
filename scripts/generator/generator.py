@@ -259,12 +259,14 @@ def wrapper_cblas(routines):
 		if routine.has_tests:
 			result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNamesTested())
 			for flavour in routine.flavours:
-				indent = " "*(10 + routine.Length())
 				result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
+
+				# There is a version available in CBLAS
 				if flavour.precision_name in ["S","D","C","Z"]:
+					indent = " "*(10 + routine.Length())
 					arguments = routine.ArgumentsWrapperC(flavour)
 
-					# Double-precision scalars
+					# Complex scalars
 					for scalar in routine.scalars:
 						if flavour.IsComplex(scalar):
 							result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
@@ -294,10 +296,27 @@ def wrapper_cblas(routines):
 
 					result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
 					result += (",\n"+indent).join([a for a in arguments])
-					result += extra_argument+endofline+");"
-				else:
-					result += "  return;"
-				result += "\n}\n"
+					result += extra_argument+endofline+");\n"
+
+				# There is no CBLAS available, forward the call to one of the available functions
+				else: # Half-precision
+					indent = " "*(9 + routine.Length())
+
+					# Convert to float (note: also integer buffers are stored as half/float)
+					for buf in routine.inputs + routine.outputs:
+						result += "  auto "+buf+"_buffer_bis = HalfToFloatBuffer("+buf+"_buffer);\n"
+
+					# Call the float routine
+					result += "  cblasX"+routine.name+"("
+					result += (",\n"+indent).join([a for a in routine.ArgumentsHalf()])
+					result += ");\n"
+
+					# Convert back to half
+					for buf in routine.outputs:
+						result += "  FloatToHalfBuffer("+buf+"_buffer, "+buf+"_buffer_bis);\n"
+
+				# Complete
+				result += "}\n"
 	return result
 
 # ==================================================================================================
@@ -317,7 +336,7 @@ files = [
   path_clblast+"/test/wrapper_clblas.h",
   path_clblast+"/test/wrapper_cblas.h",
 ]
-header_lines = [84, 71, 93, 22, 29, 41]
+header_lines = [84, 71, 93, 22, 29, 51]
 footer_lines = [17, 71, 19, 14, 6, 6]
 
 # Checks whether the command-line arguments are valid; exists otherwise
@@ -376,10 +395,9 @@ for level in [1,2,3]:
 				body += "int main(int argc, char *argv[]) {\n"
 				not_first = "false"
 				for flavour in routine.flavours:
-					if flavour.precision_name in ["S","D","C","Z"]:
-						body += "  clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
-						body += ">(argc, argv, "+not_first+", \""+flavour.name+routine.name.upper()+"\");\n"
-						not_first = "true"
+					body += "  clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
+					body += ">(argc, argv, "+not_first+", \""+flavour.name+routine.name.upper()+"\");\n"
+					not_first = "true"
 				body += "  return 0;\n"
 				body += "}\n"
 				f.write(header+"\n")

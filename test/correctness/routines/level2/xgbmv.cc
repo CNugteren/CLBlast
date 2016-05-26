@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXgbmv<double>, double, double>(argc, argv, true, "DGBMV");
   clblast::RunTests<clblast::TestXgbmv<float2>, float2, float2>(argc, argv, true, "CGBMV");
   clblast::RunTests<clblast::TestXgbmv<double2>, double2, double2>(argc, argv, true, "ZGBMV");
+  clblast::RunTests<clblast::TestXgbmv<half>, half, half>(argc, argv, true, "HGBMV");
   return 0;
 }
 

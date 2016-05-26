@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // The transpose-options to test with (data-type dependent)
+template <> const std::vector<Transpose> TestBlas<half,half>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<float,float>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<double,double>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
@@ -147,10 +148,8 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
           if (verbose_) {
             if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
             else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
-            std::cout << result1[index];
-            fprintf(stdout, " (reference) versus ");
-            std::cout << result2[index];
-            fprintf(stdout, " (CLBlast)");
+            fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
+            fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
           }
         }
       }
@@ -222,6 +221,7 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
 // =================================================================================================
 
 // Compiles the templated class
+template class TestBlas<half, half>;
 template class TestBlas<float, float>;
 template class TestBlas<double, double>;
 template class TestBlas<float2, float2>;

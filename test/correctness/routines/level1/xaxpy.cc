@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXaxpy<double>, double, double>(argc, argv, true, "DAXPY");
   clblast::RunTests<clblast::TestXaxpy<float2>, float2, float2>(argc, argv, true, "CAXPY");
   clblast::RunTests<clblast::TestXaxpy<double2>, double2, double2>(argc, argv, true, "ZAXPY");
+  clblast::RunTests<clblast::TestXaxpy<half>, half, half>(argc, argv, true, "HAXPY");
   return 0;
 }
 

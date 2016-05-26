@@ -351,11 +351,11 @@ bool TestSimilarity(const T val1, const T val2) {
   }
 }
 
-// Compiles the default case for non-complex data-types
+// Compiles the default case for standard data-types
 template bool TestSimilarity<float>(const float, const float);
 template bool TestSimilarity<double>(const double, const double);
 
-// Specialisations for complex data-types
+// Specialisations for non-standard data-types
 template <>
 bool TestSimilarity(const float2 val1, const float2 val2) {
   auto real = TestSimilarity(val1.real(), val2.real());
@@ -367,6 +367,10 @@ bool TestSimilarity(const double2 val1, const double2 val2) {
   auto real = TestSimilarity(val1.real(), val2.real());
   auto imag = TestSimilarity(val1.imag(), val2.imag());
   return (real && imag);
+}
+template <>
+bool TestSimilarity(const half val1, const half val2) {
+  return TestSimilarity(HalfToFloat(val1), HalfToFloat(val2));
 }
 
 // =================================================================================================
@@ -389,10 +393,15 @@ template <> const std::vector<double2> GetExampleScalars(const bool full_test) {
   if (full_test) { return {{0.0, 0.0}, {1.0, 1.3}, {2.42, 3.14}}; }
   else { return {{2.42, 3.14}}; }
 }
+template <> const std::vector<half> GetExampleScalars(const bool full_test) {
+  if (full_test) { return {FloatToHalf(0.0f), FloatToHalf(1.0f), FloatToHalf(3.14f)}; }
+  else { return {FloatToHalf(3.14f)}; }
+}
 
 // =================================================================================================
 
 // Compiles the templated class
+template class Tester<half, half>;
 template class Tester<float, float>;
 template class Tester<double, double>;
 template class Tester<float2, float2>;
