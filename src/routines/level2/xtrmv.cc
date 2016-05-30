@@ -72,6 +72,7 @@ StatusCode Xtrmv<T>::DoTrmv(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xtrmv<half>;
 template class Xtrmv<float>;
 template class Xtrmv<double>;
 template class Xtrmv<float2>;

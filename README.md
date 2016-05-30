@@ -20,6 +20,7 @@ Use CLBlast instead of clBLAS:
 * When you are still running on OpenCL 1.1 hardware.
 * When you value an organized and modern C++ codebase.
 * When you target Intel CPUs and GPUs or embedded devices
+* When you can benefit from the increased performance of half-precision fp16 data-types.
 
 Use CLBlast instead of cuBLAS:
 
@@ -127,7 +128,7 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 1.7.0 or higher). CLTune is available from GitHub.
+Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 2.3.1 or higher). CLTune is available from GitHub.
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
 
@@ -177,64 +178,70 @@ These graphs can be generated automatically on your own device. First, compile C
 Supported routines
 -------------
 
-CLBlast is in active development but already supports almost all the BLAS routines. The supported routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all.
+CLBlast is in active development but already supports almost all the BLAS routines. The supported routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all. The different data-types supported by the library are:
 
-| Level-1  | S | D | C | Z |
-| ---------|---|---|---|---|
-| xSWAP    | ✔ | ✔ | ✔ | ✔ |
-| xSCAL    | ✔ | ✔ | ✔ | ✔ |
-| xCOPY    | ✔ | ✔ | ✔ | ✔ |
-| xAXPY    | ✔ | ✔ | ✔ | ✔ |
-| xDOT     | ✔ | ✔ | - | - |
-| xDOTU    | - | - | ✔ | ✔ |
-| xDOTC    | - | - | ✔ | ✔ |
-| xNRM2    | ✔ | ✔ | ✔ | ✔ |
-| xASUM    | ✔ | ✔ | ✔ | ✔ |
-| IxAMAX   | ✔ | ✔ | ✔ | ✔ |
+* __S:__ Single-precision 32-bit floating-point (`float`).
+* __D:__ Double-precision 64-bit floating-point (`double`).
+* __C:__ Complex single-precision 2x32-bit floating-point (`std::complex<float>`).
+* __Z:__ Complex double-precision 2x64-bit floating-point (`std::complex<double>`).
+* __H:__ Half-precision 16-bit floating-point (`cl_half`). See section 'Half precision' for more information.
 
-| Level-2  | S | D | C | Z |
-| ---------|---|---|---|---|
-| xGEMV    | ✔ | ✔ | ✔ | ✔ |
-| xGBMV    | ✔ | ✔ | ✔ | ✔ |
-| xHEMV    | - | - | ✔ | ✔ |
-| xHBMV    | - | - | ✔ | ✔ |
-| xHPMV    | - | - | ✔ | ✔ |
-| xSYMV    | ✔ | ✔ | - | - |
-| xSBMV    | ✔ | ✔ | - | - |
-| xSPMV    | ✔ | ✔ | - | - |
-| xTRMV    | ✔ | ✔ | ✔ | ✔ |
-| xTBMV    | ✔ | ✔ | ✔ | ✔ |
-| xTPMV    | ✔ | ✔ | ✔ | ✔ |
-| xGER     | ✔ | ✔ | - | - |
-| xGERU    | - | - | ✔ | ✔ |
-| xGERC    | - | - | ✔ | ✔ |
-| xHER     | - | - | ✔ | ✔ |
-| xHPR     | - | - | ✔ | ✔ |
-| xHER2    | - | - | ✔ | ✔ |
-| xHPR2    | - | - | ✔ | ✔ |
-| xSYR     | ✔ | ✔ | - | - |
-| xSPR     | ✔ | ✔ | - | - |
-| xSYR2    | ✔ | ✔ | - | - |
-| xSPR2    | ✔ | ✔ | - | - |
+| Level-1  | S | D | C | Z | H |
+| ---------|---|---|---|---|---|
+| xSWAP    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xSCAL    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xCOPY    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xAXPY    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xDOT     | ✔ | ✔ | - | - | ✔ |
+| xDOTU    | - | - | ✔ | ✔ | - |
+| xDOTC    | - | - | ✔ | ✔ | - |
+| xNRM2    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xASUM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| IxAMAX   | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-| Level-3  | S | D | C | Z |
-| ---------|---|---|---|---|
-| xGEMM    | ✔ | ✔ | ✔ | ✔ |
-| xSYMM    | ✔ | ✔ | ✔ | ✔ |
-| xHEMM    | - | - | ✔ | ✔ |
-| xSYRK    | ✔ | ✔ | ✔ | ✔ |
-| xHERK    | - | - | ✔ | ✔ |
-| xSYR2K   | ✔ | ✔ | ✔ | ✔ |
-| xHER2K   | - | - | ✔ | ✔ |
-| xTRMM    | ✔ | ✔ | ✔ | ✔ |
+| Level-2  | S | D | C | Z | H |
+| ---------|---|---|---|---|---|
+| xGEMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGBMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHEMV    | - | - | ✔ | ✔ | - |
+| xHBMV    | - | - | ✔ | ✔ | - |
+| xHPMV    | - | - | ✔ | ✔ | - |
+| xSYMV    | ✔ | ✔ | - | - | ✔ |
+| xSBMV    | ✔ | ✔ | - | - | ✔ |
+| xSPMV    | ✔ | ✔ | - | - | ✔ |
+| xTRMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xTBMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xTPMV    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGER     | ✔ | ✔ | - | - | ✔ |
+| xGERU    | - | - | ✔ | ✔ | - |
+| xGERC    | - | - | ✔ | ✔ | - |
+| xHER     | - | - | ✔ | ✔ | - |
+| xHPR     | - | - | ✔ | ✔ | - |
+| xHER2    | - | - | ✔ | ✔ | - |
+| xHPR2    | - | - | ✔ | ✔ | - |
+| xSYR     | ✔ | ✔ | - | - | ✔ |
+| xSPR     | ✔ | ✔ | - | - | ✔ |
+| xSYR2    | ✔ | ✔ | - | - | ✔ |
+| xSPR2    | ✔ | ✔ | - | - | ✔ |
+
+| Level-3  | S | D | C | Z | H |
+| ---------|---|---|---|---|---|
+| xGEMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xSYMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHEMM    | - | - | ✔ | ✔ | - |
+| xSYRK    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHERK    | - | - | ✔ | ✔ | - |
+| xSYR2K   | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xHER2K   | - | - | ✔ | ✔ | - |
+| xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 In addition, some non-BLAS routines are also supported by CLBlast. They are experimental and should be used with care:
 
-| Additional | S | D | C | Z |
-| -----------|---|---|---|---|
-| xSUM       | ✔ | ✔ | ✔ | ✔ |
-| IxMAX      | ✔ | ✔ | ✔ | ✔ |
-| IxMIN      | ✔ | ✔ | ✔ | ✔ |
+| Additional | S | D | C | Z | H |
+| -----------|---|---|---|---|---|
+| xSUM       | ✔ | ✔ | ✔ | ✔ | ✔ |
+| IxMAX      | ✔ | ✔ | ✔ | ✔ | ✔ |
+| IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
 
@@ -248,6 +255,19 @@ Some BLAS routines are not supported yet by CLBlast. They are shown in the follo
 | xTBSV       |   |   |   |   |
 | xTPSV       |   |   |   |   |
 | xTRSM       |   |   |   |   |
+
+
+Half precision (fp16)
+-------------
+
+The half-precison fp16 format is a 16-bits floating-point data-type. Some OpenCL devices support the `cl_khr_fp16` extension, reducing storage and bandwidth requirements by a factor 2 compared to single-precision floating-point. In case the hardware also accelerates arithmetic on half-precision data-types, this can also greatly improve compute performance of e.g. level-3 routines such as GEMM. Devices which can benefit from this are among others Intel GPUs, ARM Mali GPUs, and NVIDIA's latest Pascal GPUs. Half-precision is in particular interest for the deep-learning community, in which convolutional neural networks can be processed much faster at a minor accuracy loss.
+
+Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_half` type for the host device. Unfortunately, internally this translates to a 16-bits integer, so computations on the host using this data-type should be avoided. For convenience, CLBlast provides the `clblast_half.h` header (C99 and C++ compatible), defining the `half` type as a short-hand to `cl_half` and the following basic functions:
+
+* `half FloatToHalf(const float value)`: Converts a 32-bits floating-point value to a 16-bits floating-point value.
+* `float HalfToFloat(const half value)`: Converts a 16-bits floating-point value to a 32-bits floating-point value.
+
+The `/samples` folder contains examples of how to use these convencience functions when calling one of the half-precision BLAS routines.
 
 
 Contributing
@@ -269,6 +289,7 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
+
 
 Support us
 -------------

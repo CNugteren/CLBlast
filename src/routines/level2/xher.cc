@@ -19,6 +19,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xher<half, half>::precision_ = Precision::kHalf;
 template <> const Precision Xher<float, float>::precision_ = Precision::kSingle;
 template <> const Precision Xher<double, double>::precision_ = Precision::kDouble;
 template <> const Precision Xher<float2, float>::precision_ = Precision::kComplexSingle;
@@ -43,6 +44,7 @@ template <> float2 Xher<float2,float>::GetAlpha(const float alpha) { return floa
 template <> double2 Xher<double2,double>::GetAlpha(const double alpha) { return double2{alpha, 0.0}; }
 template <> float Xher<float,float>::GetAlpha(const float alpha) { return alpha; }
 template <> double Xher<double,double>::GetAlpha(const double alpha) { return alpha; }
+template <> half Xher<half,half>::GetAlpha(const half alpha) { return alpha; }
 
 // =================================================================================================
 
@@ -63,9 +65,6 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
                          (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   const auto is_rowmajor = (layout == Layout::kRowMajor);
 
-  // Creates a matching version of alpha
-  const auto matching_alpha = GetAlpha(alpha);
-
   // Tests the matrix and the vectors for validity
   auto status = StatusCode::kSuccess;
   if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
@@ -77,14 +76,21 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
   // If alpha is zero an update is not required
   if (alpha == U{0}) { return StatusCode::kSuccess; }
 
-  // Retrieves the Xgemv kernel from the compiled binary
+  // Creates a matching version of alpha
+  const auto matching_alpha = GetAlpha(alpha);
+
+  // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
+  auto alpha_buffer = Buffer<T>(context_, 1);
+  alpha_buffer.Write(queue_, 1, &matching_alpha);
+
+  // Retrieves the kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xher");
 
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, matching_alpha);
+    kernel.SetArgument(1, alpha_buffer());
     kernel.SetArgument(2, x_buffer());
     kernel.SetArgument(3, static_cast<int>(x_offset));
     kernel.SetArgument(4, static_cast<int>(x_inc));
@@ -110,6 +116,7 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xher<half, half>;
 template class Xher<float, float>;
 template class Xher<double, double>;
 template class Xher<float2, float>;

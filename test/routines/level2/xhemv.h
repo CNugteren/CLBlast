@@ -96,9 +96,9 @@ class TestXhemv {
       auto status = clblasXhemv(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.triangle),
                                 args.n, args.alpha,
-                                buffers.a_mat(), args.a_offset, args.a_ld,
-                                buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
-                                buffers.y_vec(), args.y_offset, args.y_inc,
+                                buffers.a_mat, args.a_offset, args.a_ld,
+                                buffers.x_vec, args.x_offset, args.x_inc, args.beta,
+                                buffers.y_vec, args.y_offset, args.y_inc,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

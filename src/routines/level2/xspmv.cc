@@ -57,6 +57,7 @@ StatusCode Xspmv<T>::DoSpmv(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xspmv<half>;
 template class Xspmv<float>;
 template class Xspmv<double>;
 

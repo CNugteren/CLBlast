@@ -116,6 +116,17 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   // which is thus always displayed (unless silence is specified).
   if (!args.silent) { fprintf(stdout, "%s\n", help.c_str()); }
 
+  // Comparison against clBLAS or a CPU BLAS library is not supported in case of half-precision
+  if (args.precision == Precision::kHalf) {
+    if (args.compare_clblas != 0 || args.compare_cblas != 0) {
+      if (!args.silent) {
+        fprintf(stdout, "* Disabling clBLAS and CPU BLAS comparisons for half-precision\n\n");
+      }
+    }
+    args.compare_clblas = 0;
+    args.compare_cblas = 0;
+  }
+
   // Returns the arguments
   return args;
 }
@@ -339,6 +350,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
 // =================================================================================================
 
 // Compiles the templated class
+template class Client<half,half>;
 template class Client<float,float>;
 template class Client<double,double>;
 template class Client<float2,float2>;

@@ -20,6 +20,7 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXsbmv<float>, float, float>(argc, argv, false, "SSBMV");
   clblast::RunTests<clblast::TestXsbmv<double>, double, double>(argc, argv, true, "DSBMV");
+  clblast::RunTests<clblast::TestXsbmv<half>, half, half>(argc, argv, true, "HSBMV");
   return 0;
 }
 

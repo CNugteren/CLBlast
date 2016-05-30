@@ -29,6 +29,7 @@ class Xher: public Routine<T> {
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
   using Routine<T>::event_;
+  using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::TestVectorX;
   using Routine<T>::TestMatrixA;

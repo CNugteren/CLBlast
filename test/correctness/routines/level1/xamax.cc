@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXamax<double>, double, double>(argc, argv, true, "iDAMAX");
   clblast::RunTests<clblast::TestXamax<float2>, float2, float2>(argc, argv, true, "iCAMAX");
   clblast::RunTests<clblast::TestXamax<double2>, double2, double2>(argc, argv, true, "iZAMAX");
+  clblast::RunTests<clblast::TestXamax<half>, half, half>(argc, argv, true, "iHAMAX");
   return 0;
 }
 

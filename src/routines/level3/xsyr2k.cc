@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xsyr2k<half>::precision_ = Precision::kHalf;
 template <> const Precision Xsyr2k<float>::precision_ = Precision::kSingle;
 template <> const Precision Xsyr2k<double>::precision_ = Precision::kDouble;
 template <> const Precision Xsyr2k<float2>::precision_ = Precision::kComplexSingle;
@@ -104,6 +105,12 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
+    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+    auto alpha_buffer = Buffer<T>(context_, 1);
+    auto beta_buffer = Buffer<T>(context_, 1);
+    alpha_buffer.Write(queue_, 1, &alpha);
+    beta_buffer.Write(queue_, 1, &beta);
+
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
     auto emptyEventList = std::vector<Event>();
@@ -147,8 +154,8 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       // Sets the kernel arguments
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
-      kernel.SetArgument(2, alpha);
-      kernel.SetArgument(3, beta);
+      kernel.SetArgument(2, alpha_buffer());
+      kernel.SetArgument(3, beta_buffer());
       kernel.SetArgument(4, a_temp());
       kernel.SetArgument(5, b_temp());
       kernel.SetArgument(6, c_temp());
@@ -168,7 +175,8 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
 
       // Swaps the arguments for matrices A and B, and sets 'beta' to 1
       auto one = static_cast<T>(1);
-      kernel.SetArgument(3, one);
+      beta_buffer.Write(queue_, 1, &one);
+      kernel.SetArgument(3, beta_buffer());
       kernel.SetArgument(4, b_temp());
       kernel.SetArgument(5, a_temp());
 
@@ -196,6 +204,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsyr2k<half>;
 template class Xsyr2k<float>;
 template class Xsyr2k<double>;
 template class Xsyr2k<float2>;

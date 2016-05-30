@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xnrm2<half>::precision_ = Precision::kHalf;
 template <> const Precision Xnrm2<float>::precision_ = Precision::kSingle;
 template <> const Precision Xnrm2<double>::precision_ = Precision::kDouble;
 template <> const Precision Xnrm2<float2>::precision_ = Precision::kComplexSingle;
@@ -100,6 +101,7 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xnrm2<half>;
 template class Xnrm2<float>;
 template class Xnrm2<double>;
 template class Xnrm2<float2>;

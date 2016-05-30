@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xscal<half>::precision_ = Precision::kHalf;
 template <> const Precision Xscal<float>::precision_ = Precision::kSingle;
 template <> const Precision Xscal<double>::precision_ = Precision::kDouble;
 template <> const Precision Xscal<float2>::precision_ = Precision::kComplexSingle;
@@ -99,6 +100,7 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xscal<half>;
 template class Xscal<float>;
 template class Xscal<double>;
 template class Xscal<float2>;

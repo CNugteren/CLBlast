@@ -105,9 +105,9 @@ class TestXsymm {
                                 convertToCLBLAS(args.side),
                                 convertToCLBLAS(args.triangle),
                                 args.m, args.n, args.alpha,
-                                buffers.a_mat(), args.a_offset, args.a_ld,
-                                buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
-                                buffers.c_mat(), args.c_offset, args.c_ld,
+                                buffers.a_mat, args.a_offset, args.a_ld,
+                                buffers.b_mat, args.b_offset, args.b_ld, args.beta,
+                                buffers.c_mat, args.c_offset, args.c_ld,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

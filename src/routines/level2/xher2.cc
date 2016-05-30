@@ -19,6 +19,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xher2<half>::precision_ = Precision::kHalf;
 template <> const Precision Xher2<float>::precision_ = Precision::kSingle;
 template <> const Precision Xher2<double>::precision_ = Precision::kDouble;
 template <> const Precision Xher2<float2>::precision_ = Precision::kComplexSingle;
@@ -66,14 +67,18 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
   status = TestVectorY(n, y_buffer, y_offset, y_inc, sizeof(T));
   if (ErrorIn(status)) { return status; }
 
-  // Retrieves the Xgemv kernel from the compiled binary
+  // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
+  auto alpha_buffer = Buffer<T>(context_, 1);
+  alpha_buffer.Write(queue_, 1, &alpha);
+
+  // Retrieves the kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, "Xher2");
 
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, alpha);
+    kernel.SetArgument(1, alpha_buffer());
     kernel.SetArgument(2, x_buffer());
     kernel.SetArgument(3, static_cast<int>(x_offset));
     kernel.SetArgument(4, static_cast<int>(x_inc));
@@ -102,6 +107,7 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xher2<half>;
 template class Xher2<float>;
 template class Xher2<double>;
 template class Xher2<float2>;

@@ -91,8 +91,8 @@ class TestXhpr {
       auto status = clblasXhpr(convertToCLBLAS(args.layout),
                                convertToCLBLAS(args.triangle),
                                args.n, args.alpha,
-                               buffers.x_vec(), args.x_offset, args.x_inc,
-                               buffers.ap_mat(), args.ap_offset,
+                               buffers.x_vec, args.x_offset, args.x_inc,
+                               buffers.ap_mat, args.ap_offset,
                                1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

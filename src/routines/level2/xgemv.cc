@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xgemv<half>::precision_ = Precision::kHalf;
 template <> const Precision Xgemv<float>::precision_ = Precision::kSingle;
 template <> const Precision Xgemv<double>::precision_ = Precision::kDouble;
 template <> const Precision Xgemv<float2>::precision_ = Precision::kComplexSingle;
@@ -134,6 +135,12 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     local_size = db_["WGS3"];
   }
 
+  // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+  auto alpha_buffer = Buffer<T>(context_, 1);
+  auto beta_buffer = Buffer<T>(context_, 1);
+  alpha_buffer.Write(queue_, 1, &alpha);
+  beta_buffer.Write(queue_, 1, &beta);
+
   // Retrieves the Xgemv kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache();
@@ -142,8 +149,8 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(m_real));
     kernel.SetArgument(1, static_cast<int>(n_real));
-    kernel.SetArgument(2, alpha);
-    kernel.SetArgument(3, beta);
+    kernel.SetArgument(2, alpha_buffer());
+    kernel.SetArgument(3, beta_buffer());
     kernel.SetArgument(4, static_cast<int>(a_rotated));
     kernel.SetArgument(5, a_buffer());
     kernel.SetArgument(6, static_cast<int>(a_offset));
@@ -173,6 +180,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xgemv<half>;
 template class Xgemv<float>;
 template class Xgemv<double>;
 template class Xgemv<float2>;

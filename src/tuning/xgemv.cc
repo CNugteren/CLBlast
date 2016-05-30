@@ -96,11 +96,13 @@ class TuneXgemv {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
+    auto alpha_buffer = std::vector<T>{args.alpha};
+    auto beta_buffer = std::vector<T>{args.beta};
     auto a_rotated = (V==3) ? 1 : 0;
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(args.alpha);
-    tuner.AddArgumentScalar(args.beta);
+    tuner.AddArgumentInput(alpha_buffer);
+    tuner.AddArgumentInput(beta_buffer);
     tuner.AddArgumentScalar(static_cast<int>(a_rotated));
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentScalar(0);
@@ -135,7 +137,7 @@ using double2 = clblast::double2;
 template <int V>
 void StartVariation(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXgemv<half,V>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXgemv<float,V>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXgemv<double,V>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXgemv<float2,V>, float2>(argc, argv); break;

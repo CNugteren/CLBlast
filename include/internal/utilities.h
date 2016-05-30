@@ -22,6 +22,7 @@
 #include <complex>
 
 #include "clblast.h"
+#include "clblast_half.h"
 #include "internal/clpp11.h"
 
 namespace clblast {
@@ -94,6 +95,16 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 
 // =================================================================================================
 
+// Returns a scalar with a default value
+template <typename T>
+T GetScalar();
+
+// Returns a scalar of value 1
+template <typename T>
+T ConstantOne();
+
+// =================================================================================================
+
 // Structure containing all possible arguments for test clients, including their default values
 template <typename T>
 struct Arguments {
@@ -124,8 +135,8 @@ struct Arguments {
   size_t nrm2_offset = 0;
   size_t asum_offset = 0;
   size_t imax_offset = 0;
-  T alpha = T{1.0};
-  T beta = T{1.0};
+  T alpha = ConstantOne<T>();
+  T beta = ConstantOne<T>();
   size_t x_size = 1;
   size_t y_size = 1;
   size_t a_size = 1;
@@ -202,9 +213,13 @@ void PopulateVector(std::vector<T> &vector);
 
 // =================================================================================================
 
-// Returns a scalar with a default value
-template <typename T>
-T GetScalar();
+// Conversion between half and single-precision
+std::vector<float> HalfToFloatBuffer(const std::vector<half>& source);
+void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source);
+
+// As above, but now for OpenCL data-types instead of std::vectors
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
 
 // =================================================================================================
 

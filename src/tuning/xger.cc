@@ -85,9 +85,10 @@ class TuneXger {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
+    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(args.alpha);
+    tuner.AddArgumentInput(alpha_buffer);
     tuner.AddArgumentInput(x_vec);
     tuner.AddArgumentScalar(0); // x_offset
     tuner.AddArgumentScalar(1); // x_increment
@@ -117,7 +118,7 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXger<half>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXger<float>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXger<double>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXger<float2>, float2>(argc, argv); break;

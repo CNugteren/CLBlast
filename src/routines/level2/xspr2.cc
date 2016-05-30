@@ -46,6 +46,7 @@ StatusCode Xspr2<T>::DoSpr2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xspr2<half>;
 template class Xspr2<float>;
 template class Xspr2<double>;
 

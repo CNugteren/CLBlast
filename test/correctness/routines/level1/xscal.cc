@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXscal<double>, double, double>(argc, argv, true, "DSCAL");
   clblast::RunTests<clblast::TestXscal<float2>, float2, float2>(argc, argv, true, "CSCAL");
   clblast::RunTests<clblast::TestXscal<double2>, double2, double2>(argc, argv, true, "ZSCAL");
+  clblast::RunTests<clblast::TestXscal<half>, half, half>(argc, argv, true, "HSCAL");
   return 0;
 }
 

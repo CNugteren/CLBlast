@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXswap<double>, double, double>(argc, argv, true, "DSWAP");
   clblast::RunTests<clblast::TestXswap<float2>, float2, float2>(argc, argv, true, "CSWAP");
   clblast::RunTests<clblast::TestXswap<double2>, double2, double2>(argc, argv, true, "ZSWAP");
+  clblast::RunTests<clblast::TestXswap<half>, half, half>(argc, argv, true, "HSWAP");
   return 0;
 }
 

@@ -97,9 +97,9 @@ class TestXger {
       auto event = cl_event{};
       auto status = clblasXger(convertToCLBLAS(args.layout),
                                args.m, args.n, args.alpha,
-                               buffers.x_vec(), args.x_offset, args.x_inc,
-                               buffers.y_vec(), args.y_offset, args.y_inc,
-                               buffers.a_mat(), args.a_offset, args.a_ld,
+                               buffers.x_vec, args.x_offset, args.x_inc,
+                               buffers.y_vec, args.y_offset, args.y_inc,
+                               buffers.a_mat, args.a_offset, args.a_ld,
                                1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

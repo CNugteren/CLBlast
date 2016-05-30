@@ -44,6 +44,7 @@ StatusCode Xspr<T>::DoSpr(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xspr<half>;
 template class Xspr<float>;
 template class Xspr<double>;
 

@@ -28,11 +28,12 @@ import os.path
 
 # Local files
 from routine import Routine
-from datatype import DataType, FLT, DBL, FLT2, DBL2, F2CL, D2CL
+from datatype import DataType, HLF, FLT, DBL, FLT2, DBL2, HCL, F2CL, D2CL
 
 # ==================================================================================================
 
 # Regular data-types
+H = DataType("H", "H", HLF,  [HLF,  HLF,  HCL,  HCL],  HLF ) # half (16)
 S = DataType("S", "S", FLT,  [FLT,  FLT,  FLT,  FLT],  FLT ) # single (32)
 D = DataType("D", "D", DBL,  [DBL,  DBL,  DBL,  DBL],  DBL ) # double (64)
 C = DataType("C", "C", FLT2, [FLT2, FLT2, F2CL, F2CL], FLT2) # single-complex (3232)
@@ -41,6 +42,7 @@ Z = DataType("Z", "Z", DBL2, [DBL2, DBL2, D2CL, D2CL], DBL2) # double-complex (6
 # Special cases
 Sc = DataType("C", "Sc", FLT2,         [FLT2, FLT2, FLT2, FLT2], FLT2) # As C, but with real output
 Dz = DataType("Z", "Dz", DBL2,         [DBL2, DBL2, DBL2, DBL2], DBL2) # As Z, but with real output
+iH = DataType("H", "iH", HLF,          [HLF,  HLF,  HLF,  HLF],  HLF ) # As H, but with integer output
 iS = DataType("S", "iS", FLT,          [FLT,  FLT,  FLT,  FLT],  FLT ) # As S, but with integer output
 iD = DataType("D", "iD", DBL,          [DBL,  DBL,  DBL,  DBL],  DBL ) # As D, but with integer output
 iC = DataType("C", "iC", FLT2,         [FLT2, FLT2, F2CL, F2CL], FLT2) # As C, but with integer output
@@ -60,62 +62,62 @@ TU = DataType("TU", "typename T, typename U", "T,U", ["T", "U", "T", "U"], "T") 
 # Populates a list of routines
 routines = [
 [ # Level 1: vector-vector
-  Routine(False, True,  "1", "rotg",  T,  [S,D],     [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation", "", []),
-  Routine(False, True,  "1", "rotmg", T,  [S,D],     [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation", "", []),
-  Routine(False, True,  "1", "rot",   T,  [S,D],     ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation", "", []),
-  Routine(False, True,  "1", "rotm",  T,  [S,D],     ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation", "", []),
-  Routine(True,  True,  "1", "swap",  T,  [S,D,C,Z], ["n"], [], [], ["x","y"], [], "", "Swap two vectors", "Interchanges the contents of vectors x and y.", []),
-  Routine(True,  True,  "1", "scal",  T,  [S,D,C,Z], ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling", "Multiplies all elements of vector x by a scalar constant alpha.", []),
-  Routine(True,  True,  "1", "copy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], [], "", "Vector copy", "Copies the contents of vector x into vector y.", []),
-  Routine(True,  True,  "1", "axpy",  T,  [S,D,C,Z], ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector", "Performs the operation y = alpha * x + y, in which x and y are vectors and alpha is a scalar constant.", []),
-  Routine(True,  True,  "1", "dot",   T,  [S,D],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors", "Multiplies the vectors x and y element-wise and accumulates the results. The sum is stored in the dot buffer.", []),
-  Routine(True,  True,  "1", "dotu",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors", "See the regular xDOT routine.", []),
-  Routine(True,  True,  "1", "dotc",  T,  [C,Z],     ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated", "See the regular xDOT routine.", []),
-  Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector", "Accumulates the square of each element in the x vector and takes the square root. The resulting L2 norm is stored in the nrm2 buffer.", []),
-  Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz],["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector", "Accumulates the absolute value of each element in the x vector. The results are stored in the asum buffer.", []),
-  Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz],["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)", "Accumulates the values of each element in the x vector. The results are stored in the sum buffer. This routine is the non-absolute version of the xASUM BLAS routine.", []),
-  Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector", "Finds the index of the maximum of the absolute values in the x vector. The resulting integer index is stored in the imax buffer.", []),
-  Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)", "Finds the index of the maximum of the values in the x vector. The resulting integer index is stored in the imax buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.", []),
-  Routine(True,  False, "1", "min",   T, [iS,iD,iC,iZ],["n"], [], ["x"], ["imin"], [], "2*n", "Index of minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the values in the x vector. The resulting integer index is stored in the imin buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.", []),
+  Routine(False, True,  "1", "rotg",  T, [S,D],            [], [], [], ["sa","sb","sc","ss"], [], "", "Generate givens plane rotation", "", []),
+  Routine(False, True,  "1", "rotmg", T, [S,D],            [], [], ["sy1"], ["sd1","sd2","sx1","sparam"], [], "", "Generate modified givens plane rotation", "", []),
+  Routine(False, True,  "1", "rot",   T, [S,D],            ["n"], [], [], ["x","y"], ["cos","sin"], "", "Apply givens plane rotation", "", []),
+  Routine(False, True,  "1", "rotm",  T, [S,D],            ["n"], [], [], ["x","y","sparam"], [], "", "Apply modified givens plane rotation", "", []),
+  Routine(True,  True,  "1", "swap",  T, [S,D,C,Z,H],      ["n"], [], [], ["x","y"], [], "", "Swap two vectors", "Interchanges the contents of vectors x and y.", []),
+  Routine(True,  True,  "1", "scal",  T, [S,D,C,Z,H],      ["n"], [], [], ["x"], ["alpha"], "", "Vector scaling", "Multiplies all elements of vector x by a scalar constant alpha.", []),
+  Routine(True,  True,  "1", "copy",  T, [S,D,C,Z,H],      ["n"], [], ["x"], ["y"], [], "", "Vector copy", "Copies the contents of vector x into vector y.", []),
+  Routine(True,  True,  "1", "axpy",  T, [S,D,C,Z,H],      ["n"], [], ["x"], ["y"], ["alpha"], "", "Vector-times-constant plus vector", "Performs the operation y = alpha * x + y, in which x and y are vectors and alpha is a scalar constant.", []),
+  Routine(True,  True,  "1", "dot",   T, [S,D,H],          ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two vectors", "Multiplies the vectors x and y element-wise and accumulates the results. The sum is stored in the dot buffer.", []),
+  Routine(True,  True,  "1", "dotu",  T, [C,Z],            ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors", "See the regular xDOT routine.", []),
+  Routine(True,  True,  "1", "dotc",  T, [C,Z],            ["n"], [], ["x","y"], ["dot"], [], "n", "Dot product of two complex vectors, one conjugated", "See the regular xDOT routine.", []),
+  Routine(True,  True,  "1", "nrm2",  T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["nrm2"], [], "2*n", "Euclidian norm of a vector", "Accumulates the square of each element in the x vector and takes the square root. The resulting L2 norm is stored in the nrm2 buffer.", []),
+  Routine(True,  True,  "1", "asum",  T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["asum"], [], "n", "Absolute sum of values in a vector", "Accumulates the absolute value of each element in the x vector. The results are stored in the asum buffer.", []),
+  Routine(True,  False, "1", "sum",   T, [S,D,Sc,Dz,H],    ["n"], [], ["x"], ["sum"], [], "n", "Sum of values in a vector (non-BLAS function)", "Accumulates the values of each element in the x vector. The results are stored in the sum buffer. This routine is the non-absolute version of the xASUM BLAS routine.", []),
+  Routine(True,  True,  "1", "amax",  T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imax"], [], "2*n", "Index of absolute maximum value in a vector", "Finds the index of the maximum of the absolute values in the x vector. The resulting integer index is stored in the imax buffer.", []),
+  Routine(True,  False, "1", "max",   T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imax"], [], "2*n", "Index of maximum value in a vector (non-BLAS function)", "Finds the index of the maximum of the values in the x vector. The resulting integer index is stored in the imax buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.", []),
+  Routine(True,  False, "1", "min",   T, [iS,iD,iC,iZ,iH], ["n"], [], ["x"], ["imin"], [], "2*n", "Index of minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the values in the x vector. The resulting integer index is stored in the imin buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.", []),
 ],
 [ # Level 2: matrix-vector
-  Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication", "Performs the operation y = alpha * A * x + beta * y, in which x is an input vector, y is an input and output vector, A is an input matrix, and alpha and beta are scalars. The matrix A can optionally be transposed before performing the operation.", []),
-  Routine(True,  True,  "2a", "gbmv",  T,  [S,D,C,Z], ["m","n","kl","ku"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is banded instead.", []),
-  Routine(True,  True,  "2a", "hemv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian matrix instead.", []),
-  Routine(True,  True,  "2a", "hbmv",  T,  [C,Z],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian banded matrix instead.", []),
-  Routine(True,  True,  "2a", "hpmv",  T,  [C,Z],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Hermitian packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian packed matrix instead and represented as AP.", []),
-  Routine(True,  True,  "2a", "symv",  T,  [S,D],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric matrix-vector multiplication", "Same operation as xGEMV, but matrix A is symmetric instead.", []),
-  Routine(True,  True,  "2a", "sbmv",  T,  [S,D],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is symmetric and banded instead.", []),
-  Routine(True,  True,  "2a", "spmv",  T,  [S,D],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Symmetric packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is a symmetric packed matrix instead and represented as AP.", []),
-  Routine(True,  True,  "2a", "trmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular matrix-vector multiplication", "Same operation as xGEMV, but matrix A is triangular instead.", []),
-  Routine(True,  True,  "2a", "tbmv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is triangular and banded instead.", []),
-  Routine(True,  True,  "2a", "tpmv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "n", "Triangular packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is a triangular packed matrix instead and repreented as AP.", []),
-  Routine(False, True,  "2a", "trsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a triangular system of equations", "", []),
-  Routine(False, True,  "2a", "tbsv",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a banded triangular system of equations", "", []),
-  Routine(False, True,  "2a", "tpsv",  T,  [S,D,C,Z], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "", "Solves a packed triangular system of equations", "", []),
+  Routine(True,  True,  "2a", "gemv",  T,  [S,D,C,Z,H], ["m","n"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General matrix-vector multiplication", "Performs the operation y = alpha * A * x + beta * y, in which x is an input vector, y is an input and output vector, A is an input matrix, and alpha and beta are scalars. The matrix A can optionally be transposed before performing the operation.", []),
+  Routine(True,  True,  "2a", "gbmv",  T,  [S,D,C,Z,H], ["m","n","kl","ku"], ["layout","a_transpose"], ["a","x"], ["y"], ["alpha","beta"], "", "General banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is banded instead.", []),
+  Routine(True,  True,  "2a", "hemv",  T,  [C,Z],       ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian matrix instead.", []),
+  Routine(True,  True,  "2a", "hbmv",  T,  [C,Z],       ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Hermitian banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian banded matrix instead.", []),
+  Routine(True,  True,  "2a", "hpmv",  T,  [C,Z],       ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Hermitian packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is an Hermitian packed matrix instead and represented as AP.", []),
+  Routine(True,  True,  "2a", "symv",  T,  [S,D,H],     ["n"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric matrix-vector multiplication", "Same operation as xGEMV, but matrix A is symmetric instead.", []),
+  Routine(True,  True,  "2a", "sbmv",  T,  [S,D,H],     ["n","k"], ["layout","triangle"], ["a","x"], ["y"], ["alpha","beta"], "", "Symmetric banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is symmetric and banded instead.", []),
+  Routine(True,  True,  "2a", "spmv",  T,  [S,D,H],     ["n"], ["layout","triangle"], ["ap","x"], ["y"], ["alpha","beta"], "", "Symmetric packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is a symmetric packed matrix instead and represented as AP.", []),
+  Routine(True,  True,  "2a", "trmv",  T,  [S,D,C,Z,H], ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular matrix-vector multiplication", "Same operation as xGEMV, but matrix A is triangular instead.", []),
+  Routine(True,  True,  "2a", "tbmv",  T,  [S,D,C,Z,H], ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "n", "Triangular banded matrix-vector multiplication", "Same operation as xGEMV, but matrix A is triangular and banded instead.", []),
+  Routine(True,  True,  "2a", "tpmv",  T,  [S,D,C,Z,H], ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "n", "Triangular packed matrix-vector multiplication", "Same operation as xGEMV, but matrix A is a triangular packed matrix instead and repreented as AP.", []),
+  Routine(False, True,  "2a", "trsv",  T,  [S,D,C,Z],   ["n"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a triangular system of equations", "", []),
+  Routine(False, True,  "2a", "tbsv",  T,  [S,D,C,Z],   ["n","k"], ["layout","triangle","a_transpose","diagonal"], ["a"], ["x"], [], "", "Solves a banded triangular system of equations", "", []),
+  Routine(False, True,  "2a", "tpsv",  T,  [S,D,C,Z],   ["n"], ["layout","triangle","a_transpose","diagonal"], ["ap"], ["x"], [], "", "Solves a packed triangular system of equations", "", []),
   # Level 2: matrix update
-  Routine(True,  True,  "2b", "ger",   T,  [S,D],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 matrix update", "", []),
-  Routine(True,  True,  "2b", "geru",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex matrix update", "", []),
-  Routine(True,  True,  "2b", "gerc",  T,  [C,Z],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex conjugated matrix update", "", []),
-  Routine(True,  True,  "2b", "her",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Hermitian rank-1 matrix update", "", []),
-  Routine(True,  True,  "2b", "hpr",   Tc, [Css,Zdd], ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Hermitian packed rank-1 matrix update", "", []),
-  Routine(True,  True,  "2b", "her2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Hermitian rank-2 matrix update", "", []),
-  Routine(True,  True,  "2b", "hpr2",  T,  [C,Z],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Hermitian packed rank-2 matrix update", "", []),
-  Routine(True,  True,  "2b", "syr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Symmetric rank-1 matrix update", "", []),
-  Routine(True,  True,  "2b", "spr",   T,  [S,D],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Symmetric packed rank-1 matrix update", "", []),
-  Routine(True,  True,  "2b", "syr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Symmetric rank-2 matrix update", "", []),
-  Routine(True,  True,  "2b", "spr2",  T,  [S,D],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Symmetric packed rank-2 matrix update", "", []),
+  Routine(True,  True,  "2b", "ger",   T,  [S,D,H],     ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 matrix update", "", []),
+  Routine(True,  True,  "2b", "geru",  T,  [C,Z],       ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex matrix update", "", []),
+  Routine(True,  True,  "2b", "gerc",  T,  [C,Z],       ["m","n"], ["layout"], ["x","y"], ["a"], ["alpha"], "", "General rank-1 complex conjugated matrix update", "", []),
+  Routine(True,  True,  "2b", "her",   Tc, [Css,Zdd],   ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Hermitian rank-1 matrix update", "", []),
+  Routine(True,  True,  "2b", "hpr",   Tc, [Css,Zdd],   ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Hermitian packed rank-1 matrix update", "", []),
+  Routine(True,  True,  "2b", "her2",  T,  [C,Z],       ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Hermitian rank-2 matrix update", "", []),
+  Routine(True,  True,  "2b", "hpr2",  T,  [C,Z],       ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Hermitian packed rank-2 matrix update", "", []),
+  Routine(True,  True,  "2b", "syr",   T,  [S,D,H],     ["n"], ["layout","triangle"], ["x"], ["a"], ["alpha"], "", "Symmetric rank-1 matrix update", "", []),
+  Routine(True,  True,  "2b", "spr",   T,  [S,D,H],     ["n"], ["layout","triangle"], ["x"], ["ap"], ["alpha"], "", "Symmetric packed rank-1 matrix update", "", []),
+  Routine(True,  True,  "2b", "syr2",  T,  [S,D,H],     ["n"], ["layout","triangle"], ["x","y"], ["a"], ["alpha"], "", "Symmetric rank-2 matrix update", "", []),
+  Routine(True,  True,  "2b", "spr2",  T,  [S,D,H],     ["n"], ["layout","triangle"], ["x","y"], ["ap"], ["alpha"], "", "Symmetric packed rank-2 matrix update", "", []),
 ],
 [ # Level 3: matrix-matrix
-  Routine(True,  True,  "3", "gemm",  T,  [S,D,C,Z], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "symm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "hemm",  T,  [C,Z],     ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication", "", []),
-  Routine(True,  True,  "3", "syrk",  T,  [S,D,C,Z], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix", "", []),
-  Routine(True,  True,  "3", "herk",  Tc, [Css,Zdd], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix", "", []),
-  Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix", "", []),
-  Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix", "", []),
-  Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication", "", []),
-  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations", "", []),
+  Routine(True,  True,  "3", "gemm",  T,  [S,D,C,Z,H], ["m","n","k"], ["layout","a_transpose","b_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "General matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "symm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Symmetric matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "hemm",  T,  [C,Z],       ["m","n"], ["layout","side","triangle"], ["a","b"], ["c"], ["alpha","beta"], "", "Hermitian matrix-matrix multiplication", "", []),
+  Routine(True,  True,  "3", "syrk",  T,  [S,D,C,Z,H], ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a symmetric matrix", "", []),
+  Routine(True,  True,  "3", "herk",  Tc, [Css,Zdd],   ["n","k"], ["layout","triangle","a_transpose"], ["a"], ["c"], ["alpha","beta"], "", "Rank-K update of a hermitian matrix", "", []),
+  Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z,H], ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a symmetric matrix", "", []),
+  Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd],   ["n","k"], ["layout","triangle","ab_transpose"], ["a","b"], ["c"], ["alpha","beta"], "", "Rank-2K update of a hermitian matrix", "", []),
+  Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Triangular matrix-matrix multiplication", "", []),
+  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z,H], ["m","n"], ["layout","side","triangle","a_transpose","diagonal"], ["a"], ["b"], ["alpha"], "", "Solves a triangular system of equations", "", []),
 ]]
 
 # ==================================================================================================
@@ -229,21 +231,45 @@ def wrapper_clblas(routines):
 	result = ""
 	for routine in routines:
 		if routine.has_tests:
-			result += "\n// Forwards the clBLAS calls for %s\n" % (routine.ShortNames())
+			result += "\n// Forwards the clBLAS calls for %s\n" % (routine.ShortNamesTested())
 			if routine.NoScalars():
 				result += routine.RoutineHeaderWrapperCL(routine.template, True, 21)+";\n"
 			for flavour in routine.flavours:
-				indent = " "*(17 + routine.Length())
 				result += routine.RoutineHeaderWrapperCL(flavour, False, 21)+" {\n"
-				arguments = routine.ArgumentsWrapperCL(flavour)
-				if routine.scratch:
-					result += "  auto queue = Queue(queues[0]);\n"
-					result += "  auto context = queue.GetContext();\n"
-					result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, "+routine.scratch+");\n"
-					arguments += ["scratch_buffer()"]
-				result += "  return clblas"+flavour.name+routine.name+"("
-				result += (",\n"+indent).join([a for a in arguments])
-				result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+
+				# There is a version available in clBLAS
+				if flavour.precision_name in ["S","D","C","Z"]:
+					indent = " "*(17 + routine.Length())
+					arguments = routine.ArgumentsWrapperCL(flavour)
+					if routine.scratch:
+						result += "  auto queue = Queue(queues[0]);\n"
+						result += "  auto context = queue.GetContext();\n"
+						result += "  auto scratch_buffer = Buffer<"+flavour.template+">(context, "+routine.scratch+");\n"
+						arguments += ["scratch_buffer()"]
+					result += "  return clblas"+flavour.name+routine.name+"("
+					result += (",\n"+indent).join([a for a in arguments])
+					result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+
+				# There is no clBLAS available, forward the call to one of the available functions
+				else: # Half-precision
+					indent = " "*(24 + routine.Length())
+
+					# Convert to float (note: also integer buffers are stored as half/float)
+					for buf in routine.inputs + routine.outputs:
+						result += "  auto "+buf+"_buffer_bis = HalfToFloatBuffer("+buf+"_buffer, queues[0]);\n"
+
+					# Call the float routine
+					result += "  auto status = clblasX"+routine.name+"("
+					result += (",\n"+indent).join([a for a in routine.ArgumentsHalf()])
+					result += ",\n"+indent+"num_queues, queues, num_wait_events, wait_events, events);"
+					result += "\n"
+
+					# Convert back to half
+					for buf in routine.outputs:
+						result += "  FloatToHalfBuffer("+buf+"_buffer, "+buf+"_buffer_bis, queues[0]);\n"
+					result += "  return status;"
+
+				# Complete
 				result += "\n}\n"
 	return result
 
@@ -252,44 +278,66 @@ def wrapper_cblas(routines):
 	result = ""
 	for routine in routines:
 		if routine.has_tests:
-			result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNames())
+			result += "\n// Forwards the Netlib BLAS calls for %s\n" % (routine.ShortNamesTested())
 			for flavour in routine.flavours:
-				indent = " "*(10 + routine.Length())
 				result += routine.RoutineHeaderWrapperC(flavour, False, 12)+" {\n"
-				arguments = routine.ArgumentsWrapperC(flavour)
 
-				# Double-precision scalars
-				for scalar in routine.scalars:
-					if flavour.IsComplex(scalar):
-						result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
+				# There is a version available in CBLAS
+				if flavour.precision_name in ["S","D","C","Z"]:
+					indent = " "*(10 + routine.Length())
+					arguments = routine.ArgumentsWrapperC(flavour)
 
-				# Special case for scalar outputs
-				assignment = ""
-				postfix = ""
-				endofline = ""
-				extra_argument = ""
-				for output_buffer in routine.outputs:
-					if output_buffer in routine.ScalarBuffersFirst():
-						if flavour in [C,Z]:
-							postfix += "_sub"
-							indent += "    "
-							extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
-						elif output_buffer in routine.IndexBuffers():
-							assignment = "((int*)&"+output_buffer+"_buffer[0])["+output_buffer+"_offset] = "
-							indent += " "*len(assignment)
-						else:
-							assignment = output_buffer+"_buffer["+output_buffer+"_offset]"
-							if (flavour.name in ["Sc","Dz"]):
-								assignment = assignment+".real("
-								endofline += ")"
+					# Complex scalars
+					for scalar in routine.scalars:
+						if flavour.IsComplex(scalar):
+							result += "  const auto "+scalar+"_array = std::vector<"+flavour.buffertype[:-1]+">{"+scalar+".real(), "+scalar+".imag()};\n"
+
+					# Special case for scalar outputs
+					assignment = ""
+					postfix = ""
+					endofline = ""
+					extra_argument = ""
+					for output_buffer in routine.outputs:
+						if output_buffer in routine.ScalarBuffersFirst():
+							if flavour in [C,Z]:
+								postfix += "_sub"
+								indent += "    "
+								extra_argument += ",\n"+indent+"reinterpret_cast<return_pointer_"+flavour.buffertype[:-1]+">(&"+output_buffer+"_buffer["+output_buffer+"_offset])"
+							elif output_buffer in routine.IndexBuffers():
+								assignment = "((int*)&"+output_buffer+"_buffer[0])["+output_buffer+"_offset] = "
+								indent += " "*len(assignment)
 							else:
-								assignment = assignment+" = "
-							indent += " "*len(assignment)
+								assignment = output_buffer+"_buffer["+output_buffer+"_offset]"
+								if (flavour.name in ["Sc","Dz"]):
+									assignment = assignment+".real("
+									endofline += ")"
+								else:
+									assignment = assignment+" = "
+								indent += " "*len(assignment)
 
-				result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
-				result += (",\n"+indent).join([a for a in arguments])
-				result += extra_argument+endofline+");"
-				result += "\n}\n"
+					result += "  "+assignment+"cblas_"+flavour.name.lower()+routine.name+postfix+"("
+					result += (",\n"+indent).join([a for a in arguments])
+					result += extra_argument+endofline+");\n"
+
+				# There is no CBLAS available, forward the call to one of the available functions
+				else: # Half-precision
+					indent = " "*(9 + routine.Length())
+
+					# Convert to float (note: also integer buffers are stored as half/float)
+					for buf in routine.inputs + routine.outputs:
+						result += "  auto "+buf+"_buffer_bis = HalfToFloatBuffer("+buf+"_buffer);\n"
+
+					# Call the float routine
+					result += "  cblasX"+routine.name+"("
+					result += (",\n"+indent).join([a for a in routine.ArgumentsHalf()])
+					result += ");\n"
+
+					# Convert back to half
+					for buf in routine.outputs:
+						result += "  FloatToHalfBuffer("+buf+"_buffer, "+buf+"_buffer_bis);\n"
+
+				# Complete
+				result += "}\n"
 	return result
 
 # ==================================================================================================

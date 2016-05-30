@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xgemm<half>::precision_ = Precision::kHalf;
 template <> const Precision Xgemm<float>::precision_ = Precision::kSingle;
 template <> const Precision Xgemm<double>::precision_ = Precision::kDouble;
 template <> const Precision Xgemm<float2>::precision_ = Precision::kComplexSingle;
@@ -122,6 +123,12 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, m_ceiled*n_ceiled);
 
+    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+    auto alpha_buffer = Buffer<T>(context_, 1);
+    auto beta_buffer = Buffer<T>(context_, 1);
+    alpha_buffer.Write(queue_, 1, &alpha);
+    beta_buffer.Write(queue_, 1, &beta);
+
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
     auto emptyEventList = std::vector<Event>();
@@ -169,8 +176,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       kernel.SetArgument(0, static_cast<int>(m_ceiled));
       kernel.SetArgument(1, static_cast<int>(n_ceiled));
       kernel.SetArgument(2, static_cast<int>(k_ceiled));
-      kernel.SetArgument(3, alpha);
-      kernel.SetArgument(4, beta);
+      kernel.SetArgument(3, alpha_buffer());
+      kernel.SetArgument(4, beta_buffer());
       kernel.SetArgument(5, a_temp());
       kernel.SetArgument(6, b_temp());
       kernel.SetArgument(7, c_temp());
@@ -207,6 +214,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xgemm<half>;
 template class Xgemm<float>;
 template class Xgemm<double>;
 template class Xgemm<float2>;

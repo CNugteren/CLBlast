@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xaxpy<half>::precision_ = Precision::kHalf;
 template <> const Precision Xaxpy<float>::precision_ = Precision::kSingle;
 template <> const Precision Xaxpy<double>::precision_ = Precision::kDouble;
 template <> const Precision Xaxpy<float2>::precision_ = Precision::kComplexSingle;
@@ -67,16 +68,20 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
     const auto program = GetProgramFromCache();
     auto kernel = Kernel(program, kernel_name);
 
+    // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
+    auto alpha_buffer = Buffer<T>(context_, 1);
+    alpha_buffer.Write(queue_, 1, &alpha);
+
     // Sets the kernel arguments
     if (use_fast_kernel) {
       kernel.SetArgument(0, static_cast<int>(n));
-      kernel.SetArgument(1, alpha);
+      kernel.SetArgument(1, alpha_buffer());
       kernel.SetArgument(2, x_buffer());
       kernel.SetArgument(3, y_buffer());
     }
     else {
       kernel.SetArgument(0, static_cast<int>(n));
-      kernel.SetArgument(1, alpha);
+      kernel.SetArgument(1, alpha_buffer());
       kernel.SetArgument(2, x_buffer());
       kernel.SetArgument(3, static_cast<int>(x_offset));
       kernel.SetArgument(4, static_cast<int>(x_inc));
@@ -107,6 +112,7 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xaxpy<half>;
 template class Xaxpy<float>;
 template class Xaxpy<double>;
 template class Xaxpy<float2>;

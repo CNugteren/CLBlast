@@ -119,7 +119,7 @@ using double2 = clblast::double2;
 template <int V>
 void StartVariation(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXdot<half, V>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXdot<float, V>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXdot<double, V>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXdot<float2, V>, float2>(argc, argv); break;

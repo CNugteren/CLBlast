@@ -22,6 +22,56 @@
 namespace clblast {
 // =================================================================================================
 
+// Returns a scalar with a default value
+template <typename T>
+T GetScalar() {
+  return static_cast<T>(2.0);
+}
+template float GetScalar<float>();
+template double GetScalar<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half GetScalar() {
+  return FloatToHalf(2.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 GetScalar() {
+  return {2.0f, 0.5f};
+}
+template <>
+double2 GetScalar() {
+  return {2.0, 0.5};
+}
+
+// Returns a scalar of value 1
+template <typename T>
+T ConstantOne() {
+  return static_cast<T>(1.0);
+}
+template float ConstantOne<float>();
+template double ConstantOne<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half ConstantOne() {
+  return FloatToHalf(1.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 ConstantOne() {
+  return {1.0f, 0.0f};
+}
+template <>
+double2 ConstantOne() {
+  return {1.0, 0.0};
+}
+
+// =================================================================================================
+
 // Implements the string conversion using std::to_string if possible
 template <typename T>
 std::string ToString(T value) {
@@ -46,6 +96,12 @@ std::string ToString(double2 value) {
   real << std::setprecision(2) << value.real();
   imag << std::setprecision(2) << value.imag();
   return real.str()+"+"+imag.str()+"i";
+}
+
+// If not possible directly: special case for half-precision
+template <>
+std::string ToString(half value) {
+  return std::to_string(HalfToFloat(value));
 }
 
 // If not possible directly: special cases for CLBlast data-types
@@ -105,6 +161,9 @@ template <typename T>
 T ConvertArgument(const char* value) {
   return static_cast<T>(std::stoi(value));
 }
+template <> half ConvertArgument(const char* value) {
+  return FloatToHalf(static_cast<float>(std::stod(value)));
+}
 template <> float ConvertArgument(const char* value) {
   return static_cast<float>(std::stod(value));
 }
@@ -147,6 +206,7 @@ T GetArgument(const int argc, char *argv[], std::string &help,
 // Compiles the above function
 template int GetArgument<int>(const int, char **, std::string&, const std::string&, const int);
 template size_t GetArgument<size_t>(const int, char **, std::string&, const std::string&, const size_t);
+template half GetArgument<half>(const int, char **, std::string&, const std::string&, const half);
 template float GetArgument<float>(const int, char **, std::string&, const std::string&, const float);
 template double GetArgument<double>(const int, char **, std::string&, const std::string&, const double);
 template float2 GetArgument<float2>(const int, char **, std::string&, const std::string&, const float2);
@@ -227,24 +287,49 @@ void PopulateVector(std::vector<double2> &vector) {
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 
+// Specialized versions of the above for half-precision
+template <>
+void PopulateVector(std::vector<half> &vector) {
+  const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
+  const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
+  std::mt19937 mt(GetRandomSeed());
+  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
+  for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
+}
+
 // =================================================================================================
 
-// Returns a scalar with a default value
-template <typename T>
-T GetScalar() {
-  return static_cast<T>(2.0);
+// Conversion between half and single-precision
+std::vector<float> HalfToFloatBuffer(const std::vector<half>& source) {
+  auto result = std::vector<float>(source.size());
+  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = HalfToFloat(source[i]); }
+  return result;
 }
-template float GetScalar<float>();
-template double GetScalar<double>();
+void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source) {
+  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = FloatToHalf(source[i]); }
+}
 
-// Specialized versions of the above for complex data-types
-template <>
-float2 GetScalar() {
-  return {2.0f, 0.5f};
+// As above, but now for OpenCL data-types instead of std::vectors
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw) {
+  const auto size = source.GetSize() / sizeof(half);
+  auto queue = Queue(queue_raw);
+  auto context = queue.GetContext();
+  auto source_cpu = std::vector<half>(size);
+  source.Read(queue, size, source_cpu);
+  auto result_cpu = HalfToFloatBuffer(source_cpu);
+  auto result = Buffer<float>(context, size);
+  result.Write(queue, size, result_cpu);
+  return result;
 }
-template <>
-double2 GetScalar() {
-  return {2.0, 0.5};
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw) {
+  const auto size = source.GetSize() / sizeof(float);
+  auto queue = Queue(queue_raw);
+  auto context = queue.GetContext();
+  auto source_cpu = std::vector<float>(size);
+  source.Read(queue, size, source_cpu);
+  auto result_cpu = std::vector<half>(size);
+  FloatToHalfBuffer(result_cpu, source_cpu);
+  result.Write(queue, size, result_cpu);
 }
 
 // =================================================================================================
@@ -287,6 +372,10 @@ template <> bool PrecisionSupported<double>(const Device &device) {
 template <> bool PrecisionSupported<double2>(const Device &device) {
   auto extensions = device.Capabilities();
   return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+}
+template <> bool PrecisionSupported<half>(const Device &device) {
+  auto extensions = device.Capabilities();
+  return (extensions.find(kKhronosHalfPrecision) == std::string::npos) ? false : true;
 }
 
 // =================================================================================================

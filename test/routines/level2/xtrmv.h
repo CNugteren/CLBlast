@@ -92,8 +92,8 @@ class TestXtrmv {
                                    convertToCLBLAS(args.a_transpose),
                                    convertToCLBLAS(args.diagonal),
                                    args.n,
-                                   buffers.a_mat(), args.a_offset, args.a_ld,
-                                   buffers.x_vec(), args.x_offset, args.x_inc,
+                                   buffers.a_mat, args.a_offset, args.a_ld,
+                                   buffers.x_vec, args.x_offset, args.x_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

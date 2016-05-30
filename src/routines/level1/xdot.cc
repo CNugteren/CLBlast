@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xdot<half>::precision_ = Precision::kHalf;
 template <> const Precision Xdot<float>::precision_ = Precision::kSingle;
 template <> const Precision Xdot<double>::precision_ = Precision::kDouble;
 template <> const Precision Xdot<float2>::precision_ = Precision::kComplexSingle;
@@ -108,6 +109,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xdot<half>;
 template class Xdot<float>;
 template class Xdot<double>;
 template class Xdot<float2>;

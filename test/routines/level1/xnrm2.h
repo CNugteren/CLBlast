@@ -86,8 +86,8 @@ class TestXnrm2 {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXnrm2<T>(args.n,
-                                   buffers.scalar(), args.nrm2_offset,
-                                   buffers.x_vec(), args.x_offset, args.x_inc,
+                                   buffers.scalar, args.nrm2_offset,
+                                   buffers.x_vec, args.x_offset, args.x_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);

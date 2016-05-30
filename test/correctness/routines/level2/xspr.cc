@@ -20,6 +20,7 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXspr<float>, float, float>(argc, argv, false, "SSPR");
   clblast::RunTests<clblast::TestXspr<double>, double, double>(argc, argv, true, "DSPR");
+  clblast::RunTests<clblast::TestXspr<half>, half, half>(argc, argv, true, "HSPR");
   return 0;
 }
 

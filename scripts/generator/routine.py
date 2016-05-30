@@ -99,6 +99,18 @@ class Routine():
 	def IndexBuffers(self):
 		return ["imax","imin"]
 
+	# Lists of input/output buffers not index (integer)
+	def NonIndexInputs(self):
+		buffers = self.inputs[:] # make a copy
+		for i in self.IndexBuffers():
+			if i in buffers: buffers.remove(i)
+		return buffers
+	def NonIndexOutputs(self):
+		buffers = self.outputs[:] # make a copy
+		for i in self.IndexBuffers():
+			if i in buffers: buffers.remove(i)
+		return buffers
+
 	# List of buffers without 'inc' or 'ld'
 	def BuffersWithoutLdInc(self):
 		return self.ScalarBuffersFirst() + self.ScalarBuffersSecond() + ["ap"]
@@ -118,6 +130,12 @@ class Routine():
 	# Returns the upper-case names of these routines (all flavours)
 	def ShortNames(self):
 		return "/".join([f.name+self.name.upper() for f in self.flavours])
+
+	# As above, but excludes some
+	def ShortNamesTested(self):
+		names = [f.name+self.name.upper() for f in self.flavours]
+		if "H"+self.name.upper() in names: names.remove("H"+self.name.upper())
+		return "/".join(names)
 
 	# Determines which buffers go first (between alpha and beta) and which ones go after
 	def BuffersFirst(self):
@@ -146,11 +164,32 @@ class Routine():
 			return [", ".join(a+b+c)]
 		return []
 
+	# As above but with a '_bis' suffix for the buffer name
+	def BufferBis(self, name):
+		#if (name in self.IndexBuffers()):
+	#		return self.Buffer(name)
+		if (name in self.inputs) or (name in self.outputs):
+			a = [name+"_buffer_bis"]
+			b = [name+"_offset"]
+			c = [name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
+			return [", ".join(a+b+c)]
+		return []
+
 	# As above but with data-types
 	def BufferDef(self, name):
 		prefix = "const " if (name in self.inputs) else ""
 		if (name in self.inputs) or (name in self.outputs):
 			a = [prefix+"cl_mem "+name+"_buffer"]
+			b = ["const size_t "+name+"_offset"]
+			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
+			return [", ".join(a+b+c)]
+		return []
+
+	# As above but with data-types
+	def BufferDefWrapperCL(self, name, flavour):
+		prefix = "const " if (name in self.inputs) else ""
+		if (name in self.inputs) or (name in self.outputs):
+			a = [prefix+"Buffer<"+flavour.buffertype+">& "+name+"_buffer"]
 			b = ["const size_t "+name+"_offset"]
 			c = ["const size_t "+name+"_"+self.Postfix(name)] if (name not in self.BuffersWithoutLdInc()) else []
 			return [", ".join(a+b+c)]
@@ -179,7 +218,7 @@ class Routine():
 	# As above but with a static cast for clBLAS wrapper
 	def BufferWrapperCL(self, name):
 		if (name in self.inputs) or (name in self.outputs):
-			a = [name+"_buffer"]
+			a = [name+"_buffer()"]
 			b = [name+"_offset"]
 			c = []
 			if (name in ["x","y"]):
@@ -238,6 +277,12 @@ class Routine():
 			return [name]
 		return []
 
+	# As above, but converts from float to half
+	def ScalarHalfToFloat(self, name):
+		if name in self.scalars:
+			return ["HalfToFloat("+name+")"]
+		return []
+
 	# Retrieves the use of a scalar (alpha/beta)
 	def ScalarUse(self, name, flavour):
 		if name in self.scalars:
@@ -248,7 +293,7 @@ class Routine():
 			return [name]
 		return []
 
-	# Retrieves the use of a scalar (alpha/beta)
+	# As above, but for the clBLAS wrapper
 	def ScalarUseWrapper(self, name, flavour):
 		if name in self.scalars:
 			if name == "alpha":
@@ -258,7 +303,7 @@ class Routine():
 			return [name]
 		return []
 
-	# Retrieves the use of a scalar for CBLAS (alpha/beta)
+	# As above, but for the CBLAS wrapper
 	def ScalarUseWrapperC(self, name, flavour):
 		if name in self.scalars:
 			if flavour.IsComplex(name):
@@ -377,6 +422,28 @@ class Routine():
 
 	# ==============================================================================================
 
+	# Retrieves a combination of all the argument names (no types)
+	def Arguments(self):
+		return (self.Options() + self.Sizes() +
+		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffersFirst()])) +
+		        self.Scalar("alpha") +
+		        list(chain(*[self.Buffer(b) for b in self.BuffersFirst()])) +
+		        self.Scalar("beta") +
+		        list(chain(*[self.Buffer(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.Scalar(s) for s in self.OtherScalars()])))
+
+	# As above, but with conversions from half to float
+	def ArgumentsHalf(self):
+		return (self.Options() + self.Sizes() +
+		        list(chain(*[self.BufferBis(b) for b in self.ScalarBuffersFirst()])) +
+		        self.ScalarHalfToFloat("alpha") +
+		        list(chain(*[self.BufferBis(b) for b in self.BuffersFirst()])) +
+		        self.ScalarHalfToFloat("beta") +
+		        list(chain(*[self.BufferBis(b) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferBis(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.Scalar(s) for s in self.OtherScalars()])))
+
 	# Retrieves a combination of all the argument names, with Claduc casts
 	def ArgumentsCladuc(self, flavour, indent):
 		return (self.Options() + self.Sizes() +
@@ -388,7 +455,7 @@ class Routine():
 		        list(chain(*[self.BufferCladuc(b) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.Scalar(s) for s in self.OtherScalars()])))
 
-	# Retrieves a combination of all the argument names, with CLBlast casts
+	# As above, but with CLBlast casts
 	def ArgumentsCast(self, flavour, indent):
 		return (self.OptionsCast(indent) + self.Sizes() +
 		        list(chain(*[self.Buffer(b) for b in self.ScalarBuffersFirst()])) +
@@ -434,12 +501,12 @@ class Routine():
 	# As above, but clBLAS wrapper plain datatypes
 	def ArgumentsDefWrapperCL(self, flavour):
 		return (self.OptionsDefWrapperCL() + self.SizesDef() +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersFirst()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.ScalarBuffersFirst()])) +
 		        self.ScalarDefPlain("alpha", flavour) +
-		        list(chain(*[self.BufferDef(b) for b in self.BuffersFirst()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.BuffersFirst()])) +
 		        self.ScalarDefPlain("beta", flavour) +
-		        list(chain(*[self.BufferDef(b) for b in self.BuffersSecond()])) +
-		        list(chain(*[self.BufferDef(b) for b in self.ScalarBuffersSecond()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.BuffersSecond()])) +
+		        list(chain(*[self.BufferDefWrapperCL(b, flavour) for b in self.ScalarBuffersSecond()])) +
 		        list(chain(*[self.ScalarDefPlain(s, flavour) for s in self.OtherScalars()])))
 
 	# As above, but CBLAS wrapper plain datatypes

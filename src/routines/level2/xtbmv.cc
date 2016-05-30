@@ -72,6 +72,7 @@ StatusCode Xtbmv<T>::DoTbmv(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xtbmv<half>;
 template class Xtbmv<float>;
 template class Xtbmv<double>;
 template class Xtbmv<float2>;

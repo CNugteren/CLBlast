@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXasum<double>, double, double>(argc, argv, true, "DASUM");
   clblast::RunTests<clblast::TestXasum<float2>, float2, float2>(argc, argv, true, "ScASUM");
   clblast::RunTests<clblast::TestXasum<double2>, double2, double2>(argc, argv, true, "DzASUM");
+  clblast::RunTests<clblast::TestXasum<half>, half, half>(argc, argv, true, "HASUM");
   return 0;
 }
 

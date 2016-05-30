@@ -161,6 +161,17 @@ void cblasXswap(const size_t n,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
+void cblasXswap(const size_t n,
+                std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXswap(n,
+             x_buffer_bis, x_offset, x_inc,
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(x_buffer, x_buffer_bis);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSCAL/DSCAL/CSCAL/ZSCAL
 void cblasXscal(const size_t n,
@@ -193,6 +204,15 @@ void cblasXscal(const size_t n,
               alpha_array.data(),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
+void cblasXscal(const size_t n,
+                const half alpha,
+                std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  cblasXscal(n,
+             HalfToFloat(alpha),
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(x_buffer, x_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SCOPY/DCOPY/CCOPY/ZCOPY
 void cblasXcopy(const size_t n,
@@ -222,6 +242,16 @@ void cblasXcopy(const size_t n,
   cblas_zcopy(n,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
+}
+void cblasXcopy(const size_t n,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXcopy(n,
+             x_buffer_bis, x_offset, x_inc,
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for SAXPY/DAXPY/CAXPY/ZAXPY
@@ -263,6 +293,18 @@ void cblasXaxpy(const size_t n,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
+void cblasXaxpy(const size_t n,
+                const half alpha,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXaxpy(n,
+             HalfToFloat(alpha),
+             x_buffer_bis, x_offset, x_inc,
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SDOT/DDOT
 void cblasXdot(const size_t n,
@@ -280,6 +322,19 @@ void cblasXdot(const size_t n,
   dot_buffer[dot_offset] = cblas_ddot(n,
                                       &x_buffer[x_offset], static_cast<int>(x_inc),
                                       &y_buffer[y_offset], static_cast<int>(y_inc));
+}
+void cblasXdot(const size_t n,
+               std::vector<half>& dot_buffer, const size_t dot_offset,
+               const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+               const std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  auto dot_buffer_bis = HalfToFloatBuffer(dot_buffer);
+  cblasXdot(n,
+            dot_buffer_bis, dot_offset,
+            x_buffer_bis, x_offset, x_inc,
+            y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(dot_buffer, dot_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for CDOTU/ZDOTU
@@ -347,6 +402,16 @@ void cblasXnrm2(const size_t n,
   nrm2_buffer[nrm2_offset].real(cblas_dznrm2(n,
                                             reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
+void cblasXnrm2(const size_t n,
+                std::vector<half>& nrm2_buffer, const size_t nrm2_offset,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto nrm2_buffer_bis = HalfToFloatBuffer(nrm2_buffer);
+  cblasXnrm2(n,
+             nrm2_buffer_bis, nrm2_offset,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(nrm2_buffer, nrm2_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SASUM/DASUM/ScASUM/DzASUM
 void cblasXasum(const size_t n,
@@ -373,8 +438,18 @@ void cblasXasum(const size_t n,
   asum_buffer[asum_offset].real(cblas_dzasum(n,
                                             reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
+void cblasXasum(const size_t n,
+                std::vector<half>& asum_buffer, const size_t asum_offset,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto asum_buffer_bis = HalfToFloatBuffer(asum_buffer);
+  cblasXasum(n,
+             asum_buffer_bis, asum_offset,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(asum_buffer, asum_buffer_bis);
+}
 
-// Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 void cblasXamax(const size_t n,
                 std::vector<float>& imax_buffer, const size_t imax_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
@@ -398,6 +473,16 @@ void cblasXamax(const size_t n,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   ((int*)&imax_buffer[0])[imax_offset] = cblas_izamax(n,
                                                      reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+void cblasXamax(const size_t n,
+                std::vector<half>& imax_buffer, const size_t imax_offset,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto imax_buffer_bis = HalfToFloatBuffer(imax_buffer);
+  cblasXamax(n,
+             imax_buffer_bis, imax_offset,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(imax_buffer, imax_buffer_bis);
 }
 
 // =================================================================================================
@@ -469,6 +554,25 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
+void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
+                const size_t m, const size_t n,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const half beta,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXgemv(layout, a_transpose,
+             m, n,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc,
+             HalfToFloat(beta),
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SGBMV/DGBMV/CGBMV/ZGBMV
 void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
@@ -534,6 +638,25 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
+}
+void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
+                const size_t m, const size_t n, const size_t kl, const size_t ku,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const half beta,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXgbmv(layout, a_transpose,
+             m, n, kl, ku,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc,
+             HalfToFloat(beta),
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for CHEMV/ZHEMV
@@ -675,6 +798,25 @@ void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
+void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+                const size_t n,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const half beta,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXsymv(layout, triangle,
+             n,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc,
+             HalfToFloat(beta),
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSBMV/DSBMV
 void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
@@ -707,6 +849,25 @@ void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
+void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+                const size_t n, const size_t k,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const half beta,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXsbmv(layout, triangle,
+             n, k,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc,
+             HalfToFloat(beta),
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSPMV/DSPMV
 void cblasXspmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
@@ -738,6 +899,25 @@ void cblasXspmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
+}
+void cblasXspmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+                const size_t n,
+                const half alpha,
+                const std::vector<half>& ap_buffer, const size_t ap_offset,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const half beta,
+                std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc) {
+  auto ap_buffer_bis = HalfToFloatBuffer(ap_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  cblasXspmv(layout, triangle,
+             n,
+             HalfToFloat(alpha),
+             ap_buffer_bis, ap_offset,
+             x_buffer_bis, x_offset, x_inc,
+             HalfToFloat(beta),
+             y_buffer_bis, y_offset, y_inc);
+  FloatToHalfBuffer(y_buffer, y_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for STRMV/DTRMV/CTRMV/ZTRMV
@@ -777,6 +957,18 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
+void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
+                const size_t n,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  cblasXtrmv(layout, triangle, a_transpose, diagonal,
+             n,
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(x_buffer, x_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for STBMV/DTBMV/CTBMV/ZTBMV
 void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -815,6 +1007,18 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
+void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
+                const size_t n, const size_t k,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  cblasXtbmv(layout, triangle, a_transpose, diagonal,
+             n, k,
+             a_buffer_bis, a_offset, a_ld,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(x_buffer, x_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for STPMV/DTPMV/CTPMV/ZTPMV
 void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -852,6 +1056,18 @@ void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
               n,
               reinterpret_cast<const double*>(&ap_buffer[ap_offset]),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+}
+void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
+                const size_t n,
+                const std::vector<half>& ap_buffer, const size_t ap_offset,
+                std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
+  auto ap_buffer_bis = HalfToFloatBuffer(ap_buffer);
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  cblasXtpmv(layout, triangle, a_transpose, diagonal,
+             n,
+             ap_buffer_bis, ap_offset,
+             x_buffer_bis, x_offset, x_inc);
+  FloatToHalfBuffer(x_buffer, x_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for STRSV/DTRSV/CTRSV/ZTRSV
@@ -994,6 +1210,23 @@ void cblasXger(const CBLAS_ORDER layout,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
              &a_buffer[a_offset], a_ld);
+}
+void cblasXger(const CBLAS_ORDER layout,
+               const size_t m, const size_t n,
+               const half alpha,
+               const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+               const std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc,
+               std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  cblasXger(layout,
+            m, n,
+            HalfToFloat(alpha),
+            x_buffer_bis, x_offset, x_inc,
+            y_buffer_bis, y_offset, y_inc,
+            a_buffer_bis, a_offset, a_ld);
+  FloatToHalfBuffer(a_buffer, a_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for CGERU/ZGERU
@@ -1187,6 +1420,20 @@ void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &a_buffer[a_offset], a_ld);
 }
+void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+               const size_t n,
+               const half alpha,
+               const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+               std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  cblasXsyr(layout, triangle,
+            n,
+            HalfToFloat(alpha),
+            x_buffer_bis, x_offset, x_inc,
+            a_buffer_bis, a_offset, a_ld);
+  FloatToHalfBuffer(a_buffer, a_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSPR/DSPR
 void cblasXspr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
@@ -1210,6 +1457,20 @@ void cblasXspr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &ap_buffer[ap_offset]);
+}
+void cblasXspr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+               const size_t n,
+               const half alpha,
+               const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+               std::vector<half>& ap_buffer, const size_t ap_offset) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto ap_buffer_bis = HalfToFloatBuffer(ap_buffer);
+  cblasXspr(layout, triangle,
+            n,
+            HalfToFloat(alpha),
+            x_buffer_bis, x_offset, x_inc,
+            ap_buffer_bis, ap_offset);
+  FloatToHalfBuffer(ap_buffer, ap_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for SSYR2/DSYR2
@@ -1239,6 +1500,23 @@ void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               &y_buffer[y_offset], static_cast<int>(y_inc),
               &a_buffer[a_offset], a_ld);
 }
+void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+                const size_t n,
+                const half alpha,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc,
+                std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  cblasXsyr2(layout, triangle,
+             n,
+             HalfToFloat(alpha),
+             x_buffer_bis, x_offset, x_inc,
+             y_buffer_bis, y_offset, y_inc,
+             a_buffer_bis, a_offset, a_ld);
+  FloatToHalfBuffer(a_buffer, a_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSPR2/DSPR2
 void cblasXspr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
@@ -1266,6 +1544,23 @@ void cblasXspr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
               &ap_buffer[ap_offset]);
+}
+void cblasXspr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
+                const size_t n,
+                const half alpha,
+                const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc,
+                const std::vector<half>& y_buffer, const size_t y_offset, const size_t y_inc,
+                std::vector<half>& ap_buffer, const size_t ap_offset) {
+  auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
+  auto y_buffer_bis = HalfToFloatBuffer(y_buffer);
+  auto ap_buffer_bis = HalfToFloatBuffer(ap_buffer);
+  cblasXspr2(layout, triangle,
+             n,
+             HalfToFloat(alpha),
+             x_buffer_bis, x_offset, x_inc,
+             y_buffer_bis, y_offset, y_inc,
+             ap_buffer_bis, ap_offset);
+  FloatToHalfBuffer(ap_buffer, ap_buffer_bis);
 }
 
 // =================================================================================================
@@ -1337,6 +1632,25 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
               beta_array.data(),
               reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
 }
+void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, const CBLAS_TRANSPOSE b_transpose,
+                const size_t m, const size_t n, const size_t k,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld,
+                const half beta,
+                std::vector<half>& c_buffer, const size_t c_offset, const size_t c_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
+  auto c_buffer_bis = HalfToFloatBuffer(c_buffer);
+  cblasXgemm(layout, a_transpose, b_transpose,
+             m, n, k,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             b_buffer_bis, b_offset, b_ld,
+             HalfToFloat(beta),
+             c_buffer_bis, c_offset, c_ld);
+  FloatToHalfBuffer(c_buffer, c_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for SSYMM/DSYMM/CSYMM/ZSYMM
 void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
@@ -1402,6 +1716,25 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
               beta_array.data(),
               reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+}
+void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
+                const size_t m, const size_t n,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld,
+                const half beta,
+                std::vector<half>& c_buffer, const size_t c_offset, const size_t c_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
+  auto c_buffer_bis = HalfToFloatBuffer(c_buffer);
+  cblasXsymm(layout, side, triangle,
+             m, n,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             b_buffer_bis, b_offset, b_ld,
+             HalfToFloat(beta),
+             c_buffer_bis, c_offset, c_ld);
+  FloatToHalfBuffer(c_buffer, c_buffer_bis);
 }
 
 // Forwards the Netlib BLAS calls for CHEMM/ZHEMM
@@ -1497,6 +1830,22 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
               beta_array.data(),
               reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
 }
+void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
+                const size_t n, const size_t k,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                const half beta,
+                std::vector<half>& c_buffer, const size_t c_offset, const size_t c_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto c_buffer_bis = HalfToFloatBuffer(c_buffer);
+  cblasXsyrk(layout, triangle, a_transpose,
+             n, k,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             HalfToFloat(beta),
+             c_buffer_bis, c_offset, c_ld);
+  FloatToHalfBuffer(c_buffer, c_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for CHERK/ZHERK
 void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
@@ -1591,6 +1940,25 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
                beta_array.data(),
                reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
 }
+void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
+                 const size_t n, const size_t k,
+                 const half alpha,
+                 const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                 const std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld,
+                 const half beta,
+                 std::vector<half>& c_buffer, const size_t c_offset, const size_t c_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
+  auto c_buffer_bis = HalfToFloatBuffer(c_buffer);
+  cblasXsyr2k(layout, triangle, ab_transpose,
+              n, k,
+              HalfToFloat(alpha),
+              a_buffer_bis, a_offset, a_ld,
+              b_buffer_bis, b_offset, b_ld,
+              HalfToFloat(beta),
+              c_buffer_bis, c_offset, c_ld);
+  FloatToHalfBuffer(c_buffer, c_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for CHER2K/ZHER2K
 void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
@@ -1673,6 +2041,20 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
 }
+void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
+                const size_t m, const size_t n,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
+  cblasXtrmm(layout, side, triangle, a_transpose, diagonal,
+             m, n,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             b_buffer_bis, b_offset, b_ld);
+  FloatToHalfBuffer(b_buffer, b_buffer_bis);
+}
 
 // Forwards the Netlib BLAS calls for STRSM/DTRSM/CTRSM/ZTRSM
 void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1720,6 +2102,20 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
+}
+void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
+                const size_t m, const size_t n,
+                const half alpha,
+                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
+                std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld) {
+  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
+  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
+  cblasXtrsm(layout, side, triangle, a_transpose, diagonal,
+             m, n,
+             HalfToFloat(alpha),
+             a_buffer_bis, a_offset, a_ld,
+             b_buffer_bis, b_offset, b_ld);
+  FloatToHalfBuffer(b_buffer, b_buffer_bis);
 }
 
 // =================================================================================================

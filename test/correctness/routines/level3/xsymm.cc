@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
   clblast::RunTests<clblast::TestXsymm<float2>, float2, float2>(argc, argv, true, "CSYMM");
   clblast::RunTests<clblast::TestXsymm<double2>, double2, double2>(argc, argv, true, "ZSYMM");
+  clblast::RunTests<clblast::TestXsymm<half>, half, half>(argc, argv, true, "HSYMM");
   return 0;
 }
 

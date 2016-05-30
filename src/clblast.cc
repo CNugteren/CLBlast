@@ -160,7 +160,7 @@ template StatusCode PUBLIC_API Rotm<double>(const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
-// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
 StatusCode Swap(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -190,8 +190,12 @@ template StatusCode PUBLIC_API Swap<double2>(const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Swap<half>(const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 template <typename T>
 StatusCode Scal(const size_t n,
                 const T alpha,
@@ -221,8 +225,12 @@ template StatusCode PUBLIC_API Scal<double2>(const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<half>(const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 template <typename T>
 StatusCode Copy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -252,8 +260,12 @@ template StatusCode PUBLIC_API Copy<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Copy<half>(const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
 StatusCode Axpy(const size_t n,
                 const T alpha,
@@ -289,8 +301,13 @@ template StatusCode PUBLIC_API Axpy<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<half>(const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Dot product of two vectors: SDOT/DDOT
+// Dot product of two vectors: SDOT/DDOT/HDOT
 template <typename T>
 StatusCode Dot(const size_t n,
                cl_mem dot_buffer, const size_t dot_offset,
@@ -316,6 +333,11 @@ template StatusCode PUBLIC_API Dot<double>(const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dot<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
 template <typename T>
@@ -371,7 +393,7 @@ template StatusCode PUBLIC_API Dotc<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 template <typename T>
 StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,
@@ -401,8 +423,12 @@ template StatusCode PUBLIC_API Nrm2<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 template <typename T>
 StatusCode Asum(const size_t n,
                 cl_mem asum_buffer, const size_t asum_offset,
@@ -432,8 +458,12 @@ template StatusCode PUBLIC_API Asum<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 template <typename T>
 StatusCode Sum(const size_t n,
                cl_mem sum_buffer, const size_t sum_offset,
@@ -463,8 +493,12 @@ template StatusCode PUBLIC_API Sum<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
@@ -494,8 +528,12 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              cl_mem, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
 StatusCode Max(const size_t n,
                cl_mem imax_buffer, const size_t imax_offset,
@@ -525,8 +563,12 @@ template StatusCode PUBLIC_API Max<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 template <typename T>
 StatusCode Min(const size_t n,
                cl_mem imin_buffer, const size_t imin_offset,
@@ -556,12 +598,16 @@ template StatusCode PUBLIC_API Min<double2>(const size_t,
                                             cl_mem, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<half>(const size_t,
+                                         cl_mem, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
 
-// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
 template <typename T>
 StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n,
@@ -615,8 +661,16 @@ template StatusCode PUBLIC_API Gemv<double2>(const Layout, const Transpose,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Gemv<half>(const Layout, const Transpose,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
+// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
 StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const size_t m, const size_t n, const size_t kl, const size_t ku,
@@ -670,6 +724,14 @@ template StatusCode PUBLIC_API Gbmv<double2>(const Layout, const Transpose,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Gbmv<half>(const Layout, const Transpose,
+                                          const size_t, const size_t, const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -788,7 +850,7 @@ template StatusCode PUBLIC_API Hpmv<double2>(const Layout, const Triangle,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Symmetric matrix-vector multiplication: SSYMV/DSYMV
+// Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 template <typename T>
 StatusCode Symv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -826,8 +888,16 @@ template StatusCode PUBLIC_API Symv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Symv<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
+// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
 template <typename T>
 StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const size_t n, const size_t k,
@@ -865,8 +935,16 @@ template StatusCode PUBLIC_API Sbmv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sbmv<half>(const Layout, const Triangle,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
+// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
 StatusCode Spmv(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -904,8 +982,16 @@ template StatusCode PUBLIC_API Spmv<double>(const Layout, const Triangle,
                                             const double,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spmv<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
+// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
 StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,
@@ -941,8 +1027,13 @@ template StatusCode PUBLIC_API Trmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
+// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
 StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n, const size_t k,
@@ -978,8 +1069,13 @@ template StatusCode PUBLIC_API Tbmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Tbmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
+// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
 StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t n,
@@ -1015,6 +1111,11 @@ template StatusCode PUBLIC_API Tpmv<double2>(const Layout, const Triangle, const
                                              const cl_mem, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Tpmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
+                                          const size_t,
+                                          const cl_mem, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
@@ -1106,7 +1207,7 @@ template StatusCode PUBLIC_API Tpsv<double2>(const Layout, const Triangle, const
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// General rank-1 matrix update: SGER/DGER
+// General rank-1 matrix update: SGER/DGER/HGER
 template <typename T>
 StatusCode Ger(const Layout layout,
                const size_t m, const size_t n,
@@ -1140,6 +1241,13 @@ template StatusCode PUBLIC_API Ger<double>(const Layout,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Ger<half>(const Layout,
+                                         const size_t, const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
@@ -1343,7 +1451,7 @@ template StatusCode PUBLIC_API Hpr2<double2>(const Layout, const Triangle,
                                              cl_mem, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Symmetric rank-1 matrix update: SSYR/DSYR
+// Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 template <typename T>
 StatusCode Syr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -1373,8 +1481,14 @@ template StatusCode PUBLIC_API Syr<double>(const Layout, const Triangle,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syr<half>(const Layout, const Triangle,
+                                         const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Symmetric packed rank-1 matrix update: SSPR/DSPR
+// Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 template <typename T>
 StatusCode Spr(const Layout layout, const Triangle triangle,
                const size_t n,
@@ -1404,8 +1518,14 @@ template StatusCode PUBLIC_API Spr<double>(const Layout, const Triangle,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t,
                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr<half>(const Layout, const Triangle,
+                                         const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         cl_mem, const size_t,
+                                         cl_command_queue*, cl_event*);
 
-// Symmetric rank-2 matrix update: SSYR2/DSYR2
+// Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 template <typename T>
 StatusCode Syr2(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -1439,8 +1559,15 @@ template StatusCode PUBLIC_API Syr2<double>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syr2<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 template <typename T>
 StatusCode Spr2(const Layout layout, const Triangle triangle,
                 const size_t n,
@@ -1474,12 +1601,19 @@ template StatusCode PUBLIC_API Spr2<double>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr2<half>(const Layout, const Triangle,
+                                          const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 // =================================================================================================
 
-// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
+// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
 template <typename T>
 StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -1533,8 +1667,16 @@ template StatusCode PUBLIC_API Gemm<double2>(const Layout, const Transpose, cons
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Gemm<half>(const Layout, const Transpose, const Transpose,
+                                          const size_t, const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM
+// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
 StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const size_t m, const size_t n,
@@ -1588,6 +1730,14 @@ template StatusCode PUBLIC_API Symm<double2>(const Layout, const Side, const Tri
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Symm<half>(const Layout, const Side, const Triangle,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
 template <typename T>
@@ -1628,7 +1778,7 @@ template StatusCode PUBLIC_API Hemm<double2>(const Layout, const Side, const Tri
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 
-// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
+// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 template <typename T>
 StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                 const size_t n, const size_t k,
@@ -1676,6 +1826,13 @@ template StatusCode PUBLIC_API Syrk<double2>(const Layout, const Triangle, const
                                              const double2,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syrk<half>(const Layout, const Triangle, const Transpose,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          const half,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 template <typename T>
@@ -1712,7 +1869,7 @@ template StatusCode PUBLIC_API Herk<double>(const Layout, const Triangle, const 
                                             cl_mem, const size_t, const size_t,
                                             cl_command_queue*, cl_event*);
 
-// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 template <typename T>
 StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                  const size_t n, const size_t k,
@@ -1766,6 +1923,14 @@ template StatusCode PUBLIC_API Syr2k<double2>(const Layout, const Triangle, cons
                                               const double2,
                                               cl_mem, const size_t, const size_t,
                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Syr2k<half>(const Layout, const Triangle, const Transpose,
+                                           const size_t, const size_t,
+                                           const half,
+                                           const cl_mem, const size_t, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           const half,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
 
 // Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
 template <typename T, typename U>
@@ -1806,7 +1971,7 @@ template StatusCode PUBLIC_API Her2k<double2,double>(const Layout, const Triangl
                                                      cl_mem, const size_t, const size_t,
                                                      cl_command_queue*, cl_event*);
 
-// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
+// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
 template <typename T>
 StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
@@ -1848,8 +2013,14 @@ template StatusCode PUBLIC_API Trmm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmm<half>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
 template <typename T>
 StatusCode Trsm(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
                 const size_t, const size_t,
@@ -1883,6 +2054,12 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trsm<half>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
+                                          const size_t, const size_t,
+                                          const half,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 

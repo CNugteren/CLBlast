@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXcopy<double>, double, double>(argc, argv, true, "DCOPY");
   clblast::RunTests<clblast::TestXcopy<float2>, float2, float2>(argc, argv, true, "CCOPY");
   clblast::RunTests<clblast::TestXcopy<double2>, double2, double2>(argc, argv, true, "ZCOPY");
+  clblast::RunTests<clblast::TestXcopy<half>, half, half>(argc, argv, true, "HCOPY");
   return 0;
 }
 

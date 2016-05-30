@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXtrmm<double>, double, double>(argc, argv, true, "DTRMM");
   clblast::RunTests<clblast::TestXtrmm<float2>, float2, float2>(argc, argv, true, "CTRMM");
   clblast::RunTests<clblast::TestXtrmm<double2>, double2, double2>(argc, argv, true, "ZTRMM");
+  clblast::RunTests<clblast::TestXtrmm<half>, half, half>(argc, argv, true, "HTRMM");
   return 0;
 }
 

@@ -20,6 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Specific implementations to get the memory-type based on a template argument
+template <> const Precision Xcopy<half>::precision_ = Precision::kHalf;
 template <> const Precision Xcopy<float>::precision_ = Precision::kSingle;
 template <> const Precision Xcopy<double>::precision_ = Precision::kDouble;
 template <> const Precision Xcopy<float2>::precision_ = Precision::kComplexSingle;
@@ -105,6 +106,7 @@ StatusCode Xcopy<T>::DoCopy(const size_t n,
 // =================================================================================================
 
 // Compiles the templated class
+template class Xcopy<half>;
 template class Xcopy<float>;
 template class Xcopy<double>;
 template class Xcopy<float2>;

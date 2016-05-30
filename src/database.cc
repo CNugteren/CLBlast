@@ -29,15 +29,15 @@ namespace clblast {
 
 // Initializes the database
 const std::vector<Database::DatabaseEntry> Database::database = {
-  XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
-  XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
-  XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
-  XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
-  XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
-  CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
-  PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
-  TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
-  PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
+  XaxpyHalf, XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
+  XdotHalf, XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
+  XgemvHalf, XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
+  XgerHalf, XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
+  XgemmHalf, XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
+  CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
+  PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
+  TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
+  PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
 };
 
 // =================================================================================================

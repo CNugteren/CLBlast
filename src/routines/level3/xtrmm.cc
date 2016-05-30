@@ -130,6 +130,7 @@ StatusCode Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle
 // =================================================================================================
 
 // Compiles the templated class
+template class Xtrmm<half>;
 template class Xtrmm<float>;
 template class Xtrmm<double>;
 template class Xtrmm<float2>;

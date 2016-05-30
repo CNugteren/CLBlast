@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   clblast::RunTests<clblast::TestXsyrk<double>, double, double>(argc, argv, true, "DSYRK");
   clblast::RunTests<clblast::TestXsyrk<float2>, float2, float2>(argc, argv, true, "CSYRK");
   clblast::RunTests<clblast::TestXsyrk<double2>, double2, double2>(argc, argv, true, "ZSYRK");
+  clblast::RunTests<clblast::TestXsyrk<half>, half, half>(argc, argv, true, "HSYRK");
   return 0;
 }
 

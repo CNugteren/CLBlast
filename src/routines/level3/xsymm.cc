@@ -127,6 +127,7 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
 // =================================================================================================
 
 // Compiles the templated class
+template class Xsymm<half>;
 template class Xsymm<float>;
 template class Xsymm<double>;
 template class Xsymm<float2>;
