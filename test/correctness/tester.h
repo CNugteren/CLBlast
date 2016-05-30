@@ -103,6 +103,9 @@ class Tester {
   // Retrieves the offset values to test with
   const std::vector<size_t> GetOffsets() const;
 
+  // Retrieves the list of options as a string
+  std::string GetOptionsString(const Arguments<U> &args);
+
   // Testing against reference implementations
   int compare_cblas_;
   int compare_clblas_;

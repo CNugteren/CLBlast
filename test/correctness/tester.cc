@@ -137,7 +137,7 @@ void Tester<T,U>::TestStart(const std::string &test_name, const std::string &tes
   fprintf(stdout, "* Testing %s'%s'%s for %s'%s'%s:\n",
           kPrintMessage.c_str(), test_name.c_str(), kPrintEnd.c_str(),
           kPrintMessage.c_str(), test_configuration.c_str(), kPrintEnd.c_str());
-  fprintf(stdout, "   ");
+  if (!verbose_) { fprintf(stdout, "   "); }
 
   // Empties the error log and the error/pass counters
   error_log_.clear();
@@ -250,6 +250,33 @@ const std::vector<size_t> Tester<T,U>::GetOffsets() const {
   else { return {0}; }
 }
 
+// Retrieves the options as a string for a specific test
+template <typename T, typename U>
+std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
+  auto result = std::string("");
+  const auto equals = std::string("=");
+  for (auto &o: options_) {
+    if (o == kArgM)        { result += kArgM + equals + ToString(args.m) + " "; }
+    if (o == kArgN)        { result += kArgN + equals + ToString(args.n) + " "; }
+    if (o == kArgK)        { result += kArgK + equals + ToString(args.k) + " "; }
+    if (o == kArgKU)       { result += kArgKU + equals + ToString(args.ku) + " "; }
+    if (o == kArgKL)       { result += kArgKL + equals + ToString(args.kl) + " "; }
+    if (o == kArgXInc)     { result += kArgXInc + equals + ToString(args.x_inc) + " "; }
+    if (o == kArgYInc)     { result += kArgYInc + equals + ToString(args.y_inc) + " "; }
+    if (o == kArgXOffset)  { result += kArgXOffset + equals + ToString(args.x_offset) + " "; }
+    if (o == kArgYOffset)  { result += kArgYOffset + equals + ToString(args.y_offset) + " "; }
+    if (o == kArgALeadDim) { result += kArgALeadDim + equals + ToString(args.a_ld) + " "; }
+    if (o == kArgBLeadDim) { result += kArgBLeadDim + equals + ToString(args.b_ld) + " "; }
+    if (o == kArgCLeadDim) { result += kArgCLeadDim + equals + ToString(args.c_ld) + " "; }
+    if (o == kArgAOffset)  { result += kArgAOffset + equals + ToString(args.a_offset) + " "; }
+    if (o == kArgBOffset)  { result += kArgBOffset + equals + ToString(args.b_offset) + " "; }
+    if (o == kArgCOffset)  { result += kArgCOffset + equals + ToString(args.c_offset) + " "; }
+    if (o == kArgAPOffset) { result += kArgAPOffset + equals + ToString(args.ap_offset) + " "; }
+    if (o == kArgDotOffset){ result += kArgDotOffset + equals + ToString(args.dot_offset) + " "; }
+  }
+  return result;
+}
+
 // =================================================================================================
 
 // A test can either pass, be skipped, or fail
@@ -273,13 +300,19 @@ void Tester<T,U>::ReportError(const ErrorLogEntry &error_log_entry) {
 // line by printing newlines once every so many calls.
 template <typename T, typename U>
 void Tester<T,U>::PrintTestResult(const std::string &message) {
-  if (print_count_ == kResultsPerLine) {
-    print_count_ = 0;
-    fprintf(stdout, "\n   ");
+  if (verbose_) {
+    fprintf(stdout, "%s\n", message.c_str());
   }
-  fprintf(stdout, "%s", message.c_str());
+  else
+  {
+    if (print_count_ == kResultsPerLine) {
+      print_count_ = 0;
+      fprintf(stdout, "\n   ");
+    }
+    fprintf(stdout, "%s", message.c_str());
+    print_count_++;
+  }
   std::cout << std::flush;
-  print_count_++;
 }
 
 // Prints details of errors occurred in a given error log
@@ -292,32 +325,7 @@ void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
     else {
       fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
     }
-    for (auto &o: options_) {
-      if (o == kArgM)        { fprintf(stdout, "%s=%zu ", kArgM, entry.args.m); }
-      if (o == kArgN)        { fprintf(stdout, "%s=%zu ", kArgN, entry.args.n); }
-      if (o == kArgK)        { fprintf(stdout, "%s=%zu ", kArgK, entry.args.k); }
-      if (o == kArgKU)       { fprintf(stdout, "%s=%zu ", kArgKU, entry.args.ku); }
-      if (o == kArgKL)       { fprintf(stdout, "%s=%zu ", kArgKL, entry.args.kl); }
-      if (o == kArgLayout)   { fprintf(stdout, "%s=%d ", kArgLayout, entry.args.layout);}
-      if (o == kArgATransp)  { fprintf(stdout, "%s=%d ", kArgATransp, entry.args.a_transpose);}
-      if (o == kArgBTransp)  { fprintf(stdout, "%s=%d ", kArgBTransp, entry.args.b_transpose);}
-      if (o == kArgSide)     { fprintf(stdout, "%s=%d ", kArgSide, entry.args.side);}
-      if (o == kArgTriangle) { fprintf(stdout, "%s=%d ", kArgTriangle, entry.args.triangle);}
-      if (o == kArgDiagonal) { fprintf(stdout, "%s=%d ", kArgDiagonal, entry.args.diagonal);}
-      if (o == kArgXInc)     { fprintf(stdout, "%s=%zu ", kArgXInc, entry.args.x_inc);}
-      if (o == kArgYInc)     { fprintf(stdout, "%s=%zu ", kArgYInc, entry.args.y_inc);}
-      if (o == kArgXOffset)  { fprintf(stdout, "%s=%zu ", kArgXOffset, entry.args.x_offset);}
-      if (o == kArgYOffset)  { fprintf(stdout, "%s=%zu ", kArgYOffset, entry.args.y_offset);}
-      if (o == kArgALeadDim) { fprintf(stdout, "%s=%zu ", kArgALeadDim, entry.args.a_ld);}
-      if (o == kArgBLeadDim) { fprintf(stdout, "%s=%zu ", kArgBLeadDim, entry.args.b_ld);}
-      if (o == kArgCLeadDim) { fprintf(stdout, "%s=%zu ", kArgCLeadDim, entry.args.c_ld);}
-      if (o == kArgAOffset)  { fprintf(stdout, "%s=%zu ", kArgAOffset, entry.args.a_offset);}
-      if (o == kArgBOffset)  { fprintf(stdout, "%s=%zu ", kArgBOffset, entry.args.b_offset);}
-      if (o == kArgCOffset)  { fprintf(stdout, "%s=%zu ", kArgCOffset, entry.args.c_offset);}
-      if (o == kArgAPOffset) { fprintf(stdout, "%s=%zu ", kArgAPOffset, entry.args.ap_offset);}
-      if (o == kArgDotOffset){ fprintf(stdout, "%s=%zu ", kArgDotOffset, entry.args.dot_offset);}
-    }
-    fprintf(stdout, "\n");
+    fprintf(stdout, "%s\n", GetOptionsString(entry.args).c_str());
   }
 }
 

@@ -86,6 +86,11 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
   // Iterates over all the to-be-tested combinations of arguments
   for (auto &args: test_vector) {
 
+    // Prints the current test configuration
+    if (verbose_) {
+      fprintf(stdout, "   Config: %s-> ", GetOptionsString(args).c_str());
+    }
+
     // Runs the CLBlast code
     auto x_vec2 = Buffer<T>(context_, args.x_size);
     auto y_vec2 = Buffer<T>(context_, args.y_size);
