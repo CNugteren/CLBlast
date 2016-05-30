@@ -24,7 +24,8 @@ set(clblast_VERSION_PATCH 1)
 # Options and their default values
 option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
-option(TESTS "Enable compilation of the performance and correctness tests" OFF)
+option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
+option(TESTS "Enable compilation of the correctness tests" OFF)
 
 # ==================================================================================================
 
@@ -106,12 +107,17 @@ endif()
 
 # Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
 # and "FindCBLAS.cmake" are included.
-if(TESTS)
+if(CLIENTS OR TESTS)
   find_package(clBLAS)
   find_package(CBLAS)
   if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
-    message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
-    set(TESTS OFF)
+    if(TESTS)
+      message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
+      set(TESTS OFF)
+    endif()
+    if(CLIENTS)
+      message(STATUS "Could NOT find clBLAS nor a CPU BLAS, head-to-head performance comparison not supported in the clients")
+    endif()
   endif()
 endif()
 
@@ -224,9 +230,8 @@ endif()
 
 # ==================================================================================================
 
-# Down from here is all test (performance and correctness) related. Note that these tests require
-# the presence of clBLAS and/or a BLAS library to act as a reference.
-if(TESTS)
+# Section for the tests: common part for both performance ('CLIENTS') and correctness ('TESTS')
+if(CLIENTS OR TESTS)
 
   # Sets the specifics for the reference BLAS libraries
   set(REF_INCLUDES )
@@ -252,6 +257,43 @@ if(TESTS)
 
   # Sets the include directories
   include_directories(${clblast_SOURCE_DIR}/test ${REF_INCLUDES})
+
+endif()
+
+# ==================================================================================================
+
+# Section for the performance tests (i.e. the client). These compare against optionally a reference
+# library, either clBLAS or a CPU BLAS.
+if(CLIENTS)
+
+  # Creates the common performance-tests objects (requires CMake 2.8.8)
+  add_library(test_performance_common OBJECT test/performance/client.cc)
+
+  # Compiles the performance-tests
+  foreach(ROUTINE ${LEVEL1_ROUTINES})
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/level1/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL2_ROUTINES})
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/level2/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVEL3_ROUTINES})
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/level3/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${ROUTINES})
+    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
+  endforeach()
+
+endif()
+
+# ==================================================================================================
+
+# Section for the correctness tests. Note that these tests require the presence of clBLAS and/or a
+# CPU BLAS library to act as a reference.
+if(TESTS)
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
@@ -284,26 +326,6 @@ if(TESTS)
   endforeach()
   add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})
 
-  # Creates the common performance-tests objects (requires CMake 2.8.8)
-  add_library(test_performance_common OBJECT test/performance/client.cc)
-
-  # Compiles the performance-tests
-  foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level1/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level2/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level3/${ROUTINE}.cc)
-  endforeach()
-  foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
-    install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
-  endforeach()
-
 endif()
+
 # ==================================================================================================

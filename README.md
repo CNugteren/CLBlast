@@ -53,7 +53,7 @@ The pre-requisites for compilation of CLBlast are:
   - Intel OpenCL
   - Beignet
 
-Furthermore, to build the (optional) correctness and performance tests, another BLAS library is needed to serve as a reference. This can be either:
+Furthermore, to build the (optional) correctness tests, another BLAS library is needed to serve as a reference. This can be either:
 
 * The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS) (maintained by AMD)
 * A regular CPU Netlib BLAS library, e.g.:
@@ -91,7 +91,9 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in `samples/`.
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in `samples/`. They can be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
+
+    cmake -DSAMPLES=ON ..
 
 
 Using the tuners (optional)
@@ -124,7 +126,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - ARM Mali-T628 GPU
   - Intel MIC
 
-If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should compile the library with the optional tuners:
+If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should compile the library with the optional tuners by specifing `-DTUNERS=ON`, for example as follows:
 
     cmake -DTUNERS=ON ..
 
@@ -145,34 +147,30 @@ In summary, tuning the entire library for your device can be done as follows (st
     make
 
 
-Compiling the correctness and performance tests (optional)
+Compiling the correctness tests (optional)
 -------------
 
-To make sure CLBlast is working correctly on your device (recommended), compile with the tests enabled:
+To make sure CLBlast is working correctly on your device (recommended), compile with the tests enabled by specifying `-DTESTS=ON`, for example as follows:
 
     cmake -DTESTS=ON ..
 
 Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is best tested against [clBLAS](http://github.com/clMathLibraries/clBLAS) for correctness. If the library clBLAS is not installed on your system, it will use a regular CPU BLAS library to test against. If both are present, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables.
 
-With the `-DTESTS=ON` flag, additional performance tests are compiled. These come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against clBLAS and/or a CPU BLAS library.
 
-
-Performance remarks
+Compiling the performance tests/clients (optional)
 -------------
 
-The CLBlast library provides pre-tuned parameter-values for a number of OpenCL devices. If your device is not among these, then out-of-the-box performance might be poor. Even if the device is included performance might be poor in some cases: __the preview version is not thoroughly tested for performance yet__. See above under `Using the tuners` to find out how to tune for your device.
+To test the performance of CLBlast and compare optionally against clBLAS or a CPU BLAS library, compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared against a tuned version of the clBLAS library. The graphs of the level-3 routines (Xgemm, Xsymm, Xsyrk) show the strong points of CLBlast:
+    cmake -DCLIENTS=ON ..
 
-* The library reaches a high peak performance for large matrix sizes, in some cases a factor 2 more than clBLAS.
-* The performance for non-power of 2 values (e.g. 1000) is roughly equal to power of 2 cases (e.g. 1024). This is not the case for clBLAS, which sometimes shows a drop of a factor 2.
-* The performance is also constant for different layouts and transpose options. Again, this is not the case for clBLAS.
+The performance tests come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against optionally clBLAS and/or a CPU BLAS library. You can use the command-line options `-clblas 1` or `-cblas 1` to select a library to test against.
 
-The graphs also show the current weak points of CLBlast: for small sizes the benefit is minimal or non-existent, and for some specific configurations clBLAS is still faster.
-
-These graphs can be generated automatically on your own device. First, compile CLBlast with the tests enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable. Finally, run one of the graph-scripts found in `test/performance/graphs` using R. For example, to generate the Xgemm PDF on device 1 of platform 0:
+The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable. Finally, run one of the graph-scripts found in `test/performance/graphs` using R. For example, to generate the Xgemm PDF on device 1 of platform 0:
 
     Rscript path/to/test/performance/graphs/xgemm.r 0 1
+
+Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
 
 
 Supported routines
@@ -295,10 +293,3 @@ Support us
 -------------
 
 This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
-
-
-To-do list before release of version 1.0
--------------
-
-- Add half-precision routines (e.g. HGEMM)
-- Add API documentation
