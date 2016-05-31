@@ -294,6 +294,7 @@ endif()
 # Section for the correctness tests. Note that these tests require the presence of clBLAS and/or a
 # CPU BLAS library to act as a reference.
 if(TESTS)
+  enable_testing()
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
@@ -315,6 +316,7 @@ if(TESTS)
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
+    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE})
   endforeach()
 
   # Adds 'alltests' target: runs all tests

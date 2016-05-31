@@ -1,9 +1,10 @@
 
 Development version (next release)
+- Added support for half-precision floating-point (fp16) in the library
 - Made it possible to compile the performance tests (clients) separately from the correctness tests
 - Made a reference BLAS and head-to-head performance comparison optional in the clients
 - Increased the verbosity of the "-verbose" option in the correctness tests
-- Added support for half-precision floating-point (fp16) in the library
+- Various minor fixes and enhancements
 - Added half-precision routines:
   * Level-1: HSWAP/HSCAL/HCOPY/HAXPY/HDOT/HNRM2/HASUM/HSUM/iHAMAX/iHMAX/iHMIN
   * Level-2: HGEMV/HGBMV/HHEMV/HHBMV/HHPMV/HSYMV/HSBMV/HSPMV/HTRMV/HTBMV/HTPMV/HGER/HSYR/HSPR/HSYR2/HSPR2
