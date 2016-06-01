@@ -59,6 +59,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",1}, {"WGS",512}, {"WPT",2} } },
         { "Iris",                                            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Iris Pro",                                        { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -72,6 +73,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"VW",4}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
@@ -120,6 +122,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",2}, {"WGS",512}, {"WPT",1} } },
         { "Iris",                                            { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Iris Pro",                                        { {"VW",1}, {"WGS",256}, {"WPT",8} } },
         { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -133,6 +136,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"VW",1}, {"WGS",512}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",512}, {"WPT",1} } },
@@ -187,6 +191,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -241,6 +246,7 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",256}, {"WPT",2} } },

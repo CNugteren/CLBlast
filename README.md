@@ -102,6 +102,7 @@ Using the tuners (optional)
 The CLBlast library will be tuned in the future for the most commonly used OpenCL devices. This pre-release of CLBlast is only tuned for a limited number of devices, in particular those with the following `CL_DEVICE_NAME` values:
 
 * NVIDIA GPUs:
+  - GRID K520
   - GeForce GTX 480
   - GeForce GTX 680
   - GeForce GTX 750 Ti
@@ -114,8 +115,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tahiti
   - Hawaii
   - Pitcairn
-  - R9 M370X
+  - Radeon R9 M370X Compute Engine
 * Intel GPUs:
+  - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro
 * Intel CPUs:

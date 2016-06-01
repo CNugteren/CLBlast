@@ -58,12 +58,14 @@ const Database::DatabaseEntry Database::XgerSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",8}, {"WGS2",8}, {"WPT",4} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",8}, {"WGS2",1}, {"WPT",4} } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "GeForce GTX 480",                                 { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",1}, {"WPT",4} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
@@ -72,7 +74,7 @@ const Database::DatabaseEntry Database::XgerSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",8}, {"WGS2",1}, {"WPT",1} } },
       }
     },
   }
@@ -106,12 +108,14 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
         { "Iris Pro",                                        { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX 480",                                 { {"WGS1",128}, {"WGS2",2}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
@@ -154,6 +158,7 @@ const Database::DatabaseEntry Database::XgerDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"WGS1",128}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX 480",                                 { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
@@ -196,6 +201,7 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GRID K520",                                       { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",8}, {"WGS2",16}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
