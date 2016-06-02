@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXtpmv<float>, float, float>(argc, argv, false, "STPMV");
-  clblast::RunTests<clblast::TestXtpmv<double>, double, double>(argc, argv, true, "DTPMV");
-  clblast::RunTests<clblast::TestXtpmv<float2>, float2, float2>(argc, argv, true, "CTPMV");
-  clblast::RunTests<clblast::TestXtpmv<double2>, double2, double2>(argc, argv, true, "ZTPMV");
-  clblast::RunTests<clblast::TestXtpmv<half>, half, half>(argc, argv, true, "HTPMV");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXtpmv<float>, float, float>(argc, argv, false, "STPMV");
+  errors += clblast::RunTests<clblast::TestXtpmv<double>, double, double>(argc, argv, true, "DTPMV");
+  errors += clblast::RunTests<clblast::TestXtpmv<float2>, float2, float2>(argc, argv, true, "CTPMV");
+  errors += clblast::RunTests<clblast::TestXtpmv<double2>, double2, double2>(argc, argv, true, "ZTPMV");
+  errors += clblast::RunTests<clblast::TestXtpmv<half>, half, half>(argc, argv, true, "HTPMV");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

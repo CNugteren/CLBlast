@@ -18,10 +18,11 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXdot<float>, float, float>(argc, argv, false, "SDOT");
-  clblast::RunTests<clblast::TestXdot<double>, double, double>(argc, argv, true, "DDOT");
-  clblast::RunTests<clblast::TestXdot<half>, half, half>(argc, argv, true, "HDOT");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXdot<float>, float, float>(argc, argv, false, "SDOT");
+  errors += clblast::RunTests<clblast::TestXdot<double>, double, double>(argc, argv, true, "DDOT");
+  errors += clblast::RunTests<clblast::TestXdot<half>, half, half>(argc, argv, true, "HDOT");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

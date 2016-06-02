@@ -114,7 +114,7 @@ class TestBlas: public Tester<T,U> {
 // The interface to the correctness tester. This is a separate function in the header such that it
 // is automatically compiled for each routine, templated by the parameter "C".
 template <typename C, typename T, typename U>
-void RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
+size_t RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
 
   // Sets the reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
@@ -325,6 +325,7 @@ void RunTests(int argc, char *argv[], const bool silent, const std::string &name
       }
     }
   }
+  return tester.NumFailedTests();
 }
 
 // =================================================================================================

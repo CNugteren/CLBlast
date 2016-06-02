@@ -18,11 +18,12 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXtrsv<float>, float, float>(argc, argv, false, "STRSV");
-  clblast::RunTests<clblast::TestXtrsv<double>, double, double>(argc, argv, true, "DTRSV");
-  clblast::RunTests<clblast::TestXtrsv<float2>, float2, float2>(argc, argv, true, "CTRSV");
-  clblast::RunTests<clblast::TestXtrsv<double2>, double2, double2>(argc, argv, true, "ZTRSV");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXtrsv<float>, float, float>(argc, argv, false, "STRSV");
+  errors += clblast::RunTests<clblast::TestXtrsv<double>, double, double>(argc, argv, true, "DTRSV");
+  errors += clblast::RunTests<clblast::TestXtrsv<float2>, float2, float2>(argc, argv, true, "CTRSV");
+  errors += clblast::RunTests<clblast::TestXtrsv<double2>, double2, double2>(argc, argv, true, "ZTRSV");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXsymm<float>, float, float>(argc, argv, false, "SSYMM");
-  clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
-  clblast::RunTests<clblast::TestXsymm<float2>, float2, float2>(argc, argv, true, "CSYMM");
-  clblast::RunTests<clblast::TestXsymm<double2>, double2, double2>(argc, argv, true, "ZSYMM");
-  clblast::RunTests<clblast::TestXsymm<half>, half, half>(argc, argv, true, "HSYMM");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXsymm<float>, float, float>(argc, argv, false, "SSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<float2>, float2, float2>(argc, argv, true, "CSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<double2>, double2, double2>(argc, argv, true, "ZSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<half>, half, half>(argc, argv, true, "HSYMM");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

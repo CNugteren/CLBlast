@@ -83,6 +83,9 @@ class Tester {
   void TestErrorCodes(const StatusCode clblas_status, const StatusCode clblast_status,
                       const Arguments<U> &args);
 
+  // Returns the number of failed tests
+  size_t NumFailedTests() const { return tests_failed_; }
+
  protected:
 
   // The help-message

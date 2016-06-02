@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXsyrk<float>, float, float>(argc, argv, false, "SSYRK");
-  clblast::RunTests<clblast::TestXsyrk<double>, double, double>(argc, argv, true, "DSYRK");
-  clblast::RunTests<clblast::TestXsyrk<float2>, float2, float2>(argc, argv, true, "CSYRK");
-  clblast::RunTests<clblast::TestXsyrk<double2>, double2, double2>(argc, argv, true, "ZSYRK");
-  clblast::RunTests<clblast::TestXsyrk<half>, half, half>(argc, argv, true, "HSYRK");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXsyrk<float>, float, float>(argc, argv, false, "SSYRK");
+  errors += clblast::RunTests<clblast::TestXsyrk<double>, double, double>(argc, argv, true, "DSYRK");
+  errors += clblast::RunTests<clblast::TestXsyrk<float2>, float2, float2>(argc, argv, true, "CSYRK");
+  errors += clblast::RunTests<clblast::TestXsyrk<double2>, double2, double2>(argc, argv, true, "ZSYRK");
+  errors += clblast::RunTests<clblast::TestXsyrk<half>, half, half>(argc, argv, true, "HSYRK");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

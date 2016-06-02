@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXcopy<float>, float, float>(argc, argv, false, "SCOPY");
-  clblast::RunTests<clblast::TestXcopy<double>, double, double>(argc, argv, true, "DCOPY");
-  clblast::RunTests<clblast::TestXcopy<float2>, float2, float2>(argc, argv, true, "CCOPY");
-  clblast::RunTests<clblast::TestXcopy<double2>, double2, double2>(argc, argv, true, "ZCOPY");
-  clblast::RunTests<clblast::TestXcopy<half>, half, half>(argc, argv, true, "HCOPY");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXcopy<float>, float, float>(argc, argv, false, "SCOPY");
+  errors += clblast::RunTests<clblast::TestXcopy<double>, double, double>(argc, argv, true, "DCOPY");
+  errors += clblast::RunTests<clblast::TestXcopy<float2>, float2, float2>(argc, argv, true, "CCOPY");
+  errors += clblast::RunTests<clblast::TestXcopy<double2>, double2, double2>(argc, argv, true, "ZCOPY");
+  errors += clblast::RunTests<clblast::TestXcopy<half>, half, half>(argc, argv, true, "HCOPY");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

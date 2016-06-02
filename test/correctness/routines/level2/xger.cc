@@ -18,10 +18,11 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXger<float>, float, float>(argc, argv, false, "SGER");
-  clblast::RunTests<clblast::TestXger<double>, double, double>(argc, argv, true, "DGER");
-  clblast::RunTests<clblast::TestXger<half>, half, half>(argc, argv, true, "HGER");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXger<float>, float, float>(argc, argv, false, "SGER");
+  errors += clblast::RunTests<clblast::TestXger<double>, double, double>(argc, argv, true, "DGER");
+  errors += clblast::RunTests<clblast::TestXger<half>, half, half>(argc, argv, true, "HGER");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

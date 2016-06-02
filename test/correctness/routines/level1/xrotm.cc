@@ -18,9 +18,10 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXrotm<float>, float, float>(argc, argv, false, "SROTM");
-  clblast::RunTests<clblast::TestXrotm<double>, double, double>(argc, argv, true, "DROTM");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXrotm<float>, float, float>(argc, argv, false, "SROTM");
+  errors += clblast::RunTests<clblast::TestXrotm<double>, double, double>(argc, argv, true, "DROTM");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

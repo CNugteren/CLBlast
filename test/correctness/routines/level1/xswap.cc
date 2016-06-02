@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXswap<float>, float, float>(argc, argv, false, "SSWAP");
-  clblast::RunTests<clblast::TestXswap<double>, double, double>(argc, argv, true, "DSWAP");
-  clblast::RunTests<clblast::TestXswap<float2>, float2, float2>(argc, argv, true, "CSWAP");
-  clblast::RunTests<clblast::TestXswap<double2>, double2, double2>(argc, argv, true, "ZSWAP");
-  clblast::RunTests<clblast::TestXswap<half>, half, half>(argc, argv, true, "HSWAP");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXswap<float>, float, float>(argc, argv, false, "SSWAP");
+  errors += clblast::RunTests<clblast::TestXswap<double>, double, double>(argc, argv, true, "DSWAP");
+  errors += clblast::RunTests<clblast::TestXswap<float2>, float2, float2>(argc, argv, true, "CSWAP");
+  errors += clblast::RunTests<clblast::TestXswap<double2>, double2, double2>(argc, argv, true, "ZSWAP");
+  errors += clblast::RunTests<clblast::TestXswap<half>, half, half>(argc, argv, true, "HSWAP");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

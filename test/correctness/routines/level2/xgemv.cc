@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXgemv<float>, float, float>(argc, argv, false, "SGEMV");
-  clblast::RunTests<clblast::TestXgemv<double>, double, double>(argc, argv, true, "DGEMV");
-  clblast::RunTests<clblast::TestXgemv<float2>, float2, float2>(argc, argv, true, "CGEMV");
-  clblast::RunTests<clblast::TestXgemv<double2>, double2, double2>(argc, argv, true, "ZGEMV");
-  clblast::RunTests<clblast::TestXgemv<half>, half, half>(argc, argv, true, "HGEMV");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXgemv<float>, float, float>(argc, argv, false, "SGEMV");
+  errors += clblast::RunTests<clblast::TestXgemv<double>, double, double>(argc, argv, true, "DGEMV");
+  errors += clblast::RunTests<clblast::TestXgemv<float2>, float2, float2>(argc, argv, true, "CGEMV");
+  errors += clblast::RunTests<clblast::TestXgemv<double2>, double2, double2>(argc, argv, true, "ZGEMV");
+  errors += clblast::RunTests<clblast::TestXgemv<half>, half, half>(argc, argv, true, "HGEMV");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

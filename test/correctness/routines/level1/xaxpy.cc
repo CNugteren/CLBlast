@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXaxpy<float>, float, float>(argc, argv, false, "SAXPY");
-  clblast::RunTests<clblast::TestXaxpy<double>, double, double>(argc, argv, true, "DAXPY");
-  clblast::RunTests<clblast::TestXaxpy<float2>, float2, float2>(argc, argv, true, "CAXPY");
-  clblast::RunTests<clblast::TestXaxpy<double2>, double2, double2>(argc, argv, true, "ZAXPY");
-  clblast::RunTests<clblast::TestXaxpy<half>, half, half>(argc, argv, true, "HAXPY");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXaxpy<float>, float, float>(argc, argv, false, "SAXPY");
+  errors += clblast::RunTests<clblast::TestXaxpy<double>, double, double>(argc, argv, true, "DAXPY");
+  errors += clblast::RunTests<clblast::TestXaxpy<float2>, float2, float2>(argc, argv, true, "CAXPY");
+  errors += clblast::RunTests<clblast::TestXaxpy<double2>, double2, double2>(argc, argv, true, "ZAXPY");
+  errors += clblast::RunTests<clblast::TestXaxpy<half>, half, half>(argc, argv, true, "HAXPY");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

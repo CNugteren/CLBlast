@@ -18,9 +18,10 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXgeru<float2>, float2, float2>(argc, argv, false, "CGERU");
-  clblast::RunTests<clblast::TestXgeru<double2>, double2, double2>(argc, argv, true, "ZGERU");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXgeru<float2>, float2, float2>(argc, argv, false, "CGERU");
+  errors += clblast::RunTests<clblast::TestXgeru<double2>, double2, double2>(argc, argv, true, "ZGERU");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

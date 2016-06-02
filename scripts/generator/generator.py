@@ -414,12 +414,13 @@ for level in [1,2,3]:
 				body += "using double2 = clblast::double2;\n\n"
 				body += "// Main function (not within the clblast namespace)\n"
 				body += "int main(int argc, char *argv[]) {\n"
+				body += "  auto errors = size_t{0};\n"
 				not_first = "false"
 				for flavour in routine.flavours:
-					body += "  clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
+					body += "  errors += clblast::RunTests<clblast::TestX"+routine.name+flavour.TestTemplate()
 					body += ">(argc, argv, "+not_first+", \""+flavour.name+routine.name.upper()+"\");\n"
 					not_first = "true"
-				body += "  return 0;\n"
+				body += "  if (errors > 0) { return 1; } else { return 0; }\n"
 				body += "}\n"
 				f.write(header+"\n")
 				f.write(body)

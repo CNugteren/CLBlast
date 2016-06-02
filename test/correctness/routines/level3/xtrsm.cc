@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXtrsm<float>, float, float>(argc, argv, false, "STRSM");
-  clblast::RunTests<clblast::TestXtrsm<double>, double, double>(argc, argv, true, "DTRSM");
-  clblast::RunTests<clblast::TestXtrsm<float2>, float2, float2>(argc, argv, true, "CTRSM");
-  clblast::RunTests<clblast::TestXtrsm<double2>, double2, double2>(argc, argv, true, "ZTRSM");
-  clblast::RunTests<clblast::TestXtrsm<half>, half, half>(argc, argv, true, "HTRSM");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXtrsm<float>, float, float>(argc, argv, false, "STRSM");
+  errors += clblast::RunTests<clblast::TestXtrsm<double>, double, double>(argc, argv, true, "DTRSM");
+  errors += clblast::RunTests<clblast::TestXtrsm<float2>, float2, float2>(argc, argv, true, "CTRSM");
+  errors += clblast::RunTests<clblast::TestXtrsm<double2>, double2, double2>(argc, argv, true, "ZTRSM");
+  errors += clblast::RunTests<clblast::TestXtrsm<half>, half, half>(argc, argv, true, "HTRSM");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

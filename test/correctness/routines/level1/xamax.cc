@@ -18,12 +18,13 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXamax<float>, float, float>(argc, argv, false, "iSAMAX");
-  clblast::RunTests<clblast::TestXamax<double>, double, double>(argc, argv, true, "iDAMAX");
-  clblast::RunTests<clblast::TestXamax<float2>, float2, float2>(argc, argv, true, "iCAMAX");
-  clblast::RunTests<clblast::TestXamax<double2>, double2, double2>(argc, argv, true, "iZAMAX");
-  clblast::RunTests<clblast::TestXamax<half>, half, half>(argc, argv, true, "iHAMAX");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXamax<float>, float, float>(argc, argv, false, "iSAMAX");
+  errors += clblast::RunTests<clblast::TestXamax<double>, double, double>(argc, argv, true, "iDAMAX");
+  errors += clblast::RunTests<clblast::TestXamax<float2>, float2, float2>(argc, argv, true, "iCAMAX");
+  errors += clblast::RunTests<clblast::TestXamax<double2>, double2, double2>(argc, argv, true, "iZAMAX");
+  errors += clblast::RunTests<clblast::TestXamax<half>, half, half>(argc, argv, true, "iHAMAX");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

@@ -18,9 +18,10 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXhemv<float2>, float2, float2>(argc, argv, false, "CHEMV");
-  clblast::RunTests<clblast::TestXhemv<double2>, double2, double2>(argc, argv, true, "ZHEMV");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXhemv<float2>, float2, float2>(argc, argv, false, "CHEMV");
+  errors += clblast::RunTests<clblast::TestXhemv<double2>, double2, double2>(argc, argv, true, "ZHEMV");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================

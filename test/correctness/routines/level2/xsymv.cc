@@ -18,10 +18,11 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  clblast::RunTests<clblast::TestXsymv<float>, float, float>(argc, argv, false, "SSYMV");
-  clblast::RunTests<clblast::TestXsymv<double>, double, double>(argc, argv, true, "DSYMV");
-  clblast::RunTests<clblast::TestXsymv<half>, half, half>(argc, argv, true, "HSYMV");
-  return 0;
+  auto errors = size_t{0};
+  errors += clblast::RunTests<clblast::TestXsymv<float>, float, float>(argc, argv, false, "SSYMV");
+  errors += clblast::RunTests<clblast::TestXsymv<double>, double, double>(argc, argv, true, "DSYMV");
+  errors += clblast::RunTests<clblast::TestXsymv<half>, half, half>(argc, argv, true, "HSYMV");
+  if (errors > 0) { return 1; } else { return 0; }
 }
 
 // =================================================================================================
