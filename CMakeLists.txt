@@ -30,10 +30,7 @@ option(TESTS "Enable compilation of the correctness tests" OFF)
 # ==================================================================================================
 
 # RPATH settings
-set(CMAKE_SKIP_BUILD_RPATH false) # Use, i.e. don't skip the full RPATH for the build tree
-set(CMAKE_BUILD_WITH_INSTALL_RPATH false) # When building, don't use the install RPATH already
-set(CMAKE_INSTALL_RPATH "") # The RPATH to be used when installing
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH false) # Don't add the automatically determined parts
+set(CMAKE_MACOSX_RPATH 1)
 
 # ==================================================================================================
 
