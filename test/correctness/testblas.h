@@ -47,6 +47,7 @@ class TestBlas: public Tester<T,U> {
   using Tester<T,U>::TestErrorCodes;
   using Tester<T,U>::GetOffsets;
   using Tester<T,U>::GetOptionsString;
+  using Tester<T,U>::GetSizesString;
 
   // Test settings for the regular test. Append to these lists in case more tests are required.
   const std::vector<size_t> kVectorDims = { 7, 93, 4096 };

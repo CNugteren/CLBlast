@@ -151,7 +151,7 @@ void Tester<T,U>::TestStart(const std::string &test_name, const std::string &tes
 // summary of the number of sub-tests passed/failed.
 template <typename T, typename U>
 void Tester<T,U>::TestEnd() {
-  fprintf(stdout, "\n");
+  if (!verbose_) { fprintf(stdout, "\n"); }
   tests_passed_ += num_passed_;
   tests_skipped_ += num_skipped_;
   tests_failed_ += num_failed_;
@@ -273,6 +273,26 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgCOffset)  { result += kArgCOffset + equals + ToString(args.c_offset) + " "; }
     if (o == kArgAPOffset) { result += kArgAPOffset + equals + ToString(args.ap_offset) + " "; }
     if (o == kArgDotOffset){ result += kArgDotOffset + equals + ToString(args.dot_offset) + " "; }
+  }
+  return result;
+}
+
+// As above, but now only prints information relevant to invalid buffer sizes
+template <typename T, typename U>
+std::string Tester<T,U>::GetSizesString(const Arguments<U> &args) {
+  auto result = std::string("");
+  const auto equals = std::string("=");
+  for (auto &o: options_) {
+    if (o == kArgM)        { result += kArgM + equals + ToString(args.m) + " "; }
+    if (o == kArgN)        { result += kArgN + equals + ToString(args.n) + " "; }
+    if (o == kArgK)        { result += kArgK + equals + ToString(args.k) + " "; }
+    if (o == kArgXOffset)  { result += "xsize" + equals + ToString(args.x_size) + " "; }
+    if (o == kArgYOffset)  { result += "ysize" + equals + ToString(args.y_size) + " "; }
+    if (o == kArgAOffset)  { result += "asize" + equals + ToString(args.a_size) + " "; }
+    if (o == kArgBOffset)  { result += "bsize" + equals + ToString(args.b_size) + " "; }
+    if (o == kArgCOffset)  { result += "csize" + equals + ToString(args.c_size) + " "; }
+    if (o == kArgAPOffset) { result += "apsize" + equals + ToString(args.ap_size) + " "; }
+    if (o == kArgDotOffset){ result += "scalarsize" + equals + ToString(args.scalar_size) + " "; }
   }
   return result;
 }

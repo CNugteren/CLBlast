@@ -107,7 +107,8 @@ class Tester {
   const std::vector<size_t> GetOffsets() const;
 
   // Retrieves the list of options as a string
-  std::string GetOptionsString(const Arguments<U> &args);
+  std::string GetOptionsString(const Arguments<U> &args); // for regular tests
+  std::string GetSizesString(const Arguments<U> &args); // for invalid buffer sizes
 
   // Testing against reference implementations
   int compare_cblas_;

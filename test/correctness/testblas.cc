@@ -181,6 +181,11 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
   // Iterates over all the to-be-tested combinations of arguments
   for (auto &args: test_vector) {
 
+    // Prints the current test configuration
+    if (verbose_) {
+      fprintf(stdout, "   Config: %s-> ", GetSizesString(args).c_str());
+    }
+
     // Creates the OpenCL buffers. Note: we are not using the C++ version since we explicitly
     // want to be able to create invalid buffers (no error checking here).
     auto x1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
