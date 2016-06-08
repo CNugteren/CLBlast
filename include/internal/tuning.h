@@ -52,6 +52,7 @@ void Tuner(int argc, char* argv[]) {
 
   // Tests for validity of the precision and retrieves properties
   auto isAMD = false;
+  auto isARM = false;
   auto isGPU = false;
   {
     const auto platform = Platform(args.platform_id);
@@ -61,6 +62,7 @@ void Tuner(int argc, char* argv[]) {
       return;
     }
     isAMD = device.Vendor() == "AMD" || device.Vendor() == "Advanced Micro Devices, Inc.";
+    isARM = device.Vendor() == "ARM";
     isGPU = device.Type() == "GPU";
   }
 
@@ -95,6 +97,9 @@ void Tuner(int argc, char* argv[]) {
   if (isAMD && isGPU) {
     defines += "#define USE_CL_MAD 1\n";
     defines += "#define USE_STAGGERED_INDICES 1\n";
+  }
+  if (isARM && isGPU) {
+    defines += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
   // Loads the kernel sources and defines the kernel to tune

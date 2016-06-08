@@ -90,6 +90,7 @@ StatusCode Routine<T>::SetUp() {
 
   // Determines whether this is a specific device
   const auto isAMD = device_.Vendor() == "AMD" || device_.Vendor() == "Advanced Micro Devices, Inc.";
+  const auto isARM = device_.Vendor() == "ARM";
   const auto isGPU = device_.Type() == "GPU";
 
   // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
@@ -101,6 +102,12 @@ StatusCode Routine<T>::SetUp() {
   // For specific devices, use staggered/shuffled workgroup indices.
   if (isAMD && isGPU) {
     defines += "#define USE_STAGGERED_INDICES 1\n";
+  }
+
+  // For specific devices add a global synchronisation barrier to the GEMM kernel to optimize
+  // performance through better cache behaviour
+  if (isARM && isGPU) {
+    defines += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
   // Combines everything together into a single source string

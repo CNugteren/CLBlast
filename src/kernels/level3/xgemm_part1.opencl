@@ -7,10 +7,10 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains an optimized matrix-multiplication kernel according to the paper by Matsumoto
+// This file contains an optimized matrix-multiplication kernel inspired by the paper by Matsumoto
 // et al. and the tutorial on http://www.cedricnugteren.nl/tutorial.php. It is fully configurable
 // (and tunable!) using more or less the same parameters/naming conventions as in the paper. It
-// supports single and double precision (SGEMM/DGEMM) through a pre-processor define.
+// supports different data-types (SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM) through a pre-processor define.
 //
 // Matrices are accessed as follows:
 // A: [k*M + m], with 'k' ranging from 0:K and 'm' from 0:M (m,k,m)
@@ -31,7 +31,7 @@
 //    o-------o        o-----o  
 //                              
 //
-// This kernel is seperated into two files. This is part 1 out of 2,
+// This kernel is seperated into two files. This is part 1 out of 2.
 //
 // =================================================================================================
 
@@ -68,7 +68,7 @@ R"(
   #define KWI 1      // Unroll factor of the KWG loop (smaller or equal than KWG)
 #endif
 #ifndef VWM
-  #define VWM 1      // Vector width of matrices A and C 
+  #define VWM 1      // Vector width of matrices A and C
 #endif
 #ifndef VWN
   #define VWN 1      // Vector width of matrix B
@@ -97,7 +97,12 @@ R"(
 #define NWB (NWG/NDIMB)               // Amount of loads-per-thread for matrix B (N-dimension)
 
 // Settings
-#define USE_VECTOR_MAD 0              // Unroll (0) or don't (1) unroll the vector MAD manually
+#ifndef USE_VECTOR_MAD
+  #define USE_VECTOR_MAD 0      // Unroll (0) or don't (1) unroll the vector MAD manually
+#endif
+#ifndef GLOBAL_MEM_FENCE
+  #define GLOBAL_MEM_FENCE 0    // Global synchronisation barrier for potential better performance
+#endif
 
 // =================================================================================================
 

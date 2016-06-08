@@ -258,6 +258,9 @@ inline void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
       barrier(CLK_LOCAL_MEM_FENCE);
     #endif
   }
+  #if GLOBAL_MEM_FENCE == 1
+    barrier(CLK_GLOBAL_MEM_FENCE);
+  #endif
 }
 
 // =================================================================================================
