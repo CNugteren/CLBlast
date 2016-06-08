@@ -45,8 +45,8 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
 
   // Determines which reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
-    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 0);
+    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 0);
+    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
   #elif CLBLAST_REF_CLBLAS
     compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
     compare_cblas_ = 0;

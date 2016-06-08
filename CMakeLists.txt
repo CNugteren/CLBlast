@@ -313,7 +313,7 @@ if(TESTS)
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
-    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE})
+    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
   endforeach()
 
   # Adds 'alltests' target: runs all tests
