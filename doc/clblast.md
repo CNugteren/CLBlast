@@ -1416,7 +1416,7 @@ Arguments to TPMV:
 xGER: General rank-1 matrix update
 -------------
 
-
+Performs the operation A = alpha * x * y^T + A, in which x is an input vector, y^T is the transpose of the input vector y, A is the matrix to be updated, and alpha is a scalar value.
 
 C++ API:
 ```
@@ -1478,7 +1478,7 @@ Arguments to GER:
 xGERU: General rank-1 complex matrix update
 -------------
 
-
+Same operation as xGER, but with complex data-types.
 
 C++ API:
 ```
@@ -1533,7 +1533,7 @@ Arguments to GERU:
 xGERC: General rank-1 complex conjugated matrix update
 -------------
 
-
+Same operation as xGERU, but the update is done based on the complex conjugate of the input vectors.
 
 C++ API:
 ```
@@ -1588,7 +1588,7 @@ Arguments to GERC:
 xHER: Hermitian rank-1 matrix update
 -------------
 
-
+Performs the operation A = alpha * x * x^T + A, in which x is an input vector, x^T is the transpose of this vector, A is the triangular Hermetian matrix to be updated, and alpha is a scalar value.
 
 C++ API:
 ```
@@ -1637,7 +1637,7 @@ Arguments to HER:
 xHPR: Hermitian packed rank-1 matrix update
 -------------
 
-
+Same operation as xHER, but matrix A is an Hermitian packed matrix instead and represented as AP.
 
 C++ API:
 ```
@@ -1685,7 +1685,7 @@ Arguments to HPR:
 xHER2: Hermitian rank-2 matrix update
 -------------
 
-
+Performs the operation A = alpha * x * y^T + conj(alpha) * y * x^T + A, in which x is an input vector and x^T its transpose, y is an input vector and y^T its transpose, A is the triangular Hermetian matrix to be updated, alpha is a scalar value and conj(alpha) its complex conjugate.
 
 C++ API:
 ```
@@ -1740,7 +1740,7 @@ Arguments to HER2:
 xHPR2: Hermitian packed rank-2 matrix update
 -------------
 
-
+Same operation as xHER2, but matrix A is an Hermitian packed matrix instead and represented as AP.
 
 C++ API:
 ```
@@ -1794,7 +1794,7 @@ Arguments to HPR2:
 xSYR: Symmetric rank-1 matrix update
 -------------
 
-
+Same operation as xHER, but matrix A is a symmetric matrix instead.
 
 C++ API:
 ```
@@ -1849,7 +1849,7 @@ Arguments to SYR:
 xSPR: Symmetric packed rank-1 matrix update
 -------------
 
-
+Same operation as xSPR, but matrix A is a symmetric packed matrix instead and represented as AP.
 
 C++ API:
 ```
@@ -1903,7 +1903,7 @@ Arguments to SPR:
 xSYR2: Symmetric rank-2 matrix update
 -------------
 
-
+Same operation as xHER2, but matrix A is a symmetric matrix instead.
 
 C++ API:
 ```
@@ -1965,7 +1965,7 @@ Arguments to SYR2:
 xSPR2: Symmetric packed rank-2 matrix update
 -------------
 
-
+Same operation as xSPR2, but matrix A is a symmetric packed matrix instead and represented as AP.
 
 C++ API:
 ```
