@@ -5,7 +5,7 @@ CLBlast: API reference
 xSWAP: Swap two vectors
 -------------
 
-Interchanges the contents of vectors x and y.
+Interchanges _n_ elements of vectors _x_ and _y_.
 
 C++ API:
 ```
@@ -42,13 +42,13 @@ StatusCode CLBlastHswap(const size_t n,
 
 Arguments to SWAP:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
 * `const size_t x_offset`: The offset in elements from the start of the output x vector.
-* `const size_t x_inc`: Stride/increment of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -57,7 +57,7 @@ Arguments to SWAP:
 xSCAL: Vector scaling
 -------------
 
-Multiplies all elements of vector x by a scalar constant alpha.
+Multiplies _n_ elements of vector _x_ by a scalar constant _alpha_.
 
 C++ API:
 ```
@@ -94,11 +94,11 @@ StatusCode CLBlastHscal(const size_t n,
 
 Arguments to SCAL:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
 * `const size_t x_offset`: The offset in elements from the start of the output x vector.
-* `const size_t x_inc`: Stride/increment of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -107,7 +107,7 @@ Arguments to SCAL:
 xCOPY: Vector copy
 -------------
 
-Copies the contents of vector x into vector y.
+Copies the contents of vector _x_ into vector _y_.
 
 C++ API:
 ```
@@ -144,13 +144,13 @@ StatusCode CLBlastHcopy(const size_t n,
 
 Arguments to COPY:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -159,7 +159,7 @@ Arguments to COPY:
 xAXPY: Vector-times-constant plus vector
 -------------
 
-Performs the operation y = alpha * x + y, in which x and y are vectors and alpha is a scalar constant.
+Performs the operation _y = alpha * x + y_, in which _x_ and _y_ are vectors and _alpha_ is a scalar constant.
 
 C++ API:
 ```
@@ -202,14 +202,14 @@ StatusCode CLBlastHaxpy(const size_t n,
 
 Arguments to AXPY:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -218,7 +218,7 @@ Arguments to AXPY:
 xDOT: Dot product of two vectors
 -------------
 
-Multiplies the vectors x and y element-wise and accumulates the results. The sum is stored in the dot buffer.
+Multiplies _n_ elements of the vectors _x_ and _y_ element-wise and accumulates the results. The sum is stored in the _dot_ buffer.
 
 C++ API:
 ```
@@ -251,17 +251,17 @@ StatusCode CLBlastHdot(const size_t n,
 
 Arguments to DOT:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -298,17 +298,17 @@ StatusCode CLBlastZdotu(const size_t n,
 
 Arguments to DOTU:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -345,17 +345,17 @@ StatusCode CLBlastZdotc(const size_t n,
 
 Arguments to DOTC:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -364,7 +364,7 @@ Arguments to DOTC:
 xNRM2: Euclidian norm of a vector
 -------------
 
-Accumulates the square of each element in the x vector and takes the square root. The resulting L2 norm is stored in the nrm2 buffer.
+Accumulates the square of _n_ elements in the _x_ vector and takes the square root. The resulting L2 norm is stored in the _nrm2_ buffer.
 
 C++ API:
 ```
@@ -401,14 +401,14 @@ StatusCode CLBlastHnrm2(const size_t n,
 
 Arguments to NRM2:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
 * `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
 * `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
 * `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -417,7 +417,7 @@ Arguments to NRM2:
 xASUM: Absolute sum of values in a vector
 -------------
 
-Accumulates the absolute value of each element in the x vector. The results are stored in the asum buffer.
+Accumulates the absolute value of _n_ elements in the _x_ vector. The results are stored in the _asum_ buffer.
 
 C++ API:
 ```
@@ -454,14 +454,14 @@ StatusCode CLBlastHasum(const size_t n,
 
 Arguments to ASUM:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
 * `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
 * `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -470,7 +470,7 @@ Arguments to ASUM:
 xSUM: Sum of values in a vector (non-BLAS function)
 -------------
 
-Accumulates the values of each element in the x vector. The results are stored in the sum buffer. This routine is the non-absolute version of the xASUM BLAS routine.
+Accumulates the values of _n_ elements in the _x_ vector. The results are stored in the _sum_ buffer. This routine is the non-absolute version of the xASUM BLAS routine.
 
 C++ API:
 ```
@@ -507,14 +507,14 @@ StatusCode CLBlastHsum(const size_t n,
 
 Arguments to SUM:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
 * `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
 * `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
 * `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -523,7 +523,7 @@ Arguments to SUM:
 xAMAX: Index of absolute maximum value in a vector
 -------------
 
-Finds the index of the maximum of the absolute values in the x vector. The resulting integer index is stored in the imax buffer.
+Finds the index of the maximum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer.
 
 C++ API:
 ```
@@ -560,14 +560,14 @@ StatusCode CLBlastiHamax(const size_t n,
 
 Arguments to AMAX:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -576,7 +576,7 @@ Arguments to AMAX:
 xMAX: Index of maximum value in a vector (non-BLAS function)
 -------------
 
-Finds the index of the maximum of the values in the x vector. The resulting integer index is stored in the imax buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.
+Finds the index of the maximum of the values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.
 
 C++ API:
 ```
@@ -613,14 +613,14 @@ StatusCode CLBlastiHmax(const size_t n,
 
 Arguments to MAX:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -629,7 +629,7 @@ Arguments to MAX:
 xMIN: Index of minimum value in a vector (non-BLAS function)
 -------------
 
-Finds the index of the minimum of the values in the x vector. The resulting integer index is stored in the imin buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.
+Finds the index of the minimum of the values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.
 
 C++ API:
 ```
@@ -666,14 +666,14 @@ StatusCode CLBlastiHmin(const size_t n,
 
 Arguments to MIN:
 
-* `const size_t n`: Integer size argument.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -682,7 +682,7 @@ Arguments to MIN:
 xGEMV: General matrix-vector multiplication
 -------------
 
-Performs the operation y = alpha * A * x + beta * y, in which x is an input vector, y is an input and output vector, A is an input matrix, and alpha and beta are scalars. The matrix A can optionally be transposed before performing the operation.
+Performs the operation _y = alpha * A * x + beta * y_, in which _x_ is an input vector, _y_ is an input and output vector, _A_ is an input matrix, and _alpha_ and _beta_ are scalars. The matrix _A_ can optionally be transposed before performing the operation.
 
 C++ API:
 ```
@@ -743,30 +743,34 @@ StatusCode CLBlastHgemv(const Layout layout, const Transpose a_transpose,
 
 Arguments to GEMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMV:
+
+* The value of `a_ld` must be at least `m`.
 
 
 
 xGBMV: General banded matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is banded instead.
+Same operation as xGEMV, but matrix _A_ is banded instead.
 
 C++ API:
 ```
@@ -827,32 +831,36 @@ StatusCode CLBlastHgbmv(const Layout layout, const Transpose a_transpose,
 
 Arguments to GBMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
-* `const size_t kl`: Integer size argument.
-* `const size_t ku`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t kl`: Integer size argument. This value must be positive.
+* `const size_t ku`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GBMV:
+
+* The value of `a_ld` must be at least `kl + ku + 1`.
 
 
 
 xHEMV: Hermitian matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is an Hermitian matrix instead.
+Same operation as xGEMV, but matrix _A_ is an Hermitian matrix instead.
 
 C++ API:
 ```
@@ -889,29 +897,33 @@ StatusCode CLBlastZhemv(const Layout layout, const Triangle triangle,
 
 Arguments to HEMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HEMV:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xHBMV: Hermitian banded matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is an Hermitian banded matrix instead.
+Same operation as xGEMV, but matrix _A_ is an Hermitian banded matrix instead.
 
 C++ API:
 ```
@@ -948,30 +960,34 @@ StatusCode CLBlastZhbmv(const Layout layout, const Triangle triangle,
 
 Arguments to HBMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HBMV:
+
+* The value of `a_ld` must be at least `k + 1`.
 
 
 
 xHPMV: Hermitian packed matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is an Hermitian packed matrix instead and represented as AP.
+Same operation as xGEMV, but matrix _A_ is an Hermitian packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -1008,19 +1024,19 @@ StatusCode CLBlastZhpmv(const Layout layout, const Triangle triangle,
 
 Arguments to HPMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem ap_buffer`: OpenCL buffer to store the input AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the input AP matrix.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -1029,7 +1045,7 @@ Arguments to HPMV:
 xSYMV: Symmetric matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is symmetric instead.
+Same operation as xGEMV, but matrix _A_ is symmetric instead.
 
 C++ API:
 ```
@@ -1074,29 +1090,33 @@ StatusCode CLBlastHsymv(const Layout layout, const Triangle triangle,
 
 Arguments to SYMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYMV:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xSBMV: Symmetric banded matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is symmetric and banded instead.
+Same operation as xGEMV, but matrix _A_ is symmetric and banded instead.
 
 C++ API:
 ```
@@ -1141,30 +1161,34 @@ StatusCode CLBlastHsbmv(const Layout layout, const Triangle triangle,
 
 Arguments to SBMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SBMV:
+
+* The value of `a_ld` must be at least `k + 1`.
 
 
 
 xSPMV: Symmetric packed matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is a symmetric packed matrix instead and represented as AP.
+Same operation as xGEMV, but matrix _A_ is a symmetric packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -1209,19 +1233,19 @@ StatusCode CLBlastHspmv(const Layout layout, const Triangle triangle,
 
 Arguments to SPMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem ap_buffer`: OpenCL buffer to store the input AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the input AP matrix.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
 * `const size_t y_offset`: The offset in elements from the start of the output y vector.
-* `const size_t y_inc`: Stride/increment of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -1230,7 +1254,7 @@ Arguments to SPMV:
 xTRMV: Triangular matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is triangular instead.
+Same operation as xGEMV, but matrix _A_ is triangular instead.
 
 C++ API:
 ```
@@ -1273,26 +1297,30 @@ StatusCode CLBlastHtrmv(const Layout layout, const Triangle triangle, const Tran
 
 Arguments to TRMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const Diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for a non-unit values on the diagonal or `Diagonal::kUnit` (132) for a unit values on the diagonal.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
 * `const size_t x_offset`: The offset in elements from the start of the output x vector.
-* `const size_t x_inc`: Stride/increment of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for TRMV:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xTBMV: Triangular banded matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is triangular and banded instead.
+Same operation as xGEMV, but matrix _A_ is triangular and banded instead.
 
 C++ API:
 ```
@@ -1335,27 +1363,31 @@ StatusCode CLBlastHtbmv(const Layout layout, const Triangle triangle, const Tran
 
 Arguments to TBMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const Diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for a non-unit values on the diagonal or `Diagonal::kUnit` (132) for a unit values on the diagonal.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
 * `const size_t x_offset`: The offset in elements from the start of the output x vector.
-* `const size_t x_inc`: Stride/increment of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for TBMV:
+
+* The value of `a_ld` must be at least `k + 1`.
 
 
 
 xTPMV: Triangular packed matrix-vector multiplication
 -------------
 
-Same operation as xGEMV, but matrix A is a triangular packed matrix instead and repreented as AP.
+Same operation as xGEMV, but matrix _A_ is a triangular packed matrix instead and repreented as _AP_.
 
 C++ API:
 ```
@@ -1398,16 +1430,16 @@ StatusCode CLBlastHtpmv(const Layout layout, const Triangle triangle, const Tran
 
 Arguments to TPMV:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const Diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for a non-unit values on the diagonal or `Diagonal::kUnit` (132) for a unit values on the diagonal.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const cl_mem ap_buffer`: OpenCL buffer to store the input AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the input AP matrix.
 * `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
 * `const size_t x_offset`: The offset in elements from the start of the output x vector.
-* `const size_t x_inc`: Stride/increment of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
@@ -1416,7 +1448,7 @@ Arguments to TPMV:
 xGER: General rank-1 matrix update
 -------------
 
-Performs the operation A = alpha * x * y^T + A, in which x is an input vector, y^T is the transpose of the input vector y, A is the matrix to be updated, and alpha is a scalar value.
+Performs the operation _A = alpha * x * y^T + A_, in which _x_ is an input vector, _y^T_ is the transpose of the input vector _y_, _A_ is the matrix to be updated, and _alpha_ is a scalar value.
 
 C++ API:
 ```
@@ -1457,21 +1489,25 @@ StatusCode CLBlastHger(const Layout layout,
 
 Arguments to GER:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GER:
+
+* The value of `a_ld` must be at least `m`.
 
 
 
@@ -1512,21 +1548,25 @@ StatusCode CLBlastZgeru(const Layout layout,
 
 Arguments to GERU:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GERU:
+
+* The value of `a_ld` must be at least `m`.
 
 
 
@@ -1567,28 +1607,32 @@ StatusCode CLBlastZgerc(const Layout layout,
 
 Arguments to GERC:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GERC:
+
+* The value of `a_ld` must be at least `m`.
 
 
 
 xHER: Hermitian rank-1 matrix update
 -------------
 
-Performs the operation A = alpha * x * x^T + A, in which x is an input vector, x^T is the transpose of this vector, A is the triangular Hermetian matrix to be updated, and alpha is a scalar value.
+Performs the operation _A = alpha * x * x^T + A_, in which x is an input vector, x^T is the transpose of this vector, _A_ is the triangular Hermetian matrix to be updated, and alpha is a scalar value.
 
 C++ API:
 ```
@@ -1619,25 +1663,29 @@ StatusCode CLBlastZher(const Layout layout, const Triangle triangle,
 
 Arguments to HER:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HER:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xHPR: Hermitian packed rank-1 matrix update
 -------------
 
-Same operation as xHER, but matrix A is an Hermitian packed matrix instead and represented as AP.
+Same operation as xHER, but matrix _A_ is an Hermitian packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -1668,13 +1716,13 @@ StatusCode CLBlastZhpr(const Layout layout, const Triangle triangle,
 
 Arguments to HPR:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem ap_buffer`: OpenCL buffer to store the output AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
@@ -1685,7 +1733,7 @@ Arguments to HPR:
 xHER2: Hermitian rank-2 matrix update
 -------------
 
-Performs the operation A = alpha * x * y^T + conj(alpha) * y * x^T + A, in which x is an input vector and x^T its transpose, y is an input vector and y^T its transpose, A is the triangular Hermetian matrix to be updated, alpha is a scalar value and conj(alpha) its complex conjugate.
+Performs the operation _A = alpha * x * y^T + conj(alpha) * y * x^T + A_, in which _x_ is an input vector and _x^T_ its transpose, _y_ is an input vector and _y^T_ its transpose, _A_ is the triangular Hermetian matrix to be updated, _alpha_ is a scalar value and _conj(alpha)_ its complex conjugate.
 
 C++ API:
 ```
@@ -1719,28 +1767,32 @@ StatusCode CLBlastZher2(const Layout layout, const Triangle triangle,
 
 Arguments to HER2:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HER2:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xHPR2: Hermitian packed rank-2 matrix update
 -------------
 
-Same operation as xHER2, but matrix A is an Hermitian packed matrix instead and represented as AP.
+Same operation as xHER2, but matrix _A_ is an Hermitian packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -1774,16 +1826,16 @@ StatusCode CLBlastZhpr2(const Layout layout, const Triangle triangle,
 
 Arguments to HPR2:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem ap_buffer`: OpenCL buffer to store the output AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
@@ -1831,25 +1883,29 @@ StatusCode CLBlastHsyr(const Layout layout, const Triangle triangle,
 
 Arguments to SYR:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYR:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xSPR: Symmetric packed rank-1 matrix update
 -------------
 
-Same operation as xSPR, but matrix A is a symmetric packed matrix instead and represented as AP.
+Same operation as xSPR, but matrix _A_ is a symmetric packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -1886,13 +1942,13 @@ StatusCode CLBlastHspr(const Layout layout, const Triangle triangle,
 
 Arguments to SPR:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_mem ap_buffer`: OpenCL buffer to store the output AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
@@ -1903,7 +1959,7 @@ Arguments to SPR:
 xSYR2: Symmetric rank-2 matrix update
 -------------
 
-Same operation as xHER2, but matrix A is a symmetric matrix instead.
+Same operation as xHER2, but matrix _A_ is a symmetric matrix instead.
 
 C++ API:
 ```
@@ -1944,28 +2000,32 @@ StatusCode CLBlastHsyr2(const Layout layout, const Triangle triangle,
 
 Arguments to SYR2:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem a_buffer`: OpenCL buffer to store the output A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the output A matrix.
-* `const size_t a_ld`: Leading dimension of the output A matrix.
+* `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYR2:
+
+* The value of `a_ld` must be at least `n`.
 
 
 
 xSPR2: Symmetric packed rank-2 matrix update
 -------------
 
-Same operation as xSPR2, but matrix A is a symmetric packed matrix instead and represented as AP.
+Same operation as xSPR2, but matrix _A_ is a symmetric packed matrix instead and represented as _AP_.
 
 C++ API:
 ```
@@ -2006,16 +2066,16 @@ StatusCode CLBlastHspr2(const Layout layout, const Triangle triangle,
 
 Arguments to SPR2:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
-* `const size_t x_inc`: Stride/increment of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
 * `const size_t y_offset`: The offset in elements from the start of the input y vector.
-* `const size_t y_inc`: Stride/increment of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_mem ap_buffer`: OpenCL buffer to store the output AP matrix.
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
@@ -2026,7 +2086,7 @@ Arguments to SPR2:
 xGEMM: General matrix-matrix multiplication
 -------------
 
-
+Performs the matrix product _C = alpha * A * B + beta * C_, in which _A_ (_m_ by _k_) and _B_ (_k_ by _n_) are two general rectangular input matrices, _C_ (_m_ by _n_) is the matrix to be updated, and _alpha_ and _beta_ are scalar values. The matrices _A_ and/or _B_ can optionally be transposed before performing the operation.
 
 C++ API:
 ```
@@ -2087,32 +2147,38 @@ StatusCode CLBlastHgemm(const Layout layout, const Transpose a_transpose, const 
 
 Arguments to GEMM:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const Transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the input B matrix.
-* `const size_t b_ld`: Leading dimension of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMM:
+
+* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* The value of `c_ld` must be at least `m`.
 
 
 
 xSYMM: Symmetric matrix-matrix multiplication
 -------------
 
-
+Same operation as xGEMM, but _A_ is symmetric instead. In case of `side == kLeft`, _A_ is a symmetric _m_ by _m_ matrix and _C = alpha * A * B + beta * C_ is performed. Otherwise, in case of `side == kRight`, _A_ is a symmtric _n_ by _n_ matrix and _C = alpha * B * A + beta * C_ is performed.
 
 C++ API:
 ```
@@ -2173,31 +2239,37 @@ StatusCode CLBlastHsymm(const Layout layout, const Side side, const Triangle tri
 
 Arguments to SYMM:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Side`: The horizontal position of the triangular matrix, either `Side::kLeft` (141) or `Side::kRight` (142).
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Side side`: The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the input B matrix.
-* `const size_t b_ld`: Leading dimension of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYMM:
+
+* When `side = Side::kLeft` then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `n`.
+* The value of `b_ld` must be at least `m`.
+* The value of `c_ld` must be at least `m`.
 
 
 
 xHEMM: Hermitian matrix-matrix multiplication
 -------------
 
-
+Same operation as xSYMM, but _A_ is an Hermitian matrix instead.
 
 C++ API:
 ```
@@ -2234,31 +2306,37 @@ StatusCode CLBlastZhemm(const Layout layout, const Side side, const Triangle tri
 
 Arguments to HEMM:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Side`: The horizontal position of the triangular matrix, either `Side::kLeft` (141) or `Side::kRight` (142).
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Side side`: The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the input B matrix.
-* `const size_t b_ld`: Leading dimension of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HEMM:
+
+* When `side = Side::kLeft` then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `n`.
+* The value of `b_ld` must be at least `m`.
+* The value of `c_ld` must be at least `m`.
 
 
 
 xSYRK: Rank-K update of a symmetric matrix
 -------------
 
-
+Performs the matrix product _C = alpha * A * A^T + beta * C_ or _C = alpha * A^T * A + beta * C_, in which _A_ is a general matrix and _A^T_ is its transpose, _C_ (_n_ by _n_) is the symmetric matrix to be updated, and _alpha_ and _beta_ are scalar values.
 
 C++ API:
 ```
@@ -2313,28 +2391,33 @@ StatusCode CLBlastHsyrk(const Layout layout, const Triangle triangle, const Tran
 
 Arguments to SYRK:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYRK:
+
+* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* The value of `c_ld` must be at least `m`.
 
 
 
 xHERK: Rank-K update of a hermitian matrix
 -------------
 
-
+Same operation as xSYRK, but _C_ is an Hermitian matrix instead.
 
 C++ API:
 ```
@@ -2368,28 +2451,33 @@ StatusCode CLBlastZherk(const Layout layout, const Triangle triangle, const Tran
 
 Arguments to HERK:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HERK:
+
+* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* The value of `c_ld` must be at least `m`.
 
 
 
 xSYR2K: Rank-2K update of a symmetric matrix
 -------------
 
-
+Performs the matrix product _C = alpha * A * B^T + alpha * B * A^T + beta * C_ or _C = alpha * A^T * B + alpha * B^T * A + beta * C_, in which _A_ and _B_ are general matrices and _A^T_ and _B^T_ are their transposed versions, _C_ (_n_ by _n_) is the symmetric matrix to be updated, and _alpha_ and _beta_ are scalar values.
 
 C++ API:
 ```
@@ -2450,31 +2538,37 @@ StatusCode CLBlastHsyr2k(const Layout layout, const Triangle triangle, const Tra
 
 Arguments to SYR2K:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the packed input matrix AP, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose ab_transpose`: Transposing the packed input matrix AP, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the input B matrix.
-* `const size_t b_ld`: Leading dimension of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
 * `const T beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for SYR2K:
+
+* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `transpose == Transpose::kNo`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
+* The value of `c_ld` must be at least `n`.
 
 
 
 xHER2K: Rank-2K update of a hermitian matrix
 -------------
 
-
+Same operation as xSYR2K, but _C_ is an Hermitian matrix instead.
 
 C++ API:
 ```
@@ -2511,31 +2605,37 @@ StatusCode CLBlastZher2k(const Layout layout, const Triangle triangle, const Tra
 
 Arguments to HER2K:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the packed input matrix AP, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const size_t n`: Integer size argument.
-* `const size_t k`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose ab_transpose`: Transposing the packed input matrix AP, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the input B matrix.
-* `const size_t b_ld`: Leading dimension of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
 * `const U beta`: Input scalar constant.
 * `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
 * `const size_t c_offset`: The offset in elements from the start of the output C matrix.
-* `const size_t c_ld`: Leading dimension of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for HER2K:
+
+* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `transpose == Transpose::kNo`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
+* The value of `c_ld` must be at least `n`.
 
 
 
 xTRMM: Triangular matrix-matrix multiplication
 -------------
 
-
+Performs the matrix product _B = alpha * A * B_ or _B = alpha * B * A_, in which _A_ is a unit or non-unit triangular matrix, _B_ (_m_ by _n_) is the general matrix to be updated, and _alpha_ is a scalar value.
 
 C++ API:
 ```
@@ -2584,22 +2684,27 @@ StatusCode CLBlastHtrmm(const Layout layout, const Side side, const Triangle tri
 
 Arguments to TRMM:
 
-* `const Layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
-* `const Side`: The horizontal position of the triangular matrix, either `Side::kLeft` (141) or `Side::kRight` (142).
-* `const Triangle`: The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
-* `const Transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
-* `const Diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for a non-unit values on the diagonal or `Diagonal::kUnit` (132) for a unit values on the diagonal.
-* `const size_t m`: Integer size argument.
-* `const size_t n`: Integer size argument.
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Side side`: The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
 * `const T alpha`: Input scalar constant.
 * `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
 * `const size_t a_offset`: The offset in elements from the start of the input A matrix.
-* `const size_t a_ld`: Leading dimension of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
 * `cl_mem b_buffer`: OpenCL buffer to store the output B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the output B matrix.
-* `const size_t b_ld`: Leading dimension of the output B matrix.
+* `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for TRMM:
+
+* When `side = Side::kLeft` then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `n`.
+* The value of `b_ld` must be at least `m`.
 
 
 

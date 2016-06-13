@@ -58,9 +58,9 @@ def OptionToDoc(x):
 	    'a_transpose': "Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.",
 	    'b_transpose': "Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.",
 	    'ab_transpose': "Transposing the packed input matrix AP, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.",
-	    'side': "The horizontal position of the triangular matrix, either `Side::kLeft` (141) or `Side::kRight` (142).",
-	    'triangle': "The vertical position of the triangular matrix, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).",
-	    'diagonal': "The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for a non-unit values on the diagonal or `Diagonal::kUnit` (132) for a unit values on the diagonal.",
+	    'side': "The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).",
+	    'triangle': "The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).",
+	    'diagonal': "The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.",
 	}[x]
 
 # ==================================================================================================
@@ -265,7 +265,7 @@ class Routine():
 			incld_description = "Leading dimension " if (name in self.BuffersMatrix()) else "Stride/increment "
 			a = ["`"+prefix+"cl_mem "+name+"_buffer`: OpenCL buffer to store the "+inout+" "+math_name+"."]
 			b = ["`const size_t "+name+"_offset`: The offset in elements from the start of the "+inout+" "+math_name+"."]
-			c = ["`const size_t "+name+"_"+self.Postfix(name)+"`: "+incld_description+"of the "+inout+" "+math_name+"."] if (name not in self.BuffersWithoutLdInc()) else []
+			c = ["`const size_t "+name+"_"+self.Postfix(name)+"`: "+incld_description+"of the "+inout+" "+math_name+". This value must be greater than 0."] if (name not in self.BuffersWithoutLdInc()) else []
 			return a+b+c
 		return []
 
@@ -366,7 +366,7 @@ class Routine():
 	# Retrieves the documentation of the sizes
 	def SizesDoc(self):
 		if self.sizes:
-			definitions = ["`const size_t "+s+"`: Integer size argument." for s in self.sizes]
+			definitions = ["`const size_t "+s+"`: Integer size argument. This value must be positive." for s in self.sizes]
 			return definitions
 		return []
 
@@ -416,7 +416,7 @@ class Routine():
 	# Retrieves the documentation of the options
 	def OptionsDoc(self):
 		if self.options:
-			definitions = ["`const "+OptionToCLBlast(o)+"`: "+OptionToDoc(o) for o in self.options]
+			definitions = ["`const "+OptionToCLBlast(o)+" "+o+"`: "+OptionToDoc(o) for o in self.options]
 			return definitions
 		return []
 
@@ -547,7 +547,7 @@ class Routine():
 
 	# Retrieves a list of routine requirements for documentation
 	def RequirementsDoc(self):
-		return []
+		return self.requirements
 
 	# ==============================================================================================
 
