@@ -61,9 +61,9 @@ void Tuner(int argc, char* argv[]) {
       printf("* Unsupported precision, skipping this tuning run\n\n");
       return;
     }
-    isAMD = device.Vendor() == "AMD" || device.Vendor() == "Advanced Micro Devices, Inc.";
-    isARM = device.Vendor() == "ARM";
-    isGPU = device.Type() == "GPU";
+    isAMD = device.IsAMD();
+    isARM = device.IsARM();
+    isGPU = device.IsGPU();
   }
 
   // Creates input buffers with random data
