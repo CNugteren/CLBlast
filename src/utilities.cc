@@ -375,6 +375,7 @@ template <> bool PrecisionSupported<double2>(const Device &device) {
 }
 template <> bool PrecisionSupported<half>(const Device &device) {
   auto extensions = device.Capabilities();
+  if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
   return (extensions.find(kKhronosHalfPrecision) == std::string::npos) ? false : true;
 }
 
