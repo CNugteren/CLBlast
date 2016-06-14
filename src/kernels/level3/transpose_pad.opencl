@@ -10,7 +10,9 @@
 // This file contains the common kernels shared among different BLAS functions. This file contains
 // kernels to transpose matrices in various ways, including:
 // 1) transposing into a larger matrix by adding padding
-// 2) transposing into a smaller matrix by removing padding
+// 2) transposing into a smaller matrix by optionally removing padding. This is the general version
+//    without restrictions, see the 'transpose.opencl' file for a faster but more restricted
+//    transpose kernel.
 //
 // =================================================================================================
 
@@ -19,23 +21,11 @@
 R"(
 
 // =================================================================================================
-// Parameters set by the tuner or by the database. Here they are given a basic default value in case
-// this kernel file is used outside of the CLBlast library.
-#ifndef PADTRA_TILE
-  #define PADTRA_TILE 8   // Number of local threads in the two dimensions (x,y)
-#endif
-#ifndef PADTRA_WPT
-  #define PADTRA_WPT 1    // Amount of work per thread
-#endif
-#ifndef PADTRA_PAD
-  #define PADTRA_PAD 0    // Padding of the local memory to avoid bank-conflicts
-#endif
 
-// =================================================================================================
-
-// Same as PadCopyMatrix, but now also does the transpose
+// Transposes a matrix from source to destination. The output is padded with zero values in case the
+// destination matrix dimensions are larger than the transposed source matrix dimensions.
 __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-__kernel void PadTransposeMatrix(const int src_one, const int src_two,
+__kernel void TransposePadMatrix(const int src_one, const int src_two,
                                  const int src_ld, const int src_offset,
                                  __global const real* restrict src,
                                  const int dest_one, const int dest_two,
@@ -93,16 +83,18 @@ __kernel void PadTransposeMatrix(const int src_one, const int src_two,
 
 // =================================================================================================
 
-// Same as UnPadCopyMatrix, but now also does the transpose
+// Transposes a matrix, while considering possible padding in the source matrix. Data is read from a
+// padded source matrix, but only the actual data is written back to the transposed destination
+// matrix. This kernel optionally checks for upper/lower triangular matrices.
 __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-__kernel void UnPadTransposeMatrix(const int src_one, const int src_two,
-                                   const int src_ld, const int src_offset,
-                                   __global const real* restrict src,
-                                   const int dest_one, const int dest_two,
-                                   const int dest_ld, const int dest_offset,
-                                   __global real* dest,
-                                   const int upper, const int lower,
-                                   const int diagonal_imag_zero) {
+__kernel void TransposeMatrix(const int src_one, const int src_two,
+                              const int src_ld, const int src_offset,
+                              __global const real* restrict src,
+                              const int dest_one, const int dest_two,
+                              const int dest_ld, const int dest_offset,
+                              __global real* dest,
+                              const int upper, const int lower,
+                              const int diagonal_imag_zero) {
 
   // Local memory to store a tile of the matrix (for coalescing)
   __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
@@ -141,8 +133,10 @@ __kernel void UnPadTransposeMatrix(const int src_one, const int src_two,
 
       // Masking in case of triangular matrices: updates only the upper or lower part
       bool condition = true;
-      if (upper == 1) { condition = (id_dest_one >= id_dest_two); }
-      else if (lower == 1) { condition = (id_dest_one <= id_dest_two); }
+      #if defined(ROUTINE_SYRK) || defined(ROUTINE_HERK) || defined(ROUTINE_SYR2K) || defined(ROUTINE_HER2K)
+        if (upper == 1) { condition = (id_dest_one >= id_dest_two); }
+        else if (lower == 1) { condition = (id_dest_one <= id_dest_two); }
+      #endif
       if (condition) {
 
         // Stores the transposed value in the destination matrix

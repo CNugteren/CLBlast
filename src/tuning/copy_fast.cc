@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the padtranspose OpenCL kernels.
+// This file uses the CLTune auto-tuner to tune the copy OpenCL kernels.
 //
 // =================================================================================================
 
@@ -22,16 +22,17 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TunePadTranspose {
+class TuneCopy {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return "padtranspose"; }
-  static std::string KernelName() { return "PadTransposeMatrix"; }
+  static std::string KernelFamily() { return "copy"; }
+  static std::string KernelName() { return "CopyMatrixFast"; }
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/padtranspose.opencl"
+      #include "../src/kernels/level3/level3.opencl"
+      #include "../src/kernels/level3/copy_fast.opencl"
     ;
   }
 
@@ -57,19 +58,15 @@ class TunePadTranspose {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "PADTRA_TILE", {8, 16, 32, 64});
-    tuner.AddParameter(id, "PADTRA_WPT", {1, 2, 4, 8, 16});
-    tuner.AddParameter(id, "PADTRA_PAD", {0, 1});
+    tuner.AddParameter(id, "COPY_DIMX", {8, 16, 32});
+    tuner.AddParameter(id, "COPY_DIMY", {8, 16, 32});
+    tuner.AddParameter(id, "COPY_WPT", {1, 2, 4, 8});
+    tuner.AddParameter(id, "COPY_VW", {1, 2, 4, 8});
   }
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return ((v[0]*v[1]*(v[0]*v[1]+v[2]))*GetBytes(args.precision));
-    };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"PADTRA_TILE", "PADTRA_WPT", "PADTRA_PAD"});
-  }
+  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
 
   // Sets the base thread configuration
   static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
@@ -79,10 +76,10 @@ class TunePadTranspose {
 
   // Transforms the thread configuration based on the parameters
   using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"PADTRA_TILE", "PADTRA_TILE"}}; }
+  static TransformVector MulLocal() { return {{"COPY_DIMX", "COPY_DIMY"}}; }
   static TransformVector DivLocal() { return {}; }
   static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() { return {{"PADTRA_WPT", "PADTRA_WPT"}}; }
+  static TransformVector DivGlobal() { return {{"COPY_VW", "COPY_WPT"}}; }
 
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
@@ -90,16 +87,8 @@ class TunePadTranspose {
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
                            std::vector<T> &) {
     tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(0);
     tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(0);
     tuner.AddArgumentOutput(b_mat);
-    tuner.AddArgumentScalar(0);
   }
 
   // Describes how to compute the performance metrics
@@ -119,11 +108,11 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: clblast::Tuner<clblast::TunePadTranspose<half>, half>(argc, argv); break;
-    case clblast::Precision::kSingle: clblast::Tuner<clblast::TunePadTranspose<float>, float>(argc, argv); break;
-    case clblast::Precision::kDouble: clblast::Tuner<clblast::TunePadTranspose<double>, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TunePadTranspose<float2>, float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TunePadTranspose<double2>, double2>(argc, argv); break;
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneCopy<half>, half>(argc, argv); break;
+    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneCopy<float>, float>(argc, argv); break;
+    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneCopy<double>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneCopy<float2>, float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneCopy<double2>, double2>(argc, argv); break;
   }
   return 0;
 }

@@ -319,11 +319,11 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Ev
         IsMultiple(src_ld, db_["TRA_WPT"]) &&
         IsMultiple(src_one, db_["TRA_WPT"]*db_["TRA_WPT"]) &&
         IsMultiple(src_two, db_["TRA_WPT"]*db_["TRA_WPT"])) {
-      kernel_name = "TransposeMatrix";
+      kernel_name = "TransposeMatrixFast";
     }
     else {
       use_fast_kernel = false;
-      kernel_name = (do_pad) ? "PadTransposeMatrix" : "UnPadTransposeMatrix";
+      kernel_name = (do_pad) ? "TransposePadMatrix" : "TransposeMatrix";
     }
   }
   else {
@@ -331,11 +331,11 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Ev
         IsMultiple(src_ld, db_["COPY_VW"]) &&
         IsMultiple(src_one, db_["COPY_VW"]*db_["COPY_DIMX"]) &&
         IsMultiple(src_two, db_["COPY_WPT"]*db_["COPY_DIMY"])) {
-      kernel_name = "CopyMatrix";
+      kernel_name = "CopyMatrixFast";
     }
     else {
       use_fast_kernel = false;
-      kernel_name = (do_pad) ? "PadMatrix" : "UnPadMatrix";
+      kernel_name = (do_pad) ? "CopyPadMatrix" : "CopyMatrix";
     }
   }
 

@@ -51,7 +51,7 @@ StatusCode Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle
   // default) and on whether we are dealing with an upper or lower triangle of the triangular matrix
   bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  auto kernel_name = (is_upper) ? "TrmmUpperToSquared" : "TrmmLowerToSquared";
+  auto kernel_name = (is_upper) ? "TriaUpperToSquared" : "TriaLowerToSquared";
 
   // Determines whether or not the triangular matrix is unit-diagonal
   auto unit_diagonal = (diagonal == Diagonal::kUnit) ? true : false;

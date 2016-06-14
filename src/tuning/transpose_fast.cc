@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the copy OpenCL kernels.
+// This file uses the CLTune auto-tuner to tune the transpose OpenCL kernels.
 //
 // =================================================================================================
 
@@ -22,16 +22,17 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TuneCopy {
+class TuneTranspose {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return "copy"; }
-  static std::string KernelName() { return "CopyMatrix"; }
+  static std::string KernelFamily() { return "transpose"; }
+  static std::string KernelName() { return "TransposeMatrixFast"; }
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/copy.opencl"
+      #include "../src/kernels/level3/level3.opencl"
+      #include "../src/kernels/level3/transpose_fast.opencl"
     ;
   }
 
@@ -57,15 +58,20 @@ class TuneCopy {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "COPY_DIMX", {8, 16, 32});
-    tuner.AddParameter(id, "COPY_DIMY", {8, 16, 32});
-    tuner.AddParameter(id, "COPY_WPT", {1, 2, 4, 8});
-    tuner.AddParameter(id, "COPY_VW", {1, 2, 4, 8});
+    tuner.AddParameter(id, "TRA_DIM", {4, 8, 16, 32, 64});
+    tuner.AddParameter(id, "TRA_WPT", {1, 2, 4, 8, 16});
+    tuner.AddParameter(id, "TRA_PAD", {0, 1});
+    tuner.AddParameter(id, "TRA_SHUFFLE", {0, 1});
   }
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
+    auto LocalMemorySize = [args] (std::vector<size_t> v) {
+      return ((v[0]*v[1]*(v[0]*v[1]+v[2]))*GetBytes(args.precision));
+    };
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"TRA_DIM", "TRA_WPT", "TRA_PAD"});
+  }
 
   // Sets the base thread configuration
   static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
@@ -75,10 +81,10 @@ class TuneCopy {
 
   // Transforms the thread configuration based on the parameters
   using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"COPY_DIMX", "COPY_DIMY"}}; }
+  static TransformVector MulLocal() { return {{"TRA_DIM", "TRA_DIM"}}; }
   static TransformVector DivLocal() { return {}; }
   static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() { return {{"COPY_VW", "COPY_WPT"}}; }
+  static TransformVector DivGlobal() { return {{"TRA_WPT", "TRA_WPT"}}; }
 
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
@@ -107,11 +113,11 @@ using double2 = clblast::double2;
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   switch(clblast::GetPrecision(argc, argv)) {
-    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneCopy<half>, half>(argc, argv); break;
-    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneCopy<float>, float>(argc, argv); break;
-    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneCopy<double>, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneCopy<float2>, float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneCopy<double2>, double2>(argc, argv); break;
+    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneTranspose<half>, half>(argc, argv); break;
+    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneTranspose<float>, float>(argc, argv); break;
+    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneTranspose<double>, double>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneTranspose<float2>, float2>(argc, argv); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneTranspose<double2>, double2>(argc, argv); break;
   }
   return 0;
 }

@@ -8,29 +8,14 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file contains the common kernels shared among different BLAS functions. This file contains
-// kernels to transpose matrices.
+// a kernel to transpose matrices. This is a 'fast' version with restrictions, see the
+// 'padtranspose.opencl' file for a general transpose kernel.
 //
 // =================================================================================================
 
 // Enables loading of this file using the C++ pre-processor's #include (C++11 standard raw string
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
-
-// =================================================================================================
-// Parameters set by the tuner or by the database. Here they are given a basic default value in case
-// this kernel file is used outside of the CLBlast library.
-#ifndef TRA_DIM
-  #define TRA_DIM 8       // Number of local threads in the two dimensions (x,y)
-#endif
-#ifndef TRA_WPT
-  #define TRA_WPT 1       // Work per thread in one dimension and vector-width in the other
-#endif
-#ifndef TRA_PAD
-  #define TRA_PAD 0       // Padding of the local memory to avoid bank-conflicts
-#endif
-#ifndef TRA_SHUFFLE
-  #define TRA_SHUFFLE 0   // Shuffling of the global indices to avoid global memory bank-conflicts
-#endif
 
 // =================================================================================================
 
@@ -52,9 +37,9 @@ R"(
 // Transposes and copies a matrix. Requires both matrices to be of the same dimensions and without
 // offset. A more general version is available in 'padtranspose.opencl'.
 __attribute__((reqd_work_group_size(TRA_DIM, TRA_DIM, 1)))
-__kernel void TransposeMatrix(const int ld,
-                              __global const realT* restrict src,
-                              __global realT* dest) {
+__kernel void TransposeMatrixFast(const int ld,
+                                  __global const realT* restrict src,
+                                  __global realT* dest) {
 
   // Sets the group identifiers. They might be 'shuffled' around to distribute work in a different
   // way over workgroups, breaking memory-bank dependencies.

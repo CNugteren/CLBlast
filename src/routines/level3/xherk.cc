@@ -30,10 +30,11 @@ template <typename T, typename U>
 Xherk<T,U>::Xherk(Queue &queue, EventPointer event, const std::string &name):
     Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
   source_string_ =
-    #include "../../kernels/level3/copy.opencl"
-    #include "../../kernels/level3/pad.opencl"
-    #include "../../kernels/level3/transpose.opencl"
-    #include "../../kernels/level3/padtranspose.opencl"
+    #include "../../kernels/level3/level3.opencl"
+    #include "../../kernels/level3/copy_fast.opencl"
+    #include "../../kernels/level3/copy_pad.opencl"
+    #include "../../kernels/level3/transpose_fast.opencl"
+    #include "../../kernels/level3/transpose_pad.opencl"
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
   ;
