@@ -67,27 +67,27 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   // that the Xgemm kernel expects either matrices A and C (in case of row-major) or B (in case of
   // col-major) to be transformed, so transposing requirements are not the same as whether or not
   // the matrix is actually transposed in memory.
-  auto a_rotated = (layout == Layout::kColMajor && a_transpose != Transpose::kNo) ||
-                   (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
-  auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
-                   (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
-  auto c_rotated = (layout == Layout::kRowMajor);
-  auto a_do_transpose =  a_rotated;
-  auto b_do_transpose = !b_rotated;
-  auto c_do_transpose =  c_rotated;
+  const auto a_rotated = (layout == Layout::kColMajor && a_transpose != Transpose::kNo) ||
+                         (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
+  const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
+                         (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
+  const auto c_rotated = (layout == Layout::kRowMajor);
+  const auto a_do_transpose =  a_rotated;
+  const auto b_do_transpose = !b_rotated;
+  const auto c_do_transpose =  c_rotated;
 
   // In case of complex data-types, the transpose can also become a conjugate transpose
-  auto a_conjugate = (a_transpose == Transpose::kConjugate);
-  auto b_conjugate = (b_transpose == Transpose::kConjugate);
+  const auto a_conjugate = (a_transpose == Transpose::kConjugate);
+  const auto b_conjugate = (b_transpose == Transpose::kConjugate);
 
   // Computes the first and second dimensions of the 3 matrices taking into account whether the
   // matrices are rotated or not
-  auto a_one = (a_rotated) ? k : m;
-  auto a_two = (a_rotated) ? m : k;
-  auto b_one = (b_rotated) ? n : k;
-  auto b_two = (b_rotated) ? k : n;
-  auto c_one = (c_rotated) ? n : m;
-  auto c_two = (c_rotated) ? m : n;
+  const auto a_one = (a_rotated) ? k : m;
+  const auto a_two = (a_rotated) ? m : k;
+  const auto b_one = (b_rotated) ? n : k;
+  const auto b_two = (b_rotated) ? k : n;
+  const auto c_one = (c_rotated) ? n : m;
+  const auto c_two = (c_rotated) ? m : n;
 
   // Tests three matrices (A, B, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. m, n, k). Tests whether the
@@ -104,9 +104,9 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   if (ErrorIn(status)) { return status; }
 
   // Calculates the ceiled versions of m, n, and k
-  auto m_ceiled = Ceil(m, db_["MWG"]);
-  auto n_ceiled = Ceil(n, db_["NWG"]);
-  auto k_ceiled = Ceil(k, db_["KWG"]);
+  const auto m_ceiled = Ceil(m, db_["MWG"]);
+  const auto n_ceiled = Ceil(n, db_["NWG"]);
+  const auto k_ceiled = Ceil(k, db_["KWG"]);
 
   // The padded/transposed input/output matrices: if memory allocation fails, throw an exception
   try {
@@ -123,9 +123,9 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
                      c_do_transpose == false;
 
     // Creates the temporary matrices
-    auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*m_ceiled);
-    auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
-    auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, m_ceiled*n_ceiled);
+    const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*m_ceiled);
+    const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+    const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, m_ceiled*n_ceiled);
 
     // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
     auto alpha_buffer = Buffer<T>(context_, 1);
@@ -187,11 +187,11 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       kernel.SetArgument(7, c_temp());
 
       // Computes the global and local thread sizes
-      auto global = std::vector<size_t>{
+      const auto global = std::vector<size_t>{
         (m_ceiled * db_["MDIMC"]) / db_["MWG"],
         (n_ceiled * db_["NDIMC"]) / db_["NWG"]
       };
-      auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
+      const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
       // Launches the kernel
       auto eventKernel = Event();

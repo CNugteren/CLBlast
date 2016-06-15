@@ -44,12 +44,12 @@ class Routine {
  protected:
   
   // Runs a kernel given the global and local thread sizes
-  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> &global,
+  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> global,
                        const std::vector<size_t> &local, EventPointer event,
                        std::vector<Event>& waitForEvents);
 
   // As above, but without an event waiting list
-  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> &global,
+  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> global,
                        const std::vector<size_t> &local, EventPointer event);
 
   // Tests for valid inputs of matrices A, B, and C

@@ -62,7 +62,7 @@ StatusCode Routine<T>::SetUp() {
   // program will be added to the cache.
 
   // Inspects whether or not cl_khr_fp64 is supported in case of double precision
-  auto extensions = device_.Capabilities();
+  const auto extensions = device_.Capabilities();
   if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
     if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
       return StatusCode::kNoDoublePrecision;
@@ -106,17 +106,17 @@ StatusCode Routine<T>::SetUp() {
   }
 
   // Combines everything together into a single source string
-  auto source_string = defines + common_header + source_string_;
+  const auto source_string = defines + common_header + source_string_;
 
   // Compiles the kernel
   try {
     auto program = Program(context_, source_string);
     auto options = std::vector<std::string>();
-    auto build_status = program.Build(device_, options);
+    const auto build_status = program.Build(device_, options);
 
     // Checks for compiler crashes/errors/warnings
     if (build_status == BuildStatus::kError) {
-      auto message = program.GetBuildInfo(device_);
+      const auto message = program.GetBuildInfo(device_);
       fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
       return StatusCode::kBuildProgramFailure;
     }
@@ -136,7 +136,7 @@ StatusCode Routine<T>::SetUp() {
 
 // Enqueues a kernel, waits for completion, and checks for errors
 template <typename T>
-StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
+StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> global,
                                  const std::vector<size_t> &local, EventPointer event,
                                  std::vector<Event>& waitForEvents) {
 
@@ -157,7 +157,7 @@ StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
   }
 
   // Tests for local memory usage
-  auto local_mem_usage = kernel.LocalMemUsage(device_);
+  const auto local_mem_usage = kernel.LocalMemUsage(device_);
   if (!device_.IsLocalMemoryValid(local_mem_usage)) { return StatusCode::kInvalidLocalMemUsage; }
 
   // Launches the kernel (and checks for launch errors)
@@ -171,7 +171,7 @@ StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
 
 // As above, but without an event waiting list
 template <typename T>
-StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> &global,
+StatusCode Routine<T>::RunKernel(Kernel &kernel, std::vector<size_t> global,
                                  const std::vector<size_t> &local, EventPointer event) {
   auto emptyWaitingList = std::vector<Event>();
   return RunKernel(kernel, global, local, event, emptyWaitingList);
@@ -186,8 +186,8 @@ StatusCode Routine<T>::TestMatrixA(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimA; }
   try {
-    auto required_size = (ld*(two-1) + one + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (ld*(two-1) + one + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
   } catch (...) { return StatusCode::kInvalidMatrixA; }
   return StatusCode::kSuccess;
@@ -200,8 +200,8 @@ StatusCode Routine<T>::TestMatrixB(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimB; }
   try {
-    auto required_size = (ld*(two-1) + one + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (ld*(two-1) + one + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryB; }
   } catch (...) { return StatusCode::kInvalidMatrixB; }
   return StatusCode::kSuccess;
@@ -214,8 +214,8 @@ StatusCode Routine<T>::TestMatrixC(const size_t one, const size_t two, const Buf
                                    const size_t offset, const size_t ld, const size_t data_size) {
   if (ld < one) { return StatusCode::kInvalidLeadDimC; }
   try {
-    auto required_size = (ld*(two-1) + one + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (ld*(two-1) + one + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryC; }
   } catch (...) { return StatusCode::kInvalidMatrixC; }
   return StatusCode::kSuccess;
@@ -226,8 +226,8 @@ template <typename T>
 StatusCode Routine<T>::TestMatrixAP(const size_t n, const Buffer<T> &buffer,
                                     const size_t offset, const size_t data_size) {
   try {
-    auto required_size = (((n*(n+1))/2) + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (((n*(n+1))/2) + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryA; }
   } catch (...) { return StatusCode::kInvalidMatrixA; }
   return StatusCode::kSuccess;
@@ -242,8 +242,8 @@ StatusCode Routine<T>::TestVectorX(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementX; }
   try {
-    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = ((n-1)*inc + 1 + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryX; }
   } catch (...) { return StatusCode::kInvalidVectorX; }
   return StatusCode::kSuccess;
@@ -256,8 +256,8 @@ StatusCode Routine<T>::TestVectorY(const size_t n, const Buffer<T> &buffer, cons
                                    const size_t inc, const size_t data_size) {
   if (inc == 0) { return StatusCode::kInvalidIncrementY; }
   try {
-    auto required_size = ((n-1)*inc + 1 + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = ((n-1)*inc + 1 + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryY; }
   } catch (...) { return StatusCode::kInvalidVectorY; }
   return StatusCode::kSuccess;
@@ -271,8 +271,8 @@ template <typename T>
 StatusCode Routine<T>::TestVectorDot(const size_t n, const Buffer<T> &buffer, const size_t offset,
                                      const size_t data_size) {
   try {
-    auto required_size = (n + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (n + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryDot; }
   } catch (...) { return StatusCode::kInvalidVectorDot; }
   return StatusCode::kSuccess;
@@ -284,8 +284,8 @@ template <typename T>
 StatusCode Routine<T>::TestVectorIndex(const size_t n, const Buffer<unsigned int> &buffer,
                                        const size_t offset, const size_t data_size) {
   try {
-    auto required_size = (n + offset)*data_size;
-    auto buffer_size = buffer.GetSize();
+    const auto required_size = (n + offset)*data_size;
+    const auto buffer_size = buffer.GetSize();
     if (buffer_size < required_size) { return StatusCode::kInsufficientMemoryDot; }
   } catch (...) { return StatusCode::kInvalidVectorDot; }
   return StatusCode::kSuccess;
@@ -293,7 +293,7 @@ StatusCode Routine<T>::TestVectorIndex(const size_t n, const Buffer<unsigned int
 
 // =================================================================================================
 
-// Copies or transposes a matrix and pads/unpads it with zeros
+// Copies or transposes a matrix and optionally pads/unpads it with zeros
 template <typename T>
 StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Event>& waitForEvents,
                                               const size_t src_one, const size_t src_two,
@@ -372,36 +372,42 @@ StatusCode Routine<T>::PadCopyTransposeMatrix(EventPointer event, std::vector<Ev
 
     // Launches the kernel and returns the error code. Uses global and local thread sizes based on
     // parameters in the database.
-    auto status = StatusCode::kSuccess;
     if (do_transpose) {
       if (use_fast_kernel) {
-        auto global = std::vector<size_t>{dest_one / db_["TRA_WPT"],
-                                          dest_two / db_["TRA_WPT"]};
-        auto local = std::vector<size_t>{db_["TRA_DIM"], db_["TRA_DIM"]};
-        status = RunKernel(kernel, global, local, event, waitForEvents);
+        const auto global = std::vector<size_t>{
+          dest_one / db_["TRA_WPT"],
+          dest_two / db_["TRA_WPT"]
+        };
+        const auto local = std::vector<size_t>{db_["TRA_DIM"], db_["TRA_DIM"]};
+        return RunKernel(kernel, global, local, event, waitForEvents);
       }
       else {
-        auto global = std::vector<size_t>{Ceil(CeilDiv(dest_one, db_["PADTRA_WPT"]), db_["PADTRA_TILE"]),
-                                          Ceil(CeilDiv(dest_two, db_["PADTRA_WPT"]), db_["PADTRA_TILE"])};
-        auto local = std::vector<size_t>{db_["PADTRA_TILE"], db_["PADTRA_TILE"]};
-        status = RunKernel(kernel, global, local, event, waitForEvents);
+        const auto global = std::vector<size_t>{
+          Ceil(CeilDiv(dest_one, db_["PADTRA_WPT"]), db_["PADTRA_TILE"]),
+          Ceil(CeilDiv(dest_two, db_["PADTRA_WPT"]), db_["PADTRA_TILE"])
+        };
+        const auto local = std::vector<size_t>{db_["PADTRA_TILE"], db_["PADTRA_TILE"]};
+        return RunKernel(kernel, global, local, event, waitForEvents);
       }
     }
     else {
       if (use_fast_kernel) {
-        auto global = std::vector<size_t>{dest_one / db_["COPY_VW"],
-                                          dest_two / db_["COPY_WPT"]};
-        auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
-        status = RunKernel(kernel, global, local, event, waitForEvents);
+        const auto global = std::vector<size_t>{
+          dest_one / db_["COPY_VW"],
+          dest_two / db_["COPY_WPT"]
+        };
+        const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
+        return RunKernel(kernel, global, local, event, waitForEvents);
       }
       else {
-        auto global = std::vector<size_t>{Ceil(CeilDiv(dest_one, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
-                                          Ceil(CeilDiv(dest_two, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
-        auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
-        status = RunKernel(kernel, global, local, event, waitForEvents);
+        const auto global = std::vector<size_t>{
+          Ceil(CeilDiv(dest_one, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
+          Ceil(CeilDiv(dest_two, db_["PAD_WPTY"]), db_["PAD_DIMY"])
+        };
+        const auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
+        return RunKernel(kernel, global, local, event, waitForEvents);
       }
     }
-    return status;
   } catch (...) { return StatusCode::kInvalidKernel; }
 }
 
