@@ -560,6 +560,19 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
+// Extra non-BLAS routines (level-X)
+// =================================================================================================
+
+// Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
+template <typename T>
+StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
+                    const size_t m, const size_t n,
+                    const T alpha,
+                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                    cl_command_queue* queue, cl_event* event = nullptr);
+
+// =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.

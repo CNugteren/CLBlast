@@ -2832,6 +2832,87 @@ StatusCode CLBlastHtrsm(const Layout layout, const Side side, const Triangle tri
 }
 
 // =================================================================================================
+// Extra non-BLAS routines (level-X)
+// =================================================================================================
+
+// OMATCOPY
+StatusCode CLBlastSomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const float alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                                  static_cast<clblast::Transpose>(a_transpose),
+                                  m, n,
+                                  alpha,
+                                  a_buffer, a_offset, a_ld,
+                                  b_buffer, b_offset, b_ld,
+                                  queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastDomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const double alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                                  static_cast<clblast::Transpose>(a_transpose),
+                                  m, n,
+                                  alpha,
+                                  a_buffer, a_offset, a_ld,
+                                  b_buffer, b_offset, b_ld,
+                                  queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastComatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_float2 alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                                  static_cast<clblast::Transpose>(a_transpose),
+                                  m, n,
+                                  float2{alpha.s[0], alpha.s[1]},
+                                  a_buffer, a_offset, a_ld,
+                                  b_buffer, b_offset, b_ld,
+                                  queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastZomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_double2 alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                                  static_cast<clblast::Transpose>(a_transpose),
+                                  m, n,
+                                  double2{alpha.s[0], alpha.s[1]},
+                                  a_buffer, a_offset, a_ld,
+                                  b_buffer, b_offset, b_ld,
+                                  queue, event);
+  return static_cast<StatusCode>(status);
+}
+StatusCode CLBlastHomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_half alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event) {
+  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                                  static_cast<clblast::Transpose>(a_transpose),
+                                  m, n,
+                                  alpha,
+                                  a_buffer, a_offset, a_ld,
+                                  b_buffer, b_offset, b_ld,
+                                  queue, event);
+  return static_cast<StatusCode>(status);
+}
+
+// =================================================================================================
 
 // Clears the cache of stored binaries
 StatusCode CLBlastClearCache() {

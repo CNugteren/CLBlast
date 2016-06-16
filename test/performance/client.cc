@@ -42,8 +42,10 @@ Client<T,U>::Client(const Routine run_routine,
 // applicable, but are searched for anyway to be able to create one common argument parser. All
 // arguments have a default value in case they are not found.
 template <typename T, typename U>
-Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
-                                         const GetMetric default_b_ld, const GetMetric default_c_ld) {
+Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t level,
+                                         const GetMetric default_a_ld,
+                                         const GetMetric default_b_ld,
+                                         const GetMetric default_c_ld) {
   auto args = Arguments<U>{};
   auto help = std::string{"\n* Options given/available:\n"};
 
@@ -115,6 +117,17 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const GetMetric
   // Prints the chosen (or defaulted) arguments to screen. This also serves as the help message,
   // which is thus always displayed (unless silence is specified).
   if (!args.silent) { fprintf(stdout, "%s\n", help.c_str()); }
+
+  // Comparison against a non-BLAS routine is not supported
+  if (level == 4) { // level-4 == level-X
+    if (args.compare_clblas != 0 || args.compare_cblas != 0) {
+      if (!args.silent) {
+        fprintf(stdout, "* Disabling clBLAS and CPU BLAS comparisons for this non-BLAS routine\n\n");
+      }
+    }
+    args.compare_clblas = 0;
+    args.compare_cblas = 0;
+  }
 
   // Comparison against clBLAS or a CPU BLAS library is not supported in case of half-precision
   if (args.precision == Precision::kHalf) {

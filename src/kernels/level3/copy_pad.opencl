@@ -31,7 +31,9 @@ __kernel void CopyPadMatrix(const int src_one, const int src_two,
                             const int dest_one, const int dest_two,
                             const int dest_ld, const int dest_offset,
                             __global real* dest,
+                            const __constant real* restrict arg_alpha,
                             const int do_conjugate) {
+  const real alpha = arg_alpha[0];
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -52,7 +54,7 @@ __kernel void CopyPadMatrix(const int src_one, const int src_two,
 
         // Stores the value in the destination matrix
         if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-        dest[id_two*dest_ld + id_one + dest_offset] = value;
+        Multiply(dest[id_two*dest_ld + id_one + dest_offset], alpha, value);
       }
     }
   }
@@ -70,8 +72,10 @@ __kernel void CopyMatrix(const int src_one, const int src_two,
                          const int dest_one, const int dest_two,
                          const int dest_ld, const int dest_offset,
                          __global real* dest,
+                         const __constant real* restrict arg_alpha,
                          const int upper, const int lower,
                          const int diagonal_imag_zero) {
+  const real alpha = arg_alpha[0];
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -94,7 +98,7 @@ __kernel void CopyMatrix(const int src_one, const int src_two,
         if (id_two < dest_two && id_one < dest_one) {
           real value = src[id_two*src_ld + id_one + src_offset];
           if (diagonal_imag_zero == 1 && id_one == id_two) { ImagToZero(value); }
-          dest[id_two*dest_ld + id_one + dest_offset] = value;
+          Multiply(dest[id_two*dest_ld + id_one + dest_offset], alpha, value);
         }
       }
     }

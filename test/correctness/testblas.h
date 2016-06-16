@@ -129,6 +129,13 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
     const auto reference_routine2 = C::RunReference2; // CBLAS
   #endif
 
+  // Non-BLAS routines cannot be fully tested
+  if (!silent && C::BLASLevel() == 4) {
+    fprintf(stdout, "\n* NOTE: This non-BLAS routine is tested against a custom implementation,\n");
+    fprintf(stdout, "  not against clBLAS or a CPU BLAS library. Thus, the arguments '-clblas'\n");
+    fprintf(stdout, "  and '-cblas' have no effect.\n");
+  }
+
   // Creates a tester
   auto options = C::GetOptions();
   TestBlas<T,U> tester{argc, argv, silent, name, options,
@@ -176,8 +183,9 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
   auto ap_sizes = std::vector<size_t>{args.ap_size};
 
   // Sets the dimensions of the matrices or vectors depending on the BLAS level
-  auto dimensions = (C::BLASLevel() == 3) ? tester.kMatrixDims :
-                    (C::BLASLevel() == 2) ? tester.kMatrixVectorDims :
+  auto dimensions = (C::BLASLevel() == 4) ? tester.kMatrixDims : // non-BLAS extra routines
+                    (C::BLASLevel() == 3) ? tester.kMatrixDims : // level 3
+                    (C::BLASLevel() == 2) ? tester.kMatrixVectorDims : // level 2
                     tester.kVectorDims; // else: level 1
 
   // For the options relevant to this routine, sets the vectors to proper values
@@ -318,7 +326,9 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
               // Runs the tests
               tester.TestRegular(regular_test_vector, case_name);
               #ifdef CLBLAST_REF_CLBLAS
-                tester.TestInvalid(invalid_test_vector, case_name);
+                if (C::BLASLevel() != 4) {
+                  tester.TestInvalid(invalid_test_vector, case_name);
+                }
               #endif
             }
           }

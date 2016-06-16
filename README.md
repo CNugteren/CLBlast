@@ -235,13 +235,14 @@ CLBlast is in active development but already supports almost all the BLAS routin
 | xHER2K   | - | - | ✔ | ✔ | - |
 | xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-In addition, some non-BLAS routines are also supported by CLBlast. They are experimental and should be used with care:
+In addition, some extra non-BLAS routines are also supported by CLBlast, classified as level-X. They are experimental and should be used with care:
 
-| Additional | S | D | C | Z | H |
+| Level-X    | S | D | C | Z | H |
 | -----------|---|---|---|---|---|
 | xSUM       | ✔ | ✔ | ✔ | ✔ | ✔ |
 | IxMAX      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
 

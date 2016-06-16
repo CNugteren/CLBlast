@@ -53,8 +53,10 @@ class Client {
 
   // Parses all command-line arguments, filling in the arguments structure. If no command-line
   // argument is given for a particular argument, it is filled in with a default value.
-  Arguments<U> ParseArguments(int argc, char *argv[], const GetMetric default_a_ld,
-                              const GetMetric default_b_ld, const GetMetric default_c_ld);
+  Arguments<U> ParseArguments(int argc, char *argv[], const size_t level,
+                              const GetMetric default_a_ld,
+                              const GetMetric default_b_ld,
+                              const GetMetric default_c_ld);
 
   // The main client function, setting-up arguments, matrices, OpenCL buffers, etc. After set-up, it
   // calls the client routines.
@@ -97,14 +99,14 @@ void RunClient(int argc, char *argv[]) {
 
   // Sets the reference to test against
   #ifdef CLBLAST_REF_CLBLAS
-    const auto reference1 = C::RunReference1; // clBLAS when available
+    auto reference1 = C::RunReference1; // clBLAS when available
   #else
-    const auto reference1 = ReferenceNotAvailable<T,U>;
+    auto reference1 = ReferenceNotAvailable<T,U>;
   #endif
   #ifdef CLBLAST_REF_CBLAS
-    const auto reference2 = C::RunReference2; // CBLAS when available
+    auto reference2 = C::RunReference2; // CBLAS when available
   #else
-    const auto reference2 = ReferenceNotAvailable<T,U>;
+    auto reference2 = ReferenceNotAvailable<T,U>;
   #endif
 
   // Creates a new client
@@ -112,7 +114,8 @@ void RunClient(int argc, char *argv[]) {
                             C::GetFlops, C::GetBytes);
 
   // Simple command line argument parser with defaults
-  auto args = client.ParseArguments(argc, argv, C::DefaultLDA, C::DefaultLDB, C::DefaultLDC);
+  auto args = client.ParseArguments(argc, argv, C::BLASLevel(),
+                                    C::DefaultLDA, C::DefaultLDB, C::DefaultLDC);
   if (args.print_help) { return; }
 
   // Runs the client

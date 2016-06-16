@@ -145,7 +145,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       m_ceiled, k_ceiled, m_ceiled, 0, a_temp,
-                                      program, true, a_do_transpose, a_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, a_do_transpose, a_conjugate);
       if (ErrorIn(status)) { return status; }
       eventWaitList.push_back(eventProcessA);
     }
@@ -156,7 +157,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       status = PadCopyTransposeMatrix(eventProcessB.pointer(), emptyEventList,
                                       b_one, b_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
-                                      program, true, b_do_transpose, b_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, b_do_transpose, b_conjugate);
       if (ErrorIn(status)) { return status; }
       eventWaitList.push_back(eventProcessB);
     }
@@ -167,7 +169,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
                                       c_one, c_two, c_ld, c_offset, c_buffer,
                                       m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
-                                      program, true, c_do_transpose, false);
+                                      ConstantOne<T>(), program,
+                                      true, c_do_transpose, false);
       if (ErrorIn(status)) { return status; }
       eventWaitList.push_back(eventProcessC);
     }
@@ -205,7 +208,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
         status = PadCopyTransposeMatrix(event_, eventWaitList,
                                         m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                         c_one, c_two, c_ld, c_offset, c_buffer,
-                                        program, false, c_do_transpose, false);
+                                        ConstantOne<T>(), program,
+                                        false, c_do_transpose, false);
         if (ErrorIn(status)) { return status; }
       }
 

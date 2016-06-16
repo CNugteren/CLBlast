@@ -117,7 +117,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
-                                      program, true, a_rotated, false);
+                                      ConstantOne<T>(), program,
+                                      true, a_rotated, false);
       if (ErrorIn(status)) { return status; }
       eventWaitList.push_back(eventProcessA);
     }
@@ -128,7 +129,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
-                                    program, true, c_rotated, false);
+                                    ConstantOne<T>(), program,
+                                    true, c_rotated, false);
     if (ErrorIn(status)) { return status; }
     eventWaitList.push_back(eventProcessC);
 
@@ -164,7 +166,8 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       status = PadCopyTransposeMatrix(event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      program, false, c_rotated, false, upper, lower, false);
+                                      ConstantOne<T>(), program,
+                                      false, c_rotated, false, upper, lower, false);
       if (ErrorIn(status)) { return status; }
 
 

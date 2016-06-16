@@ -132,7 +132,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       status = PadCopyTransposeMatrix(eventProcessA1.pointer(), emptyEventList,
                                       ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a1_temp,
-                                      program, true, ab_rotated, ab_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, ab_rotated, ab_conjugate);
       eventWaitList.push_back(eventProcessA1);
       if (ErrorIn(status)) { return status; }
     }
@@ -141,7 +142,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       status = PadCopyTransposeMatrix(eventProcessA2.pointer(), emptyEventList,
                                       ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a2_temp,
-                                      program, true, ab_rotated, !ab_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, ab_rotated, !ab_conjugate);
       eventWaitList.push_back(eventProcessA2);
       if (ErrorIn(status)) { return status; }
     }
@@ -150,7 +152,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       status = PadCopyTransposeMatrix(eventProcessB1.pointer(), emptyEventList,
                                       ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b1_temp,
-                                      program, true, ab_rotated, ab_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, ab_rotated, ab_conjugate);
       eventWaitList.push_back(eventProcessB1);
       if (ErrorIn(status)) { return status; }
     }
@@ -159,7 +162,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       status = PadCopyTransposeMatrix(eventProcessB2.pointer(), emptyEventList,
                                       ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b2_temp,
-                                      program, true, ab_rotated, !ab_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, ab_rotated, !ab_conjugate);
       eventWaitList.push_back(eventProcessB2);
       if (ErrorIn(status)) { return status; }
     }
@@ -170,7 +174,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
-                                    program, true, c_rotated, false);
+                                    ConstantOne<T>(), program,
+                                    true, c_rotated, false);
     eventWaitList.push_back(eventProcessC);
     if (ErrorIn(status)) { return status; }
 
@@ -222,7 +227,8 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       status = PadCopyTransposeMatrix(event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      program, false, c_rotated, false, upper, lower, true);
+                                      ConstantOne<T>(), program,
+                                      false, c_rotated, false, upper, lower, true);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation

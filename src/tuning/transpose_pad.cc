@@ -37,7 +37,7 @@ class TunePadTranspose {
   }
 
   // The list of arguments relevant for this routine
-  static std::vector<std::string> GetOptions() { return {kArgM, kArgN}; }
+  static std::vector<std::string> GetOptions() { return {kArgM, kArgN, kArgAlpha}; }
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
@@ -90,6 +90,7 @@ class TunePadTranspose {
                            std::vector<T> &, std::vector<T> &,
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
                            std::vector<T> &) {
+    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
     tuner.AddArgumentScalar(static_cast<int>(args.m));
@@ -100,6 +101,7 @@ class TunePadTranspose {
     tuner.AddArgumentScalar(static_cast<int>(args.n));
     tuner.AddArgumentScalar(0);
     tuner.AddArgumentOutput(b_mat);
+    tuner.AddArgumentInput(alpha_buffer);
     tuner.AddArgumentScalar(0);
   }
 

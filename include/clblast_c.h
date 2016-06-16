@@ -1266,6 +1266,42 @@ StatusCode PUBLIC_API CLBlastHtrsm(const Layout layout, const Side side, const T
                                    cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
+// Extra non-BLAS routines (level-X)
+// =================================================================================================
+
+// Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
+StatusCode PUBLIC_API CLBlastSomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const float alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const double alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastComatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_float2 alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastZomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_double2 alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_half alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+
+// =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.

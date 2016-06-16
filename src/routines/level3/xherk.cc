@@ -124,7 +124,8 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
       status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
-                                      program, true, a_rotated, a_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, a_rotated, a_conjugate);
       eventWaitList.push_back(eventProcessA);
       if (ErrorIn(status)) { return status; }
     }
@@ -133,7 +134,8 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
       status = PadCopyTransposeMatrix(eventProcessB.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
-                                      program, true, a_rotated, b_conjugate);
+                                      ConstantOne<T>(), program,
+                                      true, a_rotated, b_conjugate);
       eventWaitList.push_back(eventProcessB);
       if (ErrorIn(status)) { return status; }
     }
@@ -144,7 +146,8 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
     status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
-                                    program, true, c_rotated, false);
+                                    ConstantOne<T>(), program,
+                                    true, c_rotated, false);
     eventWaitList.push_back(eventProcessC);
     if (ErrorIn(status)) { return status; }
 
@@ -180,7 +183,8 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
       status = PadCopyTransposeMatrix(event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
-                                      program, false, c_rotated, false, upper, lower, true);
+                                      ConstantOne<T>(), program,
+                                      false, c_rotated, false, upper, lower, true);
       if (ErrorIn(status)) { return status; }
 
       // Successfully finished the computation

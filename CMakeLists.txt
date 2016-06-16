@@ -133,7 +133,8 @@ set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
-set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES})
+set(LEVELX_ROUTINES xomatcopy)
+set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
 set(PRECISIONS 32 64 3232 6464)
 
 # ==================================================================================================
@@ -149,6 +150,9 @@ foreach(ROUTINE ${LEVEL2_ROUTINES})
 endforeach()
 foreach(ROUTINE ${LEVEL3_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level3/${ROUTINE}.cc)
+endforeach()
+foreach(ROUTINE ${LEVELX_ROUTINES})
+  set(SOURCES ${SOURCES} src/routines/levelx/${ROUTINE}.cc)
 endforeach()
 
 # Creates and links the library
@@ -279,6 +283,10 @@ if(CLIENTS)
     add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
                    test/performance/routines/level3/${ROUTINE}.cc)
   endforeach()
+  foreach(ROUTINE ${LEVELX_ROUTINES})
+    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+                   test/performance/routines/levelx/${ROUTINE}.cc)
+  endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
@@ -309,6 +317,10 @@ if(TESTS)
   foreach(ROUTINE ${LEVEL3_ROUTINES})
     add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
                    test/correctness/routines/level3/${ROUTINE}.cc)
+  endforeach()
+  foreach(ROUTINE ${LEVELX_ROUTINES})
+    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+                   test/correctness/routines/levelx/${ROUTINE}.cc)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})

@@ -39,7 +39,9 @@ R"(
 __attribute__((reqd_work_group_size(TRA_DIM, TRA_DIM, 1)))
 __kernel void TransposeMatrixFast(const int ld,
                                   __global const realT* restrict src,
-                                  __global realT* dest) {
+                                  __global realT* dest,
+                                  const __constant real* restrict arg_alpha) {
+  const real alpha = arg_alpha[0];
 
   // Sets the group identifiers. They might be 'shuffled' around to distribute work in a different
   // way over workgroups, breaking memory-bank dependencies.
@@ -117,12 +119,50 @@ __kernel void TransposeMatrixFast(const int ld,
     results[15] = (realT) {v[0].sF, v[1].sF, v[2].sF, v[3].sF, v[4].sF, v[5].sF, v[6].sF, v[7].sF, v[8].sF, v[9].sF, v[10].sF, v[11].sF, v[12].sF, v[13].sF, v[14].sF, v[15].sF};
   #endif
 
-  // Stores the results into the destination matrix
+  // Multiplies by alpha and then stores the results into the destination matrix
   #pragma unroll
   for (int w_two=0; w_two<TRA_WPT; ++w_two) {
+    realT result;
+    #if TRA_WPT == 1
+      Multiply(result, alpha, results[w_two]);
+    #elif TRA_WPT == 2
+      Multiply(result.x, alpha, results[w_two].x);
+      Multiply(result.y, alpha, results[w_two].y);
+    #elif TRA_WPT == 4
+      Multiply(result.x, alpha, results[w_two].x);
+      Multiply(result.y, alpha, results[w_two].y);
+      Multiply(result.z, alpha, results[w_two].z);
+      Multiply(result.w, alpha, results[w_two].w);
+    #elif TRA_WPT == 8
+      Multiply(result.s0, alpha, results[w_two].s0);
+      Multiply(result.s1, alpha, results[w_two].s1);
+      Multiply(result.s2, alpha, results[w_two].s2);
+      Multiply(result.s3, alpha, results[w_two].s3);
+      Multiply(result.s4, alpha, results[w_two].s4);
+      Multiply(result.s5, alpha, results[w_two].s5);
+      Multiply(result.s6, alpha, results[w_two].s6);
+      Multiply(result.s7, alpha, results[w_two].s7);
+    #elif TRA_WPT == 16
+      Multiply(result.s0, alpha, results[w_two].s0);
+      Multiply(result.s1, alpha, results[w_two].s1);
+      Multiply(result.s2, alpha, results[w_two].s2);
+      Multiply(result.s3, alpha, results[w_two].s3);
+      Multiply(result.s4, alpha, results[w_two].s4);
+      Multiply(result.s5, alpha, results[w_two].s5);
+      Multiply(result.s6, alpha, results[w_two].s6);
+      Multiply(result.s7, alpha, results[w_two].s7);
+      Multiply(result.s8, alpha, results[w_two].s8);
+      Multiply(result.s9, alpha, results[w_two].s9);
+      Multiply(result.sA, alpha, results[w_two].sA);
+      Multiply(result.sB, alpha, results[w_two].sB);
+      Multiply(result.sC, alpha, results[w_two].sC);
+      Multiply(result.sD, alpha, results[w_two].sD);
+      Multiply(result.sE, alpha, results[w_two].sE);
+      Multiply(result.sF, alpha, results[w_two].sF);
+    #endif
     const int id_one = gid0*TRA_DIM + get_local_id(0);
     const int id_two = (gid1*TRA_DIM + get_local_id(1))*TRA_WPT + w_two;
-    dest[id_two*(ld/TRA_WPT) + id_one] = results[w_two];
+    dest[id_two*(ld/TRA_WPT) + id_one] = result;
   }
 }
 

@@ -2708,3 +2708,76 @@ Requirements for TRMM:
 
 
 
+xOMATCOPY: Scaling and out-place transpose/copy (non-BLAS function)
+-------------
+
+Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.
+
+C++ API:
+```
+template <typename T>
+StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
+                    const size_t m, const size_t n,
+                    const T alpha,
+                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                    cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+StatusCode CLBlastSomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const float alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastDomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const double alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastComatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_float2 alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastZomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_double2 alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event)
+StatusCode CLBlastHomatcopy(const Layout layout, const Transpose a_transpose,
+                            const size_t m, const size_t n,
+                            const cl_half alpha,
+                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                            cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to OMATCOPY:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `cl_mem b_buffer`: OpenCL buffer to store the output B matrix.
+* `const size_t b_offset`: The offset in elements from the start of the output B matrix.
+* `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for OMATCOPY:
+
+* The value of `a_ld` must be at least `m`.
+* The value of `b_ld` must be at least `n`.
+
+
+

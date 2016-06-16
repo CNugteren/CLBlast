@@ -68,6 +68,9 @@
 #include "internal/routines/level3/xher2k.h"
 #include "internal/routines/level3/xtrmm.h"
 
+// Extra includes (level-x)
+#include "internal/routines/levelx/xomatcopy.h"
+
 namespace clblast {
 
 // =================================================================================================
@@ -2060,6 +2063,59 @@ template StatusCode PUBLIC_API Trsm<half>(const Layout, const Side, const Triang
                                           const cl_mem, const size_t, const size_t,
                                           cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
+
+// =================================================================================================
+// Extra non-BLAS routines (level-X)
+// =================================================================================================
+
+// Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
+template <typename T>
+StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
+                    const size_t m, const size_t n,
+                    const T alpha,
+                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                    cl_command_queue* queue, cl_event* event) {
+  auto queue_cpp = Queue(*queue);
+  auto routine = Xomatcopy<T>(queue_cpp, event);
+  auto status = routine.SetUp();
+  if (status != StatusCode::kSuccess) { return status; }
+  return routine.DoOmatcopy(layout, a_transpose,
+                            m, n,
+                            alpha,
+                            Buffer<T>(a_buffer), a_offset, a_ld,
+                            Buffer<T>(b_buffer), b_offset, b_ld);
+}
+template StatusCode PUBLIC_API Omatcopy<float>(const Layout, const Transpose,
+                                               const size_t, const size_t,
+                                               const float,
+                                               const cl_mem, const size_t, const size_t,
+                                               cl_mem, const size_t, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<double>(const Layout, const Transpose,
+                                                const size_t, const size_t,
+                                                const double,
+                                                const cl_mem, const size_t, const size_t,
+                                                cl_mem, const size_t, const size_t,
+                                                cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<float2>(const Layout, const Transpose,
+                                                const size_t, const size_t,
+                                                const float2,
+                                                const cl_mem, const size_t, const size_t,
+                                                cl_mem, const size_t, const size_t,
+                                                cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<double2>(const Layout, const Transpose,
+                                                 const size_t, const size_t,
+                                                 const double2,
+                                                 const cl_mem, const size_t, const size_t,
+                                                 cl_mem, const size_t, const size_t,
+                                                 cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
+                                              const size_t, const size_t,
+                                              const half,
+                                              const cl_mem, const size_t, const size_t,
+                                              cl_mem, const size_t, const size_t,
+                                              cl_command_queue*, cl_event*);
 
 // =================================================================================================
 

@@ -83,6 +83,7 @@ class Routine {
                                     const size_t dest_one, const size_t dest_two,
                                     const size_t dest_ld, const size_t dest_offset,
                                     const Buffer<T> &dest,
+                                    const T alpha,
                                     const Program &program, const bool do_pad,
                                     const bool do_transpose, const bool do_conjugate,
                                     const bool upper = false, const bool lower = false,

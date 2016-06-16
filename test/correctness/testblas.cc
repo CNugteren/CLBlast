@@ -174,8 +174,8 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
 template <typename T, typename U>
 void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const std::string &name) {
   if (!PrecisionSupported<T>(device_)) { return; }
-  if (!compare_clblas_) { return; }
-  if (std::is_same<T, half>::value) { return; }
+  if (!compare_clblas_) { return; } // not supported for CPU BLAS routines
+  if (std::is_same<T, half>::value) { return; } // not supported for half-precision
   TestStart("invalid buffer sizes", name);
 
   // Iterates over all the to-be-tested combinations of arguments
