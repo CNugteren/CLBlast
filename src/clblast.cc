@@ -2120,7 +2120,7 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
 // =================================================================================================
 
 // Clears the cache of stored binaries
-StatusCode ClearCache() { return cache::ClearCache(); }
+StatusCode ClearCache() { return CacheClearAll(); }
 
 // Fills the cache with all binaries for a specific device
 StatusCode FillCache(const cl_device_id device) {

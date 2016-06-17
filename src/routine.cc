@@ -40,17 +40,17 @@ template <typename T>
 StatusCode Routine<T>::SetUp() {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  if (ProgramIsInCache()) { return StatusCode::kSuccess; }
+  if (ProgramIsInCache(context_, precision_, routine_name_)) { return StatusCode::kSuccess; }
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
-  if (BinaryIsInCache()) {
+  if (BinaryIsInCache(device_name_, precision_, routine_name_)) {
     try {
-      auto& binary = cache::GetBinaryFromCache(device_name_, precision_, routine_name_);
+      auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
       auto program = Program(device_, context_, binary);
       auto options = std::vector<std::string>();
       program.Build(device_, options);
-      StoreProgramToCache(program);
+      StoreProgramToCache(program, context_, precision_, routine_name_);
     } catch (...) { return StatusCode::kBuildProgramFailure; }
     return StatusCode::kSuccess;
   }
@@ -121,8 +121,8 @@ StatusCode Routine<T>::SetUp() {
 
     // Store the compiled binary and program in the cache
     const auto binary = program.GetIR();
-    StoreBinaryToCache(binary);
-    StoreProgramToCache(program);
+    StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
+    StoreProgramToCache(program, context_, precision_, routine_name_);
   } catch (...) { return StatusCode::kBuildProgramFailure; }
 
   // No errors, normal termination of this function

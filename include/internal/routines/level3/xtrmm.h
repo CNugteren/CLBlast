@@ -31,10 +31,11 @@ class Xtrmm: public Xgemm<T> {
   using Routine<T>::queue_;
   using Routine<T>::device_;
   using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::routine_name_;
 
   // Uses the regular Xgemm routine
   using Xgemm<T>::DoGemm;
+  using Xgemm<T>::precision_;
 
   // Constructor
   Xtrmm(Queue &queue, EventPointer event, const std::string &name = "TRMM");

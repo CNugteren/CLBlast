@@ -30,6 +30,7 @@ class Xtrmv: public Xgemv<T> {
   using Routine<T>::queue_;
   using Routine<T>::device_;
   using Routine<T>::context_;
+  using Routine<T>::routine_name_;
 
   // Uses the generic matrix-vector routine
   using Xgemv<T>::MatVec;

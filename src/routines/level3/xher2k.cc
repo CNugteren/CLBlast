@@ -94,7 +94,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   try {
 
     // Loads the program from the database
-    const auto program = GetProgramFromCache();
+    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
 
     // Determines whether or not temporary matrices are needed
     auto a1_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&

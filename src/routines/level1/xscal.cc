@@ -61,7 +61,7 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
 
   // Retrieves the Xscal kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache();
+    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

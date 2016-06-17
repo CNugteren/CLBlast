@@ -65,7 +65,7 @@ StatusCode Xswap<T>::DoSwap(const size_t n,
 
   // Retrieves the Xswap kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache();
+    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

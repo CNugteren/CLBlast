@@ -31,7 +31,7 @@ class Xher: public Routine<T> {
   using Routine<T>::device_;
   using Routine<T>::event_;
   using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::routine_name_;
 
   // Constructor
   Xher(Queue &queue, EventPointer event, const std::string &name = "HER");

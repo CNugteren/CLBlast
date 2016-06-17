@@ -33,7 +33,7 @@ class Xsyr2k: public Routine<T> {
   using Routine<T>::device_;
   using Routine<T>::event_;
   using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::routine_name_;
 
   // Constructor
   Xsyr2k(Queue &queue, EventPointer event, const std::string &name = "SYR2K");

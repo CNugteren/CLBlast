@@ -85,7 +85,7 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
 
   // Retrieves the kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache();
+    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
     auto kernel = Kernel(program, "Xher");
 
     // Sets the kernel arguments

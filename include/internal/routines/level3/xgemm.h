@@ -31,7 +31,7 @@ class Xgemm: public Routine<T> {
   using Routine<T>::device_;
   using Routine<T>::event_;
   using Routine<T>::context_;
-  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::routine_name_;
 
   // Constructor
   Xgemm(Queue &queue, EventPointer event, const std::string &name = "GEMM");
@@ -45,7 +45,7 @@ class Xgemm: public Routine<T> {
                     const T beta,
                     const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
 
- private:
+ protected:
   // Static variable to get the precision
   const static Precision precision_;
 };

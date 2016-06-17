@@ -41,30 +41,6 @@ class Routine {
 
  protected:
 
-  // Stores a newly compiled binary/program into the cache
-  void StoreBinaryToCache(const std::string& binary) const {
-    cache::StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
-  }
-  void StoreProgramToCache(const Program& program) const {
-    cache::StoreProgramToCache(program, context_, precision_, routine_name_);
-  }
-
-  // Queries the cache and retrieve either a matching binary/program or a boolean whether a match
-  // exists. The first assumes that the binary/program is available in the cache and will throw an
-  // exception otherwise.
-  std::string GetBinaryFromCache() const {
-    return cache::GetBinaryFromCache(device_name_, precision_, routine_name_);
-  }
-  Program GetProgramFromCache() const {
-    return cache::GetProgramFromCache(context_, precision_, routine_name_);
-  }
-  bool BinaryIsInCache() const {
-    return cache::BinaryIsInCache(device_name_, precision_, routine_name_);
-  }
-  bool ProgramIsInCache() const {
-    return cache::ProgramIsInCache(context_, precision_, routine_name_);
-  }
-
   // Non-static variable for the precision. Note that the same variable (but static) might exist in
   // a derived class.
   const Precision precision_;

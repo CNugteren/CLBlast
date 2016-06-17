@@ -21,7 +21,6 @@
 #include "internal/utilities.h"
 
 namespace clblast {
-namespace cache {
 // =================================================================================================
 
 // The cache of compiled OpenCL binaries, along with some meta-data
@@ -90,10 +89,9 @@ bool ProgramIsInCache(const Context &context, const Precision &precision,
 // =================================================================================================
 
 // Clears the cache of stored binaries
-StatusCode ClearCache();
+StatusCode CacheClearAll();
 
 // =================================================================================================
-} // namespace cache
 } // namespace clblast
 
 // CLBLAST_CACHE_H_

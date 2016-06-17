@@ -78,7 +78,7 @@ StatusCode Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_trans
   if (ErrorIn(status)) { return status; }
 
   // Loads the program from the database
-  const auto program = GetProgramFromCache();
+  const auto program = GetProgramFromCache(context_, precision_, routine_name_);
 
   auto emptyEventList = std::vector<Event>();
   status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, emptyEventList,

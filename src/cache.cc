@@ -18,7 +18,6 @@
 #include "internal/cache.h"
 
 namespace clblast {
-namespace cache {
 // =================================================================================================
 
 // Stores the compiled binary or IR in the cache
@@ -98,7 +97,7 @@ bool ProgramIsInCache(const Context &context, const Precision &precision,
 // =================================================================================================
 
 // Clears the cache of stored binaries and programs
-StatusCode ClearCache() {
+StatusCode CacheClearAll() {
   binary_cache_mutex_.lock();
   binary_cache_.clear();
   binary_cache_mutex_.unlock();
@@ -109,5 +108,4 @@ StatusCode ClearCache() {
 }
 
 // =================================================================================================
-} // namespace cache
 } // namespace clblast

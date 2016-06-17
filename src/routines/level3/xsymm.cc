@@ -61,7 +61,7 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
     // Creates a general matrix from the symmetric matrix to be able to run the regular Xgemm
     // routine afterwards
     try {
-      const auto program = GetProgramFromCache();
+      const auto program = GetProgramFromCache(context_, precision_, routine_name_);
       auto kernel = Kernel(program, kernel_name);
 
       // Sets the arguments for the symmetric-to-squared kernel

@@ -30,7 +30,8 @@ class Xcopy: public Routine<T> {
   using Routine<T>::queue_;
   using Routine<T>::device_;
   using Routine<T>::event_;
-  using Routine<T>::GetProgramFromCache;
+  using Routine<T>::context_;
+  using Routine<T>::routine_name_;
 
   // Constructor
   Xcopy(Queue &queue, EventPointer event, const std::string &name = "COPY");
