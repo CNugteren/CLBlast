@@ -32,7 +32,6 @@ class Xsymm: public Xgemm<T> {
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Uses the regular Xgemm routine
   using Xgemm<T>::DoGemm;

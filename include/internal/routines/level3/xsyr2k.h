@@ -35,7 +35,6 @@ class Xsyr2k: public Routine<T> {
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xsyr2k(Queue &queue, EventPointer event, const std::string &name = "SYR2K");

@@ -200,6 +200,11 @@ bool CheckArgument(const int argc, char *argv[], std::string &help, const std::s
 
 // =================================================================================================
 
+// Helper function to check for errors in the status code
+constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
+
+// =================================================================================================
+
 // Returns a random number to be used as a seed
 unsigned int GetRandomSeed();
 

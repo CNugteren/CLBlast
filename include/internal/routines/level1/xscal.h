@@ -31,7 +31,6 @@ class Xscal: public Routine<T> {
   using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xscal(Queue &queue, EventPointer event, const std::string &name = "SCAL");

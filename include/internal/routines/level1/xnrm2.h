@@ -32,7 +32,6 @@ class Xnrm2: public Routine<T> {
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xnrm2(Queue &queue, EventPointer event, const std::string &name = "NRM2");

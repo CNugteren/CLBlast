@@ -31,7 +31,6 @@ class Xcopy: public Routine<T> {
   using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xcopy(Queue &queue, EventPointer event, const std::string &name = "COPY");

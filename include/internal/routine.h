@@ -32,9 +32,6 @@ template <typename T>
 class Routine {
  public:
 
-  // Helper functions which check for errors in the status code
-  static constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
-
   // Base class constructor
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision);

@@ -37,7 +37,6 @@ class Xsyrk: public Routine<T> {
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xsyrk(Queue &queue, EventPointer event, const std::string &name = "SYRK");

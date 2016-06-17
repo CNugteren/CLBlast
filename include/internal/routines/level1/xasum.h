@@ -32,7 +32,6 @@ class Xasum: public Routine<T> {
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xasum(Queue &queue, EventPointer event, const std::string &name = "ASUM");

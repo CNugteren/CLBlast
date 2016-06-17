@@ -35,7 +35,6 @@ class Xher2k: public Routine<T> {
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
   using Routine<T>::RunKernel;
-  using Routine<T>::ErrorIn;
 
   // Constructor
   Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");
