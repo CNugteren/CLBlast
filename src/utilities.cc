@@ -360,6 +360,13 @@ size_t GetBytes(const Precision precision) {
   }
 }
 
+// Convert the template argument into a precision value
+template <> Precision PrecisionValue<half>() { return Precision::kHalf; }
+template <> Precision PrecisionValue<float>() { return Precision::kSingle; }
+template <> Precision PrecisionValue<double>() { return Precision::kDouble; }
+template <> Precision PrecisionValue<float2>() { return Precision::kComplexSingle; }
+template <> Precision PrecisionValue<double2>() { return Precision::kComplexDouble; }
+
 // =================================================================================================
 
 // Returns false is this precision is not supported by the device

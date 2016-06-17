@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xcopy<half>::precision_ = Precision::kHalf;
-template <> const Precision Xcopy<float>::precision_ = Precision::kSingle;
-template <> const Precision Xcopy<double>::precision_ = Precision::kDouble;
-template <> const Precision Xcopy<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xcopy<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xcopy<T>::Xcopy(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
+    Routine<T>(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xcopy.opencl"
@@ -65,7 +56,7 @@ StatusCode Xcopy<T>::DoCopy(const size_t n,
 
   // Retrieves the Xcopy kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

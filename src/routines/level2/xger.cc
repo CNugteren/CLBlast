@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xger<half>::precision_ = Precision::kHalf;
-template <> const Precision Xger<float>::precision_ = Precision::kSingle;
-template <> const Precision Xger<double>::precision_ = Precision::kDouble;
-template <> const Precision Xger<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xger<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xger<T>::Xger(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xger"}, precision_) {
+    Routine<T>(queue, event, name, {"Xger"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level2/level2.opencl"
     #include "../../kernels/level2/xger.opencl"
@@ -71,7 +62,7 @@ StatusCode Xger<T>::DoGer(const Layout layout,
 
   // Retrieves the kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, "Xger");
 
     // Sets the kernel arguments

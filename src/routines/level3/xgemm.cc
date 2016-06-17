@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xgemm<half>::precision_ = Precision::kHalf;
-template <> const Precision Xgemm<float>::precision_ = Precision::kSingle;
-template <> const Precision Xgemm<double>::precision_ = Precision::kDouble;
-template <> const Precision Xgemm<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xgemm<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
+    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
@@ -112,7 +103,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   try {
 
     // Loads the program from the database
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
     // Determines whether or not temporary matrices are needed
     auto a_no_temp = a_one == m_ceiled && a_two == k_ceiled && a_ld == m_ceiled && a_offset == 0 &&

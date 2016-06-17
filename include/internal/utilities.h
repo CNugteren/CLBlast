@@ -240,6 +240,10 @@ bool IsMultiple(const size_t a, const size_t b);
 // Convert the precision enum into bytes, e.g. a double takes up 8 bytes
 size_t GetBytes(const Precision precision);
 
+// Convert the template argument into a precision value
+template <typename T>
+Precision PrecisionValue();
+
 // =================================================================================================
 
 // Returns false is this precision is not supported by the device

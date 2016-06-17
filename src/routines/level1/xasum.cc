@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xasum<half>::precision_ = Precision::kHalf;
-template <> const Precision Xasum<float>::precision_ = Precision::kSingle;
-template <> const Precision Xasum<double>::precision_ = Precision::kDouble;
-template <> const Precision Xasum<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xasum<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xasum<T>::Xasum(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xdot"}, precision_) {
+    Routine<T>(queue, event, name, {"Xdot"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/xasum.opencl"
   ;
@@ -56,7 +47,7 @@ StatusCode Xasum<T>::DoAsum(const size_t n,
 
   // Retrieves the Xasum kernels from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel1 = Kernel(program, "Xasum");
     auto kernel2 = Kernel(program, "XasumEpilogue");
 

@@ -42,10 +42,6 @@ class Xdot: public Routine<T> {
                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
                    const bool do_conjugate = false);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

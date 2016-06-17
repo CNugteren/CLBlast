@@ -18,19 +18,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xher<half, half>::precision_ = Precision::kHalf;
-template <> const Precision Xher<float, float>::precision_ = Precision::kSingle;
-template <> const Precision Xher<double, double>::precision_ = Precision::kDouble;
-template <> const Precision Xher<float2, float>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xher<double2, double>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
 Xher<T,U>::Xher(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xger"}, precision_) {
+    Routine<T>(queue, event, name, {"Xger"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level2/level2.opencl"
     #include "../../kernels/level2/xher.opencl"
@@ -85,7 +76,7 @@ StatusCode Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
 
   // Retrieves the kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, "Xher");
 
     // Sets the kernel arguments

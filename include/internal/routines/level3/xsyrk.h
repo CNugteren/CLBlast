@@ -47,10 +47,6 @@ class Xsyrk: public Routine<T> {
                     const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                     const T beta,
                     const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

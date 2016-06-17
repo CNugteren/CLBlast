@@ -19,16 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xher2k<float2,float>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xher2k<double2,double>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
 Xher2k<T,U>::Xher2k(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, precision_) {
+    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
@@ -94,7 +88,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   try {
 
     // Loads the program from the database
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
     // Determines whether or not temporary matrices are needed
     auto a1_no_temp = ab_one == n_ceiled && ab_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&

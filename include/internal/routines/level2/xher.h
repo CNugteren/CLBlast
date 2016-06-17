@@ -46,10 +46,6 @@ class Xher: public Routine<T> {
                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                    const bool packed = false);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xswap<half>::precision_ = Precision::kHalf;
-template <> const Precision Xswap<float>::precision_ = Precision::kSingle;
-template <> const Precision Xswap<double>::precision_ = Precision::kDouble;
-template <> const Precision Xswap<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xswap<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xswap<T>::Xswap(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
+    Routine<T>(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xswap.opencl"
@@ -65,7 +56,7 @@ StatusCode Xswap<T>::DoSwap(const size_t n,
 
   // Retrieves the Xswap kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xaxpy<half>::precision_ = Precision::kHalf;
-template <> const Precision Xaxpy<float>::precision_ = Precision::kSingle;
-template <> const Precision Xaxpy<double>::precision_ = Precision::kDouble;
-template <> const Precision Xaxpy<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xaxpy<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xaxpy<T>::Xaxpy(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xaxpy"}, precision_) {
+    Routine<T>(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xaxpy.opencl"
@@ -65,7 +56,7 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
 
   // Retrieves the Xaxpy kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Upload the scalar argument as a constant buffer to the device (needed for half-precision)

@@ -41,10 +41,6 @@ class Xomatcopy: public Routine<T> {
                         const size_t m, const size_t n, const T alpha,
                         const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                         const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

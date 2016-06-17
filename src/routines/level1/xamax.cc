@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xamax<half>::precision_ = Precision::kHalf;
-template <> const Precision Xamax<float>::precision_ = Precision::kSingle;
-template <> const Precision Xamax<double>::precision_ = Precision::kDouble;
-template <> const Precision Xamax<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xamax<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xamax<T>::Xamax(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xdot"}, precision_) {
+    Routine<T>(queue, event, name, {"Xdot"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/xamax.opencl"
   ;
@@ -56,7 +47,7 @@ StatusCode Xamax<T>::DoAmax(const size_t n,
 
   // Retrieves the Xamax kernels from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel1 = Kernel(program, "Xamax");
     auto kernel2 = Kernel(program, "XamaxEpilogue");
 

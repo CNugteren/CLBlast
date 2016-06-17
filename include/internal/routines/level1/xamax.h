@@ -40,10 +40,6 @@ class Xamax: public Routine<T> {
   StatusCode DoAmax(const size_t n,
                     const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xdot<half>::precision_ = Precision::kHalf;
-template <> const Precision Xdot<float>::precision_ = Precision::kSingle;
-template <> const Precision Xdot<double>::precision_ = Precision::kDouble;
-template <> const Precision Xdot<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xdot<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xdot<T>::Xdot(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xdot"}, precision_) {
+    Routine<T>(queue, event, name, {"Xdot"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/xdot.opencl"
   ;
@@ -60,7 +51,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
 
   // Retrieves the Xdot kernels from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel1 = Kernel(program, "Xdot");
     auto kernel2 = Kernel(program, "XdotEpilogue");
 

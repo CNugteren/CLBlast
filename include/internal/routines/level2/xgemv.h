@@ -56,10 +56,6 @@ class Xgemv: public Routine<T> {
                     bool fast_kernel, bool fast_kernel_rot,
                     const size_t parameter, const bool packed,
                     const size_t kl, const size_t ku);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

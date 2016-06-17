@@ -40,10 +40,6 @@ class Xnrm2: public Routine<T> {
   StatusCode DoNrm2(const size_t n,
                     const Buffer<T> &nrm2_buffer, const size_t nrm2_offset,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

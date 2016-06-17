@@ -39,10 +39,6 @@ class Xscal: public Routine<T> {
   // Templated-precision implementation of the routine
   StatusCode DoScal(const size_t n, const T alpha,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

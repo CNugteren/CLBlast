@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xnrm2<half>::precision_ = Precision::kHalf;
-template <> const Precision Xnrm2<float>::precision_ = Precision::kSingle;
-template <> const Precision Xnrm2<double>::precision_ = Precision::kDouble;
-template <> const Precision Xnrm2<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xnrm2<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xnrm2<T>::Xnrm2(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xdot"}, precision_) {
+    Routine<T>(queue, event, name, {"Xdot"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/xnrm2.opencl"
   ;
@@ -56,7 +47,7 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
 
   // Retrieves the Xnrm2 kernels from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel1 = Kernel(program, "Xnrm2");
     auto kernel2 = Kernel(program, "Xnrm2Epilogue");
 

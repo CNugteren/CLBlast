@@ -19,19 +19,10 @@
 namespace clblast {
 // =================================================================================================
 
-// Specific implementations to get the memory-type based on a template argument
-template <> const Precision Xgemv<half>::precision_ = Precision::kHalf;
-template <> const Precision Xgemv<float>::precision_ = Precision::kSingle;
-template <> const Precision Xgemv<double>::precision_ = Precision::kDouble;
-template <> const Precision Xgemv<float2>::precision_ = Precision::kComplexSingle;
-template <> const Precision Xgemv<double2>::precision_ = Precision::kComplexDouble;
-
-// =================================================================================================
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Pad", "Xgemv"}, precision_) {
+    Routine<T>(queue, event, name, {"Pad", "Xgemv"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level2/xgemv.opencl"
     #include "../../kernels/level2/xgemv_fast.opencl"
@@ -143,7 +134,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 
   // Retrieves the Xgemv kernel from the compiled binary
   try {
-    const auto program = GetProgramFromCache(context_, precision_, routine_name_);
+    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
     // Sets the kernel arguments

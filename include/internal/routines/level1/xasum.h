@@ -40,10 +40,6 @@ class Xasum: public Routine<T> {
   StatusCode DoAsum(const size_t n,
                     const Buffer<T> &asum_buffer, const size_t asum_offset,
                     const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
-
- private:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================
