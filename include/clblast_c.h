@@ -77,8 +77,8 @@ typedef enum StatusCode_ {
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
-  kInvalidVectorDot          = -2043, // Vector dot is not a valid OpenCL buffer
-  kInsufficientMemoryDot     = -2042, // Vector dot's OpenCL buffer is too small
+  kInvalidVectorScalar       = -2043, // The unit-sized vector is not a valid OpenCL buffer
+  kInsufficientMemoryScalar  = -2042, // The unit-sized vector's OpenCL buffer is too small
 } StatusCode;
 
 // Matrix layout and transpose types

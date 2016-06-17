@@ -101,12 +101,12 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 
   // Tests the matrix and the vectors for validity
   auto status = StatusCode::kSuccess;
-  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
-  else { status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T)); }
+  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset); }
+  else { status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld); }
   if (ErrorIn(status)) { return status; }
-  status = TestVectorX(n_real, x_buffer, x_offset, x_inc, sizeof(T));
+  status = TestVectorX(n_real, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorY(m_real, y_buffer, y_offset, y_inc, sizeof(T));
+  status = TestVectorY(m_real, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used

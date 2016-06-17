@@ -49,7 +49,7 @@ StatusCode Xscal<T>::DoScal(const size_t n, const T alpha,
   if (n == 0) { return StatusCode::kInvalidDimension; }
 
   // Tests the vector for validity
-  auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  auto status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used

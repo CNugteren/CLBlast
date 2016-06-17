@@ -30,8 +30,6 @@ class Xcopy: public Routine<T> {
   using Routine<T>::queue_;
   using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestVectorX;
-  using Routine<T>::TestVectorY;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 

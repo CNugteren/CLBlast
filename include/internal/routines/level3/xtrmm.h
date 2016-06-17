@@ -30,7 +30,6 @@ class Xtrmm: public Xgemm<T> {
   using Routine<T>::db_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestMatrixA;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 

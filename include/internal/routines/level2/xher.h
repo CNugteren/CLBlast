@@ -31,9 +31,6 @@ class Xher: public Routine<T> {
   using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestVectorX;
-  using Routine<T>::TestMatrixA;
-  using Routine<T>::TestMatrixAP;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 

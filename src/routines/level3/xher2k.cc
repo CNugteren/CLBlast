@@ -76,11 +76,11 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   //    matrix A cannot be less than N when rotated, or less than K when not-rotated
   //    matrix B cannot be less than N when rotated, or less than K when not-rotated
   //    matrix C cannot be less than N
-  auto status = TestMatrixA(ab_one, ab_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = TestMatrixA(ab_one, ab_two, a_buffer, a_offset, a_ld);
   if (ErrorIn(status)) { return status; }
-  status = TestMatrixB(ab_one, ab_two, b_buffer, b_offset, b_ld, sizeof(T));
+  status = TestMatrixB(ab_one, ab_two, b_buffer, b_offset, b_ld);
   if (ErrorIn(status)) { return status; }
-  status = TestMatrixC(n, n, c_buffer, c_offset, c_ld, sizeof(T));
+  status = TestMatrixC(n, n, c_buffer, c_offset, c_ld);
   if (ErrorIn(status)) { return status; }
 
   // Calculates the ceiled versions of n and k

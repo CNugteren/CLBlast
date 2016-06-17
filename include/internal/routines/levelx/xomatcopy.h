@@ -29,8 +29,6 @@ class Xomatcopy: public Routine<T> {
   using Routine<T>::event_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
-  using Routine<T>::TestMatrixA;
-  using Routine<T>::TestMatrixB;
   using Routine<T>::ErrorIn;
 
   // Constructor

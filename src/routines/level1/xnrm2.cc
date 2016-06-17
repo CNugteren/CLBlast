@@ -49,9 +49,9 @@ StatusCode Xnrm2<T>::DoNrm2(const size_t n,
   if (n == 0) { return StatusCode::kInvalidDimension; }
 
   // Tests the vectors for validity
-  auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  auto status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorDot(1, nrm2_buffer, nrm2_offset, sizeof(T));
+  status = TestVectorScalar(1, nrm2_buffer, nrm2_offset);
   if (ErrorIn(status)) { return status; }
 
   // Retrieves the Xnrm2 kernels from the compiled binary

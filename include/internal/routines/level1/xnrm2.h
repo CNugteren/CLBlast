@@ -31,8 +31,6 @@ class Xnrm2: public Routine<T> {
   using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::TestVectorX;
-  using Routine<T>::TestVectorDot;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 

@@ -59,12 +59,12 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
 
   // Tests the matrix and the vectors for validity
   auto status = StatusCode::kSuccess;
-  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset, sizeof(T)); }
-  else { status = TestMatrixA(n, n, a_buffer, a_offset, a_ld, sizeof(T)); }
+  if (packed) { status = TestMatrixAP(n, a_buffer, a_offset); }
+  else { status = TestMatrixA(n, n, a_buffer, a_offset, a_ld); }
   if (ErrorIn(status)) { return status; }
-  status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorY(n, y_buffer, y_offset, y_inc, sizeof(T));
+  status = TestVectorY(n, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
 
   // Upload the scalar argument as a constant buffer to the device (needed for half-precision)

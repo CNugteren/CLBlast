@@ -51,11 +51,11 @@ StatusCode Xdot<T>::DoDot(const size_t n,
   if (n == 0) { return StatusCode::kInvalidDimension; }
 
   // Tests the vectors for validity
-  auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  auto status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorY(n, y_buffer, y_offset, y_inc, sizeof(T));
+  status = TestVectorY(n, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorDot(1, dot_buffer, dot_offset, sizeof(T));
+  status = TestVectorScalar(1, dot_buffer, dot_offset);
   if (ErrorIn(status)) { return status; }
 
   // Retrieves the Xdot kernels from the compiled binary

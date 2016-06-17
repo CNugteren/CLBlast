@@ -50,9 +50,9 @@ StatusCode Xswap<T>::DoSwap(const size_t n,
   if (n == 0) { return StatusCode::kInvalidDimension; }
 
   // Tests the vectors for validity
-  auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  auto status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorY(n, y_buffer, y_offset, y_inc, sizeof(T));
+  status = TestVectorY(n, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
 
   // Determines whether or not the fast-version can be used

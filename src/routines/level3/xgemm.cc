@@ -96,11 +96,11 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   //    matrix A cannot be less than K when rotated, or less than M when not-rotated
   //    matrix B cannot be less than N when rotated, or less than K when not-rotated
   //    matrix C cannot be less than N when rotated, or less than M when not-rotated
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
   if (ErrorIn(status)) { return status; }
-  status = TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld, sizeof(T));
+  status = TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
   if (ErrorIn(status)) { return status; }
-  status = TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld, sizeof(T));
+  status = TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
   if (ErrorIn(status)) { return status; }
 
   // Calculates the ceiled versions of m, n, and k

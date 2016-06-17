@@ -49,9 +49,9 @@ StatusCode Xamax<T>::DoAmax(const size_t n,
   if (n == 0) { return StatusCode::kInvalidDimension; }
 
   // Tests the vectors for validity
-  auto status = TestVectorX(n, x_buffer, x_offset, x_inc, sizeof(T));
+  auto status = TestVectorX(n, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorIndex(1, imax_buffer, imax_offset, sizeof(unsigned int));
+  status = TestVectorIndex(1, imax_buffer, imax_offset);
   if (ErrorIn(status)) { return status; }
 
   // Retrieves the Xamax kernels from the compiled binary

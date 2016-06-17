@@ -45,7 +45,7 @@ StatusCode Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle
   auto k = (side == Side::kLeft) ? m : n;
 
   // Checks for validity of the squared A matrix
-  auto status = TestMatrixA(k, k, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = TestMatrixA(k, k, a_buffer, a_offset, a_ld);
   if (ErrorIn(status)) { return status; }
 
   // Determines which kernel to run based on the layout (the Xgemm kernel assumes column-major as

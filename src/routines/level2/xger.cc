@@ -58,11 +58,11 @@ StatusCode Xger<T>::DoGer(const Layout layout,
   const auto a_two = (a_is_rowmajor) ? m : n;
 
   // Tests the matrix and the vectors for validity
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld, sizeof(T));
+  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorX(m, x_buffer, x_offset, x_inc, sizeof(T));
+  status = TestVectorX(m, x_buffer, x_offset, x_inc);
   if (ErrorIn(status)) { return status; }
-  status = TestVectorY(n, y_buffer, y_offset, y_inc, sizeof(T));
+  status = TestVectorY(n, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
 
   // Upload the scalar argument as a constant buffer to the device (needed for half-precision)

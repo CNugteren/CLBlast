@@ -36,8 +36,6 @@ class Xsyrk: public Routine<T> {
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
   using Routine<T>::PadCopyTransposeMatrix;
-  using Routine<T>::TestMatrixA;
-  using Routine<T>::TestMatrixC;
   using Routine<T>::RunKernel;
   using Routine<T>::ErrorIn;
 
