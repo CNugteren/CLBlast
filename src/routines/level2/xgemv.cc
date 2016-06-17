@@ -169,7 +169,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     // Launches the kernel
     auto global = std::vector<size_t>{global_size};
     auto local = std::vector<size_t>{local_size};
-    status = RunKernel(kernel, global, local, event_);
+    status = RunKernel(kernel, queue_, device_, global, local, event_);
     if (ErrorIn(status)) { return status; }
 
     // Succesfully finished the computation

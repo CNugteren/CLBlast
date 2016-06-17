@@ -27,9 +27,10 @@ class Xhemm: public Xgemm<T> {
 
   // Members and methods from the base class
   using Routine<T>::db_;
+  using Routine<T>::queue_;
+  using Routine<T>::device_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::RunKernel;
 
   // Uses the regular Xgemm routine
   using Xgemm<T>::DoGemm;

@@ -25,10 +25,13 @@ class Xomatcopy: public Routine<T> {
  public:
 
   // Members and methods from the base class
+  using Routine<T>::db_;
   using Routine<T>::source_string_;
+  using Routine<T>::queue_;
+  using Routine<T>::device_;
   using Routine<T>::event_;
+  using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::PadCopyTransposeMatrix;
 
   // Constructor
   Xomatcopy(Queue &queue, EventPointer event, const std::string &name = "OMATCOPY");

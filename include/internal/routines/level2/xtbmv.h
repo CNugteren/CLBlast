@@ -28,6 +28,7 @@ class Xtbmv: public Xgemv<T> {
   
   // Members from the base class
   using Routine<T>::queue_;
+  using Routine<T>::device_;
   using Routine<T>::context_;
 
   // Uses the generic matrix-vector routine

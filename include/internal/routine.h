@@ -40,30 +40,6 @@ class Routine {
   StatusCode SetUp();
 
  protected:
-  
-  // Runs a kernel given the global and local thread sizes
-  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> global,
-                       const std::vector<size_t> &local, EventPointer event,
-                       std::vector<Event>& waitForEvents);
-
-  // As above, but without an event waiting list
-  StatusCode RunKernel(Kernel &kernel, std::vector<size_t> global,
-                       const std::vector<size_t> &local, EventPointer event);
-
-  // Copies/transposes a matrix and padds/unpads it with zeroes. This method is also able to write
-  // to symmetric and triangular matrices through optional arguments.
-  StatusCode PadCopyTransposeMatrix(EventPointer event, std::vector<Event>& waitForEvents,
-                                    const size_t src_one, const size_t src_two,
-                                    const size_t src_ld, const size_t src_offset,
-                                    const Buffer<T> &src,
-                                    const size_t dest_one, const size_t dest_two,
-                                    const size_t dest_ld, const size_t dest_offset,
-                                    const Buffer<T> &dest,
-                                    const T alpha,
-                                    const Program &program, const bool do_pad,
-                                    const bool do_transpose, const bool do_conjugate,
-                                    const bool upper = false, const bool lower = false,
-                                    const bool diagonal_imag_zero = false);
 
   // Stores a newly compiled binary/program into the cache
   void StoreBinaryToCache(const std::string& binary) const {
@@ -105,16 +81,28 @@ class Routine {
 
   // OpenCL device properties
   const std::string device_name_;
-  const size_t max_work_item_dimensions_;
-  const std::vector<size_t> max_work_item_sizes_;
-  const size_t max_work_group_size_;
 
   // Connection to the database for all the device-specific parameters
   const Database db_;
 };
 
 // =================================================================================================
+
+// Enqueues a kernel, waits for completion, and checks for errors
+StatusCode RunKernel(Kernel &kernel, Queue queue, const Device device,
+                     std::vector<size_t> global, const std::vector<size_t> &local,
+                     EventPointer event, std::vector<Event>& waitForEvents);
+
+// As above, but without an event waiting list
+StatusCode RunKernel(Kernel &kernel, Queue queue, const Device device,
+                     std::vector<size_t> global, const std::vector<size_t> &local,
+                     EventPointer event);
+
+// =================================================================================================
 } // namespace clblast
+
+// Temporary fix: TODO place include in a more logical place
+#include "internal/routines/common.h"
 
 // CLBLAST_ROUTINE_H_
 #endif

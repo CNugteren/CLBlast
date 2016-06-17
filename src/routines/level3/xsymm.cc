@@ -80,7 +80,7 @@ StatusCode Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle
                                         Ceil(CeilDiv(k, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
       auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
       auto kernelEvent = Event();
-      status = RunKernel(kernel, global, local, kernelEvent.pointer());
+      status = RunKernel(kernel, queue_, device_, global, local, kernelEvent.pointer());
       if (ErrorIn(status)) { return status; }
 
       // Synchronize now: 'DoGemm' does not accept a list of events to wait for

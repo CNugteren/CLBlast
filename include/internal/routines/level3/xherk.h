@@ -30,11 +30,10 @@ class Xherk: public Routine<T> {
   using Routine<T>::db_;
   using Routine<T>::source_string_;
   using Routine<T>::queue_;
+  using Routine<T>::device_;
   using Routine<T>::event_;
   using Routine<T>::context_;
   using Routine<T>::GetProgramFromCache;
-  using Routine<T>::PadCopyTransposeMatrix;
-  using Routine<T>::RunKernel;
 
   // Constructor
   Xherk(Queue &queue, EventPointer event, const std::string &name = "HERK");

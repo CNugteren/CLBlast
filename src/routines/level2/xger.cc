@@ -94,7 +94,7 @@ StatusCode Xger<T>::DoGer(const Layout layout,
     auto a_two_ceiled = Ceil(CeilDiv(a_two, db_["WPT"]), db_["WGS2"]);
     auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
     auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
-    status = RunKernel(kernel, global, local, event_);
+    status = RunKernel(kernel, queue_, device_, global, local, event_);
     if (ErrorIn(status)) { return status; }
 
     // Succesfully finished the computation

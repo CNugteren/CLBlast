@@ -142,7 +142,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     // case nothing has to be done, these kernels can be skipped.
     if (!a_no_temp) {
       auto eventProcessA = Event();
-      status = PadCopyTransposeMatrix(eventProcessA.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       m_ceiled, k_ceiled, m_ceiled, 0, a_temp,
                                       ConstantOne<T>(), program,
@@ -154,7 +154,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     // As above, but now for matrix B
     if (!b_no_temp) {
       auto eventProcessB = Event();
-      status = PadCopyTransposeMatrix(eventProcessB.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessB.pointer(), emptyEventList,
                                       b_one, b_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
                                       ConstantOne<T>(), program,
@@ -166,7 +166,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     // As above, but now for matrix C. This is only necessary if C is used both as input and output.
     if (!c_no_temp && beta != static_cast<T>(0)) {
       auto eventProcessC = Event();
-      status = PadCopyTransposeMatrix(eventProcessC.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessC.pointer(), emptyEventList,
                                       c_one, c_two, c_ld, c_offset, c_buffer,
                                       m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                       ConstantOne<T>(), program,
@@ -199,13 +199,13 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       // Launches the kernel
       auto eventKernel = Event();
       auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
-      status = RunKernel(kernel, global, local, eventPointer, eventWaitList);
+      status = RunKernel(kernel, queue_, device_, global, local, eventPointer, eventWaitList);
       if (ErrorIn(status)) { return status; }
 
       // Runs the post-processing kernel if needed
       if (!c_no_temp) {
         eventWaitList.push_back(eventKernel);
-        status = PadCopyTransposeMatrix(event_, eventWaitList,
+        status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, eventWaitList,
                                         m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
                                         c_one, c_two, c_ld, c_offset, c_buffer,
                                         ConstantOne<T>(), program,

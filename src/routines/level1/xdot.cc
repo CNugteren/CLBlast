@@ -86,7 +86,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
     auto global1 = std::vector<size_t>{db_["WGS1"]*temp_size};
     auto local1 = std::vector<size_t>{db_["WGS1"]};
     auto kernelEvent = Event();
-    status = RunKernel(kernel1, global1, local1, kernelEvent.pointer());
+    status = RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
     if (ErrorIn(status)) { return status; }
     eventWaitList.push_back(kernelEvent);
 
@@ -98,7 +98,7 @@ StatusCode Xdot<T>::DoDot(const size_t n,
     // Launches the epilogue kernel
     auto global2 = std::vector<size_t>{db_["WGS2"]};
     auto local2 = std::vector<size_t>{db_["WGS2"]};
-    status = RunKernel(kernel2, global2, local2, event_, eventWaitList);
+    status = RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
     if (ErrorIn(status)) { return status; }
 
     // Succesfully finished the computation
