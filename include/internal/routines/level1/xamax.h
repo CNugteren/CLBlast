@@ -21,17 +21,8 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xamax: public Routine<T> {
+class Xamax: public Routine {
  public:
-
-  // Members and methods from the base class
-  using Routine<T>::db_;
-  using Routine<T>::source_string_;
-  using Routine<T>::queue_;
-  using Routine<T>::device_;
-  using Routine<T>::event_;
-  using Routine<T>::context_;
-  using Routine<T>::routine_name_;
 
   // Constructor
   Xamax(Queue &queue, EventPointer event, const std::string &name = "AMAX");

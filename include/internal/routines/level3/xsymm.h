@@ -27,16 +27,14 @@ template <typename T>
 class Xsymm: public Xgemm<T> {
  public:
 
-  // Members and methods from the base class
-  using Routine<T>::db_;
-  using Routine<T>::queue_;
-  using Routine<T>::device_;
-  using Routine<T>::context_;
-  using Routine<T>::routine_name_;
-
-  // Uses the regular Xgemm routine
-  using Xgemm<T>::DoGemm;
+  // Uses methods and variables the regular Xgemm routine
   using Xgemm<T>::precision_;
+  using Xgemm<T>::routine_name_;
+  using Xgemm<T>::queue_;
+  using Xgemm<T>::context_;
+  using Xgemm<T>::device_;
+  using Xgemm<T>::db_;
+  using Xgemm<T>::DoGemm;
 
   // Constructor
   Xsymm(Queue &queue, EventPointer event, const std::string &name = "SYMM");

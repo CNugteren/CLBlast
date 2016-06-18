@@ -22,7 +22,7 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xomatcopy<T>::Xomatcopy(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Copy","Pad","Transpose","Padtranspose"}, PrecisionValue<T>()) {
+    Routine(queue, event, name, {"Copy","Pad","Transpose","Padtranspose"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"

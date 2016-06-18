@@ -20,9 +20,8 @@ namespace clblast {
 // =================================================================================================
 
 // Constructor: not much here, because no status codes can be returned
-template <typename T>
-Routine<T>::Routine(Queue &queue, EventPointer event, const std::string &name,
-                    const std::vector<std::string> &routines, const Precision precision):
+Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
+                 const std::vector<std::string> &routines, const Precision precision):
     precision_(precision),
     routine_name_(name),
     queue_(queue),
@@ -36,8 +35,7 @@ Routine<T>::Routine(Queue &queue, EventPointer event, const std::string &name,
 // =================================================================================================
 
 // Separate set-up function to allow for status codes to be returned
-template <typename T>
-StatusCode Routine<T>::SetUp() {
+StatusCode Routine::SetUp() {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
   if (ProgramIsInCache(context_, precision_, routine_name_)) { return StatusCode::kSuccess; }
@@ -173,15 +171,6 @@ StatusCode RunKernel(Kernel &kernel, Queue queue, const Device device,
   auto emptyWaitingList = std::vector<Event>();
   return RunKernel(kernel, queue, device, global, local, event, emptyWaitingList);
 }
-
-// =================================================================================================
-
-// Compiles the templated class
-template class Routine<half>;
-template class Routine<float>;
-template class Routine<double>;
-template class Routine<float2>;
-template class Routine<double2>;
 
 // =================================================================================================
 } // namespace clblast

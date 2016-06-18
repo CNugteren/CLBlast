@@ -25,14 +25,10 @@ namespace clblast {
 template <typename T>
 class Xtpmv: public Xgemv<T> {
  public:
-  
-  // Members from the base class
-  using Routine<T>::queue_;
-  using Routine<T>::device_;
-  using Routine<T>::context_;
-  using Routine<T>::routine_name_;
 
   // Uses the generic matrix-vector routine
+  using Xgemv<T>::queue_;
+  using Xgemv<T>::context_;
   using Xgemv<T>::MatVec;
 
   // Constructor

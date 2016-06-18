@@ -22,7 +22,7 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xaxpy<T>::Xaxpy(Queue &queue, EventPointer event, const std::string &name):
-    Routine<T>(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
+    Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
   source_string_ =
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xaxpy.opencl"

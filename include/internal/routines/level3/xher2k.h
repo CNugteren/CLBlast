@@ -23,17 +23,8 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T, typename U>
-class Xher2k: public Routine<T> {
+class Xher2k: public Routine {
  public:
-
-  // Members and methods from the base class
-  using Routine<T>::db_;
-  using Routine<T>::source_string_;
-  using Routine<T>::queue_;
-  using Routine<T>::device_;
-  using Routine<T>::event_;
-  using Routine<T>::context_;
-  using Routine<T>::routine_name_;
 
   // Constructor
   Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");
