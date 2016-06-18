@@ -9,8 +9,8 @@
 //
 // =================================================================================================
 
-#include "correctness/testblas.h"
-#include "routines/level1/xrotm.h"
+#include "test/correctness/testblas.hpp"
+#include "test/routines/level1/xrotm.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

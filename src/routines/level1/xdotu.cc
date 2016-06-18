@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xdotu.h"
+#include "routines/level1/xdotu.hpp"
 
 #include <string>
 

@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xnrm2.h"
+#include "routines/level1/xnrm2.hpp"
 
 #include <string>
 #include <vector>

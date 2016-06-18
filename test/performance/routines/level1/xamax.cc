@@ -9,8 +9,8 @@
 //
 // =================================================================================================
 
-#include "performance/client.h"
-#include "routines/level1/xamax.h"
+#include "test/performance/client.hpp"
+#include "test/routines/level1/xamax.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xherk.h"
+#include "routines/level3/xherk.hpp"
 
 #include <string>
 #include <vector>

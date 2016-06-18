@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xtrmm.h"
+#include "routines/level3/xtrmm.hpp"
 
 #include <string>
 #include <vector>

@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xher2k.h"
+#include "routines/level3/xher2k.hpp"
 
 #include <string>
 #include <vector>

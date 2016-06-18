@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xgemv.h"
+#include "routines/level2/xgemv.hpp"
 
 #include <string>
 #include <vector>

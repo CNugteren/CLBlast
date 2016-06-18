@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "performance/client.h"
+#include "test/performance/client.hpp"
 
 #include <string>
 #include <vector>

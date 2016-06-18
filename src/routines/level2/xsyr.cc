@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xsyr.h"
+#include "routines/level2/xsyr.hpp"
 
 #include <string>
 

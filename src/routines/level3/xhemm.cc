@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xhemm.h"
+#include "routines/level3/xhemm.hpp"
 
 #include <string>
 #include <vector>

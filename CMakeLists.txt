@@ -121,7 +121,7 @@ endif()
 # ==================================================================================================
 
 # Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
+include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
 
 # ==================================================================================================
 
@@ -140,8 +140,15 @@ set(PRECISIONS 32 64 3232 6464)
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/cache.cc
-            src/utilities.cc src/clblast_c.cc src/routines/common.cc)
+set(SOURCES
+  src/database/database.cc
+  src/routines/common.cc
+  src/cache.cc
+  src/clblast.cc
+  src/clblast_c.cc
+  src/routine.cc
+  src/utilities.cc
+)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()
@@ -211,7 +218,7 @@ if(TUNERS)
 
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} src/tuning/${KERNEL}.cc)
+    add_executable(clblast_tuner_${KERNEL} src/tuning/kernels/${KERNEL}.cc)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
@@ -257,7 +264,7 @@ if(CLIENTS OR TESTS)
   endif()
 
   # Sets the include directories
-  include_directories(${clblast_SOURCE_DIR}/test ${REF_INCLUDES})
+  include_directories(${clblast_SOURCE_DIR} ${REF_INCLUDES})
 
 endif()
 

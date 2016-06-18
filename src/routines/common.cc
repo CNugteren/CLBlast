@@ -13,7 +13,7 @@
 
 #include <vector>
 
-#include "internal/routines/common.h"
+#include "routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================

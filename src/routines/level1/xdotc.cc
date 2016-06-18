@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xdotc.h"
+#include "routines/level1/xdotc.hpp"
 
 #include <string>
 #include <vector>

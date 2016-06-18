@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xdot.h"
+#include "routines/level1/xdot.hpp"
 
 #include <string>
 #include <vector>

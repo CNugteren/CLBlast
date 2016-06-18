@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xspmv.h"
+#include "routines/level2/xspmv.hpp"
 
 #include <string>
 #include <vector>

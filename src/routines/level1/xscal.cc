@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xscal.h"
+#include "routines/level1/xscal.hpp"
 
 #include <string>
 #include <vector>

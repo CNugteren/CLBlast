@@ -9,8 +9,8 @@
 //
 // =================================================================================================
 
-#include "performance/client.h"
-#include "routines/levelx/xomatcopy.h"
+#include "test/performance/client.hpp"
+#include "test/routines/levelx/xomatcopy.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

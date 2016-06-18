@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "correctness/testblas.h"
+#include "test/correctness/testblas.hpp"
 
 namespace clblast {
 // =================================================================================================

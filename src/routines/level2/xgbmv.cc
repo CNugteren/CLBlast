@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xgbmv.h"
+#include "routines/level2/xgbmv.hpp"
 
 #include <string>
 #include <vector>

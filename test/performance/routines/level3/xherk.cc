@@ -9,8 +9,8 @@
 //
 // =================================================================================================
 
-#include "performance/client.h"
-#include "routines/level3/xherk.h"
+#include "test/performance/client.hpp"
+#include "test/routines/level3/xherk.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

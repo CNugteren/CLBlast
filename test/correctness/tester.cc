@@ -11,12 +11,12 @@
 //
 // =================================================================================================
 
-#include "correctness/tester.h"
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <cmath>
+
+#include "test/correctness/tester.hpp"
 
 namespace clblast {
 // =================================================================================================

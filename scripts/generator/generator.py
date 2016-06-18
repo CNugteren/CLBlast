@@ -382,8 +382,8 @@ files = [
   path_clblast+"/src/clblast.cc",
   path_clblast+"/include/clblast_c.h",
   path_clblast+"/src/clblast_c.cc",
-  path_clblast+"/test/wrapper_clblas.h",
-  path_clblast+"/test/wrapper_cblas.h",
+  path_clblast+"/test/wrapper_clblas.hpp",
+  path_clblast+"/test/wrapper_cblas.hpp",
 ]
 header_lines = [84, 74, 93, 22, 29, 41]
 footer_lines = [17, 75, 19, 14, 6, 6]
@@ -436,8 +436,8 @@ for level in [1,2,3,4]:
 			filename = path_clblast+"/test/correctness/routines/level"+levelnames[level-1]+"/x"+routine.name+".cc"
 			with open(filename, "w") as f:
 				body = ""
-				body += "#include \"correctness/testblas.h\"\n"
-				body += "#include \"routines/level"+levelnames[level-1]+"/x"+routine.name+".h\"\n\n"
+				body += "#include \"test/correctness/testblas.hpp\"\n"
+				body += "#include \"test/routines/level"+levelnames[level-1]+"/x"+routine.name+".hpp\"\n\n"
 				body += "// Shortcuts to the clblast namespace\n"
 				body += "using float2 = clblast::float2;\n"
 				body += "using double2 = clblast::double2;\n\n"
@@ -462,8 +462,8 @@ for level in [1,2,3,4]:
 			filename = path_clblast+"/test/performance/routines/level"+levelnames[level-1]+"/x"+routine.name+".cc"
 			with open(filename, "w") as f:
 				body = ""
-				body += "#include \"performance/client.h\"\n"
-				body += "#include \"routines/level"+levelnames[level-1]+"/x"+routine.name+".h\"\n\n"
+				body += "#include \"test/performance/client.hpp\"\n"
+				body += "#include \"test/routines/level"+levelnames[level-1]+"/x"+routine.name+".hpp\"\n\n"
 				body += "// Shortcuts to the clblast namespace\n"
 				body += "using float2 = clblast::float2;\n"
 				body += "using double2 = clblast::double2;\n\n"

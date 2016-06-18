@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xspr2.h"
+#include "routines/level2/xspr2.hpp"
 
 #include <string>
 

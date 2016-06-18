@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xamax.h"
+#include "routines/level1/xamax.hpp"
 
 #include <string>
 #include <vector>

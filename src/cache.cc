@@ -15,7 +15,7 @@
 #include <vector>
 #include <mutex>
 
-#include "internal/cache.h"
+#include "cache.hpp"
 
 namespace clblast {
 // =================================================================================================

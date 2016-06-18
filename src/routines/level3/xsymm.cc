@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xsymm.h"
+#include "routines/level3/xsymm.hpp"
 
 #include <string>
 #include <vector>

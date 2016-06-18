@@ -9,8 +9,8 @@
 //
 // =================================================================================================
 
-#include "performance/client.h"
-#include "routines/level2/xtpmv.h"
+#include "test/performance/client.hpp"
+#include "test/routines/level2/xtpmv.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;

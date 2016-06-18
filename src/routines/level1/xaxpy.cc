@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level1/xaxpy.h"
+#include "routines/level1/xaxpy.hpp"
 
 #include <string>
 #include <vector>

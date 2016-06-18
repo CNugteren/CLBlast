@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xtrmv.h"
+#include "routines/level2/xtrmv.hpp"
 
 #include <string>
 #include <vector>

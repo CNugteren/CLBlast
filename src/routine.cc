@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "internal/routine.h"
+#include "routine.hpp"
 
 namespace clblast {
 // =================================================================================================

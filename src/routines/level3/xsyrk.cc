@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level3/xsyrk.h"
+#include "routines/level3/xsyrk.hpp"
 
 #include <string>
 #include <vector>

@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "internal/routines/level2/xsymv.h"
+#include "routines/level2/xsymv.hpp"
 
 #include <string>
 #include <vector>
