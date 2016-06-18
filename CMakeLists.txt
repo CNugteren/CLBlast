@@ -141,7 +141,7 @@ set(PRECISIONS 32 64 3232 6464)
 
 # Gathers all source-files
 set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/cache.cc
-            src/utilities.cc src/clblast_c.cc)
+            src/utilities.cc src/clblast_c.cc src/routines/common.cc)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
 endforeach()

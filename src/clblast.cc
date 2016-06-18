@@ -29,10 +29,10 @@
 #include "internal/routines/level1/xdotc.h"
 #include "internal/routines/level1/xnrm2.h"
 #include "internal/routines/level1/xasum.h"
-#include "internal/routines/level1/xsum.h" // non-BLAS function
+#include "internal/routines/level1/xsum.h" // non-BLAS routine
 #include "internal/routines/level1/xamax.h"
-#include "internal/routines/level1/xmax.h" // non-BLAS function
-#include "internal/routines/level1/xmin.h" // non-BLAS function
+#include "internal/routines/level1/xmax.h" // non-BLAS routine
+#include "internal/routines/level1/xmin.h" // non-BLAS routine
 
 // BLAS level-2 includes
 #include "internal/routines/level2/xgemv.h"
@@ -68,7 +68,7 @@
 #include "internal/routines/level3/xher2k.h"
 #include "internal/routines/level3/xtrmm.h"
 
-// Extra includes (level-x)
+// Level-x includes (non-BLAS)
 #include "internal/routines/levelx/xomatcopy.h"
 
 namespace clblast {
@@ -2123,6 +2123,7 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
 StatusCode ClearCache() { return CacheClearAll(); }
 
 // Fills the cache with all binaries for a specific device
+// TODO: Add half-precision FP16 set-up calls
 StatusCode FillCache(const cl_device_id device) {
   try {
 
@@ -2171,7 +2172,7 @@ StatusCode FillCache(const cl_device_id device) {
     Xsyr2<float>(queue, nullptr).SetUp(); Xsyr2<double>(queue, nullptr).SetUp();
     Xspr2<float>(queue, nullptr).SetUp(); Xspr2<double>(queue, nullptr).SetUp();
 
-    // Runs all the level 1 set-up functions
+    // Runs all the level 3 set-up functions
     Xgemm<float>(queue, nullptr).SetUp(); Xgemm<double>(queue, nullptr).SetUp(); Xgemm<float2>(queue, nullptr).SetUp(); Xgemm<double2>(queue, nullptr).SetUp();
     Xsymm<float>(queue, nullptr).SetUp(); Xsymm<double>(queue, nullptr).SetUp(); Xsymm<float2>(queue, nullptr).SetUp(); Xsymm<double2>(queue, nullptr).SetUp();
     Xhemm<float2>(queue, nullptr).SetUp(); Xhemm<double2>(queue, nullptr).SetUp();
@@ -2180,6 +2181,9 @@ StatusCode FillCache(const cl_device_id device) {
     Xsyr2k<float>(queue, nullptr).SetUp(); Xsyr2k<double>(queue, nullptr).SetUp(); Xsyr2k<float2>(queue, nullptr).SetUp(); Xsyr2k<double2>(queue, nullptr).SetUp();
     Xher2k<float2,float>(queue, nullptr).SetUp(); Xher2k<double2,double>(queue, nullptr).SetUp();
     Xtrmm<float>(queue, nullptr).SetUp(); Xtrmm<double>(queue, nullptr).SetUp(); Xtrmm<float2>(queue, nullptr).SetUp(); Xtrmm<double2>(queue, nullptr).SetUp();
+
+    // Runs all the level 3 set-up functions
+    Xomatcopy<float>(queue, nullptr).SetUp(); Xomatcopy<double>(queue, nullptr).SetUp(); Xomatcopy<float2>(queue, nullptr).SetUp(); Xomatcopy<double2>(queue, nullptr).SetUp();
 
   } catch (...) { return StatusCode::kBuildProgramFailure; }
   return StatusCode::kSuccess;

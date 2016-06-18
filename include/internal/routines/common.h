@@ -8,7 +8,8 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file contains all the interfaces to common kernels, such as copying, padding, and
-// transposing a matrix. These functions are templated and thus header-only.
+// transposing a matrix. These functions are templated and thus header-only. This file also contains
+// other common functions to routines, such as a function to launch a kernel.
 //
 // =================================================================================================
 
@@ -18,17 +19,30 @@
 #include <string>
 #include <vector>
 
-#include "internal/utilities.h"
-#include "internal/routine.h"
+#include "clblast.h"
+#include "internal/clpp11.h"
+#include "internal/database.h"
 
 namespace clblast {
+// =================================================================================================
+
+// Enqueues a kernel, waits for completion, and checks for errors
+StatusCode RunKernel(Kernel &kernel, Queue &queue, const Device &device,
+                     std::vector<size_t> global, const std::vector<size_t> &local,
+                     EventPointer event, std::vector<Event>& waitForEvents);
+
+// As above, but without an event waiting list
+StatusCode RunKernel(Kernel &kernel, Queue &queue, const Device &device,
+                     std::vector<size_t> global, const std::vector<size_t> &local,
+                     EventPointer event);
+
 // =================================================================================================
 
 // Copies or transposes a matrix and optionally pads/unpads it with zeros. This method is also able
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
-StatusCode PadCopyTransposeMatrix(Queue queue, const Device device, const Context context,
-                                  const Database db,
+StatusCode PadCopyTransposeMatrix(Queue &queue, const Device &device, const Context &context,
+                                  const Database &db,
                                   EventPointer event, std::vector<Event>& waitForEvents,
                                   const size_t src_one, const size_t src_two,
                                   const size_t src_ld, const size_t src_offset,

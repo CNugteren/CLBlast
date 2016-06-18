@@ -23,6 +23,7 @@
 #include "internal/utilities.h"
 #include "internal/database.h"
 #include "internal/buffer_test.h"
+#include "internal/routines/common.h"
 
 namespace clblast {
 // =================================================================================================
@@ -40,8 +41,7 @@ class Routine {
 
  protected:
 
-  // Non-static variable for the precision. Note that the same variable (but static) might exist in
-  // a derived class.
+  // Non-static variable for the precision
   const Precision precision_;
 
   // The routine's name and its kernel-source in string form
@@ -62,22 +62,7 @@ class Routine {
 };
 
 // =================================================================================================
-
-// Enqueues a kernel, waits for completion, and checks for errors
-StatusCode RunKernel(Kernel &kernel, Queue queue, const Device device,
-                     std::vector<size_t> global, const std::vector<size_t> &local,
-                     EventPointer event, std::vector<Event>& waitForEvents);
-
-// As above, but without an event waiting list
-StatusCode RunKernel(Kernel &kernel, Queue queue, const Device device,
-                     std::vector<size_t> global, const std::vector<size_t> &local,
-                     EventPointer event);
-
-// =================================================================================================
 } // namespace clblast
-
-// Temporary fix: TODO place include in a more logical place
-#include "internal/routines/common.h"
 
 // CLBLAST_ROUTINE_H_
 #endif
