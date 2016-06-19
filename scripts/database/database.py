@@ -310,7 +310,7 @@ defaults = CalculateDefaults(bests)
 bests = ConcatenateData(bests, defaults)
 
 # Outputs the data as a C++ database
-path_cpp_database = os.path.join(path_clblast, "include", "internal", "database")
+path_cpp_database = os.path.join(path_clblast, "src", "database", "kernels")
 print("## Producing a C++ database in '"+path_cpp_database+"'...")
 PrintData(bests, path_cpp_database)
 

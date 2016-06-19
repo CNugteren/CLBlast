@@ -121,7 +121,7 @@ endif()
 # ==================================================================================================
 
 # Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${OPENCL_INCLUDE_DIRS})
+include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
 
 # ==================================================================================================
 
@@ -140,19 +140,26 @@ set(PRECISIONS 32 64 3232 6464)
 # ==================================================================================================
 
 # Gathers all source-files
-set(SOURCES src/clblast.cc src/database.cc src/routine.cc src/cache.cc
-            src/utilities.cc src/clblast_c.cc)
+set(SOURCES
+  src/database/database.cpp
+  src/routines/common.cpp
+  src/cache.cpp
+  src/clblast.cpp
+  src/clblast_c.cpp
+  src/routine.cpp
+  src/utilities.cpp
+)
 foreach(ROUTINE ${LEVEL1_ROUTINES})
-  set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cc)
+  set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
 endforeach()
 foreach(ROUTINE ${LEVEL2_ROUTINES})
-  set(SOURCES ${SOURCES} src/routines/level2/${ROUTINE}.cc)
+  set(SOURCES ${SOURCES} src/routines/level2/${ROUTINE}.cpp)
 endforeach()
 foreach(ROUTINE ${LEVEL3_ROUTINES})
-  set(SOURCES ${SOURCES} src/routines/level3/${ROUTINE}.cc)
+  set(SOURCES ${SOURCES} src/routines/level3/${ROUTINE}.cpp)
 endforeach()
 foreach(ROUTINE ${LEVELX_ROUTINES})
-  set(SOURCES ${SOURCES} src/routines/levelx/${ROUTINE}.cc)
+  set(SOURCES ${SOURCES} src/routines/levelx/${ROUTINE}.cpp)
 endforeach()
 
 # Creates and links the library
@@ -186,7 +193,7 @@ if(SAMPLES)
 
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
-    add_executable(clblast_sample_${SAMPLE} samples/${SAMPLE}.cc)
+    add_executable(clblast_sample_${SAMPLE} samples/${SAMPLE}.cpp)
     target_link_libraries(clblast_sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
     install(TARGETS clblast_sample_${SAMPLE} DESTINATION bin)
   endforeach()
@@ -211,7 +218,7 @@ if(TUNERS)
 
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} src/tuning/${KERNEL}.cc)
+    add_executable(clblast_tuner_${KERNEL} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
@@ -257,7 +264,7 @@ if(CLIENTS OR TESTS)
   endif()
 
   # Sets the include directories
-  include_directories(${clblast_SOURCE_DIR}/test ${REF_INCLUDES})
+  include_directories(${clblast_SOURCE_DIR} ${REF_INCLUDES})
 
 endif()
 
@@ -268,24 +275,24 @@ endif()
 if(CLIENTS)
 
   # Creates the common performance-tests objects (requires CMake 2.8.8)
-  add_library(test_performance_common OBJECT test/performance/client.cc)
+  add_library(test_performance_common OBJECT test/performance/client.cpp)
 
   # Compiles the performance-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
     add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level1/${ROUTINE}.cc)
+                   test/performance/routines/level1/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
     add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level2/${ROUTINE}.cc)
+                   test/performance/routines/level2/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
     add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/level3/${ROUTINE}.cc)
+                   test/performance/routines/level3/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
     add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
-                   test/performance/routines/levelx/${ROUTINE}.cc)
+                   test/performance/routines/levelx/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
@@ -303,24 +310,24 @@ if(TESTS)
 
   # Creates the common correctness-tests objects (requires CMake 2.8.8)
   add_library(test_correctness_common OBJECT
-              test/correctness/tester.cc test/correctness/testblas.cc)
+              test/correctness/tester.cpp test/correctness/testblas.cpp)
 
   # Compiles the correctness-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
     add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level1/${ROUTINE}.cc)
+                   test/correctness/routines/level1/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
     add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level2/${ROUTINE}.cc)
+                   test/correctness/routines/level2/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
     add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/level3/${ROUTINE}.cc)
+                   test/correctness/routines/level3/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
     add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
-                   test/correctness/routines/levelx/${ROUTINE}.cc)
+                   test/correctness/routines/levelx/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
