@@ -58,9 +58,10 @@ const Database::DatabaseEntry Database::XgerSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",8}, {"WGS2",8}, {"WPT",4} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",8}, {"WGS2",1}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",8}, {"WGS2",1}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
@@ -108,9 +109,10 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WGS2",4}, {"WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
         { "Iris Pro",                                        { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",16}, {"WGS2",2}, {"WPT",1} } },
       }
     },
     { // NVIDIA GPUs

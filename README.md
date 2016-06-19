@@ -117,6 +117,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Pitcairn
   - Radeon R9 M370X Compute Engine
 * Intel GPUs:
+  - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro
