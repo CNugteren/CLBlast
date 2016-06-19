@@ -10,14 +10,14 @@
 # This script automatically generates the bodies of the following files, creating the full CLBlast
 # API interface and implementation (C, C++, and reference BLAS wrappers):
 #    clblast.h
-#    clblast.cc
+#    clblast.cpp
 #    clblast_c.h
-#    clblast_c.cc
+#    clblast_c.cpp
 #    wrapper_clblas.h
 #    wrapper_cblas.h
 # It also generates the main functions for the correctness and performance tests as found in
-#    test/correctness/routines/levelX/xYYYY.cc
-#    test/performance/routines/levelX/xYYYY.cc
+#    test/correctness/routines/levelX/xYYYY.cpp
+#    test/performance/routines/levelX/xYYYY.cpp
 # It also produces the API documentation found in doc/clblast.md
 #
 # ==================================================================================================
@@ -200,7 +200,7 @@ def clblast_h(routines):
 		result += routine.RoutineHeaderCPP(12, " = nullptr")+";\n"
 	return result
 
-# The C++ API implementation (.cc)
+# The C++ API implementation (.cpp)
 def clblast_cc(routines):
 	result = ""
 	for routine in routines:
@@ -237,7 +237,7 @@ def clblast_c_h(routines):
 			result += routine.RoutineHeaderC(flavour, 31, " PUBLIC_API")+";\n"
 	return result
 
-# The C API implementation (.cc)
+# The C API implementation (.cpp)
 def clblast_c_cc(routines):
 	result = ""
 	for routine in routines:
@@ -379,9 +379,9 @@ if len(sys.argv) != 2:
 path_clblast = sys.argv[1]
 files = [
   path_clblast+"/include/clblast.h",
-  path_clblast+"/src/clblast.cc",
+  path_clblast+"/src/clblast.cpp",
   path_clblast+"/include/clblast_c.h",
-  path_clblast+"/src/clblast_c.cc",
+  path_clblast+"/src/clblast_c.cpp",
   path_clblast+"/test/wrapper_clblas.hpp",
   path_clblast+"/test/wrapper_cblas.hpp",
 ]
@@ -433,7 +433,7 @@ for i in xrange(0,len(files)):
 for level in [1,2,3,4]:
 	for routine in routines[level-1]:
 		if routine.has_tests:
-			filename = path_clblast+"/test/correctness/routines/level"+levelnames[level-1]+"/x"+routine.name+".cc"
+			filename = path_clblast+"/test/correctness/routines/level"+levelnames[level-1]+"/x"+routine.name+".cpp"
 			with open(filename, "w") as f:
 				body = ""
 				body += "#include \"test/correctness/testblas.hpp\"\n"
@@ -459,7 +459,7 @@ for level in [1,2,3,4]:
 for level in [1,2,3,4]:
 	for routine in routines[level-1]:
 		if routine.has_tests:
-			filename = path_clblast+"/test/performance/routines/level"+levelnames[level-1]+"/x"+routine.name+".cc"
+			filename = path_clblast+"/test/performance/routines/level"+levelnames[level-1]+"/x"+routine.name+".cpp"
 			with open(filename, "w") as f:
 				body = ""
 				body += "#include \"test/performance/client.hpp\"\n"
