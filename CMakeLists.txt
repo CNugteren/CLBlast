@@ -135,7 +135,7 @@ set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv 
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
 set(LEVELX_ROUTINES xomatcopy)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
-set(PRECISIONS 32 64 3232 6464)
+set(PRECISIONS 32 64 3232 6464 16)
 
 # ==================================================================================================
 
