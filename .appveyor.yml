@@ -12,15 +12,14 @@ install:
   - ps: mkdir $env:OPENCL_ROOT
   - ps: pushd $env:OPENCL_ROOT
   - ps: $opencl_registry = $env:OPENCL_REGISTRY
-  # This downloads the source to the example/demo icd library
-  - ps: wget $opencl_registry/specs/opencl-icd-1.2.11.0.tgz -OutFile opencl-icd-1.2.11.0.tgz
-  - ps: 7z x opencl-icd-1.2.11.0.tgz
-  - ps: 7z x opencl-icd-1.2.11.0.tar
-  - ps: mv .\icd\* .
+  # This downloads the source to the Khronos ICD library
+  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+  - ps: mv ./OpenCL-ICD-Loader/* .
   # This downloads all the opencl header files
   # The cmake build files expect a directory called inc
   - ps: mkdir inc/CL
-  - ps: wget $opencl_registry/api/1.2/ | select -ExpandProperty links | where {$_.href -like "*.h*"} | select -ExpandProperty outerText | foreach{ wget $opencl_registry/api/1.2/$_ -OutFile inc/CL/$_ }
+  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
+  - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
   - ps: mkdir lib
@@ -28,9 +27,13 @@ install:
   - cmake -G "NMake Makefiles" ..
   - nmake
   - ps: popd
+  # Switch to OpenCL 1.2 headers
+  - ps: pushd inc/CL
+  - git fetch origin opencl12:opencl12
+  - git checkout opencl12
+  - ps: popd
   # Rename the inc directory to include, so FindOpencl() will find it
   - ps: ren inc include
-  - ps: popd
   - ps: popd
 
 before_build:
