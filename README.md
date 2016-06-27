@@ -9,7 +9,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 
-__Note that the CLBlast library is actively being developed, and might not be mature enough for production environments__. This preview-version doesn't support the less commonly used routines yet: they will be added in due time. It also lacks extensive tuning on some common OpenCL platforms: __out-of-the-box performance on some devices might be poor__. See below for more details (and how to tune yourself).
+This preview-version is not yet tuned for all OpenCL devices: __out-of-the-box performance on some devices might be poor__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -19,7 +19,7 @@ Use CLBlast instead of clBLAS:
 
 * When you care about achieving maximum performance.
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
-* When you run on exotic OpenCL devices which you need to tune yourself.
+* When you run on exotic OpenCL devices for which you need to tune yourself.
 * When you are still running on OpenCL 1.1 hardware.
 * When you value an organized and modern C++ codebase.
 * When you target Intel CPUs and GPUs or embedded devices
@@ -28,13 +28,13 @@ Use CLBlast instead of clBLAS:
 Use CLBlast instead of cuBLAS:
 
 * When you want your code to run on devices other than NVIDIA CUDA-enabled GPUs.
-* When you want to tune for a specific configuration (e.g. rectangular matrix-sizes)
+* When you want to tune for a specific configuration (e.g. rectangular matrix-sizes).
 * When you sleep better if you know that the library you use is open-source.
+* When you are using OpenCL rather than CUDA.
 
 When not to use CLBlast:
 
 * When you run on NVIDIA's CUDA-enabled GPUs only and can benefit from cuBLAS's assembly-level tuned kernels.
-* When you need those BLAS routines that are not yet supported by CLBlast.
 
 
 Compilation and installation
@@ -55,14 +55,6 @@ The pre-requisites for compilation of CLBlast are:
   - AMD APP SDK
   - Intel OpenCL
   - Beignet
-
-Furthermore, to build the (optional) correctness tests, another BLAS library is needed to serve as a reference. This can be either:
-
-* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS) (maintained by AMD)
-* A regular CPU Netlib BLAS library, e.g.:
-  - OpenBLAS
-  - BLIS
-  - Accelerate
 
 An example of an out-of-source build using a command-line compiler and make (starting from the root of the CLBlast folder):
 
@@ -94,7 +86,7 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the `clblast.h` include file and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in `samples/`. They can be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the above mentioned include files and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in the `samples` subfolder. They can optionally be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
 
     cmake -DSAMPLES=ON ..
 
@@ -136,11 +128,11 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the CLTune auto-tuning library, which has to be installed separately (version 2.3.1 or higher). CLTune is available from GitHub.
+Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.3.1 or higher).
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
 
-The tuners output a JSON-file with the results. The best results need to be added to `include/internal/database/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
 In summary, tuning the entire library for your device can be done as follows (starting from the root of the CLBlast folder):
 
@@ -160,13 +152,23 @@ To make sure CLBlast is working correctly on your device (recommended), compile 
 
     cmake -DTESTS=ON ..
 
-Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested for correctness against [clBLAS](http://github.com/clMathLibraries/clBLAS) and/or a regular CPU BLAS library. If both are installed on your system, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables.
+To build these tests, another BLAS library is needed to serve as a reference. This can be either:
+
+* The OpenCL BLAS library [clBLAS](http://github.com/clMathLibraries/clBLAS) (maintained by AMD)
+* A regular CPU Netlib BLAS library, e.g.:
+  - OpenBLAS
+  - BLIS
+  - Accelerate
+
+Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested for correctness against [clBLAS](http://github.com/clMathLibraries/clBLAS) and/or a regular CPU BLAS library. If both are installed on your system, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables. All tests have a `-verbose` option to enable additional diagnostic output. They also have a `-full_test` option to increase coverage further.
+
+All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
 
 
 Compiling the performance tests/clients (optional)
 -------------
 
-To test the performance of CLBlast and compare optionally against clBLAS or a CPU BLAS library, compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
+To test the performance of CLBlast and compare optionally against [clBLAS](http://github.com/clMathLibraries/clBLAS) or a CPU BLAS library (see above for requirements), compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
 
     cmake -DCLIENTS=ON ..
 
@@ -182,7 +184,7 @@ Note that the CLBlast library provides pre-tuned parameter-values for some devic
 Supported routines
 -------------
 
-CLBlast is in active development but already supports almost all the BLAS routines. The supported routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all. The different data-types supported by the library are:
+CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-BLAS routines. The supported BLAS routines are marked with '✔' in the following tables. Routines marked with '-' do not exist: they are not part of BLAS at all. The different data-types supported by the library are:
 
 * __S:__ Single-precision 32-bit floating-point (`float`).
 * __D:__ Double-precision 64-bit floating-point (`double`).
@@ -248,18 +250,7 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-Some BLAS routines are not supported yet by CLBlast. They are shown in the following table:
-
-| Unsupported | S | D | C | Z |
-| ------------|---|---|---|---|
-| xROTG       |   |   | - | - |
-| xROTMG      |   |   | - | - |
-| xROT        |   |   | - | - |
-| xROTM       |   |   | - | - |
-| xTRSV       |   |   |   |   |
-| xTBSV       |   |   |   |   |
-| xTPSV       |   |   |   |   |
-| xTRSM       |   |   |   |   |
+Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTRSV, xTBSV, xTPSV, and xTRSM.
 
 
 Half precision (fp16)
@@ -272,7 +263,7 @@ Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_
 * `half FloatToHalf(const float value)`: Converts a 32-bits floating-point value to a 16-bits floating-point value.
 * `float HalfToFloat(const half value)`: Converts a 16-bits floating-point value to a 32-bits floating-point value.
 
-The `/samples` folder contains examples of how to use these convencience functions when calling one of the half-precision BLAS routines.
+The `samples/haxpy.c` example shows how to use these convencience functions when calling the half-precision BLAS routine HAXPY.
 
 
 Contributing
@@ -282,7 +273,7 @@ Contributions are welcome in the form of tuning results for OpenCL devices previ
 
 The contributing authors (code, pull requests, testing) so far are:
 
-* [Cedric Nugteren](http://www.cedricnugteren.nl)
+* [Cedric Nugteren](http://www.cedricnugteren.nl) - main author
 * [Anton Lokhmotov](https://github.com/psyhtest)
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](https://github.com/gpus)
