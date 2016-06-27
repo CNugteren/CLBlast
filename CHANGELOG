@@ -5,6 +5,7 @@ Development version (next release)
 - Made a reference BLAS and head-to-head performance comparison optional in the clients
 - Increased the verbosity of the "-verbose" option in the correctness tests
 - Refactored the host code for better compilation times and fewer lines of code
+- Added Appveyor continuous integration and increased coverage of the Travis builds
 - Improved the API documentation
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)

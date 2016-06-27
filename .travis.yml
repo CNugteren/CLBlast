@@ -20,7 +20,7 @@ addons:
 
 env:
   global:
-    - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/make/release
+    - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/clblast
     - OPENCL_REGISTRY=https://www.khronos.org/registry/cl
     - OPENCL_ROOT=${TRAVIS_BUILD_DIR}/bin/opencl
 
