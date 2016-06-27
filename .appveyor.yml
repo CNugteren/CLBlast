@@ -7,6 +7,10 @@ environment:
 platform:
   - x64
 
+init:
+  - cmake --version
+  - C:\"Program Files (x86)"\"Microsoft Visual Studio 14.0"\VC\vcvarsall.bat %PLATFORM%
+
 # Creates an OpenCL library to link against. Taken from clMathLibraries/clBLAS
 install:
   - ps: mkdir $env:OPENCL_ROOT
