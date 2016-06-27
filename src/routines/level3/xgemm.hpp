@@ -35,10 +35,6 @@ class Xgemm: public Routine {
                     const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                     const T beta,
                     const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
-
- protected:
-  // Static variable to get the precision
-  const static Precision precision_;
 };
 
 // =================================================================================================

@@ -28,7 +28,6 @@ class Xsymm: public Xgemm<T> {
  public:
 
   // Uses methods and variables the regular Xgemm routine
-  using Xgemm<T>::precision_;
   using Xgemm<T>::routine_name_;
   using Xgemm<T>::queue_;
   using Xgemm<T>::context_;
