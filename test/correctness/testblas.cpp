@@ -51,12 +51,12 @@ TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
   else { throw std::runtime_error("Invalid configuration: no reference to test against"); }
 
   // Computes the maximum sizes. This allows for a single set of input/output buffers.
-  auto max_vec = *std::max_element(kVectorDims.begin(), kVectorDims.end());
-  auto max_inc = *std::max_element(kIncrements.begin(), kIncrements.end());
-  auto max_mat = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
-  auto max_ld = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
-  auto max_matvec = *std::max_element(kMatrixVectorDims.begin(), kMatrixVectorDims.end());
-  auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
+  const auto max_vec = *std::max_element(kVectorDims.begin(), kVectorDims.end());
+  const auto max_inc = *std::max_element(kIncrements.begin(), kIncrements.end());
+  const auto max_mat = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
+  const auto max_ld = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
+  const auto max_matvec = *std::max_element(kMatrixVectorDims.begin(), kMatrixVectorDims.end());
+  const auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
 
   // Creates test input data
   x_source_.resize(std::max(max_vec, max_matvec)*max_inc + max_offset);
@@ -84,14 +84,15 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
   TestStart("regular behaviour", name);
 
   // Iterates over all the to-be-tested combinations of arguments
-  for (auto &args: test_vector) {
+  for (const auto &args: test_vector) {
 
     // Prints the current test configuration
     if (verbose_) {
-      fprintf(stdout, "   Config: %s-> ", GetOptionsString(args).c_str());
+      fprintf(stdout, "   Testing: %s", GetOptionsString(args).c_str());
+      std::cout << std::flush;
     }
 
-    // Runs the CLBlast code
+    // Set-up for the CLBlast run
     auto x_vec2 = Buffer<T>(context_, args.x_size);
     auto y_vec2 = Buffer<T>(context_, args.y_size);
     auto a_mat2 = Buffer<T>(context_, args.a_size);
@@ -107,15 +108,22 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     ap_mat2.Write(queue_, args.ap_size, ap_source_);
     scalar2.Write(queue_, args.scalar_size, scalar_source_);
     auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
-    auto status2 = run_routine_(args, buffers2, queue_);
+
+    // Runs CLBlast
+    if (verbose_) {
+      fprintf(stdout, "[CLBlast]");
+      std::cout << std::flush;
+    }
+    const auto status2 = run_routine_(args, buffers2, queue_);
 
     // Don't continue with CBLAS if there are incorrect parameters
     if (compare_cblas_ && status2 != StatusCode::kSuccess) {
+      if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
       TestErrorCodes(status2, status2, args);
       continue;
     }
 
-    // Runs the reference BLAS code
+    // Set-up for the reference run
     auto x_vec1 = Buffer<T>(context_, args.x_size);
     auto y_vec1 = Buffer<T>(context_, args.y_size);
     auto a_mat1 = Buffer<T>(context_, args.a_size);
@@ -131,9 +139,17 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     ap_mat1.Write(queue_, args.ap_size, ap_source_);
     scalar1.Write(queue_, args.scalar_size, scalar_source_);
     auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
-    auto status1 = run_reference_(args, buffers1, queue_);
+
+    // Runs the reference code
+    if (verbose_) {
+      if (compare_clblas_) { fprintf(stdout, " [clBLAS]"); }
+      else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
+      std::cout << std::flush;
+    }
+    const auto status1 = run_reference_(args, buffers1, queue_);
 
     // Tests for equality of the two status codes
+    if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
     if (status1 != StatusCode::kSuccess || status2 != StatusCode::kSuccess) {
       TestErrorCodes(status1, status2, args);
       continue;
@@ -179,11 +195,12 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
   TestStart("invalid buffer sizes", name);
 
   // Iterates over all the to-be-tested combinations of arguments
-  for (auto &args: test_vector) {
+  for (const auto &args: test_vector) {
 
     // Prints the current test configuration
     if (verbose_) {
-      fprintf(stdout, "   Config: %s-> ", GetSizesString(args).c_str());
+      fprintf(stdout, "   Testing: %s", GetSizesString(args).c_str());
+      std::cout << std::flush;
     }
 
     // Creates the OpenCL buffers. Note: we are not using the C++ version since we explicitly
@@ -216,14 +233,26 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat2 = Buffer<T>(c2);
     auto ap_mat2 = Buffer<T>(ap2);
     auto scalar2 = Buffer<T>(d2);
-
-    // Runs the two routines
     auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
     auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
-    auto status1 = run_reference_(args, buffers1, queue_);
-    auto status2 = run_routine_(args, buffers2, queue_);
+
+    // Runs CLBlast
+    if (verbose_) {
+      fprintf(stdout, "[CLBlast]");
+      std::cout << std::flush;
+    }
+    const auto status2 = run_routine_(args, buffers2, queue_);
+
+    // Runs the reference code
+    if (verbose_) {
+      if (compare_clblas_) { fprintf(stdout, " [clBLAS]"); }
+      else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
+      std::cout << std::flush;
+    }
+    const auto status1 = run_reference_(args, buffers1, queue_);
 
     // Tests for equality of the two status codes
+    if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
     TestErrorCodes(status1, status2, args);
   }
   TestEnd();
