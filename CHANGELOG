@@ -1,4 +1,7 @@
 
+Development version (next release)
+-
+
 Version 0.8.0
 - Added support for half-precision floating-point (fp16) in the library
 - Made it possible to compile the performance tests (clients) separately from the correctness tests
