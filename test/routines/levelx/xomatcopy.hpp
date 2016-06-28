@@ -83,52 +83,47 @@ class TestXomatcopy {
 
   // Describes how to run a naive version of the routine (for correctness/performance comparison).
   // Note that a proper clBLAS or CPU BLAS comparison is not available for non-BLAS routines.
+  static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      return RunReference2(args, buffers, queue);
+  }
 
-  #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-        return RunReference2(args, buffers, queue);
-    }
-  #endif
+  static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
 
-  #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    // Data transfer from OpenCL to std::vector
+    std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
+    std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
+    buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
+    buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
 
-      // Data transfer from OpenCL to std::vector
-      std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-      std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
+    // Checking for invalid arguments
+    const auto a_rotated = (args.layout == Layout::kRowMajor);
+    const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
+                           (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
+    const auto a_base = (a_rotated) ? args.a_ld*(args.m-1) + args.n : args.a_ld*(args.n-1) + args.m;
+    const auto b_base = (b_rotated) ? args.b_ld*(args.m-1) + args.n : args.b_ld*(args.n-1) + args.m;
+    if ((args.m == 0) || (args.n == 0)) { return StatusCode::kInvalidDimension; }
+    if ((args.a_ld < args.m && !a_rotated) || (args.a_ld < args.n && a_rotated)) { return StatusCode::kInvalidLeadDimA; }
+    if ((args.b_ld < args.m && !b_rotated) || (args.b_ld < args.n && b_rotated)) { return StatusCode::kInvalidLeadDimB; }
+    if (buffers.a_mat.GetSize() < (a_base + args.a_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryA; }
+    if (buffers.b_mat.GetSize() < (b_base + args.b_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryB; }
 
-      // Checking for invalid arguments
-      const auto a_rotated = (args.layout == Layout::kRowMajor);
-      const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
-                             (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-      const auto a_base = (a_rotated) ? args.a_ld*(args.m-1) + args.n : args.a_ld*(args.n-1) + args.m;
-      const auto b_base = (b_rotated) ? args.b_ld*(args.m-1) + args.n : args.b_ld*(args.n-1) + args.m;
-      if ((args.m == 0) || (args.n == 0)) { return StatusCode::kInvalidDimension; }
-      if ((args.a_ld < args.m && !a_rotated) || (args.a_ld < args.n && a_rotated)) { return StatusCode::kInvalidLeadDimA; }
-      if ((args.b_ld < args.m && !b_rotated) || (args.b_ld < args.n && b_rotated)) { return StatusCode::kInvalidLeadDimB; }
-      if (buffers.a_mat.GetSize() < (a_base + args.a_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryA; }
-      if (buffers.b_mat.GetSize() < (b_base + args.b_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryB; }
-
-      // Matrix copy, scaling, and/or transpose
-      for (auto id1 = size_t{0}; id1 < args.m; ++id1) {
-        for (auto id2 = size_t{0}; id2 < args.n; ++id2) {
-          const auto a_one = (a_rotated) ? id2 : id1;
-          const auto a_two = (a_rotated) ? id1 : id2;
-          const auto b_one = (b_rotated) ? id2 : id1;
-          const auto b_two = (b_rotated) ? id1 : id2;
-          const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
-          const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
-          b_mat_cpu[b_index] = args.alpha * a_mat_cpu[a_index];
-        }
+    // Matrix copy, scaling, and/or transpose
+    for (auto id1 = size_t{0}; id1 < args.m; ++id1) {
+      for (auto id2 = size_t{0}; id2 < args.n; ++id2) {
+        const auto a_one = (a_rotated) ? id2 : id1;
+        const auto a_two = (a_rotated) ? id1 : id2;
+        const auto b_one = (b_rotated) ? id2 : id1;
+        const auto b_two = (b_rotated) ? id1 : id2;
+        const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
+        const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
+        b_mat_cpu[b_index] = args.alpha * a_mat_cpu[a_index];
       }
-
-      // Data transfer back to OpenCL
-      buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
-      return StatusCode::kSuccess;
     }
-  #endif
+
+    // Data transfer back to OpenCL
+    buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
+    return StatusCode::kSuccess;
+  }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
