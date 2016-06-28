@@ -1,7 +1,6 @@
 environment:
   global:
     CLBLAST_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\clblast"
-    CLBLAST_INSTALL: "%APPVEYOR_BUILD_FOLDER%\\bin\\install"
     OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\opencl"
 
@@ -45,19 +44,18 @@ install:
   - ps: popd
 
 before_build:
-  - ps: mkdir $env:CLBLAST_INSTALL
   - ps: mkdir $env:CLBLAST_ROOT
   - ps: pushd $env:CLBLAST_ROOT
-  - set INSTALL_PATH=$env:CLBLAST_INSTALL
-  - cmake -G "Visual Studio 14 Win64" -DCMAKE_INSTALL_PREFIX=%INSTALL_PATH% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
+  - ps: mkdir install_dir
+  - cmake -G "Visual Studio 14 Win64" -DCMAKE_INSTALL_PREFIX=install_dir -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - cmake --build .
   - cmake --build . --target install
 
 after_build:
-  - ps: pushd $env:CLBLAST_INSTALL
-  - 7z a CLBlast-Windows-x64.zip .\$env:CLBLAST_INSTALL\*
+  - ps: pushd $env:CLBLAST_ROOT
+  - 7z a CLBlast-Windows-x64.zip .\install_dir\*
   - ps: mv CLBlast-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
 
 artifacts:
