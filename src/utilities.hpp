@@ -188,7 +188,7 @@ T ConvertArgument(const char* value);
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
-T GetArgument(const int argc, char *argv[], std::string &help,
+T GetArgument(const int argc, char **argv, std::string &help,
               const std::string &option, const T default_value);
 
 // Returns the precision only

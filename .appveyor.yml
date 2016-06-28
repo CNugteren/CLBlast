@@ -46,7 +46,7 @@ install:
 before_build:
   - ps: mkdir $env:CLBLAST_ROOT
   - ps: pushd $env:CLBLAST_ROOT
-  - cmake -G"Visual Studio 14 Win64" -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
+  - cmake -G "Visual Studio 14 Win64" -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - cmake --build .

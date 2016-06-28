@@ -182,7 +182,7 @@ template <> double2 ConvertArgument(const char* value) {
 // This function matches patterns in the form of "-option value" or "--option value". It returns a
 // default value in case the option is not found in the argument string.
 template <typename T>
-T GetArgument(const int argc, char *argv[], std::string &help,
+T GetArgument(const int argc, char **argv, std::string &help,
               const std::string &option, const T default_value) {
 
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with

@@ -274,24 +274,31 @@ endif()
 # library, either clBLAS or a CPU BLAS.
 if(CLIENTS)
 
-  # Creates the common performance-tests objects (requires CMake 2.8.8)
-  add_library(test_performance_common OBJECT test/performance/client.cpp)
+  # Visual Studio requires the sources of non-exported objects/libraries
+  set(CLIENTS_COMMON )
+  if(MSVC)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities.cpp test/performance/client.cpp)
+  else()
+    # Creates the common performance-tests objects (requires CMake 2.8.8)
+    add_library(test_performance_common OBJECT test/performance/client.cpp)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
+  endif()
 
   # Compiles the performance-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
                    test/performance/routines/level1/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
                    test/performance/routines/level2/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
                    test/performance/routines/level3/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
-    add_executable(clblast_client_${ROUTINE} $<TARGET_OBJECTS:test_performance_common>
+    add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
                    test/performance/routines/levelx/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
@@ -308,25 +315,33 @@ endif()
 if(TESTS)
   enable_testing()
 
-  # Creates the common correctness-tests objects (requires CMake 2.8.8)
-  add_library(test_correctness_common OBJECT
-              test/correctness/tester.cpp test/correctness/testblas.cpp)
+  # Visual Studio requires the sources of non-exported objects/libraries
+  set(TESTS_COMMON )
+  if(MSVC)
+    set(TESTS_COMMON ${TESTS_COMMON} src/utilities.cpp
+        test/correctness/tester.cpp test/correctness/testblas.cpp)
+  else()
+    # Creates the common correctness-tests objects (requires CMake 2.8.8)
+    add_library(test_correctness_common OBJECT
+                test/correctness/tester.cpp test/correctness/testblas.cpp)
+    set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
+  endif()
 
   # Compiles the correctness-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
                    test/correctness/routines/level1/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
                    test/correctness/routines/level2/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
                    test/correctness/routines/level3/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
-    add_executable(clblast_test_${ROUTINE} $<TARGET_OBJECTS:test_correctness_common>
+    add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
                    test/correctness/routines/levelx/${ROUTINE}.cpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
