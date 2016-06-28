@@ -2,6 +2,10 @@ language: cpp
 sudo: required
 dist: trusty
 
+os:
+  - linux
+  - osx
+
 compiler:
   - gcc
   - clang
@@ -16,7 +20,7 @@ addons:
 
 env:
   global:
-    - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/make/release
+    - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/clblast
     - OPENCL_REGISTRY=https://www.khronos.org/registry/cl
     - OPENCL_ROOT=${TRAVIS_BUILD_DIR}/bin/opencl
 
@@ -55,7 +59,7 @@ install:
 before_script:
   - mkdir -p ${CLBLAST_ROOT}
   - pushd ${CLBLAST_ROOT}
-  - cmake -DOPENCL_ROOT=${OPENCL_ROOT} ${TRAVIS_BUILD_DIR}
+  - cmake -DOPENCL_ROOT=${OPENCL_ROOT} -DTESTS=ON -DCLIENTS=ON ${TRAVIS_BUILD_DIR}
 
 script:
   - make

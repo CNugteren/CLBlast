@@ -1,4 +1,21 @@
 
+Version 0.8.0
+- Added support for half-precision floating-point (fp16) in the library
+- Made it possible to compile the performance tests (clients) separately from the correctness tests
+- Made a reference BLAS and head-to-head performance comparison optional in the clients
+- Increased the verbosity of the "-verbose" option in the correctness tests
+- Refactored the host code for better compilation times and fewer lines of code
+- Added Appveyor continuous integration and increased coverage of the Travis builds
+- Improved the API documentation
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+- Added half-precision routines:
+  * Level-1: HSWAP/HSCAL/HCOPY/HAXPY/HDOT/HNRM2/HASUM/HSUM/iHAMAX/iHMAX/iHMIN
+  * Level-2: HGEMV/HGBMV/HHEMV/HHBMV/HHPMV/HSYMV/HSBMV/HSPMV/HTRMV/HTBMV/HTPMV/HGER/HSYR/HSPR/HSYR2/HSPR2
+  * Level-3: HGEMM/HSYMM/HSYRK/HSYR2K/HTRMM
+- Added non-BLAS routines:
+  * SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY (matrix copy, scaling, and/or transpose)
+
 Version 0.7.1
 - Improved performance of large power-of-2 xGEMM kernels for AMD GPUs
 - Fixed a bug in the xGEMM routine related to the event incorrectly set

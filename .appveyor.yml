@@ -1,0 +1,64 @@
+environment:
+  global:
+    CLBLAST_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\clblast"
+    OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
+    OPENCL_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\opencl"
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+init:
+  - cmake --version
+  - C:\"Program Files (x86)"\"Microsoft Visual Studio 14.0"\VC\vcvarsall.bat %PLATFORM%
+
+# Creates an OpenCL library to link against. Taken from clMathLibraries/clBLAS
+install:
+  - ps: mkdir $env:OPENCL_ROOT
+  - ps: pushd $env:OPENCL_ROOT
+  - ps: $opencl_registry = $env:OPENCL_REGISTRY
+  # This downloads the source to the Khronos ICD library
+  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+  - ps: mv ./OpenCL-ICD-Loader/* .
+  # This downloads all the opencl header files
+  # The cmake build files expect a directory called inc
+  - ps: mkdir inc/CL
+  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
+  - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
+  # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
+  # Create the static import lib in a directory called lib, so findopencl() will find it
+  - ps: mkdir lib
+  - ps: pushd lib
+  - cmake -G "NMake Makefiles" ..
+  - nmake
+  - ps: popd
+  # Switch to OpenCL 1.2 headers
+  - ps: pushd inc/CL
+  - git fetch origin opencl12:opencl12
+  - git checkout opencl12
+  - ps: popd
+  # Rename the inc directory to include, so FindOpencl() will find it
+  - ps: ren inc include
+  - ps: popd
+
+before_build:
+  - ps: mkdir $env:CLBLAST_ROOT
+  - ps: pushd $env:CLBLAST_ROOT
+  - ps: mkdir install_dir
+  - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=install_dir -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
+
+build_script:
+  - nmake
+  - nmake install
+
+after_build:
+  - ps: pushd $env:CLBLAST_ROOT
+  - 7z a CLBlast-Windows-x64.zip .\install_dir\*
+  - ps: mv CLBlast-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
+
+artifacts:
+  - path: '*.zip'
+    name: release
+    type: zip

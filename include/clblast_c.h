@@ -77,8 +77,8 @@ typedef enum StatusCode_ {
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
-  kInvalidVectorDot          = -2043, // Vector dot is not a valid OpenCL buffer
-  kInsufficientMemoryDot     = -2042, // Vector dot's OpenCL buffer is too small
+  kInvalidVectorScalar       = -2043, // The unit-sized vector is not a valid OpenCL buffer
+  kInsufficientMemoryScalar  = -2042, // The unit-sized vector's OpenCL buffer is too small
 } StatusCode;
 
 // Matrix layout and transpose types
@@ -148,7 +148,7 @@ StatusCode PUBLIC_API CLBlastDrotm(const size_t n,
                                    cl_mem sparam_buffer, const size_t sparam_offset,
                                    cl_command_queue* queue, cl_event* event);
 
-// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP
+// Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 StatusCode PUBLIC_API CLBlastSswap(const size_t n,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -165,8 +165,12 @@ StatusCode PUBLIC_API CLBlastZswap(const size_t n,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHswap(const size_t n,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL
+// Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 StatusCode PUBLIC_API CLBlastSscal(const size_t n,
                                    const float alpha,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -183,8 +187,12 @@ StatusCode PUBLIC_API CLBlastZscal(const size_t n,
                                    const cl_double2 alpha,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHscal(const size_t n,
+                                   const cl_half alpha,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY
+// Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 StatusCode PUBLIC_API CLBlastScopy(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -201,8 +209,12 @@ StatusCode PUBLIC_API CLBlastZcopy(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHcopy(const size_t n,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY
+// Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 StatusCode PUBLIC_API CLBlastSaxpy(const size_t n,
                                    const float alpha,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -223,14 +235,24 @@ StatusCode PUBLIC_API CLBlastZaxpy(const size_t n,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHaxpy(const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Dot product of two vectors: SDOT/DDOT
+// Dot product of two vectors: SDOT/DDOT/HDOT
 StatusCode PUBLIC_API CLBlastSdot(const size_t n,
                                   cl_mem dot_buffer, const size_t dot_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                   cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastDdot(const size_t n,
+                                  cl_mem dot_buffer, const size_t dot_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHdot(const size_t n,
                                   cl_mem dot_buffer, const size_t dot_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
@@ -260,7 +282,7 @@ StatusCode PUBLIC_API CLBlastZdotc(const size_t n,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2
+// Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 StatusCode PUBLIC_API CLBlastSnrm2(const size_t n,
                                    cl_mem nrm2_buffer, const size_t nrm2_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -277,8 +299,12 @@ StatusCode PUBLIC_API CLBlastDznrm2(const size_t n,
                                    cl_mem nrm2_buffer, const size_t nrm2_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHnrm2(const size_t n,
+                                   cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM
+// Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 StatusCode PUBLIC_API CLBlastSasum(const size_t n,
                                    cl_mem asum_buffer, const size_t asum_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -295,8 +321,12 @@ StatusCode PUBLIC_API CLBlastDzasum(const size_t n,
                                    cl_mem asum_buffer, const size_t asum_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHasum(const size_t n,
+                                   cl_mem asum_buffer, const size_t asum_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM
+// Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 StatusCode PUBLIC_API CLBlastSsum(const size_t n,
                                   cl_mem sum_buffer, const size_t sum_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -313,8 +343,12 @@ StatusCode PUBLIC_API CLBlastDzsum(const size_t n,
                                   cl_mem sum_buffer, const size_t sum_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsum(const size_t n,
+                                  cl_mem sum_buffer, const size_t sum_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX
+// Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 StatusCode PUBLIC_API CLBlastiSamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -331,8 +365,12 @@ StatusCode PUBLIC_API CLBlastiZamax(const size_t n,
                                    cl_mem imax_buffer, const size_t imax_offset,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHamax(const size_t n,
+                                   cl_mem imax_buffer, const size_t imax_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX
+// Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 StatusCode PUBLIC_API CLBlastiSmax(const size_t n,
                                   cl_mem imax_buffer, const size_t imax_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -349,8 +387,12 @@ StatusCode PUBLIC_API CLBlastiZmax(const size_t n,
                                   cl_mem imax_buffer, const size_t imax_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHmax(const size_t n,
+                                  cl_mem imax_buffer, const size_t imax_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN
+// Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 StatusCode PUBLIC_API CLBlastiSmin(const size_t n,
                                   cl_mem imin_buffer, const size_t imin_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -367,12 +409,16 @@ StatusCode PUBLIC_API CLBlastiZmin(const size_t n,
                                   cl_mem imin_buffer, const size_t imin_offset,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastiHmin(const size_t n,
+                                  cl_mem imin_buffer, const size_t imin_offset,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
 
-// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV
+// General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
 StatusCode PUBLIC_API CLBlastSgemv(const Layout layout, const Transpose a_transpose,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -405,8 +451,16 @@ StatusCode PUBLIC_API CLBlastZgemv(const Layout layout, const Transpose a_transp
                                    const cl_double2 beta,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHgemv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_half beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV
+// General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 StatusCode PUBLIC_API CLBlastSgbmv(const Layout layout, const Transpose a_transpose,
                                    const size_t m, const size_t n, const size_t kl, const size_t ku,
                                    const float alpha,
@@ -437,6 +491,14 @@ StatusCode PUBLIC_API CLBlastZgbmv(const Layout layout, const Transpose a_transp
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    const cl_double2 beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHgbmv(const Layout layout, const Transpose a_transpose,
+                                   const size_t m, const size_t n, const size_t kl, const size_t ku,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_half beta,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
@@ -494,7 +556,7 @@ StatusCode PUBLIC_API CLBlastZhpmv(const Layout layout, const Triangle triangle,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// Symmetric matrix-vector multiplication: SSYMV/DSYMV
+// Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 StatusCode PUBLIC_API CLBlastSsymv(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -511,8 +573,16 @@ StatusCode PUBLIC_API CLBlastDsymv(const Layout layout, const Triangle triangle,
                                    const double beta,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsymv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_half beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV
+// Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
 StatusCode PUBLIC_API CLBlastSsbmv(const Layout layout, const Triangle triangle,
                                    const size_t n, const size_t k,
                                    const float alpha,
@@ -529,8 +599,16 @@ StatusCode PUBLIC_API CLBlastDsbmv(const Layout layout, const Triangle triangle,
                                    const double beta,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsbmv(const Layout layout, const Triangle triangle,
+                                   const size_t n, const size_t k,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_half beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV
+// Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 StatusCode PUBLIC_API CLBlastSspmv(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -547,8 +625,16 @@ StatusCode PUBLIC_API CLBlastDspmv(const Layout layout, const Triangle triangle,
                                    const double beta,
                                    cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHspmv(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_half beta,
+                                   cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV
+// Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 StatusCode PUBLIC_API CLBlastStrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t n,
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -569,8 +655,13 @@ StatusCode PUBLIC_API CLBlastZtrmv(const Layout layout, const Triangle triangle,
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV
+// Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 StatusCode PUBLIC_API CLBlastStbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t n, const size_t k,
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -591,8 +682,13 @@ StatusCode PUBLIC_API CLBlastZtbmv(const Layout layout, const Triangle triangle,
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n, const size_t k,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV
+// Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 StatusCode PUBLIC_API CLBlastStpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t n,
                                    const cl_mem ap_buffer, const size_t ap_offset,
@@ -609,6 +705,11 @@ StatusCode PUBLIC_API CLBlastCtpmv(const Layout layout, const Triangle triangle,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
 StatusCode PUBLIC_API CLBlastZtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t n,
+                                   const cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t n,
                                    const cl_mem ap_buffer, const size_t ap_offset,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
@@ -680,7 +781,7 @@ StatusCode PUBLIC_API CLBlastZtpsv(const Layout layout, const Triangle triangle,
                                    cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                    cl_command_queue* queue, cl_event* event);
 
-// General rank-1 matrix update: SGER/DGER
+// General rank-1 matrix update: SGER/DGER/HGER
 StatusCode PUBLIC_API CLBlastSger(const Layout layout,
                                   const size_t m, const size_t n,
                                   const float alpha,
@@ -691,6 +792,13 @@ StatusCode PUBLIC_API CLBlastSger(const Layout layout,
 StatusCode PUBLIC_API CLBlastDger(const Layout layout,
                                   const size_t m, const size_t n,
                                   const double alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHger(const Layout layout,
+                                  const size_t m, const size_t n,
+                                  const cl_half alpha,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
@@ -788,7 +896,7 @@ StatusCode PUBLIC_API CLBlastZhpr2(const Layout layout, const Triangle triangle,
                                    cl_mem ap_buffer, const size_t ap_offset,
                                    cl_command_queue* queue, cl_event* event);
 
-// Symmetric rank-1 matrix update: SSYR/DSYR
+// Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 StatusCode PUBLIC_API CLBlastSsyr(const Layout layout, const Triangle triangle,
                                   const size_t n,
                                   const float alpha,
@@ -801,8 +909,14 @@ StatusCode PUBLIC_API CLBlastDsyr(const Layout layout, const Triangle triangle,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const cl_half alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Symmetric packed rank-1 matrix update: SSPR/DSPR
+// Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 StatusCode PUBLIC_API CLBlastSspr(const Layout layout, const Triangle triangle,
                                   const size_t n,
                                   const float alpha,
@@ -815,8 +929,14 @@ StatusCode PUBLIC_API CLBlastDspr(const Layout layout, const Triangle triangle,
                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_mem ap_buffer, const size_t ap_offset,
                                   cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHspr(const Layout layout, const Triangle triangle,
+                                  const size_t n,
+                                  const cl_half alpha,
+                                  const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                  cl_mem ap_buffer, const size_t ap_offset,
+                                  cl_command_queue* queue, cl_event* event);
 
-// Symmetric rank-2 matrix update: SSYR2/DSYR2
+// Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 StatusCode PUBLIC_API CLBlastSsyr2(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -831,8 +951,15 @@ StatusCode PUBLIC_API CLBlastDsyr2(const Layout layout, const Triangle triangle,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric packed rank-2 matrix update: SSPR2/DSPR2
+// Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 StatusCode PUBLIC_API CLBlastSspr2(const Layout layout, const Triangle triangle,
                                    const size_t n,
                                    const float alpha,
@@ -847,12 +974,19 @@ StatusCode PUBLIC_API CLBlastDspr2(const Layout layout, const Triangle triangle,
                                    const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                                    cl_mem ap_buffer, const size_t ap_offset,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHspr2(const Layout layout, const Triangle triangle,
+                                   const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                   const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                   cl_mem ap_buffer, const size_t ap_offset,
+                                   cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
 // =================================================================================================
 
-// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM
+// General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
 StatusCode PUBLIC_API CLBlastSgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
                                    const size_t m, const size_t n, const size_t k,
                                    const float alpha,
@@ -885,8 +1019,16 @@ StatusCode PUBLIC_API CLBlastZgemm(const Layout layout, const Transpose a_transp
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                   const size_t m, const size_t n, const size_t k,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM
+// Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 StatusCode PUBLIC_API CLBlastSsymm(const Layout layout, const Side side, const Triangle triangle,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -919,6 +1061,14 @@ StatusCode PUBLIC_API CLBlastZsymm(const Layout layout, const Side side, const T
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsymm(const Layout layout, const Side side, const Triangle triangle,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
 // Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
 StatusCode PUBLIC_API CLBlastChemm(const Layout layout, const Side side, const Triangle triangle,
@@ -938,7 +1088,7 @@ StatusCode PUBLIC_API CLBlastZhemm(const Layout layout, const Side side, const T
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
 
-// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK
+// Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 StatusCode PUBLIC_API CLBlastSsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                                    const size_t n, const size_t k,
                                    const float alpha,
@@ -967,6 +1117,13 @@ StatusCode PUBLIC_API CLBlastZsyrk(const Layout layout, const Triangle triangle,
                                    const cl_double2 beta,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                                   const size_t n, const size_t k,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   const cl_half beta,
+                                   cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 StatusCode PUBLIC_API CLBlastCherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
@@ -984,7 +1141,7 @@ StatusCode PUBLIC_API CLBlastZherk(const Layout layout, const Triangle triangle,
                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                    cl_command_queue* queue, cl_event* event);
 
-// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K
+// Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 StatusCode PUBLIC_API CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
                                     const size_t n, const size_t k,
                                     const float alpha,
@@ -1017,6 +1174,14 @@ StatusCode PUBLIC_API CLBlastZsyr2k(const Layout layout, const Triangle triangle
                                     const cl_double2 beta,
                                     cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                     cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+                                    const size_t n, const size_t k,
+                                    const cl_half alpha,
+                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                    const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                    const cl_half beta,
+                                    cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                    cl_command_queue* queue, cl_event* event);
 
 // Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
 StatusCode PUBLIC_API CLBlastCher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
@@ -1036,7 +1201,7 @@ StatusCode PUBLIC_API CLBlastZher2k(const Layout layout, const Triangle triangle
                                     cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                                     cl_command_queue* queue, cl_event* event);
 
-// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM
+// Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
 StatusCode PUBLIC_API CLBlastStrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -1061,8 +1226,14 @@ StatusCode PUBLIC_API CLBlastZtrmm(const Layout layout, const Side side, const T
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
 StatusCode PUBLIC_API CLBlastStrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                                    const size_t m, const size_t n,
                                    const float alpha,
@@ -1087,6 +1258,48 @@ StatusCode PUBLIC_API CLBlastZtrsm(const Layout layout, const Side side, const T
                                    const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                    cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                    cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event);
+
+// =================================================================================================
+// Extra non-BLAS routines (level-X)
+// =================================================================================================
+
+// Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
+StatusCode PUBLIC_API CLBlastSomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const float alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastDomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const double alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastComatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_float2 alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastZomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_double2 alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
+StatusCode PUBLIC_API CLBlastHomatcopy(const Layout layout, const Transpose a_transpose,
+                                       const size_t m, const size_t n,
+                                       const cl_half alpha,
+                                       const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                       cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                       cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 
