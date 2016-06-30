@@ -9,7 +9,7 @@
 #
 # ==================================================================================================
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.11)
 
 # Overrides for MSVC static runtime
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/c_flag_overrides.cmake)
@@ -165,6 +165,11 @@ endforeach()
 # Creates and links the library
 add_library(clblast SHARED ${SOURCES})
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
+
+# Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
+if(MSVC)
+  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+endif()
 
 # Installs the library
 install(TARGETS clblast DESTINATION lib)

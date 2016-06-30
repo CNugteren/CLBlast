@@ -1,6 +1,7 @@
 
 Development version (next release)
 - Updated to version 6.0 of the CLCudaAPI C++11 OpenCL header
+- Fixed proper MSVC dllimport and dllexport declarations
 
 Version 0.8.0
 - Added support for half-precision floating-point (fp16) in the library
