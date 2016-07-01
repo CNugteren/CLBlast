@@ -161,6 +161,8 @@ template <typename T>
 T ConvertArgument(const char* value) {
   return static_cast<T>(std::stoi(value));
 }
+template size_t ConvertArgument(const char* value);
+
 template <> half ConvertArgument(const char* value) {
   return FloatToHalf(static_cast<float>(std::stod(value)));
 }
@@ -178,6 +180,15 @@ template <> double2 ConvertArgument(const char* value) {
   auto val = static_cast<double>(std::stod(value));
   return double2{val, val};
 }
+
+// Variant of "ConvertArgument" with default values
+template <typename T>
+T ConvertArgument(const char* value, T default_value) {
+
+  if (value) { return ConvertArgument<T>(value); }
+  return default_value;
+}
+template size_t ConvertArgument(const char* value, size_t default_value);
 
 // This function matches patterns in the form of "-option value" or "--option value". It returns a
 // default value in case the option is not found in the argument string.
