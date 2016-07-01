@@ -183,9 +183,19 @@ std::string ToString(T value);
 
 // =================================================================================================
 
-// Helper for the function "GetArgument"
+// Helper for the function "GetArgument" to convert the argument to the value type
 template <typename T>
-T ConvertArgument(const char* value);
+T ConvertArgument(const char* value) {
+  return static_cast<T>(std::stoi(value));
+}
+
+// Variant of "ConvertArgument" with default values
+template <typename T>
+T ConvertArgument(const char* value, T default_value) {
+
+  if (value) { return ConvertArgument<T>(value); }
+  return default_value;
+}
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>

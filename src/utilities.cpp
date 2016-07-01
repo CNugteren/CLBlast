@@ -157,10 +157,6 @@ std::string ToString(Precision value) {
 // Helper for the below function to convert the argument to the value type. Adds specialization for
 // complex data-types. Note that complex arguments are accepted as regular values and are copied to
 // both the real and imaginary parts.
-template <typename T>
-T ConvertArgument(const char* value) {
-  return static_cast<T>(std::stoi(value));
-}
 template <> half ConvertArgument(const char* value) {
   return FloatToHalf(static_cast<float>(std::stod(value)));
 }
