@@ -1,4 +1,9 @@
 
+Development version (next release)
+- Updated to version 6.0 of the CLCudaAPI C++11 OpenCL header
+- Fixed proper MSVC dllimport and dllexport declarations
+- Fixed memory leaks related to events not being released
+
 Version 0.8.0
 - Added support for half-precision floating-point (fp16) in the library
 - Made it possible to compile the performance tests (clients) separately from the correctness tests

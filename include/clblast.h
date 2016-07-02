@@ -25,6 +25,18 @@
   #include <CL/opencl.h>
 #endif
 
+// Exports library functions under Windows when building a DLL. See also:
+// https://msdn.microsoft.com/en-us/library/a90k134d.aspx
+#ifdef _WIN32
+  #ifdef COMPILING_DLL
+    #define PUBLIC_API __declspec(dllexport)
+  #else
+    #define PUBLIC_API __declspec(dllimport)
+  #endif
+#else
+  #define PUBLIC_API
+#endif
+
 namespace clblast {
 // =================================================================================================
 
@@ -576,11 +588,11 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.
-StatusCode ClearCache();
+StatusCode PUBLIC_API ClearCache();
 
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
-StatusCode FillCache(const cl_device_id device);
+StatusCode PUBLIC_API FillCache(const cl_device_id device);
 
 // =================================================================================================
 

@@ -72,15 +72,24 @@ inline void CheckError(const cl_int status) {
 class Event {
  public:
 
-  // Constructor based on the regular OpenCL data-type
-  explicit Event(const cl_event event): event_(event) { }
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Event(const cl_event event):
+      event_(new cl_event) {
+    *event_ = event;
+  }
 
-  // Regular constructor
-  explicit Event(): event_(nullptr) { }
+  // Regular constructor with memory management
+  explicit Event():
+      event_(new cl_event, [](cl_event* e) {
+        if (*e) { CheckError(clReleaseEvent(*e)); }
+        delete e;
+      }) {
+    *event_ = nullptr;
+  }
 
   // Waits for completion of this event
   void WaitForCompletion() const {
-    CheckError(clWaitForEvents(1, &event_));
+    CheckError(clWaitForEvents(1, &(*event_)));
   }
 
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
@@ -89,20 +98,20 @@ class Event {
   float GetElapsedTime() const {
     WaitForCompletion();
     auto bytes = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
     auto time_start = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
     auto time_end = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
     return (time_end - time_start) * 1.0e-6f;
   }
 
   // Accessor to the private data-member
-  cl_event& operator()() { return event_; }
-  cl_event* pointer() { return &event_; }
+  cl_event& operator()() { return *event_; }
+  cl_event* pointer() { return &(*event_); }
  private:
-  cl_event event_;
+  std::shared_ptr<cl_event> event_;
 };
 
 // Pointer to an OpenCL event
@@ -163,6 +172,15 @@ class Device {
 
   // Methods to retrieve device information
   std::string Version() const { return GetInfoString(CL_DEVICE_VERSION); }
+  size_t VersionNumber() const
+  {
+    std::string version_string = Version().substr(7);
+    // Space separates the end of the OpenCL version number from the beginning of the
+    // vendor-specific information.
+    size_t next_whitespace = version_string.find(' ');
+    size_t version = (size_t) (100.0 * std::stod(version_string.substr(0, next_whitespace)));
+    return version;
+  }
   std::string Vendor() const { return GetInfoString(CL_DEVICE_VENDOR); }
   std::string Name() const { return GetInfoString(CL_DEVICE_NAME); }
   std::string Type() const {
@@ -181,8 +199,8 @@ class Device {
   std::vector<size_t> MaxWorkItemSizes() const {
     return GetInfoVector<size_t>(CL_DEVICE_MAX_WORK_ITEM_SIZES);
   }
-  size_t LocalMemSize() const {
-    return static_cast<size_t>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
+  cl_ulong LocalMemSize() const {
+    return GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE);
   }
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
   size_t CoreClock() const { return GetInfo(CL_DEVICE_MAX_CLOCK_FREQUENCY); }
@@ -193,7 +211,7 @@ class Device {
   size_t MemoryBusWidth() const { return 0; } // Not exposed in OpenCL
 
   // Configuration-validity checks
-  bool IsLocalMemoryValid(const size_t local_mem_usage) const {
+  bool IsLocalMemoryValid(const cl_ulong local_mem_usage) const {
     return (local_mem_usage <= LocalMemSize());
   }
   bool IsThreadConfigValid(const std::vector<size_t> &local) const {
@@ -211,6 +229,8 @@ class Device {
   bool IsCPU() const { return Type() == "CPU"; }
   bool IsGPU() const { return Type() == "GPU"; }
   bool IsAMD() const { return Vendor() == "AMD" || Vendor() == "Advanced Micro Devices, Inc."; }
+  bool IsNVIDIA() const { return Vendor() == "NVIDIA" || Vendor() == "NVIDIA Corporation"; }
+  bool IsIntel() const { return Vendor() == "Intel" || Vendor() == "GenuineIntel"; }
   bool IsARM() const { return Vendor() == "ARM"; }
 
   // Accessor to the private data-member
@@ -386,8 +406,16 @@ class Queue {
                                                              delete s; }) {
     auto status = CL_SUCCESS;
     #ifdef CL_VERSION_2_0
-      cl_queue_properties properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
-      *queue_ = clCreateCommandQueueWithProperties(context(), device(), properties, &status);
+      size_t ocl_version = device.VersionNumber();
+      if (ocl_version >= 200)
+      {
+        cl_queue_properties properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
+        *queue_ = clCreateCommandQueueWithProperties(context(), device(), properties, &status);
+      }
+      else
+      {
+        *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
+      }
     #else
       *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
     #endif
@@ -627,11 +655,11 @@ class Kernel {
   }
 
   // Retrieves the amount of local memory used per work-group for this kernel
-  size_t LocalMemUsage(const Device &device) const {
+  cl_ulong LocalMemUsage(const Device &device) const {
     auto bytes = size_t{0};
     auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, 0, nullptr, &bytes));
-    auto result = size_t{0};
+    auto result = cl_ulong{0};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, bytes, &result, nullptr));
     return result;
   }
