@@ -72,15 +72,24 @@ inline void CheckError(const cl_int status) {
 class Event {
  public:
 
-  // Constructor based on the regular OpenCL data-type
-  explicit Event(const cl_event event): event_(event) { }
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Event(const cl_event event):
+      event_(new cl_event) {
+    *event_ = event;
+  }
 
-  // Regular constructor
-  explicit Event(): event_(nullptr) { }
+  // Regular constructor with memory management
+  explicit Event():
+      event_(new cl_event, [](cl_event* e) {
+        if (*e) { CheckError(clReleaseEvent(*e)); }
+        delete e;
+      }) {
+    *event_ = nullptr;
+  }
 
   // Waits for completion of this event
   void WaitForCompletion() const {
-    CheckError(clWaitForEvents(1, &event_));
+    CheckError(clWaitForEvents(1, &(*event_)));
   }
 
   // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
@@ -89,20 +98,20 @@ class Event {
   float GetElapsedTime() const {
     WaitForCompletion();
     auto bytes = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
     auto time_start = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
     auto time_end = size_t{0};
-    clGetEventProfilingInfo(event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
     return (time_end - time_start) * 1.0e-6f;
   }
 
   // Accessor to the private data-member
-  cl_event& operator()() { return event_; }
-  cl_event* pointer() { return &event_; }
+  cl_event& operator()() { return *event_; }
+  cl_event* pointer() { return &(*event_); }
  private:
-  cl_event event_;
+  std::shared_ptr<cl_event> event_;
 };
 
 // Pointer to an OpenCL event

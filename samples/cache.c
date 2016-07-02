@@ -113,6 +113,7 @@ void run_example_routine(const cl_device_id device) {
 
   // Wait for completion
   clWaitForEvents(1, &event);
+  clReleaseEvent(event);
 
   // Retrieves the execution time
   clock_t diff = clock() - start;
