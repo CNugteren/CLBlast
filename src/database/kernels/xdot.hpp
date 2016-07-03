@@ -60,8 +60,11 @@ const Database::DatabaseEntry Database::XdotSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WGS2",32} } },
+        { "GeForce GTX 1070",                                { {"WGS1",128}, {"WGS2",1024} } },
         { "GeForce GTX 480",                                 { {"WGS1",512}, {"WGS2",32} } },
+        { "GeForce GTX 670",                                 { {"WGS1",512}, {"WGS2",1024} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",128} } },
+        { "GeForce GTX 750",                                 { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",1024}, {"WGS2",32} } },
@@ -106,8 +109,11 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",64}, {"WGS2",32} } },
+        { "GeForce GTX 1070",                                { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX 480",                                 { {"WGS1",512}, {"WGS2",32} } },
+        { "GeForce GTX 670",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",64} } },
+        { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",64} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
@@ -144,12 +150,15 @@ const Database::DatabaseEntry Database::XdotDouble = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WGS2",32} } },
+        { "GeForce GTX 1070",                                { {"WGS1",128}, {"WGS2",512} } },
         { "GeForce GTX 480",                                 { {"WGS1",512}, {"WGS2",32} } },
+        { "GeForce GTX 670",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",64} } },
+        { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",256} } },
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
       }
     },
     { // Default
@@ -182,8 +191,11 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",64}, {"WGS2",32} } },
+        { "GeForce GTX 1070",                                { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX 480",                                 { {"WGS1",512}, {"WGS2",32} } },
+        { "GeForce GTX 670",                                 { {"WGS1",512}, {"WGS2",128} } },
         { "GeForce GTX 680",                                 { {"WGS1",256}, {"WGS2",64} } },
+        { "GeForce GTX 750",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",128}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WGS2",32} } },

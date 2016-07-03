@@ -99,9 +99,12 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
 * NVIDIA GPUs:
   - GRID K520
   - GeForce GTX 480
+  - GeForce GTX 670
   - GeForce GTX 680
+  - GeForce GTX 750
   - GeForce GTX 750 Ti
   - GeForce GTX 980
+  - GeForce GTX 1070
   - GeForce GTX Titan
   - GeForce GTX Titan X
   - Tesla K20m
@@ -278,6 +281,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](https://github.com/gpus)
 * [Hugh Perkins](https://github.com/hughperkins)
+* [Gian-Carlo Pascutto](https://github.com/gcp)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 

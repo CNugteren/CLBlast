@@ -68,8 +68,11 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",256}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "GeForce GTX 1070",                                { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
+        { "GeForce GTX 670",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",128}, {"WPT3",2} } },
+        { "GeForce GTX 750",                                 { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",2}, {"WGS3",128}, {"WPT3",2} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",4}, {"WGS3",128}, {"WPT3",4} } },
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
@@ -125,8 +128,11 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 1070",                                { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 670",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "GeForce GTX 680",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 750",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
@@ -169,8 +175,11 @@ const Database::DatabaseEntry Database::XgemvDouble = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 1070",                                { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",128}, {"WPT3",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 670",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",2}, {"WGS3",128}, {"WPT3",2} } },
+        { "GeForce GTX 750",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",2}, {"WGS2",256}, {"WPT2",2}, {"VW3",2}, {"WGS3",64}, {"WPT3",2} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",2}, {"WGS3",256}, {"WPT3",2} } },
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",256}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
@@ -218,6 +227,7 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",256}, {"WPT3",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "GeForce GTX 670",                                 { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
       }
     },
