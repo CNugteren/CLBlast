@@ -199,8 +199,8 @@ class Device {
   std::vector<size_t> MaxWorkItemSizes() const {
     return GetInfoVector<size_t>(CL_DEVICE_MAX_WORK_ITEM_SIZES);
   }
-  size_t LocalMemSize() const {
-    return static_cast<size_t>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
+  cl_ulong LocalMemSize() const {
+    return GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE);
   }
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
   size_t CoreClock() const { return GetInfo(CL_DEVICE_MAX_CLOCK_FREQUENCY); }
@@ -211,7 +211,7 @@ class Device {
   size_t MemoryBusWidth() const { return 0; } // Not exposed in OpenCL
 
   // Configuration-validity checks
-  bool IsLocalMemoryValid(const size_t local_mem_usage) const {
+  bool IsLocalMemoryValid(const cl_ulong local_mem_usage) const {
     return (local_mem_usage <= LocalMemSize());
   }
   bool IsThreadConfigValid(const std::vector<size_t> &local) const {
@@ -655,11 +655,11 @@ class Kernel {
   }
 
   // Retrieves the amount of local memory used per work-group for this kernel
-  size_t LocalMemUsage(const Device &device) const {
+  cl_ulong LocalMemUsage(const Device &device) const {
     auto bytes = size_t{0};
     auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, 0, nullptr, &bytes));
-    auto result = size_t{0};
+    auto result = cl_ulong{0};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, bytes, &result, nullptr));
     return result;
   }
