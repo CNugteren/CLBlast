@@ -221,9 +221,15 @@ if(TUNERS)
   # Includes CLTune
   include_directories(${CLTUNE_INCLUDE_DIRS})
 
+  # Visual Studio requires the sources of non-exported objects/libraries
+  set(TUNERS_COMMON )
+  if(MSVC)
+    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities.cpp)
+  endif()
+
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} src/tuning/kernels/${KERNEL}.cpp)
+    add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
