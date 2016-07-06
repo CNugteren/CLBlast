@@ -80,8 +80,9 @@ constexpr auto kArgComparecblas = "cblas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
+constexpr auto kArgWarmUp = "warm_up";
 
-// The client-specific arguments in string form
+// The test-specific arguments in string form
 constexpr auto kArgFullTest = "full_test";
 constexpr auto kArgVerbose = "verbose";
 
