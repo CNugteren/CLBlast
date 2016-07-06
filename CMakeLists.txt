@@ -27,6 +27,13 @@ option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
 
+# Compile in verbose mode with additional diagnostic messages
+option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
+if(VERBOSE)
+  message("-- Building in verbose mode")
+  add_definitions(-DVERBOSE)
+endif()
+
 # ==================================================================================================
 
 # RPATH settings

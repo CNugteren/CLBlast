@@ -183,6 +183,8 @@ The folder `doc/performance` contains some PDF files with performance results on
 
 Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
 
+In case performance is still sub-optimal or something else is wrong, CLBlast can be build in verbose mode for (performance) debugging by specifying `-DVERBOSE=ON` to CMake.
+
 
 Supported routines
 -------------

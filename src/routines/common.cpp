@@ -12,6 +12,7 @@
 // =================================================================================================
 
 #include <vector>
+#include <chrono>
 
 #include "routines/common.hpp"
 
@@ -44,10 +45,25 @@ StatusCode RunKernel(Kernel &kernel, Queue &queue, const Device &device,
   const auto local_mem_usage = kernel.LocalMemUsage(device);
   if (!device.IsLocalMemoryValid(local_mem_usage)) { return StatusCode::kInvalidLocalMemUsage; }
 
+  // Prints the name of the kernel to launch in case of debugging in verbose mode
+  #ifdef VERBOSE
+    queue.Finish();
+    printf("[DEBUG] Running kernel '%s'\n", kernel.GetFunctionName().c_str());
+    const auto start_time = std::chrono::steady_clock::now();
+  #endif
+
   // Launches the kernel (and checks for launch errors)
   try {
     kernel.Launch(queue, global, local, event, waitForEvents);
   } catch (...) { return StatusCode::kKernelLaunchError; }
+
+  // Prints the elapsed execution time in case of debugging in verbose mode
+  #ifdef VERBOSE
+    queue.Finish();
+    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+    const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
+    printf("[DEBUG] Completed kernel in %.2lf ms\n", timing);
+  #endif
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;

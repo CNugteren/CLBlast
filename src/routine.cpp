@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "routine.hpp"
 
@@ -103,6 +104,13 @@ StatusCode Routine::SetUp() {
   // Combines everything together into a single source string
   const auto source_string = defines + common_header + source_string_;
 
+  // Prints details of the routine to compile in case of debugging in verbose mode
+  #ifdef VERBOSE
+    printf("[DEBUG] Compiling routine '%s-%s' for device '%s'\n",
+           routine_name_.c_str(), ToString(precision_).c_str(), device_name_.c_str());
+    const auto start_time = std::chrono::steady_clock::now();
+  #endif
+
   // Compiles the kernel
   try {
     auto program = Program(context_, source_string);
@@ -122,6 +130,13 @@ StatusCode Routine::SetUp() {
     StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
     StoreProgramToCache(program, context_, precision_, routine_name_);
   } catch (...) { return StatusCode::kBuildProgramFailure; }
+
+  // Prints the elapsed compilation time in case of debugging in verbose mode
+  #ifdef VERBOSE
+    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+    const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
+    printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
+  #endif
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;

@@ -664,6 +664,16 @@ class Kernel {
     return result;
   }
 
+  // Retrieves the name of the kernel
+  std::string GetFunctionName() {
+    auto bytes = size_t{0};
+    CheckError(clGetKernelInfo(*kernel_, CL_KERNEL_FUNCTION_NAME, 0, nullptr, &bytes));
+    auto result = std::string{};
+    result.resize(bytes);
+    CheckError(clGetKernelInfo(*kernel_, CL_KERNEL_FUNCTION_NAME, bytes, &result[0], nullptr));
+    return std::string{result.c_str()}; // Removes any trailing '\0'-characters
+  }
+
   // Launches a kernel onto the specified queue
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event) {
