@@ -95,7 +95,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 # ==================================================================================================
 
 # Package scripts location
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${clblast_SOURCE_DIR}/cmake/Modules/")
 
 # Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
 find_package(OpenCL REQUIRED)
