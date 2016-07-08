@@ -4,6 +4,7 @@ Development version (next release)
 - Fixed proper MSVC dllimport and dllexport declarations
 - Fixed memory leaks related to events not being released
 - Fixed a bug with a size_t and cl_ulong mismatch on 32-bit systems
+- Fixed a bug related to the cache and retrieval of programs based on the OpenCL context
 - Added an option (-warm_up) to do a warm-up run before timing in the performance clients
 - Added tuned parameters for various devices (see README)
 

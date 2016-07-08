@@ -55,7 +55,7 @@ struct ProgramCache {
   // Finds out whether the properties match
   bool MatchInCache(const ContextPointer ref_context, const Precision &ref_precision,
                     const std::string &ref_routine) {
-    return (context_ptr == ref_context &&
+    return (*context_ptr == *ref_context &&
             precision == ref_precision &&
             routine_name_ == ref_routine);
   }

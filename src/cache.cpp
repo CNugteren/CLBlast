@@ -23,6 +23,9 @@ namespace clblast {
 // Stores the compiled binary or IR in the cache
 void StoreBinaryToCache(const std::string &binary, const std::string &device_name,
                         const Precision &precision, const std::string &routine_name) {
+  #ifdef VERBOSE
+    printf("[DEBUG] Storing binary in cache\n");
+  #endif
   binary_cache_mutex_.lock();
   binary_cache_.push_back(BinaryCache{binary, device_name, precision, routine_name});
   binary_cache_mutex_.unlock();
@@ -31,6 +34,9 @@ void StoreBinaryToCache(const std::string &binary, const std::string &device_nam
 // Stores the compiled program in the cache
 void StoreProgramToCache(const Program &program, const Context &context,
                          const Precision &precision, const std::string &routine_name) {
+  #ifdef VERBOSE
+    printf("[DEBUG] Storing program in cache\n");
+  #endif
   program_cache_mutex_.lock();
   program_cache_.push_back(ProgramCache{program, context.pointer(), precision, routine_name});
   program_cache_mutex_.unlock();
@@ -40,6 +46,9 @@ void StoreProgramToCache(const Program &program, const Context &context,
 // otherwise.
 const std::string& GetBinaryFromCache(const std::string &device_name, const Precision &precision,
                                       const std::string &routine_name) {
+  #ifdef VERBOSE
+    printf("[DEBUG] Retrieving binary from cache\n");
+  #endif
   binary_cache_mutex_.lock();
   for (auto &cached_binary: binary_cache_) {
     if (cached_binary.MatchInCache(device_name, precision, routine_name)) {
@@ -55,6 +64,9 @@ const std::string& GetBinaryFromCache(const std::string &device_name, const Prec
 // otherwise.
 const Program& GetProgramFromCache(const Context &context, const Precision &precision,
                                    const std::string &routine_name) {
+  #ifdef VERBOSE
+    printf("[DEBUG] Retrieving program from cache\n");
+  #endif
   program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
     if (cached_program.MatchInCache(context.pointer(), precision, routine_name)) {
