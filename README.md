@@ -110,11 +110,13 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
-  - Tahiti
+  - AMD Radeon R9 M370X Compute Engine
   - Hawaii
+  - Oland
   - Pitcairn
-  - Radeon R9 M370X Compute Engine
+  - Tahiti
 * Intel GPUs:
+  - HD Graphics 530
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics Skylake ULT GT2
   - Iris

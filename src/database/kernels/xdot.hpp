@@ -38,6 +38,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WGS2",32} } },
         { "Hawaii",                                          { {"WGS1",256}, {"WGS2",32} } },
+        { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",128}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
@@ -51,6 +52,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 530",                        { {"WGS1",64}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",512}, {"WGS2",64} } },
@@ -87,6 +89,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",32} } },
         { "Hawaii",                                          { {"WGS1",256}, {"WGS2",32} } },
+        { "Oland",                                           { {"WGS1",128}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
@@ -100,6 +103,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 530",                        { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",32}, {"WGS2",32} } },
@@ -136,6 +140,7 @@ const Database::DatabaseEntry Database::XdotDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",128} } },
         { "Hawaii",                                          { {"WGS1",256}, {"WGS2",32} } },
+        { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
@@ -177,6 +182,7 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",32} } },
         { "Hawaii",                                          { {"WGS1",256}, {"WGS2",32} } },
+        { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
