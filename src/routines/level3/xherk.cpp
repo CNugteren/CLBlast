@@ -98,13 +98,9 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
     auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
-    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
+    // Convert the arguments to complex versions
     auto complex_alpha = T{alpha, static_cast<U>(0.0)};
     auto complex_beta = T{beta, static_cast<U>(0.0)};
-    auto alpha_buffer = Buffer<T>(context_, 1);
-    auto beta_buffer = Buffer<T>(context_, 1);
-    alpha_buffer.Write(queue_, 1, &complex_alpha);
-    beta_buffer.Write(queue_, 1, &complex_beta);
 
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
@@ -152,8 +148,8 @@ StatusCode Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, cons
       // Sets the kernel arguments
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
-      kernel.SetArgument(2, alpha_buffer());
-      kernel.SetArgument(3, beta_buffer());
+      kernel.SetArgument(2, GetRealArg(complex_alpha));
+      kernel.SetArgument(3, GetRealArg(complex_beta));
       kernel.SetArgument(4, a_temp());
       kernel.SetArgument(5, b_temp());
       kernel.SetArgument(6, c_temp());

@@ -227,6 +227,12 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
 void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
 
+// Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
+// no conversion, but half-precision is not supported as kernel argument so it is converted to float.
+template <typename T> struct RealArg { using Type = T; };
+template <> struct RealArg<half> { using Type = float; };
+template <typename T> typename RealArg<T>::Type GetRealArg(const T value);
+
 // =================================================================================================
 
 // Rounding functions

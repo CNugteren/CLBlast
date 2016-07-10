@@ -332,6 +332,14 @@ void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_com
   result.Write(queue, size, result_cpu);
 }
 
+// Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
+// no conversion, but half-precision is not supported as kernel argument so it is converted to float.
+template <> typename RealArg<half>::Type GetRealArg(const half value) { return HalfToFloat(value); }
+template <> typename RealArg<float>::Type GetRealArg(const float value) { return value; }
+template <> typename RealArg<double>::Type GetRealArg(const double value) { return value; }
+template <> typename RealArg<float2>::Type GetRealArg(const float2 value) { return value; }
+template <> typename RealArg<double2>::Type GetRealArg(const double2 value) { return value; }
+
 // =================================================================================================
 
 // Rounding functions performing ceiling and division operations

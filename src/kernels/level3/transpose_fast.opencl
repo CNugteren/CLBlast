@@ -40,8 +40,8 @@ __attribute__((reqd_work_group_size(TRA_DIM, TRA_DIM, 1)))
 __kernel void TransposeMatrixFast(const int ld,
                                   __global const realT* restrict src,
                                   __global realT* dest,
-                                  const __constant real* restrict arg_alpha) {
-  const real alpha = arg_alpha[0];
+                                  const real_arg arg_alpha) {
+  const real alpha = GetRealArg(arg_alpha);
 
   // Sets the group identifiers. They might be 'shuffled' around to distribute work in a different
   // way over workgroups, breaking memory-bank dependencies.

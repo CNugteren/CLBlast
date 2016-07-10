@@ -39,8 +39,8 @@ __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 __kernel void CopyMatrixFast(const int ld,
                              __global const realC* restrict src,
                              __global realC* dest,
-                             const __constant real* restrict arg_alpha) {
-  const real alpha = arg_alpha[0];
+                             const real_arg arg_alpha) {
+  const real alpha = GetRealArg(arg_alpha);
   #pragma unroll
   for (int w_one=0; w_one<COPY_WPT; ++w_one) {
     const int id_one = get_global_id(0);
