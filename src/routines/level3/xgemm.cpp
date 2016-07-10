@@ -63,9 +63,12 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
                          (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
   const auto c_rotated = (layout == Layout::kRowMajor);
-  const auto a_do_transpose =  a_rotated;
-  const auto b_do_transpose = !b_rotated;
-  const auto c_do_transpose =  c_rotated;
+  static const auto a_want_rotated = false;
+  static const auto b_want_rotated = true;
+  static const auto c_want_rotated = false;
+  const auto a_do_transpose = a_rotated != a_want_rotated;
+  const auto b_do_transpose = b_rotated != b_want_rotated;
+  const auto c_do_transpose = c_rotated != c_want_rotated;
 
   // In case of complex data-types, the transpose can also become a conjugate transpose
   const auto a_conjugate = (a_transpose == Transpose::kConjugate);
@@ -99,6 +102,15 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
   const auto n_ceiled = Ceil(n, db_["NWG"]);
   const auto k_ceiled = Ceil(k, db_["KWG"]);
 
+  // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
+  // whether the matrices need to be rotated or not for the kernel.
+  const auto a_one_i = (a_want_rotated) ? k_ceiled : m_ceiled;
+  const auto a_two_i = (a_want_rotated) ? m_ceiled : k_ceiled;
+  const auto b_one_i = (b_want_rotated) ? n_ceiled : k_ceiled;
+  const auto b_two_i = (b_want_rotated) ? k_ceiled : n_ceiled;
+  const auto c_one_i = (c_want_rotated) ? n_ceiled : m_ceiled;
+  const auto c_two_i = (c_want_rotated) ? m_ceiled : n_ceiled;
+
   // The padded/transposed input/output matrices: if memory allocation fails, throw an exception
   try {
 
@@ -106,17 +118,17 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
     const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
     // Determines whether or not temporary matrices are needed
-    auto a_no_temp = a_one == m_ceiled && a_two == k_ceiled && a_ld == m_ceiled && a_offset == 0 &&
+    auto a_no_temp = a_one == a_one_i && a_two == a_two_i && a_ld == a_one && a_offset == 0 &&
                      a_do_transpose == false && a_conjugate == false;
-    auto b_no_temp = b_one == n_ceiled && b_two == k_ceiled && b_ld == n_ceiled && b_offset == 0 &&
+    auto b_no_temp = b_one == b_one_i && b_two == b_two_i && b_ld == b_one && b_offset == 0 &&
                      b_do_transpose == false && b_conjugate == false;
-    auto c_no_temp = c_one == m_ceiled && c_two == n_ceiled && c_ld == m_ceiled && c_offset == 0 &&
+    auto c_no_temp = c_one == c_one_i && c_two == c_two_i && c_ld == c_one && c_offset == 0 &&
                      c_do_transpose == false;
 
     // Creates the temporary matrices
-    const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*m_ceiled);
-    const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
-    const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, m_ceiled*n_ceiled);
+    const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i*a_two_i);
+    const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, b_one_i*b_two_i);
+    const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, c_one_i*c_two_i);
 
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
@@ -129,7 +141,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       auto eventProcessA = Event();
       status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
-                                      m_ceiled, k_ceiled, m_ceiled, 0, a_temp,
+                                      a_one_i, a_two_i, a_one_i, 0, a_temp,
                                       ConstantOne<T>(), program,
                                       true, a_do_transpose, a_conjugate);
       if (ErrorIn(status)) { return status; }
@@ -141,7 +153,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       auto eventProcessB = Event();
       status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
                                       b_one, b_two, b_ld, b_offset, b_buffer,
-                                      n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
+                                      b_one_i, b_two_i, b_one_i, 0, b_temp,
                                       ConstantOne<T>(), program,
                                       true, b_do_transpose, b_conjugate);
       if (ErrorIn(status)) { return status; }
@@ -153,7 +165,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       auto eventProcessC = Event();
       status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                                       c_one, c_two, c_ld, c_offset, c_buffer,
-                                      m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
+                                      c_one_i, c_two_i, c_one_i, 0, c_temp,
                                       ConstantOne<T>(), program,
                                       true, c_do_transpose, false);
       if (ErrorIn(status)) { return status; }
@@ -176,8 +188,8 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
 
       // Computes the global and local thread sizes
       const auto global = std::vector<size_t>{
-        (m_ceiled * db_["MDIMC"]) / db_["MWG"],
-        (n_ceiled * db_["NDIMC"]) / db_["NWG"]
+        (c_one_i * db_["MDIMC"]) / db_["MWG"],
+        (c_two_i * db_["NDIMC"]) / db_["NWG"]
       };
       const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
@@ -191,7 +203,7 @@ StatusCode Xgemm<T>::DoGemm(const Layout layout,
       if (!c_no_temp) {
         eventWaitList.push_back(eventKernel);
         status = PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
-                                        m_ceiled, n_ceiled, m_ceiled, 0, c_temp,
+                                        c_one_i, c_two_i, c_one_i, 0, c_temp,
                                         c_one, c_two, c_ld, c_offset, c_buffer,
                                         ConstantOne<T>(), program,
                                         false, c_do_transpose, false);
