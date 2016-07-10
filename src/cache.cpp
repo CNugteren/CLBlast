@@ -38,7 +38,7 @@ void StoreProgramToCache(const Program &program, const Context &context,
     printf("[DEBUG] Storing program in cache\n");
   #endif
   program_cache_mutex_.lock();
-  program_cache_.push_back(ProgramCache{program, context.pointer(), precision, routine_name});
+  program_cache_.push_back(ProgramCache{program, context(), precision, routine_name});
   program_cache_mutex_.unlock();
 }
 
@@ -69,7 +69,7 @@ const Program& GetProgramFromCache(const Context &context, const Precision &prec
   #endif
   program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(context.pointer(), precision, routine_name)) {
+    if (cached_program.MatchInCache(context(), precision, routine_name)) {
       program_cache_mutex_.unlock();
       return cached_program.program;
     }
@@ -97,7 +97,7 @@ bool ProgramIsInCache(const Context &context, const Precision &precision,
                       const std::string &routine_name) {
   program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
-    if (cached_program.MatchInCache(context.pointer(), precision, routine_name)) {
+    if (cached_program.MatchInCache(context(), precision, routine_name)) {
       program_cache_mutex_.unlock();
       return true;
     }

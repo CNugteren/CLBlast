@@ -48,14 +48,14 @@ static std::mutex binary_cache_mutex_;
 // The cache of compiled OpenCL programs, along with some meta-data
 struct ProgramCache {
   Program program;
-  ContextPointer context_ptr;
+  cl_context context;
   Precision precision;
   std::string routine_name_;
 
   // Finds out whether the properties match
-  bool MatchInCache(const ContextPointer ref_context, const Precision &ref_precision,
+  bool MatchInCache(const cl_context ref_context, const Precision &ref_precision,
                     const std::string &ref_routine) {
-    return (*context_ptr == *ref_context &&
+    return (context == ref_context &&
             precision == ref_precision &&
             routine_name_ == ref_routine);
   }
