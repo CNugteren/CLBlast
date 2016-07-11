@@ -695,21 +695,12 @@ class Kernel {
       if (waitEvent()) { waitForEventsPlain.push_back(waitEvent()); }
     }
 
-    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
-
     // Launches the kernel while waiting for other events
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
-                                      nullptr, global.data(), local.data(),
+                                      nullptr, global.data(), !local.empty() ? local.data() : nullptr,
                                       static_cast<cl_uint>(waitForEventsPlain.size()),
-                                      waitForEventsPlain.data(),
+                                      !waitForEventsPlain.empty() ? waitForEventsPlain.data() : nullptr,
                                       event));
-  }
-
-  // As above, but with the default local workgroup size
-  void Launch(const Queue &queue, const std::vector<size_t> &global, EventPointer event) {
-    CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
-                                      nullptr, global.data(), nullptr,
-                                      0, nullptr, event));
   }
 
   // Accessor to the private data-member
