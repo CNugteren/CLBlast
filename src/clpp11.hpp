@@ -689,13 +689,13 @@ class Kernel {
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
               const std::vector<Event> &waitForEvents) {
-    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
-
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
     for (auto &waitEvent : waitForEvents) {
-      waitForEventsPlain.push_back(waitEvent());
+      if (waitEvent()) { waitForEventsPlain.push_back(waitEvent()); }
     }
+
+    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
 
     // Launches the kernel while waiting for other events
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
