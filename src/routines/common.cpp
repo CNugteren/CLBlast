@@ -22,7 +22,7 @@ namespace clblast {
 // Enqueues a kernel, waits for completion, and checks for errors
 StatusCode RunKernel(Kernel &kernel, Queue &queue, const Device &device,
                      std::vector<size_t> global, const std::vector<size_t> &local,
-                     EventPointer event, std::vector<Event>& waitForEvents) {
+                     EventPointer event, const std::vector<Event> &waitForEvents) {
 
   // Tests for validity of the local thread sizes
   if (local.size() > device.MaxWorkItemDimensions()) {
