@@ -44,7 +44,7 @@ const std::vector<Database::DatabaseEntry> Database::database = {
 
 // Constructor, computing device properties and populating the parameter-vector from the database
 Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
-                   const Precision precision):
+                   const Precision precision, const std::vector<DatabaseEntry> &overlay):
   parameters_{} {
 
   // Finds information of the current device
@@ -53,10 +53,23 @@ Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
   auto device_vendor = device.Vendor();
   auto device_name = device.Name();
 
+  // Set the short vendor name
+  for (auto &combination : kVendorNames) {
+    if (device_vendor == combination.first) {
+      device_vendor = combination.second;
+    }
+  }
+
   // Iterates over all kernels to include, and retrieves the parameters for each of them
   for (auto &kernel: kernels) {
-    auto search_result = Search(kernel, device_type, device_vendor, device_name, precision);
-    parameters_.insert(search_result.begin(), search_result.end());
+    auto search_result = ParametersPtr{};
+
+    for (auto db: { &overlay, &database }) {
+      search_result = Search(kernel, device_type, device_vendor, device_name, precision, *db);
+      if (search_result) { parameters_.insert(search_result->begin(), search_result->end()); break; }
+    }
+
+    if (!search_result) { throw std::runtime_error("Database error, could not find a suitable entry"); }
   }
 }
 
@@ -74,27 +87,21 @@ std::string Database::GetDefines() const {
 // =================================================================================================
 
 // Searches the database for the right kernel and precision
-Database::Parameters Database::Search(const std::string &this_kernel,
-                                      const std::string &this_type,
-                                      const std::string &this_vendor,
-                                      const std::string &this_device,
-                                      const Precision this_precision) const {
-  // Set the short vendor name
-  auto this_short_vendor = this_vendor;
-  for (auto &combination : kVendorNames) {
-    if (this_vendor == combination.first) {
-      this_short_vendor = combination.second;
-    }
-  }
+Database::ParametersPtr Database::Search(const std::string &this_kernel,
+                                         const std::string &this_type,
+                                         const std::string &this_vendor,
+                                         const std::string &this_device,
+                                         const Precision this_precision,
+                                         const std::vector<DatabaseEntry> &this_database) const {
 
   // Selects the right kernel
-  for (auto &db: database) {
+  for (auto &db: this_database) {
     if (db.kernel == this_kernel && db.precision == this_precision) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.
       for (auto &vendor: db.vendors) {
-        if ((vendor.name == this_short_vendor || vendor.name == kDeviceVendorAll) &&
+        if ((vendor.name == this_vendor || vendor.name == kDeviceVendorAll) &&
             (vendor.type == this_type || vendor.type == kDeviceTypeAll)) {
 
           // Searches for the right device. If the current device is unavailable, selects the vendor
@@ -104,7 +111,7 @@ Database::Parameters Database::Search(const std::string &this_kernel,
             if (device.name == this_device || device.name == "default") {
 
               // Sets the parameters accordingly
-              return device.parameters;
+              return &device.parameters;
             }
           }
         }
@@ -113,7 +120,7 @@ Database::Parameters Database::Search(const std::string &this_kernel,
   }
 
   // If we reached this point, something is wrong
-  throw std::runtime_error("Database error, could not find a suitable entry");
+  return nullptr;
 }
 
 // =================================================================================================
