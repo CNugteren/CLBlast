@@ -119,7 +119,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     // case nothing has to be done, these kernels can be skipped.
     if (!a1_no_temp) {
       auto eventProcessA1 = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessA1.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA1.pointer(), emptyEventList,
                                       ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a1_temp,
                                       ConstantOne<T>(), program,
@@ -129,7 +129,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     }
     if (!a2_no_temp) {
       auto eventProcessA2 = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessA2.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA2.pointer(), emptyEventList,
                                       ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a2_temp,
                                       ConstantOne<T>(), program,
@@ -139,7 +139,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     }
     if (!b1_no_temp) {
       auto eventProcessB1 = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessB1.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB1.pointer(), emptyEventList,
                                       ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b1_temp,
                                       ConstantOne<T>(), program,
@@ -149,7 +149,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     }
     if (!b2_no_temp) {
       auto eventProcessB2 = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessB2.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB2.pointer(), emptyEventList,
                                       ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b2_temp,
                                       ConstantOne<T>(), program,
@@ -161,7 +161,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     auto eventProcessC = Event();
-    status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessC.pointer(), emptyEventList,
+    status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     ConstantOne<T>(), program,
@@ -212,7 +212,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, eventWaitList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       ConstantOne<T>(), program,

@@ -99,7 +99,7 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     // case nothing has to be done, these kernels can be skipped.
     if (!a_no_temp) {
       auto eventProcessA = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessA.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                                       a_one, a_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
                                       ConstantOne<T>(), program,
@@ -111,7 +111,7 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     auto eventProcessC = Event();
-    status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessC.pointer(), emptyEventList,
+    status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     ConstantOne<T>(), program,
@@ -148,7 +148,7 @@ StatusCode Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const 
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, eventWaitList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       ConstantOne<T>(), program,
