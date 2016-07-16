@@ -194,7 +194,7 @@ class Device {
   }
   size_t MaxWorkGroupSize() const { return GetInfo<size_t>(CL_DEVICE_MAX_WORK_GROUP_SIZE); }
   size_t MaxWorkItemDimensions() const {
-    return GetInfo<cl_uint>(CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS);
+    return static_cast<size_t>(GetInfo<cl_uint>(CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS));
   }
   std::vector<size_t> MaxWorkItemSizes() const {
     return GetInfoVector<size_t>(CL_DEVICE_MAX_WORK_ITEM_SIZES);
@@ -203,10 +203,18 @@ class Device {
     return GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE);
   }
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
-  size_t CoreClock() const { return GetInfo(CL_DEVICE_MAX_CLOCK_FREQUENCY); }
-  size_t ComputeUnits() const { return GetInfo(CL_DEVICE_MAX_COMPUTE_UNITS); }
-  size_t MemorySize() const { return GetInfo<cl_ulong>(CL_DEVICE_GLOBAL_MEM_SIZE); }
-  size_t MaxAllocSize() const { return GetInfo<cl_ulong>(CL_DEVICE_MAX_MEM_ALLOC_SIZE); }
+  size_t CoreClock() const {
+    return static_cast<size_t>(GetInfo<cl_uint>(CL_DEVICE_MAX_CLOCK_FREQUENCY));
+  }
+  size_t ComputeUnits() const {
+    return static_cast<size_t>(GetInfo<cl_uint>(CL_DEVICE_MAX_COMPUTE_UNITS));
+  }
+  unsigned long MemorySize() const {
+    return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_GLOBAL_MEM_SIZE));
+  }
+  unsigned long MaxAllocSize() const {
+    return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_MAX_MEM_ALLOC_SIZE));
+  }
   size_t MemoryClock() const { return 0; } // Not exposed in OpenCL
   size_t MemoryBusWidth() const { return 0; } // Not exposed in OpenCL
 
@@ -246,13 +254,6 @@ class Device {
     auto result = T(0);
     CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
     return result;
-  }
-  size_t GetInfo(const cl_device_info info) const {
-    auto bytes = size_t{0};
-    CheckError(clGetDeviceInfo(device_, info, 0, nullptr, &bytes));
-    auto result = cl_ulong(0);
-    CheckError(clGetDeviceInfo(device_, info, bytes, &result, nullptr));
-    return static_cast<size_t>(result);
   }
   template <typename T>
   std::vector<T> GetInfoVector(const cl_device_info info) const {
