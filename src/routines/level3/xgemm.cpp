@@ -284,10 +284,13 @@ StatusCode Xgemm<T>::GemmDirect(const size_t m, const size_t n, const size_t k,
     kernel.SetArgument(18, static_cast<int>(b_conjugate));
 
     // Computes the global and local thread sizes
-    const auto m_ceiled = Ceil(m, 16);
-    const auto n_ceiled = Ceil(n, 16);
-    const auto global = std::vector<size_t>{m_ceiled, n_ceiled};
-    const auto local = std::vector<size_t>{16, 16};
+    const auto m_ceiled = Ceil(m, db_["MWG"]);
+    const auto n_ceiled = Ceil(n, db_["NWG"]);
+    const auto global = std::vector<size_t>{
+      (m_ceiled * db_["MDIMC"]) / db_["MWG"],
+      (n_ceiled * db_["NDIMC"]) / db_["NWG"]
+    };
+    const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
     // Launches the kernel
     auto status = RunKernel(kernel, queue_, device_, global, local, event_);
