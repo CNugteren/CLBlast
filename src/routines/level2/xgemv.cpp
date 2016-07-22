@@ -126,12 +126,6 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     local_size = db_["WGS3"];
   }
 
-  // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
-  auto alpha_buffer = Buffer<T>(context_, 1);
-  auto beta_buffer = Buffer<T>(context_, 1);
-  alpha_buffer.Write(queue_, 1, &alpha);
-  beta_buffer.Write(queue_, 1, &beta);
-
   // Retrieves the Xgemv kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
@@ -140,8 +134,8 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(m_real));
     kernel.SetArgument(1, static_cast<int>(n_real));
-    kernel.SetArgument(2, alpha_buffer());
-    kernel.SetArgument(3, beta_buffer());
+    kernel.SetArgument(2, GetRealArg(alpha));
+    kernel.SetArgument(3, GetRealArg(beta));
     kernel.SetArgument(4, static_cast<int>(a_rotated));
     kernel.SetArgument(5, a_buffer());
     kernel.SetArgument(6, static_cast<int>(a_offset));

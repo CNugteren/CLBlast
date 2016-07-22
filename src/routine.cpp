@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "routine.hpp"
 
@@ -21,7 +22,8 @@ namespace clblast {
 
 // Constructor: not much here, because no status codes can be returned
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
-                 const std::vector<std::string> &routines, const Precision precision):
+                 const std::vector<std::string> &routines, const Precision precision,
+                 const std::vector<Database::DatabaseEntry> &userDatabase):
     precision_(precision),
     routine_name_(name),
     queue_(queue),
@@ -29,7 +31,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
     device_name_(device_.Name()),
-    db_(queue_, routines, precision_) {
+    db_(queue_, routines, precision_, userDatabase) {
 }
 
 // =================================================================================================
@@ -103,6 +105,13 @@ StatusCode Routine::SetUp() {
   // Combines everything together into a single source string
   const auto source_string = defines + common_header + source_string_;
 
+  // Prints details of the routine to compile in case of debugging in verbose mode
+  #ifdef VERBOSE
+    printf("[DEBUG] Compiling routine '%s-%s' for device '%s'\n",
+           routine_name_.c_str(), ToString(precision_).c_str(), device_name_.c_str());
+    const auto start_time = std::chrono::steady_clock::now();
+  #endif
+
   // Compiles the kernel
   try {
     auto program = Program(context_, source_string);
@@ -122,6 +131,13 @@ StatusCode Routine::SetUp() {
     StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
     StoreProgramToCache(program, context_, precision_, routine_name_);
   } catch (...) { return StatusCode::kBuildProgramFailure; }
+
+  // Prints the elapsed compilation time in case of debugging in verbose mode
+  #ifdef VERBOSE
+    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+    const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
+    printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
+  #endif
 
   // No errors, normal termination of this function
   return StatusCode::kSuccess;

@@ -82,6 +82,9 @@ class Client {
   const std::vector<std::string> options_;
   const GetMetric get_flops_;
   const GetMetric get_bytes_;
+
+  // Extra arguments
+  bool warm_up_; // if enabled, do a warm-up run first before measuring execution time
 };
 
 // =================================================================================================

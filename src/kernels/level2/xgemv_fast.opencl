@@ -96,16 +96,16 @@ inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x,
 // --> 'do_conjugate' is 0
 __attribute__((reqd_work_group_size(WGS2, 1, 1)))
 __kernel void XgemvFast(const int m, const int n,
-                        const __constant real* restrict arg_alpha,
-                        const __constant real* restrict arg_beta,
+                        const real_arg arg_alpha,
+                        const real_arg arg_beta,
                         const int a_rotated,
                         const __global realVF* restrict agm, const int a_offset, const int a_ld,
                         const __global real* restrict xgm, const int x_offset, const int x_inc,
                         __global real* ygm, const int y_offset, const int y_inc,
                         const int do_conjugate, const int parameter,
                         const int kl, const int ku) {
-  const real alpha = arg_alpha[0];
-  const real beta = arg_beta[0];
+  const real alpha = GetRealArg(arg_alpha);
+  const real beta = GetRealArg(arg_beta);
 
   // Local memory for the vector X
   __local real xlm[WGS2];
@@ -198,16 +198,16 @@ __kernel void XgemvFast(const int m, const int n,
 // --> 'do_conjugate' is 0
 __attribute__((reqd_work_group_size(WGS3, 1, 1)))
 __kernel void XgemvFastRot(const int m, const int n,
-                           const __constant real* restrict arg_alpha,
-                           const __constant real* restrict arg_beta,
+                           const real_arg arg_alpha,
+                           const real_arg arg_beta,
                            const int a_rotated,
                            const __global realVFR* restrict agm, const int a_offset, const int a_ld,
                            const __global real* restrict xgm, const int x_offset, const int x_inc,
                            __global real* ygm, const int y_offset, const int y_inc,
                            const int do_conjugate, const int parameter,
                            const int kl, const int ku) {
-  const real alpha = arg_alpha[0];
-  const real beta = arg_beta[0];
+  const real alpha = GetRealArg(arg_alpha);
+  const real beta = GetRealArg(arg_beta);
 
   // Local memory for the vector X
   __local real xlm[WGS3];

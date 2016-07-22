@@ -22,6 +22,7 @@ except ImportError:
 
 # Additional modules
 import pandas as pd
+print("## Using pandas version "+pd.__version__+", requires at least 0.17.0")
 
 # Server storing a copy of the database
 DATABASE_SERVER_URL = "http://www.cedricnugteren.nl/tuning/clblast.db"

@@ -9,7 +9,7 @@
 #
 # ==================================================================================================
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.11)
 
 # Overrides for MSVC static runtime
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/c_flag_overrides.cmake)
@@ -26,6 +26,13 @@ option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
+
+# Compile in verbose mode with additional diagnostic messages
+option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
+if(VERBOSE)
+  message("-- Building in verbose mode")
+  add_definitions(-DVERBOSE)
+endif()
 
 # ==================================================================================================
 
@@ -88,7 +95,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 # ==================================================================================================
 
 # Package scripts location
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${clblast_SOURCE_DIR}/cmake/Modules/")
 
 # Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
 find_package(OpenCL REQUIRED)
@@ -166,6 +173,11 @@ endforeach()
 add_library(clblast SHARED ${SOURCES})
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
+# Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
+if(MSVC)
+  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+endif()
+
 # Installs the library
 install(TARGETS clblast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
@@ -216,9 +228,15 @@ if(TUNERS)
   # Includes CLTune
   include_directories(${CLTUNE_INCLUDE_DIRS})
 
+  # Visual Studio requires the sources of non-exported objects/libraries
+  set(TUNERS_COMMON )
+  if(MSVC)
+    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities.cpp)
+  endif()
+
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} src/tuning/kernels/${KERNEL}.cpp)
+    add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()

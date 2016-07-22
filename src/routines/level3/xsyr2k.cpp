@@ -97,12 +97,6 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
     auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
-    // Upload the scalar arguments as constant buffers to the device (needed for half-precision)
-    auto alpha_buffer = Buffer<T>(context_, 1);
-    auto beta_buffer = Buffer<T>(context_, 1);
-    alpha_buffer.Write(queue_, 1, &alpha);
-    beta_buffer.Write(queue_, 1, &beta);
-
     // Events of all kernels (including pre/post processing kernels)
     auto eventWaitList = std::vector<Event>();
     auto emptyEventList = std::vector<Event>();
@@ -112,7 +106,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     // case nothing has to be done, these kernels can be skipped.
     if (!a_no_temp) {
       auto eventProcessA = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessA.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                                       ab_one, ab_two, a_ld, a_offset, a_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
                                       ConstantOne<T>(), program,
@@ -122,7 +116,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     }
     if (!b_no_temp) {
       auto eventProcessB = Event();
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessB.pointer(), emptyEventList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
                                       ab_one, ab_two, b_ld, b_offset, b_buffer,
                                       n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
                                       ConstantOne<T>(), program,
@@ -134,7 +128,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
     // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
     // modify the other triangle.
     auto eventProcessC = Event();
-    status = PadCopyTransposeMatrix(queue_, device_, context_, db_, eventProcessC.pointer(), emptyEventList,
+    status = PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                                     n, n, c_ld, c_offset, c_buffer,
                                     n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                     ConstantOne<T>(), program,
@@ -149,8 +143,8 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       // Sets the kernel arguments
       kernel.SetArgument(0, static_cast<int>(n_ceiled));
       kernel.SetArgument(1, static_cast<int>(k_ceiled));
-      kernel.SetArgument(2, alpha_buffer());
-      kernel.SetArgument(3, beta_buffer());
+      kernel.SetArgument(2, GetRealArg(alpha));
+      kernel.SetArgument(3, GetRealArg(beta));
       kernel.SetArgument(4, a_temp());
       kernel.SetArgument(5, b_temp());
       kernel.SetArgument(6, c_temp());
@@ -170,8 +164,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
 
       // Swaps the arguments for matrices A and B, and sets 'beta' to 1
       auto one = static_cast<T>(1);
-      beta_buffer.Write(queue_, 1, &one);
-      kernel.SetArgument(3, beta_buffer());
+      kernel.SetArgument(3, GetRealArg(one));
       kernel.SetArgument(4, b_temp());
       kernel.SetArgument(5, a_temp());
 
@@ -184,7 +177,7 @@ StatusCode Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, cons
       // Runs the post-processing kernel
       auto upper = (triangle == Triangle::kUpper);
       auto lower = (triangle == Triangle::kLower);
-      status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, eventWaitList,
+      status = PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                                       n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                                       n, n, c_ld, c_offset, c_buffer,
                                       ConstantOne<T>(), program,

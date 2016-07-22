@@ -86,11 +86,10 @@ class TuneCopy {
                            std::vector<T> &, std::vector<T> &,
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentOutput(b_mat);
-    tuner.AddArgumentInput(alpha_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
   }
 
   // Describes how to compute the performance metrics

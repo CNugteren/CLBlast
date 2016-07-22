@@ -121,13 +121,11 @@ class TuneXgemm {
                            std::vector<T> &, std::vector<T> &,
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &c_mat,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
-    auto beta_buffer = std::vector<T>{args.beta};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
     tuner.AddArgumentScalar(static_cast<int>(args.k));
-    tuner.AddArgumentInput(alpha_buffer);
-    tuner.AddArgumentInput(beta_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
+    tuner.AddArgumentScalar(GetRealArg(args.beta));
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentInput(b_mat);
     tuner.AddArgumentOutput(c_mat);

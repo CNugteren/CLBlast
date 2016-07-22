@@ -58,10 +58,6 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
   status = TestVectorY(n, y_buffer, y_offset, y_inc);
   if (ErrorIn(status)) { return status; }
 
-  // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
-  auto alpha_buffer = Buffer<T>(context_, 1);
-  alpha_buffer.Write(queue_, 1, &alpha);
-
   // Retrieves the kernel from the compiled binary
   try {
     const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
@@ -69,7 +65,7 @@ StatusCode Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
 
     // Sets the kernel arguments
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, alpha_buffer());
+    kernel.SetArgument(1, GetRealArg(alpha));
     kernel.SetArgument(2, x_buffer());
     kernel.SetArgument(3, static_cast<int>(x_offset));
     kernel.SetArgument(4, static_cast<int>(x_inc));

@@ -99,19 +99,24 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
 * NVIDIA GPUs:
   - GRID K520
   - GeForce GTX 480
+  - GeForce GTX 670
   - GeForce GTX 680
+  - GeForce GTX 750
   - GeForce GTX 750 Ti
   - GeForce GTX 980
+  - GeForce GTX 1070
   - GeForce GTX Titan
   - GeForce GTX Titan X
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
-  - Tahiti
+  - AMD Radeon R9 M370X Compute Engine
   - Hawaii
+  - Oland
   - Pitcairn
-  - Radeon R9 M370X Compute Engine
+  - Tahiti
 * Intel GPUs:
+  - HD Graphics 530
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics Skylake ULT GT2
   - Iris
@@ -179,6 +184,8 @@ The folder `doc/performance` contains some PDF files with performance results on
     Rscript ../scripts/graphs/xgemm.r 0 1
 
 Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
+
+In case performance is still sub-optimal or something else is wrong, CLBlast can be build in verbose mode for (performance) debugging by specifying `-DVERBOSE=ON` to CMake.
 
 
 Supported routines
@@ -278,6 +285,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](https://github.com/gpus)
 * [Hugh Perkins](https://github.com/hughperkins)
+* [Gian-Carlo Pascutto](https://github.com/gcp)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 

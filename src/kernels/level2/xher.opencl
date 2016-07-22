@@ -20,11 +20,11 @@ R"(
 // Symmetric version of the rank-1 matrix update kernel (HER, HPR, SYR, SPR)
 __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
 __kernel void Xher(const int n,
-                   const __constant real* restrict arg_alpha,
+                   const real_arg arg_alpha,
                    const __global real* restrict xgm, const int x_offset, const int x_inc,
                    __global real* restrict agm, const int a_offset, const int a_ld,
                    const int is_upper, const int is_rowmajor) {
-  const real alpha = arg_alpha[0];
+  const real alpha = GetRealArg(arg_alpha);
 
   // Register storage for X and XT
   real xvalues[WPT];

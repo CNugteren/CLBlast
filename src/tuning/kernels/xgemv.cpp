@@ -96,13 +96,11 @@ class TuneXgemv {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
-    auto beta_buffer = std::vector<T>{args.beta};
     auto a_rotated = (V==3) ? 1 : 0;
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentInput(alpha_buffer);
-    tuner.AddArgumentInput(beta_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
+    tuner.AddArgumentScalar(GetRealArg(args.beta));
     tuner.AddArgumentScalar(static_cast<int>(a_rotated));
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentScalar(0);

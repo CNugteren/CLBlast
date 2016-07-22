@@ -16,7 +16,6 @@
 #include <string>
 
 #include "clblast.h"
-#include "public_api.hpp"
 #include "cache.hpp"
 
 // BLAS level-1 includes
