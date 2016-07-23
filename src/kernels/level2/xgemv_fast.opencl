@@ -97,7 +97,7 @@ __kernel void XgemvFast(const int m, const int n,
                         const __global real* restrict xgm, const int x_offset, const int x_inc,
                         __global real* ygm, const int y_offset, const int y_inc,
                         const int do_conjugate, const int parameter,
-                        const int kl, const int ku) {
+                        const int kl_unused, const int ku_unused) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -199,7 +199,7 @@ __kernel void XgemvFastRot(const int m, const int n,
                            const __global real* restrict xgm, const int x_offset, const int x_inc,
                            __global real* ygm, const int y_offset, const int y_inc,
                            const int do_conjugate, const int parameter,
-                           const int kl, const int ku) {
+                           const int kl_unused, const int ku_unused) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -216,11 +216,13 @@ __kernel void XgemvFastRot(const int m, const int n,
   real acc;
   SetToZero(acc);
 
-  // Loops over work-group sized portions of the work
+  // Loops over tile-sized portions of the work
   for (int kwg=0; kwg<n; kwg+=WPT3) {
 
     // Loads the vector X into local memory
-    xlm[lid] = xgm[(kwg + lid) * x_inc + x_offset];
+    if (lid < WPT3) {
+      xlm[lid] = xgm[(kwg + lid) * x_inc + x_offset];
+    }
 
     // Loads the matrix A into local memory
     #pragma unroll

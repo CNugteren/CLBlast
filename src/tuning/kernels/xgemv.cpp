@@ -61,10 +61,20 @@ class TuneXgemv {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128});
-    if (V==1 || V==2) { tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4}); }
-    else { tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32}); }
-    if (V==2 || V==3) { tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8}); }
+    if (V==1) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {32, 64, 128, 256});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
+    }
+    if (V==2) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128, 256});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
+      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
+    }
+    if (V==3) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32});
+      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
+    }
   }
 
   // Sets the constraints and local memory size

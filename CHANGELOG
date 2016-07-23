@@ -7,6 +7,7 @@ Development version (next release)
 - Fixed a bug related to the cache and retrieval of programs based on the OpenCL context
 - Fixed a performance issue (caused by fp16 support) by optimizing alpha/beta parameter passing to kernels
 - Added an option (-warm_up) to do a warm-up run before timing in the performance clients
+- Improved performance significantly of rotated GEMV computations
 - Added tuned parameters for various devices (see README)
 
 Version 0.8.0
