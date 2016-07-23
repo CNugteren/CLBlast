@@ -122,7 +122,7 @@ StatusCode Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   }
   if (fast_kernel_rot) {
     kernel_name = "XgemvFastRot";
-    global_size = m_real / db_["WPT3"];
+    global_size = m_real;
     local_size = db_["WGS3"];
   }
 

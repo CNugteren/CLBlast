@@ -36,7 +36,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
   "Xgemv", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
+        { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",128}, {"WPT2",1}, {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
         { "Oland",                                           { {"WGS1",128}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",4}, {"WGS3",256}, {"WPT3",4} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1}, {"VW2",1}, {"WGS2",64}, {"WPT2",1}, {"VW3",1}, {"WGS3",64}, {"WPT3",1} } },
