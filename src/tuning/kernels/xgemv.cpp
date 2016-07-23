@@ -61,7 +61,7 @@ class TuneXgemv {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "WGS"+std::to_string(V), {32, 64, 128, 256});
+    tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128});
     if (V==1 || V==2) { tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4}); }
     else { tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32}); }
     if (V==2 || V==3) { tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8}); }
@@ -69,9 +69,13 @@ class TuneXgemv {
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
-    auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
     if (V==2 || V==3) {
+      auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
       tuner.AddConstraint(id, MultipleOfX, {"WPT"+std::to_string(V), "VW"+std::to_string(V)});
+    }
+    if (V==3) {
+      auto LargerOrEqual = [] (std::vector<size_t> v) { return v[0] >= v[1]; };
+      tuner.AddConstraint(id, LargerOrEqual, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
     }
   }
   static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
