@@ -127,11 +127,6 @@ endif()
 
 # ==================================================================================================
 
-# Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
-
-# ==================================================================================================
-
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger xgemm xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
@@ -173,16 +168,26 @@ endforeach()
 add_library(clblast SHARED ${SOURCES})
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
+# Includes directories: CLBlast and OpenCL
+target_include_directories(clblast PUBLIC
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
+                           $<INSTALL_INTERFACE:include>
+                           ${OPENCL_INCLUDE_DIRS})
+
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
   target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
 endif()
 
 # Installs the library
-install(TARGETS clblast DESTINATION lib)
+install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+
+# Installs the config for find_package in dependent projects
+install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # ==================================================================================================
 
@@ -194,6 +199,11 @@ endif()
 if(DEFINED ENV{DEFAULT_PLATFORM})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{DEFAULT_PLATFORM})
 endif()
+
+# ==================================================================================================
+
+# Includes directories: CLBlast and OpenCL
+include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
 
 # ==================================================================================================
 
