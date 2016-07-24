@@ -22,7 +22,8 @@ namespace clblast {
 
 // Constructor: not much here, because no status codes can be returned
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
-                 const std::vector<std::string> &routines, const Precision precision):
+                 const std::vector<std::string> &routines, const Precision precision,
+                 const std::vector<Database::DatabaseEntry> &userDatabase):
     precision_(precision),
     routine_name_(name),
     queue_(queue),
@@ -30,7 +31,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
     device_name_(device_.Name()),
-    db_(queue_, routines, precision_) {
+    db_(queue_, routines, precision_, userDatabase) {
 }
 
 // =================================================================================================
