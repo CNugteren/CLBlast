@@ -79,7 +79,7 @@ class Database {
   static const DatabaseEntry PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble;
   static const std::vector<DatabaseEntry> database;
 
-  // The constructor with a user-provided database overlay
+  // The constructor with a user-provided database overlay (potentially an empty vector)
   explicit Database(const Queue &queue, const std::vector<std::string> &routines,
                     const Precision precision, const std::vector<DatabaseEntry> &overlay);
 
@@ -90,11 +90,7 @@ class Database {
   std::string GetDefines() const;
 
  private:
-  Parameters Search(const std::string &this_kernel, const std::string &this_type,
-                    const std::string &this_vendor, const std::string &this_device,
-                    const Precision this_precision) const;
-
-  // Alternate search method in a specified database, returning pointer (possibly NULL)
+  // Search method for a specified database, returning pointer (possibly a nullptr)
   ParametersPtr Search(const std::string &this_kernel, const std::string &this_type,
                        const std::string &this_vendor, const std::string &this_device,
                        const Precision this_precision, const std::vector<DatabaseEntry> &db) const;

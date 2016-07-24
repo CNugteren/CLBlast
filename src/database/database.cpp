@@ -42,7 +42,8 @@ const std::vector<Database::DatabaseEntry> Database::database = {
 
 // =================================================================================================
 
-// Constructor, computing device properties and populating the parameter-vector from the database
+// Constructor, computing device properties and populating the parameter-vector from the database.
+// This takes an optional overlay database in case of custom tuning or custom kernels.
 Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
                    const Precision precision, const std::vector<DatabaseEntry> &overlay):
   parameters_{} {
@@ -66,7 +67,10 @@ Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
 
     for (auto db: { &overlay, &database }) {
       search_result = Search(kernel, device_type, device_vendor, device_name, precision, *db);
-      if (search_result) { parameters_.insert(search_result->begin(), search_result->end()); break; }
+      if (search_result) {
+        parameters_.insert(search_result->begin(), search_result->end());
+        break;
+      }
     }
 
     if (!search_result) { throw std::runtime_error("Database error, could not find a suitable entry"); }
@@ -86,7 +90,7 @@ std::string Database::GetDefines() const {
 
 // =================================================================================================
 
-// Searches the database for the right kernel and precision
+// Searches a particular database for the right kernel and precision
 Database::ParametersPtr Database::Search(const std::string &this_kernel,
                                          const std::string &this_type,
                                          const std::string &this_vendor,
@@ -119,7 +123,7 @@ Database::ParametersPtr Database::Search(const std::string &this_kernel,
     }
   }
 
-  // If we reached this point, something is wrong
+  // If we reached this point, the entry was not found in this database
   return nullptr;
 }
 
