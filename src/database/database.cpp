@@ -35,7 +35,7 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XdotHalf, XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvHalf, XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
   XgemvFastHalf, XgemvFastSingle, XgemvFastDouble, XgemvFastComplexSingle, XgemvFastComplexDouble,
-  XgemvFastRotHalf, XgemvFastRotSingle, XgemvFastRotDouble, XgemvFastRotComplexSingle, XgemvFastRotComplexDouble,
+  /* XgemvFastRotHalf, */ XgemvFastRotSingle, XgemvFastRotDouble, XgemvFastRotComplexSingle, XgemvFastRotComplexDouble,
   XgerHalf, XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   /* XgemmHalf, */ XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
