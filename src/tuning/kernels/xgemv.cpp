@@ -29,7 +29,7 @@ class TuneXgemv {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return "xgemv_"+std::to_string(V); }
+  static std::string KernelFamily() { return (V==1) ? "xgemv" : ((V==2) ? "xgemv_fast" : "xgemv_fast_rot"); }
   static std::string KernelName() { return (V==1) ? "Xgemv" : ((V==2) ? "XgemvFast" : "XgemvFastRot"); }
   static std::string GetSources() {
     return
