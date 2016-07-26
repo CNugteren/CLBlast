@@ -109,7 +109,9 @@ class Event {
 
   // Accessor to the private data-member
   cl_event& operator()() { return *event_; }
+  const cl_event& operator()() const { return *event_; }
   cl_event* pointer() { return &(*event_); }
+  const cl_event* pointer() const { return &(*event_); }
  private:
   std::shared_ptr<cl_event> event_;
 };
@@ -686,28 +688,19 @@ class Kernel {
   // As above, but with an event waiting list
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
-              std::vector<Event>& waitForEvents) {
-    if (waitForEvents.size() == 0) { return Launch(queue, global, local, event); }
-
+              const std::vector<Event> &waitForEvents) {
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
     for (auto &waitEvent : waitForEvents) {
-      waitForEventsPlain.push_back(waitEvent());
+      if (waitEvent()) { waitForEventsPlain.push_back(waitEvent()); }
     }
 
     // Launches the kernel while waiting for other events
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
-                                      nullptr, global.data(), local.data(),
+                                      nullptr, global.data(), !local.empty() ? local.data() : nullptr,
                                       static_cast<cl_uint>(waitForEventsPlain.size()),
-                                      waitForEventsPlain.data(),
+                                      !waitForEventsPlain.empty() ? waitForEventsPlain.data() : nullptr,
                                       event));
-  }
-
-  // As above, but with the default local workgroup size
-  void Launch(const Queue &queue, const std::vector<size_t> &global, EventPointer event) {
-    CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
-                                      nullptr, global.data(), nullptr,
-                                      0, nullptr, event));
   }
 
   // Accessor to the private data-member

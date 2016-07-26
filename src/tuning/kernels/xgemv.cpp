@@ -29,7 +29,7 @@ class TuneXgemv {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return "xgemv_"+std::to_string(V); }
+  static std::string KernelFamily() { return (V==1) ? "xgemv" : ((V==2) ? "xgemv_fast" : "xgemv_fast_rot"); }
   static std::string KernelName() { return (V==1) ? "Xgemv" : ((V==2) ? "XgemvFast" : "XgemvFastRot"); }
   static std::string GetSources() {
     return
@@ -61,21 +61,42 @@ class TuneXgemv {
 
   // Sets the tuning parameters and their possible values
   static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "WGS"+std::to_string(V), {64, 128, 256});
-    tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
-    if (V==2 || V==3) { tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8}); }
+    if (V==1) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {32, 64, 128, 256});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
+    }
+    if (V==2) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128, 256});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
+      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
+    }
+    if (V==3) {
+      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128});
+      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32});
+      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
+    }
   }
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
-    auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
     if (V==2 || V==3) {
+      auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
       tuner.AddConstraint(id, MultipleOfX, {"WPT"+std::to_string(V), "VW"+std::to_string(V)});
+    }
+    if (V==3) {
+      auto LargerOrEqual = [] (std::vector<size_t> v) { return v[0] >= v[1]; };
+      tuner.AddConstraint(id, LargerOrEqual, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
     }
   }
   static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    auto LocalMemorySize = [args] (std::vector<size_t> v) { return v[0]*GetBytes(args.precision); };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V)});
+    if (V==1 || V==2) {
+      auto LocalMemorySize = [args] (std::vector<size_t> v) { return v[0]*GetBytes(args.precision); };
+      tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V)});
+    }
+    else {
+      auto LocalMemorySize = [args] (std::vector<size_t> v) { return (v[0]*v[1] + v[1])*GetBytes(args.precision); };
+      tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
+    }
   }
 
   // Sets the base thread configuration
@@ -89,7 +110,10 @@ class TuneXgemv {
   static TransformVector MulLocal() { return {{"WGS"+std::to_string(V)}}; }
   static TransformVector DivLocal() { return {}; }
   static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() { return {{"WPT"+std::to_string(V)}}; }
+  static TransformVector DivGlobal() {
+    if (V==1 || V==2) return {{"WPT"+std::to_string(V)}};
+    return {};
+  }
 
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
