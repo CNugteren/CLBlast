@@ -64,8 +64,9 @@ def get_cpp_footer():
 def get_cpp_precision(family, precision):
     """Retrieves the C++ code for the start of a new precision"""
     precision_string = precision_to_string(precision)
+    camelcase_name = family.title().replace("_", "")
     return("\n\nconst Database::DatabaseEntry Database::%s%s = {\n  \"%s\", Precision::k%s, {\n"
-           % (family.title(), precision_string, family.title(), precision_string))
+           % (camelcase_name, precision_string, camelcase_name, precision_string))
 
 
 def get_cpp_device_vendor(vendor, device_type):

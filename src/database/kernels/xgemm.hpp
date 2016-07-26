@@ -14,18 +14,6 @@
 namespace clblast {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmHalf = {
-  "Xgemm", Precision::kHalf, {
-    { // Default
-      kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
-      }
-    },
-  }
-};
-
-// =================================================================================================
-
 const Database::DatabaseEntry Database::XgemmSingle = {
   "Xgemm", Precision::kSingle, {
     { // AMD GPUs

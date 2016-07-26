@@ -17,6 +17,8 @@
 #include "database/kernels/xaxpy.hpp"
 #include "database/kernels/xdot.hpp"
 #include "database/kernels/xgemv.hpp"
+#include "database/kernels/xgemv_fast.hpp"
+#include "database/kernels/xgemv_fast_rot.hpp"
 #include "database/kernels/xger.hpp"
 #include "database/kernels/xgemm.hpp"
 #include "database/kernels/copy.hpp"
@@ -32,8 +34,10 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XaxpyHalf, XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble,
   XdotHalf, XdotSingle, XdotDouble, XdotComplexSingle, XdotComplexDouble,
   XgemvHalf, XgemvSingle, XgemvDouble, XgemvComplexSingle, XgemvComplexDouble,
+  XgemvFastHalf, XgemvFastSingle, XgemvFastDouble, XgemvFastComplexSingle, XgemvFastComplexDouble,
+  /* XgemvFastRotHalf, */ XgemvFastRotSingle, XgemvFastRotDouble, XgemvFastRotComplexSingle, XgemvFastRotComplexDouble,
   XgerHalf, XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
-  XgemmHalf, XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
+  /* XgemmHalf, */ XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
   TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
