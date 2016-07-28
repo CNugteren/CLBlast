@@ -230,8 +230,6 @@ endif()
 # the CLTune library (not included as part of the source).
 if(TUNERS)
 
-  # Includes CLTune
-
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TUNERS_COMMON )
   if(MSVC)
@@ -301,7 +299,8 @@ if(CLIENTS)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
-    # Adds clblast's interface include pathes because we can't link to clblast here
+
+    # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
                                ${clblast_SOURCE_DIR})
