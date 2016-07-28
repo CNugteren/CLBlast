@@ -1,8 +1,8 @@
 environment:
   global:
-    CLBLAST_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\clblast"
+    CLBLAST_ROOT: "%APPVEYOR_BUILD_FOLDER%\\..\\bin\\clblast"
     OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
-    OPENCL_ROOT: "%APPVEYOR_BUILD_FOLDER%\\bin\\opencl"
+    OPENCL_ROOT: "%APPVEYOR_BUILD_FOLDER%\\..\\bin\\opencl"
 
 platform:
   - x64
