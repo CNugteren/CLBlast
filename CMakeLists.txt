@@ -202,11 +202,6 @@ endif()
 
 # ==================================================================================================
 
-# Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
-
-# ==================================================================================================
-
 # This section contains all the code related to the examples
 if(SAMPLES)
 
@@ -236,7 +231,6 @@ endif()
 if(TUNERS)
 
   # Includes CLTune
-  include_directories(${CLTUNE_INCLUDE_DIRS})
 
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TUNERS_COMMON )
@@ -248,6 +242,7 @@ if(TUNERS)
   foreach(KERNEL ${KERNELS})
     add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
 
@@ -291,9 +286,6 @@ if(CLIENTS OR TESTS)
     endif()
   endif()
 
-  # Sets the include directories
-  include_directories(${clblast_SOURCE_DIR} ${REF_INCLUDES})
-
 endif()
 
 # ==================================================================================================
@@ -309,6 +301,10 @@ if(CLIENTS)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
+    # Adds clblast's interface include pathes because we can't link to clblast here
+    target_include_directories(test_performance_common PRIVATE
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 
@@ -331,6 +327,7 @@ if(CLIENTS)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_client_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -352,6 +349,9 @@ if(TESTS)
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
     add_library(test_correctness_common OBJECT
                 test/correctness/tester.cpp test/correctness/testblas.cpp)
+    target_include_directories(test_correctness_common PUBLIC
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
   endif()
 
@@ -375,6 +375,7 @@ if(TESTS)
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
+    target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
   endforeach()
 
