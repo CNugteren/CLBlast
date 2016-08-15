@@ -32,7 +32,7 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
       }
     },
     { // NVIDIA GPUs
@@ -69,7 +69,7 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",2}, {"WGS3",32}, {"WPT3",8} } },
       }
     },
     { // Default

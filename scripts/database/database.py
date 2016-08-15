@@ -99,7 +99,7 @@ def main(argv):
 
     # Determines the defaults for other vendors and per vendor
     print("[database] Calculating the default values...")
-    database_defaults = defaults.calculate_defaults(database)
+    database_defaults = defaults.calculate_defaults(database, cl_args.verbose)
     database_best_results = db.concatenate_database(database_best_results, database_defaults)
 
     # Outputs the database as a C++ database

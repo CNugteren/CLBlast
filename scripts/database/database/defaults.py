@@ -25,7 +25,7 @@ def set_default_time(database_entry):
     return database_entry
 
 
-def calculate_defaults(database, calculate_common_best=True):
+def calculate_defaults(database, verbose, calculate_common_best=True):
     """Sets defaults for devices of the same type/vendor. An option determines how to compute the defaults."""
     database_defaults = pd.DataFrame()
 
@@ -34,7 +34,7 @@ def calculate_defaults(database, calculate_common_best=True):
                                             clblast.ARGUMENT_ATTRIBUTES)
     for group_name, database_group in database_type_vendor:
         if calculate_common_best:
-            default_values = get_common_best(database_group, group_name)
+            default_values = get_common_best(database_group, group_name, verbose)
         else:
             default_values = get_smallest_best(database_group)
         default_values = set_default_device(default_values)
@@ -69,16 +69,23 @@ def get_smallest_best(database):
     return database_best_results.min(axis=0)
 
 
-def get_common_best(database, group_name):
+def get_common_best(database, group_name, verbose):
     """Sets defaults based on the best values of entries supported by all devices. This might cause a problem in case
-    not every device was tuned with the same parameters."""
-    # TODO: Quite a bit slower than the above `get_smallest_best` method
+    not every device was tuned with the same parameters. In that case it falls back to the above method to retrieve
+    the smallest best execution time"""
 
     # Counts the number of devices in this group
     num_devices = len(database.groupby(clblast.DEVICE_ATTRIBUTES))
 
     # Removes columns without any values
     database = database.dropna(axis=1, how='all')
+    database = database.reset_index()
+
+    # Inserts the relative execution times into the database
+    def relative_performance(x):
+        x["relative_performance"] = x["time"].min() / x["time"]
+        return x
+    database = database.groupby(clblast.ATTRIBUTES + ["kernel"]).apply(relative_performance)
 
     # Retrieves the parameter names for this kernel
     all_column_names = list(database.columns.values)
@@ -94,17 +101,21 @@ def get_common_best(database, group_name):
         return get_smallest_best(database)
 
     # Computes the sum of the execution times over the different devices
-    database_common_by_parameters = database_common.groupby(parameter_column_names)
-    group_times = database_common_by_parameters['time'].transform(sum)
-    database_common.loc[:, 'group_time'] = group_times
+    def sum_performance(x):
+        x["group_performance"] = x["relative_performance"].sum()
+        return x
+    database_common = database_common.groupby(parameter_column_names).apply(sum_performance)
 
-    # Retrieves the entries with the best execution time
-    best_time = database_common["group_time"].min()
-    database_bests = database_common[database_common["group_time"] == best_time]
+    # Retrieves the entries with the highest performance
+    best_performance = database_common["group_performance"].max()
+    database_bests = database_common[database_common["group_performance"] == best_performance]
 
     # Retrieves one example only (the parameters are the same anyway)
-    database_bests = database_bests.drop_duplicates(["group_time"])
-    # print("[database] " + str(group_name) + " with devices: " + str(num_devices) + " " + str(database_bests.shape))
-    assert len(database_bests) == 1
+    database_bests = database_bests.drop_duplicates(["group_performance"])
 
+    # Completed, report and return the results
+    if verbose:
+        print("[database] " + str(group_name) + " with performance " + str(best_performance) + " with devices: " +
+        str(num_devices) + " " + str(database_bests.shape))
+    assert len(database_bests) == 1
     return database_bests
