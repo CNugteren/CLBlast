@@ -22,8 +22,8 @@ R"(
 // =================================================================================================
 
 // Full version of the kernel with offsets and strided accesses
-__attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void Xscal(const int n, const real alpha,
+__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+void Xscal(const int n, const real alpha,
                     __global real* xgm, const int x_offset, const int x_inc) {
 
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
@@ -40,8 +40,8 @@ __kernel void Xscal(const int n, const real alpha,
 
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
-__attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void XscalFast(const int n, const real alpha,
+__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+void XscalFast(const int n, const real alpha,
                         __global realV* xgm) {
   #pragma unroll
   for (int w=0; w<WPT; ++w) {

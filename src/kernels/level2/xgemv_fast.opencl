@@ -94,8 +94,8 @@ inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x,
 // --> 'a_ld' is a multiple of VW2
 // --> 'a_rotated' is 0
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void XgemvFast(const int m, const int n,
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void XgemvFast(const int m, const int n,
                         const __constant real* restrict arg_alpha,
                         const __constant real* restrict arg_beta,
                         const int a_rotated,
@@ -196,8 +196,8 @@ __kernel void XgemvFast(const int m, const int n,
 // --> 'a_ld' is a multiple of VW3
 // --> 'a_rotated' is 1
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS3, 1, 1)))
-__kernel void XgemvFastRot(const int m, const int n,
+__kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
+void XgemvFastRot(const int m, const int n,
                            const __constant real* restrict arg_alpha,
                            const __constant real* restrict arg_beta,
                            const int a_rotated,

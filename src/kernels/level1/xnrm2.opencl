@@ -30,8 +30,8 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the multiplication and the majority of the operation
-__attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xnrm2(const int n,
+__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+void Xnrm2(const int n,
                     const __global real* restrict xgm, const int x_offset, const int x_inc,
                     __global real* output) {
   __local real lm[WGS1];
@@ -72,8 +72,8 @@ __kernel void Xnrm2(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void Xnrm2Epilogue(const __global real* restrict input,
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void Xnrm2Epilogue(const __global real* restrict input,
                             __global real* nrm2, const int nrm2_offset) {
   __local real lm[WGS2];
   const int lid = get_local_id(0);

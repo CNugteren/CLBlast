@@ -35,8 +35,8 @@ R"(
 
 // Fast copy kernel. Requires 'ld' and the number of threads in dimension 0 to be a multiple of
 // COPY_VW. Also requires both matrices to be of the same dimensions and without offset.
-__attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
-__kernel void CopyMatrixFast(const int ld,
+__kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
+void CopyMatrixFast(const int ld,
                              __global const realC* restrict src,
                              __global realC* dest,
                              const __constant real* restrict arg_alpha) {

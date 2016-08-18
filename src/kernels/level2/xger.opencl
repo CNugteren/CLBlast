@@ -18,8 +18,8 @@ R"(
 // =================================================================================================
 
 // Regular version of the rank-1 matrix update kernel (GER, GERU, GERC)
-__attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
-__kernel void Xger(const int max1, const int max2,
+__kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+void Xger(const int max1, const int max2,
                    const __constant real* restrict arg_alpha,
                    const __global real* restrict xgm, const int x_offset, const int x_inc,
                    const __global real* ygm, const int y_offset, const int y_inc,

@@ -24,8 +24,8 @@ R"(
 // Copies a matrix from source to destination. The output is padded with zero values in case the
 // destination matrix dimensions are larger than the source matrix dimensions. Additionally, the ld
 // value and offset can be different.
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void CopyPadMatrix(const int src_one, const int src_two,
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyPadMatrix(const int src_one, const int src_two,
                             const int src_ld, const int src_offset,
                             __global const real* restrict src,
                             const int dest_one, const int dest_two,
@@ -65,8 +65,8 @@ __kernel void CopyPadMatrix(const int src_one, const int src_two,
 // Same as above, but now un-pads a matrix. This kernel reads data from a padded source matrix, but
 // writes only the actual data back to the destination matrix. Again, the ld value and offset can
 // be different.
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void CopyMatrix(const int src_one, const int src_two,
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyMatrix(const int src_one, const int src_two,
                          const int src_ld, const int src_offset,
                          __global const real* restrict src,
                          const int dest_one, const int dest_two,

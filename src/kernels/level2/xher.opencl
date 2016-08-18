@@ -18,8 +18,8 @@ R"(
 // =================================================================================================
 
 // Symmetric version of the rank-1 matrix update kernel (HER, HPR, SYR, SPR)
-__attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
-__kernel void Xher(const int n,
+__kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+void Xher(const int n,
                    const __constant real* restrict arg_alpha,
                    const __global real* restrict xgm, const int x_offset, const int x_inc,
                    __global real* restrict agm, const int a_offset, const int a_ld,
