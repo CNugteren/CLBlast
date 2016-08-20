@@ -88,16 +88,16 @@ inline realVF LoadMatrixAVF(const __global realVF* restrict agm, const int x, co
 // --> 'a_ld' is a multiple of VW2
 // --> 'a_rotated' is 0
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void XgemvFast(const int m, const int n,
-                        const real_arg arg_alpha,
-                        const real_arg arg_beta,
-                        const int a_rotated,
-                        const __global realVF* restrict agm, const int a_offset, const int a_ld,
-                        const __global real* restrict xgm, const int x_offset, const int x_inc,
-                        __global real* ygm, const int y_offset, const int y_inc,
-                        const int do_conjugate, const int parameter,
-                        const int kl_unused, const int ku_unused) {
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void XgemvFast(const int m, const int n,
+               const real_arg arg_alpha,
+               const real_arg arg_beta,
+               const int a_rotated,
+               const __global realVF* restrict agm, const int a_offset, const int a_ld,
+               const __global real* restrict xgm, const int x_offset, const int x_inc,
+               __global real* ygm, const int y_offset, const int y_inc,
+               const int do_conjugate, const int parameter,
+               const int kl_unused, const int ku_unused) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -190,16 +190,16 @@ __kernel void XgemvFast(const int m, const int n,
 // --> 'a_ld' is a multiple of VW3
 // --> 'a_rotated' is 1
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS3, 1, 1)))
-__kernel void XgemvFastRot(const int m, const int n,
-                           const real_arg arg_alpha,
-                           const real_arg arg_beta,
-                           const int a_rotated,
-                           const __global realVFR* restrict agm, const int a_offset, const int a_ld,
-                           const __global real* restrict xgm, const int x_offset, const int x_inc,
-                           __global real* ygm, const int y_offset, const int y_inc,
-                           const int do_conjugate, const int parameter,
-                           const int kl_unused, const int ku_unused) {
+__kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
+void XgemvFastRot(const int m, const int n,
+                  const real_arg arg_alpha,
+                  const real_arg arg_beta,
+                  const int a_rotated,
+                  const __global realVFR* restrict agm, const int a_offset, const int a_ld,
+                  const __global real* restrict xgm, const int x_offset, const int x_inc,
+                  __global real* ygm, const int y_offset, const int y_inc,
+                  const int do_conjugate, const int parameter,
+                  const int kl_unused, const int ku_unused) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 

@@ -18,13 +18,13 @@ R"(
 // =================================================================================================
 
 // Symmetric version of the rank-2 matrix update kernel (HER2, HPR2, SYR2, SPR2)
-__attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
-__kernel void Xher2(const int n,
-                    const real_arg arg_alpha,
-                    const __global real* restrict xgm, const int x_offset, const int x_inc,
-                    const __global real* restrict ygm, const int y_offset, const int y_inc,
-                    __global real* restrict agm, const int a_offset, const int a_ld,
-                    const int is_upper, const int is_rowmajor) {
+__kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+void Xher2(const int n,
+           const real_arg arg_alpha,
+           const __global real* restrict xgm, const int x_offset, const int x_inc,
+           const __global real* restrict ygm, const int y_offset, const int y_inc,
+           __global real* restrict agm, const int a_offset, const int a_ld,
+           const int is_upper, const int is_rowmajor) {
   const real alpha = GetRealArg(arg_alpha);
 
   // Register storage for X and Y

@@ -268,13 +268,13 @@ inline void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
 #if defined(ROUTINE_SYRK) || defined(ROUTINE_HERK) || defined(ROUTINE_SYR2K) || defined(ROUTINE_HER2K)
 
 // Main entry point of the kernel. This is the upper-triangular version.
-__attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
-__kernel void XgemmUpper(const int kSizeN, const int kSizeK,
-                         const real_arg arg_alpha,
-                         const real_arg arg_beta,
-                         const __global realM* restrict agm,
-                         const __global realN* restrict bgm,
-                         __global realM* cgm) {
+__kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+void XgemmUpper(const int kSizeN, const int kSizeK,
+                const real_arg arg_alpha,
+                const real_arg arg_beta,
+                const __global realM* restrict agm,
+                const __global realN* restrict bgm,
+                __global realM* cgm) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -308,13 +308,13 @@ __kernel void XgemmUpper(const int kSizeN, const int kSizeK,
 }
 
 // Main entry point of the kernel. This is the lower-triangular version.
-__attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
-__kernel void XgemmLower(const int kSizeN, const int kSizeK,
-                         const real_arg arg_alpha,
-                         const real_arg arg_beta,
-                         const __global realM* restrict agm,
-                         const __global realN* restrict bgm,
-                         __global realM* cgm) {
+__kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+void XgemmLower(const int kSizeN, const int kSizeK,
+                const real_arg arg_alpha,
+                const real_arg arg_beta,
+                const __global realM* restrict agm,
+                const __global realN* restrict bgm,
+                __global realM* cgm) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -352,13 +352,13 @@ __kernel void XgemmLower(const int kSizeN, const int kSizeK,
 #else
 
 // Main entry point of the kernel. This is the regular full version.
-__attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
-__kernel void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
-                    const real_arg arg_alpha,
-                    const real_arg arg_beta,
-                    const __global realM* restrict agm,
-                    const __global realN* restrict bgm,
-                    __global realM* cgm) {
+__kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
+           const real_arg arg_alpha,
+           const real_arg arg_beta,
+           const __global realM* restrict agm,
+           const __global realN* restrict bgm,
+           __global realM* cgm) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
