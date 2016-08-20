@@ -210,8 +210,8 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
 // =================================================================================================
 
 // Full version of the kernel
-__attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xgemv(const int m, const int n,
+__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+void Xgemv(const int m, const int n,
                     const real_arg arg_alpha,
                     const real_arg arg_beta,
                     const int a_rotated,

@@ -20,13 +20,13 @@ R"(
 
 // Kernel to populate a squared hermitian matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void HermLowerToSquared(const int src_dim,
-                                 const int src_ld, const int src_offset,
-                                 __global const real* restrict src,
-                                 const int dest_dim,
-                                 const int dest_ld, const int dest_offset,
-                                 __global real* dest) {
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void HermLowerToSquared(const int src_dim,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_dim,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -59,13 +59,13 @@ __kernel void HermLowerToSquared(const int src_dim,
 }
 
 // Same as above, but now the matrix' data is stored in the upper-triangle
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void HermUpperToSquared(const int src_dim,
-                                 const int src_ld, const int src_offset,
-                                 __global const real* restrict src,
-                                 const int dest_dim,
-                                 const int dest_ld, const int dest_offset,
-                                 __global real* dest) {
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void HermUpperToSquared(const int src_dim,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_dim,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll

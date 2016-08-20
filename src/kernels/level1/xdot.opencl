@@ -30,11 +30,11 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the multiplication and the majority of the sum operation
-__attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xdot(const int n,
-                   const __global real* restrict xgm, const int x_offset, const int x_inc,
-                   const __global real* restrict ygm, const int y_offset, const int y_inc,
-                   __global real* output, const int do_conjugate) {
+__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+void Xdot(const int n,
+          const __global real* restrict xgm, const int x_offset, const int x_inc,
+          const __global real* restrict ygm, const int y_offset, const int y_inc,
+          __global real* output, const int do_conjugate) {
   __local real lm[WGS1];
   const int lid = get_local_id(0);
   const int wgid = get_group_id(0);
@@ -73,9 +73,9 @@ __kernel void Xdot(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the sum operation. This kernel has to
 // be launched with a single workgroup only.
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void XdotEpilogue(const __global real* restrict input,
-                           __global real* dot, const int dot_offset) {
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void XdotEpilogue(const __global real* restrict input,
+                  __global real* dot, const int dot_offset) {
   __local real lm[WGS2];
   const int lid = get_local_id(0);
 
