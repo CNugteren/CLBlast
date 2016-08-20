@@ -127,11 +127,6 @@ endif()
 
 # ==================================================================================================
 
-# Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
-
-# ==================================================================================================
-
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger xgemm xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
@@ -173,16 +168,26 @@ endforeach()
 add_library(clblast SHARED ${SOURCES})
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
+# Includes directories: CLBlast and OpenCL
+target_include_directories(clblast PUBLIC
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
+                           $<INSTALL_INTERFACE:include>
+                           ${OPENCL_INCLUDE_DIRS})
+
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
   target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
 endif()
 
 # Installs the library
-install(TARGETS clblast DESTINATION lib)
+install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+
+# Installs the config for find_package in dependent projects
+install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # ==================================================================================================
 
@@ -225,9 +230,6 @@ endif()
 # the CLTune library (not included as part of the source).
 if(TUNERS)
 
-  # Includes CLTune
-  include_directories(${CLTUNE_INCLUDE_DIRS})
-
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TUNERS_COMMON )
   if(MSVC)
@@ -238,6 +240,7 @@ if(TUNERS)
   foreach(KERNEL ${KERNELS})
     add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
 
@@ -281,9 +284,6 @@ if(CLIENTS OR TESTS)
     endif()
   endif()
 
-  # Sets the include directories
-  include_directories(${clblast_SOURCE_DIR} ${REF_INCLUDES})
-
 endif()
 
 # ==================================================================================================
@@ -299,6 +299,11 @@ if(CLIENTS)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
+
+    # Adds CLBlast's interface include paths because we can't link to CLBlast here
+    target_include_directories(test_performance_common PRIVATE
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 
@@ -321,6 +326,7 @@ if(CLIENTS)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_client_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -342,6 +348,9 @@ if(TESTS)
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
     add_library(test_correctness_common OBJECT
                 test/correctness/tester.cpp test/correctness/testblas.cpp)
+    target_include_directories(test_correctness_common PUBLIC
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
   endif()
 
@@ -365,6 +374,7 @@ if(TESTS)
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
+    target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
   endforeach()
 
