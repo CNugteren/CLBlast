@@ -43,7 +43,7 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
   }
@@ -74,7 +74,7 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
   }
@@ -104,7 +104,7 @@ const Database::DatabaseEntry Database::XgemvFastRotDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
   }
@@ -128,7 +128,7 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
       }
     },
   }

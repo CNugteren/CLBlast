@@ -196,7 +196,7 @@ const Database::DatabaseEntry Database::XgemvDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
   }

@@ -93,7 +93,7 @@ const Database::DatabaseEntry Database::CopySingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
       }
     },
   }
@@ -154,7 +154,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }
@@ -213,7 +213,7 @@ const Database::DatabaseEntry Database::CopyDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
   }
@@ -272,7 +272,7 @@ const Database::DatabaseEntry Database::CopyComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
   }

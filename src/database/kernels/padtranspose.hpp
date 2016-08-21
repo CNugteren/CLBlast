@@ -93,7 +93,7 @@ const Database::DatabaseEntry Database::PadtransposeSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
+        { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
       }
     },
   }
@@ -162,7 +162,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
+        { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
       }
     },
   }
@@ -221,7 +221,7 @@ const Database::DatabaseEntry Database::PadtransposeDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
+        { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
       }
     },
   }
@@ -280,7 +280,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
+        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",2} } },
       }
     },
   }

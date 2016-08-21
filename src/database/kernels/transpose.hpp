@@ -93,7 +93,7 @@ const Database::DatabaseEntry Database::TransposeSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
       }
     },
   }
@@ -156,7 +156,7 @@ const Database::DatabaseEntry Database::TransposeComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
       }
     },
   }
@@ -215,7 +215,7 @@ const Database::DatabaseEntry Database::TransposeDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
       }
     },
   }
@@ -268,7 +268,7 @@ const Database::DatabaseEntry Database::TransposeComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",4}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",1} } },
       }
     },
   }

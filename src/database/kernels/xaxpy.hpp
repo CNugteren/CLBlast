@@ -93,7 +93,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",2}, {"WGS",128}, {"WPT",1} } },
       }
     },
   }
@@ -162,7 +162,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
   }
@@ -280,7 +280,7 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
   }

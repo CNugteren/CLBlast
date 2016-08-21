@@ -75,7 +75,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
   }
@@ -126,7 +126,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
   }
@@ -168,7 +168,7 @@ const Database::DatabaseEntry Database::XdotDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
   }
@@ -210,7 +210,7 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
   }

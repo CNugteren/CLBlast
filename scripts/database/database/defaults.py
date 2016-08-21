@@ -51,7 +51,10 @@ def calculate_defaults(database, verbose, calculate_common_best=True):
     # Defaults over all device types and vendors
     groups = database.groupby(clblast.KERNEL_ATTRIBUTES + ["kernel"] + clblast.ARGUMENT_ATTRIBUTES)
     for group_name, database_group in groups:
-        default_values = get_smallest_best(database_group)
+        if calculate_common_best:
+            default_values = get_common_best(database_group, group_name, verbose)
+        else:
+            default_values = get_smallest_best(database_group)
         default_values["device_vendor"] = clblast.VENDOR_DEFAULT
         default_values["device_type"] = clblast.DEVICE_TYPE_DEFAULT
         default_values = set_default_device(default_values)
