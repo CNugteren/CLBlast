@@ -97,25 +97,9 @@ def get_common_best(database, group_name, verbose):
 
     # Fall back to another method in case there are no shared entries at all across devices
     if len(database_common) == 0:
-        # print("[database] Skipping: " + str(group_name) + " with devices: %d %d " % (num_devices, len(database)))
+        if verbose:
+            print("[database] No common kernels for: " + str(group_name) + " with devices: %d " % num_devices)
         return get_smallest_best(database)
 
-    # Computes the sum of the execution times over the different devices
-    def sum_performance(x):
-        x["group_performance"] = x["relative_performance"].sum()
-        return x
-    database_common = database_common.groupby(parameter_column_names).apply(sum_performance)
-
-    # Retrieves the entries with the highest performance
-    best_performance = database_common["group_performance"].max()
-    database_bests = database_common[database_common["group_performance"] == best_performance]
-
-    # Retrieves one example only (the parameters are the same anyway)
-    database_bests = database_bests.drop_duplicates(["group_performance"])
-
-    # Completed, report and return the results
-    if verbose:
-        print("[database] " + str(group_name) + " with performance " + str(best_performance) + " with devices: " +
-        str(num_devices) + " " + str(database_bests.shape))
-    assert len(database_bests) == 1
-    return database_bests
+    # Retrieves the entries with the highest relative performance
+    return bests.get_relative_bests(database_common, parameter_column_names, group_name, verbose)

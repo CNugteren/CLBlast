@@ -8,6 +8,7 @@ Development version (next release)
 - Fixed a performance issue (caused by fp16 support) by optimizing alpha/beta parameter passing to kernels
 - Added an option (-warm_up) to do a warm-up run before timing in the performance clients
 - Improved performance significantly of rotated GEMV computations
+- Improved performance of unseen/un-tuned devices by a better default tuning parameter selection
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 
