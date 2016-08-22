@@ -41,7 +41,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",128}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -56,7 +56,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",512}, {"WGS2",64} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
       }
     },
     { // NVIDIA GPUs
@@ -70,12 +70,12 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",1024}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",256} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
   }
@@ -92,7 +92,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
         { "Oland",                                           { {"WGS1",128}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -121,12 +121,12 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",64} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",512}, {"WGS2",64} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
   }
@@ -143,7 +143,7 @@ const Database::DatabaseEntry Database::XdotDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -163,12 +163,12 @@ const Database::DatabaseEntry Database::XdotDouble = {
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
   }
@@ -185,7 +185,7 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -205,12 +205,12 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",128}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
   }

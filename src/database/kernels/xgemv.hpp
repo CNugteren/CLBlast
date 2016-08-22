@@ -48,7 +48,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
       }
     },
     { // Intel GPUs
@@ -81,7 +81,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",256}, {"WPT1",1} } },
       }
     },
     { // Default
@@ -161,14 +161,14 @@ const Database::DatabaseEntry Database::XgemvDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",256}, {"WPT1",1} } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",2} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
       }
     },
     { // Intel accelerators
@@ -191,12 +191,12 @@ const Database::DatabaseEntry Database::XgemvDouble = {
         { "GeForce GTX TITAN X",                             { {"WGS1",64}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",256}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
   }
@@ -220,7 +220,7 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
       }
     },
     { // Intel accelerators
@@ -234,7 +234,7 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
         { "GRID K520",                                       { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX 670",                                 { {"WGS1",128}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
     { // Default
