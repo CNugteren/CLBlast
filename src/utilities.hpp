@@ -80,8 +80,9 @@ constexpr auto kArgComparecblas = "cblas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
+constexpr auto kArgWarmUp = "warm_up";
 
-// The client-specific arguments in string form
+// The test-specific arguments in string form
 constexpr auto kArgFullTest = "full_test";
 constexpr auto kArgVerbose = "verbose";
 
@@ -182,9 +183,19 @@ std::string ToString(T value);
 
 // =================================================================================================
 
-// Helper for the function "GetArgument"
+// Helper for the function "GetArgument" to convert the argument to the value type
 template <typename T>
-T ConvertArgument(const char* value);
+T ConvertArgument(const char* value) {
+  return static_cast<T>(std::stoi(value));
+}
+
+// Variant of "ConvertArgument" with default values
+template <typename T>
+T ConvertArgument(const char* value, T default_value) {
+
+  if (value) { return ConvertArgument<T>(value); }
+  return default_value;
+}
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
@@ -225,6 +236,12 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 // As above, but now for OpenCL data-types instead of std::vectors
 Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
 void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
+
+// Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
+// no conversion, but half-precision is not supported as kernel argument so it is converted to float.
+template <typename T> struct RealArg { using Type = T; };
+template <> struct RealArg<half> { using Type = float; };
+template <typename T> typename RealArg<T>::Type GetRealArg(const T value);
 
 // =================================================================================================
 

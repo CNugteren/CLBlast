@@ -89,9 +89,8 @@ class TuneXaxpy {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentInput(alpha_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
     tuner.AddArgumentInput(x_vec);
     tuner.AddArgumentOutput(y_vec);
   }

@@ -59,20 +59,16 @@ StatusCode Xaxpy<T>::DoAxpy(const size_t n, const T alpha,
     const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
     auto kernel = Kernel(program, kernel_name);
 
-    // Upload the scalar argument as a constant buffer to the device (needed for half-precision)
-    auto alpha_buffer = Buffer<T>(context_, 1);
-    alpha_buffer.Write(queue_, 1, &alpha);
-
     // Sets the kernel arguments
     if (use_fast_kernel) {
       kernel.SetArgument(0, static_cast<int>(n));
-      kernel.SetArgument(1, alpha_buffer());
+      kernel.SetArgument(1, GetRealArg(alpha));
       kernel.SetArgument(2, x_buffer());
       kernel.SetArgument(3, y_buffer());
     }
     else {
       kernel.SetArgument(0, static_cast<int>(n));
-      kernel.SetArgument(1, alpha_buffer());
+      kernel.SetArgument(1, GetRealArg(alpha));
       kernel.SetArgument(2, x_buffer());
       kernel.SetArgument(3, static_cast<int>(x_offset));
       kernel.SetArgument(4, static_cast<int>(x_inc));

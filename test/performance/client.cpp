@@ -113,6 +113,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
   args.print_help     = CheckArgument(argc, argv, help, kArgHelp);
   args.silent         = CheckArgument(argc, argv, help, kArgQuiet);
   args.no_abbrv       = CheckArgument(argc, argv, help, kArgNoAbbreviations);
+  warm_up_            = CheckArgument(argc, argv, help, kArgWarmUp);
 
   // Prints the chosen (or defaulted) arguments to screen. This also serves as the help message,
   // which is thus always displayed (unless silence is specified).
@@ -244,12 +245,24 @@ template <typename T, typename U>
 double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
                                    Buffers<T> &buffers, Queue &queue,
                                    Routine run_blas, const std::string &library_name) {
+  auto status = StatusCode::kSuccess;
+
+  // Do an optional warm-up to omit compilation times and initialisations from the measurements
+  if (warm_up_) {
+    try {
+      status = run_blas(args, buffers, queue);
+    } catch (...) { status = static_cast<StatusCode>(kUnknownError); }
+    if (status != StatusCode::kSuccess) {
+      throw std::runtime_error(library_name+" error: "+ToString(static_cast<int>(status)));
+    }
+  }
+
+  // Start the timed part
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {
     auto start_time = std::chrono::steady_clock::now();
 
     // Executes the main computation
-    auto status = StatusCode::kSuccess;
     try {
       status = run_blas(args, buffers, queue);
     } catch (...) { status = static_cast<StatusCode>(kUnknownError); }

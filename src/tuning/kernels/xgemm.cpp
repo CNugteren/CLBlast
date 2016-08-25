@@ -48,7 +48,7 @@ class TuneXgemm {
   static size_t DefaultM() { return 1024; }
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1024; }
-  static double DefaultFraction() { return 2048.0; }
+  static double DefaultFraction() { return 256.0; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -67,9 +67,9 @@ class TuneXgemm {
     tuner.AddParameter(id, "NDIMC", {8, 16, 32});
     tuner.AddParameter(id, "MDIMA", {8, 16, 32});
     tuner.AddParameter(id, "NDIMB", {8, 16, 32});
-    tuner.AddParameter(id, "KWI", {2, 8});
-    tuner.AddParameter(id, "VWM", {1, 2, 4, 8});
-    tuner.AddParameter(id, "VWN", {1, 2, 4, 8});
+    tuner.AddParameter(id, "KWI", {2});
+    tuner.AddParameter(id, "VWM", {1, 2, 4});
+    tuner.AddParameter(id, "VWN", {1, 2, 4});
     tuner.AddParameter(id, "STRM", {0, 1});
     tuner.AddParameter(id, "STRN", {0, 1});
     tuner.AddParameter(id, "SA", {0, 1});
@@ -121,13 +121,11 @@ class TuneXgemm {
                            std::vector<T> &, std::vector<T> &,
                            std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &c_mat,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
-    auto beta_buffer = std::vector<T>{args.beta};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
     tuner.AddArgumentScalar(static_cast<int>(args.k));
-    tuner.AddArgumentInput(alpha_buffer);
-    tuner.AddArgumentInput(beta_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
+    tuner.AddArgumentScalar(GetRealArg(args.beta));
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentInput(b_mat);
     tuner.AddArgumentOutput(c_mat);

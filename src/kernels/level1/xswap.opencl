@@ -22,10 +22,10 @@ R"(
 // =================================================================================================
 
 // Full version of the kernel with offsets and strided accesses
-__attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void Xswap(const int n,
-                    __global real* xgm, const int x_offset, const int x_inc,
-                    __global real* ygm, const int y_offset, const int y_inc) {
+__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+void Xswap(const int n,
+           __global real* xgm, const int x_offset, const int x_inc,
+           __global real* ygm, const int y_offset, const int y_inc) {
 
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
   #pragma unroll
@@ -40,10 +40,10 @@ __kernel void Xswap(const int n,
 
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
-__attribute__((reqd_work_group_size(WGS, 1, 1)))
-__kernel void XswapFast(const int n,
-                        __global realV* xgm,
-                        __global realV* ygm) {
+__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+void XswapFast(const int n,
+               __global realV* xgm,
+               __global realV* ygm) {
   #pragma unroll
   for (int w=0; w<WPT; ++w) {
     const int id = w*get_global_size(0) + get_global_id(0);

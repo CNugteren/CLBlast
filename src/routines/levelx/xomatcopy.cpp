@@ -72,7 +72,7 @@ StatusCode Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_trans
   const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
   auto emptyEventList = std::vector<Event>();
-  status = PadCopyTransposeMatrix(queue_, device_, context_, db_, event_, emptyEventList,
+  status = PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList,
                                   a_one, a_two, a_ld, a_offset, a_buffer,
                                   b_one, b_two, b_ld, b_offset, b_buffer,
                                   alpha, program, false, transpose, conjugate);

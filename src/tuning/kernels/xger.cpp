@@ -85,10 +85,9 @@ class TuneXger {
                            std::vector<T> &x_vec, std::vector<T> &y_vec,
                            std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
                            std::vector<T> &) {
-    auto alpha_buffer = std::vector<T>{args.alpha};
     tuner.AddArgumentScalar(static_cast<int>(args.m));
     tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentInput(alpha_buffer);
+    tuner.AddArgumentScalar(GetRealArg(args.alpha));
     tuner.AddArgumentInput(x_vec);
     tuner.AddArgumentScalar(0); // x_offset
     tuner.AddArgumentScalar(1); // x_increment
