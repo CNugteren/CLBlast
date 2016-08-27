@@ -187,6 +187,10 @@ std::string ToString(T value);
 template <typename T>
 T ConvertArgument(const char* value);
 
+// Variant of "ConvertArgument" with default values
+template <typename T>
+T ConvertArgument(const char* value, T default_value);
+
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
 T GetArgument(const int argc, char **argv, std::string &help,

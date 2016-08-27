@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 
 #include "test/correctness/tester.hpp"
 
@@ -27,8 +28,8 @@ template <typename T, typename U>
 Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
                     const std::string &name, const std::vector<std::string> &options):
     help_("Options given/available:\n"),
-    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, size_t{0}))),
-    device_(Device(platform_, GetArgument(argc, argv, help_, kArgDevice, size_t{0}))),
+    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0})))),
+    device_(Device(platform_, GetArgument(argc, argv, help_, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0})))),
     context_(Context(device_)),
     queue_(Queue(context_, device_)),
     full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
