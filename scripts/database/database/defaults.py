@@ -84,6 +84,15 @@ def get_common_best(database, group_name, verbose):
     database = database.dropna(axis=1, how='all')
     database = database.reset_index()
 
+    # In case multiple runs for the exact same configuration where made: take just the best performing one into account
+    other_column_names = list(database.columns.values)
+    other_column_names.remove("time")
+    database_by_time = database.groupby(other_column_names)
+    if len(database_by_time) != len(database):
+        if verbose:
+            print("[database] " + str(group_name) + " keeping only entries with the lowest execution time")
+        database = database_by_time.apply(lambda x: x[x["time"] == x["time"].min()])
+
     # Inserts the relative execution times into the database
     def relative_performance(x):
         x["relative_performance"] = x["time"].min() / x["time"]
