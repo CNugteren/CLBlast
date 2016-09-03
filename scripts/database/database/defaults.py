@@ -45,8 +45,7 @@ def calculate_defaults(database, verbose, calculate_common_best=True):
     groups = database_defaults.groupby(clblast.DEVICE_TYPE_ATTRIBUTES + clblast.KERNEL_ATTRIBUTES + ["kernel"])
     for group_name, database_group in groups:
         if len(database_group) != 1:
-            description = database_group["kernel"].min() + " " + database_group["device_vendor"].min()
-            print("[WARNING] Entries for a single kernel with multiple argument values: " + description)
+            print("[WARNING] Entries for a single kernel with multiple argument values: " + str(group_name))
 
     # Defaults over all device types and vendors
     groups = database.groupby(clblast.KERNEL_ATTRIBUTES + ["kernel"] + clblast.ARGUMENT_ATTRIBUTES)

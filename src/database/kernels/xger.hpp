@@ -18,6 +18,7 @@ const Database::DatabaseEntry Database::XgerHalf = {
   "Xger", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
@@ -60,10 +61,11 @@ const Database::DatabaseEntry Database::XgerSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",32}, {"WGS2",1}, {"WPT",2} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",8}, {"WGS2",8}, {"WPT",4} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
@@ -116,10 +118,11 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",32}, {"WGS2",1}, {"WPT",2} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",512}, {"WGS2",1}, {"WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
         { "Iris Pro",                                        { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
@@ -136,7 +139,7 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
       }
     },
   }

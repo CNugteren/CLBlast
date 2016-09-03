@@ -30,6 +30,7 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
@@ -68,6 +69,7 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",128}, {"WPT3",8} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },

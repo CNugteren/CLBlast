@@ -18,6 +18,7 @@ const Database::DatabaseEntry Database::XgemvHalf = {
   "Xgemv", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
@@ -54,6 +55,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",256}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2} } },
@@ -116,6 +118,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",64}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",256}, {"WPT1",1} } },
