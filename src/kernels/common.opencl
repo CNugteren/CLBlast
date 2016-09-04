@@ -148,6 +148,13 @@ R"(
   #define SetToOne(a) a = ONE
 #endif
 
+// Determines whether a variable is zero
+#if PRECISION == 3232 || PRECISION == 6464
+  #define IsZero(a) ((a.x == ZERO) && (a.y == ZERO))
+#else
+  #define IsZero(a) (a == ZERO)
+#endif
+
 // The absolute value (component-wise)
 #if PRECISION == 3232 || PRECISION == 6464
   #define AbsoluteValue(value) value.x = fabs(value.x); value.y = fabs(value.y)
