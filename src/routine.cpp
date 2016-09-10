@@ -58,18 +58,14 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
   // program will be added to the cache.
 
   // Inspects whether or not cl_khr_fp64 is supported in case of double precision
-  const auto extensions = device_.Capabilities();
-  if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
-    if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
-      throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
-    }
+  if ((precision_ == Precision::kDouble && !PrecisionSupported<double>(device_)) ||
+      (precision_ == Precision::kComplexDouble && !PrecisionSupported<double2>(device_))) {
+    throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
   }
 
   // As above, but for cl_khr_fp16 (half precision)
-  if (precision_ == Precision::kHalf) {
-    if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
-      throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
-    }
+  if (precision_ == Precision::kHalf && !PrecisionSupported<half>(device_)) {
+    throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
   }
 
   // Collects the parameters for this device in the form of defines, and adds the precision
