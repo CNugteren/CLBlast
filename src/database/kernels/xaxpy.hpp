@@ -79,10 +79,10 @@ const Database::DatabaseEntry Database::XaxpySingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"VW",2}, {"WGS",64}, {"WPT",1} } },
-        { "GeForce GTX 1070",                                { {"VW",2}, {"WGS",64}, {"WPT",1} } },
-        { "GeForce GTX 480",                                 { {"VW",4}, {"WGS",64}, {"WPT",1} } },
+        { "GeForce GTX 1070",                                { {"VW",1}, {"WGS",64}, {"WPT",4} } },
+        { "GeForce GTX 480",                                 { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX 670",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
-        { "GeForce GTX 680",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
+        { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
@@ -209,7 +209,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 1070",                                { {"VW",1}, {"WGS",64}, {"WPT",8} } },
-        { "GeForce GTX 480",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
+        { "GeForce GTX 480",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX 670",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },

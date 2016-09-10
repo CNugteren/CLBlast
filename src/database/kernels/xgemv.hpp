@@ -88,7 +88,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
   }
