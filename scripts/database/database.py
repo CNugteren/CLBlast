@@ -77,6 +77,7 @@ def main(argv):
         # Adds the new data to the database
         old_size = len(database.index)
         database = db.concatenate_database(database, imported_data)
+        database = database.drop_duplicates()
         new_size = len(database.index)
         print("with " + str(new_size - old_size) + " new items")  # Newline printed here
 
