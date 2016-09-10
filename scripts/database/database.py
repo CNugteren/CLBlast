@@ -77,12 +77,13 @@ def main(argv):
         # Adds the new data to the database
         old_size = len(database.index)
         database = db.concatenate_database(database, imported_data)
-        database = db.remove_duplicates(database)
+        database = database.drop_duplicates()
         new_size = len(database.index)
         print("with " + str(new_size - old_size) + " new items")  # Newline printed here
 
     # Stores the modified database back to disk
     if len(glob.glob(json_files)) >= 1:
+        database = db.remove_duplicates(database)
         io.save_database(database, database_filename)
 
     # Optional: update the database here. Default is disabled, code below is just an example

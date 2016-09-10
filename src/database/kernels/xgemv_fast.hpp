@@ -60,7 +60,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
         { "Iris Pro",                                        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",2}, {"WGS2",64}, {"WPT2",2} } },
       }
     },
     { // Intel accelerators
@@ -88,7 +88,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
   }
@@ -123,7 +123,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Iris Pro",                                        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
     { // Intel accelerators
@@ -145,7 +145,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
   }

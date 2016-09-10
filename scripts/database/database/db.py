@@ -6,6 +6,7 @@
 #   Cedric Nugteren <www.cedricnugteren.nl>
 
 import pandas as pd
+import numpy as np
 
 
 def get_entries_by_field(database, field, value):
@@ -16,11 +17,6 @@ def get_entries_by_field(database, field, value):
 def concatenate_database(database1, database2):
     """Concatenates two databases row-wise and returns the result"""
     return pd.concat([database1, database2])
-
-
-def remove_duplicates(database):
-    """Removes duplicates from a database"""
-    return database.drop_duplicates()
 
 
 def find_and_replace(database, dictionary):
@@ -47,4 +43,28 @@ def remove_entries_by_kernel_family(database, kernel_family_name):
 def update_database(database, condition, field, value):
     """Updates the database by writing a specific value to a given field, given certain conditions"""
     database.loc[condition, field] = value
+    return database
+
+
+def remove_duplicates(database):
+    """Removes duplicates from the database based on all but the 'time' column"""
+
+    # First remove 100% duplicate entries
+    database = database.drop_duplicates()
+
+    # Replace NaNs with -1 first (needed for groupby)
+    database = database.replace(np.nan, -1)
+
+    # In case multiple runs for the exact same configuration where made: take just the best performing one into account
+    other_column_names = list(database.columns.values)
+    other_column_names.remove("time")
+    database_by_time = database.groupby(other_column_names,)
+    num_removals = len(database) - len(database_by_time)
+    if num_removals > 0:
+        print("[database] Removing %d entries: keeping only those with the lowest execution time" % num_removals)
+        print("[database] Note: this might take a while")
+        database = database_by_time.apply(lambda x: x[x["time"] == x["time"].min()])
+
+    # Re-replace the NaN values
+    database = database.replace(-1, np.nan)
     return database
