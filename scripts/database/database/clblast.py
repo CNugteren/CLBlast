@@ -18,6 +18,7 @@ DEVICE_ATTRIBUTES = ["device", "device_core_clock", "device_compute_units"]
 KERNEL_ATTRIBUTES = ["precision", "kernel_family"]
 ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
 ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ARGUMENT_ATTRIBUTES
+GROUP_ATTRIBUTES = DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ["kernel"] + ARGUMENT_ATTRIBUTES
 
 
 def precision_to_string(precision):
@@ -81,42 +82,51 @@ def print_cpp_database(database, output_dir):
     """Outputs the database as C++ code"""
 
     # Iterates over the kernel families
-    for family_name, family_database in database.groupby(["kernel_family"]):
-        family_database = family_database.dropna(axis=1, how='all')
+    kernel_families = [s["kernel_family"] for s in database["sections"]]
+    for family_name in kernel_families:
+        family_database = [s for s in database["sections"] if s["kernel_family"] == family_name]
 
         # Opens a new file for each kernel family
-        full_path = os.path.join(output_dir, family_name+'.hpp')
+        full_path = os.path.join(output_dir, family_name + ".hpp")
         with open(full_path, 'w+') as f:
             f.write(get_cpp_header(family_name))
 
             # Loops over the different precision (e.g. 16, 32, 3232, 64, 6464)
-            for precision, precision_database in family_database.groupby(["precision"]):
+            precisions = sorted(set([s["precision"] for s in family_database]))
+            for precision in precisions:
+                precision_database = [s for s in family_database if s["precision"] == precision]
                 f.write(get_cpp_precision(family_name, precision))
 
                 # Loops over a combination of device vendors and device types (e.g. AMD GPU)
-                for vendor, vendor_database in precision_database.groupby(["device_vendor"]):
-                    for device_type, device_type_database in vendor_database.groupby(["device_type"]):
+                device_vendors = sorted(set([s["device_vendor"] for s in precision_database]))
+                for vendor in device_vendors:
+                    vendor_database = [s for s in precision_database if s["device_vendor"] == vendor]
+                    device_types = sorted(set([s["device_type"] for s in vendor_database]))
+                    for device_type in device_types:
+                        type_database = [s for s in vendor_database if s["device_type"] == device_type]
                         f.write(get_cpp_device_vendor(vendor, device_type))
 
                         # Loops over every device of this vendor-type combination
-                        for device_name, device_database in device_type_database.groupby(["device"]):
+                        devices = sorted(set([s["device"] for s in type_database]))
+                        for device_name in devices:
+                            device_database = [s for s in type_database if s["device"] == device_name]
                             device_name_quoted = "\"%s\"," % device_name
                             device_name_cpp = "        { %-50s { " % device_name_quoted
                             f.write(device_name_cpp)
 
                             # Collects the parameters for this entry
                             parameters = []
-                            for kernel, kernel_database in device_database.groupby(["kernel"]):
-                                kernel_database = kernel_database.dropna(axis=1)
+                            kernels = sorted(set([s["kernel"] for s in device_database]))
+                            for kernel in kernels:
+                                kernel_database = [s for s in device_database if s["kernel"] == kernel]
 
-                                # Only consider the actual parameters, not the precision
-                                def is_parameter(column):
-                                    return column.startswith('parameters.') and column != "parameters.PRECISION"
-                                column_names = [col for col in list(kernel_database) if is_parameter(col)]
+                                assert len(kernel_database) == 1
+                                results = kernel_database[0]["results"]
 
-                                for p in column_names:
-                                    parameter_name = p.replace("parameters.", "")
-                                    parameter_value = int(kernel_database[p].iloc[0])
+                                assert len(results) == 1
+                                new_parameters = results[0]["parameters"]
+                                for parameter_name in sorted(new_parameters):
+                                    parameter_value = new_parameters[parameter_name]
                                     parameters.append("{\"" + parameter_name + "\"," + str(parameter_value) + "}")
 
                             # Prints the entry

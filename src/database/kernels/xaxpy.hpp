@@ -20,12 +20,12 @@ const Database::DatabaseEntry Database::XaxpyHalf = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",4}, {"WGS",512}, {"WPT",8} } },
-        { "default",                                         { {"VW",4}, {"WGS",512}, {"WPT",8} } },
+        { "default",                                         { {"VW",8}, {"WGS",64}, {"WPT",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",4}, {"WGS",512}, {"WPT",8} } },
+        { "default",                                         { {"VW",8}, {"WGS",64}, {"WPT",1} } },
       }
     },
   }
