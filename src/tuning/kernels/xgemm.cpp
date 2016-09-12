@@ -35,6 +35,7 @@ class TuneXgemm {
       #include "../src/kernels/common.opencl"
       #include "../src/kernels/level3/xgemm_part1.opencl"
       #include "../src/kernels/level3/xgemm_part2.opencl"
+      #include "../src/kernels/level3/xgemm_part3.opencl"
     ;
   }
 
