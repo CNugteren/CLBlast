@@ -82,7 +82,7 @@ def print_cpp_database(database, output_dir):
     """Outputs the database as C++ code"""
 
     # Iterates over the kernel families
-    kernel_families = [s["kernel_family"] for s in database["sections"]]
+    kernel_families = sorted(set([s["kernel_family"] for s in database["sections"]]))
     for family_name in kernel_families:
         family_database = [s for s in database["sections"] if s["kernel_family"] == family_name]
 
@@ -92,15 +92,27 @@ def print_cpp_database(database, output_dir):
             f.write(get_cpp_header(family_name))
 
             # Loops over the different precision (e.g. 16, 32, 3232, 64, 6464)
-            precisions = sorted(set([s["precision"] for s in family_database]))
+            precisions = sorted(set([s["precision"] for s in database["sections"]]))  # Based on full database
             for precision in precisions:
                 precision_database = [s for s in family_database if s["precision"] == precision]
                 f.write(get_cpp_precision(family_name, precision))
 
-                # Loops over a combination of device vendors and device types (e.g. AMD GPU)
+                # In case there is nothing found at all (e.g. 16-bit): continue as if this was a precision of 32 but
+                # with the defaults only
+                if len(precision_database) == 0:
+                    print("[database] No results found for %s:%s, retrieving defaults from %s:32" %
+                          (family_name, precision, family_name))
+                    precision_database = [s for s in family_database if s["precision"] == "32"
+                                          and s["device_vendor"] == VENDOR_DEFAULT
+                                          and s["device_type"] == DEVICE_TYPE_DEFAULT
+                                          and s["device"] == DEVICE_NAME_DEFAULT]
+
+                # Loops over device vendors (e.g. AMD)
                 device_vendors = sorted(set([s["device_vendor"] for s in precision_database]))
                 for vendor in device_vendors:
                     vendor_database = [s for s in precision_database if s["device_vendor"] == vendor]
+
+                    # Loops over device types (e.g. GPU)
                     device_types = sorted(set([s["device_type"] for s in vendor_database]))
                     for device_type in device_types:
                         type_database = [s for s in vendor_database if s["device_type"] == device_type]
