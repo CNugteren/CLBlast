@@ -14,6 +14,18 @@
 namespace clblast {
 // =================================================================================================
 
+const Database::DatabaseEntry Database::XgemvFastRotHalf = {
+  "XgemvFastRot", Precision::kHalf, {
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+      }
+    },
+  }
+};
+
+// =================================================================================================
+
 const Database::DatabaseEntry Database::XgemvFastRotSingle = {
   "XgemvFastRot", Precision::kSingle, {
     { // AMD GPUs

@@ -20,12 +20,12 @@ const Database::DatabaseEntry Database::XgemvHalf = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
   }

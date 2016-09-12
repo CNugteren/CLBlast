@@ -13,46 +13,48 @@ try:
 except ImportError:
     from urllib2 import urlopen  # Python 2
 
-import pandas as pd
-
-import clblast
-
 
 def download_database(filename, database_url):
     """Downloads a database and saves it to disk"""
     print("[database] Downloading database from '" + database_url + "'...")
     database = urlopen(database_url)
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         f.write(database.read())
 
 
 def load_database(filename):
     """Loads a database from disk"""
     print("[database] Loading database from '" + filename + "'")
-    return pd.read_pickle(filename)
+    with open(filename) as f:
+        return json.load(f)
 
 
 def save_database(database, filename):
     """Saves a database to disk"""
     print("[database] Saving database to '" + filename + "'")
-    database.to_pickle(filename)
+    with open(filename, "wb") as f:
+        json.dump(database, f, sort_keys=True, indent=4)
 
 
-def load_json_to_pandas(filename):
-    """Loads JSON data from file and converts it to a pandas database"""
+def load_tuning_results(filename):
+    """Loads JSON data from file and pre-processes it"""
     with open(filename) as f:
         json_data = json.load(f)
 
-    # Gathers all results and stores them in a new database
-    json_database = pd.DataFrame(json_data)
-    new_database = pd.io.json.json_normalize(json_database["results"])
+    # Removes the numbering following the kernel family name
+    json_data["kernel_family"] = re.sub(r'_\d+', '', json_data["kernel_family"])
 
-    # Sets the common attributes to each entry in the results
-    for attribute in clblast.ATTRIBUTES:
-        if attribute == "kernel_family":
-            new_database[attribute] = re.sub(r'_\d+', '', json_data[attribute])
-        elif attribute in json_data:
-            new_database[attribute] = json_data[attribute]
-        else:
-            new_database[attribute] = 0  # For example a parameters that was not used by this kernel
-    return new_database
+    # Adds the kernel name to the section instead of to the individual results
+    assert len(json_data["results"]) > 0
+    json_data["kernel"] = json_data["results"][0]["kernel"]
+    for result in json_data["results"]:
+        assert json_data["kernel"] == result["kernel"]
+        result.pop("kernel", None)
+
+    # Removes the 'PRECISION' parameter from the individual results: it is redundant
+    for result in json_data["results"]:
+        assert json_data["precision"] == str(result["parameters"]["PRECISION"])
+        result["parameters"].pop("PRECISION", None)
+
+    # All done
+    return json_data
