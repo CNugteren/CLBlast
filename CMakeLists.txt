@@ -75,6 +75,12 @@ else()
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
       set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
     endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0.0)
+      # GCC does not support attributes on template arguments
+      # in particular we hit this with the alignment attributes on cl_XXX types
+      # which are then used to instantiate various templates in CLBlast
+      set(FLAGS "${FLAGS} -Wno-ignored-attributes")
+    endif()
   elseif(CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set(FLAGS "${FLAGS} -Wextra -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
