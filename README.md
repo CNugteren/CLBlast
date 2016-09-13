@@ -288,7 +288,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Hugh Perkins](https://github.com/hughperkins)
 * [Gian-Carlo Pascutto](https://github.com/gcp)
 * [Ivan Shapovalov](https://github.com/intelfx)
-* [Dimitri VA](https://github.com/dvasschemacq)
+* [Dimitri Van Assche](https://github.com/dvasschemacq)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
