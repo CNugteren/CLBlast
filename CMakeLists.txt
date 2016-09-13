@@ -197,13 +197,13 @@ install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # ==================================================================================================
 
-# Sets a default platform ($DEVICEPLATFORM) and device ($DEFAULT_DEVICE) to run tuners and tests on
+# Sets a default platform ($DEVICEPLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests on
 set(DEVICEPLATFORM )
-if(DEFINED ENV{DEFAULT_DEVICE})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{DEFAULT_DEVICE})
+if(DEFINED ENV{CLBLAST_DEVICE})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{CLBLAST_DEVICE})
 endif()
-if(DEFINED ENV{DEFAULT_PLATFORM})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{DEFAULT_PLATFORM})
+if(DEFINED ENV{CLBLAST_PLATFORM})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{CLBLAST_PLATFORM})
 endif()
 
 # ==================================================================================================
