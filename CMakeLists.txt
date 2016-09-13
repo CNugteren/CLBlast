@@ -9,7 +9,7 @@
 #
 # ==================================================================================================
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.11)
 
 # Overrides for MSVC static runtime
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/c_flag_overrides.cmake)
@@ -18,7 +18,7 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 8)
+set(clblast_VERSION_MINOR 9)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -26,6 +26,13 @@ option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
+
+# Compile in verbose mode with additional diagnostic messages
+option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
+if(VERBOSE)
+  message("-- Building in verbose mode")
+  add_definitions(-DVERBOSE)
+endif()
 
 # ==================================================================================================
 
@@ -68,6 +75,12 @@ else()
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
       set(FLAGS "${FLAGS} -Wno-attributes -Wno-unused-variable")
     endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0.0)
+      # GCC does not support attributes on template arguments
+      # in particular we hit this with the alignment attributes on cl_XXX types
+      # which are then used to instantiate various templates in CLBlast
+      set(FLAGS "${FLAGS} -Wno-ignored-attributes")
+    endif()
   elseif(CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set(FLAGS "${FLAGS} -Wextra -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
@@ -88,7 +101,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 # ==================================================================================================
 
 # Package scripts location
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${clblast_SOURCE_DIR}/cmake/Modules/")
 
 # Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
 find_package(OpenCL REQUIRED)
@@ -117,11 +130,6 @@ if(CLIENTS OR TESTS)
     endif()
   endif()
 endif()
-
-# ==================================================================================================
-
-# Includes directories: CLBlast and OpenCL
-include_directories(${clblast_SOURCE_DIR}/include ${clblast_SOURCE_DIR}/src ${OPENCL_INCLUDE_DIRS})
 
 # ==================================================================================================
 
@@ -166,21 +174,36 @@ endforeach()
 add_library(clblast SHARED ${SOURCES})
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
+# Includes directories: CLBlast and OpenCL
+target_include_directories(clblast PUBLIC
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
+                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
+                           $<INSTALL_INTERFACE:include>
+                           ${OPENCL_INCLUDE_DIRS})
+
+# Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
+if(MSVC)
+  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+endif()
+
 # Installs the library
-install(TARGETS clblast DESTINATION lib)
+install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
 
+# Installs the config for find_package in dependent projects
+install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
+
 # ==================================================================================================
 
-# Sets a default platform ($DEVICEPLATFORM) and device ($DEFAULT_DEVICE) to run tuners and tests on
+# Sets a default platform ($DEVICEPLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests on
 set(DEVICEPLATFORM )
-if(DEFINED ENV{DEFAULT_DEVICE})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{DEFAULT_DEVICE})
+if(DEFINED ENV{CLBLAST_DEVICE})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{CLBLAST_DEVICE})
 endif()
-if(DEFINED ENV{DEFAULT_PLATFORM})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{DEFAULT_PLATFORM})
+if(DEFINED ENV{CLBLAST_PLATFORM})
+  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{CLBLAST_PLATFORM})
 endif()
 
 # ==================================================================================================
@@ -213,13 +236,17 @@ endif()
 # the CLTune library (not included as part of the source).
 if(TUNERS)
 
-  # Includes CLTune
-  include_directories(${CLTUNE_INCLUDE_DIRS})
+  # Visual Studio requires the sources of non-exported objects/libraries
+  set(TUNERS_COMMON )
+  if(MSVC)
+    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities.cpp)
+  endif()
 
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} src/tuning/kernels/${KERNEL}.cpp)
+    add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
 
@@ -263,9 +290,6 @@ if(CLIENTS OR TESTS)
     endif()
   endif()
 
-  # Sets the include directories
-  include_directories(${clblast_SOURCE_DIR} ${REF_INCLUDES})
-
 endif()
 
 # ==================================================================================================
@@ -281,6 +305,11 @@ if(CLIENTS)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
+
+    # Adds CLBlast's interface include paths because we can't link to CLBlast here
+    target_include_directories(test_performance_common PRIVATE
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 
@@ -303,6 +332,7 @@ if(CLIENTS)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_client_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
 
@@ -324,6 +354,9 @@ if(TESTS)
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
     add_library(test_correctness_common OBJECT
                 test/correctness/tester.cpp test/correctness/testblas.cpp)
+    target_include_directories(test_correctness_common PUBLIC
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR})
     set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
   endif()
 
@@ -347,6 +380,7 @@ if(TESTS)
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
+    target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
   endforeach()
 

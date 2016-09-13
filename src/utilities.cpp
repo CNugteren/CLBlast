@@ -161,6 +161,8 @@ template <typename T>
 T ConvertArgument(const char* value) {
   return static_cast<T>(std::stoi(value));
 }
+template size_t ConvertArgument(const char* value);
+
 template <> half ConvertArgument(const char* value) {
   return FloatToHalf(static_cast<float>(std::stod(value)));
 }
@@ -178,6 +180,15 @@ template <> double2 ConvertArgument(const char* value) {
   auto val = static_cast<double>(std::stod(value));
   return double2{val, val};
 }
+
+// Variant of "ConvertArgument" with default values
+template <typename T>
+T ConvertArgument(const char* value, T default_value) {
+
+  if (value) { return ConvertArgument<T>(value); }
+  return default_value;
+}
+template size_t ConvertArgument(const char* value, size_t default_value);
 
 // This function matches patterns in the form of "-option value" or "--option value". It returns a
 // default value in case the option is not found in the argument string.
@@ -331,6 +342,14 @@ void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_com
   FloatToHalfBuffer(result_cpu, source_cpu);
   result.Write(queue, size, result_cpu);
 }
+
+// Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
+// no conversion, but half-precision is not supported as kernel argument so it is converted to float.
+template <> typename RealArg<half>::Type GetRealArg(const half value) { return HalfToFloat(value); }
+template <> typename RealArg<float>::Type GetRealArg(const float value) { return value; }
+template <> typename RealArg<double>::Type GetRealArg(const double value) { return value; }
+template <> typename RealArg<float2>::Type GetRealArg(const float2 value) { return value; }
+template <> typename RealArg<double2>::Type GetRealArg(const double2 value) { return value; }
 
 // =================================================================================================
 

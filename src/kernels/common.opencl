@@ -109,6 +109,16 @@ R"(
   typedef real singlereal;
 #endif
 
+// Converts a 'real argument' value to a 'real' value as passed to the kernel. Normally there is no
+// conversion, but half-precision is not supported as kernel argument so it is converted from float.
+#if PRECISION == 16
+  typedef float real_arg;
+  #define GetRealArg(x) (half)x
+#else
+  typedef real real_arg;
+  #define GetRealArg(x) x
+#endif
+
 // =================================================================================================
 
 // Don't use the non-IEEE754 compliant OpenCL built-in mad() instruction per default. For specific
@@ -136,6 +146,13 @@ R"(
   #define SetToOne(a) a.x = ONE; a.y = ZERO
 #else
   #define SetToOne(a) a = ONE
+#endif
+
+// Determines whether a variable is zero
+#if PRECISION == 3232 || PRECISION == 6464
+  #define IsZero(a) ((a.x == ZERO) && (a.y == ZERO))
+#else
+  #define IsZero(a) (a == ZERO)
 #endif
 
 // The absolute value (component-wise)

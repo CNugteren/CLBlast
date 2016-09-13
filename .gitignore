@@ -2,5 +2,6 @@ build
 stash
 .*
 *.pyc
-*.db
+database.json
+database_best.json
 cl.hpp

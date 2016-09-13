@@ -32,9 +32,11 @@ namespace clblast {
 class Routine {
  public:
 
-  // Base class constructor
+  // Base class constructor. The user database is an optional extra database to override the
+  // built-in database.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
-                   const std::vector<std::string> &routines, const Precision precision);
+                   const std::vector<std::string> &routines, const Precision precision,
+                   const std::vector<Database::DatabaseEntry> &userDatabase = {});
 
   // Set-up phase of the kernel
   StatusCode SetUp();

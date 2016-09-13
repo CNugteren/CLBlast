@@ -99,20 +99,26 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
 * NVIDIA GPUs:
   - GRID K520
   - GeForce GTX 480
+  - GeForce GTX 670
   - GeForce GTX 680
+  - GeForce GTX 750
   - GeForce GTX 750 Ti
   - GeForce GTX 980
+  - GeForce GTX 1070
   - GeForce GTX Titan
   - GeForce GTX Titan X
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
-  - Tahiti
+  - AMD Radeon R9 M370X Compute Engine
   - Hawaii
+  - Oland
   - Pitcairn
-  - Radeon R9 M370X Compute Engine
+  - Tahiti
 * Intel GPUs:
+  - HD Graphics 530
   - HD Graphics Haswell Ultrabook GT2 Mobile
+  - HD Graphics 5500 BroadWell U-Processor GT2
   - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro
@@ -130,7 +136,7 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
 Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.3.1 or higher).
 
-Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
+Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
 
 The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
@@ -162,7 +168,7 @@ To build these tests, another BLAS library is needed to serve as a reference. Th
 
 Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested for correctness against [clBLAS](http://github.com/clMathLibraries/clBLAS) and/or a regular CPU BLAS library. If both are installed on your system, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables. All tests have a `-verbose` option to enable additional diagnostic output. They also have a `-full_test` option to increase coverage further.
 
-All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `DEFAULT_DEVICE` and `DEFAULT_PLATFORM` environmental variables before running CMake.
+All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
 
 
 Compiling the performance tests/clients (optional)
@@ -179,6 +185,8 @@ The folder `doc/performance` contains some PDF files with performance results on
     Rscript ../scripts/graphs/xgemm.r 0 1
 
 Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
+
+In case performance is still sub-optimal or something else is wrong, CLBlast can be build in verbose mode for (performance) debugging by specifying `-DVERBOSE=ON` to CMake.
 
 
 Supported routines
@@ -278,6 +286,9 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](https://github.com/gpus)
 * [Hugh Perkins](https://github.com/hughperkins)
+* [Gian-Carlo Pascutto](https://github.com/gcp)
+* [Ivan Shapovalov](https://github.com/intelfx)
+* [Dimitri Van Assche](https://github.com/dvasschemacq)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 

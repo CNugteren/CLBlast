@@ -24,16 +24,16 @@ R"(
 
 // Transposes a matrix from source to destination. The output is padded with zero values in case the
 // destination matrix dimensions are larger than the transposed source matrix dimensions.
-__attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-__kernel void TransposePadMatrix(const int src_one, const int src_two,
-                                 const int src_ld, const int src_offset,
-                                 __global const real* restrict src,
-                                 const int dest_one, const int dest_two,
-                                 const int dest_ld, const int dest_offset,
-                                 __global real* dest,
-                                 const __constant real* restrict arg_alpha,
-                                 const int do_conjugate) {
-  const real alpha = arg_alpha[0];
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposePadMatrix(const int src_one, const int src_two,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_one, const int dest_two,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest,
+                        const real_arg arg_alpha,
+                        const int do_conjugate) {
+  const real alpha = GetRealArg(arg_alpha);
 
   // Local memory to store a tile of the matrix (for coalescing)
   __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
@@ -88,17 +88,17 @@ __kernel void TransposePadMatrix(const int src_one, const int src_two,
 // Transposes a matrix, while considering possible padding in the source matrix. Data is read from a
 // padded source matrix, but only the actual data is written back to the transposed destination
 // matrix. This kernel optionally checks for upper/lower triangular matrices.
-__attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-__kernel void TransposeMatrix(const int src_one, const int src_two,
-                              const int src_ld, const int src_offset,
-                              __global const real* restrict src,
-                              const int dest_one, const int dest_two,
-                              const int dest_ld, const int dest_offset,
-                              __global real* dest,
-                              const __constant real* restrict arg_alpha,
-                              const int upper, const int lower,
-                              const int diagonal_imag_zero) {
-  const real alpha = arg_alpha[0];
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposeMatrix(const int src_one, const int src_two,
+                     const int src_ld, const int src_offset,
+                     __global const real* restrict src,
+                     const int dest_one, const int dest_two,
+                     const int dest_ld, const int dest_offset,
+                     __global real* dest,
+                     const real_arg arg_alpha,
+                     const int upper, const int lower,
+                     const int diagonal_imag_zero) {
+  const real alpha = GetRealArg(arg_alpha);
 
   // Local memory to store a tile of the matrix (for coalescing)
   __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];

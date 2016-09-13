@@ -38,7 +38,7 @@ R"(
   #define WGS3 64     // The local work-group size
 #endif
 #ifndef WPT3
-  #define WPT3 1      // The amount of work-per-thread
+  #define WPT3 1      // The tile-size
 #endif
 #ifndef VW3
   #define VW3 1       // Vector width of matrix A loads
@@ -74,15 +74,9 @@ R"(
 
 // =================================================================================================
 
-// Loads a vector input value (1/2)
+// Loads a vector input value
 inline realVF LoadMatrixAVF(const __global realVF* restrict agm, const int x, const int y,
                             const int a_ld) {
-  return agm[a_ld*y + x];
-}
-
-// Loads a vector input value (2/2): as before, but different data-type
-inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x, const int y,
-                              const int a_ld) {
   return agm[a_ld*y + x];
 }
 
@@ -94,23 +88,23 @@ inline realVFR LoadMatrixAVFR(const __global realVFR* restrict agm, const int x,
 // --> 'a_ld' is a multiple of VW2
 // --> 'a_rotated' is 0
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void XgemvFast(const int m, const int n,
-                        const __constant real* restrict arg_alpha,
-                        const __constant real* restrict arg_beta,
-                        const int a_rotated,
-                        const __global realVF* restrict agm, const int a_offset, const int a_ld,
-                        const __global real* restrict xgm, const int x_offset, const int x_inc,
-                        __global real* ygm, const int y_offset, const int y_inc,
-                        const int do_conjugate, const int parameter,
-                        const int kl, const int ku) {
-  const real alpha = arg_alpha[0];
-  const real beta = arg_beta[0];
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void XgemvFast(const int m, const int n,
+               const real_arg arg_alpha,
+               const real_arg arg_beta,
+               const int a_rotated,
+               const __global realVF* restrict agm, const int a_offset, const int a_ld,
+               const __global real* restrict xgm, const int x_offset, const int x_inc,
+               __global real* ygm, const int y_offset, const int y_inc,
+               const int do_conjugate, const int parameter,
+               const int kl_unused, const int ku_unused) {
+  const real alpha = GetRealArg(arg_alpha);
+  const real beta = GetRealArg(arg_beta);
 
   // Local memory for the vector X
   __local real xlm[WGS2];
 
-  // Initializes the accumulation register
+  // Initializes the accumulation registers
   real acc[WPT2];
   #pragma unroll
   for (int w=0; w<WPT2; ++w) {
@@ -134,7 +128,7 @@ __kernel void XgemvFast(const int m, const int n,
       #pragma unroll
       for (int w=0; w<WPT2/VW2; ++w) {
         const int gid = (WPT2/VW2)*get_global_id(0) + w;
-        realVF avec = LoadMatrixAVF(agm, gid, k, a_ld/VW2);
+        realVF avec = agm[(a_ld/VW2)*k + gid];
         #if VW2 == 1
           MultiplyAdd(acc[VW2*w+0], xlm[kl], avec);
         #elif VW2 == 2
@@ -196,84 +190,96 @@ __kernel void XgemvFast(const int m, const int n,
 // --> 'a_ld' is a multiple of VW3
 // --> 'a_rotated' is 1
 // --> 'do_conjugate' is 0
-__attribute__((reqd_work_group_size(WGS3, 1, 1)))
-__kernel void XgemvFastRot(const int m, const int n,
-                           const __constant real* restrict arg_alpha,
-                           const __constant real* restrict arg_beta,
-                           const int a_rotated,
-                           const __global realVFR* restrict agm, const int a_offset, const int a_ld,
-                           const __global real* restrict xgm, const int x_offset, const int x_inc,
-                           __global real* ygm, const int y_offset, const int y_inc,
-                           const int do_conjugate, const int parameter,
-                           const int kl, const int ku) {
-  const real alpha = arg_alpha[0];
-  const real beta = arg_beta[0];
+__kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
+void XgemvFastRot(const int m, const int n,
+                  const real_arg arg_alpha,
+                  const real_arg arg_beta,
+                  const int a_rotated,
+                  const __global realVFR* restrict agm, const int a_offset, const int a_ld,
+                  const __global real* restrict xgm, const int x_offset, const int x_inc,
+                  __global real* ygm, const int y_offset, const int y_inc,
+                  const int do_conjugate, const int parameter,
+                  const int kl_unused, const int ku_unused) {
+  const real alpha = GetRealArg(arg_alpha);
+  const real beta = GetRealArg(arg_beta);
+
+  // Local memory to store a tile of the matrix (for coalescing)
+  __local real tile[WPT3][WGS3];
+  const int lid = get_local_id(0);
+  const int lid_mod = lid % (WPT3/VW3);
+  const int lid_div = lid / (WPT3/VW3);
 
   // Local memory for the vector X
-  __local real xlm[WGS3];
+  __local real xlm[WPT3];
 
   // Initializes the accumulation register
-  real acc[WPT3];
-  #pragma unroll
-  for (int w=0; w<WPT3; ++w) {
-    SetToZero(acc[w]);
-  }
+  real acc;
+  SetToZero(acc);
 
-  // Loops over work-group sized portions of the work
-  for (int kwg=0; kwg<n; kwg+=WGS3) {
+  // Loops over tile-sized portions of the work
+  for (int kwg=0; kwg<n; kwg+=WPT3) {
 
     // Loads the vector X into local memory
-    const int lid = get_local_id(0);
-    xlm[lid] = xgm[(kwg + lid)*x_inc + x_offset];
+    if (lid < WPT3) {
+      xlm[lid] = xgm[(kwg + lid) * x_inc + x_offset];
+    }
+
+    // Loads the matrix A into local memory
+    #pragma unroll
+    for (int kl=0; kl<WPT3/VW3; ++kl) {
+      const int x = (kwg/VW3) + lid_mod;
+      const int y = get_group_id(0) * WGS3 + lid_div * (WPT3/VW3) + kl;
+      realVFR avec = agm[(a_ld/VW3) * y + x];
+      #if VW3 == 1
+        tile[kl*VW3 + 0][lid] = avec;
+      #elif VW3 == 2
+        tile[kl*VW3 + 0][lid] = avec.x;
+        tile[kl*VW3 + 1][lid] = avec.y;
+      #elif VW3 == 4
+        tile[kl*VW3 + 0][lid] = avec.x;
+        tile[kl*VW3 + 1][lid] = avec.y;
+        tile[kl*VW3 + 2][lid] = avec.z;
+        tile[kl*VW3 + 3][lid] = avec.w;
+      #elif VW3 == 8
+        tile[kl*VW3 + 0][lid] = avec.s0;
+        tile[kl*VW3 + 1][lid] = avec.s1;
+        tile[kl*VW3 + 2][lid] = avec.s2;
+        tile[kl*VW3 + 3][lid] = avec.s3;
+        tile[kl*VW3 + 4][lid] = avec.s4;
+        tile[kl*VW3 + 5][lid] = avec.s5;
+        tile[kl*VW3 + 6][lid] = avec.s6;
+        tile[kl*VW3 + 7][lid] = avec.s7;
+      #elif VW3 == 16
+        tile[kl*VW3 + 0][lid] = avec.s0;
+        tile[kl*VW3 + 1][lid] = avec.s1;
+        tile[kl*VW3 + 2][lid] = avec.s2;
+        tile[kl*VW3 + 3][lid] = avec.s3;
+        tile[kl*VW3 + 4][lid] = avec.s4;
+        tile[kl*VW3 + 5][lid] = avec.s5;
+        tile[kl*VW3 + 6][lid] = avec.s6;
+        tile[kl*VW3 + 7][lid] = avec.s7;
+        tile[kl*VW3 + 8][lid] = avec.s8;
+        tile[kl*VW3 + 9][lid] = avec.s9;
+        tile[kl*VW3 + 10][lid] = avec.sA;
+        tile[kl*VW3 + 11][lid] = avec.sB;
+        tile[kl*VW3 + 12][lid] = avec.sC;
+        tile[kl*VW3 + 13][lid] = avec.sD;
+        tile[kl*VW3 + 14][lid] = avec.sE;
+        tile[kl*VW3 + 15][lid] = avec.sF;
+      #endif
+    }
 
     // Synchronizes all threads in a workgroup
     barrier(CLK_LOCAL_MEM_FENCE);
 
     // The multiply-add function (rotated)
     #pragma unroll
-    for (int kl=0; kl<WGS3/VW3; ++kl) {
-      const int k = (kwg/VW3) + kl;
+    for (int kl=0; kl<WPT3/VW3; ++kl) {
       #pragma unroll
-      for (int w=0; w<WPT3; ++w) {
-        const int gid = WPT3*get_global_id(0) + w;
-        realVFR avec = LoadMatrixAVFR(agm, k, gid, a_ld/VW3);
-        #if VW3 == 1
-          MultiplyAdd(acc[w], xlm[VW3*kl+0], avec);
-        #elif VW3 == 2
-          MultiplyAdd(acc[w], xlm[VW3*kl+0], avec.x);
-          MultiplyAdd(acc[w], xlm[VW3*kl+1], avec.y);
-        #elif VW3 == 4
-          MultiplyAdd(acc[w], xlm[VW3*kl+0], avec.x);
-          MultiplyAdd(acc[w], xlm[VW3*kl+1], avec.y);
-          MultiplyAdd(acc[w], xlm[VW3*kl+2], avec.z);
-          MultiplyAdd(acc[w], xlm[VW3*kl+3], avec.w);
-        #elif VW3 == 8
-          MultiplyAdd(acc[w], xlm[VW3*kl+0], avec.s0);
-          MultiplyAdd(acc[w], xlm[VW3*kl+1], avec.s1);
-          MultiplyAdd(acc[w], xlm[VW3*kl+2], avec.s2);
-          MultiplyAdd(acc[w], xlm[VW3*kl+3], avec.s3);
-          MultiplyAdd(acc[w], xlm[VW3*kl+4], avec.s4);
-          MultiplyAdd(acc[w], xlm[VW3*kl+5], avec.s5);
-          MultiplyAdd(acc[w], xlm[VW3*kl+6], avec.s6);
-          MultiplyAdd(acc[w], xlm[VW3*kl+7], avec.s7);
-        #elif VW3 == 16
-          MultiplyAdd(acc[w], xlm[VW3*kl+0], avec.s0);
-          MultiplyAdd(acc[w], xlm[VW3*kl+1], avec.s1);
-          MultiplyAdd(acc[w], xlm[VW3*kl+2], avec.s2);
-          MultiplyAdd(acc[w], xlm[VW3*kl+3], avec.s3);
-          MultiplyAdd(acc[w], xlm[VW3*kl+4], avec.s4);
-          MultiplyAdd(acc[w], xlm[VW3*kl+5], avec.s5);
-          MultiplyAdd(acc[w], xlm[VW3*kl+6], avec.s6);
-          MultiplyAdd(acc[w], xlm[VW3*kl+7], avec.s7);
-          MultiplyAdd(acc[w], xlm[VW3*kl+8], avec.s8);
-          MultiplyAdd(acc[w], xlm[VW3*kl+9], avec.s9);
-          MultiplyAdd(acc[w], xlm[VW3*kl+10], avec.sA);
-          MultiplyAdd(acc[w], xlm[VW3*kl+11], avec.sB);
-          MultiplyAdd(acc[w], xlm[VW3*kl+12], avec.sC);
-          MultiplyAdd(acc[w], xlm[VW3*kl+13], avec.sD);
-          MultiplyAdd(acc[w], xlm[VW3*kl+14], avec.sE);
-          MultiplyAdd(acc[w], xlm[VW3*kl+15], avec.sF);
-        #endif
+      for (int v=0; v<VW3; ++v) {
+        real aval = tile[lid_mod*VW3 + v][lid_div * (WPT3/VW3) + kl];
+        real xval = xlm[kl*VW3 + v];
+        MultiplyAdd(acc, xval, aval);
       }
     }
 
@@ -282,12 +288,9 @@ __kernel void XgemvFastRot(const int m, const int n,
   }
 
   // Stores the final result
-  #pragma unroll
-  for (int w=0; w<WPT3; ++w) {
-    const int gid = WPT3*get_global_id(0) + w;
-    real yval = ygm[gid*y_inc + y_offset];
-    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
-  }
+  const int gid = get_global_id(0);
+  real yval = ygm[gid * y_inc + y_offset];
+  AXPBY(ygm[gid * y_inc + y_offset], alpha, acc, beta, yval);
 }
 
 // =================================================================================================

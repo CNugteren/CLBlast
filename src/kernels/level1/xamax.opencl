@@ -30,10 +30,10 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the loading and the majority of the operation
-__attribute__((reqd_work_group_size(WGS1, 1, 1)))
-__kernel void Xamax(const int n,
-                    const __global real* restrict xgm, const int x_offset, const int x_inc,
-                    __global singlereal* maxgm, __global unsigned int* imaxgm) {
+__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+void Xamax(const int n,
+           const __global real* restrict xgm, const int x_offset, const int x_inc,
+           __global singlereal* maxgm, __global unsigned int* imaxgm) {
   __local singlereal maxlm[WGS1];
   __local unsigned int imaxlm[WGS1];
   const int lid = get_local_id(0);
@@ -95,10 +95,10 @@ __kernel void Xamax(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
-__attribute__((reqd_work_group_size(WGS2, 1, 1)))
-__kernel void XamaxEpilogue(const __global singlereal* restrict maxgm,
-                            const __global unsigned int* restrict imaxgm,
-                            __global unsigned int* imax, const int imax_offset) {
+__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+void XamaxEpilogue(const __global singlereal* restrict maxgm,
+                   const __global unsigned int* restrict imaxgm,
+                   __global unsigned int* imax, const int imax_offset) {
   __local singlereal maxlm[WGS2];
   __local unsigned int imaxlm[WGS2];
   const int lid = get_local_id(0);
