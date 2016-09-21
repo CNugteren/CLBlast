@@ -5,46 +5,60 @@
 # Author(s):
 #   Cedric Nugteren <www.cedricnugteren.nl>
 
-import pandas as pd
+import clblast
 
 
-def get_entries_by_field(database, field, value):
-    """Retrieves entries from the database with a specific value for a given field"""
-    return database[database[field] == value]
+def length(database):
+    """Computes the total number of tuning entries"""
+    num_tuning_entries = 0
+    for section in database["sections"]:
+        num_tuning_entries += len(section["results"])
+    return num_tuning_entries
 
 
-def concatenate_database(database1, database2):
-    """Concatenates two databases row-wise and returns the result"""
-    return pd.concat([database1, database2])
+def add_section(database, new_section):
+    """Adds a new section to the database"""
+    for old_section in database["sections"]:
 
+        # Verify whether the sections match
+        equal = True
+        for attribute in new_section.keys():
+            if attribute != "results":
+                if attribute not in old_section or new_section[attribute] != old_section[attribute]:
+                    equal = False
+                    break
 
-def remove_duplicates(database):
-    """Removes duplicates from a database"""
-    return database.drop_duplicates()
+        # They match: append the new section's results to the corresponding entry in the database and return
+        if equal:
+            old_section["results"] = combine_results(old_section["results"], new_section["results"])
+            return database
 
-
-def find_and_replace(database, dictionary):
-    """Finds and replaces entries in a database based on a dictionary. Example:
-    dictionary = { "key_to_edit": { find1: replace1, find2, replace2 } }"""
-    return database.replace(dictionary)
-
-
-def remove_entries_by_key_value(database, key, value):
-    """Removes entries in the databased which have a specific value for a given key"""
-    return database[database[key] != value]
-
-
-def remove_entries_by_device(database, device_name):
-    """Shorthand for the above, specifically removes entries for a given device"""
-    return remove_entries_by_key_value(database, "device", device_name)
-
-
-def remove_entries_by_kernel_family(database, kernel_family_name):
-    """Shorthand for the above, specifically removes entries for a given kernel family"""
-    return remove_entries_by_key_value(database, "kernel_family", kernel_family_name)
-
-
-def update_database(database, condition, field, value):
-    """Updates the database by writing a specific value to a given field, given certain conditions"""
-    database.loc[condition, field] = value
+    # No match found: append the whole new section to the database
+    database["sections"].append(new_section)
     return database
+
+
+def combine_results(old_results, new_results):
+    """Adds new results to the results JSON list"""
+    for new_result in new_results:
+        old_results = combine_result(old_results, new_result)
+    return old_results
+
+
+def combine_result(old_results, new_result):
+    """Adds a new result to the results JSON list; filters for duplicate entries and saves the best performing one"""
+
+    # Loops over all existing results to test for already existing entries with these parameters
+    for old_result in old_results:
+
+        # Verify whether the results match
+        equal = new_result["parameters"] == old_result["parameters"]
+
+        # They match: keep only the one with the minimum execution time
+        if equal:
+            old_result["time"] = min(old_result["time"], new_result["time"])
+            return old_results
+
+    # No match found: append a new result
+    old_results.append(new_result)
+    return old_results

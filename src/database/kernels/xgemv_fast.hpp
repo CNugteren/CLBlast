@@ -18,13 +18,14 @@ const Database::DatabaseEntry Database::XgemvFastHalf = {
   "XgemvFast", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
-        { "default",                                         { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
       }
     },
   }
@@ -48,17 +49,18 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
+        { "default",                                         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
         { "Iris Pro",                                        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",2}, {"WGS2",64}, {"WPT2",2} } },
       }
     },
     { // Intel accelerators
@@ -81,7 +83,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
       }
     },
     { // Default
@@ -116,6 +118,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 530",                        { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
+        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -189,7 +192,7 @@ const Database::DatabaseEntry Database::XgemvFastDouble = {
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
       }
     },
     { // Default

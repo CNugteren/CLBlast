@@ -17,49 +17,21 @@ addons:
       - kubuntu-backports
     packages:
       - cmake
+      - ocl-icd-opencl-dev
 
 env:
   global:
     - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/clblast
-    - OPENCL_REGISTRY=https://www.khronos.org/registry/cl
-    - OPENCL_ROOT=${TRAVIS_BUILD_DIR}/bin/opencl
 
 before_install:
   - cmake --version;
   - ${CC} --version;
   - ${CXX} --version;
 
-install:
-  # The following linux logic is necessary because of Travis's move to the GCE platform, which does not
-  # currently contain packages for fglrx: https://github.com/travis-ci/travis-ci/issues/5221
-  # We build our own linkable .so file
-  - if [ ${TRAVIS_OS_NAME} == "linux" ]; then
-      mkdir -p ${OPENCL_ROOT};
-      pushd ${OPENCL_ROOT};
-      travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git;
-      mv ./OpenCL-ICD-Loader/* .;
-      travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL;
-      pushd inc/CL;
-      travis_retry wget -w 1 -np -nd -nv -A h,hpp ${OPENCL_REGISTRY}/api/2.1/cl.hpp;
-      popd;
-      mkdir -p lib;
-      pushd lib;
-      cmake -G "Unix Makefiles" ..;
-      make;
-      cp ./bin/libOpenCL.so .;
-      popd;
-      pushd inc/CL;
-      travis_retry git fetch origin opencl12:opencl12;
-      git checkout opencl12;
-      popd;
-      mv inc/ include/;
-      popd;
-    fi
-
 before_script:
   - mkdir -p ${CLBLAST_ROOT}
   - pushd ${CLBLAST_ROOT}
-  - cmake -DOPENCL_ROOT=${OPENCL_ROOT} -DTESTS=ON -DCLIENTS=ON ${TRAVIS_BUILD_DIR}
+  - cmake -DTESTS=ON -DCLIENTS=ON ${TRAVIS_BUILD_DIR}
 
 script:
   - make

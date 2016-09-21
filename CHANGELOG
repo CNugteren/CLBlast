@@ -1,13 +1,20 @@
 
 Development version (next release)
+- It is now possible to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
+
+Version 0.9.0
 - Updated to version 6.0 of the CLCudaAPI C++11 OpenCL header
+- Improved performance significantly of rotated GEMV computations
+- Improved performance of unseen/un-tuned devices by a better default tuning parameter selection
 - Fixed proper MSVC dllimport and dllexport declarations
 - Fixed memory leaks related to events not being released
 - Fixed a bug with a size_t and cl_ulong mismatch on 32-bit systems
 - Fixed a bug related to the cache and retrieval of programs based on the OpenCL context
 - Fixed a performance issue (caused by fp16 support) by optimizing alpha/beta parameter passing to kernels
+- Fixed a bug in the OpenCL kernels: now placing __kernel before __attribute__
+- Fixed a bug in level-3 routines when beta is zero and matrix C contains NaNs
 - Added an option (-warm_up) to do a warm-up run before timing in the performance clients
-- Improved performance significantly of rotated GEMV computations
+- Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 
 Version 0.8.0

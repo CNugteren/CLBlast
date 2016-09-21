@@ -20,14 +20,14 @@ R"(
 
 // Kernel to populate a squared triangular matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void TriaLowerToSquared(const int src_dim,
-                                 const int src_ld, const int src_offset,
-                                 __global const real* restrict src,
-                                 const int dest_dim,
-                                 const int dest_ld, const int dest_offset,
-                                 __global real* dest,
-                                 const int unit_diagonal) {
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void TriaLowerToSquared(const int src_dim,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_dim,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest,
+                        const int unit_diagonal) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -55,14 +55,14 @@ __kernel void TriaLowerToSquared(const int src_dim,
 }
 
 // Same as above, but now the matrix' data is stored in the upper-triangle
-__attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-__kernel void TriaUpperToSquared(const int src_dim,
-                                 const int src_ld, const int src_offset,
-                                 __global const real* restrict src,
-                                 const int dest_dim,
-                                 const int dest_ld, const int dest_offset,
-                                 __global real* dest,
-                                 const int unit_diagonal) {
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void TriaUpperToSquared(const int src_dim,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_dim,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest,
+                        const int unit_diagonal) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
