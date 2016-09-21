@@ -284,7 +284,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Cedric Nugteren](http://www.cedricnugteren.nl) - main author
 * [Anton Lokhmotov](https://github.com/psyhtest)
 * [Dragan Djuric](https://github.com/blueberry)
-* [Marco Hutter](https://github.com/gpus)
+* [Marco Hutter](http://marco-hutter.de/)
 * [Hugh Perkins](https://github.com/hughperkins)
 * [Gian-Carlo Pascutto](https://github.com/gcp)
 * [Ivan Shapovalov](https://github.com/intelfx)
