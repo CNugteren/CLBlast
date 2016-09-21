@@ -90,6 +90,8 @@ Afterwards, any of CLBlast's routines can be called directly: there is no need t
 
     cmake -DSAMPLES=ON ..
 
+Furthermore, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
 
 Using the tuners (optional)
 -------------

@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
 
 #include "routine.hpp"
 
@@ -42,13 +43,19 @@ StatusCode Routine::SetUp() {
   // Queries the cache to see whether or not the program (context-specific) is already there
   if (ProgramIsInCache(context_, precision_, routine_name_)) { return StatusCode::kSuccess; }
 
+  // Sets the build options from an environmental variable (if set)
+  auto options = std::vector<std::string>();
+  const auto environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
+  if (environment_variable != nullptr) {
+    options.push_back(std::string(environment_variable));
+  }
+
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
   if (BinaryIsInCache(device_name_, precision_, routine_name_)) {
     try {
       auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
       auto program = Program(device_, context_, binary);
-      auto options = std::vector<std::string>();
       program.Build(device_, options);
       StoreProgramToCache(program, context_, precision_, routine_name_);
     } catch (...) { return StatusCode::kBuildProgramFailure; }
@@ -115,7 +122,6 @@ StatusCode Routine::SetUp() {
   // Compiles the kernel
   try {
     auto program = Program(context_, source_string);
-    auto options = std::vector<std::string>();
     const auto build_status = program.Build(device_, options);
 
     // Checks for compiler crashes/errors/warnings
