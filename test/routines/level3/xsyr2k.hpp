@@ -90,7 +90,7 @@ class TestXsyr2k {
                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
                         buffers.c_mat(), args.c_offset, args.c_ld,
                         &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 

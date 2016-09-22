@@ -77,7 +77,7 @@ class TestXomatcopy {
                               buffers.a_mat(), args.a_offset, args.a_ld,
                               buffers.b_mat(), args.b_offset, args.b_ld,
                               &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 
