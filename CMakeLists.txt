@@ -356,7 +356,7 @@ if(TESTS)
                 test/correctness/tester.cpp test/correctness/testblas.cpp)
     target_include_directories(test_correctness_common PUBLIC
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR})
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
   endif()
 
