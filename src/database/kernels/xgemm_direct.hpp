@@ -18,7 +18,7 @@ const Database::DatabaseEntry Database::XgemmDirectHalf = {
   "XgemmDirect", Precision::kHalf, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"MWGD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"NWGD",32}, {"VWMD",1}, {"VWND",1} } },
+        { "default",                                         { {"WGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"VWMD",1}, {"VWND",1} } },
       }
     },
   }
@@ -30,7 +30,7 @@ const Database::DatabaseEntry Database::XgemmDirectSingle = {
   "XgemmDirect", Precision::kSingle, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"MWGD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"NWGD",32}, {"VWMD",1}, {"VWND",1} } },
+        { "default",                                         { {"WGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"VWMD",1}, {"VWND",1} } },
       }
     },
   }
@@ -42,7 +42,7 @@ const Database::DatabaseEntry Database::XgemmDirectComplexSingle = {
   "XgemmDirect", Precision::kComplexSingle, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"MWGD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"NWGD",32}, {"VWMD",1}, {"VWND",1} } },
+        { "default",                                         { {"WGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"VWMD",1}, {"VWND",1} } },
       }
     },
   }
@@ -54,7 +54,7 @@ const Database::DatabaseEntry Database::XgemmDirectDouble = {
   "XgemmDirect", Precision::kDouble, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"MWGD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"NWGD",32}, {"VWMD",1}, {"VWND",1} } },
+        { "default",                                         { {"WGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"VWMD",1}, {"VWND",1} } },
       }
     },
   }
@@ -66,7 +66,7 @@ const Database::DatabaseEntry Database::XgemmDirectComplexDouble = {
   "XgemmDirect", Precision::kComplexDouble, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"MWGD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"NWGD",32}, {"VWMD",1}, {"VWND",1} } },
+        { "default",                                         { {"WGD",32}, {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"VWMD",1}, {"VWND",1} } },
       }
     },
   }
