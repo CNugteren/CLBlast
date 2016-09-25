@@ -21,6 +21,7 @@
 #include "database/kernels/xgemv_fast_rot.hpp"
 #include "database/kernels/xger.hpp"
 #include "database/kernels/xgemm.hpp"
+#include "database/kernels/xgemm_direct.hpp"
 #include "database/kernels/copy.hpp"
 #include "database/kernels/pad.hpp"
 #include "database/kernels/transpose.hpp"
@@ -38,6 +39,7 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XgemvFastRotHalf, XgemvFastRotSingle, XgemvFastRotDouble, XgemvFastRotComplexSingle, XgemvFastRotComplexDouble,
   XgerHalf, XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmHalf, XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
+  XgemmDirectHalf, XgemmDirectSingle, XgemmDirectDouble, XgemmDirectComplexSingle, XgemmDirectComplexDouble,
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
   TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
