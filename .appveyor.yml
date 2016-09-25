@@ -1,6 +1,6 @@
 environment:
   global:
-    CLBLAST_BUILD: "%APPVEYOR_BUILD_FOLDER%\\..\\bin\\clblast"
+    CLBLAST_BUILD: "C:\\clblast\\build"
     OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "C:\\dependencies\\opencl"
 
