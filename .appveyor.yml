@@ -1,7 +1,6 @@
 environment:
   global:
     CLBLAST_BUILD: "%APPVEYOR_BUILD_FOLDER%\\..\\bin\\clblast"
-    INSTALL_DIR: "%APPVEYOR_BUILD_FOLDER%\\..\\bin\\install"
     OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "C:\\dependencies\\opencl"
 
@@ -47,8 +46,8 @@ install:
 before_build:
   - ps: mkdir $env:CLBLAST_BUILD
   - ps: pushd $env:CLBLAST_BUILD
-  - ps: mkdir $env:INSTALL_DIR
-  - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=$env:INSTALL_DIR -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
+  - ps: mkdir install_dir
+  - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=install_dir -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - nmake
@@ -56,7 +55,7 @@ build_script:
 
 after_build:
   - ps: pushd $env:CLBLAST_BUILD
-  - 7z a CLBlast-Windows-x64.zip $env:INSTALL_DIR\*
+  - 7z a CLBlast-Windows-x64.zip .\install_dir\*
   - ps: mv CLBlast-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
 
 artifacts:
