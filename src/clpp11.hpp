@@ -12,8 +12,8 @@
 // Portability here means that a similar header exists for CUDA with the same classes and
 // interfaces. In other words, moving from the OpenCL API to the CUDA API becomes a one-line change.
 //
-// This file is taken from the Claduc project <https://github.com/CNugteren/Claduc> and therefore
-// contains the following header copyright notice:
+// This file is taken from the CLCudaAPI project <https://github.com/CNugteren/CLCudaAPI> and
+// therefore contains the following header copyright notice:
 //
 // =================================================================================================
 //
@@ -97,14 +97,12 @@ class Event {
   // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
   float GetElapsedTime() const {
     WaitForCompletion();
-    auto bytes = size_t{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, 0, nullptr, &bytes);
-    auto time_start = size_t{0};
+    const auto bytes = sizeof(cl_ulong);
+    auto time_start = cl_ulong{0};
     clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, 0, nullptr, &bytes);
-    auto time_end = size_t{0};
+    auto time_end = cl_ulong{0};
     clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
-    return (time_end - time_start) * 1.0e-6f;
+    return static_cast<float>(time_end - time_start) * 1.0e-6f;
   }
 
   // Accessor to the private data-member
@@ -151,6 +149,17 @@ class Platform {
  private:
   cl_platform_id platform_;
 };
+
+// Retrieves a vector with all platforms
+inline std::vector<Platform> GetAllPlatforms() {
+  auto num_platforms = cl_uint{0};
+  CheckError(clGetPlatformIDs(0, nullptr, &num_platforms));
+  auto all_platforms = std::vector<Platform>();
+  for (size_t platform_id = 0; platform_id < static_cast<size_t>(num_platforms); ++platform_id) {
+    all_platforms.push_back(Platform(platform_id));
+  }
+  return all_platforms;
+}
 
 // =================================================================================================
 
@@ -201,8 +210,8 @@ class Device {
   std::vector<size_t> MaxWorkItemSizes() const {
     return GetInfoVector<size_t>(CL_DEVICE_MAX_WORK_ITEM_SIZES);
   }
-  cl_ulong LocalMemSize() const {
-    return GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE);
+  unsigned long LocalMemSize() const {
+    return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
   }
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
   size_t CoreClock() const {
@@ -238,9 +247,11 @@ class Device {
   // Query for a specific type of device or brand
   bool IsCPU() const { return Type() == "CPU"; }
   bool IsGPU() const { return Type() == "GPU"; }
-  bool IsAMD() const { return Vendor() == "AMD" || Vendor() == "Advanced Micro Devices, Inc."; }
+  bool IsAMD() const { return Vendor() == "AMD" || Vendor() == "Advanced Micro Devices, Inc." ||
+                              Vendor() == "AuthenticAMD";; }
   bool IsNVIDIA() const { return Vendor() == "NVIDIA" || Vendor() == "NVIDIA Corporation"; }
-  bool IsIntel() const { return Vendor() == "Intel" || Vendor() == "GenuineIntel"; }
+  bool IsIntel() const { return Vendor() == "INTEL" || Vendor() == "Intel" ||
+                                Vendor() == "GenuineIntel"; }
   bool IsARM() const { return Vendor() == "ARM"; }
 
   // Accessor to the private data-member
@@ -606,8 +617,7 @@ class Buffer {
 
   // Retrieves the actual allocated size in bytes
   size_t GetSize() const {
-    auto bytes = size_t{0};
-    CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, 0, nullptr, &bytes));
+    const auto bytes = sizeof(size_t);
     auto result = size_t{0};
     CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, bytes, &result, nullptr));
     return result;
@@ -658,17 +668,16 @@ class Kernel {
   }
 
   // Retrieves the amount of local memory used per work-group for this kernel
-  cl_ulong LocalMemUsage(const Device &device) const {
-    auto bytes = size_t{0};
+  unsigned long LocalMemUsage(const Device &device) const {
+    const auto bytes = sizeof(cl_ulong);
     auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
-    CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, 0, nullptr, &bytes));
     auto result = cl_ulong{0};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, bytes, &result, nullptr));
-    return result;
+    return static_cast<unsigned long>(result);
   }
 
   // Retrieves the name of the kernel
-  std::string GetFunctionName() {
+  std::string GetFunctionName() const {
     auto bytes = size_t{0};
     CheckError(clGetKernelInfo(*kernel_, CL_KERNEL_FUNCTION_NAME, 0, nullptr, &bytes));
     auto result = std::string{};
@@ -689,6 +698,7 @@ class Kernel {
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
               const std::vector<Event> &waitForEvents) {
+
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
     for (auto &waitEvent : waitForEvents) {
