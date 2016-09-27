@@ -46,6 +46,8 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgBeta)     { args.beta     = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgFraction) { args.fraction = GetArgument(argc, argv, help, kArgFraction, C::DefaultFraction()); }
   }
+  const auto num_runs = GetArgument(argc, argv, help, kArgNumRuns, size_t{1});
+
   fprintf(stdout, "%s\n", help.c_str());
 
   // Tests validity of the given arguments
@@ -127,6 +129,7 @@ void Tuner(int argc, char* argv[]) {
   C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat, temp);
 
   // Starts the tuning process
+  tuner.SetNumRuns(num_runs);
   tuner.Tune();
 
   // Prints the results to screen
@@ -135,7 +138,7 @@ void Tuner(int argc, char* argv[]) {
 
   // Also prints the performance of the best-case in terms of GB/s or GFLOPS
   if (time_ms != 0.0) {
-    printf("[ -------> ] %.1lf ms", time_ms);
+    printf("[ -------> ] %.2lf ms", time_ms);
     printf(" or %.1lf %s\n", C::GetMetric(args)/(time_ms*1.0e6), C::PerformanceUnit().c_str());
   }
 

@@ -3,6 +3,7 @@ Development version (next release)
 - It is now possible to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
 - Fixed a bug in the tests and samples related to waiting for an invalid event
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header
+- Added an option to run tuned kernels multiple times to average execution times
 - Various minor fixes and enhancements
 
 Version 0.9.0
