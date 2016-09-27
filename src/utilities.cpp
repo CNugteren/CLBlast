@@ -270,40 +270,40 @@ unsigned int GetRandomSeed() {
 
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
-void PopulateVector(std::vector<T> &vector) {
+void PopulateVector(std::vector<T> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<T>(kTestDataLowerLimit);
   auto upper_limit = static_cast<T>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<T> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = dist(mt); }
 }
-template void PopulateVector<float>(std::vector<float>&);
-template void PopulateVector<double>(std::vector<double>&);
+template void PopulateVector<float>(std::vector<float>&, const unsigned int);
+template void PopulateVector<double>(std::vector<double>&, const unsigned int);
 
 // Specialized versions of the above for complex data-types
 template <>
-void PopulateVector(std::vector<float2> &vector) {
+void PopulateVector(std::vector<float2> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<float>(kTestDataLowerLimit);
   auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 template <>
-void PopulateVector(std::vector<double2> &vector) {
+void PopulateVector(std::vector<double2> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<double>(kTestDataLowerLimit);
   auto upper_limit = static_cast<double>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<double> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 
 // Specialized versions of the above for half-precision
 template <>
-void PopulateVector(std::vector<half> &vector) {
+void PopulateVector(std::vector<half> &vector, const unsigned int seed) {
   const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
   const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
 }

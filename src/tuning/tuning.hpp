@@ -30,6 +30,7 @@ namespace clblast {
 // that it is automatically compiled for the various kernels (given as the 'C' template argument).
 template <typename C, typename T>
 void Tuner(int argc, char* argv[]) {
+  constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Sets the parameters and platform/device for which to tune (command-line options)
   auto help = std::string{"* Options given/available:\n"};
@@ -73,12 +74,12 @@ void Tuner(int argc, char* argv[]) {
   auto b_mat = std::vector<T>(C::GetSizeB(args));
   auto c_mat = std::vector<T>(C::GetSizeC(args));
   auto temp = std::vector<T>(C::GetSizeTemp(args));
-  PopulateVector(x_vec);
-  PopulateVector(y_vec);
-  PopulateVector(a_mat);
-  PopulateVector(b_mat);
-  PopulateVector(c_mat);
-  PopulateVector(temp);
+  PopulateVector(x_vec, kSeed);
+  PopulateVector(y_vec, kSeed);
+  PopulateVector(a_mat, kSeed);
+  PopulateVector(b_mat, kSeed);
+  PopulateVector(c_mat, kSeed);
+  PopulateVector(temp, kSeed);
 
   // Initializes the tuner for the chosen device
   cltune::Tuner tuner(args.platform_id, args.device_id);

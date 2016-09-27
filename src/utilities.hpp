@@ -219,7 +219,7 @@ constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>
-void PopulateVector(std::vector<T> &vector);
+void PopulateVector(std::vector<T> &vector, const unsigned int seed);
 
 // =================================================================================================
 
