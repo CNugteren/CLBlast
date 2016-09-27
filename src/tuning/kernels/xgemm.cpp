@@ -126,10 +126,10 @@ class TuneXgemm {
   // Sets the local memory size
   static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
     auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return (((v[0]*v[1]*v[2]/v[3]) + (v[4]*v[5]*v[6]/v[7]))*GetBytes(args.precision));
+      return (((v[0]*v[1]*v[2]) + (v[3]*v[4]*v[5]))*GetBytes(args.precision));
     };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG", "VWM",
-                                                    "SB", "KWG", "NWG", "VWN"});
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG",
+                                                    "SB", "KWG", "NWG"});
   }
 
   // Sets the base thread configuration
