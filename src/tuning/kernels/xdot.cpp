@@ -47,6 +47,7 @@ class TuneXdot {
   static size_t DefaultN() { return 2*1024*1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
+  static size_t DefaultNumRuns() { return 1; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) { return args.n; }

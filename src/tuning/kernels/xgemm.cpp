@@ -52,6 +52,7 @@ class TuneXgemm {
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1024; }
   static double DefaultFraction() { return (V==1) ? 1.0 : 512.0; } // test all or sample randomly
+  static size_t DefaultNumRuns() { return 1; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
