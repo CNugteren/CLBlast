@@ -43,6 +43,12 @@ R"(
 #ifndef VWND
   #define VWND 1      // Vector width of matrix B
 #endif
+#ifndef PADA
+  #define PADA 1      // Local memory padding for matrix A
+#endif
+#ifndef PADB
+  #define PADB 1      // Local memory padding for matrix B
+#endif
 
 // Helper parameters based on the above tuning parameters
 #define MWID (WGD/MDIMCD)                // Work per work-item (M-dimension)
@@ -87,10 +93,16 @@ R"(
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
 inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local real* alm,
-                                 const int a_ld, const int a_offset, const int tid, const int kwg,
+                                 const int a_ld, const int a_offset, const int kwg,
                                  const int a_transpose, const int a_conjugate) {
-  const int la0 = tid % MDIMAD;
-  const int la1 = tid / MDIMAD;
+  #if MDIMCD == MDIMAD
+    const int la0 = get_local_id(0);
+    const int la1 = get_local_id(1);
+  #else
+    const int tid = get_local_id(0) + MDIMCD*get_local_id(1);
+    const int la0 = tid % MDIMAD;
+    const int la1 = tid / MDIMAD;
+  #endif
   #pragma unroll
   for (int mia=0; mia<MWAD/VWMD; ++mia) {
     #pragma unroll
@@ -105,45 +117,45 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
       // Loads the data from global memory into the local memory
       const realMD avec = agm[idk*(a_ld/VWMD) + idm + a_offset];
       #if VWMD == 1
-         alm[kg*WGD + mg] = avec;
+         alm[kg*(WGD + PADA) + mg] = avec;
       #elif VWMD == 2
-         alm[kg*WGD + mg*VWMD + 0] = avec.x;
-         alm[kg*WGD + mg*VWMD + 1] = avec.y;
+         alm[kg*(WGD + PADA) + mg*VWMD + 0] = avec.x;
+         alm[kg*(WGD + PADA) + mg*VWMD + 1] = avec.y;
       #elif VWMD == 4
-         alm[kg*WGD + mg*VWMD + 0] = avec.x;
-         alm[kg*WGD + mg*VWMD + 1] = avec.y;
-         alm[kg*WGD + mg*VWMD + 2] = avec.z;
-         alm[kg*WGD + mg*VWMD + 3] = avec.w;
+         alm[kg*(WGD + PADA) + mg*VWMD + 0] = avec.x;
+         alm[kg*(WGD + PADA) + mg*VWMD + 1] = avec.y;
+         alm[kg*(WGD + PADA) + mg*VWMD + 2] = avec.z;
+         alm[kg*(WGD + PADA) + mg*VWMD + 3] = avec.w;
       #elif VWMD == 8
-         alm[kg*WGD + mg*VWMD + 0] = avec.s0;
-         alm[kg*WGD + mg*VWMD + 1] = avec.s1;
-         alm[kg*WGD + mg*VWMD + 2] = avec.s2;
-         alm[kg*WGD + mg*VWMD + 3] = avec.s3;
-         alm[kg*WGD + mg*VWMD + 4] = avec.s4;
-         alm[kg*WGD + mg*VWMD + 5] = avec.s5;
-         alm[kg*WGD + mg*VWMD + 6] = avec.s6;
-         alm[kg*WGD + mg*VWMD + 7] = avec.s7;
+         alm[kg*(WGD + PADA) + mg*VWMD + 0] = avec.s0;
+         alm[kg*(WGD + PADA) + mg*VWMD + 1] = avec.s1;
+         alm[kg*(WGD + PADA) + mg*VWMD + 2] = avec.s2;
+         alm[kg*(WGD + PADA) + mg*VWMD + 3] = avec.s3;
+         alm[kg*(WGD + PADA) + mg*VWMD + 4] = avec.s4;
+         alm[kg*(WGD + PADA) + mg*VWMD + 5] = avec.s5;
+         alm[kg*(WGD + PADA) + mg*VWMD + 6] = avec.s6;
+         alm[kg*(WGD + PADA) + mg*VWMD + 7] = avec.s7;
       #elif VWMD == 16
-         alm[kg*WGD + mg*VWMD + 0] = avec.s0;
-         alm[kg*WGD + mg*VWMD + 1] = avec.s1;
-         alm[kg*WGD + mg*VWMD + 2] = avec.s2;
-         alm[kg*WGD + mg*VWMD + 3] = avec.s3;
-         alm[kg*WGD + mg*VWMD + 4] = avec.s4;
-         alm[kg*WGD + mg*VWMD + 5] = avec.s5;
-         alm[kg*WGD + mg*VWMD + 6] = avec.s6;
-         alm[kg*WGD + mg*VWMD + 7] = avec.s7;
-         alm[kg*WGD + mg*VWMD + 8] = avec.s8;
-         alm[kg*WGD + mg*VWMD + 9] = avec.s9;
-         alm[kg*WGD + mg*VWMD + 10] = avec.sA;
-         alm[kg*WGD + mg*VWMD + 11] = avec.sB;
-         alm[kg*WGD + mg*VWMD + 12] = avec.sC;
-         alm[kg*WGD + mg*VWMD + 13] = avec.sD;
-         alm[kg*WGD + mg*VWMD + 14] = avec.sE;
-         alm[kg*WGD + mg*VWMD + 15] = avec.sF;
+         alm[kg*(WGD + PADA) + mg*VWMD + 0] = avec.s0;
+         alm[kg*(WGD + PADA) + mg*VWMD + 1] = avec.s1;
+         alm[kg*(WGD + PADA) + mg*VWMD + 2] = avec.s2;
+         alm[kg*(WGD + PADA) + mg*VWMD + 3] = avec.s3;
+         alm[kg*(WGD + PADA) + mg*VWMD + 4] = avec.s4;
+         alm[kg*(WGD + PADA) + mg*VWMD + 5] = avec.s5;
+         alm[kg*(WGD + PADA) + mg*VWMD + 6] = avec.s6;
+         alm[kg*(WGD + PADA) + mg*VWMD + 7] = avec.s7;
+         alm[kg*(WGD + PADA) + mg*VWMD + 8] = avec.s8;
+         alm[kg*(WGD + PADA) + mg*VWMD + 9] = avec.s9;
+         alm[kg*(WGD + PADA) + mg*VWMD + 10] = avec.sA;
+         alm[kg*(WGD + PADA) + mg*VWMD + 11] = avec.sB;
+         alm[kg*(WGD + PADA) + mg*VWMD + 12] = avec.sC;
+         alm[kg*(WGD + PADA) + mg*VWMD + 13] = avec.sD;
+         alm[kg*(WGD + PADA) + mg*VWMD + 14] = avec.sE;
+         alm[kg*(WGD + PADA) + mg*VWMD + 15] = avec.sF;
       #endif
       if (a_conjugate) {
         for (int vm=0; vm<VWMD; ++vm) {
-          COMPLEX_CONJUGATE(alm[kg*WGD + mg*VWMD + vm]);
+          COMPLEX_CONJUGATE(alm[kg*(WGD + PADA) + mg*VWMD + vm]);
         }
       }
     }
@@ -152,10 +164,16 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
 
 // Same as above, but now for the B input matrix
 inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local real* blm,
-                                 const int b_ld, const int b_offset, const int tid, const int kwg,
+                                 const int b_ld, const int b_offset, const int kwg,
                                  const int b_transpose, const int b_conjugate) {
-  const int lb0 = tid % NDIMBD;
-  const int lb1 = tid / NDIMBD;
+  #if MDIMCD == NDIMBD
+    const int lb0 = get_local_id(0);
+    const int lb1 = get_local_id(1);
+  #else
+    const int tid = get_local_id(0) + MDIMCD*get_local_id(1);
+    const int lb0 = tid % NDIMBD;
+    const int lb1 = tid / NDIMBD;
+  #endif
   #pragma unroll
   for (int kib=0; kib<KWBD; ++kib) {
     #pragma unroll
@@ -170,45 +188,45 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
       // Loads the data from global memory into the local memory
       const realND bvec = bgm[idk*(b_ld/VWND) + idn + b_offset];
       #if VWND == 1
-         blm[kg*WGD + ng] = bvec;
+         blm[kg*(WGD + PADB) + ng] = bvec;
       #elif VWND == 2
-         blm[kg*WGD + ng*VWND + 0] = bvec.x;
-         blm[kg*WGD + ng*VWND + 1] = bvec.y;
+         blm[kg*(WGD + PADB) + ng*VWND + 0] = bvec.x;
+         blm[kg*(WGD + PADB) + ng*VWND + 1] = bvec.y;
       #elif VWND == 4
-         blm[kg*WGD + ng*VWND + 0] = bvec.x;
-         blm[kg*WGD + ng*VWND + 1] = bvec.y;
-         blm[kg*WGD + ng*VWND + 2] = bvec.z;
-         blm[kg*WGD + ng*VWND + 3] = bvec.w;
+         blm[kg*(WGD + PADB) + ng*VWND + 0] = bvec.x;
+         blm[kg*(WGD + PADB) + ng*VWND + 1] = bvec.y;
+         blm[kg*(WGD + PADB) + ng*VWND + 2] = bvec.z;
+         blm[kg*(WGD + PADB) + ng*VWND + 3] = bvec.w;
       #elif VWND == 8
-         blm[kg*WGD + ng*VWND + 0] = bvec.s0;
-         blm[kg*WGD + ng*VWND + 1] = bvec.s1;
-         blm[kg*WGD + ng*VWND + 2] = bvec.s2;
-         blm[kg*WGD + ng*VWND + 3] = bvec.s3;
-         blm[kg*WGD + ng*VWND + 4] = bvec.s4;
-         blm[kg*WGD + ng*VWND + 5] = bvec.s5;
-         blm[kg*WGD + ng*VWND + 6] = bvec.s6;
-         blm[kg*WGD + ng*VWND + 7] = bvec.s7;
+         blm[kg*(WGD + PADB) + ng*VWND + 0] = bvec.s0;
+         blm[kg*(WGD + PADB) + ng*VWND + 1] = bvec.s1;
+         blm[kg*(WGD + PADB) + ng*VWND + 2] = bvec.s2;
+         blm[kg*(WGD + PADB) + ng*VWND + 3] = bvec.s3;
+         blm[kg*(WGD + PADB) + ng*VWND + 4] = bvec.s4;
+         blm[kg*(WGD + PADB) + ng*VWND + 5] = bvec.s5;
+         blm[kg*(WGD + PADB) + ng*VWND + 6] = bvec.s6;
+         blm[kg*(WGD + PADB) + ng*VWND + 7] = bvec.s7;
       #elif VWND == 16
-         blm[kg*WGD + ng*VWND + 0] = bvec.s0;
-         blm[kg*WGD + ng*VWND + 1] = bvec.s1;
-         blm[kg*WGD + ng*VWND + 2] = bvec.s2;
-         blm[kg*WGD + ng*VWND + 3] = bvec.s3;
-         blm[kg*WGD + ng*VWND + 4] = bvec.s4;
-         blm[kg*WGD + ng*VWND + 5] = bvec.s5;
-         blm[kg*WGD + ng*VWND + 6] = bvec.s6;
-         blm[kg*WGD + ng*VWND + 7] = bvec.s7;
-         blm[kg*WGD + ng*VWND + 8] = bvec.s8;
-         blm[kg*WGD + ng*VWND + 9] = bvec.s9;
-         blm[kg*WGD + ng*VWND + 10] = bvec.sA;
-         blm[kg*WGD + ng*VWND + 11] = bvec.sB;
-         blm[kg*WGD + ng*VWND + 12] = bvec.sC;
-         blm[kg*WGD + ng*VWND + 13] = bvec.sD;
-         blm[kg*WGD + ng*VWND + 14] = bvec.sE;
-         blm[kg*WGD + ng*VWND + 15] = bvec.sF;
+         blm[kg*(WGD + PADB) + ng*VWND + 0] = bvec.s0;
+         blm[kg*(WGD + PADB) + ng*VWND + 1] = bvec.s1;
+         blm[kg*(WGD + PADB) + ng*VWND + 2] = bvec.s2;
+         blm[kg*(WGD + PADB) + ng*VWND + 3] = bvec.s3;
+         blm[kg*(WGD + PADB) + ng*VWND + 4] = bvec.s4;
+         blm[kg*(WGD + PADB) + ng*VWND + 5] = bvec.s5;
+         blm[kg*(WGD + PADB) + ng*VWND + 6] = bvec.s6;
+         blm[kg*(WGD + PADB) + ng*VWND + 7] = bvec.s7;
+         blm[kg*(WGD + PADB) + ng*VWND + 8] = bvec.s8;
+         blm[kg*(WGD + PADB) + ng*VWND + 9] = bvec.s9;
+         blm[kg*(WGD + PADB) + ng*VWND + 10] = bvec.sA;
+         blm[kg*(WGD + PADB) + ng*VWND + 11] = bvec.sB;
+         blm[kg*(WGD + PADB) + ng*VWND + 12] = bvec.sC;
+         blm[kg*(WGD + PADB) + ng*VWND + 13] = bvec.sD;
+         blm[kg*(WGD + PADB) + ng*VWND + 14] = bvec.sE;
+         blm[kg*(WGD + PADB) + ng*VWND + 15] = bvec.sF;
       #endif
       if (b_conjugate) {
         for (int vn=0; vn<VWND; ++vn) {
-          COMPLEX_CONJUGATE(blm[kg*WGD + ng*VWND + vn]);
+          COMPLEX_CONJUGATE(blm[kg*(WGD + PADB) + ng*VWND + vn]);
         }
       }
     }
@@ -224,7 +242,7 @@ inline void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int k
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
     const int mg = mi + get_local_id(0)*MWID;
-    const int index = (a_transpose) ? mg*WGD + kg : kg*WGD + mg;
+    const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
     apm[mi] = alm[index];
   }
 }
@@ -235,7 +253,7 @@ inline void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int k
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     const int ng = ni + get_local_id(1)*NWID;
-    const int index = (b_transpose) ? ng*WGD + kg : kg*WGD + ng;
+    const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
     bpm[ni] = blm[index];
   }
 }
@@ -314,11 +332,8 @@ __kernel void XgemmDirect(const int kSizeM, const int kSizeN, const int kSizeK,
   const __global real* restrict bgms = (const __global real* restrict) bgm;
 
   // Allocates workgroup-private memory (local memory)
-  __local real alm[WGD * WGD];
-  __local real blm[WGD * WGD];
-
-  // Combined thread identifier (volatile to disable caching)
-  volatile int tid = get_local_id(0) + MDIMCD*get_local_id(1);
+  __local real alm[WGD * (WGD + PADA)];
+  __local real blm[WGD * (WGD + PADB)];
 
   // Allocates workitem-private memory (registers)
   real apm[MWID];
@@ -340,8 +355,8 @@ __kernel void XgemmDirect(const int kSizeM, const int kSizeN, const int kSizeK,
     for (; kwg < (kSizeK/WGD) * WGD; kwg+=WGD) {
 
       // Loads data: off-chip --> local (matrix A and B)
-      GlobalToLocalDirectA(agm, alm, a_ld, a_offset, tid, kwg, a_transpose, a_conjugate);
-      GlobalToLocalDirectB(bgm, blm, b_ld, b_offset, tid, kwg, b_transpose, b_conjugate);
+      GlobalToLocalDirectA(agm, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
+      GlobalToLocalDirectB(bgm, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate);
       barrier(CLK_LOCAL_MEM_FENCE);
 
       // Loops over all workitem tiles, unrolled by a factor KWID

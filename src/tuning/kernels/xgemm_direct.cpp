@@ -71,6 +71,8 @@ class TuneXgemmDirect {
       tuner.AddParameter(id, "KWID", {2});
       tuner.AddParameter(id, "VWMD", {1, 2, 4, 8});
       tuner.AddParameter(id, "VWND", {1, 2, 4, 8});
+      tuner.AddParameter(id, "PADA", {1});
+      tuner.AddParameter(id, "PADB", {1});
     } // a lot more tuning parameters - has to be sampled randomly, too much to test all
     else {
       tuner.AddParameter(id, "WGD", {8, 16, 32, 64, 128});
@@ -81,6 +83,8 @@ class TuneXgemmDirect {
       tuner.AddParameter(id, "KWID", {2, 8, 16});
       tuner.AddParameter(id, "VWMD", {1, 2, 4, 8});
       tuner.AddParameter(id, "VWND", {1, 2, 4, 8});
+      tuner.AddParameter(id, "PADA", {0, 1});
+      tuner.AddParameter(id, "PADB", {0, 1});
     }
   }
 
@@ -112,9 +116,9 @@ class TuneXgemmDirect {
   // Sets the local memory size
   static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
     auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return ((v[0]*v[1] + v[2]*v[3])*GetBytes(args.precision));
+      return ((v[0]*(v[0] + v[1]) + v[0]*(v[0] + v[2]))*GetBytes(args.precision));
     };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGD", "WGD", "WGD", "WGD"});
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGD", "PADA", "PADB"});
   }
 
   // Sets the base thread configuration
@@ -150,7 +154,7 @@ class TuneXgemmDirect {
     tuner.AddArgumentScalar(0); // c_offset
     tuner.AddArgumentScalar(static_cast<int>(args.n)); // c_ld
     tuner.AddArgumentScalar(1); // a_do_transpose
-    tuner.AddArgumentScalar(1); // b_do_transpose
+    tuner.AddArgumentScalar(0); // b_do_transpose
     tuner.AddArgumentScalar(1); // c_do_transpose
     tuner.AddArgumentScalar(0); // a_conjugate
     tuner.AddArgumentScalar(0); // b_conjugate
