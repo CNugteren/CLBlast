@@ -30,6 +30,7 @@ namespace clblast {
 // that it is automatically compiled for the various kernels (given as the 'C' template argument).
 template <typename C, typename T>
 void Tuner(int argc, char* argv[]) {
+  constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Sets the parameters and platform/device for which to tune (command-line options)
   auto help = std::string{"* Options given/available:\n"};
@@ -45,6 +46,8 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgBeta)     { args.beta     = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgFraction) { args.fraction = GetArgument(argc, argv, help, kArgFraction, C::DefaultFraction()); }
   }
+  const auto num_runs = GetArgument(argc, argv, help, kArgNumRuns, size_t{1});
+
   fprintf(stdout, "%s\n", help.c_str());
 
   // Tests validity of the given arguments
@@ -73,12 +76,12 @@ void Tuner(int argc, char* argv[]) {
   auto b_mat = std::vector<T>(C::GetSizeB(args));
   auto c_mat = std::vector<T>(C::GetSizeC(args));
   auto temp = std::vector<T>(C::GetSizeTemp(args));
-  PopulateVector(x_vec);
-  PopulateVector(y_vec);
-  PopulateVector(a_mat);
-  PopulateVector(b_mat);
-  PopulateVector(c_mat);
-  PopulateVector(temp);
+  PopulateVector(x_vec, kSeed);
+  PopulateVector(y_vec, kSeed);
+  PopulateVector(a_mat, kSeed);
+  PopulateVector(b_mat, kSeed);
+  PopulateVector(c_mat, kSeed);
+  PopulateVector(temp, kSeed);
 
   // Initializes the tuner for the chosen device
   cltune::Tuner tuner(args.platform_id, args.device_id);
@@ -126,6 +129,7 @@ void Tuner(int argc, char* argv[]) {
   C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat, temp);
 
   // Starts the tuning process
+  tuner.SetNumRuns(num_runs);
   tuner.Tune();
 
   // Prints the results to screen
@@ -134,7 +138,7 @@ void Tuner(int argc, char* argv[]) {
 
   // Also prints the performance of the best-case in terms of GB/s or GFLOPS
   if (time_ms != 0.0) {
-    printf("[ -------> ] %.1lf ms", time_ms);
+    printf("[ -------> ] %.2lf ms", time_ms);
     printf(" or %.1lf %s\n", C::GetMetric(args)/(time_ms*1.0e6), C::PerformanceUnit().c_str());
   }
 

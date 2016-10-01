@@ -66,13 +66,13 @@ TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
   c_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
   ap_source_.resize(std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
   scalar_source_.resize(std::max(max_mat, max_matvec) + max_offset);
-  PopulateVector(x_source_);
-  PopulateVector(y_source_);
-  PopulateVector(a_source_);
-  PopulateVector(b_source_);
-  PopulateVector(c_source_);
-  PopulateVector(ap_source_);
-  PopulateVector(scalar_source_);
+  PopulateVector(x_source_, kSeed);
+  PopulateVector(y_source_, kSeed);
+  PopulateVector(a_source_, kSeed);
+  PopulateVector(b_source_, kSeed);
+  PopulateVector(c_source_, kSeed);
+  PopulateVector(ap_source_, kSeed);
+  PopulateVector(scalar_source_, kSeed);
 }
 
 // ===============================================================================================

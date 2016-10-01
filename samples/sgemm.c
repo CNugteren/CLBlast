@@ -87,8 +87,10 @@ int main(void) {
                                    &queue, &event);
 
   // Wait for completion
-  clWaitForEvents(1, &event);
-  clReleaseEvent(event);
+  if (status == kSuccess) {
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+  }
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
   printf("Completed SGEMM with status %d\n", status);

@@ -178,13 +178,13 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> c_source(args.c_size);
     std::vector<T> ap_source(args.ap_size);
     std::vector<T> scalar_source(args.scalar_size);
-    PopulateVector(x_source);
-    PopulateVector(y_source);
-    PopulateVector(a_source);
-    PopulateVector(b_source);
-    PopulateVector(c_source);
-    PopulateVector(ap_source);
-    PopulateVector(scalar_source);
+    PopulateVector(x_source, kSeed);
+    PopulateVector(y_source, kSeed);
+    PopulateVector(a_source, kSeed);
+    PopulateVector(b_source, kSeed);
+    PopulateVector(c_source, kSeed);
+    PopulateVector(ap_source, kSeed);
+    PopulateVector(scalar_source, kSeed);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);

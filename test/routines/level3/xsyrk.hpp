@@ -82,7 +82,7 @@ class TestXsyrk {
                        buffers.a_mat(), args.a_offset, args.a_ld, args.beta,
                        buffers.c_mat(), args.c_offset, args.c_ld,
                        &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 

@@ -95,8 +95,10 @@ int main() {
                               &queue_plain, &event);
 
   // Record the execution time
-  clWaitForEvents(1, &event);
-  clReleaseEvent(event);
+  if (status == clblast::StatusCode::kSuccess) {
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+  }
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;
   auto time_ms = std::chrono::duration<double,std::milli>(elapsed_time).count();
 

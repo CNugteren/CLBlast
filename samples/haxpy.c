@@ -77,8 +77,10 @@ int main(void) {
                                    &queue, &event);
 
   // Wait for completion
-  clWaitForEvents(1, &event);
-  clReleaseEvent(event);
+  if (status == kSuccess) {
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+  }
 
   // Copies the result back to the host
   clEnqueueReadBuffer(queue, device_b, CL_TRUE, 0, n*sizeof(cl_half), host_b, 0, NULL, NULL);

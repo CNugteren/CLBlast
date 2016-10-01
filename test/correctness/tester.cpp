@@ -358,26 +358,31 @@ void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
 // Compares two floating point values and returns whether they are within an acceptable error
 // margin. This replaces GTest's EXPECT_NEAR().
 template <typename T>
-bool TestSimilarity(const T val1, const T val2) {
+bool TestSimilarityNear(const T val1, const T val2,
+                        const T error_margin_absolute, const T error_margin_relative) {
   const auto difference = std::fabs(val1 - val2);
-
-  // Set the allowed error margin for floating-point comparisons
-  constexpr auto kErrorMarginRelative = T(0.025);
-  constexpr auto kErrorMarginAbsolute = T(1.0e-3);
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
   // The values are zero or very small: the relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < kErrorMarginAbsolute) {
-    return (difference < kErrorMarginAbsolute);
+  else if (val1 == 0 || val2 == 0 || difference < error_margin_absolute) {
+    return (difference < error_margin_absolute);
   }
   // Use relative error
   else {
     const auto absolute_sum = std::fabs(val1) + std::fabs(val2);
-    return (difference / absolute_sum) < kErrorMarginRelative;
+    return (difference / absolute_sum) < error_margin_relative;
   }
+}
+
+// Default method for similarity testing
+template <typename T>
+bool TestSimilarity(const T val1, const T val2) {
+  constexpr auto kErrorMarginRelative = T(0.025);
+  constexpr auto kErrorMarginAbsolute = T(0.001);
+  return TestSimilarityNear(val1, val2, kErrorMarginRelative, kErrorMarginAbsolute);
 }
 
 // Compiles the default case for standard data-types
@@ -399,7 +404,10 @@ bool TestSimilarity(const double2 val1, const double2 val2) {
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {
-  return TestSimilarity(HalfToFloat(val1), HalfToFloat(val2));
+  constexpr auto kErrorMarginRelative = float(0.050);
+  constexpr auto kErrorMarginAbsolute = float(0.002);
+  return TestSimilarityNear(HalfToFloat(val1), HalfToFloat(val2),
+                            kErrorMarginRelative, kErrorMarginAbsolute);
 }
 
 // =================================================================================================

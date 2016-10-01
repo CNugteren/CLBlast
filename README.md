@@ -136,7 +136,7 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.3.1 or higher).
+Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.5.0 or higher).
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
 

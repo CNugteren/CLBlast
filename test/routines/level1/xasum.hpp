@@ -76,7 +76,7 @@ class TestXasum {
                           buffers.scalar(), args.asum_offset,
                           buffers.x_vec(), args.x_offset, args.x_inc,
                           &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 
