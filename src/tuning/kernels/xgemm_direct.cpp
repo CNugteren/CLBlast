@@ -29,7 +29,7 @@ class TuneXgemmDirect {
 
   // The representative kernel and the source code
   static std::string KernelFamily() { return (V==1) ? "xgemm_direct_1" : "xgemm_direct_2"; }
-  static std::string KernelName() { return "XgemmDirect"; }
+  static std::string KernelName() { return "XgemmDirectTN"; }
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
@@ -50,8 +50,8 @@ class TuneXgemmDirect {
   static size_t DefaultM() { return 256; }
   static size_t DefaultN() { return 256; }
   static size_t DefaultK() { return 256; }
-  static double DefaultFraction() { return (V==1) ? 1.0 : 16.0; } // test all or sample randomly
-  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
+  static double DefaultFraction() { return (V==1) ? 1.0 : 32.0; } // test all or sample randomly
+  static size_t DefaultNumRuns() { return 4; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -154,8 +154,6 @@ class TuneXgemmDirect {
     tuner.AddArgumentOutput(c_mat);
     tuner.AddArgumentScalar(0); // c_offset
     tuner.AddArgumentScalar(static_cast<int>(args.n)); // c_ld
-    tuner.AddArgumentScalar(1); // a_do_transpose
-    tuner.AddArgumentScalar(0); // b_do_transpose
     tuner.AddArgumentScalar(1); // c_do_transpose
     tuner.AddArgumentScalar(0); // a_conjugate
     tuner.AddArgumentScalar(0); // b_conjugate
