@@ -33,7 +33,8 @@ class TuneXgemmDirect {
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/xgemm_direct.opencl"
+      #include "../src/kernels/level3/xgemm_direct_part1.opencl"
+      #include "../src/kernels/level3/xgemm_direct_part2.opencl"
     ;
   }
 
@@ -46,9 +47,9 @@ class TuneXgemmDirect {
   static void TestValidArguments(const Arguments<T> &) { }
 
   // Sets the default values for the arguments
-  static size_t DefaultM() { return 128; }
-  static size_t DefaultN() { return 128; }
-  static size_t DefaultK() { return 128; }
+  static size_t DefaultM() { return 256; }
+  static size_t DefaultN() { return 256; }
+  static size_t DefaultK() { return 256; }
   static double DefaultFraction() { return (V==1) ? 1.0 : 16.0; } // test all or sample randomly
   static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
 

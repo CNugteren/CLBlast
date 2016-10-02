@@ -36,7 +36,8 @@ Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"
-    #include "../../kernels/level3/xgemm_direct.opencl"
+    #include "../../kernels/level3/xgemm_direct_part1.opencl"
+    #include "../../kernels/level3/xgemm_direct_part2.opencl"
   ;
 }
 
