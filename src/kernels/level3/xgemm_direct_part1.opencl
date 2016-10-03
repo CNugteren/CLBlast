@@ -182,6 +182,31 @@ inline void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpm
 
 // =================================================================================================
 
+// Caches on-chip local memory into per-thread private memory (registers). This function is specific
+// for caching the A input matrix.
+inline void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int kg,
+                                  const int a_transpose) {
+  #pragma unroll
+  for (int mi=0; mi<MWID; ++mi) {
+    const int mg = mi + get_local_id(0)*MWID;
+    const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
+    apm[mi] = alm[index];
+  }
+}
+
+// Same as above, but now for the B input matrix
+inline void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int kg,
+                                  const int b_transpose) {
+  #pragma unroll
+  for (int ni=0; ni<NWID; ++ni) {
+    const int ng = ni + get_local_id(1)*NWID;
+    const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
+    bpm[ni] = blm[index];
+  }
+}
+
+// =================================================================================================
+
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
 inline void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],

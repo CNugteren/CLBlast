@@ -160,6 +160,74 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
   }
 }
 
+// =================================================================================================
+
+// Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
+// caching the A input matrix. In contrast to the functions above, this function performs doesn't
+// use the vector data-types.
+inline void GlobalToLocalScalarA(const __global real* restrict agms, __local real* alm,
+                                 const int a_ld, const int a_offset, const int kwg,
+                                 const int a_transpose, const int a_conjugate) {
+  #if MDIMCD == MDIMAD
+    const int la0 = get_local_id(0);
+    const int la1 = get_local_id(1);
+  #else
+    const int tid = get_local_id(0) + MDIMCD*get_local_id(1);
+    const int la0 = tid % MDIMAD;
+    const int la1 = tid / MDIMAD;
+  #endif
+  #pragma unroll
+  for (int mia=0; mia<MWAD; ++mia) {
+    #pragma unroll
+    for (int kia=0; kia<KWAD; ++kia) {
+
+      // Computes the indices for the global memory
+      int mg = mia + la0*MWAD;
+      int kg = kia + la1*KWAD;
+      int idm = (a_transpose) ? mg + kwg : mg + GetGroupID0()*WGD;
+      int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
+
+      // Loads the data from global memory into the local memory
+      const real result = agms[idk*a_ld + idm + a_offset];
+      if (a_conjugate) { COMPLEX_CONJUGATE(result); }
+      alm[kg*(WGD + PADA) + mg] = result;
+    }
+  }
+}
+
+// Same as above, but now for the B input matrix
+inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local real* blm,
+                                 const int b_ld, const int b_offset, const int kwg,
+                                 const int b_transpose, const int b_conjugate) {
+  #if MDIMCD == NDIMBD
+    const int lb0 = get_local_id(0);
+    const int lb1 = get_local_id(1);
+  #else
+    const int tid = get_local_id(0) + MDIMCD*get_local_id(1);
+    const int lb0 = tid % NDIMBD;
+    const int lb1 = tid / NDIMBD;
+  #endif
+  #pragma unroll
+  for (int kib=0; kib<KWBD; ++kib) {
+    #pragma unroll
+    for (int nib=0; nib<NWBD; ++nib) {
+
+      // Computes the indices for the global memory
+      int ng = nib + lb0*NWBD;
+      int kg = kib + lb1*KWBD;
+      int idn = (b_transpose) ? ng + kwg : ng + GetGroupID1()*WGD;
+      int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
+
+      // Loads the data from global memory into the local memory
+      const real result = bgms[idk*b_ld + idn + b_offset];
+      if (b_conjugate) { COMPLEX_CONJUGATE(result); }
+      blm[kg*(WGD + PADB) + ng] = result;
+    }
+  }
+}
+
+// =================================================================================================
+
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs bounds
 // checks and doesn't use the vector data-types.
@@ -235,31 +303,6 @@ inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local re
         SetToZero(blm[kg*(WGD + PADB) + ng]);
       }
     }
-  }
-}
-
-// =================================================================================================
-
-// Caches on-chip local memory into per-thread private memory (registers). This function is specific
-// for caching the A input matrix.
-inline void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int kg,
-                                  const int a_transpose) {
-  #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    const int mg = mi + get_local_id(0)*MWID;
-    const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
-    apm[mi] = alm[index];
-  }
-}
-
-// Same as above, but now for the B input matrix
-inline void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int kg,
-                                  const int b_transpose) {
-  #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    const int ng = ni + get_local_id(1)*NWID;
-    const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
-    bpm[ni] = blm[index];
   }
 }
 
