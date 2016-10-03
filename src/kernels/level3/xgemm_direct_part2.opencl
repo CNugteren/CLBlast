@@ -188,7 +188,7 @@ inline void GlobalToLocalScalarA(const __global real* restrict agms, __local rea
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      const real result = agms[idk*a_ld + idm + a_offset];
+      real result = agms[idk*a_ld + idm + a_offset];
       if (a_conjugate) { COMPLEX_CONJUGATE(result); }
       alm[kg*(WGD + PADA) + mg] = result;
     }
@@ -219,7 +219,7 @@ inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local rea
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      const real result = bgms[idk*b_ld + idn + b_offset];
+      real result = bgms[idk*b_ld + idn + b_offset];
       if (b_conjugate) { COMPLEX_CONJUGATE(result); }
       blm[kg*(WGD + PADB) + ng] = result;
     }
@@ -257,7 +257,7 @@ inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local re
       // Loads the data from global memory into the local memory
       int condition = (a_transpose) ? idm < kSizeK : idm < kSizeM;
       if (condition) {
-        const real result = agms[idk*a_ld + idm + a_offset];
+        real result = agms[idk*a_ld + idm + a_offset];
         if (a_conjugate) { COMPLEX_CONJUGATE(result); }
         alm[kg*(WGD + PADA) + mg] = result;
       }
@@ -295,7 +295,7 @@ inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local re
       // Loads the data from global memory into the local memory
       int condition = (b_transpose) ? idn < kSizeK : idn < kSizeN;
       if (condition) {
-        const real result = bgms[idk*b_ld + idn + b_offset];
+        real result = bgms[idk*b_ld + idn + b_offset];
         if (b_conjugate) { COMPLEX_CONJUGATE(result); }
         blm[kg*(WGD + PADB) + ng] = result;
       }
