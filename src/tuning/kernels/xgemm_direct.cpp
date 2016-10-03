@@ -35,6 +35,7 @@ class TuneXgemmDirect {
       #include "../src/kernels/common.opencl"
       #include "../src/kernels/level3/xgemm_direct_part1.opencl"
       #include "../src/kernels/level3/xgemm_direct_part2.opencl"
+      #include "../src/kernels/level3/xgemm_direct_part3.opencl"
     ;
   }
 
