@@ -65,6 +65,11 @@ class DataType:
         return ((scalar == "alpha" and self.alpha_cpp in [D_FLOAT2, D_DOUBLE2]) or
                 (scalar == "beta" and self.beta_cpp in [D_FLOAT2, D_DOUBLE2]))
 
+    def is_non_standard(self, scalar):
+        """Current scalar is of a non-standard type"""
+        return ((scalar == "alpha" and self.alpha_cpp in [D_HALF, D_FLOAT2, D_DOUBLE2]) or
+                (scalar == "beta" and self.beta_cpp in [D_HALF, D_FLOAT2, D_DOUBLE2]))
+
 
 # Regular data-types
 H = DataType("H", "H", D_HALF, [D_HALF] * 2 + [D_HALF_OPENCL] * 2, D_HALF)  # half (16)

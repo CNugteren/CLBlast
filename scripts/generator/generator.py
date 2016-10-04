@@ -12,6 +12,8 @@
 #    clblast.cpp
 #    clblast_c.h
 #    clblast_c.cpp
+#    clblast_blas.h
+#    clblast_blas.cpp
 #    wrapper_clblas.h
 #    wrapper_cblas.h
 # It also generates the main functions for the correctness and performance tests as found in
@@ -30,8 +32,8 @@ from generator.routine import Routine
 from generator.datatype import H, S, D, C, Z, Sc, Dz, iH, iS, iD, iC, iZ, Css, Zdd, Ccs, Zzd, T, Tc, TU
 
 
-HEADER_LINES = [96, 73, 97, 22, 29, 41]
-FOOTER_LINES = [17, 75, 19, 14, 6, 6]
+HEADER_LINES = [96, 73, 97, 22, 29, 41, 43, 1]
+FOOTER_LINES = [17, 75, 19, 14, 6, 6, 10, 1]
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."
@@ -132,6 +134,8 @@ def main(argv):
         library_root + "/src/clblast_c.cpp",
         library_root + "/test/wrapper_clblas.hpp",
         library_root + "/test/wrapper_cblas.hpp",
+        library_root + "/include/clblast_blas.h",
+        library_root + "/src/clblast_blas.cpp",
     ]
 
     # Checks whether the command-line arguments are valid; exists otherwise
@@ -168,6 +172,10 @@ def main(argv):
                         body += cpp.wrapper_clblas(routine)
                     if i == 5:
                         body += cpp.wrapper_cblas(routine)
+                    if i == 6:
+                        body += cpp.clblast_blas_h(routine)
+                    if i == 7:
+                        body += cpp.clblast_blas_cc(routine)
             f.write("".join(file_header))
             f.write(body)
             f.write("".join(file_footer))

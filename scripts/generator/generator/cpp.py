@@ -90,6 +90,46 @@ def clblast_c_cc(routine):
     return result
 
 
+def clblast_blas_h(routine):
+    """The Netlib CBLAS API header (.h)"""
+    result = NL + "// " + routine.description + ": " + routine.short_names() + NL
+    for flavour in routine.flavours:
+        result += routine.routine_header_netlib(flavour, 24, " PUBLIC_API") + ";" + NL
+    return result
+
+
+def clblast_blas_cc(routine):
+    """The Netlib CBLAS API implementation (.cpp)"""
+    result = NL + "// " + routine.name.upper() + NL
+    for flavour in routine.flavours:
+        template = "<" + flavour.template + ">" if routine.no_scalars() else ""
+        indent = " " * (26 + routine.length() + len(template))
+        result += routine.routine_header_netlib(flavour, 13, "") + " {" + NL
+
+        # Initialize OpenCL
+        result += "  auto platform = Platform(size_t{0});" + NL
+        result += "  auto device = Device(platform, size_t{0});" + NL
+        result += "  auto context = Context(device);" + NL
+        result += "  auto queue = Queue(context, device);" + NL
+
+        # Copy data structures to the device
+        for name in routine.inputs + routine.outputs:
+            result += "  " + routine.create_buffer(name, flavour.template, "0") + NL
+        for name in routine.inputs + routine.outputs:
+            result += "  " + routine.write_buffer(name, "0") + NL
+
+        # The function call
+        result += "  auto status = clblast::" + routine.name.capitalize() + template + "("
+        result += ("," + NL + indent).join([a for a in routine.arguments_cast(flavour, indent)])
+        result += "," + NL + indent + "queue, event);" + NL
+
+        # Copy back and clean-up
+        for name in routine.outputs:
+            result += "  " + routine.read_buffer(name, "0") + NL
+        result += "  return;" + NL + "}" + NL
+    return result
+
+
 def wrapper_clblas(routine):
     """The wrapper to the reference clBLAS routines (for performance/correctness testing)"""
     result = ""
