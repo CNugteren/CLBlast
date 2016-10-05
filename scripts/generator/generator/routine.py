@@ -182,7 +182,7 @@ class Routine:
         """As above but as plain C pointer"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            data_type = "void" if flavour.is_non_standard(name) else flavour.buffer_type
+            data_type = "void" if flavour.is_non_standard() else flavour.buffer_type
             a = [prefix + data_type + "* " + name + ""]
             c = ["const int " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + c)]
@@ -317,9 +317,9 @@ class Routine:
         """Retrieves the definition of a scalar (alpha/beta) but make it a void pointer in case of non-standard types"""
         if name in self.scalars:
             if name == "alpha":
-                data_type = "void*" if flavour.is_non_standard(name) else flavour.alpha_cpp
+                data_type = "void*" if flavour.is_non_standard() else flavour.alpha_cpp
                 return ["const " + data_type + " " + name]
-            data_type = "void*" if flavour.is_non_standard(name) else flavour.beta_cpp
+            data_type = "void*" if flavour.is_non_standard() else flavour.beta_cpp
             return ["const " + data_type + " " + name]
         return []
 
