@@ -26,6 +26,7 @@
 #include "database/kernels/pad.hpp"
 #include "database/kernels/transpose.hpp"
 #include "database/kernels/padtranspose.hpp"
+#include "database/kernel_selection.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -43,7 +44,8 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
   TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
-  PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
+  PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble,
+  KernelSelectionHalf, KernelSelectionSingle, KernelSelectionDouble, KernelSelectionComplexSingle, KernelSelectionComplexDouble
 };
 
 // =================================================================================================

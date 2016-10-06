@@ -80,6 +80,7 @@ class Database {
   static const DatabaseEntry PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble;
   static const DatabaseEntry TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble;
   static const DatabaseEntry PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble;
+  static const DatabaseEntry KernelSelectionHalf, KernelSelectionSingle, KernelSelectionDouble, KernelSelectionComplexSingle, KernelSelectionComplexDouble;
   static const std::vector<DatabaseEntry> database;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
