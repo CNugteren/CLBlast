@@ -31,8 +31,12 @@ options("width"=170)
 
 # ==================================================================================================
 
-# Constants
-num_runs <- 4
+# Settings
+num_runs <- 5
+num_runs_short <- 50
+xtics_subset_threshold <- 100
+xtics_subset_stepsize <- 8
+
 devices <- c("-platform","-device")
 options_string <- "-q -no_abbrv -cblas 0"
 library_names <- c("CLBlast", "clBLAS")
@@ -66,11 +70,21 @@ main <- function(routine_name, precision, test_names, test_values,
   executable <- paste("./clblast_client_", routine_name, sep="")
 
   # Configures the outputfile
-  pdf(paste(display_name, ".pdf", sep=""), height=8, width=13)
-  par(mfrow=c(2, 3))
-  par(oma=c(0, 0, 0, 0))
-  par(mar=c(4.6, 4.4, 1.5, 0)) # bottom, left, top, right [c(5.1, 4.1, 4.1, 2.1)]
-  par(mgp=c(2.8, 0.6, 0)) # location of xlab/ylab, tick-mark labels, tick marks [c(3, 1, 0)]
+  file_name <- paste(display_name, ".pdf", sep="")
+  if (length(test_names) == 6) {
+    pdf(file_name, height=8, width=13)
+    par(mfrow=c(2, 3))
+    par(oma=c(0, 0, 0, 0))
+    par(mar=c(4.6, 4.4, 1.5, 0)) # bottom, left, top, right [c(5.1, 4.1, 4.1, 2.1)]
+    par(mgp=c(2.8, 0.6, 0)) # location of xlab/ylab, tick-mark labels, tick marks [c(3, 1, 0)]
+  }
+  else { # length(test_names) == 2
+    pdf(file_name, height=8, width=13)
+    par(mfrow=c(2, 1))
+    par(oma=c(0, 0, 0, 0))
+    par(mar=c(4.6, 4.4, 1.5, 0)) # bottom, left, top, right [c(5.1, 4.1, 4.1, 2.1)]
+    par(mgp=c(2.8, 0.6, 0)) # location of xlab/ylab, tick-mark labels, tick marks [c(3, 1, 0)]
+  }
 
   # Loops over the test-cases
   for (test_id in 1:length(test_names)) {
@@ -169,7 +183,12 @@ plot_graph <- function(xdata, ydata, log_setting,
        main="", xlab="", ylab="",
        ylim=c(ymin, ymax), xlim=c(xmin, xmax), axes=F, "n")
   axis(side=2, las=2)
-  axis(side=1, at=xdata, labels=xtics, las=2)
+  if (length(xdata) > xtics_subset_threshold) {  # Too many indices to print, plot only every Nth
+    subset <- seq(from=1, to=length(xdata), by=xtics_subset_stepsize)
+    axis(side=1, at=xdata[subset], labels=xtics[subset], las=2)
+  } else {
+    axis(side=1, at=xdata, labels=xtics, las=2)
+  }
   title(xlab=xlabel, line=-1)
   title(ylab=ylabel, line=2)
   title(graph_title, line=-2)
