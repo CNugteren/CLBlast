@@ -21,10 +21,12 @@
 #include "database/kernels/xgemv_fast_rot.hpp"
 #include "database/kernels/xger.hpp"
 #include "database/kernels/xgemm.hpp"
+#include "database/kernels/xgemm_direct.hpp"
 #include "database/kernels/copy.hpp"
 #include "database/kernels/pad.hpp"
 #include "database/kernels/transpose.hpp"
 #include "database/kernels/padtranspose.hpp"
+#include "database/kernel_selection.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -38,10 +40,12 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   XgemvFastRotHalf, XgemvFastRotSingle, XgemvFastRotDouble, XgemvFastRotComplexSingle, XgemvFastRotComplexDouble,
   XgerHalf, XgerSingle, XgerDouble, XgerComplexSingle, XgerComplexDouble,
   XgemmHalf, XgemmSingle, XgemmDouble, XgemmComplexSingle, XgemmComplexDouble,
+  XgemmDirectHalf, XgemmDirectSingle, XgemmDirectDouble, XgemmDirectComplexSingle, XgemmDirectComplexDouble,
   CopyHalf, CopySingle, CopyDouble, CopyComplexSingle, CopyComplexDouble,
   PadHalf, PadSingle, PadDouble, PadComplexSingle, PadComplexDouble,
   TransposeHalf, TransposeSingle, TransposeDouble, TransposeComplexSingle, TransposeComplexDouble,
-  PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble
+  PadtransposeHalf, PadtransposeSingle, PadtransposeDouble, PadtransposeComplexSingle, PadtransposeComplexDouble,
+  KernelSelectionHalf, KernelSelectionSingle, KernelSelectionDouble, KernelSelectionComplexSingle, KernelSelectionComplexDouble
 };
 
 // =================================================================================================

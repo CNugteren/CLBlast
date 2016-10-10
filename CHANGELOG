@@ -1,8 +1,9 @@
 
 Development version (next release)
-- It is now possible to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
-- Fixed a bug in the tests and samples related to waiting for an invalid event
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header
+- Improved performance of GEMM kernels for small sizes by using a direct single-kernel implementation
+- Fixed a bug in the tests and samples related to waiting for an invalid event
+- Added an option to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
 - Added an option to run tuned kernels multiple times to average execution times
 - Various minor fixes and enhancements
 
