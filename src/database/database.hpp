@@ -36,18 +36,18 @@ class Database {
 
   // Structures for content inside the database
   struct DatabaseDevice {
-    const std::string name;
-    const Parameters parameters;
+    std::string name;
+    Parameters parameters;
   };
   struct DatabaseVendor {
-    const std::string type;
-    const std::string name;
-    const std::vector<DatabaseDevice> devices;
+    std::string type;
+    std::string name;
+    std::vector<DatabaseDevice> devices;
   };
   struct DatabaseEntry {
-    const std::string kernel;
-    const Precision precision;
-    const std::vector<DatabaseVendor> vendors;
+    std::string kernel;
+    Precision precision;
+    std::vector<DatabaseVendor> vendors;
   };
 
   // The OpenCL device types
