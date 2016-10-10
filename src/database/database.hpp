@@ -51,21 +51,16 @@ class Database {
   };
 
   // The OpenCL device types
-  static constexpr auto kDeviceTypeCPU = "CPU";
-  static constexpr auto kDeviceTypeGPU = "GPU";
-  static constexpr auto kDeviceTypeAccelerator = "accelerator";
-  static constexpr auto kDeviceTypeAll = "default";
+  static const std::string kDeviceTypeCPU;
+  static const std::string kDeviceTypeGPU;
+  static const std::string kDeviceTypeAccelerator;
+  static const std::string kDeviceTypeAll;
 
   // The OpenCL device vendors
-  static constexpr auto kDeviceVendorAll = "default";
+  static const std::string kDeviceVendorAll;
 
   // Alternative names for some OpenCL vendors
-  const std::unordered_map<std::string,std::string> kVendorNames {
-    {"Intel(R) Corporation", "Intel"},
-    {"GenuineIntel", "Intel"},
-    {"Advanced Micro Devices, Inc.", "AMD"},
-    {"NVIDIA Corporation", "NVIDIA"},
-  };
+  static const std::unordered_map<std::string, std::string> kVendorNames;
 
   // The database consists of separate database entries, stored together in a vector
   static const DatabaseEntry XaxpyHalf, XaxpySingle, XaxpyDouble, XaxpyComplexSingle, XaxpyComplexDouble;

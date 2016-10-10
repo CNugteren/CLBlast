@@ -25,6 +25,10 @@
 #include "clblast_half.h"
 #include "clpp11.hpp"
 
+#ifdef _MSC_VER
+  #include "msvc.hpp"
+#endif
+
 namespace clblast {
 // =================================================================================================
 
