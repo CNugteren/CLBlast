@@ -210,7 +210,7 @@ bool CheckArgument(const int argc, char *argv[], std::string &help, const std::s
 // =================================================================================================
 
 // Helper function to check for errors in the status code
-constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
+inline bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
 // =================================================================================================
 

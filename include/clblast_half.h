@@ -25,6 +25,11 @@
   #include <CL/opencl.h>
 #endif
 
+// MSVC 2013 doesn't fully support C99
+#ifdef _MSC_VER
+    #define inline __inline
+#endif
+
 // =================================================================================================
 
 // Host data-type for half-precision floating-point (16-bit). This is based on the OpenCL type,
