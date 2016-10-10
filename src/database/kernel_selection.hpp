@@ -19,6 +19,16 @@ namespace clblast {
 
 const Database::DatabaseEntry Database::KernelSelectionHalf = {
   "KernelSelection", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",512*512*512} } },
@@ -31,6 +41,16 @@ const Database::DatabaseEntry Database::KernelSelectionHalf = {
 
 const Database::DatabaseEntry Database::KernelSelectionSingle = {
   "KernelSelection", Precision::kSingle, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",512*512*512} } },
@@ -43,6 +63,16 @@ const Database::DatabaseEntry Database::KernelSelectionSingle = {
 
 const Database::DatabaseEntry Database::KernelSelectionComplexSingle = {
   "KernelSelection", Precision::kComplexSingle, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",512*512*512} } },
@@ -55,6 +85,16 @@ const Database::DatabaseEntry Database::KernelSelectionComplexSingle = {
 
 const Database::DatabaseEntry Database::KernelSelectionDouble = {
   "KernelSelection", Precision::kDouble, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",512*512*512} } },
@@ -67,6 +107,16 @@ const Database::DatabaseEntry Database::KernelSelectionDouble = {
 
 const Database::DatabaseEntry Database::KernelSelectionComplexDouble = {
   "KernelSelection", Precision::kComplexDouble, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
+      }
+    },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",512*512*512} } },
