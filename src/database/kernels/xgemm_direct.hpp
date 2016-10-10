@@ -42,8 +42,8 @@ const Database::DatabaseEntry Database::XgemmDirectSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
+        { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
       }
     },
     { // Default
@@ -72,8 +72,8 @@ const Database::DatabaseEntry Database::XgemmDirectComplexSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
+        { "GeForce GTX 750 Ti",                              { {"KWID",16}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",1}, {"WGD",16} } },
+        { "default",                                         { {"KWID",16}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",1}, {"WGD",16} } },
       }
     },
     { // Default
@@ -96,8 +96,8 @@ const Database::DatabaseEntry Database::XgemmDirectDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
+        { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
       }
     },
     { // Default

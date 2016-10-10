@@ -51,8 +51,9 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Default
@@ -114,8 +115,9 @@ const Database::DatabaseEntry Database::XgemvFastRotDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 750 Ti",                              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
       }
     },
     { // Default

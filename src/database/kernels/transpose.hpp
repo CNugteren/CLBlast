@@ -207,7 +207,7 @@ const Database::DatabaseEntry Database::TransposeDouble = {
         { "GeForce GTX 670",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
         { "GeForce GTX 680",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
         { "GeForce GTX 750",                                 { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "GeForce GTX 980",                                 { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "GeForce GTX TITAN",                               { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"TRA_DIM",32}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
