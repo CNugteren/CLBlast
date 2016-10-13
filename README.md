@@ -119,8 +119,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tahiti
 * Intel GPUs:
   - HD Graphics 530
-  - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics 5500 BroadWell U-Processor GT2
+  - HD Graphics Haswell Ultrabook GT2 Mobile
+  - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro
