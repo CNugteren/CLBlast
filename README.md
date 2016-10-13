@@ -48,7 +48,7 @@ The pre-requisites for compilation of CLBlast are:
   - Clang 3.3 or newer
   - AppleClang 5.0 or newer
   - ICC 14.0 or newer
-  - MSVC (Visual Studio) 2015 or newer
+  - MSVC (Visual Studio) 2013 or newer
 * An OpenCL 1.1 or newer library, for example:
   - Apple OpenCL
   - NVIDIA CUDA SDK

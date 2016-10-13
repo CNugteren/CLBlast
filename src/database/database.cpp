@@ -48,6 +48,23 @@ const std::vector<Database::DatabaseEntry> Database::database = {
   KernelSelectionHalf, KernelSelectionSingle, KernelSelectionDouble, KernelSelectionComplexSingle, KernelSelectionComplexDouble
 };
 
+// The OpenCL device types
+const std::string Database::kDeviceTypeCPU = "CPU";
+const std::string Database::kDeviceTypeGPU = "GPU";
+const std::string Database::kDeviceTypeAccelerator = "accelerator";
+const std::string Database::kDeviceTypeAll = "default";
+
+// The OpenCL device vendors
+const std::string Database::kDeviceVendorAll = "default";
+
+// Alternative names for some OpenCL vendors
+const std::unordered_map<std::string, std::string> Database::kVendorNames{
+  { "Intel(R) Corporation", "Intel" },
+  { "GenuineIntel", "Intel" },
+  { "Advanced Micro Devices, Inc.", "AMD" },
+  { "NVIDIA Corporation", "NVIDIA" },
+};
+
 // =================================================================================================
 
 // Constructor, computing device properties and populating the parameter-vector from the database.
