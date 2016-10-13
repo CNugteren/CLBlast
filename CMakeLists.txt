@@ -22,6 +22,7 @@ set(clblast_VERSION_MINOR 9)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
+option(BUILD_SHARED_LIBS "Build shared or static library" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
@@ -171,7 +172,12 @@ foreach(ROUTINE ${LEVELX_ROUTINES})
 endforeach()
 
 # Creates and links the library
-add_library(clblast SHARED ${SOURCES})
+if(BUILD_SHARED_LIBS)
+  add_library(clblast SHARED ${SOURCES})
+else(BUILD_SHARED_LIBS)
+  add_library(clblast STATIC ${SOURCES})
+endif(BUILD_SHARED_LIBS)
+
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
 # Includes directories: CLBlast and OpenCL
