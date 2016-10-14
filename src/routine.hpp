@@ -36,7 +36,7 @@ class Routine {
   // built-in database.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
-                   const std::vector<Database::DatabaseEntry> &userDatabase = {});
+                   const std::vector<const Database::DatabaseEntry*> &userDatabase = {});
 
   // Set-up phase of the kernel
   StatusCode SetUp();

@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeHalf = {
+const Database::DatabaseEntry PadtransposeHalf = {
   "Padtranspose", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::PadtransposeHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeSingle = {
+const Database::DatabaseEntry PadtransposeSingle = {
   "Padtranspose", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -104,7 +105,7 @@ const Database::DatabaseEntry Database::PadtransposeSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
+const Database::DatabaseEntry PadtransposeComplexSingle = {
   "Padtranspose", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -175,7 +176,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeDouble = {
+const Database::DatabaseEntry PadtransposeDouble = {
   "Padtranspose", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -234,7 +235,7 @@ const Database::DatabaseEntry Database::PadtransposeDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
+const Database::DatabaseEntry PadtransposeComplexDouble = {
   "Padtranspose", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -292,4 +293,5 @@ const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

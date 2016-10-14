@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerHalf = {
+const Database::DatabaseEntry XgerHalf = {
   "Xger", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XgerHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerSingle = {
+const Database::DatabaseEntry XgerSingle = {
   "Xger", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -92,7 +93,7 @@ const Database::DatabaseEntry Database::XgerSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerComplexSingle = {
+const Database::DatabaseEntry XgerComplexSingle = {
   "Xger", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -151,7 +152,7 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerDouble = {
+const Database::DatabaseEntry XgerDouble = {
   "Xger", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -199,7 +200,7 @@ const Database::DatabaseEntry Database::XgerDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerComplexDouble = {
+const Database::DatabaseEntry XgerComplexDouble = {
   "Xger", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -246,4 +247,5 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

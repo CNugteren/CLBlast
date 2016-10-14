@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDirectHalf = {
+const Database::DatabaseEntry XgemmDirectHalf = {
   "XgemmDirect", Precision::kHalf, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -26,7 +27,7 @@ const Database::DatabaseEntry Database::XgemmDirectHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDirectSingle = {
+const Database::DatabaseEntry XgemmDirectSingle = {
   "XgemmDirect", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -56,7 +57,7 @@ const Database::DatabaseEntry Database::XgemmDirectSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDirectComplexSingle = {
+const Database::DatabaseEntry XgemmDirectComplexSingle = {
   "XgemmDirect", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -86,7 +87,7 @@ const Database::DatabaseEntry Database::XgemmDirectComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDirectDouble = {
+const Database::DatabaseEntry XgemmDirectDouble = {
   "XgemmDirect", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -110,7 +111,7 @@ const Database::DatabaseEntry Database::XgemmDirectDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDirectComplexDouble = {
+const Database::DatabaseEntry XgemmDirectComplexDouble = {
   "XgemmDirect", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -133,4 +134,5 @@ const Database::DatabaseEntry Database::XgemmDirectComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

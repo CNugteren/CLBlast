@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastHalf = {
+const Database::DatabaseEntry XgemvFastHalf = {
   "XgemvFast", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XgemvFastHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastSingle = {
+const Database::DatabaseEntry XgemvFastSingle = {
   "XgemvFast", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -97,7 +98,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
+const Database::DatabaseEntry XgemvFastComplexSingle = {
   "XgemvFast", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -154,7 +155,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastDouble = {
+const Database::DatabaseEntry XgemvFastDouble = {
   "XgemvFast", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -206,7 +207,7 @@ const Database::DatabaseEntry Database::XgemvFastDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastComplexDouble = {
+const Database::DatabaseEntry XgemvFastComplexDouble = {
   "XgemvFast", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -248,4 +249,5 @@ const Database::DatabaseEntry Database::XgemvFastComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

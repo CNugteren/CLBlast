@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadHalf = {
+const Database::DatabaseEntry PadHalf = {
   "Pad", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::PadHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadSingle = {
+const Database::DatabaseEntry PadSingle = {
   "Pad", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -104,7 +105,7 @@ const Database::DatabaseEntry Database::PadSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadComplexSingle = {
+const Database::DatabaseEntry PadComplexSingle = {
   "Pad", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -175,7 +176,7 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadDouble = {
+const Database::DatabaseEntry PadDouble = {
   "Pad", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -234,7 +235,7 @@ const Database::DatabaseEntry Database::PadDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadComplexDouble = {
+const Database::DatabaseEntry PadComplexDouble = {
   "Pad", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -292,4 +293,5 @@ const Database::DatabaseEntry Database::PadComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

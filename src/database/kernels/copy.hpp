@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyHalf = {
+const Database::DatabaseEntry CopyHalf = {
   "Copy", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::CopyHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopySingle = {
+const Database::DatabaseEntry CopySingle = {
   "Copy", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -104,7 +105,7 @@ const Database::DatabaseEntry Database::CopySingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyComplexSingle = {
+const Database::DatabaseEntry CopyComplexSingle = {
   "Copy", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -167,7 +168,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyDouble = {
+const Database::DatabaseEntry CopyDouble = {
   "Copy", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -226,7 +227,7 @@ const Database::DatabaseEntry Database::CopyDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyComplexDouble = {
+const Database::DatabaseEntry CopyComplexDouble = {
   "Copy", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -284,4 +285,5 @@ const Database::DatabaseEntry Database::CopyComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

@@ -15,9 +15,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::KernelSelectionHalf = {
+const Database::DatabaseEntry KernelSelectionHalf = {
   "KernelSelection", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -39,7 +40,7 @@ const Database::DatabaseEntry Database::KernelSelectionHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::KernelSelectionSingle = {
+const Database::DatabaseEntry KernelSelectionSingle = {
   "KernelSelection", Precision::kSingle, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -61,7 +62,7 @@ const Database::DatabaseEntry Database::KernelSelectionSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::KernelSelectionComplexSingle = {
+const Database::DatabaseEntry KernelSelectionComplexSingle = {
   "KernelSelection", Precision::kComplexSingle, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -83,7 +84,7 @@ const Database::DatabaseEntry Database::KernelSelectionComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::KernelSelectionDouble = {
+const Database::DatabaseEntry KernelSelectionDouble = {
   "KernelSelection", Precision::kDouble, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -105,7 +106,7 @@ const Database::DatabaseEntry Database::KernelSelectionDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::KernelSelectionComplexDouble = {
+const Database::DatabaseEntry KernelSelectionComplexDouble = {
   "KernelSelection", Precision::kComplexDouble, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -126,4 +127,5 @@ const Database::DatabaseEntry Database::KernelSelectionComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

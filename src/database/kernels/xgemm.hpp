@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmHalf = {
+const Database::DatabaseEntry XgemmHalf = {
   "Xgemm", Precision::kHalf, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -26,7 +27,7 @@ const Database::DatabaseEntry Database::XgemmHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmSingle = {
+const Database::DatabaseEntry XgemmSingle = {
   "Xgemm", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -97,7 +98,7 @@ const Database::DatabaseEntry Database::XgemmSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmComplexSingle = {
+const Database::DatabaseEntry XgemmComplexSingle = {
   "Xgemm", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -168,7 +169,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDouble = {
+const Database::DatabaseEntry XgemmDouble = {
   "Xgemm", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -227,7 +228,7 @@ const Database::DatabaseEntry Database::XgemmDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmComplexDouble = {
+const Database::DatabaseEntry XgemmComplexDouble = {
   "Xgemm", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -284,4 +285,5 @@ const Database::DatabaseEntry Database::XgemmComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

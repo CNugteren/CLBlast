@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyHalf = {
+const Database::DatabaseEntry XaxpyHalf = {
   "Xaxpy", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XaxpyHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpySingle = {
+const Database::DatabaseEntry XaxpySingle = {
   "Xaxpy", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -104,7 +105,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyComplexSingle = {
+const Database::DatabaseEntry XaxpyComplexSingle = {
   "Xaxpy", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -175,7 +176,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyDouble = {
+const Database::DatabaseEntry XaxpyDouble = {
   "Xaxpy", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -234,7 +235,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyComplexDouble = {
+const Database::DatabaseEntry XaxpyComplexDouble = {
   "Xaxpy", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -292,4 +293,5 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

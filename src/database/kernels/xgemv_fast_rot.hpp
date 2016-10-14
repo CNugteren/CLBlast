@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotHalf = {
+const Database::DatabaseEntry XgemvFastRotHalf = {
   "XgemvFastRot", Precision::kHalf, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -26,7 +27,7 @@ const Database::DatabaseEntry Database::XgemvFastRotHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotSingle = {
+const Database::DatabaseEntry XgemvFastRotSingle = {
   "XgemvFastRot", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -67,7 +68,7 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
+const Database::DatabaseEntry XgemvFastRotComplexSingle = {
   "XgemvFastRot", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -101,7 +102,7 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotDouble = {
+const Database::DatabaseEntry XgemvFastRotDouble = {
   "XgemvFastRot", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -132,7 +133,7 @@ const Database::DatabaseEntry Database::XgemvFastRotDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotComplexDouble = {
+const Database::DatabaseEntry XgemvFastRotComplexDouble = {
   "XgemvFastRot", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -155,4 +156,5 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

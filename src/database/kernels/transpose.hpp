@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TransposeHalf = {
+const Database::DatabaseEntry TransposeHalf = {
   "Transpose", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::TransposeHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TransposeSingle = {
+const Database::DatabaseEntry TransposeSingle = {
   "Transpose", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -104,7 +105,7 @@ const Database::DatabaseEntry Database::TransposeSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TransposeComplexSingle = {
+const Database::DatabaseEntry TransposeComplexSingle = {
   "Transpose", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -169,7 +170,7 @@ const Database::DatabaseEntry Database::TransposeComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TransposeDouble = {
+const Database::DatabaseEntry TransposeDouble = {
   "Transpose", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -228,7 +229,7 @@ const Database::DatabaseEntry Database::TransposeDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::TransposeComplexDouble = {
+const Database::DatabaseEntry TransposeComplexDouble = {
   "Transpose", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -280,4 +281,5 @@ const Database::DatabaseEntry Database::TransposeComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast
