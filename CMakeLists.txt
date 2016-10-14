@@ -65,6 +65,15 @@ elseif(MSVC)
   endif()
 endif()
 
+# DLL Settings
+if(MSVC)
+  if(BUILD_SHARED_LIBS)
+    add_definitions(" /DCLBLAST_DLL")
+  else(BUILD_SHARED_LIBS)
+    add_definitions(" /DCLBLAST_STATIC")
+  endif(BUILD_SHARED_LIBS)
+endif(MSVC)
+
 # C++ compiler settings
 if(MSVC)
   set(FLAGS "/Ox")
@@ -195,7 +204,9 @@ target_include_directories(clblast PUBLIC
 
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
-  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  if(BUILD_SHARED_LIBS)
+    target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  endif(BUILD_SHARED_LIBS)
 endif()
 
 # Installs the library
