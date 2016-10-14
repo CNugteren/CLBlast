@@ -322,7 +322,7 @@ if(CLIENTS)
     # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR})
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 
