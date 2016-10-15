@@ -74,6 +74,10 @@ A custom installation folder can be specified when calling CMake:
 
     cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/directory ..
 
+Building a static version of the library instead of shared one (.dylib/.so/.dll) can be done by disabling the `BUILD_SHARED_LIBS` option when calling CMake. For example:
+
+    cmake -DBUILD_SHARED_LIBS=OFF ..
+
 
 Using the library
 -------------

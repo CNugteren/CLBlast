@@ -22,7 +22,7 @@ set(clblast_VERSION_MINOR 9)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
-option(BUILD_SHARED_LIBS "Build shared or static library" ON)
+option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
