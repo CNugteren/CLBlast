@@ -43,6 +43,7 @@
 #include <memory>    // std::shared_ptr
 #include <stdexcept> // std::runtime_error
 #include <numeric>   // std::accumulate
+#include <cstring>   // std::strlen
 
 // OpenCL
 #if defined(__APPLE__) || defined(__MACOSX)
@@ -283,7 +284,8 @@ class Device {
     auto result = std::string{};
     result.resize(bytes);
     CheckError(clGetDeviceInfo(device_, info, bytes, &result[0], nullptr));
-    return std::string{result.c_str()}; // Removes any trailing '\0'-characters
+    result.resize(strlen(result.c_str())); // Removes any trailing '\0'-characters
+    return result;
   }
 };
 
