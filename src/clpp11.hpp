@@ -92,16 +92,17 @@ class Event {
     CheckError(clWaitForEvents(1, &(*event_)));
   }
 
-  // Retrieves the elapsed time of the last recorded event. Note that no error checking is done on
-  // the 'clGetEventProfilingInfo' function, since there is a bug in Apple's OpenCL implementation:
-  // http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx
+  // Retrieves the elapsed time of the last recorded event.
+  // (Note that there is a bug in Apple's OpenCL implementation of the 'clGetEventProfilingInfo' function:
+  //  http://stackoverflow.com/questions/26145603/clgeteventprofilinginfo-bug-in-macosx)
+  // However, in our case the reply size is fixed to be cl_ulong, so we are not affected.
   float GetElapsedTime() const {
     WaitForCompletion();
     const auto bytes = sizeof(cl_ulong);
     auto time_start = cl_ulong{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr);
+    CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr));
     auto time_end = cl_ulong{0};
-    clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr);
+    CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr));
     return static_cast<float>(time_end - time_start) * 1.0e-6f;
   }
 
