@@ -48,7 +48,7 @@ The pre-requisites for compilation of CLBlast are:
   - Clang 3.3 or newer
   - AppleClang 5.0 or newer
   - ICC 14.0 or newer
-  - MSVC (Visual Studio) 2015 or newer
+  - MSVC (Visual Studio) 2013 or newer
 * An OpenCL 1.1 or newer library, for example:
   - Apple OpenCL
   - NVIDIA CUDA SDK
@@ -73,6 +73,10 @@ When using Visual Studio, the project-files can be generated as follows:
 A custom installation folder can be specified when calling CMake:
 
     cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/directory ..
+
+Building a static version of the library instead of shared one (.dylib/.so/.dll) can be done by disabling the `BUILD_SHARED_LIBS` option when calling CMake. For example:
+
+    cmake -DBUILD_SHARED_LIBS=OFF ..
 
 
 Using the library
@@ -119,8 +123,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tahiti
 * Intel GPUs:
   - HD Graphics 530
-  - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics 5500 BroadWell U-Processor GT2
+  - HD Graphics Haswell Ultrabook GT2 Mobile
+  - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro

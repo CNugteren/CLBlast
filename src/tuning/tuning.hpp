@@ -46,7 +46,7 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgBeta)     { args.beta     = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgFraction) { args.fraction = GetArgument(argc, argv, help, kArgFraction, C::DefaultFraction()); }
   }
-  const auto num_runs = GetArgument(argc, argv, help, kArgNumRuns, size_t{1});
+  const auto num_runs = GetArgument(argc, argv, help, kArgNumRuns, C::DefaultNumRuns());
 
   fprintf(stdout, "%s\n", help.c_str());
 

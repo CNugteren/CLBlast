@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XdotHalf = {
+const Database::DatabaseEntry XdotHalf = {
   "Xdot", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XdotHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XdotSingle = {
+const Database::DatabaseEntry XdotSingle = {
   "Xdot", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -55,6 +56,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",64}, {"WGS2",32} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",64}, {"WGS2",32} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",512}, {"WGS2",128} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",512}, {"WGS2",64} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
@@ -68,6 +70,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",512}, {"WGS2",1024} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",128} } },
         { "GeForce GTX 750",                                 { {"WGS1",128}, {"WGS2",32} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",1024}, {"WGS2",32} } },
@@ -84,7 +87,7 @@ const Database::DatabaseEntry Database::XdotSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XdotComplexSingle = {
+const Database::DatabaseEntry XdotComplexSingle = {
   "Xdot", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -106,6 +109,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",32}, {"WGS2",32} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",512}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",32}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
@@ -119,6 +123,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",32} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",64} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
@@ -135,7 +140,7 @@ const Database::DatabaseEntry Database::XdotComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XdotDouble = {
+const Database::DatabaseEntry XdotDouble = {
   "Xdot", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -160,6 +165,7 @@ const Database::DatabaseEntry Database::XdotDouble = {
         { "GeForce GTX 670",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",256} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
@@ -176,7 +182,7 @@ const Database::DatabaseEntry Database::XdotDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XdotComplexDouble = {
+const Database::DatabaseEntry XdotComplexDouble = {
   "Xdot", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -201,6 +207,7 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
         { "GeForce GTX 670",                                 { {"WGS1",512}, {"WGS2",128} } },
         { "GeForce GTX 680",                                 { {"WGS1",256}, {"WGS2",64} } },
         { "GeForce GTX 750",                                 { {"WGS1",256}, {"WGS2",32} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",128}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WGS2",32} } },
@@ -216,4 +223,5 @@ const Database::DatabaseEntry Database::XdotComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

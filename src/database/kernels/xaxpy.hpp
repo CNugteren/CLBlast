@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyHalf = {
+const Database::DatabaseEntry XaxpyHalf = {
   "Xaxpy", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XaxpyHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpySingle = {
+const Database::DatabaseEntry XaxpySingle = {
   "Xaxpy", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -64,6 +65,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
         { "Intel(R) HD Graphics 530",                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",1}, {"WGS",512}, {"WPT",2} } },
         { "Iris",                                            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Iris Pro",                                        { {"VW",1}, {"WGS",128}, {"WPT",2} } },
@@ -84,7 +86,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
         { "GeForce GTX 670",                                 { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",4}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -103,7 +105,7 @@ const Database::DatabaseEntry Database::XaxpySingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyComplexSingle = {
+const Database::DatabaseEntry XaxpyComplexSingle = {
   "Xaxpy", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -134,6 +136,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"VW",4}, {"WGS",64}, {"WPT",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW",2}, {"WGS",512}, {"WPT",1} } },
         { "Iris",                                            { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Iris Pro",                                        { {"VW",1}, {"WGS",256}, {"WPT",8} } },
@@ -173,7 +176,7 @@ const Database::DatabaseEntry Database::XaxpyComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyDouble = {
+const Database::DatabaseEntry XaxpyDouble = {
   "Xaxpy", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -213,7 +216,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
         { "GeForce GTX 670",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"VW",1}, {"WGS",128}, {"WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",256}, {"WPT",2} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
@@ -232,7 +235,7 @@ const Database::DatabaseEntry Database::XaxpyDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XaxpyComplexDouble = {
+const Database::DatabaseEntry XaxpyComplexDouble = {
   "Xaxpy", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -272,7 +275,7 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
         { "GeForce GTX 670",                                 { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX 680",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",256}, {"WPT",2} } },
+        { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
@@ -290,4 +293,5 @@ const Database::DatabaseEntry Database::XaxpyComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyHalf = {
+const Database::DatabaseEntry CopyHalf = {
   "Copy", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::CopyHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopySingle = {
+const Database::DatabaseEntry CopySingle = {
   "Copy", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -64,6 +65,7 @@ const Database::DatabaseEntry Database::CopySingle = {
         { "Intel(R) HD Graphics 530",                        { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
@@ -84,7 +86,7 @@ const Database::DatabaseEntry Database::CopySingle = {
         { "GeForce GTX 670",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "GeForce GTX 680",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "GeForce GTX 750",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
-        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "GeForce GTX 980",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
@@ -103,7 +105,7 @@ const Database::DatabaseEntry Database::CopySingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyComplexSingle = {
+const Database::DatabaseEntry CopyComplexSingle = {
   "Copy", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -128,6 +130,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",4} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
         { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",4} } },
@@ -147,7 +150,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
         { "GeForce GTX 480",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 670",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 750",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
-        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 980",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",4} } },
@@ -165,7 +168,7 @@ const Database::DatabaseEntry Database::CopyComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyDouble = {
+const Database::DatabaseEntry CopyDouble = {
   "Copy", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -205,13 +208,13 @@ const Database::DatabaseEntry Database::CopyDouble = {
         { "GeForce GTX 670",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "GeForce GTX 680",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "GeForce GTX 750",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "GeForce GTX 980",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
-        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
     { // Default
@@ -224,7 +227,7 @@ const Database::DatabaseEntry Database::CopyDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::CopyComplexDouble = {
+const Database::DatabaseEntry CopyComplexDouble = {
   "Copy", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -264,7 +267,7 @@ const Database::DatabaseEntry Database::CopyComplexDouble = {
         { "GeForce GTX 670",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 680",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 750",                                 { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "GeForce GTX 750 Ti",                              { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX 980",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
@@ -282,4 +285,5 @@ const Database::DatabaseEntry Database::CopyComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

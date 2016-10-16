@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvHalf = {
+const Database::DatabaseEntry XgemvHalf = {
   "Xgemv", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XgemvHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvSingle = {
+const Database::DatabaseEntry XgemvSingle = {
   "Xgemv", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -57,6 +58,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",256}, {"WPT1",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",64}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2} } },
         { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2} } },
@@ -77,7 +79,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX 680",                                 { {"WGS1",256}, {"WPT1",1} } },
         { "GeForce GTX 750",                                 { {"WGS1",256}, {"WPT1",1} } },
-        { "GeForce GTX 750 Ti",                              { {"WGS1",256}, {"WPT1",1} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WPT1",1} } },
@@ -96,7 +98,7 @@ const Database::DatabaseEntry Database::XgemvSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvComplexSingle = {
+const Database::DatabaseEntry XgemvComplexSingle = {
   "Xgemv", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -120,6 +122,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",256}, {"WPT1",1} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WPT1",1} } },
@@ -140,7 +143,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX 680",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX 750",                                 { {"WGS1",128}, {"WPT1",1} } },
-        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
@@ -155,7 +158,7 @@ const Database::DatabaseEntry Database::XgemvComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvDouble = {
+const Database::DatabaseEntry XgemvDouble = {
   "Xgemv", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -188,7 +191,7 @@ const Database::DatabaseEntry Database::XgemvDouble = {
         { "GeForce GTX 670",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 750",                                 { {"WGS1",64}, {"WPT1",1} } },
-        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WPT1",1} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",64}, {"WPT1",1} } },
@@ -207,7 +210,7 @@ const Database::DatabaseEntry Database::XgemvDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvComplexDouble = {
+const Database::DatabaseEntry XgemvComplexDouble = {
   "Xgemv", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -249,4 +252,5 @@ const Database::DatabaseEntry Database::XgemvComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

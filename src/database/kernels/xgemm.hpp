@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmHalf = {
+const Database::DatabaseEntry XgemmHalf = {
   "Xgemm", Precision::kHalf, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -26,7 +27,7 @@ const Database::DatabaseEntry Database::XgemmHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmSingle = {
+const Database::DatabaseEntry XgemmSingle = {
   "Xgemm", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -57,9 +58,10 @@ const Database::DatabaseEntry Database::XgemmSingle = {
         { "Intel(R) HD Graphics 530",                        { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",4}, {"VWN",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",4} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",1}, {"VWN",8} } },
         { "Iris",                                            { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",1} } },
-        { "Iris Pro",                                        { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
+        { "Iris Pro",                                        { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
         { "default",                                         { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
@@ -77,7 +79,7 @@ const Database::DatabaseEntry Database::XgemmSingle = {
         { "GeForce GTX 670",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
         { "GeForce GTX 680",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",2} } },
         { "GeForce GTX 750",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",2} } },
-        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",4} } },
+        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",1}, {"VWM",8}, {"VWN",2} } },
         { "GeForce GTX 980",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",4}, {"VWN",8} } },
         { "GeForce GTX TITAN",                               { {"KWG",16}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",2} } },
         { "GeForce GTX TITAN X",                             { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",8} } },
@@ -96,7 +98,7 @@ const Database::DatabaseEntry Database::XgemmSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmComplexSingle = {
+const Database::DatabaseEntry XgemmComplexSingle = {
   "Xgemm", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -127,6 +129,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"KWG",16}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"KWG",16}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",32}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",4}, {"VWN",1} } },
         { "Iris",                                            { {"KWG",32}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "Iris Pro",                                        { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",1} } },
@@ -147,7 +150,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
         { "GeForce GTX 670",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",1} } },
         { "GeForce GTX 680",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",2} } },
         { "GeForce GTX 750",                                 { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",2} } },
-        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",4} } },
+        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
         { "GeForce GTX 980",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
         { "GeForce GTX TITAN",                               { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "GeForce GTX TITAN X",                             { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",4} } },
@@ -166,7 +169,7 @@ const Database::DatabaseEntry Database::XgemmComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmDouble = {
+const Database::DatabaseEntry XgemmDouble = {
   "Xgemm", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -206,7 +209,7 @@ const Database::DatabaseEntry Database::XgemmDouble = {
         { "GeForce GTX 670",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",32}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "GeForce GTX 680",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",2}, {"VWN",4} } },
         { "GeForce GTX 750",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",2}, {"VWN",1} } },
-        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",1} } },
+        { "GeForce GTX 750 Ti",                              { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",2} } },
         { "GeForce GTX 980",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",32}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
         { "GeForce GTX TITAN",                               { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",2} } },
         { "GeForce GTX TITAN X",                             { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",16}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
@@ -225,7 +228,7 @@ const Database::DatabaseEntry Database::XgemmDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemmComplexDouble = {
+const Database::DatabaseEntry XgemmComplexDouble = {
   "Xgemm", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -265,7 +268,7 @@ const Database::DatabaseEntry Database::XgemmComplexDouble = {
         { "GeForce GTX 670",                                 { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",1}, {"VWN",2} } },
         { "GeForce GTX 680",                                 { {"KWG",16}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",32}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "GeForce GTX 750",                                 { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",32}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",4} } },
-        { "GeForce GTX 750 Ti",                              { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",16}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",4} } },
+        { "GeForce GTX 750 Ti",                              { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "GeForce GTX 980",                                 { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",2} } },
         { "GeForce GTX TITAN X",                             { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "Tesla K20m",                                      { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
@@ -282,4 +285,5 @@ const Database::DatabaseEntry Database::XgemmComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

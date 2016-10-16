@@ -22,6 +22,7 @@ set(clblast_VERSION_MINOR 9)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
+option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
@@ -64,12 +65,26 @@ elseif(MSVC)
   endif()
 endif()
 
+# DLL Settings
+if(MSVC)
+  if(BUILD_SHARED_LIBS)
+    add_definitions(" /DCLBLAST_DLL")
+  else(BUILD_SHARED_LIBS)
+    add_definitions(" /DCLBLAST_STATIC")
+  endif(BUILD_SHARED_LIBS)
+endif(MSVC)
+
 # C++ compiler settings
 if(MSVC)
   set(FLAGS "/Ox")
   set(FLAGS "${FLAGS} /wd4715")
 else()
-  set(FLAGS "-O3 -std=c++11")
+  set(FLAGS "-std=c++11")
+  if(VERBOSE)
+    set(FLAGS "${FLAGS} -O1 -g")
+  else()
+    set(FLAGS "${FLAGS} -O3")
+  endif()
   if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     set(FLAGS "${FLAGS} -Wall -Wno-comment -Wno-return-type -Wno-switch -Wno-missing-noreturn")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
@@ -134,7 +149,8 @@ endif()
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger xgemm xgemv)
+set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
+            xgemm xgemm_direct xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
@@ -171,7 +187,12 @@ foreach(ROUTINE ${LEVELX_ROUTINES})
 endforeach()
 
 # Creates and links the library
-add_library(clblast SHARED ${SOURCES})
+if(BUILD_SHARED_LIBS)
+  add_library(clblast SHARED ${SOURCES})
+else(BUILD_SHARED_LIBS)
+  add_library(clblast STATIC ${SOURCES})
+endif(BUILD_SHARED_LIBS)
+
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
 # Includes directories: CLBlast and OpenCL
@@ -183,7 +204,9 @@ target_include_directories(clblast PUBLIC
 
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
-  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  if(BUILD_SHARED_LIBS)
+    target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  endif(BUILD_SHARED_LIBS)
 endif()
 
 # Installs the library
@@ -310,7 +333,7 @@ if(CLIENTS)
     # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR})
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 

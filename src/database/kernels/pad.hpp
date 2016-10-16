@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadHalf = {
+const Database::DatabaseEntry PadHalf = {
   "Pad", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::PadHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadSingle = {
+const Database::DatabaseEntry PadSingle = {
   "Pad", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -64,6 +65,7 @@ const Database::DatabaseEntry Database::PadSingle = {
         { "Intel(R) HD Graphics 530",                        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "Iris Pro",                                        { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
@@ -84,7 +86,7 @@ const Database::DatabaseEntry Database::PadSingle = {
         { "GeForce GTX 670",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
         { "GeForce GTX 680",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "GeForce GTX 750",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",2} } },
-        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX TITAN",                               { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
@@ -103,7 +105,7 @@ const Database::DatabaseEntry Database::PadSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadComplexSingle = {
+const Database::DatabaseEntry PadComplexSingle = {
   "Pad", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -134,10 +136,11 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Iris Pro",                                        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",4} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
       }
     },
     { // Intel accelerators
@@ -154,13 +157,13 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
         { "GeForce GTX 670",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "GeForce GTX 680",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "GeForce GTX 750",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX TITAN",                               { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Tesla K20m",                                      { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "Tesla K40m",                                      { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
       }
     },
     { // Default
@@ -173,7 +176,7 @@ const Database::DatabaseEntry Database::PadComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadDouble = {
+const Database::DatabaseEntry PadDouble = {
   "Pad", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -232,7 +235,7 @@ const Database::DatabaseEntry Database::PadDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadComplexDouble = {
+const Database::DatabaseEntry PadComplexDouble = {
   "Pad", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -272,7 +275,7 @@ const Database::DatabaseEntry Database::PadComplexDouble = {
         { "GeForce GTX 670",                                 { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX 680",                                 { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX 750",                                 { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
+        { "GeForce GTX 750 Ti",                              { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX 980",                                 { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "GeForce GTX TITAN",                               { {"PAD_DIMX",8}, {"PAD_DIMY",32}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "GeForce GTX TITAN X",                             { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
@@ -290,4 +293,5 @@ const Database::DatabaseEntry Database::PadComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

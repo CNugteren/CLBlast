@@ -12,9 +12,10 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeHalf = {
+const Database::DatabaseEntry PadtransposeHalf = {
   "Padtranspose", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::PadtransposeHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeSingle = {
+const Database::DatabaseEntry PadtransposeSingle = {
   "Padtranspose", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -64,6 +65,7 @@ const Database::DatabaseEntry Database::PadtransposeSingle = {
         { "Intel(R) HD Graphics 530",                        { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Iris",                                            { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Iris Pro",                                        { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
@@ -103,7 +105,7 @@ const Database::DatabaseEntry Database::PadtransposeSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
+const Database::DatabaseEntry PadtransposeComplexSingle = {
   "Padtranspose", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -134,6 +136,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Iris",                                            { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Iris Pro",                                        { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
@@ -173,7 +176,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeDouble = {
+const Database::DatabaseEntry PadtransposeDouble = {
   "Padtranspose", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -232,7 +235,7 @@ const Database::DatabaseEntry Database::PadtransposeDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
+const Database::DatabaseEntry PadtransposeComplexDouble = {
   "Padtranspose", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -272,7 +275,7 @@ const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
         { "GeForce GTX 670",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 680",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 750",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
-        { "GeForce GTX 750 Ti",                              { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "GeForce GTX 750 Ti",                              { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",2} } },
         { "GeForce GTX 980",                                 { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN",                               { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
@@ -290,4 +293,5 @@ const Database::DatabaseEntry Database::PadtransposeComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast
