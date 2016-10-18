@@ -22,8 +22,7 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
 Xher2k<T,U>::Xher2k(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>()) {
-  source_string_ =
+    Routine(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
     #include "../../kernels/level3/copy_pad.opencl"
@@ -32,7 +31,7 @@ Xher2k<T,U>::Xher2k(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"
-  ;
+    }) {
 }
 
 // =================================================================================================

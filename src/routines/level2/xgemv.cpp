@@ -22,11 +22,10 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Pad", "Xgemv", "XgemvFast", "XgemvFastRot"}, PrecisionValue<T>()) {
-  source_string_ =
+    Routine(queue, event, name, {"Pad", "Xgemv", "XgemvFast", "XgemvFastRot"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level2/xgemv.opencl"
     #include "../../kernels/level2/xgemv_fast.opencl"
-  ;
+    }) {
 }
 
 // =================================================================================================

@@ -22,10 +22,9 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xnrm2<T>::Xnrm2(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>()) {
-  source_string_ =
+    Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level1/xnrm2.opencl"
-  ;
+    }) {
 }
 
 // =================================================================================================

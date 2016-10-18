@@ -52,7 +52,6 @@ def clblast_cc(routine):
         result += "  try {" + NL
         result += "    auto queue_cpp = Queue(*queue);" + NL
         result += "    auto routine = X" + routine.name + "<" + routine.template.template + ">(queue_cpp, event);" + NL
-        result += "    routine.SetUp();" + NL
         result += "    routine.Do" + routine.name.capitalize() + "("
         result += ("," + NL + indent1).join([a for a in routine.arguments_clcudaapi()])
         result += ");" + NL

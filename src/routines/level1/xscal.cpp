@@ -22,11 +22,10 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xscal<T>::Xscal(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>()) {
-  source_string_ =
+    Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level1/level1.opencl"
     #include "../../kernels/level1/xscal.opencl"
-  ;
+    }) {
 }
 
 // =================================================================================================

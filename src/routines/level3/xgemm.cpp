@@ -24,8 +24,7 @@ template <typename T>
 Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name,
             {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","KernelSelection"},
-            PrecisionValue<T>()) {
-  source_string_ =
+            PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
     #include "../../kernels/level3/copy_pad.opencl"
@@ -37,13 +36,11 @@ Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/xgemm_direct_part1.opencl"
     #include "../../kernels/level3/xgemm_direct_part2.opencl"
     #include "../../kernels/level3/xgemm_direct_part3.opencl"
-  ;
-  auto source_string_part_2 = // separated in two parts to prevent C1091 in MSVC 2013
+    , // separated in two parts to prevent C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"
-  ;
-  source_string_ += source_string_part_2;
+    }) {
 }
 
 // =================================================================================================
