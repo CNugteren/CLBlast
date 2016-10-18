@@ -39,26 +39,26 @@ class Tester {
  public:
 
   // Maximum number of test results printed on a single line
-  static constexpr auto kResultsPerLine = size_t{64};
+  static const size_t kResultsPerLine;
 
   // Error percentage is not applicable: error was caused by an incorrect status
-  static constexpr auto kStatusError = -1.0f;
+  static const float kStatusError;
 
   // Constants holding start and end strings for terminal-output in colour
-  const std::string kPrintError{"\x1b[31m"};
-  const std::string kPrintSuccess{"\x1b[32m"};
-  const std::string kPrintWarning{"\x1b[35m"};
-  const std::string kPrintMessage{"\x1b[1m"};
-  const std::string kPrintEnd{"\x1b[0m"};
+  static const std::string kPrintError;
+  static const std::string kPrintSuccess;
+  static const std::string kPrintWarning;
+  static const std::string kPrintMessage;
+  static const std::string kPrintEnd;
 
   // Sets the output error coding
-  const std::string kSuccessData{kPrintSuccess + ":" + kPrintEnd};
-  const std::string kSuccessStatus{kPrintSuccess + "." + kPrintEnd};
-  const std::string kErrorData{kPrintError + "X" + kPrintEnd};
-  const std::string kErrorStatus{kPrintError + "/" + kPrintEnd};
-  const std::string kSkippedCompilation{kPrintWarning + "\\" + kPrintEnd};
-  const std::string kUnsupportedPrecision{kPrintWarning + "o" + kPrintEnd};
-  const std::string kUnsupportedReference{kPrintWarning + "-" + kPrintEnd};
+  static const std::string kSuccessData;
+  static const std::string kSuccessStatus;
+  static const std::string kErrorData;
+  static const std::string kErrorStatus;
+  static const std::string kSkippedCompilation;
+  static const std::string kUnsupportedPrecision;
+  static const std::string kUnsupportedReference;
 
   // This structure combines the above log-entry with a status code an error percentage
   struct ErrorLogEntry {

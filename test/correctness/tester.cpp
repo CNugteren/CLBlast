@@ -22,6 +22,30 @@
 namespace clblast {
 // =================================================================================================
 
+// Maximum number of test results printed on a single line
+template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = size_t{64};
+
+// Error percentage is not applicable: error was caused by an incorrect status
+template <typename T, typename U> const float Tester<T,U>::kStatusError = -1.0f;
+
+// Constants holding start and end strings for terminal-output in colour
+template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "\x1b[31m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "\x1b[32m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "\x1b[35m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "\x1b[1m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "\x1b[0m";
+
+// Sets the output error coding
+template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = kPrintSuccess + ":" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = kPrintSuccess + "." + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kErrorData = kPrintError + "X" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = kPrintError + "/" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = kPrintWarning + "\\" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = kPrintWarning + "o" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = kPrintWarning + "-" + kPrintEnd;
+
+// =================================================================================================
+
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T, typename U>
@@ -41,8 +65,8 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
     print_count_{0},
     tests_passed_{0},
     tests_skipped_{0},
-    tests_failed_{0},
-    options_{options} {
+    tests_failed_{0} {
+  options_ = options;
 
   // Determines which reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
