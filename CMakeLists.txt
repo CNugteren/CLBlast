@@ -220,13 +220,19 @@ install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # ==================================================================================================
 
-# Sets a default platform ($DEVICEPLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests on
+# Sets a default platform ($CLBLAST_PLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests
 set(DEVICEPLATFORM )
 if(DEFINED ENV{CLBLAST_DEVICE})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{CLBLAST_DEVICE})
 endif()
 if(DEFINED ENV{CLBLAST_PLATFORM})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{CLBLAST_PLATFORM})
+endif()
+
+# Optionally also provides other options to the tests such as -full_test ($CLBLAST_TEST_ARGUMENTS)
+set(TEST_ARGUMENTS )
+if(DEFINED ENV{CLBLAST_TEST_ARGUMENTS})
+  set(TEST_ARGUMENTS $ENV{CLBLAST_TEST_ARGUMENTS})
 endif()
 
 # ==================================================================================================
@@ -405,14 +411,14 @@ if(TESTS)
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
     target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
-    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM} ${TEST_ARGUMENTS})
   endforeach()
 
   # Adds 'alltests' target: runs all tests
   set(ALLTESTS )
   set(ALLTESTSDEPENDS )
   foreach(ROUTINE ${ROUTINES})
-    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM} ${TEST_ARGUMENTS})
     set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
   endforeach()
   add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})
