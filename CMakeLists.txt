@@ -218,6 +218,14 @@ install(FILES include/clblast_half.h DESTINATION include)
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
+# Install pkg-config file on Linux
+if(UNIX)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/clblast.pc.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc
+            DESTINATION lib/pkgconfig)
+endif()
+
 # ==================================================================================================
 
 # Sets a default platform ($CLBLAST_PLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests
