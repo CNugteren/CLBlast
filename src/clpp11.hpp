@@ -67,6 +67,14 @@ inline void CheckError(const cl_int status) {
   }
 }
 
+// Error occured in OpenCL (no-exception version for destructors)
+inline void CheckErrorDtor(const cl_int status) {
+  if (status != CL_SUCCESS) {
+    auto message = "Internal OpenCL Error: "+std::to_string(status) + " (ignoring)";
+    fprintf(stderr, "%s\n", message.c_str());
+  }
+}
+
 // =================================================================================================
 
 // C++11 version of 'cl_event'
@@ -82,7 +90,7 @@ class Event {
   // Regular constructor with memory management
   explicit Event():
       event_(new cl_event, [](cl_event* e) {
-        if (*e) { CheckError(clReleaseEvent(*e)); }
+        if (*e) { CheckErrorDtor(clReleaseEvent(*e)); }
         delete e;
       }) {
     *event_ = nullptr;
@@ -303,7 +311,7 @@ class Context {
 
   // Regular constructor with memory management
   explicit Context(const Device &device):
-      context_(new cl_context, [](cl_context* c) { CheckError(clReleaseContext(*c)); delete c; }) {
+      context_(new cl_context, [](cl_context* c) { CheckErrorDtor(clReleaseContext(*c)); delete c; }) {
     auto status = CL_SUCCESS;
     const cl_device_id dev = device();
     *context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
@@ -332,7 +340,7 @@ class Program {
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, std::string source):
-      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      program_(new cl_program, [](cl_program* p) { CheckErrorDtor(clReleaseProgram(*p)); delete p; }),
       length_(source.length()),
       source_(std::move(source)),
       source_ptr_(&source_[0]) {
@@ -343,7 +351,7 @@ class Program {
 
   // Binary-based constructor with memory management
   explicit Program(const Device &device, const Context &context, const std::string& binary):
-      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      program_(new cl_program, [](cl_program* p) { CheckErrorDtor(clReleaseProgram(*p)); delete p; }),
       length_(binary.length()),
       source_(binary),
       source_ptr_(&source_[0]) {
@@ -419,7 +427,7 @@ class Queue {
 
   // Regular constructor with memory management
   explicit Queue(const Context &context, const Device &device):
-      queue_(new cl_command_queue, [](cl_command_queue* s) { CheckError(clReleaseCommandQueue(*s));
+      queue_(new cl_command_queue, [](cl_command_queue* s) { CheckErrorDtor(clReleaseCommandQueue(*s));
                                                              delete s; }) {
     auto status = CL_SUCCESS;
     #ifdef CL_VERSION_2_0
@@ -647,7 +655,7 @@ class Kernel {
 
   // Regular constructor with memory management
   explicit Kernel(const Program &program, const std::string &name):
-      kernel_(new cl_kernel, [](cl_kernel* k) { CheckError(clReleaseKernel(*k)); delete k; }) {
+      kernel_(new cl_kernel, [](cl_kernel* k) { CheckErrorDtor(clReleaseKernel(*k)); delete k; }) {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program(), name.c_str(), &status);
     CheckError(status);
