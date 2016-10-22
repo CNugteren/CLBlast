@@ -69,9 +69,7 @@ endif()
 if(MSVC)
   if(BUILD_SHARED_LIBS)
     add_definitions(" /DCLBLAST_DLL")
-  else(BUILD_SHARED_LIBS)
-    add_definitions(" /DCLBLAST_STATIC")
-  endif(BUILD_SHARED_LIBS)
+  endif()
 endif(MSVC)
 
 # C++ compiler settings
@@ -192,7 +190,7 @@ if(BUILD_SHARED_LIBS)
   add_library(clblast SHARED ${SOURCES})
 else(BUILD_SHARED_LIBS)
   add_library(clblast STATIC ${SOURCES})
-endif(BUILD_SHARED_LIBS)
+endif()
 
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
@@ -207,7 +205,7 @@ target_include_directories(clblast PUBLIC
 if(MSVC)
   if(BUILD_SHARED_LIBS)
     target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
-  endif(BUILD_SHARED_LIBS)
+  endif()
 endif()
 
 # Installs the library
