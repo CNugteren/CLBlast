@@ -1,7 +1,20 @@
+
+// =================================================================================================
+// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
+// project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
+// width of 100 characters per line.
+//
+// Author(s):
+//   Ivan Shapovalov <intelfx@intelfx.name>
+//
+// This file contains exception classes corresponding to 'clpp11.hpp'. It is also part of the
+// CLCudaAPI project. See 'clpp11.hpp' for more details.
+//
+// =================================================================================================
+
 #ifndef CLBLAST_CXPP11_COMMON_H_
 #define CLBLAST_CXPP11_COMMON_H_
 
-// C++
 #include <string>    // std::string
 #include <stdexcept> // std::runtime_error
 
