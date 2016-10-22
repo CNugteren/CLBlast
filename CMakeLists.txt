@@ -169,6 +169,7 @@ set(SOURCES
   src/routines/common.cpp
   src/cache.cpp
   src/clblast.cpp
+  src/clblast_exceptions.cpp
   src/clblast_c.cpp
   src/routine.cpp
   src/utilities.cpp

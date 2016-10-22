@@ -36,13 +36,13 @@ Xomatcopy<T>::Xomatcopy(Queue &queue, EventPointer event, const std::string &nam
 
 // The main routine
 template <typename T>
-StatusCode Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_transpose,
-                                    const size_t m, const size_t n, const T alpha,
-                                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                                    const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
+void Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_transpose,
+                              const size_t m, const size_t n, const T alpha,
+                              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                              const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
 
   // Makes sure all dimensions are larger than zero
-  if ((m == 0) || (n == 0)) { return StatusCode::kInvalidDimension; }
+  if ((m == 0) || (n == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
 
   // Determines whether to transpose the matrix A
   const auto transpose = (a_transpose != Transpose::kNo);
@@ -63,22 +63,17 @@ StatusCode Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_trans
   // Also tests that the leading dimensions of:
   //    matrix A cannot be less than N when rotated, or less than M when not-rotated
   //    matrix B cannot be less than M when rotated, or less than N when not-rotated
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
-  if (ErrorIn(status)) { return status; }
-  status = TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
-  if (ErrorIn(status)) { return status; }
+  TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
+  TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
 
   // Loads the program from the database
   const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
   auto emptyEventList = std::vector<Event>();
-  status = PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList,
-                                  a_one, a_two, a_ld, a_offset, a_buffer,
-                                  b_one, b_two, b_ld, b_offset, b_buffer,
-                                  alpha, program, false, transpose, conjugate);
-  if (ErrorIn(status)) { return status; }
-
-  return StatusCode::kSuccess;
+  PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList,
+                         a_one, a_two, a_ld, a_offset, a_buffer,
+                         b_one, b_two, b_ld, b_offset, b_buffer,
+                         alpha, program, false, transpose, conjugate);
 }
 
 // =================================================================================================

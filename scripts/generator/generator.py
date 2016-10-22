@@ -30,8 +30,8 @@ from generator.routine import Routine
 from generator.datatype import H, S, D, C, Z, Sc, Dz, iH, iS, iD, iC, iZ, Css, Zdd, Ccs, Zzd, T, Tc, TU
 
 
-HEADER_LINES = [96, 73, 97, 22, 29, 41]
-FOOTER_LINES = [17, 75, 19, 14, 6, 6]
+HEADER_LINES = [97, 73, 98, 22, 29, 41]
+FOOTER_LINES = [17, 80, 19, 18, 6, 6]
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."

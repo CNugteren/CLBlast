@@ -168,13 +168,15 @@ StatusCode Swap(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xswap<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSwap(n,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xswap<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSwap(n,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Swap<float>(const size_t,
                                            cl_mem, const size_t, const size_t,
@@ -203,13 +205,15 @@ StatusCode Scal(const size_t n,
                 const T alpha,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xscal<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoScal(n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xscal<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoScal(n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Scal<float>(const size_t,
                                            const float,
@@ -238,13 +242,15 @@ StatusCode Copy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xcopy<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoCopy(n,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xcopy<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoCopy(n,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Copy<float>(const size_t,
                                            const cl_mem, const size_t, const size_t,
@@ -274,14 +280,16 @@ StatusCode Axpy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xaxpy<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoAxpy(n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xaxpy<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoAxpy(n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Axpy<float>(const size_t,
                                            const float,
@@ -316,14 +324,16 @@ StatusCode Dot(const size_t n,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xdot<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoDot(n,
-                       Buffer<T>(dot_buffer), dot_offset,
-                       Buffer<T>(x_buffer), x_offset, x_inc,
-                       Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xdot<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoDot(n,
+                  Buffer<T>(dot_buffer), dot_offset,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Dot<float>(const size_t,
                                           cl_mem, const size_t,
@@ -348,14 +358,16 @@ StatusCode Dotu(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xdotu<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoDotu(n,
-                        Buffer<T>(dot_buffer), dot_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xdotu<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoDotu(n,
+                   Buffer<T>(dot_buffer), dot_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Dotu<float2>(const size_t,
                                             cl_mem, const size_t,
@@ -375,14 +387,16 @@ StatusCode Dotc(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xdotc<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoDotc(n,
-                        Buffer<T>(dot_buffer), dot_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xdotc<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoDotc(n,
+                   Buffer<T>(dot_buffer), dot_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Dotc<float2>(const size_t,
                                             cl_mem, const size_t,
@@ -401,13 +415,15 @@ StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xnrm2<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoNrm2(n,
-                        Buffer<T>(nrm2_buffer), nrm2_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xnrm2<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoNrm2(n,
+                   Buffer<T>(nrm2_buffer), nrm2_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Nrm2<float>(const size_t,
                                            cl_mem, const size_t,
@@ -436,13 +452,15 @@ StatusCode Asum(const size_t n,
                 cl_mem asum_buffer, const size_t asum_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xasum<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoAsum(n,
-                        Buffer<T>(asum_buffer), asum_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xasum<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoAsum(n,
+                   Buffer<T>(asum_buffer), asum_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Asum<float>(const size_t,
                                            cl_mem, const size_t,
@@ -471,13 +489,15 @@ StatusCode Sum(const size_t n,
                cl_mem sum_buffer, const size_t sum_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsum<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSum(n,
-                       Buffer<T>(sum_buffer), sum_offset,
-                       Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsum<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSum(n,
+                  Buffer<T>(sum_buffer), sum_offset,
+                  Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Sum<float>(const size_t,
                                           cl_mem, const size_t,
@@ -506,13 +526,15 @@ StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xamax<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoAmax(n,
-                        Buffer<unsigned int>(imax_buffer), imax_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xamax<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoAmax(n,
+                   Buffer<unsigned int>(imax_buffer), imax_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Amax<float>(const size_t,
                                            cl_mem, const size_t,
@@ -541,13 +563,15 @@ StatusCode Max(const size_t n,
                cl_mem imax_buffer, const size_t imax_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xmax<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoMax(n,
-                       Buffer<unsigned int>(imax_buffer), imax_offset,
-                       Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xmax<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoMax(n,
+                  Buffer<unsigned int>(imax_buffer), imax_offset,
+                  Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Max<float>(const size_t,
                                           cl_mem, const size_t,
@@ -576,13 +600,15 @@ StatusCode Min(const size_t n,
                cl_mem imin_buffer, const size_t imin_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xmin<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoMin(n,
-                       Buffer<unsigned int>(imin_buffer), imin_offset,
-                       Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xmin<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoMin(n,
+                  Buffer<unsigned int>(imin_buffer), imin_offset,
+                  Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Min<float>(const size_t,
                                           cl_mem, const size_t,
@@ -619,17 +645,19 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xgemv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGemv(layout, a_transpose,
-                        m, n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xgemv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGemv(layout, a_transpose,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Gemv<float>(const Layout, const Transpose,
                                            const size_t, const size_t,
@@ -682,17 +710,19 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xgbmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGbmv(layout, a_transpose,
-                        m, n, kl, ku,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xgbmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGbmv(layout, a_transpose,
+                   m, n, kl, ku,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Gbmv<float>(const Layout, const Transpose,
                                            const size_t, const size_t, const size_t, const size_t,
@@ -745,17 +775,19 @@ StatusCode Hemv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhemv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHemv(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhemv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHemv(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hemv<float2>(const Layout, const Triangle,
                                             const size_t,
@@ -784,17 +816,19 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhbmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHbmv(layout, triangle,
-                        n, k,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhbmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHbmv(layout, triangle,
+                   n, k,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hbmv<float2>(const Layout, const Triangle,
                                             const size_t, const size_t,
@@ -823,17 +857,19 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhpmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHpmv(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(ap_buffer), ap_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhpmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHpmv(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(ap_buffer), ap_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hpmv<float2>(const Layout, const Triangle,
                                             const size_t,
@@ -862,17 +898,19 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsymv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSymv(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsymv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSymv(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Symv<float>(const Layout, const Triangle,
                                            const size_t,
@@ -909,17 +947,19 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsbmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSbmv(layout, triangle,
-                        n, k,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsbmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSbmv(layout, triangle,
+                   n, k,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Sbmv<float>(const Layout, const Triangle,
                                            const size_t, const size_t,
@@ -956,17 +996,19 @@ StatusCode Spmv(const Layout layout, const Triangle triangle,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xspmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSpmv(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(ap_buffer), ap_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        beta,
-                        Buffer<T>(y_buffer), y_offset, y_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xspmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSpmv(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(ap_buffer), ap_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   beta,
+                   Buffer<T>(y_buffer), y_offset, y_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Spmv<float>(const Layout, const Triangle,
                                            const size_t,
@@ -1000,14 +1042,16 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xtrmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoTrmv(layout, triangle, a_transpose, diagonal,
-                        n,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoTrmv(layout, triangle, a_transpose, diagonal,
+                   n,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t,
@@ -1042,14 +1086,16 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xtbmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoTbmv(layout, triangle, a_transpose, diagonal,
-                        n, k,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtbmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoTbmv(layout, triangle, a_transpose, diagonal,
+                   n, k,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Tbmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t, const size_t,
@@ -1084,14 +1130,16 @@ StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem ap_buffer, const size_t ap_offset,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xtpmv<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoTpmv(layout, triangle, a_transpose, diagonal,
-                        n,
-                        Buffer<T>(ap_buffer), ap_offset,
-                        Buffer<T>(x_buffer), x_offset, x_inc);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtpmv<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoTpmv(layout, triangle, a_transpose, diagonal,
+                   n,
+                   Buffer<T>(ap_buffer), ap_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Tpmv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t,
@@ -1218,16 +1266,18 @@ StatusCode Ger(const Layout layout,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xger<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGer(layout,
-                       m, n,
-                       alpha,
-                       Buffer<T>(x_buffer), x_offset, x_inc,
-                       Buffer<T>(y_buffer), y_offset, y_inc,
-                       Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xger<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGer(layout,
+                  m, n,
+                  alpha,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(y_buffer), y_offset, y_inc,
+                  Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Ger<float>(const Layout,
                                           const size_t, const size_t,
@@ -1260,16 +1310,18 @@ StatusCode Geru(const Layout layout,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xgeru<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGeru(layout,
-                        m, n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xgeru<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGeru(layout,
+                   m, n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Geru<float2>(const Layout,
                                             const size_t, const size_t,
@@ -1295,16 +1347,18 @@ StatusCode Gerc(const Layout layout,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xgerc<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGerc(layout,
-                        m, n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xgerc<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGerc(layout,
+                   m, n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Gerc<float2>(const Layout,
                                             const size_t, const size_t,
@@ -1329,15 +1383,17 @@ StatusCode Her(const Layout layout, const Triangle triangle,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xher<std::complex<T>,T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHer(layout, triangle,
-                       n,
-                       alpha,
-                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
-                       Buffer<std::complex<T>>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xher<std::complex<T>,T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHer(layout, triangle,
+                  n,
+                  alpha,
+                  Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                  Buffer<std::complex<T>>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Her<float>(const Layout, const Triangle,
                                           const size_t,
@@ -1360,15 +1416,17 @@ StatusCode Hpr(const Layout layout, const Triangle triangle,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhpr<std::complex<T>,T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHpr(layout, triangle,
-                       n,
-                       alpha,
-                       Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
-                       Buffer<std::complex<T>>(ap_buffer), ap_offset);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhpr<std::complex<T>,T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHpr(layout, triangle,
+                  n,
+                  alpha,
+                  Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
+                  Buffer<std::complex<T>>(ap_buffer), ap_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hpr<float>(const Layout, const Triangle,
                                           const size_t,
@@ -1392,16 +1450,18 @@ StatusCode Her2(const Layout layout, const Triangle triangle,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xher2<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHer2(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xher2<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHer2(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Her2<float2>(const Layout, const Triangle,
                                             const size_t,
@@ -1427,16 +1487,18 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem ap_buffer, const size_t ap_offset,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhpr2<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHpr2(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(ap_buffer), ap_offset);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhpr2<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHpr2(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(ap_buffer), ap_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hpr2<float2>(const Layout, const Triangle,
                                             const size_t,
@@ -1461,15 +1523,17 @@ StatusCode Syr(const Layout layout, const Triangle triangle,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsyr<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSyr(layout, triangle,
-                       n,
-                       alpha,
-                       Buffer<T>(x_buffer), x_offset, x_inc,
-                       Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsyr<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSyr(layout, triangle,
+                  n,
+                  alpha,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Syr<float>(const Layout, const Triangle,
                                           const size_t,
@@ -1498,15 +1562,17 @@ StatusCode Spr(const Layout layout, const Triangle triangle,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xspr<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSpr(layout, triangle,
-                       n,
-                       alpha,
-                       Buffer<T>(x_buffer), x_offset, x_inc,
-                       Buffer<T>(ap_buffer), ap_offset);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xspr<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSpr(layout, triangle,
+                  n,
+                  alpha,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(ap_buffer), ap_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Spr<float>(const Layout, const Triangle,
                                           const size_t,
@@ -1536,16 +1602,18 @@ StatusCode Syr2(const Layout layout, const Triangle triangle,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsyr2<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSyr2(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(a_buffer), a_offset, a_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsyr2<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSyr2(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Syr2<float>(const Layout, const Triangle,
                                            const size_t,
@@ -1578,16 +1646,18 @@ StatusCode Spr2(const Layout layout, const Triangle triangle,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem ap_buffer, const size_t ap_offset,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xspr2<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSpr2(layout, triangle,
-                        n,
-                        alpha,
-                        Buffer<T>(x_buffer), x_offset, x_inc,
-                        Buffer<T>(y_buffer), y_offset, y_inc,
-                        Buffer<T>(ap_buffer), ap_offset);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xspr2<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSpr2(layout, triangle,
+                   n,
+                   alpha,
+                   Buffer<T>(x_buffer), x_offset, x_inc,
+                   Buffer<T>(y_buffer), y_offset, y_inc,
+                   Buffer<T>(ap_buffer), ap_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Spr2<float>(const Layout, const Triangle,
                                            const size_t,
@@ -1625,17 +1695,19 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xgemm<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoGemm(layout, a_transpose, b_transpose,
-                        m, n, k,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(b_buffer), b_offset, b_ld,
-                        beta,
-                        Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xgemm<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoGemm(layout, a_transpose, b_transpose,
+                   m, n, k,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld,
+                   beta,
+                   Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Gemm<float>(const Layout, const Transpose, const Transpose,
                                            const size_t, const size_t, const size_t,
@@ -1688,17 +1760,19 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsymm<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSymm(layout, side, triangle,
-                        m, n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(b_buffer), b_offset, b_ld,
-                        beta,
-                        Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsymm<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSymm(layout, side, triangle,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld,
+                   beta,
+                   Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Symm<float>(const Layout, const Side, const Triangle,
                                            const size_t, const size_t,
@@ -1751,17 +1825,19 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xhemm<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHemm(layout, side, triangle,
-                        m, n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(b_buffer), b_offset, b_ld,
-                        beta,
-                        Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhemm<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHemm(layout, side, triangle,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld,
+                   beta,
+                   Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Hemm<float2>(const Layout, const Side, const Triangle,
                                             const size_t, const size_t,
@@ -1789,16 +1865,18 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsyrk<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSyrk(layout, triangle, a_transpose,
-                        n, k,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        beta,
-                        Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsyrk<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSyrk(layout, triangle, a_transpose,
+                   n, k,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   beta,
+                   Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Syrk<float>(const Layout, const Triangle, const Transpose,
                                            const size_t, const size_t,
@@ -1845,16 +1923,18 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xherk<std::complex<T>,T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHerk(layout, triangle, a_transpose,
-                        n, k,
-                        alpha,
-                        Buffer<std::complex<T>>(a_buffer), a_offset, a_ld,
-                        beta,
-                        Buffer<std::complex<T>>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xherk<std::complex<T>,T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHerk(layout, triangle, a_transpose,
+                   n, k,
+                   alpha,
+                   Buffer<std::complex<T>>(a_buffer), a_offset, a_ld,
+                   beta,
+                   Buffer<std::complex<T>>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Herk<float>(const Layout, const Triangle, const Transpose,
                                            const size_t, const size_t,
@@ -1881,17 +1961,19 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  const T beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xsyr2k<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoSyr2k(layout, triangle, ab_transpose,
-                         n, k,
-                         alpha,
-                         Buffer<T>(a_buffer), a_offset, a_ld,
-                         Buffer<T>(b_buffer), b_offset, b_ld,
-                         beta,
-                         Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xsyr2k<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoSyr2k(layout, triangle, ab_transpose,
+                    n, k,
+                    alpha,
+                    Buffer<T>(a_buffer), a_offset, a_ld,
+                    Buffer<T>(b_buffer), b_offset, b_ld,
+                    beta,
+                    Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Syr2k<float>(const Layout, const Triangle, const Transpose,
                                             const size_t, const size_t,
@@ -1944,17 +2026,19 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  const U beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                  cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xher2k<T,U>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoHer2k(layout, triangle, ab_transpose,
-                         n, k,
-                         alpha,
-                         Buffer<T>(a_buffer), a_offset, a_ld,
-                         Buffer<T>(b_buffer), b_offset, b_ld,
-                         beta,
-                         Buffer<T>(c_buffer), c_offset, c_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xher2k<T,U>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoHer2k(layout, triangle, ab_transpose,
+                    n, k,
+                    alpha,
+                    Buffer<T>(a_buffer), a_offset, a_ld,
+                    Buffer<T>(b_buffer), b_offset, b_ld,
+                    beta,
+                    Buffer<T>(c_buffer), c_offset, c_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Her2k<float2,float>(const Layout, const Triangle, const Transpose,
                                                    const size_t, const size_t,
@@ -1981,15 +2065,17 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xtrmm<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoTrmm(layout, side, triangle, a_transpose, diagonal,
-                        m, n,
-                        alpha,
-                        Buffer<T>(a_buffer), a_offset, a_ld,
-                        Buffer<T>(b_buffer), b_offset, b_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrmm<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoTrmm(layout, side, triangle, a_transpose, diagonal,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trmm<float>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
                                            const size_t, const size_t,
@@ -2075,15 +2161,17 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                     cl_command_queue* queue, cl_event* event) {
-  auto queue_cpp = Queue(*queue);
-  auto routine = Xomatcopy<T>(queue_cpp, event);
-  auto status = routine.SetUp();
-  if (status != StatusCode::kSuccess) { return status; }
-  return routine.DoOmatcopy(layout, a_transpose,
-                            m, n,
-                            alpha,
-                            Buffer<T>(a_buffer), a_offset, a_ld,
-                            Buffer<T>(b_buffer), b_offset, b_ld);
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xomatcopy<T>(queue_cpp, event);
+    routine.SetUp();
+    routine.DoOmatcopy(layout, a_transpose,
+                       m, n,
+                       alpha,
+                       Buffer<T>(a_buffer), a_offset, a_ld,
+                       Buffer<T>(b_buffer), b_offset, b_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Omatcopy<float>(const Layout, const Transpose,
                                                const size_t, const size_t,
@@ -2119,7 +2207,12 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
 // =================================================================================================
 
 // Clears the cache of stored binaries
-StatusCode ClearCache() { return CacheClearAll(); }
+StatusCode ClearCache() {
+  try {
+    CacheClearAll();
+  } catch (...) { return DispatchException(); }
+  return StatusCode::kSuccess;
+}
 
 // Fills the cache with all binaries for a specific device
 // TODO: Add half-precision FP16 set-up calls
@@ -2184,7 +2277,7 @@ StatusCode FillCache(const cl_device_id device) {
     // Runs all the level 3 set-up functions
     Xomatcopy<float>(queue, nullptr).SetUp(); Xomatcopy<double>(queue, nullptr).SetUp(); Xomatcopy<float2>(queue, nullptr).SetUp(); Xomatcopy<double2>(queue, nullptr).SetUp();
 
-  } catch (...) { return StatusCode::kBuildProgramFailure; }
+  } catch (...) { return DispatchException(); }
   return StatusCode::kSuccess;
 }
 

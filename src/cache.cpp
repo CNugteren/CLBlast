@@ -57,7 +57,7 @@ const std::string& GetBinaryFromCache(const std::string &device_name, const Prec
     }
   }
   binary_cache_mutex_.unlock();
-  throw std::runtime_error("Internal CLBlast error: Expected binary in cache, but found none.");
+  throw LogicError("GetBinaryFromCache: Expected binary in cache, but found none");
 }
 
 // Queries the cache and retrieves a matching program. Assumes that the match is available, throws
@@ -75,7 +75,7 @@ const Program& GetProgramFromCache(const Context &context, const Precision &prec
     }
   }
   program_cache_mutex_.unlock();
-  throw std::runtime_error("Internal CLBlast error: Expected program in cache, but found none.");
+  throw LogicError("GetProgramFromCache: Expected program in cache, but found none");
 }
 
 // Queries the cache to see whether or not the compiled kernel is already there
@@ -109,14 +109,13 @@ bool ProgramIsInCache(const Context &context, const Precision &precision,
 // =================================================================================================
 
 // Clears the cache of stored binaries and programs
-StatusCode CacheClearAll() {
+void CacheClearAll() {
   binary_cache_mutex_.lock();
   binary_cache_.clear();
   binary_cache_mutex_.unlock();
   program_cache_mutex_.lock();
   program_cache_.clear();
   program_cache_mutex_.unlock();
-  return StatusCode::kSuccess;
 }
 
 // =================================================================================================

@@ -39,7 +39,7 @@ class Routine {
                    const std::vector<const Database::DatabaseEntry*> &userDatabase = {});
 
   // Set-up phase of the kernel
-  StatusCode SetUp();
+  void SetUp();
 
  protected:
 

@@ -28,9 +28,9 @@ class Xswap: public Routine {
   Xswap(Queue &queue, EventPointer event, const std::string &name = "SWAP");
 
   // Templated-precision implementation of the routine
-  StatusCode DoSwap(const size_t n,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoSwap(const size_t n,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
 // =================================================================================================

@@ -38,10 +38,10 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 // =================================================================================================
 
 // Separate set-up function to allow for status codes to be returned
-StatusCode Routine::SetUp() {
+void Routine::SetUp() {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  if (ProgramIsInCache(context_, precision_, routine_name_)) { return StatusCode::kSuccess; }
+  if (ProgramIsInCache(context_, precision_, routine_name_)) { return; }
 
   // Sets the build options from an environmental variable (if set)
   auto options = std::vector<std::string>();
@@ -53,13 +53,10 @@ StatusCode Routine::SetUp() {
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
   if (BinaryIsInCache(device_name_, precision_, routine_name_)) {
-    try {
-      auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
-      auto program = Program(device_, context_, binary);
-      program.Build(device_, options);
-      StoreProgramToCache(program, context_, precision_, routine_name_);
-    } catch (...) { return StatusCode::kBuildProgramFailure; }
-    return StatusCode::kSuccess;
+    auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
+    auto program = Program(device_, context_, binary);
+    program.Build(device_, options);
+    StoreProgramToCache(program, context_, precision_, routine_name_);
   }
 
   // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
@@ -69,14 +66,14 @@ StatusCode Routine::SetUp() {
   const auto extensions = device_.Capabilities();
   if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
     if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
-      return StatusCode::kNoDoublePrecision;
+      throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
     }
   }
 
   // As above, but for cl_khr_fp16 (half precision)
   if (precision_ == Precision::kHalf) {
     if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
-      return StatusCode::kNoHalfPrecision;
+      throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
     }
   }
 
@@ -120,23 +117,21 @@ StatusCode Routine::SetUp() {
   #endif
 
   // Compiles the kernel
+  auto program = Program(context_, source_string);
   try {
-    auto program = Program(context_, source_string);
-    const auto build_status = program.Build(device_, options);
-
-    // Checks for compiler crashes/errors/warnings
-    if (build_status == BuildStatus::kError) {
-      const auto message = program.GetBuildInfo(device_);
-      fprintf(stdout, "OpenCL compiler error/warning: %s\n", message.c_str());
-      return StatusCode::kBuildProgramFailure;
+    program.Build(device_, options);
+  } catch (const CLError &e) {
+    if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
+      fprintf(stdout, "OpenCL compiler error/warning: %s\n",
+              program.GetBuildInfo(device_).c_str());
     }
-    if (build_status == BuildStatus::kInvalid) { return StatusCode::kInvalidBinary; }
+    throw;
+  }
 
-    // Store the compiled binary and program in the cache
-    const auto binary = program.GetIR();
-    StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
-    StoreProgramToCache(program, context_, precision_, routine_name_);
-  } catch (...) { return StatusCode::kBuildProgramFailure; }
+  // Store the compiled binary and program in the cache
+  const auto binary = program.GetIR();
+  StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
+  StoreProgramToCache(program, context_, precision_, routine_name_);
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
   #ifdef VERBOSE
@@ -144,9 +139,6 @@ StatusCode Routine::SetUp() {
     const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
     printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
   #endif
-
-  // No errors, normal termination of this function
-  return StatusCode::kSuccess;
 }
 
 // =================================================================================================

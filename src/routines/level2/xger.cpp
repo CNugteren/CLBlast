@@ -33,15 +33,15 @@ Xger<T>::Xger(Queue &queue, EventPointer event, const std::string &name):
 
 // The main routine
 template <typename T>
-StatusCode Xger<T>::DoGer(const Layout layout,
-                          const size_t m, const size_t n,
-                          const T alpha,
-                          const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                          const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                          const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
+void Xger<T>::DoGer(const Layout layout,
+                    const size_t m, const size_t n,
+                    const T alpha,
+                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
 
   // Makes sure all dimensions are larger than zero
-  if (m == 0 || n == 0) { return StatusCode::kInvalidDimension; }
+  if (m == 0 || n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
 
   // Computes whether or not the matrix has an alternative layout (row or column-major).
   const auto a_is_rowmajor = (layout == Layout::kRowMajor);
@@ -49,44 +49,35 @@ StatusCode Xger<T>::DoGer(const Layout layout,
   const auto a_two = (a_is_rowmajor) ? m : n;
 
   // Tests the matrix and the vectors for validity
-  auto status = TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
-  if (ErrorIn(status)) { return status; }
-  status = TestVectorX(m, x_buffer, x_offset, x_inc);
-  if (ErrorIn(status)) { return status; }
-  status = TestVectorY(n, y_buffer, y_offset, y_inc);
-  if (ErrorIn(status)) { return status; }
+  TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
+  TestVectorX(m, x_buffer, x_offset, x_inc);
+  TestVectorY(n, y_buffer, y_offset, y_inc);
 
   // Retrieves the kernel from the compiled binary
-  try {
-    const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-    auto kernel = Kernel(program, "Xger");
+  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
+  auto kernel = Kernel(program, "Xger");
 
-    // Sets the kernel arguments
-    kernel.SetArgument(0, static_cast<int>(a_one));
-    kernel.SetArgument(1, static_cast<int>(a_two));
-    kernel.SetArgument(2, GetRealArg(alpha));
-    kernel.SetArgument(3, x_buffer());
-    kernel.SetArgument(4, static_cast<int>(x_offset));
-    kernel.SetArgument(5, static_cast<int>(x_inc));
-    kernel.SetArgument(6, y_buffer());
-    kernel.SetArgument(7, static_cast<int>(y_offset));
-    kernel.SetArgument(8, static_cast<int>(y_inc));
-    kernel.SetArgument(9, a_buffer());
-    kernel.SetArgument(10, static_cast<int>(a_offset));
-    kernel.SetArgument(11, static_cast<int>(a_ld));
-    kernel.SetArgument(12, static_cast<int>(a_is_rowmajor));
+  // Sets the kernel arguments
+  kernel.SetArgument(0, static_cast<int>(a_one));
+  kernel.SetArgument(1, static_cast<int>(a_two));
+  kernel.SetArgument(2, GetRealArg(alpha));
+  kernel.SetArgument(3, x_buffer());
+  kernel.SetArgument(4, static_cast<int>(x_offset));
+  kernel.SetArgument(5, static_cast<int>(x_inc));
+  kernel.SetArgument(6, y_buffer());
+  kernel.SetArgument(7, static_cast<int>(y_offset));
+  kernel.SetArgument(8, static_cast<int>(y_inc));
+  kernel.SetArgument(9, a_buffer());
+  kernel.SetArgument(10, static_cast<int>(a_offset));
+  kernel.SetArgument(11, static_cast<int>(a_ld));
+  kernel.SetArgument(12, static_cast<int>(a_is_rowmajor));
 
-    // Launches the kernel
-    auto a_one_ceiled = Ceil(CeilDiv(a_one, db_["WPT"]), db_["WGS1"]);
-    auto a_two_ceiled = Ceil(CeilDiv(a_two, db_["WPT"]), db_["WGS2"]);
-    auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
-    auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
-    status = RunKernel(kernel, queue_, device_, global, local, event_);
-    if (ErrorIn(status)) { return status; }
-
-    // Succesfully finished the computation
-    return StatusCode::kSuccess;
-  } catch (...) { return StatusCode::kInvalidKernel; }
+  // Launches the kernel
+  auto a_one_ceiled = Ceil(CeilDiv(a_one, db_["WPT"]), db_["WGS1"]);
+  auto a_two_ceiled = Ceil(CeilDiv(a_two, db_["WPT"]), db_["WGS2"]);
+  auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
+  auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
+  RunKernel(kernel, queue_, device_, global, local, event_);
 }
 
 // =================================================================================================
