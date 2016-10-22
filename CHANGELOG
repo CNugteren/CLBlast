@@ -1,6 +1,7 @@
 
 Development version (next release)
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header
+- Changed the enums in the C API to avoid potential name clashes with external code
 - Greatly improved the way exceptions are handled in the library (thanks to 'intelfx')
 - Improved performance of GEMM kernels for small sizes by using a direct single-kernel implementation
 - Fixed a bug in the tests and samples related to waiting for an invalid event

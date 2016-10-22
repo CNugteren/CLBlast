@@ -71,13 +71,13 @@ int main(void) {
   clEnqueueWriteBuffer(queue, device_b, CL_TRUE, 0, n*sizeof(cl_half), host_b, 0, NULL, NULL);
 
   // Call the HAXPY routine.
-  StatusCode status = CLBlastHaxpy(n, alpha,
-                                   device_a, 0, 1,
-                                   device_b, 0, 1,
-                                   &queue, &event);
+  CLBlastStatusCode status = CLBlastHaxpy(n, alpha,
+                                          device_a, 0, 1,
+                                          device_b, 0, 1,
+                                          &queue, &event);
 
   // Wait for completion
-  if (status == kSuccess) {
+  if (status == CLBlastSuccess) {
     clWaitForEvents(1, &event);
     clReleaseEvent(event);
   }

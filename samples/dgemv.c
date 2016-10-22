@@ -74,17 +74,17 @@ int main(void) {
   clEnqueueWriteBuffer(queue, device_y, CL_TRUE, 0, m*sizeof(double), host_y, 0, NULL, NULL);
 
   // Call the DGEMV routine.
-  StatusCode status = CLBlastDgemv(kRowMajor, kNo,
-                                   m, n,
-                                   alpha,
-                                   device_a, 0, a_ld,
-                                   device_x, 0, 1,
-                                   beta,
-                                   device_y, 0, 1,
-                                   &queue, &event);
+  CLBlastStatusCode status = CLBlastDgemv(CLBlastLayoutRowMajor, CLBlastTransposeNo,
+                                          m, n,
+                                          alpha,
+                                          device_a, 0, a_ld,
+                                          device_x, 0, 1,
+                                          beta,
+                                          device_y, 0, 1,
+                                          &queue, &event);
 
   // Wait for completion
-  if (status == kSuccess) {
+  if (status == CLBlastSuccess) {
     clWaitForEvents(1, &event);
     clReleaseEvent(event);
   }

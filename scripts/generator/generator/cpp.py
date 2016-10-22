@@ -73,7 +73,7 @@ def clblast_c_h(routine):
     """The C API header (.h)"""
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     for flavour in routine.flavours:
-        result += routine.routine_header_c(flavour, 31, " PUBLIC_API") + ";" + NL
+        result += routine.routine_header_c(flavour, 38, " PUBLIC_API") + ";" + NL
     return result
 
 
@@ -82,13 +82,15 @@ def clblast_c_cc(routine):
     result = NL + "// " + routine.name.upper() + NL
     for flavour in routine.flavours:
         template = "<" + flavour.template + ">" if routine.no_scalars() else ""
-        indent = " " * (45 + routine.length() + len(template))
-        result += routine.routine_header_c(flavour, 20, "") + " {" + NL
+        indent = " " * (16 + routine.length() + len(template))
+        result += routine.routine_header_c(flavour, 27, "") + " {" + NL
         result += "  try {" + NL
-        result += "    return static_cast<StatusCode>(clblast::" + routine.name.capitalize() + template + "("
+        result += "    return static_cast<CLBlastStatusCode>(" + NL
+        result += "      clblast::" + routine.name.capitalize() + template + "("
         result += ("," + NL + indent).join([a for a in routine.arguments_cast(flavour, indent)])
-        result += "," + NL + indent + "queue, event));" + NL
-        result += "  } catch (...) { return static_cast<StatusCode>(clblast::DispatchExceptionForC()); }" + NL
+        result += "," + NL + indent + "queue, event)" + NL
+        result += "    );" + NL
+        result += "  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }" + NL
         result += "}" + NL
     return result
 

@@ -67,13 +67,13 @@ int main(void) {
   clEnqueueWriteBuffer(queue, device_output, CL_TRUE, 0, 1*sizeof(float), host_output, 0, NULL, NULL);
 
   // Call the SASUM routine.
-  StatusCode status = CLBlastSasum(n,
-                                   device_output, 0,
-                                   device_input, 0, 1,
-                                   &queue, &event);
+  CLBlastStatusCode status = CLBlastSasum(n,
+                                          device_output, 0,
+                                          device_input, 0, 1,
+                                          &queue, &event);
 
   // Wait for completion
-  if (status == kSuccess) {
+  if (status == CLBlastSuccess) {
     clWaitForEvents(1, &event);
     clReleaseEvent(event);
   }

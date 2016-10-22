@@ -248,7 +248,7 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   }
 
   // Could not compile the CLBlast kernel properly
-  else if (clblast_status == StatusCode::kBuildProgramFailure ||
+  else if (clblast_status == StatusCode::kOpenCLBuildProgramFailure ||
            clblast_status == StatusCode::kNotImplemented) {
     PrintTestResult(kSkippedCompilation);
     ReportSkipped();
