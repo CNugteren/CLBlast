@@ -24,9 +24,8 @@
 #include "clblast.h"
 #include "clblast_half.h"
 #include "clpp11.hpp"
-#include "clblast_exceptions.hpp"
-
-#include "msvc.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/msvc.hpp"
 
 namespace clblast {
 // =================================================================================================

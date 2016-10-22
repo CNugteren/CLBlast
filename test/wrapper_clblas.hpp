@@ -17,7 +17,7 @@
 
 #include <clBLAS.h>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 

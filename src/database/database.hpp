@@ -21,7 +21,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

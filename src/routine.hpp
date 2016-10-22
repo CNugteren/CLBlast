@@ -19,9 +19,9 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "cache.hpp"
-#include "buffer_test.hpp"
+#include "utilities/buffer_test.hpp"
 #include "database/database.hpp"
 #include "routines/common.hpp"
 

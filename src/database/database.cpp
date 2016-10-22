@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 #include "database/database.hpp"
 #include "database/kernels/xaxpy.hpp"

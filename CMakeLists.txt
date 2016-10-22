@@ -167,12 +167,12 @@ set(PRECISIONS 32 64 3232 6464 16)
 set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
+  src/utilities/clblast_exceptions.cpp
+  src/utilities/utilities.cpp
   src/cache.cpp
   src/clblast.cpp
-  src/clblast_exceptions.cpp
   src/clblast_c.cpp
   src/routine.cpp
-  src/utilities.cpp
 )
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
@@ -221,7 +221,7 @@ install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # Install pkg-config file on Linux
 if(UNIX)
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/clblast.pc.in"
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/clblast.pc.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc
             DESTINATION lib/pkgconfig)

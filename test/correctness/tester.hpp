@@ -28,7 +28,7 @@
 #endif
 #include "clblast.h"
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

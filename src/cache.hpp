@@ -18,7 +18,7 @@
 #include <vector>
 #include <mutex>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
