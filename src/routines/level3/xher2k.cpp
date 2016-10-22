@@ -79,7 +79,7 @@ StatusCode Xher2k<T,U>::DoHer2k(const Layout layout, const Triangle triangle, co
   if (ErrorIn(status)) { return status; }
 
   // Calculates the ceiled versions of n and k
-  auto n_ceiled = Ceil(n, db_["NWG"]);
+  auto n_ceiled = Ceil(Ceil(n, db_["MWG"]), db_["NWG"]);
   auto k_ceiled = Ceil(k, db_["KWG"]);
 
   // Decides which kernel to run: the upper-triangular or lower-triangular version
