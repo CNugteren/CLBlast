@@ -43,7 +43,8 @@ const Database::DatabaseEntry XgerSingle = {
         { "Oland",                                           { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -102,7 +103,8 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "Oland",                                           { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -144,7 +146,7 @@ const Database::DatabaseEntry XgerComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
       }
     },
   }
@@ -161,7 +163,8 @@ const Database::DatabaseEntry XgerDouble = {
         { "Oland",                                           { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",8}, {"WGS2",16}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -209,6 +212,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
         { "Oland",                                           { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",16}, {"WGS2",4}, {"WPT",1} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
       }
     },

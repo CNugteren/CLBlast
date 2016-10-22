@@ -121,6 +121,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Oland
   - Pitcairn
   - Tahiti
+  - Tonga
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2

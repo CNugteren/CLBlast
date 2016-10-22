@@ -43,7 +43,8 @@ const Database::DatabaseEntry XaxpySingle = {
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
-        { "default",                                         { {"VW",2}, {"WGS",256}, {"WPT",1} } },
+        { "Tonga",                                           { {"VW",1}, {"WGS",256}, {"WPT",8} } },
+        { "default",                                         { {"VW",2}, {"WGS",64}, {"WPT",2} } },
       }
     },
     { // ARM GPUs
@@ -97,7 +98,7 @@ const Database::DatabaseEntry XaxpySingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",4}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",4}, {"WGS",256}, {"WPT",1} } },
       }
     },
   }
@@ -114,6 +115,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "Tonga",                                           { {"VW",1}, {"WGS",256}, {"WPT",8} } },
         { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
@@ -185,6 +187,7 @@ const Database::DatabaseEntry XaxpyDouble = {
         { "Oland",                                           { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "Tonga",                                           { {"VW",1}, {"WGS",128}, {"WPT",4} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
       }
     },
@@ -244,6 +247,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
         { "Oland",                                           { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Tonga",                                           { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
@@ -286,7 +290,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",256}, {"WPT",1} } },
       }
     },
   }

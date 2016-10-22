@@ -43,6 +43,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",1}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -107,6 +108,7 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -164,6 +166,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -216,6 +219,7 @@ const Database::DatabaseEntry XgemvFastComplexDouble = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },

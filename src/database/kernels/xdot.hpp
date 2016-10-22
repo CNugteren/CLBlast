@@ -42,6 +42,7 @@ const Database::DatabaseEntry XdotSingle = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",128}, {"WGS2",32} } },
+        { "Tonga",                                           { {"WGS1",64}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
@@ -95,7 +96,8 @@ const Database::DatabaseEntry XdotComplexSingle = {
         { "Oland",                                           { {"WGS1",128}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "Tonga",                                           { {"WGS1",256}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
     { // Intel CPUs
@@ -148,7 +150,8 @@ const Database::DatabaseEntry XdotDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "Tonga",                                           { {"WGS1",128}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
     { // Intel CPUs
@@ -190,6 +193,7 @@ const Database::DatabaseEntry XdotComplexDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
+        { "Tonga",                                           { {"WGS1",128}, {"WGS2",64} } },
         { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
