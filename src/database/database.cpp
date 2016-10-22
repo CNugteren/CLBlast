@@ -92,7 +92,7 @@ Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
       }
     }
 
-    if (!search_result) { throw std::runtime_error("Database error, could not find a suitable entry"); }
+    if (!search_result) { throw RuntimeErrorCode(StatusCode::kDatabaseError); }
   }
 }
 

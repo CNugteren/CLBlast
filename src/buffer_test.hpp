@@ -22,96 +22,88 @@ namespace clblast {
 
 // Tests matrix 'A' for validity
 template <typename T>
-StatusCode TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
+void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
                        const size_t offset, const size_t ld) {
-  if (ld < one) { return StatusCode::kInvalidLeadDimA; }
+  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryA; }
-  } catch (...) { return StatusCode::kInvalidMatrixA; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryA); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidMatrixA, e.what()); }
 }
 
 // Tests matrix 'B' for validity
 template <typename T>
-StatusCode TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
+void TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
                        const size_t offset, const size_t ld) {
-  if (ld < one) { return StatusCode::kInvalidLeadDimB; }
+  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryB; }
-  } catch (...) { return StatusCode::kInvalidMatrixB; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryB); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidMatrixB, e.what()); }
 }
 
 // Tests matrix 'C' for validity
 template <typename T>
-StatusCode TestMatrixC(const size_t one, const size_t two, const Buffer<T> &buffer,
+void TestMatrixC(const size_t one, const size_t two, const Buffer<T> &buffer,
                        const size_t offset, const size_t ld) {
-  if (ld < one) { return StatusCode::kInvalidLeadDimC; }
+  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimC); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryC; }
-  } catch (...) { return StatusCode::kInvalidMatrixC; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryC); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidMatrixC, e.what()); }
 }
 
 // Tests matrix 'AP' for validity
 template <typename T>
-StatusCode TestMatrixAP(const size_t n, const Buffer<T> &buffer, const size_t offset) {
+void TestMatrixAP(const size_t n, const Buffer<T> &buffer, const size_t offset) {
   try {
     const auto required_size = (((n * (n + 1)) / 2) + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryA; }
-  } catch (...) { return StatusCode::kInvalidMatrixA; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryA); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidMatrixA, e.what()); }
 }
 
 // =================================================================================================
 
 // Tests vector 'X' for validity
 template <typename T>
-StatusCode TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
+void TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
                        const size_t inc) {
-  if (inc == 0) { return StatusCode::kInvalidIncrementX; }
+  if (inc == 0) { throw BLASError(StatusCode::kInvalidIncrementX); }
   try {
     const auto required_size = ((n - 1) * inc + 1 + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryX; }
-  } catch (...) { return StatusCode::kInvalidVectorX; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryX); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorX, e.what()); }
 }
 
 // Tests vector 'Y' for validity
 template <typename T>
-StatusCode TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
+void TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
                        const size_t inc) {
-  if (inc == 0) { return StatusCode::kInvalidIncrementY; }
+  if (inc == 0) { throw BLASError(StatusCode::kInvalidIncrementY); }
   try {
     const auto required_size = ((n - 1) * inc + 1 + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryY; }
-  } catch (...) { return StatusCode::kInvalidVectorY; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryY); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorY, e.what()); }
 }
 
 // =================================================================================================
 
 // Tests vector 'scalar' for validity
 template <typename T>
-StatusCode TestVectorScalar(const size_t n, const Buffer<T> &buffer, const size_t offset) {
+void TestVectorScalar(const size_t n, const Buffer<T> &buffer, const size_t offset) {
   try {
     const auto required_size = (n + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryScalar; }
-  } catch (...) { return StatusCode::kInvalidVectorScalar; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryScalar); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorScalar, e.what()); }
 }
 
 // Tests vector 'index' for validity
 template <typename T>
-StatusCode TestVectorIndex(const size_t n, const Buffer<T> &buffer, const size_t offset) {
+void TestVectorIndex(const size_t n, const Buffer<T> &buffer, const size_t offset) {
   try {
     const auto required_size = (n + offset) * sizeof(T);
-    if (buffer.GetSize() < required_size) { return StatusCode::kInsufficientMemoryScalar; }
-  } catch (...) { return StatusCode::kInvalidVectorScalar; }
-  return StatusCode::kSuccess;
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryScalar); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorScalar, e.what()); }
 }
 
 // =================================================================================================

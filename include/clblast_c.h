@@ -76,13 +76,14 @@ typedef enum StatusCode_ {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
-  kKernelLaunchError         = -2048, // Problem occurred when enqueuing the kernel
-  kKernelRunError            = -2047, // Problem occurred while running the kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
   kInvalidVectorScalar       = -2043, // The unit-sized vector is not a valid OpenCL buffer
   kInsufficientMemoryScalar  = -2042, // The unit-sized vector's OpenCL buffer is too small
+  kDatabaseError             = -2041, // Entry for the device was not found in the database
+  kUnknownError              = -2040, // A catch-all error code representing an unspecified error
+  kUnexpectedError           = -2039, // A catch-all error code representing an unexpected exception
 } StatusCode;
 
 // Matrix layout and transpose types

@@ -37,13 +37,13 @@ class Xhemm: public Xgemm<T> {
   Xhemm(Queue &queue, EventPointer event, const std::string &name = "HEMM");
 
   // Templated-precision implementation of the routine
-  StatusCode DoHemm(const Layout layout, const Side side, const Triangle triangle,
-                    const size_t m, const size_t n,
-                    const T alpha,
-                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                    const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                    const T beta,
-                    const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoHemm(const Layout layout, const Side side, const Triangle triangle,
+              const size_t m, const size_t n,
+              const T alpha,
+              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+              const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+              const T beta,
+              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
 };
 
 // =================================================================================================
