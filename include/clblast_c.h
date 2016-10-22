@@ -47,14 +47,34 @@ typedef enum StatusCode_ {
 
   // Status codes in common with the OpenCL standard
   kSuccess                   =   0, // CL_SUCCESS
+  kOpenCLCompilerNotAvailable=  -3, // CL_COMPILER_NOT_AVAILABLE
   kTempBufferAllocFailure    =  -4, // CL_MEM_OBJECT_ALLOCATION_FAILURE
-  kBuildProgramFailure       = -11, // CL_BUILD_PROGRAM_FAILURE: OpenCL compilation error
+  kOpenCLOutOfResources      =  -5, // CL_OUT_OF_RESOURCES
+  kOpenCLOutOfHostMemory     =  -6, // CL_OUT_OF_HOST_MEMORY
+  kOpenCLBuildProgramFailure = -11, // CL_BUILD_PROGRAM_FAILURE: OpenCL compilation error
+  kInvalidValue              = -30, // CL_INVALID_VALUE
+  kInvalidCommandQueue       = -36, // CL_INVALID_COMMAND_QUEUE
+  kInvalidMemObject          = -38, // CL_INVALID_MEM_OBJECT
   kInvalidBinary             = -42, // CL_INVALID_BINARY
+  kInvalidBuildOptions       = -43, // CL_INVALID_BUILD_OPTIONS
+  kInvalidProgram            = -44, // CL_INVALID_PROGRAM
+  kInvalidProgramExecutable  = -45, // CL_INVALID_PROGRAM_EXECUTABLE
+  kInvalidKernelName         = -46, // CL_INVALID_KERNEL_NAME
+  kInvalidKernelDefinition   = -47, // CL_INVALID_KERNEL_DEFINITION
   kInvalidKernel             = -48, // CL_INVALID_KERNEL
+  kInvalidArgIndex           = -49, // CL_INVALID_ARG_INDEX
+  kInvalidArgValue           = -50, // CL_INVALID_ARG_VALUE
+  kInvalidArgSize            = -51, // CL_INVALID_ARG_SIZE
+  kInvalidKernelArgs         = -52, // CL_INVALID_KERNEL_ARGS
   kInvalidLocalNumDimensions = -53, // CL_INVALID_WORK_DIMENSION: Too many thread dimensions
   kInvalidLocalThreadsTotal  = -54, // CL_INVALID_WORK_GROUP_SIZE: Too many threads in total
   kInvalidLocalThreadsDim    = -55, // CL_INVALID_WORK_ITEM_SIZE: ... or for a specific dimension
-  kInvalidTempBufferSize     = -61, // CL_INVALID_BUFFER_SIZE
+  kInvalidGlobalOffset       = -56, // CL_INVALID_GLOBAL_OFFSET
+  kInvalidEventWaitList      = -57, // CL_INVALID_EVENT_WAIT_LIST
+  kInvalidEvent              = -58, // CL_INVALID_EVENT
+  kInvalidOperation          = -59, // CL_INVALID_OPERATION
+  kInvalidBufferSize         = -61, // CL_INVALID_BUFFER_SIZE
+  kInvalidGlobalWorkSize     = -63, // CL_INVALID_GLOBAL_WORK_SIZE
 
   // Status codes in common with the clBLAS library
   kNotImplemented            = -1024, // Routine or functionality not implemented yet

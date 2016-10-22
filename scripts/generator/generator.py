@@ -29,8 +29,15 @@ import generator.doc as doc
 from generator.routine import Routine
 from generator.datatype import H, S, D, C, Z, Sc, Dz, iH, iS, iD, iC, iZ, Css, Zdd, Ccs, Zzd, T, Tc, TU
 
-
-HEADER_LINES = [97, 73, 98, 22, 29, 41]
+FILES = [
+    "/include/clblast.h",
+    "/src/clblast.cpp",
+    "/include/clblast_c.h",
+    "/src/clblast_c.cpp",
+    "/test/wrapper_clblas.hpp",
+    "/test/wrapper_cblas.hpp",
+]
+HEADER_LINES = [117, 73, 118, 22, 29, 41]
 FOOTER_LINES = [17, 80, 19, 18, 6, 6]
 
 # Different possibilities for requirements
@@ -124,33 +131,23 @@ def main(argv):
     cl_args = parser.parse_args(argv)
     library_root = cl_args.clblast_root
 
-    # Sets all the files the output
-    files = [
-        library_root + "/include/clblast.h",
-        library_root + "/src/clblast.cpp",
-        library_root + "/include/clblast_c.h",
-        library_root + "/src/clblast_c.cpp",
-        library_root + "/test/wrapper_clblas.hpp",
-        library_root + "/test/wrapper_cblas.hpp",
-    ]
-
     # Checks whether the command-line arguments are valid; exists otherwise
-    for f in files:
-        if not os.path.isfile(f):
+    for f in FILES:
+        if not os.path.isfile(library_root + f):
             print("[ERROR] The path '" + library_root + "' does not point to the root of the CLBlast library")
             sys.exit()
 
     # Iterates over all regular files to output
-    for i in range(0, len(files)):
+    for i in range(0, len(FILES)):
 
         # Stores the header and the footer of the original file
-        with open(files[i]) as f:
+        with open(library_root + FILES[i]) as f:
             original = f.readlines()
         file_header = original[:HEADER_LINES[i]]
         file_footer = original[-FOOTER_LINES[i]:]
 
         # Re-writes the body of the file
-        with open(files[i], "w") as f:
+        with open(library_root + FILES[i], "w") as f:
             body = ""
             levels = [1, 2, 3] if (i == 4 or i == 5) else [1, 2, 3, 4]
             for level in levels:
