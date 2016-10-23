@@ -26,7 +26,11 @@ namespace clblast {
 template <typename Base>
 class Error : public Base {
  public:
-  using Base::Base;
+  // Perfect forwarding of the constructor since "using Base::Base" is not supported by VS 2013
+  template <typename... Args>
+  Error(Args&&... args):
+      Base(std::forward<Args>(args)...) {
+  }
 };
 
 // =================================================================================================
@@ -34,7 +38,12 @@ class Error : public Base {
 // Represents a generic device-specific runtime error (returned by an OpenCL or CUDA API function)
 class DeviceError : public Error<std::runtime_error> {
  public:
-  using Error<std::runtime_error>::Error;
+   // Perfect forwarding of the constructor since "using Error<std::runtime_error>::Error" is not
+   // supported by VS 2013
+   template <typename... Args>
+   DeviceError(Args&&... args):
+       Error<std::runtime_error>(std::forward<Args>(args)...) {
+   }
 
   static std::string TrimCallString(const char *where) {
     const char *paren = strchr(where, '(');
