@@ -285,7 +285,7 @@ The `samples/haxpy.c` example shows how to use these convencience functions when
 Contributing
 -------------
 
-Contributions are welcome in the form of tuning results for OpenCL devices previously untested. Furthermore, merge requests are welcome as long as they contain unit additions or modifications. Furthermore, they should follow the CLBlast coding style, which is based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers.
+Contributions are welcome in the form of tuning results for OpenCL devices previously untested or pull requests. See [the contributing guidelines](CONTRIBUTING.md) for more details.
 
 The contributing authors (code, pull requests, testing) so far are:
 
