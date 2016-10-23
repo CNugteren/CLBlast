@@ -61,8 +61,8 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
   if (do_transpose) {
     if (use_fast_kernel &&
         IsMultiple(src_ld, db["TRA_WPT"]) &&
-        IsMultiple(src_one, db["TRA_WPT"]*db["TRA_WPT"]) &&
-        IsMultiple(src_two, db["TRA_WPT"]*db["TRA_WPT"])) {
+        IsMultiple(src_one, db["TRA_WPT"]*db["TRA_DIM"]) &&
+        IsMultiple(src_two, db["TRA_WPT"]*db["TRA_DIM"])) {
       kernel_name = "TransposeMatrixFast";
     }
     else {
