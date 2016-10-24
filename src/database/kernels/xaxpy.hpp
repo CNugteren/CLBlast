@@ -90,6 +90,7 @@ const Database::DatabaseEntry XaxpySingle = {
         { "GeForce GTX 750 Ti",                              { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",4}, {"WGS",256}, {"WPT",1} } },
+        { "GeForce GTX TITAN Black",                         { {"VW",4}, {"WGS",128}, {"WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
@@ -162,6 +163,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",512}, {"WPT",1} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",1}, {"WGS",256}, {"WPT",1} } },
+        { "GeForce GTX TITAN Black",                         { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -222,15 +224,16 @@ const Database::DatabaseEntry XaxpyDouble = {
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",256}, {"WPT",2} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
+        { "GeForce GTX TITAN Black",                         { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "default",                                         { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",2} } },
       }
     },
   }
@@ -282,6 +285,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
         { "GeForce GTX 750 Ti",                              { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "GeForce GTX 980",                                 { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"VW",1}, {"WGS",64}, {"WPT",4} } },
+        { "GeForce GTX TITAN Black",                         { {"VW",1}, {"WGS",128}, {"WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -290,7 +294,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",256}, {"WPT",1} } },
+        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",1} } },
       }
     },
   }
