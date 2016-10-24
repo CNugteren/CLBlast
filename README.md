@@ -298,6 +298,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Gian-Carlo Pascutto](https://github.com/gcp)
 * [Ivan Shapovalov](https://github.com/intelfx)
 * [Dimitri Van Assche](https://github.com/dvasschemacq)
+* [Shehzan Mohammed](https://shehzan10.github.io)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -305,6 +306,7 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
+* [ArrayFire](http://arrayfire.org)
 
 
 Support us
