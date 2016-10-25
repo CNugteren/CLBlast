@@ -170,7 +170,7 @@ set(SOURCES
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
-  src/clblast_blas.cpp
+  src/clblast_netlib_c.cpp
   src/routine.cpp
 )
 foreach(ROUTINE ${LEVEL1_ROUTINES})
@@ -214,7 +214,7 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
-install(FILES include/clblast_blas.h DESTINATION include)
+install(FILES include/clblast_netlib_c.h DESTINATION include)
 
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)

@@ -12,8 +12,8 @@
 #    clblast.cpp
 #    clblast_c.h
 #    clblast_c.cpp
-#    clblast_blas.h
-#    clblast_blas.cpp
+#    clblast_netlib_c.h
+#    clblast_netlib_c.cpp
 #    wrapper_clblas.h
 #    wrapper_cblas.h
 # It also generates the main functions for the correctness and performance tests as found in
@@ -38,8 +38,8 @@ FILES = [
     "/src/clblast_c.cpp",
     "/test/wrapper_clblas.hpp",
     "/test/wrapper_cblas.hpp",
-    "/include/clblast_blas.h",
-    "/src/clblast_blas.cpp",
+    "/include/clblast_netlib_c.h",
+    "/src/clblast_netlib_c.cpp",
 ]
 HEADER_LINES = [117, 73, 118, 22, 29, 41, 47, 32]
 FOOTER_LINES = [17, 80, 19, 18, 6, 6, 9, 2]
@@ -205,9 +205,9 @@ def main(argv):
                     if i == 5:
                         body += cpp.wrapper_cblas(routine)
                     if i == 6:
-                        body += cpp.clblast_blas_h(routine)
+                        body += cpp.clblast_netlib_c_h(routine)
                     if i == 7:
-                        body += cpp.clblast_blas_cc(routine)
+                        body += cpp.clblast_netlib_c_cc(routine)
             f.write("".join(file_header))
             f.write(body)
             f.write("".join(file_footer))

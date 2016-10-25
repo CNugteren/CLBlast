@@ -15,7 +15,7 @@
 
 #include <cstdlib>
 
-#include "clblast_blas.h"
+#include "clblast_netlib_c.h"
 #include "clblast.h"
 #include "utilities/utilities.hpp"
 

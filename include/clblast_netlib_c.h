@@ -13,8 +13,8 @@
 //
 // =================================================================================================
 
-#ifndef CLBLAST_CLBLAST_BLAS_H_
-#define CLBLAST_CLBLAST_BLAS_H_
+#ifndef CLBLAST_CLBLAST_NETLIB_C_H_
+#define CLBLAST_CLBLAST_NETLIB_C_H_
 
 // Exports library functions under Windows when building a DLL. See also:
 // https://msdn.microsoft.com/en-us/library/a90k134d.aspx
@@ -924,5 +924,5 @@ void PUBLIC_API cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspo
 } // extern "C"
 #endif
 
-// CLBLAST_CLBLAST_BLAS_H_
+// CLBLAST_CLBLAST_NETLIB_C_H_
 #endif

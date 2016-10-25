@@ -95,7 +95,7 @@ def clblast_c_cc(routine):
     return result
 
 
-def clblast_blas_h(routine):
+def clblast_netlib_c_h(routine):
     """The Netlib CBLAS API header (.h)"""
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     for flavour in routine.flavours:
@@ -104,7 +104,7 @@ def clblast_blas_h(routine):
     return result
 
 
-def clblast_blas_cc(routine):
+def clblast_netlib_c_cc(routine):
     """The Netlib CBLAS API implementation (.cpp)"""
     result = NL + "// " + routine.name.upper() + NL
     for flavour in routine.flavours:
