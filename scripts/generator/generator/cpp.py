@@ -112,13 +112,13 @@ def clblast_blas_cc(routine):
         # There is a version available in CBLAS
         if flavour.precision_name in ["S", "D", "C", "Z"]:
             template = "<" + flavour.template + ">" if routine.no_scalars() else ""
-            indent = " " * (12 + routine.length() + len(template))
+            indent = " " * (21 + routine.length() + len(template))
             result += routine.routine_header_netlib(flavour, 13, "") + " {" + NL
 
             # Initialize OpenCL
             result += "  auto device = get_device();" + NL
-            result += "  auto context = Context(device);" + NL
-            result += "  auto queue = Queue(context, device);" + NL
+            result += "  auto context = clblast::Context(device);" + NL
+            result += "  auto queue = clblast::Queue(context, device);" + NL
 
             # Set alpha and beta
             result += "".join("  " + s + NL for s in routine.scalar_create_cpp(flavour))
@@ -134,13 +134,13 @@ def clblast_blas_cc(routine):
 
             # The function call
             result += "  auto queue_cl = queue();" + NL
-            result += "  auto s = " + routine.name.capitalize() + template + "("
+            result += "  auto s = clblast::" + routine.name.capitalize() + template + "("
             result += ("," + NL + indent).join([a for a in routine.arguments_netlib(flavour, indent)])
             result += "," + NL + indent + "&queue_cl);" + NL
 
             # Error handling
-            result += "  if (s != StatusCode::kSuccess) {" + NL
-            result += "    throw std::runtime_error(\"CLBlast returned with error code \" + ToString(s));" + NL
+            result += "  if (s != clblast::StatusCode::kSuccess) {" + NL
+            result += "    throw std::runtime_error(\"CLBlast returned with error code \" + clblast::ToString(s));" + NL
             result += "  }" + NL
 
             # Copy back and clean-up

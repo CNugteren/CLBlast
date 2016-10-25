@@ -163,7 +163,6 @@ set(PRECISIONS 32 64 3232 6464 16)
 
 # Gathers all source-files
 set(SOURCES
-  src/clblast_blas.cpp
   src/database/database.cpp
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
@@ -171,6 +170,7 @@ set(SOURCES
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
+  src/clblast_blas.cpp
   src/routine.cpp
 )
 foreach(ROUTINE ${LEVEL1_ROUTINES})

@@ -75,7 +75,7 @@ class Routine:
     @staticmethod
     def create_buffer(name, template):
         """Creates a new CLCudaAPI buffer"""
-        return "auto " + name + "_buffer = Buffer<" + template + ">(context, " + name + "_size);"
+        return "auto " + name + "_buffer = clblast::Buffer<" + template + ">(context, " + name + "_size);"
 
     @staticmethod
     def write_buffer(name, template):

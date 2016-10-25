@@ -42,7 +42,7 @@ FILES = [
     "/src/clblast_blas.cpp",
 ]
 HEADER_LINES = [117, 73, 118, 22, 29, 41, 47, 32]
-FOOTER_LINES = [17, 80, 19, 18, 6, 6, 9, 3]
+FOOTER_LINES = [17, 80, 19, 18, 6, 6, 9, 2]
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."
