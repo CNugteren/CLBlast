@@ -117,11 +117,6 @@ typedef enum CLBlastDiagonal_ { CLBlastDiagonalNonUnit = 131,
                                 CLBlastDiagonalUnit = 132 } CLBlastDiagonal;
 typedef enum CLBlastSide_ { CLBlastSideLeft = 141, CLBlastSideRight = 142 } CLBlastSide;
 
-// Precision scoped enum (values in bits)
-typedef enum CLBlastPrecision_ { CLBlastPrecisionHalf = 16, CLBlastPrecisionSingle = 32,
-                                 CLBlastPrecisionDouble = 64, CLBlastPrecisionComplexSingle = 3232,
-                                 CLBlastPrecisionComplexDouble = 6464 } CLBlastPrecision;
-
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================

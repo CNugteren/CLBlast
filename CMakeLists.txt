@@ -163,6 +163,7 @@ set(PRECISIONS 32 64 3232 6464 16)
 
 # Gathers all source-files
 set(SOURCES
+  src/clblast_blas.cpp
   src/database/database.cpp
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
@@ -213,6 +214,7 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+install(FILES include/clblast_blas.h DESTINATION include)
 
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)

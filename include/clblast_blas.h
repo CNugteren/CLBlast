@@ -18,8 +18,8 @@
 
 // Exports library functions under Windows when building a DLL. See also:
 // https://msdn.microsoft.com/en-us/library/a90k134d.aspx
-#ifdef _WIN32
-  #ifdef COMPILING_DLL
+#if defined(_WIN32) && defined(CLBLAST_DLL)
+  #if defined(COMPILING_DLL)
     #define PUBLIC_API __declspec(dllexport)
   #else
     #define PUBLIC_API __declspec(dllimport)
@@ -41,6 +41,7 @@ typedef enum Transpose_ { kNo = 111, kYes = 112, kConjugate = 113 } Transpose;
 typedef enum Triangle_ { kUpper = 121, kLower = 122 } Triangle;
 typedef enum Diagonal_ { kNonUnit = 131, kUnit = 132 } Diagonal;
 typedef enum Side_ { kLeft = 141, kRight = 142 } Side;
+
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
@@ -103,9 +104,6 @@ void PUBLIC_API cblas_cswap(const int n,
 void PUBLIC_API cblas_zswap(const int n,
                             void* x, const int x_inc,
                             void* y, const int y_inc);
-void PUBLIC_API cblas_hswap(const int n,
-                            void* x, const int x_inc,
-                            void* y, const int y_inc);
 
 // Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 void PUBLIC_API cblas_sscal(const int n,
@@ -120,9 +118,6 @@ void PUBLIC_API cblas_cscal(const int n,
 void PUBLIC_API cblas_zscal(const int n,
                             const void* alpha,
                             void* x, const int x_inc);
-void PUBLIC_API cblas_hscal(const int n,
-                            const void* alpha,
-                            void* x, const int x_inc);
 
 // Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 void PUBLIC_API cblas_scopy(const int n,
@@ -135,9 +130,6 @@ void PUBLIC_API cblas_ccopy(const int n,
                             const void* x, const int x_inc,
                             void* y, const int y_inc);
 void PUBLIC_API cblas_zcopy(const int n,
-                            const void* x, const int x_inc,
-                            void* y, const int y_inc);
-void PUBLIC_API cblas_hcopy(const int n,
                             const void* x, const int x_inc,
                             void* y, const int y_inc);
 
@@ -158,10 +150,6 @@ void PUBLIC_API cblas_zaxpy(const int n,
                             const void* alpha,
                             const void* x, const int x_inc,
                             void* y, const int y_inc);
-void PUBLIC_API cblas_haxpy(const int n,
-                            const void* alpha,
-                            const void* x, const int x_inc,
-                            void* y, const int y_inc);
 
 // Dot product of two vectors: SDOT/DDOT/HDOT
 void PUBLIC_API cblas_sdot(const int n,
@@ -172,10 +160,6 @@ void PUBLIC_API cblas_ddot(const int n,
                            double* dot,
                            const double* x, const int x_inc,
                            const double* y, const int y_inc);
-void PUBLIC_API cblas_hdot(const int n,
-                           void* dot,
-                           const void* x, const int x_inc,
-                           const void* y, const int y_inc);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
 void PUBLIC_API cblas_cdotu(const int n,
@@ -210,9 +194,6 @@ void PUBLIC_API cblas_scnrm2(const int n,
 void PUBLIC_API cblas_dznrm2(const int n,
                             void* nrm2,
                             const void* x, const int x_inc);
-void PUBLIC_API cblas_hnrm2(const int n,
-                            void* nrm2,
-                            const void* x, const int x_inc);
 
 // Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 void PUBLIC_API cblas_sasum(const int n,
@@ -225,9 +206,6 @@ void PUBLIC_API cblas_scasum(const int n,
                             void* asum,
                             const void* x, const int x_inc);
 void PUBLIC_API cblas_dzasum(const int n,
-                            void* asum,
-                            const void* x, const int x_inc);
-void PUBLIC_API cblas_hasum(const int n,
                             void* asum,
                             const void* x, const int x_inc);
 
@@ -244,9 +222,6 @@ void PUBLIC_API cblas_scsum(const int n,
 void PUBLIC_API cblas_dzsum(const int n,
                            void* sum,
                            const void* x, const int x_inc);
-void PUBLIC_API cblas_hsum(const int n,
-                           void* sum,
-                           const void* x, const int x_inc);
 
 // Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 void PUBLIC_API cblas_isamax(const int n,
@@ -259,9 +234,6 @@ void PUBLIC_API cblas_icamax(const int n,
                             void* imax,
                             const void* x, const int x_inc);
 void PUBLIC_API cblas_izamax(const int n,
-                            void* imax,
-                            const void* x, const int x_inc);
-void PUBLIC_API cblas_ihamax(const int n,
                             void* imax,
                             const void* x, const int x_inc);
 
@@ -278,9 +250,6 @@ void PUBLIC_API cblas_icmax(const int n,
 void PUBLIC_API cblas_izmax(const int n,
                            void* imax,
                            const void* x, const int x_inc);
-void PUBLIC_API cblas_ihmax(const int n,
-                           void* imax,
-                           const void* x, const int x_inc);
 
 // Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 void PUBLIC_API cblas_ismin(const int n,
@@ -293,9 +262,6 @@ void PUBLIC_API cblas_icmin(const int n,
                            void* imin,
                            const void* x, const int x_inc);
 void PUBLIC_API cblas_izmin(const int n,
-                           void* imin,
-                           const void* x, const int x_inc);
-void PUBLIC_API cblas_ihmin(const int n,
                            void* imin,
                            const void* x, const int x_inc);
 
@@ -332,13 +298,6 @@ void PUBLIC_API cblas_zgemv(const Layout layout, const Transpose a_transpose,
                             const void* x, const int x_inc,
                             const void* beta,
                             void* y, const int y_inc);
-void PUBLIC_API cblas_hgemv(const Layout layout, const Transpose a_transpose,
-                            const int m, const int n,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* x, const int x_inc,
-                            const void* beta,
-                            void* y, const int y_inc);
 
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 void PUBLIC_API cblas_sgbmv(const Layout layout, const Transpose a_transpose,
@@ -363,13 +322,6 @@ void PUBLIC_API cblas_cgbmv(const Layout layout, const Transpose a_transpose,
                             const void* beta,
                             void* y, const int y_inc);
 void PUBLIC_API cblas_zgbmv(const Layout layout, const Transpose a_transpose,
-                            const int m, const int n, const int kl, const int ku,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* x, const int x_inc,
-                            const void* beta,
-                            void* y, const int y_inc);
-void PUBLIC_API cblas_hgbmv(const Layout layout, const Transpose a_transpose,
                             const int m, const int n, const int kl, const int ku,
                             const void* alpha,
                             const void* a, const int a_ld,
@@ -440,13 +392,6 @@ void PUBLIC_API cblas_dsymv(const Layout layout, const Triangle triangle,
                             const double* x, const int x_inc,
                             const double beta,
                             double* y, const int y_inc);
-void PUBLIC_API cblas_hsymv(const Layout layout, const Triangle triangle,
-                            const int n,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* x, const int x_inc,
-                            const void* beta,
-                            void* y, const int y_inc);
 
 // Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
 void PUBLIC_API cblas_ssbmv(const Layout layout, const Triangle triangle,
@@ -463,13 +408,6 @@ void PUBLIC_API cblas_dsbmv(const Layout layout, const Triangle triangle,
                             const double* x, const int x_inc,
                             const double beta,
                             double* y, const int y_inc);
-void PUBLIC_API cblas_hsbmv(const Layout layout, const Triangle triangle,
-                            const int n, const int k,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* x, const int x_inc,
-                            const void* beta,
-                            void* y, const int y_inc);
 
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 void PUBLIC_API cblas_sspmv(const Layout layout, const Triangle triangle,
@@ -486,13 +424,6 @@ void PUBLIC_API cblas_dspmv(const Layout layout, const Triangle triangle,
                             const double* x, const int x_inc,
                             const double beta,
                             double* y, const int y_inc);
-void PUBLIC_API cblas_hspmv(const Layout layout, const Triangle triangle,
-                            const int n,
-                            const void* alpha,
-                            const void* ap,
-                            const void* x, const int x_inc,
-                            const void* beta,
-                            void* y, const int y_inc);
 
 // Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 void PUBLIC_API cblas_strmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
@@ -508,10 +439,6 @@ void PUBLIC_API cblas_ctrmv(const Layout layout, const Triangle triangle, const 
                             const void* a, const int a_ld,
                             void* x, const int x_inc);
 void PUBLIC_API cblas_ztrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                            const int n,
-                            const void* a, const int a_ld,
-                            void* x, const int x_inc);
-void PUBLIC_API cblas_htrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                             const int n,
                             const void* a, const int a_ld,
                             void* x, const int x_inc);
@@ -533,10 +460,6 @@ void PUBLIC_API cblas_ztbmv(const Layout layout, const Triangle triangle, const 
                             const int n, const int k,
                             const void* a, const int a_ld,
                             void* x, const int x_inc);
-void PUBLIC_API cblas_htbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                            const int n, const int k,
-                            const void* a, const int a_ld,
-                            void* x, const int x_inc);
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 void PUBLIC_API cblas_stpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
@@ -552,10 +475,6 @@ void PUBLIC_API cblas_ctpmv(const Layout layout, const Triangle triangle, const 
                             const void* ap,
                             void* x, const int x_inc);
 void PUBLIC_API cblas_ztpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                            const int n,
-                            const void* ap,
-                            void* x, const int x_inc);
-void PUBLIC_API cblas_htpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                             const int n,
                             const void* ap,
                             void* x, const int x_inc);
@@ -627,12 +546,6 @@ void PUBLIC_API cblas_dger(const Layout layout,
                            const double* x, const int x_inc,
                            const double* y, const int y_inc,
                            double* a, const int a_ld);
-void PUBLIC_API cblas_hger(const Layout layout,
-                           const int m, const int n,
-                           const void* alpha,
-                           const void* x, const int x_inc,
-                           const void* y, const int y_inc,
-                           void* a, const int a_ld);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 void PUBLIC_API cblas_cgeru(const Layout layout,
@@ -725,11 +638,6 @@ void PUBLIC_API cblas_dsyr(const Layout layout, const Triangle triangle,
                            const double alpha,
                            const double* x, const int x_inc,
                            double* a, const int a_ld);
-void PUBLIC_API cblas_hsyr(const Layout layout, const Triangle triangle,
-                           const int n,
-                           const void* alpha,
-                           const void* x, const int x_inc,
-                           void* a, const int a_ld);
 
 // Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 void PUBLIC_API cblas_sspr(const Layout layout, const Triangle triangle,
@@ -742,11 +650,6 @@ void PUBLIC_API cblas_dspr(const Layout layout, const Triangle triangle,
                            const double alpha,
                            const double* x, const int x_inc,
                            double* ap);
-void PUBLIC_API cblas_hspr(const Layout layout, const Triangle triangle,
-                           const int n,
-                           const void* alpha,
-                           const void* x, const int x_inc,
-                           void* ap);
 
 // Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 void PUBLIC_API cblas_ssyr2(const Layout layout, const Triangle triangle,
@@ -761,12 +664,6 @@ void PUBLIC_API cblas_dsyr2(const Layout layout, const Triangle triangle,
                             const double* x, const int x_inc,
                             const double* y, const int y_inc,
                             double* a, const int a_ld);
-void PUBLIC_API cblas_hsyr2(const Layout layout, const Triangle triangle,
-                            const int n,
-                            const void* alpha,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc,
-                            void* a, const int a_ld);
 
 // Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 void PUBLIC_API cblas_sspr2(const Layout layout, const Triangle triangle,
@@ -781,12 +678,6 @@ void PUBLIC_API cblas_dspr2(const Layout layout, const Triangle triangle,
                             const double* x, const int x_inc,
                             const double* y, const int y_inc,
                             double* ap);
-void PUBLIC_API cblas_hspr2(const Layout layout, const Triangle triangle,
-                            const int n,
-                            const void* alpha,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc,
-                            void* ap);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
@@ -821,13 +712,6 @@ void PUBLIC_API cblas_zgemm(const Layout layout, const Transpose a_transpose, co
                             const void* b, const int b_ld,
                             const void* beta,
                             void* c, const int c_ld);
-void PUBLIC_API cblas_hgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                            const int m, const int n, const int k,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* b, const int b_ld,
-                            const void* beta,
-                            void* c, const int c_ld);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 void PUBLIC_API cblas_ssymm(const Layout layout, const Side side, const Triangle triangle,
@@ -852,13 +736,6 @@ void PUBLIC_API cblas_csymm(const Layout layout, const Side side, const Triangle
                             const void* beta,
                             void* c, const int c_ld);
 void PUBLIC_API cblas_zsymm(const Layout layout, const Side side, const Triangle triangle,
-                            const int m, const int n,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* b, const int b_ld,
-                            const void* beta,
-                            void* c, const int c_ld);
-void PUBLIC_API cblas_hsymm(const Layout layout, const Side side, const Triangle triangle,
                             const int m, const int n,
                             const void* alpha,
                             const void* a, const int a_ld,
@@ -902,12 +779,6 @@ void PUBLIC_API cblas_csyrk(const Layout layout, const Triangle triangle, const 
                             const void* beta,
                             void* c, const int c_ld);
 void PUBLIC_API cblas_zsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                            const int n, const int k,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            const void* beta,
-                            void* c, const int c_ld);
-void PUBLIC_API cblas_hsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
                             const int n, const int k,
                             const void* alpha,
                             const void* a, const int a_ld,
@@ -957,13 +828,6 @@ void PUBLIC_API cblas_zsyr2k(const Layout layout, const Triangle triangle, const
                              const void* b, const int b_ld,
                              const void* beta,
                              void* c, const int c_ld);
-void PUBLIC_API cblas_hsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                             const int n, const int k,
-                             const void* alpha,
-                             const void* a, const int a_ld,
-                             const void* b, const int b_ld,
-                             const void* beta,
-                             void* c, const int c_ld);
 
 // Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
 void PUBLIC_API cblas_cher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
@@ -1002,11 +866,6 @@ void PUBLIC_API cblas_ztrmm(const Layout layout, const Side side, const Triangle
                             const void* alpha,
                             const void* a, const int a_ld,
                             void* b, const int b_ld);
-void PUBLIC_API cblas_htrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                            const int m, const int n,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            void* b, const int b_ld);
 
 // Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
 void PUBLIC_API cblas_strsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
@@ -1025,11 +884,6 @@ void PUBLIC_API cblas_ctrsm(const Layout layout, const Side side, const Triangle
                             const void* a, const int a_ld,
                             void* b, const int b_ld);
 void PUBLIC_API cblas_ztrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                            const int m, const int n,
-                            const void* alpha,
-                            const void* a, const int a_ld,
-                            void* b, const int b_ld);
-void PUBLIC_API cblas_htrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                             const int m, const int n,
                             const void* alpha,
                             const void* a, const int a_ld,
@@ -1060,12 +914,6 @@ void PUBLIC_API cblas_zomatcopy(const Layout layout, const Transpose a_transpose
                                 const void* alpha,
                                 const void* a, const int a_ld,
                                 void* b, const int b_ld);
-void PUBLIC_API cblas_homatcopy(const Layout layout, const Transpose a_transpose,
-                                const int m, const int n,
-                                const void* alpha,
-                                const void* a, const int a_ld,
-                                void* b, const int b_ld);
-                                half* b, const size_t b_offset, const size_t b_ld);
 
 // =================================================================================================
 
