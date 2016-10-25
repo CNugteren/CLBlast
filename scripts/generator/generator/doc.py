@@ -32,7 +32,7 @@ def generate(routine):
     result += "C API:" + NL
     result += "```" + NL
     for flavour in routine.flavours:
-        result += routine.routine_header_c(flavour, 20, "") + NL
+        result += routine.routine_header_c(flavour, 27, "") + NL
     result += "```" + NL + NL
 
     # Routine arguments

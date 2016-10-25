@@ -45,17 +45,18 @@ def clblast_h(routine):
 
 def clblast_cc(routine):
     """The C++ API implementation (.cpp)"""
-    indent1 = " " * (20 + routine.length())
+    indent1 = " " * (15 + routine.length())
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     if routine.implemented:
         result += routine.routine_header_cpp(12, "") + " {" + NL
-        result += "  auto queue_cpp = Queue(*queue);" + NL
-        result += "  auto routine = X" + routine.name + "<" + routine.template.template + ">(queue_cpp, event);" + NL
-        result += "  auto status = routine.SetUp();" + NL
-        result += "  if (status != StatusCode::kSuccess) { return status; }" + NL
-        result += "  return routine.Do" + routine.name.capitalize() + "("
+        result += "  try {" + NL
+        result += "    auto queue_cpp = Queue(*queue);" + NL
+        result += "    auto routine = X" + routine.name + "<" + routine.template.template + ">(queue_cpp, event);" + NL
+        result += "    routine.Do" + routine.name.capitalize() + "("
         result += ("," + NL + indent1).join([a for a in routine.arguments_clcudaapi()])
         result += ");" + NL
+        result += "    return StatusCode::kSuccess;" + NL
+        result += "  } catch (...) { return DispatchException(); }" + NL
     else:
         result += routine.routine_header_type_cpp(12) + " {" + NL
         result += "  return StatusCode::kNotImplemented;" + NL
@@ -72,7 +73,7 @@ def clblast_c_h(routine):
     """The C API header (.h)"""
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     for flavour in routine.flavours:
-        result += routine.routine_header_c(flavour, 31, " PUBLIC_API") + ";" + NL
+        result += routine.routine_header_c(flavour, 38, " PUBLIC_API") + ";" + NL
     return result
 
 
@@ -81,12 +82,16 @@ def clblast_c_cc(routine):
     result = NL + "// " + routine.name.upper() + NL
     for flavour in routine.flavours:
         template = "<" + flavour.template + ">" if routine.no_scalars() else ""
-        indent = " " * (26 + routine.length() + len(template))
-        result += routine.routine_header_c(flavour, 20, "") + " {" + NL
-        result += "  auto status = clblast::" + routine.name.capitalize() + template + "("
+        indent = " " * (16 + routine.length() + len(template))
+        result += routine.routine_header_c(flavour, 27, "") + " {" + NL
+        result += "  try {" + NL
+        result += "    return static_cast<CLBlastStatusCode>(" + NL
+        result += "      clblast::" + routine.name.capitalize() + template + "("
         result += ("," + NL + indent).join([a for a in routine.arguments_cast(flavour, indent)])
-        result += "," + NL + indent + "queue, event);"
-        result += NL + "  return static_cast<StatusCode>(status);" + NL + "}" + NL
+        result += "," + NL + indent + "queue, event)" + NL
+        result += "    );" + NL
+        result += "  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }" + NL
+        result += "}" + NL
     return result
 
 

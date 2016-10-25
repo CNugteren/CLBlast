@@ -24,8 +24,8 @@
 #include "clblast.h"
 #include "clblast_half.h"
 #include "clpp11.hpp"
-
-#include "msvc.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/msvc.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -204,11 +204,6 @@ Precision GetPrecision(const int argc, char *argv[],
 
 // As in "GetArgument", but now only checks whether an argument is given or not
 bool CheckArgument(const int argc, char *argv[], std::string &help, const std::string &option);
-
-// =================================================================================================
-
-// Helper function to check for errors in the status code
-inline bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
 
 // =================================================================================================
 

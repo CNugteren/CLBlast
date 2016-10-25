@@ -28,8 +28,8 @@ class Xscal: public Routine {
   Xscal(Queue &queue, EventPointer event, const std::string &name = "SCAL");
 
   // Templated-precision implementation of the routine
-  StatusCode DoScal(const size_t n, const T alpha,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoScal(const size_t n, const T alpha,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
 };
 
 // =================================================================================================

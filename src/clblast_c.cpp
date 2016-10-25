@@ -15,7 +15,7 @@
 
 #include "clblast_c.h"
 #include "clblast.h"
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
@@ -26,735 +26,930 @@ using double2 = clblast::double2;
 // =================================================================================================
 
 // ROTG
-StatusCode CLBlastSrotg(cl_mem sa_buffer, const size_t sa_offset,
-                        cl_mem sb_buffer, const size_t sb_offset,
-                        cl_mem sc_buffer, const size_t sc_offset,
-                        cl_mem ss_buffer, const size_t ss_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotg<float>(sa_buffer, sa_offset,
-                                     sb_buffer, sb_offset,
-                                     sc_buffer, sc_offset,
-                                     ss_buffer, ss_offset,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSrotg(cl_mem sa_buffer, const size_t sa_offset,
+                               cl_mem sb_buffer, const size_t sb_offset,
+                               cl_mem sc_buffer, const size_t sc_offset,
+                               cl_mem ss_buffer, const size_t ss_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotg<float>(sa_buffer, sa_offset,
+                           sb_buffer, sb_offset,
+                           sc_buffer, sc_offset,
+                           ss_buffer, ss_offset,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDrotg(cl_mem sa_buffer, const size_t sa_offset,
-                        cl_mem sb_buffer, const size_t sb_offset,
-                        cl_mem sc_buffer, const size_t sc_offset,
-                        cl_mem ss_buffer, const size_t ss_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotg<double>(sa_buffer, sa_offset,
-                                      sb_buffer, sb_offset,
-                                      sc_buffer, sc_offset,
-                                      ss_buffer, ss_offset,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDrotg(cl_mem sa_buffer, const size_t sa_offset,
+                               cl_mem sb_buffer, const size_t sb_offset,
+                               cl_mem sc_buffer, const size_t sc_offset,
+                               cl_mem ss_buffer, const size_t ss_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotg<double>(sa_buffer, sa_offset,
+                            sb_buffer, sb_offset,
+                            sc_buffer, sc_offset,
+                            ss_buffer, ss_offset,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // ROTMG
-StatusCode CLBlastSrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
-                         cl_mem sd2_buffer, const size_t sd2_offset,
-                         cl_mem sx1_buffer, const size_t sx1_offset,
-                         const cl_mem sy1_buffer, const size_t sy1_offset,
-                         cl_mem sparam_buffer, const size_t sparam_offset,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotmg<float>(sd1_buffer, sd1_offset,
-                                      sd2_buffer, sd2_offset,
-                                      sx1_buffer, sx1_offset,
-                                      sy1_buffer, sy1_offset,
-                                      sparam_buffer, sparam_offset,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
+                                cl_mem sd2_buffer, const size_t sd2_offset,
+                                cl_mem sx1_buffer, const size_t sx1_offset,
+                                const cl_mem sy1_buffer, const size_t sy1_offset,
+                                cl_mem sparam_buffer, const size_t sparam_offset,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotmg<float>(sd1_buffer, sd1_offset,
+                            sd2_buffer, sd2_offset,
+                            sx1_buffer, sx1_offset,
+                            sy1_buffer, sy1_offset,
+                            sparam_buffer, sparam_offset,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
-                         cl_mem sd2_buffer, const size_t sd2_offset,
-                         cl_mem sx1_buffer, const size_t sx1_offset,
-                         const cl_mem sy1_buffer, const size_t sy1_offset,
-                         cl_mem sparam_buffer, const size_t sparam_offset,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotmg<double>(sd1_buffer, sd1_offset,
-                                       sd2_buffer, sd2_offset,
-                                       sx1_buffer, sx1_offset,
-                                       sy1_buffer, sy1_offset,
-                                       sparam_buffer, sparam_offset,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDrotmg(cl_mem sd1_buffer, const size_t sd1_offset,
+                                cl_mem sd2_buffer, const size_t sd2_offset,
+                                cl_mem sx1_buffer, const size_t sx1_offset,
+                                const cl_mem sy1_buffer, const size_t sy1_offset,
+                                cl_mem sparam_buffer, const size_t sparam_offset,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotmg<double>(sd1_buffer, sd1_offset,
+                             sd2_buffer, sd2_offset,
+                             sx1_buffer, sx1_offset,
+                             sy1_buffer, sy1_offset,
+                             sparam_buffer, sparam_offset,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // ROT
-StatusCode CLBlastSrot(const size_t n,
-                       cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       const float cos,
-                       const float sin,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rot(n,
-                             x_buffer, x_offset, x_inc,
-                             y_buffer, y_offset, y_inc,
-                             cos,
-                             sin,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSrot(const size_t n,
+                              cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const float cos,
+                              const float sin,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rot(n,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   cos,
+                   sin,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDrot(const size_t n,
-                       cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       const double cos,
-                       const double sin,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rot(n,
-                             x_buffer, x_offset, x_inc,
-                             y_buffer, y_offset, y_inc,
-                             cos,
-                             sin,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDrot(const size_t n,
+                              cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const double cos,
+                              const double sin,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rot(n,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   cos,
+                   sin,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // ROTM
-StatusCode CLBlastSrotm(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem sparam_buffer, const size_t sparam_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotm<float>(n,
-                                     x_buffer, x_offset, x_inc,
-                                     y_buffer, y_offset, y_inc,
-                                     sparam_buffer, sparam_offset,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSrotm(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem sparam_buffer, const size_t sparam_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotm<float>(n,
+                           x_buffer, x_offset, x_inc,
+                           y_buffer, y_offset, y_inc,
+                           sparam_buffer, sparam_offset,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDrotm(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem sparam_buffer, const size_t sparam_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Rotm<double>(n,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      sparam_buffer, sparam_offset,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDrotm(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem sparam_buffer, const size_t sparam_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Rotm<double>(n,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            sparam_buffer, sparam_offset,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SWAP
-StatusCode CLBlastSswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Swap<float>(n,
-                                     x_buffer, x_offset, x_inc,
-                                     y_buffer, y_offset, y_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSswap(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Swap<float>(n,
+                           x_buffer, x_offset, x_inc,
+                           y_buffer, y_offset, y_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Swap<double>(n,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDswap(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Swap<double>(n,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Swap<float2>(n,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCswap(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Swap<float2>(n,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Swap<double2>(n,
-                                       x_buffer, x_offset, x_inc,
-                                       y_buffer, y_offset, y_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZswap(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Swap<double2>(n,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHswap(const size_t n,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Swap<half>(n,
-                                    x_buffer, x_offset, x_inc,
-                                    y_buffer, y_offset, y_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHswap(const size_t n,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Swap<half>(n,
+                          x_buffer, x_offset, x_inc,
+                          y_buffer, y_offset, y_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SCAL
-StatusCode CLBlastSscal(const size_t n,
-                        const float alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Scal(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSscal(const size_t n,
+                               const float alpha,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Scal(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDscal(const size_t n,
-                        const double alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Scal(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDscal(const size_t n,
+                               const double alpha,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Scal(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCscal(const size_t n,
-                        const cl_float2 alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Scal(n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCscal(const size_t n,
+                               const cl_float2 alpha,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Scal(n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZscal(const size_t n,
-                        const cl_double2 alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Scal(n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZscal(const size_t n,
+                               const cl_double2 alpha,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Scal(n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHscal(const size_t n,
-                        const cl_half alpha,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Scal(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHscal(const size_t n,
+                               const cl_half alpha,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Scal(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // COPY
-StatusCode CLBlastScopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Copy<float>(n,
-                                     x_buffer, x_offset, x_inc,
-                                     y_buffer, y_offset, y_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastScopy(const size_t n,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Copy<float>(n,
+                           x_buffer, x_offset, x_inc,
+                           y_buffer, y_offset, y_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Copy<double>(n,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDcopy(const size_t n,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Copy<double>(n,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Copy<float2>(n,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCcopy(const size_t n,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Copy<float2>(n,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Copy<double2>(n,
-                                       x_buffer, x_offset, x_inc,
-                                       y_buffer, y_offset, y_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZcopy(const size_t n,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Copy<double2>(n,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHcopy(const size_t n,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Copy<half>(n,
-                                    x_buffer, x_offset, x_inc,
-                                    y_buffer, y_offset, y_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHcopy(const size_t n,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Copy<half>(n,
+                          x_buffer, x_offset, x_inc,
+                          y_buffer, y_offset, y_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // AXPY
-StatusCode CLBlastSaxpy(const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Axpy(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSaxpy(const size_t n,
+                               const float alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Axpy(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDaxpy(const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Axpy(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDaxpy(const size_t n,
+                               const double alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Axpy(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCaxpy(const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Axpy(n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCaxpy(const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Axpy(n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZaxpy(const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Axpy(n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZaxpy(const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Axpy(n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHaxpy(const size_t n,
-                        const cl_half alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Axpy(n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHaxpy(const size_t n,
+                               const cl_half alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Axpy(n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // DOT
-StatusCode CLBlastSdot(const size_t n,
-                       cl_mem dot_buffer, const size_t dot_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dot<float>(n,
-                                    dot_buffer, dot_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    y_buffer, y_offset, y_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSdot(const size_t n,
+                              cl_mem dot_buffer, const size_t dot_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dot<float>(n,
+                          dot_buffer, dot_offset,
+                          x_buffer, x_offset, x_inc,
+                          y_buffer, y_offset, y_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDdot(const size_t n,
-                       cl_mem dot_buffer, const size_t dot_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dot<double>(n,
-                                     dot_buffer, dot_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     y_buffer, y_offset, y_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDdot(const size_t n,
+                              cl_mem dot_buffer, const size_t dot_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dot<double>(n,
+                           dot_buffer, dot_offset,
+                           x_buffer, x_offset, x_inc,
+                           y_buffer, y_offset, y_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHdot(const size_t n,
-                       cl_mem dot_buffer, const size_t dot_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dot<half>(n,
-                                   dot_buffer, dot_offset,
-                                   x_buffer, x_offset, x_inc,
-                                   y_buffer, y_offset, y_inc,
-                                   queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHdot(const size_t n,
+                              cl_mem dot_buffer, const size_t dot_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dot<half>(n,
+                         dot_buffer, dot_offset,
+                         x_buffer, x_offset, x_inc,
+                         y_buffer, y_offset, y_inc,
+                         queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // DOTU
-StatusCode CLBlastCdotu(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dotu<float2>(n,
-                                      dot_buffer, dot_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCdotu(const size_t n,
+                               cl_mem dot_buffer, const size_t dot_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dotu<float2>(n,
+                            dot_buffer, dot_offset,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZdotu(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dotu<double2>(n,
-                                       dot_buffer, dot_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       y_buffer, y_offset, y_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZdotu(const size_t n,
+                               cl_mem dot_buffer, const size_t dot_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dotu<double2>(n,
+                             dot_buffer, dot_offset,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // DOTC
-StatusCode CLBlastCdotc(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dotc<float2>(n,
-                                      dot_buffer, dot_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      y_buffer, y_offset, y_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCdotc(const size_t n,
+                               cl_mem dot_buffer, const size_t dot_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dotc<float2>(n,
+                            dot_buffer, dot_offset,
+                            x_buffer, x_offset, x_inc,
+                            y_buffer, y_offset, y_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZdotc(const size_t n,
-                        cl_mem dot_buffer, const size_t dot_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Dotc<double2>(n,
-                                       dot_buffer, dot_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       y_buffer, y_offset, y_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZdotc(const size_t n,
+                               cl_mem dot_buffer, const size_t dot_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Dotc<double2>(n,
+                             dot_buffer, dot_offset,
+                             x_buffer, x_offset, x_inc,
+                             y_buffer, y_offset, y_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // NRM2
-StatusCode CLBlastSnrm2(const size_t n,
-                        cl_mem nrm2_buffer, const size_t nrm2_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Nrm2<float>(n,
-                                     nrm2_buffer, nrm2_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSnrm2(const size_t n,
+                               cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Nrm2<float>(n,
+                           nrm2_buffer, nrm2_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDnrm2(const size_t n,
-                        cl_mem nrm2_buffer, const size_t nrm2_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Nrm2<double>(n,
-                                      nrm2_buffer, nrm2_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDnrm2(const size_t n,
+                               cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Nrm2<double>(n,
+                            nrm2_buffer, nrm2_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastScnrm2(const size_t n,
-                        cl_mem nrm2_buffer, const size_t nrm2_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Nrm2<float2>(n,
-                                      nrm2_buffer, nrm2_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastScnrm2(const size_t n,
+                               cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Nrm2<float2>(n,
+                            nrm2_buffer, nrm2_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDznrm2(const size_t n,
-                        cl_mem nrm2_buffer, const size_t nrm2_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Nrm2<double2>(n,
-                                       nrm2_buffer, nrm2_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDznrm2(const size_t n,
+                               cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Nrm2<double2>(n,
+                             nrm2_buffer, nrm2_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHnrm2(const size_t n,
-                        cl_mem nrm2_buffer, const size_t nrm2_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Nrm2<half>(n,
-                                    nrm2_buffer, nrm2_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHnrm2(const size_t n,
+                               cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Nrm2<half>(n,
+                          nrm2_buffer, nrm2_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // ASUM
-StatusCode CLBlastSasum(const size_t n,
-                        cl_mem asum_buffer, const size_t asum_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Asum<float>(n,
-                                     asum_buffer, asum_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSasum(const size_t n,
+                               cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Asum<float>(n,
+                           asum_buffer, asum_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDasum(const size_t n,
-                        cl_mem asum_buffer, const size_t asum_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Asum<double>(n,
-                                      asum_buffer, asum_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDasum(const size_t n,
+                               cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Asum<double>(n,
+                            asum_buffer, asum_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastScasum(const size_t n,
-                        cl_mem asum_buffer, const size_t asum_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Asum<float2>(n,
-                                      asum_buffer, asum_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastScasum(const size_t n,
+                               cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Asum<float2>(n,
+                            asum_buffer, asum_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDzasum(const size_t n,
-                        cl_mem asum_buffer, const size_t asum_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Asum<double2>(n,
-                                       asum_buffer, asum_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDzasum(const size_t n,
+                               cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Asum<double2>(n,
+                             asum_buffer, asum_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHasum(const size_t n,
-                        cl_mem asum_buffer, const size_t asum_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Asum<half>(n,
-                                    asum_buffer, asum_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHasum(const size_t n,
+                               cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Asum<half>(n,
+                          asum_buffer, asum_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SUM
-StatusCode CLBlastSsum(const size_t n,
-                       cl_mem sum_buffer, const size_t sum_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sum<float>(n,
-                                    sum_buffer, sum_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsum(const size_t n,
+                              cl_mem sum_buffer, const size_t sum_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sum<float>(n,
+                          sum_buffer, sum_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsum(const size_t n,
-                       cl_mem sum_buffer, const size_t sum_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sum<double>(n,
-                                     sum_buffer, sum_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsum(const size_t n,
+                              cl_mem sum_buffer, const size_t sum_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sum<double>(n,
+                           sum_buffer, sum_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastScsum(const size_t n,
-                       cl_mem sum_buffer, const size_t sum_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sum<float2>(n,
-                                     sum_buffer, sum_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastScsum(const size_t n,
+                              cl_mem sum_buffer, const size_t sum_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sum<float2>(n,
+                           sum_buffer, sum_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDzsum(const size_t n,
-                       cl_mem sum_buffer, const size_t sum_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sum<double2>(n,
-                                      sum_buffer, sum_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDzsum(const size_t n,
+                              cl_mem sum_buffer, const size_t sum_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sum<double2>(n,
+                            sum_buffer, sum_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsum(const size_t n,
-                       cl_mem sum_buffer, const size_t sum_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sum<half>(n,
-                                   sum_buffer, sum_offset,
-                                   x_buffer, x_offset, x_inc,
-                                   queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsum(const size_t n,
+                              cl_mem sum_buffer, const size_t sum_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sum<half>(n,
+                         sum_buffer, sum_offset,
+                         x_buffer, x_offset, x_inc,
+                         queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // AMAX
-StatusCode CLBlastiSamax(const size_t n,
-                        cl_mem imax_buffer, const size_t imax_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Amax<float>(n,
-                                     imax_buffer, imax_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiSamax(const size_t n,
+                               cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amax<float>(n,
+                           imax_buffer, imax_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiDamax(const size_t n,
-                        cl_mem imax_buffer, const size_t imax_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Amax<double>(n,
-                                      imax_buffer, imax_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiDamax(const size_t n,
+                               cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amax<double>(n,
+                            imax_buffer, imax_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiCamax(const size_t n,
-                        cl_mem imax_buffer, const size_t imax_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Amax<float2>(n,
-                                      imax_buffer, imax_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiCamax(const size_t n,
+                               cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amax<float2>(n,
+                            imax_buffer, imax_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiZamax(const size_t n,
-                        cl_mem imax_buffer, const size_t imax_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Amax<double2>(n,
-                                       imax_buffer, imax_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiZamax(const size_t n,
+                               cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amax<double2>(n,
+                             imax_buffer, imax_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiHamax(const size_t n,
-                        cl_mem imax_buffer, const size_t imax_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Amax<half>(n,
-                                    imax_buffer, imax_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiHamax(const size_t n,
+                               cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amax<half>(n,
+                          imax_buffer, imax_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // MAX
-StatusCode CLBlastiSmax(const size_t n,
-                       cl_mem imax_buffer, const size_t imax_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Max<float>(n,
-                                    imax_buffer, imax_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiSmax(const size_t n,
+                              cl_mem imax_buffer, const size_t imax_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Max<float>(n,
+                          imax_buffer, imax_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiDmax(const size_t n,
-                       cl_mem imax_buffer, const size_t imax_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Max<double>(n,
-                                     imax_buffer, imax_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiDmax(const size_t n,
+                              cl_mem imax_buffer, const size_t imax_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Max<double>(n,
+                           imax_buffer, imax_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiCmax(const size_t n,
-                       cl_mem imax_buffer, const size_t imax_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Max<float2>(n,
-                                     imax_buffer, imax_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiCmax(const size_t n,
+                              cl_mem imax_buffer, const size_t imax_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Max<float2>(n,
+                           imax_buffer, imax_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiZmax(const size_t n,
-                       cl_mem imax_buffer, const size_t imax_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Max<double2>(n,
-                                      imax_buffer, imax_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiZmax(const size_t n,
+                              cl_mem imax_buffer, const size_t imax_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Max<double2>(n,
+                            imax_buffer, imax_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiHmax(const size_t n,
-                       cl_mem imax_buffer, const size_t imax_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Max<half>(n,
-                                   imax_buffer, imax_offset,
-                                   x_buffer, x_offset, x_inc,
-                                   queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiHmax(const size_t n,
+                              cl_mem imax_buffer, const size_t imax_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Max<half>(n,
+                         imax_buffer, imax_offset,
+                         x_buffer, x_offset, x_inc,
+                         queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // MIN
-StatusCode CLBlastiSmin(const size_t n,
-                       cl_mem imin_buffer, const size_t imin_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Min<float>(n,
-                                    imin_buffer, imin_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiSmin(const size_t n,
+                              cl_mem imin_buffer, const size_t imin_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Min<float>(n,
+                          imin_buffer, imin_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiDmin(const size_t n,
-                       cl_mem imin_buffer, const size_t imin_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Min<double>(n,
-                                     imin_buffer, imin_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiDmin(const size_t n,
+                              cl_mem imin_buffer, const size_t imin_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Min<double>(n,
+                           imin_buffer, imin_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiCmin(const size_t n,
-                       cl_mem imin_buffer, const size_t imin_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Min<float2>(n,
-                                     imin_buffer, imin_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiCmin(const size_t n,
+                              cl_mem imin_buffer, const size_t imin_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Min<float2>(n,
+                           imin_buffer, imin_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiZmin(const size_t n,
-                       cl_mem imin_buffer, const size_t imin_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Min<double2>(n,
-                                      imin_buffer, imin_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiZmin(const size_t n,
+                              cl_mem imin_buffer, const size_t imin_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Min<double2>(n,
+                            imin_buffer, imin_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastiHmin(const size_t n,
-                       cl_mem imin_buffer, const size_t imin_offset,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Min<half>(n,
-                                   imin_buffer, imin_offset,
-                                   x_buffer, x_offset, x_inc,
-                                   queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastiHmin(const size_t n,
+                              cl_mem imin_buffer, const size_t imin_offset,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Min<half>(n,
+                         imin_buffer, imin_offset,
+                         x_buffer, x_offset, x_inc,
+                         queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // =================================================================================================
@@ -762,1365 +957,1602 @@ StatusCode CLBlastiHmin(const size_t n,
 // =================================================================================================
 
 // GEMV
-StatusCode CLBlastSgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const float beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const double beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              float2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_float2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    float2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              double2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_double2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    double2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHgemv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_half beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_half beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // GBMV
-StatusCode CLBlastSgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n, kl, ku,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n, const size_t kl, const size_t ku,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const float beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n, kl, ku,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n, kl, ku,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n, const size_t kl, const size_t ku,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const double beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n, kl, ku,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n, kl, ku,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              float2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n, const size_t kl, const size_t ku,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_float2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n, kl, ku,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    float2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n, kl, ku,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              double2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n, const size_t kl, const size_t ku,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_double2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n, kl, ku,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    double2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHgbmv(const Layout layout, const Transpose a_transpose,
-                        const size_t m, const size_t n, const size_t kl, const size_t ku,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_half beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              m, n, kl, ku,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                               const size_t m, const size_t n, const size_t kl, const size_t ku,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_half beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    m, n, kl, ku,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HEMV
-StatusCode CLBlastChemv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              float2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_float2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    float2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhemv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hemv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              double2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_double2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hemv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    double2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HBMV
-StatusCode CLBlastChbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n, k,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              float2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n, const size_t k,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_float2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n, k,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    float2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n, k,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              double2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n, const size_t k,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_double2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n, k,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    double2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HPMV
-StatusCode CLBlastChpmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_float2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              ap_buffer, ap_offset,
-                              x_buffer, x_offset, x_inc,
-                              float2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_float2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    ap_buffer, ap_offset,
+                    x_buffer, x_offset, x_inc,
+                    float2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhpmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_double2 beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              ap_buffer, ap_offset,
-                              x_buffer, x_offset, x_inc,
-                              double2{beta.s[0], beta.s[1]},
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_double2 beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    ap_buffer, ap_offset,
+                    x_buffer, x_offset, x_inc,
+                    double2{beta.s[0], beta.s[1]},
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYMV
-StatusCode CLBlastSsymv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const float beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsymv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const double beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsymv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_half beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_half beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SBMV
-StatusCode CLBlastSsbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n, const size_t k,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const float beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n, const size_t k,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const double beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsbmv(const Layout layout, const Triangle triangle,
-                        const size_t n, const size_t k,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_half beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Sbmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n, const size_t k,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_half beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Sbmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SPMV
-StatusCode CLBlastSspmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const float beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              ap_buffer, ap_offset,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const float alpha,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const float beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    ap_buffer, ap_offset,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDspmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const double beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              ap_buffer, ap_offset,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const double alpha,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const double beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    ap_buffer, ap_offset,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHspmv(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_half alpha,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_half beta,
-                        cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spmv(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              ap_buffer, ap_offset,
-                              x_buffer, x_offset, x_inc,
-                              beta,
-                              y_buffer, y_offset, y_inc,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_half alpha,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_half beta,
+                               cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spmv(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    ap_buffer, ap_offset,
+                    x_buffer, x_offset, x_inc,
+                    beta,
+                    y_buffer, y_offset, y_inc,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TRMV
-StatusCode CLBlastStrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n,
-                                     a_buffer, a_offset, a_ld,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n,
+                           a_buffer, a_offset, a_ld,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n,
-                                       a_buffer, a_offset, a_ld,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n,
+                             a_buffer, a_offset, a_ld,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmv<half>(static_cast<clblast::Layout>(layout),
-                                    static_cast<clblast::Triangle>(triangle),
-                                    static_cast<clblast::Transpose>(a_transpose),
-                                    static_cast<clblast::Diagonal>(diagonal),
-                                    n,
-                                    a_buffer, a_offset, a_ld,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmv<half>(static_cast<clblast::Layout>(layout),
+                          static_cast<clblast::Triangle>(triangle),
+                          static_cast<clblast::Transpose>(a_transpose),
+                          static_cast<clblast::Diagonal>(diagonal),
+                          n,
+                          a_buffer, a_offset, a_ld,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TBMV
-StatusCode CLBlastStbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbmv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n, k,
-                                     a_buffer, a_offset, a_ld,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbmv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n, k,
+                           a_buffer, a_offset, a_ld,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbmv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n, k,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbmv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n, k,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n, k,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n, k,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbmv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n, k,
-                                       a_buffer, a_offset, a_ld,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbmv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n, k,
+                             a_buffer, a_offset, a_ld,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbmv<half>(static_cast<clblast::Layout>(layout),
-                                    static_cast<clblast::Triangle>(triangle),
-                                    static_cast<clblast::Transpose>(a_transpose),
-                                    static_cast<clblast::Diagonal>(diagonal),
-                                    n, k,
-                                    a_buffer, a_offset, a_ld,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbmv<half>(static_cast<clblast::Layout>(layout),
+                          static_cast<clblast::Triangle>(triangle),
+                          static_cast<clblast::Transpose>(a_transpose),
+                          static_cast<clblast::Diagonal>(diagonal),
+                          n, k,
+                          a_buffer, a_offset, a_ld,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TPMV
-StatusCode CLBlastStpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpmv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n,
-                                     ap_buffer, ap_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpmv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n,
+                           ap_buffer, ap_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpmv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      ap_buffer, ap_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpmv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            ap_buffer, ap_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      ap_buffer, ap_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            ap_buffer, ap_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpmv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n,
-                                       ap_buffer, ap_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpmv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n,
+                             ap_buffer, ap_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpmv<half>(static_cast<clblast::Layout>(layout),
-                                    static_cast<clblast::Triangle>(triangle),
-                                    static_cast<clblast::Transpose>(a_transpose),
-                                    static_cast<clblast::Diagonal>(diagonal),
-                                    n,
-                                    ap_buffer, ap_offset,
-                                    x_buffer, x_offset, x_inc,
-                                    queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpmv<half>(static_cast<clblast::Layout>(layout),
+                          static_cast<clblast::Triangle>(triangle),
+                          static_cast<clblast::Transpose>(a_transpose),
+                          static_cast<clblast::Diagonal>(diagonal),
+                          n,
+                          ap_buffer, ap_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TRSV
-StatusCode CLBlastStrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n,
-                                     a_buffer, a_offset, a_ld,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n,
+                           a_buffer, a_offset, a_ld,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n,
-                                       a_buffer, a_offset, a_ld,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n,
+                             a_buffer, a_offset, a_ld,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TBSV
-StatusCode CLBlastStbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbsv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n, k,
-                                     a_buffer, a_offset, a_ld,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbsv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n, k,
+                           a_buffer, a_offset, a_ld,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbsv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n, k,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbsv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n, k,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n, k,
-                                      a_buffer, a_offset, a_ld,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n, k,
+                            a_buffer, a_offset, a_ld,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n, const size_t k,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tbsv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n, k,
-                                       a_buffer, a_offset, a_ld,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n, const size_t k,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tbsv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n, k,
+                             a_buffer, a_offset, a_ld,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TPSV
-StatusCode CLBlastStpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpsv<float>(static_cast<clblast::Layout>(layout),
-                                     static_cast<clblast::Triangle>(triangle),
-                                     static_cast<clblast::Transpose>(a_transpose),
-                                     static_cast<clblast::Diagonal>(diagonal),
-                                     n,
-                                     ap_buffer, ap_offset,
-                                     x_buffer, x_offset, x_inc,
-                                     queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpsv<float>(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Diagonal>(diagonal),
+                           n,
+                           ap_buffer, ap_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpsv<double>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      ap_buffer, ap_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpsv<double>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            ap_buffer, ap_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout),
-                                      static_cast<clblast::Triangle>(triangle),
-                                      static_cast<clblast::Transpose>(a_transpose),
-                                      static_cast<clblast::Diagonal>(diagonal),
-                                      n,
-                                      ap_buffer, ap_offset,
-                                      x_buffer, x_offset, x_inc,
-                                      queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout),
+                            static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose),
+                            static_cast<clblast::Diagonal>(diagonal),
+                            n,
+                            ap_buffer, ap_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t n,
-                        const cl_mem ap_buffer, const size_t ap_offset,
-                        cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Tpsv<double2>(static_cast<clblast::Layout>(layout),
-                                       static_cast<clblast::Triangle>(triangle),
-                                       static_cast<clblast::Transpose>(a_transpose),
-                                       static_cast<clblast::Diagonal>(diagonal),
-                                       n,
-                                       ap_buffer, ap_offset,
-                                       x_buffer, x_offset, x_inc,
-                                       queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem ap_buffer, const size_t ap_offset,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Tpsv<double2>(static_cast<clblast::Layout>(layout),
+                             static_cast<clblast::Triangle>(triangle),
+                             static_cast<clblast::Transpose>(a_transpose),
+                             static_cast<clblast::Diagonal>(diagonal),
+                             n,
+                             ap_buffer, ap_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // GER
-StatusCode CLBlastSger(const Layout layout,
-                       const size_t m, const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Ger(static_cast<clblast::Layout>(layout),
-                             m, n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             y_buffer, y_offset, y_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSger(const CLBlastLayout layout,
+                              const size_t m, const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Ger(static_cast<clblast::Layout>(layout),
+                   m, n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDger(const Layout layout,
-                       const size_t m, const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Ger(static_cast<clblast::Layout>(layout),
-                             m, n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             y_buffer, y_offset, y_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDger(const CLBlastLayout layout,
+                              const size_t m, const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Ger(static_cast<clblast::Layout>(layout),
+                   m, n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHger(const Layout layout,
-                       const size_t m, const size_t n,
-                       const cl_half alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Ger(static_cast<clblast::Layout>(layout),
-                             m, n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             y_buffer, y_offset, y_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHger(const CLBlastLayout layout,
+                              const size_t m, const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Ger(static_cast<clblast::Layout>(layout),
+                   m, n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // GERU
-StatusCode CLBlastCgeru(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Geru(static_cast<clblast::Layout>(layout),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCgeru(const CLBlastLayout layout,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Geru(static_cast<clblast::Layout>(layout),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZgeru(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Geru(static_cast<clblast::Layout>(layout),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZgeru(const CLBlastLayout layout,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Geru(static_cast<clblast::Layout>(layout),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // GERC
-StatusCode CLBlastCgerc(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gerc(static_cast<clblast::Layout>(layout),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCgerc(const CLBlastLayout layout,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gerc(static_cast<clblast::Layout>(layout),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZgerc(const Layout layout,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gerc(static_cast<clblast::Layout>(layout),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZgerc(const CLBlastLayout layout,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gerc(static_cast<clblast::Layout>(layout),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HER
-StatusCode CLBlastCher(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCher(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZher(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZher(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HPR
-StatusCode CLBlastChpr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             ap_buffer, ap_offset,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem ap_buffer, const size_t ap_offset,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   ap_buffer, ap_offset,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhpr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             ap_buffer, ap_offset,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem ap_buffer, const size_t ap_offset,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   ap_buffer, ap_offset,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HER2
-StatusCode CLBlastCher2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZher2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HPR2
-StatusCode CLBlastChpr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              ap_buffer, ap_offset,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem ap_buffer, const size_t ap_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    ap_buffer, ap_offset,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhpr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hpr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              ap_buffer, ap_offset,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem ap_buffer, const size_t ap_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hpr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    ap_buffer, ap_offset,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYR
-StatusCode CLBlastSsyr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsyr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsyr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const cl_half alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             a_buffer, a_offset, a_ld,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   a_buffer, a_offset, a_ld,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SPR
-StatusCode CLBlastSspr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const float alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             ap_buffer, ap_offset,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem ap_buffer, const size_t ap_offset,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   ap_buffer, ap_offset,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDspr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const double alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             ap_buffer, ap_offset,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem ap_buffer, const size_t ap_offset,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   ap_buffer, ap_offset,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHspr(const Layout layout, const Triangle triangle,
-                       const size_t n,
-                       const cl_half alpha,
-                       const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                       cl_mem ap_buffer, const size_t ap_offset,
-                       cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr(static_cast<clblast::Layout>(layout),
-                             static_cast<clblast::Triangle>(triangle),
-                             n,
-                             alpha,
-                             x_buffer, x_offset, x_inc,
-                             ap_buffer, ap_offset,
-                             queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                              const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              cl_mem ap_buffer, const size_t ap_offset,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr(static_cast<clblast::Layout>(layout),
+                   static_cast<clblast::Triangle>(triangle),
+                   n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   ap_buffer, ap_offset,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYR2
-StatusCode CLBlastSsyr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const float alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsyr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const double alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsyr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_half alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              a_buffer, a_offset, a_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_half alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    a_buffer, a_offset, a_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SPR2
-StatusCode CLBlastSspr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const float alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              ap_buffer, ap_offset,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const float alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem ap_buffer, const size_t ap_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    ap_buffer, ap_offset,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDspr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const double alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              ap_buffer, ap_offset,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const double alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem ap_buffer, const size_t ap_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    ap_buffer, ap_offset,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHspr2(const Layout layout, const Triangle triangle,
-                        const size_t n,
-                        const cl_half alpha,
-                        const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                        const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                        cl_mem ap_buffer, const size_t ap_offset,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Spr2(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              n,
-                              alpha,
-                              x_buffer, x_offset, x_inc,
-                              y_buffer, y_offset, y_inc,
-                              ap_buffer, ap_offset,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
+                               const size_t n,
+                               const cl_half alpha,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_mem ap_buffer, const size_t ap_offset,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Spr2(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    n,
+                    alpha,
+                    x_buffer, x_offset, x_inc,
+                    y_buffer, y_offset, y_inc,
+                    ap_buffer, ap_offset,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // =================================================================================================
@@ -2128,707 +2560,815 @@ StatusCode CLBlastHspr2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // GEMM
-StatusCode CLBlastSgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Transpose>(b_transpose),
-                              m, n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const float beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Transpose>(b_transpose),
+                    m, n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Transpose>(b_transpose),
-                              m, n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const double beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Transpose>(b_transpose),
+                    m, n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Transpose>(b_transpose),
-                              m, n, k,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              float2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_float2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Transpose>(b_transpose),
+                    m, n, k,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    float2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Transpose>(b_transpose),
-                              m, n, k,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              double2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_double2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Transpose>(b_transpose),
+                    m, n, k,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    double2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                        const size_t m, const size_t n, const size_t k,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_half beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Gemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Transpose>(b_transpose),
-                              m, n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_half beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Gemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Transpose>(b_transpose),
+                    m, n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYMM
-StatusCode CLBlastSsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const float beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const double beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              float2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_float2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    float2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              double2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_double2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    double2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsymm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_half beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Symm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_half beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Symm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HEMM
-StatusCode CLBlastChemm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              float2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastChemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_float2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    float2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZhemm(const Layout layout, const Side side, const Triangle triangle,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Hemm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              double2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               const cl_double2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Hemm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    double2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYRK
-StatusCode CLBlastSsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const float beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syrk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const double beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syrk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_float2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              float2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_float2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syrk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    float2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_double2 beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              double2{beta.s[0], beta.s[1]},
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_double2 beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syrk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    double2{beta.s[0], beta.s[1]},
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const cl_half beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syrk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const cl_half beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syrk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HERK
-StatusCode CLBlastCherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const float beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Herk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const float beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Herk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
-                        const size_t n, const size_t k,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        const double beta,
-                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Herk(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              n, k,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              beta,
-                              c_buffer, c_offset, c_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
+                               const size_t n, const size_t k,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               const double beta,
+                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Herk(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    n, k,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    beta,
+                    c_buffer, c_offset, c_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // SYR2K
-StatusCode CLBlastSsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const float alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const float beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               alpha,
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               beta,
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const float alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const float beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     beta,
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const double alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const double beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               alpha,
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               beta,
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const double alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const double beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     beta,
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_float2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const cl_float2 beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               float2{alpha.s[0], alpha.s[1]},
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               float2{beta.s[0], beta.s[1]},
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const cl_float2 alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const cl_float2 beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     float2{alpha.s[0], alpha.s[1]},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     float2{beta.s[0], beta.s[1]},
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_double2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const cl_double2 beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               double2{alpha.s[0], alpha.s[1]},
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               double2{beta.s[0], beta.s[1]},
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const cl_double2 alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const cl_double2 beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     double2{alpha.s[0], alpha.s[1]},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     double2{beta.s[0], beta.s[1]},
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_half alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const cl_half beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Syr2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               alpha,
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               beta,
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const cl_half alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const cl_half beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Syr2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     alpha,
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     beta,
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // HER2K
-StatusCode CLBlastCher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_float2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const float beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               float2{alpha.s[0], alpha.s[1]},
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               beta,
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const cl_float2 alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const float beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     float2{alpha.s[0], alpha.s[1]},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     beta,
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-                         const size_t n, const size_t k,
-                         const cl_double2 alpha,
-                         const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                         const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                         const double beta,
-                         cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                         cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Her2k(static_cast<clblast::Layout>(layout),
-                               static_cast<clblast::Triangle>(triangle),
-                               static_cast<clblast::Transpose>(ab_transpose),
-                               n, k,
-                               double2{alpha.s[0], alpha.s[1]},
-                               a_buffer, a_offset, a_ld,
-                               b_buffer, b_offset, b_ld,
-                               beta,
-                               c_buffer, c_offset, c_ld,
-                               queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
+                                const size_t n, const size_t k,
+                                const cl_double2 alpha,
+                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                const double beta,
+                                cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Her2k(static_cast<clblast::Layout>(layout),
+                     static_cast<clblast::Triangle>(triangle),
+                     static_cast<clblast::Transpose>(ab_transpose),
+                     n, k,
+                     double2{alpha.s[0], alpha.s[1]},
+                     a_buffer, a_offset, a_ld,
+                     b_buffer, b_offset, b_ld,
+                     beta,
+                     c_buffer, c_offset, c_ld,
+                     queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TRMM
-StatusCode CLBlastStrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trmm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trmm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // TRSM
-StatusCode CLBlastStrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const float alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const double alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastCtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_float2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              float2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastCtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    float2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_double2 alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              double2{alpha.s[0], alpha.s[1]},
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    double2{alpha.s[0], alpha.s[1]},
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                        const size_t m, const size_t n,
-                        const cl_half alpha,
-                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                        cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                        cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Trsm(static_cast<clblast::Layout>(layout),
-                              static_cast<clblast::Side>(side),
-                              static_cast<clblast::Triangle>(triangle),
-                              static_cast<clblast::Transpose>(a_transpose),
-                              static_cast<clblast::Diagonal>(diagonal),
-                              m, n,
-                              alpha,
-                              a_buffer, a_offset, a_ld,
-                              b_buffer, b_offset, b_ld,
-                              queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Trsm(static_cast<clblast::Layout>(layout),
+                    static_cast<clblast::Side>(side),
+                    static_cast<clblast::Triangle>(triangle),
+                    static_cast<clblast::Transpose>(a_transpose),
+                    static_cast<clblast::Diagonal>(diagonal),
+                    m, n,
+                    alpha,
+                    a_buffer, a_offset, a_ld,
+                    b_buffer, b_offset, b_ld,
+                    queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // =================================================================================================
@@ -2836,92 +3376,111 @@ StatusCode CLBlastHtrsm(const Layout layout, const Side side, const Triangle tri
 // =================================================================================================
 
 // OMATCOPY
-StatusCode CLBlastSomatcopy(const Layout layout, const Transpose a_transpose,
-                            const size_t m, const size_t n,
-                            const float alpha,
-                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                            cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
-                                  static_cast<clblast::Transpose>(a_transpose),
-                                  m, n,
-                                  alpha,
-                                  a_buffer, a_offset, a_ld,
-                                  b_buffer, b_offset, b_ld,
-                                  queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastSomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const float alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                        static_cast<clblast::Transpose>(a_transpose),
+                        m, n,
+                        alpha,
+                        a_buffer, a_offset, a_ld,
+                        b_buffer, b_offset, b_ld,
+                        queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastDomatcopy(const Layout layout, const Transpose a_transpose,
-                            const size_t m, const size_t n,
-                            const double alpha,
-                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                            cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
-                                  static_cast<clblast::Transpose>(a_transpose),
-                                  m, n,
-                                  alpha,
-                                  a_buffer, a_offset, a_ld,
-                                  b_buffer, b_offset, b_ld,
-                                  queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastDomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const double alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                        static_cast<clblast::Transpose>(a_transpose),
+                        m, n,
+                        alpha,
+                        a_buffer, a_offset, a_ld,
+                        b_buffer, b_offset, b_ld,
+                        queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastComatcopy(const Layout layout, const Transpose a_transpose,
-                            const size_t m, const size_t n,
-                            const cl_float2 alpha,
-                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                            cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
-                                  static_cast<clblast::Transpose>(a_transpose),
-                                  m, n,
-                                  float2{alpha.s[0], alpha.s[1]},
-                                  a_buffer, a_offset, a_ld,
-                                  b_buffer, b_offset, b_ld,
-                                  queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastComatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_float2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                        static_cast<clblast::Transpose>(a_transpose),
+                        m, n,
+                        float2{alpha.s[0], alpha.s[1]},
+                        a_buffer, a_offset, a_ld,
+                        b_buffer, b_offset, b_ld,
+                        queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastZomatcopy(const Layout layout, const Transpose a_transpose,
-                            const size_t m, const size_t n,
-                            const cl_double2 alpha,
-                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                            cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
-                                  static_cast<clblast::Transpose>(a_transpose),
-                                  m, n,
-                                  double2{alpha.s[0], alpha.s[1]},
-                                  a_buffer, a_offset, a_ld,
-                                  b_buffer, b_offset, b_ld,
-                                  queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastZomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_double2 alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                        static_cast<clblast::Transpose>(a_transpose),
+                        m, n,
+                        double2{alpha.s[0], alpha.s[1]},
+                        a_buffer, a_offset, a_ld,
+                        b_buffer, b_offset, b_ld,
+                        queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-StatusCode CLBlastHomatcopy(const Layout layout, const Transpose a_transpose,
-                            const size_t m, const size_t n,
-                            const cl_half alpha,
-                            const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                            cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                            cl_command_queue* queue, cl_event* event) {
-  auto status = clblast::Omatcopy(static_cast<clblast::Layout>(layout),
-                                  static_cast<clblast::Transpose>(a_transpose),
-                                  m, n,
-                                  alpha,
-                                  a_buffer, a_offset, a_ld,
-                                  b_buffer, b_offset, b_ld,
-                                  queue, event);
-  return static_cast<StatusCode>(status);
+CLBlastStatusCode CLBlastHomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
+                                   const size_t m, const size_t n,
+                                   const cl_half alpha,
+                                   const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                   cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Omatcopy(static_cast<clblast::Layout>(layout),
+                        static_cast<clblast::Transpose>(a_transpose),
+                        m, n,
+                        alpha,
+                        a_buffer, a_offset, a_ld,
+                        b_buffer, b_offset, b_ld,
+                        queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // =================================================================================================
 
 // Clears the cache of stored binaries
-StatusCode CLBlastClearCache() {
-  return static_cast<StatusCode>(clblast::ClearCache());
+CLBlastStatusCode CLBlastClearCache() {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::ClearCache());
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // Fills the cache with binaries for a specific device
-StatusCode CLBlastFillCache(const cl_device_id device) {
-  return static_cast<StatusCode>(clblast::FillCache(device));
+CLBlastStatusCode CLBlastFillCache(const cl_device_id device) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::FillCache(device));
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
 // =================================================================================================

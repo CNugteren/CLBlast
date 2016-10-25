@@ -31,10 +31,10 @@ class Xdotc: public Xdot<T> {
   Xdotc(Queue &queue, EventPointer event, const std::string &name = "DOTC");
 
   // Templated-precision implementation of the routine
-  StatusCode DoDotc(const size_t n,
-                    const Buffer<T> &dot_buffer, const size_t dot_offset,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoDotc(const size_t n,
+              const Buffer<T> &dot_buffer, const size_t dot_offset,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
 // =================================================================================================

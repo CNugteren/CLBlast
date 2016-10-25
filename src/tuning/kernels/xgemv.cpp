@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
 
 namespace clblast {

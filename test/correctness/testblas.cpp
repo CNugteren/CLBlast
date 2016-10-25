@@ -19,7 +19,24 @@
 namespace clblast {
 // =================================================================================================
 
-// The transpose-options to test with (data-type dependent)
+// Test settings for the regular test. Append to these lists in case more tests are required.
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 4096 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 512 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
+
+// Test settings for the invalid tests
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
+template <typename T, typename U> const size_t TestBlas<T,U>::kBufferSize = 64;
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVecSizes = {0, kBufferSize - 1, kBufferSize};
+
+// The layout/transpose/triangle options to test with
+template <typename T, typename U> const std::vector<Layout> TestBlas<T,U>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
+template <typename T, typename U> const std::vector<Triangle> TestBlas<T,U>::kTriangles = {Triangle::kUpper, Triangle::kLower};
+template <typename T, typename U> const std::vector<Side> TestBlas<T,U>::kSides = {Side::kLeft, Side::kRight};
+template <typename T, typename U> const std::vector<Diagonal> TestBlas<T,U>::kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
 template <> const std::vector<Transpose> TestBlas<half,half>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<float,float>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<double,double>::kTransposes = {Transpose::kNo, Transpose::kYes};
@@ -39,6 +56,9 @@ TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
                         const ResultGet get_result, const ResultIndex get_index,
                         const ResultIterator get_id1, const ResultIterator get_id2):
     Tester<T,U>(argc, argv, silent, name, options),
+    kOffsets(GetOffsets()),
+    kAlphaValues(GetExampleScalars<U>(full_test_)),
+    kBetaValues(GetExampleScalars<U>(full_test_)),
     run_routine_(run_routine),
     get_result_(get_result),
     get_index_(get_index),

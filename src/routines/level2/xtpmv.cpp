@@ -29,17 +29,15 @@ Xtpmv<T>::Xtpmv(Queue &queue, EventPointer event, const std::string &name):
 
 // The main routine
 template <typename T>
-StatusCode Xtpmv<T>::DoTpmv(const Layout layout, const Triangle triangle,
-                            const Transpose a_transpose, const Diagonal diagonal,
-                            const size_t n,
-                            const Buffer<T> &ap_buffer, const size_t ap_offset,
-                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
+void Xtpmv<T>::DoTpmv(const Layout layout, const Triangle triangle,
+                      const Transpose a_transpose, const Diagonal diagonal,
+                      const size_t n,
+                      const Buffer<T> &ap_buffer, const size_t ap_offset,
+                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
 
   // Creates a copy of X: a temporary scratch buffer
   auto scratch_buffer = Buffer<T>(context_, n*x_inc + x_offset);
-  try {
-    x_buffer.CopyTo(queue_, n*x_inc + x_offset, scratch_buffer);
-  } catch (...) { } // Continues: error-code is returned in MatVec
+  x_buffer.CopyTo(queue_, n*x_inc + x_offset, scratch_buffer);
 
   // The data is either in the upper or lower triangle
   size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
@@ -52,20 +50,22 @@ StatusCode Xtpmv<T>::DoTpmv(const Layout layout, const Triangle triangle,
   // The specific triangular packed matrix-accesses are implemented in the kernel guarded by the
   // ROUTINE_TPMV define.
   auto fast_kernels = false;
-  auto status = MatVec(layout, a_transpose,
-                       n, n, static_cast<T>(1),
-                       ap_buffer, ap_offset, n,
-                       scratch_buffer, x_offset, x_inc, static_cast<T>(0),
-                       x_buffer, x_offset, x_inc,
-                       fast_kernels, fast_kernels,
-                       parameter, true, 0, 0);
-
-  // Returns the proper error code (renames vector Y to X)
-  switch(status) {
-    case StatusCode::kInvalidVectorY:      return StatusCode::kInvalidVectorX;
-    case StatusCode::kInvalidIncrementY:   return StatusCode::kInvalidIncrementX;
-    case StatusCode::kInsufficientMemoryY: return StatusCode::kInsufficientMemoryX;
-    default: return status;
+  try {
+    MatVec(layout, a_transpose,
+           n, n, static_cast<T>(1),
+           ap_buffer, ap_offset, n,
+           scratch_buffer, x_offset, x_inc, static_cast<T>(0),
+           x_buffer, x_offset, x_inc,
+           fast_kernels, fast_kernels,
+           parameter, true, 0, 0);
+  } catch (BLASError &e) {
+    // Returns the proper error code (renames vector Y to X)
+    switch (e.status()) {
+      case StatusCode::kInvalidVectorY:      throw BLASError(StatusCode::kInvalidVectorX, e.details());
+      case StatusCode::kInvalidIncrementY:   throw BLASError(StatusCode::kInvalidIncrementX, e.details());
+      case StatusCode::kInsufficientMemoryY: throw BLASError(StatusCode::kInsufficientMemoryX, e.details());
+      default:                               throw;
+    }
   }
 }
 

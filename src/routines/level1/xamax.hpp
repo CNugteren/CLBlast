@@ -28,9 +28,9 @@ class Xamax: public Routine {
   Xamax(Queue &queue, EventPointer event, const std::string &name = "AMAX");
 
   // Templated-precision implementation of the routine
-  StatusCode DoAmax(const size_t n,
-                    const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoAmax(const size_t n,
+              const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
 };
 
 // =================================================================================================

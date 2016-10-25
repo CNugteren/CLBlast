@@ -33,13 +33,13 @@ class Xhpmv: public Xgemv<T> {
   Xhpmv(Queue &queue, EventPointer event, const std::string &name = "HPMV");
 
   // Templated-precision implementation of the routine
-  StatusCode DoHpmv(const Layout layout, const Triangle triangle,
-                    const size_t n,
-                    const T alpha,
-                    const Buffer<T> &ap_buffer, const size_t ap_offset,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const T beta,
-                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoHpmv(const Layout layout, const Triangle triangle,
+              const size_t n,
+              const T alpha,
+              const Buffer<T> &ap_buffer, const size_t ap_offset,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+              const T beta,
+              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
 // =================================================================================================

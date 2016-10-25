@@ -69,9 +69,7 @@ endif()
 if(MSVC)
   if(BUILD_SHARED_LIBS)
     add_definitions(" /DCLBLAST_DLL")
-  else(BUILD_SHARED_LIBS)
-    add_definitions(" /DCLBLAST_STATIC")
-  endif(BUILD_SHARED_LIBS)
+  endif()
 endif(MSVC)
 
 # C++ compiler settings
@@ -167,11 +165,12 @@ set(PRECISIONS 32 64 3232 6464 16)
 set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
+  src/utilities/clblast_exceptions.cpp
+  src/utilities/utilities.cpp
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
   src/routine.cpp
-  src/utilities.cpp
 )
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
@@ -191,7 +190,7 @@ if(BUILD_SHARED_LIBS)
   add_library(clblast SHARED ${SOURCES})
 else(BUILD_SHARED_LIBS)
   add_library(clblast STATIC ${SOURCES})
-endif(BUILD_SHARED_LIBS)
+endif()
 
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
@@ -206,7 +205,7 @@ target_include_directories(clblast PUBLIC
 if(MSVC)
   if(BUILD_SHARED_LIBS)
     target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
-  endif(BUILD_SHARED_LIBS)
+  endif()
 endif()
 
 # Installs the library
@@ -218,15 +217,29 @@ install(FILES include/clblast_half.h DESTINATION include)
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
+# Install pkg-config file on Linux
+if(UNIX)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/clblast.pc.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc
+            DESTINATION lib/pkgconfig)
+endif()
+
 # ==================================================================================================
 
-# Sets a default platform ($DEVICEPLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests on
+# Sets a default platform ($CLBLAST_PLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests
 set(DEVICEPLATFORM )
 if(DEFINED ENV{CLBLAST_DEVICE})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{CLBLAST_DEVICE})
 endif()
 if(DEFINED ENV{CLBLAST_PLATFORM})
   set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{CLBLAST_PLATFORM})
+endif()
+
+# Optionally also provides other options to the tests such as -full_test ($CLBLAST_TEST_ARGUMENTS)
+set(TEST_ARGUMENTS )
+if(DEFINED ENV{CLBLAST_TEST_ARGUMENTS})
+  set(TEST_ARGUMENTS $ENV{CLBLAST_TEST_ARGUMENTS})
 endif()
 
 # ==================================================================================================
@@ -262,7 +275,7 @@ if(TUNERS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TUNERS_COMMON )
   if(MSVC)
-    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities.cpp)
+    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities/utilities.cpp)
   endif()
 
   # Adds tuning executables
@@ -298,7 +311,7 @@ if(CLIENTS OR TESTS)
     find_package(Threads)
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(REF_INCLUDES ${REF_INCLUDES} ${CLBLAS_INCLUDE_DIRS})
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC)
       add_definitions(" /DCLBLAST_REF_CLBLAS")
     else()
       add_definitions(" -DCLBLAST_REF_CLBLAS")
@@ -307,7 +320,7 @@ if(CLIENTS OR TESTS)
   if(CBLAS_FOUND)
     set(REF_INCLUDES ${REF_INCLUDES} ${CBLAS_INCLUDE_DIRS})
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CBLAS_LIBRARIES})
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC)
       add_definitions(" /DCLBLAST_REF_CBLAS")
     else()
       add_definitions(" -DCLBLAST_REF_CBLAS")
@@ -325,7 +338,7 @@ if(CLIENTS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(CLIENTS_COMMON )
   if(MSVC)
-    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities.cpp test/performance/client.cpp)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/performance/client.cpp)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
@@ -372,7 +385,7 @@ if(TESTS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TESTS_COMMON )
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/utilities.cpp
+    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp
         test/correctness/tester.cpp test/correctness/testblas.cpp)
   else()
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
@@ -405,14 +418,14 @@ if(TESTS)
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
     target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
-    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM} ${TEST_ARGUMENTS})
   endforeach()
 
   # Adds 'alltests' target: runs all tests
   set(ALLTESTS )
   set(ALLTESTSDEPENDS )
   foreach(ROUTINE ${ROUTINES})
-    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM} ${TEST_ARGUMENTS})
     set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
   endforeach()
   add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})

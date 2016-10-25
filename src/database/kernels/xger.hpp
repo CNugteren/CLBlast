@@ -43,7 +43,8 @@ const Database::DatabaseEntry XgerSingle = {
         { "Oland",                                           { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -80,6 +81,7 @@ const Database::DatabaseEntry XgerSingle = {
         { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",16}, {"WPT",4} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
       }
     },
@@ -102,7 +104,8 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "Oland",                                           { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -139,12 +142,13 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "GeForce GTX 750",                                 { {"WGS1",32}, {"WGS2",16}, {"WPT",4} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
       }
     },
   }
@@ -161,7 +165,8 @@ const Database::DatabaseEntry XgerDouble = {
         { "Oland",                                           { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",8}, {"WGS2",16}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -187,6 +192,7 @@ const Database::DatabaseEntry XgerDouble = {
         { "GeForce GTX 750",                                 { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",16}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
       }
     },
@@ -209,6 +215,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
         { "Oland",                                           { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",16}, {"WGS2",4}, {"WPT",1} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
       }
     },
@@ -235,6 +242,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
         { "GeForce GTX 750",                                 { {"WGS1",8}, {"WGS2",32}, {"WPT",4} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "default",                                         { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
       }
     },

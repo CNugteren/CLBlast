@@ -18,7 +18,7 @@
 #include <vector>
 #include <mutex>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -89,7 +89,7 @@ bool ProgramIsInCache(const Context &context, const Precision &precision,
 // =================================================================================================
 
 // Clears the cache of stored binaries
-StatusCode CacheClearAll();
+void CacheClearAll();
 
 // =================================================================================================
 } // namespace clblast

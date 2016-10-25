@@ -19,9 +19,9 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "cache.hpp"
-#include "buffer_test.hpp"
+#include "utilities/buffer_test.hpp"
 #include "database/database.hpp"
 #include "routines/common.hpp"
 
@@ -34,21 +34,19 @@ class Routine {
 
   // Base class constructor. The user database is an optional extra database to override the
   // built-in database.
+  // All heavy preparation work is done inside this constructor.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
-                   const std::vector<const Database::DatabaseEntry*> &userDatabase = {});
-
-  // Set-up phase of the kernel
-  StatusCode SetUp();
+                   const std::vector<const Database::DatabaseEntry*> &userDatabase,
+                   std::initializer_list<const char *> source);
 
  protected:
 
   // Non-static variable for the precision
   const Precision precision_;
 
-  // The routine's name and its kernel-source in string form
+  // The routine's name
   const std::string routine_name_;
-  std::string source_string_;
 
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;

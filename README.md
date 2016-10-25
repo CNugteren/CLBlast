@@ -111,8 +111,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - GeForce GTX 750 Ti
   - GeForce GTX 980
   - GeForce GTX 1070
-  - GeForce GTX Titan
-  - GeForce GTX Titan X
+  - GeForce GTX TITAN
+  - GeForce GTX TITAN Black
+  - GeForce GTX TITAN X
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
@@ -121,6 +122,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Oland
   - Pitcairn
   - Tahiti
+  - Tonga
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -175,7 +177,7 @@ To build these tests, another BLAS library is needed to serve as a reference. Th
 
 Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested for correctness against [clBLAS](http://github.com/clMathLibraries/clBLAS) and/or a regular CPU BLAS library. If both are installed on your system, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables. All tests have a `-verbose` option to enable additional diagnostic output. They also have a `-full_test` option to increase coverage further.
 
-All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
+All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake. Further options (e.g. `-full_test`) can be supplied through the `CLBLAST_TEST_ARGUMENTS` environmental variable.
 
 
 Compiling the performance tests/clients (optional)
@@ -284,7 +286,7 @@ The `samples/haxpy.c` example shows how to use these convencience functions when
 Contributing
 -------------
 
-Contributions are welcome in the form of tuning results for OpenCL devices previously untested. Furthermore, merge requests are welcome as long as they contain unit additions or modifications. Furthermore, they should follow the CLBlast coding style, which is based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers.
+Contributions are welcome in the form of tuning results for OpenCL devices previously untested or pull requests. See [the contributing guidelines](CONTRIBUTING.md) for more details.
 
 The contributing authors (code, pull requests, testing) so far are:
 
@@ -296,6 +298,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Gian-Carlo Pascutto](https://github.com/gcp)
 * [Ivan Shapovalov](https://github.com/intelfx)
 * [Dimitri Van Assche](https://github.com/dvasschemacq)
+* [Shehzan Mohammed](https://shehzan10.github.io)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -303,6 +306,7 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
+* [ArrayFire](http://arrayfire.org)
 
 
 Support us

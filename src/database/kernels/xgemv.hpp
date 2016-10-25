@@ -43,6 +43,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "Oland",                                           { {"WGS1",128}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1} } },
+        { "Tonga",                                           { {"WGS1",128}, {"WPT1",2} } },
         { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
@@ -82,6 +83,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",256}, {"WPT1",1} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
@@ -107,6 +109,7 @@ const Database::DatabaseEntry XgemvComplexSingle = {
         { "Oland",                                           { {"WGS1",64}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WPT1",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WPT1",1} } },
+        { "Tonga",                                           { {"WGS1",32}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
@@ -145,6 +148,7 @@ const Database::DatabaseEntry XgemvComplexSingle = {
         { "GeForce GTX 750",                                 { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
@@ -167,6 +171,7 @@ const Database::DatabaseEntry XgemvDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1} } },
+        { "Tonga",                                           { {"WGS1",32}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",256}, {"WPT1",1} } },
       }
     },
@@ -194,6 +199,7 @@ const Database::DatabaseEntry XgemvDouble = {
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WPT1",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",256}, {"WPT1",1} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",64}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",256}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
@@ -219,6 +225,7 @@ const Database::DatabaseEntry XgemvComplexDouble = {
         { "Oland",                                           { {"WGS1",256}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WPT1",1} } },
+        { "Tonga",                                           { {"WGS1",64}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },

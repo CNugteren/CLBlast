@@ -20,7 +20,7 @@ extern "C"
   #include <cblas.h>
 }
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 
