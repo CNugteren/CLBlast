@@ -41,7 +41,7 @@ FILES = [
     "/include/clblast_blas.h",
     "/src/clblast_blas.cpp",
 ]
-HEADER_LINES = [117, 73, 118, 22, 29, 41, 44, 32]
+HEADER_LINES = [117, 73, 118, 22, 29, 41, 47, 32]
 FOOTER_LINES = [17, 80, 19, 18, 6, 6, 9, 3]
 
 # Different possibilities for requirements
@@ -67,8 +67,8 @@ def size_helper(condition, size_one, size_two, multiplier):
 
 
 def layout_transpose_condition(prefix):
-    return "(layout == Layout::kColMajor && " + prefix + "_transpose != Transpose::kNo) || " +\
-           "(layout == Layout::kRowMajor && " + prefix + "_transpose == Transpose::kNo)"
+    return "(layout == CLBlastLayoutColMajor && " + prefix + "_transpose != CLBlastTransposeNo) || " +\
+           "(layout == CLBlastLayoutRowMajor && " + prefix + "_transpose == CLBlastTransposeNo)"
 
 
 # Different possibilities for the vector and matrix sizes
@@ -79,20 +79,20 @@ ym = "m * y_inc"
 an = "n * a_ld"
 apn = "((n*(n+1)) / 2)"
 cn = "n * c_ld"
-xmn = size_helper("a_transpose != Transpose::kNo", "m", "n", "x_inc")
-ynm = size_helper("a_transpose != Transpose::kNo", "n", "m", "y_inc")
-amn = size_helper("layout == Layout::kRowMajor", "m", "n", "a_ld")
-amns = size_helper("side == Side::kLeft", "m", "n", "a_ld")
+xmn = size_helper("a_transpose != CLBlastTransposeNo", "m", "n", "x_inc")
+ynm = size_helper("a_transpose != CLBlastTransposeNo", "n", "m", "y_inc")
+amn = size_helper("layout == CLBlastLayoutRowMajor", "m", "n", "a_ld")
+amns = size_helper("side == CLBlastSideLeft", "m", "n", "a_ld")
 amk = size_helper(layout_transpose_condition("a"), "m", "k", "a_ld")
 ank = size_helper(layout_transpose_condition("a"), "n", "k", "a_ld")
 ankab = size_helper(layout_transpose_condition("ab"), "n", "k", "a_ld")
 bkn = size_helper(layout_transpose_condition("b"), "k", "n", "b_ld")
 bnkab = size_helper(layout_transpose_condition("ab"), "n", "k", "b_ld")
-bmn = size_helper("layout == Layout::kRowMajor", "m", "n", "b_ld")
+bmn = size_helper("layout == CLBlastLayoutRowMajor", "m", "n", "b_ld")
 bnma = size_helper(layout_transpose_condition("a"), "n", "m", "b_ld")
-cmn = size_helper("layout == Layout::kRowMajor", "m", "n", "c_ld")
-ammn = size_helper("layout == Layout::kRowMajor", "m", "((side == Side::kLeft) ? m : n)", "a_ld")
-bmnn = size_helper("layout == Layout::kRowMajor", "((side == Side::kLeft) ? m : n)", "n", "b_ld")
+cmn = size_helper("layout == CLBlastLayoutRowMajor", "m", "n", "c_ld")
+ammn = size_helper("layout == CLBlastLayoutRowMajor", "m", "((side == CLBlastSideLeft) ? m : n)", "a_ld")
+bmnn = size_helper("layout == CLBlastLayoutRowMajor", "((side == CLBlastSideLeft) ? m : n)", "n", "b_ld")
 
 # ==================================================================================================
 

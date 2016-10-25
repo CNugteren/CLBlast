@@ -548,7 +548,7 @@ class Routine:
 
     def arguments_def_netlib(self, flavour):
         """As above, but for the Netlib CBLAS API"""
-        return (self.options_def() + self.sizes_def_netlib() +
+        return (self.options_def_c() + self.sizes_def_netlib() +
                 list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.scalar_buffers_first()])) +
                 self.scalar_def_void("alpha", flavour) +
                 list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.buffers_first()])) +

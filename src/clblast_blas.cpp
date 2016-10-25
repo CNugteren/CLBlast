@@ -44,12 +44,12 @@ void cblas_srotg(float* sa,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto sa_size = 1;
-  auto sa_buffer = Buffer<float>(context, sa_size);
   const auto sb_size = 1;
-  auto sb_buffer = Buffer<float>(context, sb_size);
   const auto sc_size = 1;
-  auto sc_buffer = Buffer<float>(context, sc_size);
   const auto ss_size = 1;
+  auto sa_buffer = Buffer<float>(context, sa_size);
+  auto sb_buffer = Buffer<float>(context, sb_size);
+  auto sc_buffer = Buffer<float>(context, sc_size);
   auto ss_buffer = Buffer<float>(context, ss_size);
   sa_buffer.Write(queue, sa_size, reinterpret_cast<float*>(sa));
   sb_buffer.Write(queue, sb_size, reinterpret_cast<float*>(sb));
@@ -77,12 +77,12 @@ void cblas_drotg(double* sa,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto sa_size = 1;
-  auto sa_buffer = Buffer<double>(context, sa_size);
   const auto sb_size = 1;
-  auto sb_buffer = Buffer<double>(context, sb_size);
   const auto sc_size = 1;
-  auto sc_buffer = Buffer<double>(context, sc_size);
   const auto ss_size = 1;
+  auto sa_buffer = Buffer<double>(context, sa_size);
+  auto sb_buffer = Buffer<double>(context, sb_size);
+  auto sc_buffer = Buffer<double>(context, sc_size);
   auto ss_buffer = Buffer<double>(context, ss_size);
   sa_buffer.Write(queue, sa_size, reinterpret_cast<double*>(sa));
   sb_buffer.Write(queue, sb_size, reinterpret_cast<double*>(sb));
@@ -113,14 +113,14 @@ void cblas_srotmg(float* sd1,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto sy1_size = 1;
-  auto sy1_buffer = Buffer<float>(context, sy1_size);
   const auto sd1_size = 1;
-  auto sd1_buffer = Buffer<float>(context, sd1_size);
   const auto sd2_size = 1;
-  auto sd2_buffer = Buffer<float>(context, sd2_size);
   const auto sx1_size = 1;
-  auto sx1_buffer = Buffer<float>(context, sx1_size);
   const auto sparam_size = 1;
+  auto sy1_buffer = Buffer<float>(context, sy1_size);
+  auto sd1_buffer = Buffer<float>(context, sd1_size);
+  auto sd2_buffer = Buffer<float>(context, sd2_size);
+  auto sx1_buffer = Buffer<float>(context, sx1_size);
   auto sparam_buffer = Buffer<float>(context, sparam_size);
   sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const float*>(sy1));
   sd1_buffer.Write(queue, sd1_size, reinterpret_cast<float*>(sd1));
@@ -151,14 +151,14 @@ void cblas_drotmg(double* sd1,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto sy1_size = 1;
-  auto sy1_buffer = Buffer<double>(context, sy1_size);
   const auto sd1_size = 1;
-  auto sd1_buffer = Buffer<double>(context, sd1_size);
   const auto sd2_size = 1;
-  auto sd2_buffer = Buffer<double>(context, sd2_size);
   const auto sx1_size = 1;
-  auto sx1_buffer = Buffer<double>(context, sx1_size);
   const auto sparam_size = 1;
+  auto sy1_buffer = Buffer<double>(context, sy1_size);
+  auto sd1_buffer = Buffer<double>(context, sd1_size);
+  auto sd2_buffer = Buffer<double>(context, sd2_size);
+  auto sx1_buffer = Buffer<double>(context, sx1_size);
   auto sparam_buffer = Buffer<double>(context, sparam_size);
   sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const double*>(sy1));
   sd1_buffer.Write(queue, sd1_size, reinterpret_cast<double*>(sd1));
@@ -191,8 +191,8 @@ void cblas_srot(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
@@ -218,8 +218,8 @@ void cblas_drot(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
@@ -246,10 +246,10 @@ void cblas_srotm(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<float>(context, y_size);
   const auto sparam_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
+  auto y_buffer = Buffer<float>(context, y_size);
   auto sparam_buffer = Buffer<float>(context, sparam_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
@@ -275,10 +275,10 @@ void cblas_drotm(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<double>(context, y_size);
   const auto sparam_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
+  auto y_buffer = Buffer<double>(context, y_size);
   auto sparam_buffer = Buffer<double>(context, sparam_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
@@ -305,8 +305,8 @@ void cblas_sswap(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
@@ -328,8 +328,8 @@ void cblas_dswap(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
@@ -351,8 +351,8 @@ void cblas_cswap(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float2*>(y));
@@ -374,8 +374,8 @@ void cblas_zswap(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double2*>(y));
@@ -481,8 +481,8 @@ void cblas_scopy(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
@@ -503,8 +503,8 @@ void cblas_dcopy(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
@@ -525,8 +525,8 @@ void cblas_ccopy(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float2*>(y));
@@ -547,8 +547,8 @@ void cblas_zcopy(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double2*>(y));
@@ -573,8 +573,8 @@ void cblas_saxpy(const int n,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
@@ -598,8 +598,8 @@ void cblas_daxpy(const int n,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
@@ -623,8 +623,8 @@ void cblas_caxpy(const int n,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float2*>(y));
@@ -648,8 +648,8 @@ void cblas_zaxpy(const int n,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double2*>(y));
@@ -674,10 +674,10 @@ void cblas_sdot(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<float>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
+  auto y_buffer = Buffer<float>(context, y_size);
   auto dot_buffer = Buffer<float>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
@@ -701,10 +701,10 @@ void cblas_ddot(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<double>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
+  auto y_buffer = Buffer<double>(context, y_size);
   auto dot_buffer = Buffer<double>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
@@ -730,10 +730,10 @@ void cblas_cdotu(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<float2>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
+  auto y_buffer = Buffer<float2>(context, y_size);
   auto dot_buffer = Buffer<float2>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -757,10 +757,10 @@ void cblas_zdotu(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<double2>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
+  auto y_buffer = Buffer<double2>(context, y_size);
   auto dot_buffer = Buffer<double2>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -786,10 +786,10 @@ void cblas_cdotc(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<float2>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
+  auto y_buffer = Buffer<float2>(context, y_size);
   auto dot_buffer = Buffer<float2>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -813,10 +813,10 @@ void cblas_zdotc(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n;
-  auto y_buffer = Buffer<double2>(context, y_size);
   const auto dot_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
+  auto y_buffer = Buffer<double2>(context, y_size);
   auto dot_buffer = Buffer<double2>(context, dot_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -841,8 +841,8 @@ void cblas_snrm2(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto nrm2_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto nrm2_buffer = Buffer<float>(context, nrm2_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   nrm2_buffer.Write(queue, nrm2_size, reinterpret_cast<float*>(nrm2));
@@ -863,8 +863,8 @@ void cblas_dnrm2(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto nrm2_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto nrm2_buffer = Buffer<double>(context, nrm2_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   nrm2_buffer.Write(queue, nrm2_size, reinterpret_cast<double*>(nrm2));
@@ -885,8 +885,8 @@ void cblas_scnrm2(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto nrm2_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto nrm2_buffer = Buffer<float2>(context, nrm2_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   nrm2_buffer.Write(queue, nrm2_size, reinterpret_cast<float2*>(nrm2));
@@ -907,8 +907,8 @@ void cblas_dznrm2(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto nrm2_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto nrm2_buffer = Buffer<double2>(context, nrm2_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   nrm2_buffer.Write(queue, nrm2_size, reinterpret_cast<double2*>(nrm2));
@@ -931,8 +931,8 @@ void cblas_sasum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto asum_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto asum_buffer = Buffer<float>(context, asum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   asum_buffer.Write(queue, asum_size, reinterpret_cast<float*>(asum));
@@ -953,8 +953,8 @@ void cblas_dasum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto asum_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto asum_buffer = Buffer<double>(context, asum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   asum_buffer.Write(queue, asum_size, reinterpret_cast<double*>(asum));
@@ -975,8 +975,8 @@ void cblas_scasum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto asum_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto asum_buffer = Buffer<float2>(context, asum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   asum_buffer.Write(queue, asum_size, reinterpret_cast<float2*>(asum));
@@ -997,8 +997,8 @@ void cblas_dzasum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto asum_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto asum_buffer = Buffer<double2>(context, asum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   asum_buffer.Write(queue, asum_size, reinterpret_cast<double2*>(asum));
@@ -1021,8 +1021,8 @@ void cblas_ssum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto sum_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto sum_buffer = Buffer<float>(context, sum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   sum_buffer.Write(queue, sum_size, reinterpret_cast<float*>(sum));
@@ -1043,8 +1043,8 @@ void cblas_dsum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto sum_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto sum_buffer = Buffer<double>(context, sum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   sum_buffer.Write(queue, sum_size, reinterpret_cast<double*>(sum));
@@ -1065,8 +1065,8 @@ void cblas_scsum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto sum_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto sum_buffer = Buffer<float2>(context, sum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   sum_buffer.Write(queue, sum_size, reinterpret_cast<float2*>(sum));
@@ -1087,8 +1087,8 @@ void cblas_dzsum(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto sum_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto sum_buffer = Buffer<double2>(context, sum_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   sum_buffer.Write(queue, sum_size, reinterpret_cast<double2*>(sum));
@@ -1111,8 +1111,8 @@ void cblas_isamax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto imax_buffer = Buffer<float>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<float*>(imax));
@@ -1133,8 +1133,8 @@ void cblas_idamax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto imax_buffer = Buffer<double>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<double*>(imax));
@@ -1155,8 +1155,8 @@ void cblas_icamax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto imax_buffer = Buffer<float2>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<float2*>(imax));
@@ -1177,8 +1177,8 @@ void cblas_izamax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto imax_buffer = Buffer<double2>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<double2*>(imax));
@@ -1201,8 +1201,8 @@ void cblas_ismax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto imax_buffer = Buffer<float>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<float*>(imax));
@@ -1223,8 +1223,8 @@ void cblas_idmax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto imax_buffer = Buffer<double>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<double*>(imax));
@@ -1245,8 +1245,8 @@ void cblas_icmax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto imax_buffer = Buffer<float2>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<float2*>(imax));
@@ -1267,8 +1267,8 @@ void cblas_izmax(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto imax_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto imax_buffer = Buffer<double2>(context, imax_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   imax_buffer.Write(queue, imax_size, reinterpret_cast<double2*>(imax));
@@ -1291,8 +1291,8 @@ void cblas_ismin(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto imin_size = 1;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto imin_buffer = Buffer<float>(context, imin_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   imin_buffer.Write(queue, imin_size, reinterpret_cast<float*>(imin));
@@ -1313,8 +1313,8 @@ void cblas_idmin(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto imin_size = 1;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto imin_buffer = Buffer<double>(context, imin_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   imin_buffer.Write(queue, imin_size, reinterpret_cast<double*>(imin));
@@ -1335,8 +1335,8 @@ void cblas_icmin(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto imin_size = 1;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto imin_buffer = Buffer<float2>(context, imin_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   imin_buffer.Write(queue, imin_size, reinterpret_cast<float2*>(imin));
@@ -1357,8 +1357,8 @@ void cblas_izmin(const int n,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto x_size = n;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto imin_size = 1;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto imin_buffer = Buffer<double2>(context, imin_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   imin_buffer.Write(queue, imin_size, reinterpret_cast<double2*>(imin));
@@ -1378,7 +1378,7 @@ void cblas_izmin(const int n,
 // =================================================================================================
 
 // GEMV
-void cblas_sgemv(const Layout layout, const Transpose a_transpose,
+void cblas_sgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -1390,11 +1390,11 @@ void cblas_sgemv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<float>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<float>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -1414,7 +1414,7 @@ void cblas_sgemv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float*>(y));
 }
-void cblas_dgemv(const Layout layout, const Transpose a_transpose,
+void cblas_dgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -1426,11 +1426,11 @@ void cblas_dgemv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<double>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<double>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -1450,7 +1450,7 @@ void cblas_dgemv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<double*>(y));
 }
-void cblas_cgemv(const Layout layout, const Transpose a_transpose,
+void cblas_cgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1462,11 +1462,11 @@ void cblas_cgemv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<float2>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<float2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -1486,7 +1486,7 @@ void cblas_cgemv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float2*>(y));
 }
-void cblas_zgemv(const Layout layout, const Transpose a_transpose,
+void cblas_zgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1498,11 +1498,11 @@ void cblas_zgemv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<double2>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<double2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -1524,7 +1524,7 @@ void cblas_zgemv(const Layout layout, const Transpose a_transpose,
 }
 
 // GBMV
-void cblas_sgbmv(const Layout layout, const Transpose a_transpose,
+void cblas_sgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n, const int kl, const int ku,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -1536,11 +1536,11 @@ void cblas_sgbmv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<float>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<float>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -1560,7 +1560,7 @@ void cblas_sgbmv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float*>(y));
 }
-void cblas_dgbmv(const Layout layout, const Transpose a_transpose,
+void cblas_dgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n, const int kl, const int ku,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -1572,11 +1572,11 @@ void cblas_dgbmv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<double>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<double>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -1596,7 +1596,7 @@ void cblas_dgbmv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<double*>(y));
 }
-void cblas_cgbmv(const Layout layout, const Transpose a_transpose,
+void cblas_cgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n, const int kl, const int ku,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1608,11 +1608,11 @@ void cblas_cgbmv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<float2>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<float2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -1632,7 +1632,7 @@ void cblas_cgbmv(const Layout layout, const Transpose a_transpose,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float2*>(y));
 }
-void cblas_zgbmv(const Layout layout, const Transpose a_transpose,
+void cblas_zgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const int m, const int n, const int kl, const int ku,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1644,11 +1644,11 @@ void cblas_zgbmv(const Layout layout, const Transpose a_transpose,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto x_size = (a_transpose != CLBlastTransposeNo) ? m * x_inc : n * x_inc;
+  const auto y_size = (a_transpose != CLBlastTransposeNo) ? n * y_inc : m * y_inc;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto x_size = (a_transpose != Transpose::kNo) ? m * x_inc : n * x_inc;
   auto x_buffer = Buffer<double2>(context, x_size);
-  const auto y_size = (a_transpose != Transpose::kNo) ? n * y_inc : m * y_inc;
   auto y_buffer = Buffer<double2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -1670,7 +1670,7 @@ void cblas_zgbmv(const Layout layout, const Transpose a_transpose,
 }
 
 // HEMV
-void cblas_chemv(const Layout layout, const Triangle triangle,
+void cblas_chemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1683,10 +1683,10 @@ void cblas_chemv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -1706,7 +1706,7 @@ void cblas_chemv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float2*>(y));
 }
-void cblas_zhemv(const Layout layout, const Triangle triangle,
+void cblas_zhemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1719,10 +1719,10 @@ void cblas_zhemv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -1744,7 +1744,7 @@ void cblas_zhemv(const Layout layout, const Triangle triangle,
 }
 
 // HBMV
-void cblas_chbmv(const Layout layout, const Triangle triangle,
+void cblas_chbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1757,10 +1757,10 @@ void cblas_chbmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -1780,7 +1780,7 @@ void cblas_chbmv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float2*>(y));
 }
-void cblas_zhbmv(const Layout layout, const Triangle triangle,
+void cblas_zhbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -1793,10 +1793,10 @@ void cblas_zhbmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -1818,7 +1818,7 @@ void cblas_zhbmv(const Layout layout, const Triangle triangle,
 }
 
 // HPMV
-void cblas_chpmv(const Layout layout, const Triangle triangle,
+void cblas_chpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* ap,
@@ -1831,10 +1831,10 @@ void cblas_chpmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float2>(context, ap_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto ap_buffer = Buffer<float2>(context, ap_size);
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -1854,7 +1854,7 @@ void cblas_chpmv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float2*>(y));
 }
-void cblas_zhpmv(const Layout layout, const Triangle triangle,
+void cblas_zhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* ap,
@@ -1867,10 +1867,10 @@ void cblas_zhpmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double2>(context, ap_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
+  auto ap_buffer = Buffer<double2>(context, ap_size);
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -1892,7 +1892,7 @@ void cblas_zhpmv(const Layout layout, const Triangle triangle,
 }
 
 // SYMV
-void cblas_ssymv(const Layout layout, const Triangle triangle,
+void cblas_ssymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -1905,10 +1905,10 @@ void cblas_ssymv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -1928,7 +1928,7 @@ void cblas_ssymv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float*>(y));
 }
-void cblas_dsymv(const Layout layout, const Triangle triangle,
+void cblas_dsymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -1941,10 +1941,10 @@ void cblas_dsymv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -1966,7 +1966,7 @@ void cblas_dsymv(const Layout layout, const Triangle triangle,
 }
 
 // SBMV
-void cblas_ssbmv(const Layout layout, const Triangle triangle,
+void cblas_ssbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n, const int k,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -1979,10 +1979,10 @@ void cblas_ssbmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -2002,7 +2002,7 @@ void cblas_ssbmv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float*>(y));
 }
-void cblas_dsbmv(const Layout layout, const Triangle triangle,
+void cblas_dsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n, const int k,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -2015,10 +2015,10 @@ void cblas_dsbmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -2040,7 +2040,7 @@ void cblas_dsbmv(const Layout layout, const Triangle triangle,
 }
 
 // SPMV
-void cblas_sspmv(const Layout layout, const Triangle triangle,
+void cblas_sspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const float alpha,
                  const float* ap,
@@ -2053,10 +2053,10 @@ void cblas_sspmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float>(context, ap_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
+  auto ap_buffer = Buffer<float>(context, ap_size);
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -2076,7 +2076,7 @@ void cblas_sspmv(const Layout layout, const Triangle triangle,
   }
   y_buffer.Read(queue, y_size, reinterpret_cast<float*>(y));
 }
-void cblas_dspmv(const Layout layout, const Triangle triangle,
+void cblas_dspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const double alpha,
                  const double* ap,
@@ -2089,10 +2089,10 @@ void cblas_dspmv(const Layout layout, const Triangle triangle,
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double>(context, ap_size);
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
+  auto ap_buffer = Buffer<double>(context, ap_size);
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -2114,7 +2114,7 @@ void cblas_dspmv(const Layout layout, const Triangle triangle,
 }
 
 // TRMV
-void cblas_strmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_strmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
@@ -2122,8 +2122,8 @@ void cblas_strmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
   auto x_buffer = Buffer<float>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2141,7 +2141,7 @@ void cblas_strmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
@@ -2149,8 +2149,8 @@ void cblas_dtrmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
   auto x_buffer = Buffer<double>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2168,7 +2168,7 @@ void cblas_dtrmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2176,8 +2176,8 @@ void cblas_ctrmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2195,7 +2195,7 @@ void cblas_ctrmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2203,8 +2203,8 @@ void cblas_ztrmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2224,7 +2224,7 @@ void cblas_ztrmv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // TBMV
-void cblas_stbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_stbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
@@ -2232,8 +2232,8 @@ void cblas_stbmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
   auto x_buffer = Buffer<float>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2251,7 +2251,7 @@ void cblas_stbmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
@@ -2259,8 +2259,8 @@ void cblas_dtbmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
   auto x_buffer = Buffer<double>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2278,7 +2278,7 @@ void cblas_dtbmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2286,8 +2286,8 @@ void cblas_ctbmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2305,7 +2305,7 @@ void cblas_ctbmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2313,8 +2313,8 @@ void cblas_ztbmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2334,7 +2334,7 @@ void cblas_ztbmv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // TPMV
-void cblas_stpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_stpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const float* ap,
                  float* x, const int x_inc) {
@@ -2342,8 +2342,8 @@ void cblas_stpmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<float>(context, ap_size);
   auto x_buffer = Buffer<float>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2361,7 +2361,7 @@ void cblas_stpmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const double* ap,
                  double* x, const int x_inc) {
@@ -2369,8 +2369,8 @@ void cblas_dtpmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<double>(context, ap_size);
   auto x_buffer = Buffer<double>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2388,7 +2388,7 @@ void cblas_dtpmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
@@ -2396,8 +2396,8 @@ void cblas_ctpmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float2>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<float2>(context, ap_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2415,7 +2415,7 @@ void cblas_ctpmv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
@@ -2423,8 +2423,8 @@ void cblas_ztpmv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double2>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<double2>(context, ap_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2444,7 +2444,7 @@ void cblas_ztpmv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // TRSV
-void cblas_strsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_strsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
@@ -2452,8 +2452,8 @@ void cblas_strsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
   auto x_buffer = Buffer<float>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2471,7 +2471,7 @@ void cblas_strsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
@@ -2479,8 +2479,8 @@ void cblas_dtrsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
   auto x_buffer = Buffer<double>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2498,7 +2498,7 @@ void cblas_dtrsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2506,8 +2506,8 @@ void cblas_ctrsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2525,7 +2525,7 @@ void cblas_ctrsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2533,8 +2533,8 @@ void cblas_ztrsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2554,7 +2554,7 @@ void cblas_ztrsv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // TBSV
-void cblas_stbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_stbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
@@ -2562,8 +2562,8 @@ void cblas_stbsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float>(context, a_size);
   auto x_buffer = Buffer<float>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2581,7 +2581,7 @@ void cblas_stbsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
@@ -2589,8 +2589,8 @@ void cblas_dtbsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double>(context, a_size);
   auto x_buffer = Buffer<double>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2608,7 +2608,7 @@ void cblas_dtbsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2616,8 +2616,8 @@ void cblas_ctbsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2635,7 +2635,7 @@ void cblas_ctbsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztbsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
@@ -2643,8 +2643,8 @@ void cblas_ztbsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto a_size = n * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
   const auto x_size = n * x_inc;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2664,7 +2664,7 @@ void cblas_ztbsv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // TPSV
-void cblas_stpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_stpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const float* ap,
                  float* x, const int x_inc) {
@@ -2672,8 +2672,8 @@ void cblas_stpsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<float>(context, ap_size);
   auto x_buffer = Buffer<float>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -2691,7 +2691,7 @@ void cblas_stpsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float*>(x));
 }
-void cblas_dtpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const double* ap,
                  double* x, const int x_inc) {
@@ -2699,8 +2699,8 @@ void cblas_dtpsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<double>(context, ap_size);
   auto x_buffer = Buffer<double>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -2718,7 +2718,7 @@ void cblas_dtpsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<double*>(x));
 }
-void cblas_ctpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
@@ -2726,8 +2726,8 @@ void cblas_ctpsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<float2>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<float2>(context, ap_size);
   auto x_buffer = Buffer<float2>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -2745,7 +2745,7 @@ void cblas_ctpsv(const Layout layout, const Triangle triangle, const Transpose a
   }
   x_buffer.Read(queue, x_size, reinterpret_cast<float2*>(x));
 }
-void cblas_ztpsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
@@ -2753,8 +2753,8 @@ void cblas_ztpsv(const Layout layout, const Triangle triangle, const Transpose a
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
-  auto ap_buffer = Buffer<double2>(context, ap_size);
   const auto x_size = n * x_inc;
+  auto ap_buffer = Buffer<double2>(context, ap_size);
   auto x_buffer = Buffer<double2>(context, x_size);
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -2774,7 +2774,7 @@ void cblas_ztpsv(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // GER
-void cblas_sger(const Layout layout,
+void cblas_sger(const CLBlastLayout layout,
                 const int m, const int n,
                 const float alpha,
                 const float* x, const int x_inc,
@@ -2785,10 +2785,10 @@ void cblas_sger(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto y_buffer = Buffer<float>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<float>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
@@ -2806,7 +2806,7 @@ void cblas_sger(const Layout layout,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float*>(a));
 }
-void cblas_dger(const Layout layout,
+void cblas_dger(const CLBlastLayout layout,
                 const int m, const int n,
                 const double alpha,
                 const double* x, const int x_inc,
@@ -2817,10 +2817,10 @@ void cblas_dger(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto y_buffer = Buffer<double>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<double>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
@@ -2840,7 +2840,7 @@ void cblas_dger(const Layout layout,
 }
 
 // GERU
-void cblas_cgeru(const Layout layout,
+void cblas_cgeru(const CLBlastLayout layout,
                  const int m, const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -2851,10 +2851,10 @@ void cblas_cgeru(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -2872,7 +2872,7 @@ void cblas_cgeru(const Layout layout,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float2*>(a));
 }
-void cblas_zgeru(const Layout layout,
+void cblas_zgeru(const CLBlastLayout layout,
                  const int m, const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -2883,10 +2883,10 @@ void cblas_zgeru(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -2906,7 +2906,7 @@ void cblas_zgeru(const Layout layout,
 }
 
 // GERC
-void cblas_cgerc(const Layout layout,
+void cblas_cgerc(const CLBlastLayout layout,
                  const int m, const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -2917,10 +2917,10 @@ void cblas_cgerc(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto y_buffer = Buffer<float2>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -2938,7 +2938,7 @@ void cblas_cgerc(const Layout layout,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float2*>(a));
 }
-void cblas_zgerc(const Layout layout,
+void cblas_zgerc(const CLBlastLayout layout,
                  const int m, const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -2949,10 +2949,10 @@ void cblas_zgerc(const Layout layout,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = m * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto y_buffer = Buffer<double2>(context, y_size);
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -2972,7 +2972,7 @@ void cblas_zgerc(const Layout layout,
 }
 
 // HER
-void cblas_cher(const Layout layout, const Triangle triangle,
+void cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const void* alpha,
                 const void* x, const int x_inc,
@@ -2982,8 +2982,8 @@ void cblas_cher(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto a_buffer = Buffer<float2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<float2*>(a));
@@ -3000,7 +3000,7 @@ void cblas_cher(const Layout layout, const Triangle triangle,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float2*>(a));
 }
-void cblas_zher(const Layout layout, const Triangle triangle,
+void cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const void* alpha,
                 const void* x, const int x_inc,
@@ -3010,8 +3010,8 @@ void cblas_zher(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto a_buffer = Buffer<double2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<double2*>(a));
@@ -3030,7 +3030,7 @@ void cblas_zher(const Layout layout, const Triangle triangle,
 }
 
 // HPR
-void cblas_chpr(const Layout layout, const Triangle triangle,
+void cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const void* alpha,
                 const void* x, const int x_inc,
@@ -3040,8 +3040,8 @@ void cblas_chpr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<float2>(context, x_size);
   auto ap_buffer = Buffer<float2>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float2*>(ap));
@@ -3058,7 +3058,7 @@ void cblas_chpr(const Layout layout, const Triangle triangle,
   }
   ap_buffer.Read(queue, ap_size, reinterpret_cast<float2*>(ap));
 }
-void cblas_zhpr(const Layout layout, const Triangle triangle,
+void cblas_zhpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const void* alpha,
                 const void* x, const int x_inc,
@@ -3068,8 +3068,8 @@ void cblas_zhpr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<double2>(context, x_size);
   auto ap_buffer = Buffer<double2>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double2*>(ap));
@@ -3088,7 +3088,7 @@ void cblas_zhpr(const Layout layout, const Triangle triangle,
 }
 
 // HER2
-void cblas_cher2(const Layout layout, const Triangle triangle,
+void cblas_cher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -3099,10 +3099,10 @@ void cblas_cher2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<float2>(context, y_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<float2>(context, x_size);
+  auto y_buffer = Buffer<float2>(context, y_size);
   auto a_buffer = Buffer<float2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -3121,7 +3121,7 @@ void cblas_cher2(const Layout layout, const Triangle triangle,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float2*>(a));
 }
-void cblas_zher2(const Layout layout, const Triangle triangle,
+void cblas_zher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -3132,10 +3132,10 @@ void cblas_zher2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<double2>(context, y_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<double2>(context, x_size);
+  auto y_buffer = Buffer<double2>(context, y_size);
   auto a_buffer = Buffer<double2>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -3156,7 +3156,7 @@ void cblas_zher2(const Layout layout, const Triangle triangle,
 }
 
 // HPR2
-void cblas_chpr2(const Layout layout, const Triangle triangle,
+void cblas_chpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -3167,10 +3167,10 @@ void cblas_chpr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float2>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<float2>(context, y_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<float2>(context, x_size);
+  auto y_buffer = Buffer<float2>(context, y_size);
   auto ap_buffer = Buffer<float2>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
@@ -3189,7 +3189,7 @@ void cblas_chpr2(const Layout layout, const Triangle triangle,
   }
   ap_buffer.Read(queue, ap_size, reinterpret_cast<float2*>(ap));
 }
-void cblas_zhpr2(const Layout layout, const Triangle triangle,
+void cblas_zhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
@@ -3200,10 +3200,10 @@ void cblas_zhpr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double2>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<double2>(context, y_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<double2>(context, x_size);
+  auto y_buffer = Buffer<double2>(context, y_size);
   auto ap_buffer = Buffer<double2>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
@@ -3224,7 +3224,7 @@ void cblas_zhpr2(const Layout layout, const Triangle triangle,
 }
 
 // SYR
-void cblas_ssyr(const Layout layout, const Triangle triangle,
+void cblas_ssyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const float alpha,
                 const float* x, const int x_inc,
@@ -3234,8 +3234,8 @@ void cblas_ssyr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<float>(context, x_size);
   auto a_buffer = Buffer<float>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<float*>(a));
@@ -3252,7 +3252,7 @@ void cblas_ssyr(const Layout layout, const Triangle triangle,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float*>(a));
 }
-void cblas_dsyr(const Layout layout, const Triangle triangle,
+void cblas_dsyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const double alpha,
                 const double* x, const int x_inc,
@@ -3262,8 +3262,8 @@ void cblas_dsyr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<double>(context, x_size);
   auto a_buffer = Buffer<double>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<double*>(a));
@@ -3282,7 +3282,7 @@ void cblas_dsyr(const Layout layout, const Triangle triangle,
 }
 
 // SPR
-void cblas_sspr(const Layout layout, const Triangle triangle,
+void cblas_sspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const float alpha,
                 const float* x, const int x_inc,
@@ -3292,8 +3292,8 @@ void cblas_sspr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<float>(context, x_size);
   auto ap_buffer = Buffer<float>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float*>(ap));
@@ -3310,7 +3310,7 @@ void cblas_sspr(const Layout layout, const Triangle triangle,
   }
   ap_buffer.Read(queue, ap_size, reinterpret_cast<float*>(ap));
 }
-void cblas_dspr(const Layout layout, const Triangle triangle,
+void cblas_dspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
                 const double alpha,
                 const double* x, const int x_inc,
@@ -3320,8 +3320,8 @@ void cblas_dspr(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<double>(context, x_size);
   auto ap_buffer = Buffer<double>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double*>(ap));
@@ -3340,7 +3340,7 @@ void cblas_dspr(const Layout layout, const Triangle triangle,
 }
 
 // SYR2
-void cblas_ssyr2(const Layout layout, const Triangle triangle,
+void cblas_ssyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const float alpha,
                  const float* x, const int x_inc,
@@ -3351,10 +3351,10 @@ void cblas_ssyr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<float>(context, y_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<float>(context, x_size);
+  auto y_buffer = Buffer<float>(context, y_size);
   auto a_buffer = Buffer<float>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
@@ -3373,7 +3373,7 @@ void cblas_ssyr2(const Layout layout, const Triangle triangle,
   }
   a_buffer.Read(queue, a_size, reinterpret_cast<float*>(a));
 }
-void cblas_dsyr2(const Layout layout, const Triangle triangle,
+void cblas_dsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const double alpha,
                  const double* x, const int x_inc,
@@ -3384,10 +3384,10 @@ void cblas_dsyr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<double>(context, y_size);
   const auto a_size = n * a_ld;
+  auto x_buffer = Buffer<double>(context, x_size);
+  auto y_buffer = Buffer<double>(context, y_size);
   auto a_buffer = Buffer<double>(context, a_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
@@ -3408,7 +3408,7 @@ void cblas_dsyr2(const Layout layout, const Triangle triangle,
 }
 
 // SPR2
-void cblas_sspr2(const Layout layout, const Triangle triangle,
+void cblas_sspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const float alpha,
                  const float* x, const int x_inc,
@@ -3419,10 +3419,10 @@ void cblas_sspr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<float>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<float>(context, y_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<float>(context, x_size);
+  auto y_buffer = Buffer<float>(context, y_size);
   auto ap_buffer = Buffer<float>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
@@ -3441,7 +3441,7 @@ void cblas_sspr2(const Layout layout, const Triangle triangle,
   }
   ap_buffer.Read(queue, ap_size, reinterpret_cast<float*>(ap));
 }
-void cblas_dspr2(const Layout layout, const Triangle triangle,
+void cblas_dspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const int n,
                  const double alpha,
                  const double* x, const int x_inc,
@@ -3452,10 +3452,10 @@ void cblas_dspr2(const Layout layout, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
-  auto x_buffer = Buffer<double>(context, x_size);
   const auto y_size = n * y_inc;
-  auto y_buffer = Buffer<double>(context, y_size);
   const auto ap_size = ((n*(n+1)) / 2);
+  auto x_buffer = Buffer<double>(context, x_size);
+  auto y_buffer = Buffer<double>(context, y_size);
   auto ap_buffer = Buffer<double>(context, ap_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
@@ -3480,7 +3480,7 @@ void cblas_dspr2(const Layout layout, const Triangle triangle,
 // =================================================================================================
 
 // GEMM
-void cblas_sgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+void cblas_sgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
                  const int m, const int n, const int k,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -3492,11 +3492,11 @@ void cblas_sgemm(const Layout layout, const Transpose a_transpose, const Transpo
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? m * a_ld : k * a_ld;
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? m * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && b_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && b_transpose == CLBlastTransposeNo)) ? k * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && b_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && b_transpose == Transpose::kNo)) ? k * b_ld : n * b_ld;
   auto b_buffer = Buffer<float>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<float>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float*>(b));
@@ -3517,7 +3517,7 @@ void cblas_sgemm(const Layout layout, const Transpose a_transpose, const Transpo
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float*>(c));
 }
-void cblas_dgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+void cblas_dgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
                  const int m, const int n, const int k,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -3529,11 +3529,11 @@ void cblas_dgemm(const Layout layout, const Transpose a_transpose, const Transpo
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? m * a_ld : k * a_ld;
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? m * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && b_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && b_transpose == CLBlastTransposeNo)) ? k * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && b_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && b_transpose == Transpose::kNo)) ? k * b_ld : n * b_ld;
   auto b_buffer = Buffer<double>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<double>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double*>(b));
@@ -3554,7 +3554,7 @@ void cblas_dgemm(const Layout layout, const Transpose a_transpose, const Transpo
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<double*>(c));
 }
-void cblas_cgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+void cblas_cgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
                  const int m, const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3566,11 +3566,11 @@ void cblas_cgemm(const Layout layout, const Transpose a_transpose, const Transpo
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? m * a_ld : k * a_ld;
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? m * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && b_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && b_transpose == CLBlastTransposeNo)) ? k * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && b_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && b_transpose == Transpose::kNo)) ? k * b_ld : n * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float2*>(b));
@@ -3591,7 +3591,7 @@ void cblas_cgemm(const Layout layout, const Transpose a_transpose, const Transpo
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zgemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+void cblas_zgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
                  const int m, const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3603,11 +3603,11 @@ void cblas_zgemm(const Layout layout, const Transpose a_transpose, const Transpo
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? m * a_ld : k * a_ld;
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? m * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && b_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && b_transpose == CLBlastTransposeNo)) ? k * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && b_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && b_transpose == Transpose::kNo)) ? k * b_ld : n * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double2*>(b));
@@ -3630,7 +3630,7 @@ void cblas_zgemm(const Layout layout, const Transpose a_transpose, const Transpo
 }
 
 // SYMM
-void cblas_ssymm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_ssymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -3642,11 +3642,11 @@ void cblas_ssymm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<float>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<float>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float*>(b));
@@ -3667,7 +3667,7 @@ void cblas_ssymm(const Layout layout, const Side side, const Triangle triangle,
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float*>(c));
 }
-void cblas_dsymm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_dsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -3679,11 +3679,11 @@ void cblas_dsymm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<double>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<double>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double*>(b));
@@ -3704,7 +3704,7 @@ void cblas_dsymm(const Layout layout, const Side side, const Triangle triangle,
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<double*>(c));
 }
-void cblas_csymm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_csymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3716,11 +3716,11 @@ void cblas_csymm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float2*>(b));
@@ -3741,7 +3741,7 @@ void cblas_csymm(const Layout layout, const Side side, const Triangle triangle,
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zsymm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_zsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3753,11 +3753,11 @@ void cblas_zsymm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double2*>(b));
@@ -3780,7 +3780,7 @@ void cblas_zsymm(const Layout layout, const Side side, const Triangle triangle,
 }
 
 // HEMM
-void cblas_chemm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_chemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3792,11 +3792,11 @@ void cblas_chemm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float2*>(b));
@@ -3817,7 +3817,7 @@ void cblas_chemm(const Layout layout, const Side side, const Triangle triangle,
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zhemm(const Layout layout, const Side side, const Triangle triangle,
+void cblas_zhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3829,11 +3829,11 @@ void cblas_zhemm(const Layout layout, const Side side, const Triangle triangle,
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : ((side == Side::kLeft) ? m : n) * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : ((side == CLBlastSideLeft) ? m : n) * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? ((side == CLBlastSideLeft) ? m : n) * b_ld : n * b_ld;
+  const auto c_size = (layout == CLBlastLayoutRowMajor) ? m * c_ld : n * c_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? ((side == Side::kLeft) ? m : n) * b_ld : n * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
-  const auto c_size = (layout == Layout::kRowMajor) ? m * c_ld : n * c_ld;
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double2*>(b));
@@ -3856,7 +3856,7 @@ void cblas_zhemm(const Layout layout, const Side side, const Triangle triangle,
 }
 
 // SYRK
-void cblas_ssyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_ssyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -3867,9 +3867,9 @@ void cblas_ssyrk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float>(context, a_size);
   auto c_buffer = Buffer<float>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<float*>(c));
@@ -3888,7 +3888,7 @@ void cblas_ssyrk(const Layout layout, const Triangle triangle, const Transpose a
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float*>(c));
 }
-void cblas_dsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_dsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -3899,9 +3899,9 @@ void cblas_dsyrk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double>(context, a_size);
   auto c_buffer = Buffer<double>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<double*>(c));
@@ -3920,7 +3920,7 @@ void cblas_dsyrk(const Layout layout, const Triangle triangle, const Transpose a
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<double*>(c));
 }
-void cblas_csyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_csyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3931,9 +3931,9 @@ void cblas_csyrk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
@@ -3952,7 +3952,7 @@ void cblas_csyrk(const Layout layout, const Triangle triangle, const Transpose a
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zsyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_zsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3963,9 +3963,9 @@ void cblas_zsyrk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
@@ -3986,7 +3986,7 @@ void cblas_zsyrk(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // HERK
-void cblas_cherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -3997,9 +3997,9 @@ void cblas_cherk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float2>(context, a_size);
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
@@ -4018,7 +4018,7 @@ void cblas_cherk(const Layout layout, const Triangle triangle, const Transpose a
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zherk(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+void cblas_zherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -4029,9 +4029,9 @@ void cblas_zherk(const Layout layout, const Triangle triangle, const Transpose a
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double2>(context, a_size);
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
@@ -4052,7 +4052,7 @@ void cblas_zherk(const Layout layout, const Triangle triangle, const Transpose a
 }
 
 // SYR2K
-void cblas_ssyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_ssyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const float alpha,
                   const float* a, const int a_ld,
@@ -4064,11 +4064,11 @@ void cblas_ssyr2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<float>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float>(context, a_size);
+  auto b_buffer = Buffer<float>(context, b_size);
   auto c_buffer = Buffer<float>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float*>(b));
@@ -4089,7 +4089,7 @@ void cblas_ssyr2k(const Layout layout, const Triangle triangle, const Transpose 
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float*>(c));
 }
-void cblas_dsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_dsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const double alpha,
                   const double* a, const int a_ld,
@@ -4101,11 +4101,11 @@ void cblas_dsyr2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<double>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double>(context, a_size);
+  auto b_buffer = Buffer<double>(context, b_size);
   auto c_buffer = Buffer<double>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double*>(b));
@@ -4126,7 +4126,7 @@ void cblas_dsyr2k(const Layout layout, const Triangle triangle, const Transpose 
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<double*>(c));
 }
-void cblas_csyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_csyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const void* alpha,
                   const void* a, const int a_ld,
@@ -4138,11 +4138,11 @@ void cblas_csyr2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<float2>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float2>(context, a_size);
+  auto b_buffer = Buffer<float2>(context, b_size);
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float2*>(b));
@@ -4163,7 +4163,7 @@ void cblas_csyr2k(const Layout layout, const Triangle triangle, const Transpose 
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zsyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_zsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const void* alpha,
                   const void* a, const int a_ld,
@@ -4175,11 +4175,11 @@ void cblas_zsyr2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<double2>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double2>(context, a_size);
+  auto b_buffer = Buffer<double2>(context, b_size);
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double2*>(b));
@@ -4202,7 +4202,7 @@ void cblas_zsyr2k(const Layout layout, const Triangle triangle, const Transpose 
 }
 
 // HER2K
-void cblas_cher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_cher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const void* alpha,
                   const void* a, const int a_ld,
@@ -4214,11 +4214,11 @@ void cblas_cher2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<float2>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<float2>(context, a_size);
+  auto b_buffer = Buffer<float2>(context, b_size);
   auto c_buffer = Buffer<float2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const float2*>(b));
@@ -4239,7 +4239,7 @@ void cblas_cher2k(const Layout layout, const Triangle triangle, const Transpose 
   }
   c_buffer.Read(queue, c_size, reinterpret_cast<float2*>(c));
 }
-void cblas_zher2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
+void cblas_zher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                   const int n, const int k,
                   const void* alpha,
                   const void* a, const int a_ld,
@@ -4251,11 +4251,11 @@ void cblas_zher2k(const Layout layout, const Triangle triangle, const Transpose 
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = beta;
-  const auto a_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * a_ld : k * a_ld;
-  auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && ab_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && ab_transpose == Transpose::kNo)) ? n * b_ld : k * b_ld;
-  auto b_buffer = Buffer<double2>(context, b_size);
+  const auto a_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * a_ld : k * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && ab_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && ab_transpose == CLBlastTransposeNo)) ? n * b_ld : k * b_ld;
   const auto c_size = n * c_ld;
+  auto a_buffer = Buffer<double2>(context, a_size);
+  auto b_buffer = Buffer<double2>(context, b_size);
   auto c_buffer = Buffer<double2>(context, c_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<const double2*>(b));
@@ -4278,7 +4278,7 @@ void cblas_zher2k(const Layout layout, const Triangle triangle, const Transpose 
 }
 
 // TRMM
-void cblas_strmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_strmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -4287,9 +4287,9 @@ void cblas_strmm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<float>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
@@ -4309,7 +4309,7 @@ void cblas_strmm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float*>(b));
 }
-void cblas_dtrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -4318,9 +4318,9 @@ void cblas_dtrmm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<double>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
@@ -4340,7 +4340,7 @@ void cblas_dtrmm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<double*>(b));
 }
-void cblas_ctrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -4349,9 +4349,9 @@ void cblas_ctrmm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
@@ -4371,7 +4371,7 @@ void cblas_ctrmm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float2*>(b));
 }
-void cblas_ztrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -4380,9 +4380,9 @@ void cblas_ztrmm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));
@@ -4404,7 +4404,7 @@ void cblas_ztrmm(const Layout layout, const Side side, const Triangle triangle, 
 }
 
 // TRSM
-void cblas_strsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_strsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const float alpha,
                  const float* a, const int a_ld,
@@ -4413,9 +4413,9 @@ void cblas_strsm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<float>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
@@ -4435,7 +4435,7 @@ void cblas_strsm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float*>(b));
 }
-void cblas_dtrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_dtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const double alpha,
                  const double* a, const int a_ld,
@@ -4444,9 +4444,9 @@ void cblas_dtrsm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<double>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
@@ -4466,7 +4466,7 @@ void cblas_dtrsm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<double*>(b));
 }
-void cblas_ctrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ctrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -4475,9 +4475,9 @@ void cblas_ctrsm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
@@ -4497,7 +4497,7 @@ void cblas_ctrsm(const Layout layout, const Side side, const Triangle triangle, 
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float2*>(b));
 }
-void cblas_ztrsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+void cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                  const int m, const int n,
                  const void* alpha,
                  const void* a, const int a_ld,
@@ -4506,9 +4506,9 @@ void cblas_ztrsm(const Layout layout, const Side side, const Triangle triangle, 
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
-  const auto a_size = (side == Side::kLeft) ? m * a_ld : n * a_ld;
+  const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
+  const auto b_size = (layout == CLBlastLayoutRowMajor) ? m * b_ld : n * b_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = (layout == Layout::kRowMajor) ? m * b_ld : n * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));
@@ -4534,7 +4534,7 @@ void cblas_ztrsm(const Layout layout, const Side side, const Triangle triangle, 
 // =================================================================================================
 
 // OMATCOPY
-void cblas_somatcopy(const Layout layout, const Transpose a_transpose,
+void cblas_somatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
                      const float alpha,
                      const float* a, const int a_ld,
@@ -4543,9 +4543,9 @@ void cblas_somatcopy(const Layout layout, const Transpose a_transpose,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * b_ld : m * b_ld;
   auto a_buffer = Buffer<float>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * b_ld : m * b_ld;
   auto b_buffer = Buffer<float>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
@@ -4562,7 +4562,7 @@ void cblas_somatcopy(const Layout layout, const Transpose a_transpose,
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float*>(b));
 }
-void cblas_domatcopy(const Layout layout, const Transpose a_transpose,
+void cblas_domatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
                      const double alpha,
                      const double* a, const int a_ld,
@@ -4571,9 +4571,9 @@ void cblas_domatcopy(const Layout layout, const Transpose a_transpose,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * b_ld : m * b_ld;
   auto a_buffer = Buffer<double>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * b_ld : m * b_ld;
   auto b_buffer = Buffer<double>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
@@ -4590,7 +4590,7 @@ void cblas_domatcopy(const Layout layout, const Transpose a_transpose,
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<double*>(b));
 }
-void cblas_comatcopy(const Layout layout, const Transpose a_transpose,
+void cblas_comatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
                      const void* alpha,
                      const void* a, const int a_ld,
@@ -4599,9 +4599,9 @@ void cblas_comatcopy(const Layout layout, const Transpose a_transpose,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * b_ld : m * b_ld;
   auto a_buffer = Buffer<float2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * b_ld : m * b_ld;
   auto b_buffer = Buffer<float2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
@@ -4618,7 +4618,7 @@ void cblas_comatcopy(const Layout layout, const Transpose a_transpose,
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<float2*>(b));
 }
-void cblas_zomatcopy(const Layout layout, const Transpose a_transpose,
+void cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
                      const void* alpha,
                      const void* a, const int a_ld,
@@ -4627,9 +4627,9 @@ void cblas_zomatcopy(const Layout layout, const Transpose a_transpose,
   auto context = Context(device);
   auto queue = Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
-  const auto a_size = (layout == Layout::kRowMajor) ? m * a_ld : n * a_ld;
+  const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
+  const auto b_size = ((layout == CLBlastLayoutColMajor && a_transpose != CLBlastTransposeNo) || (layout == CLBlastLayoutRowMajor && a_transpose == CLBlastTransposeNo)) ? n * b_ld : m * b_ld;
   auto a_buffer = Buffer<double2>(context, a_size);
-  const auto b_size = ((layout == Layout::kColMajor && a_transpose != Transpose::kNo) || (layout == Layout::kRowMajor && a_transpose == Transpose::kNo)) ? n * b_ld : m * b_ld;
   auto b_buffer = Buffer<double2>(context, b_size);
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));

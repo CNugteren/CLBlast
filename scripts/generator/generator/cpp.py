@@ -126,6 +126,7 @@ def clblast_blas_cc(routine):
             # Copy data structures to the device
             for i, name in enumerate(routine.inputs + routine.outputs):
                 result += "  " + routine.set_size(name, routine.buffer_sizes[i]) + NL
+            for i, name in enumerate(routine.inputs + routine.outputs):
                 result += "  " + routine.create_buffer(name, flavour.buffer_type) + NL
             for name in routine.inputs + routine.outputs:
                 prefix = "" if name in routine.outputs else "const "
