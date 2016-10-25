@@ -2974,7 +2974,7 @@ void cblas_zgerc(const CLBlastLayout layout,
 // HER
 void cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
-                const void* alpha,
+                const float alpha,
                 const void* x, const int x_inc,
                 void* a, const int a_ld) {
   auto device = get_device();
@@ -3002,7 +3002,7 @@ void cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle,
 }
 void cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
-                const void* alpha,
+                const double alpha,
                 const void* x, const int x_inc,
                 void* a, const int a_ld) {
   auto device = get_device();
@@ -3032,7 +3032,7 @@ void cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle,
 // HPR
 void cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
-                const void* alpha,
+                const float alpha,
                 const void* x, const int x_inc,
                 void* ap) {
   auto device = get_device();
@@ -3060,7 +3060,7 @@ void cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
 }
 void cblas_zhpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const int n,
-                const void* alpha,
+                const double alpha,
                 const void* x, const int x_inc,
                 void* ap) {
   auto device = get_device();
@@ -3988,9 +3988,9 @@ void cblas_zsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
 // HERK
 void cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
-                 const void* alpha,
+                 const float alpha,
                  const void* a, const int a_ld,
-                 const void* beta,
+                 const float beta,
                  void* c, const int c_ld) {
   auto device = get_device();
   auto context = Context(device);
@@ -4020,9 +4020,9 @@ void cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
 }
 void cblas_zherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                  const int n, const int k,
-                 const void* alpha,
+                 const double alpha,
                  const void* a, const int a_ld,
-                 const void* beta,
+                 const double beta,
                  void* c, const int c_ld) {
   auto device = get_device();
   auto context = Context(device);
@@ -4207,7 +4207,7 @@ void cblas_cher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* alpha,
                   const void* a, const int a_ld,
                   const void* b, const int b_ld,
-                  const void* beta,
+                  const float beta,
                   void* c, const int c_ld) {
   auto device = get_device();
   auto context = Context(device);
@@ -4244,7 +4244,7 @@ void cblas_zher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* alpha,
                   const void* a, const int a_ld,
                   const void* b, const int b_ld,
-                  const void* beta,
+                  const double beta,
                   void* c, const int c_ld) {
   auto device = get_device();
   auto context = Context(device);

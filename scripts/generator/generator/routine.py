@@ -341,9 +341,9 @@ class Routine:
         """Retrieves the definition of a scalar (alpha/beta) but make it a void pointer in case of non-standard types"""
         if name in self.scalars:
             if name == "alpha":
-                data_type = "void*" if flavour.is_non_standard() else flavour.alpha_cpp
+                data_type = "void*" if flavour.is_complex("alpha") else flavour.alpha_cpp
                 return ["const " + data_type + " " + name]
-            data_type = "void*" if flavour.is_non_standard() else flavour.beta_cpp
+            data_type = "void*" if flavour.is_complex("beta") else flavour.beta_cpp
             return ["const " + data_type + " " + name]
         return []
 

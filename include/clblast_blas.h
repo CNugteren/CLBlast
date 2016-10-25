@@ -581,24 +581,24 @@ void PUBLIC_API cblas_zgerc(const CLBlastLayout layout,
 // Hermitian rank-1 matrix update: CHER/ZHER
 void PUBLIC_API cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                            const int n,
-                           const void* alpha,
+                           const float alpha,
                            const void* x, const int x_inc,
                            void* a, const int a_ld);
 void PUBLIC_API cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                            const int n,
-                           const void* alpha,
+                           const double alpha,
                            const void* x, const int x_inc,
                            void* a, const int a_ld);
 
 // Hermitian packed rank-1 matrix update: CHPR/ZHPR
 void PUBLIC_API cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                            const int n,
-                           const void* alpha,
+                           const float alpha,
                            const void* x, const int x_inc,
                            void* ap);
 void PUBLIC_API cblas_zhpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                            const int n,
-                           const void* alpha,
+                           const double alpha,
                            const void* x, const int x_inc,
                            void* ap);
 
@@ -791,15 +791,15 @@ void PUBLIC_API cblas_zsyrk(const CLBlastLayout layout, const CLBlastTriangle tr
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 void PUBLIC_API cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                             const int n, const int k,
-                            const void* alpha,
+                            const float alpha,
                             const void* a, const int a_ld,
-                            const void* beta,
+                            const float beta,
                             void* c, const int c_ld);
 void PUBLIC_API cblas_zherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose,
                             const int n, const int k,
-                            const void* alpha,
+                            const double alpha,
                             const void* a, const int a_ld,
-                            const void* beta,
+                            const double beta,
                             void* c, const int c_ld);
 
 // Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
@@ -838,14 +838,14 @@ void PUBLIC_API cblas_cher2k(const CLBlastLayout layout, const CLBlastTriangle t
                              const void* alpha,
                              const void* a, const int a_ld,
                              const void* b, const int b_ld,
-                             const void* beta,
+                             const float beta,
                              void* c, const int c_ld);
 void PUBLIC_API cblas_zher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose,
                              const int n, const int k,
                              const void* alpha,
                              const void* a, const int a_ld,
                              const void* b, const int b_ld,
-                             const void* beta,
+                             const double beta,
                              void* c, const int c_ld);
 
 // Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
