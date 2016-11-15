@@ -17,9 +17,15 @@ namespace database {
 
 const Database::DatabaseEntry XgemmDirectHalf = {
   "XgemmDirect", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
       }
     },
   }
@@ -38,8 +44,9 @@ const Database::DatabaseEntry XgemmDirectSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
         { "Iris Pro",                                        { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
       }
     },
     { // NVIDIA GPUs
@@ -70,8 +77,9 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
         { "Iris Pro",                                        { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
       }
     },
     { // NVIDIA GPUs
@@ -83,7 +91,7 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
       }
     },
   }

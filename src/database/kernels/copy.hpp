@@ -20,13 +20,13 @@ const Database::DatabaseEntry CopyHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} } },
       }
     },
   }
@@ -67,10 +67,10 @@ const Database::DatabaseEntry CopySingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",8} } },
         { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
-        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
     { // Intel accelerators
@@ -134,7 +134,7 @@ const Database::DatabaseEntry CopyComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Iris",                                            { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "Iris Pro",                                        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",4} } },
         { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },

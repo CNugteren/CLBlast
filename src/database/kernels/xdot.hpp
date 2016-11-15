@@ -20,13 +20,13 @@ const Database::DatabaseEntry XdotHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
   }
@@ -58,7 +58,7 @@ const Database::DatabaseEntry XdotSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",64}, {"WGS2",32} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",512}, {"WGS2",128} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",32} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",32} } },
         { "Iris Pro",                                        { {"WGS1",512}, {"WGS2",64} } },
         { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
       }
@@ -113,7 +113,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",512}, {"WGS2",32} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",32} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",256} } },
         { "Iris Pro",                                        { {"WGS1",32}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",32} } },
       }
@@ -136,7 +136,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
   }

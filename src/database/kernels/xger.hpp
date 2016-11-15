@@ -20,13 +20,13 @@ const Database::DatabaseEntry XgerHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",4}, {"WGS2",8}, {"WPT",2} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",4}, {"WGS2",8}, {"WPT",2} } },
       }
     },
   }
@@ -66,7 +66,7 @@ const Database::DatabaseEntry XgerSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",8}, {"WGS2",8}, {"WPT",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",4}, {"WPT",4} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
       }
@@ -127,9 +127,9 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",512}, {"WGS2",1}, {"WPT",1} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",16}, {"WGS2",1}, {"WPT",1} } },
         { "Iris Pro",                                        { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs

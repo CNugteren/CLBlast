@@ -21,12 +21,12 @@ const Database::DatabaseEntry TransposeHalf = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",8} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
-        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",8} } },
       }
     },
   }
@@ -67,10 +67,10 @@ const Database::DatabaseEntry TransposeSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
         { "Iris",                                            { {"TRA_DIM",8}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
         { "Iris Pro",                                        { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
-        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",4} } },
       }
     },
     { // Intel accelerators
@@ -140,7 +140,7 @@ const Database::DatabaseEntry TransposeComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "Iris",                                            { {"TRA_DIM",8}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "Iris Pro",                                        { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
         { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",2} } },
@@ -166,7 +166,7 @@ const Database::DatabaseEntry TransposeComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } },
+        { "default",                                         { {"TRA_DIM",16}, {"TRA_PAD",1}, {"TRA_SHUFFLE",1}, {"TRA_WPT",2} } },
       }
     },
   }

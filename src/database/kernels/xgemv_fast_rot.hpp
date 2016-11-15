@@ -17,9 +17,15 @@ namespace database {
 
 const Database::DatabaseEntry XgemvFastRotHalf = {
   "XgemvFastRot", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
   }
@@ -47,9 +53,9 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
       }
     },
     { // NVIDIA GPUs
@@ -62,7 +68,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
   }
@@ -90,14 +96,14 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",128}, {"WPT3",8} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW3",4}, {"WGS3",32}, {"WPT3",8} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",2}, {"WGS3",32}, {"WPT3",8} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
       }
     },
   }

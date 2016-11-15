@@ -20,7 +20,7 @@ const Database::DatabaseEntry XgemvHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",256}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
       }
     },
@@ -60,10 +60,10 @@ const Database::DatabaseEntry XgemvSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",64}, {"WPT1",1} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WPT1",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WPT1",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2} } },
         { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2} } },
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
     { // Intel accelerators
@@ -92,7 +92,7 @@ const Database::DatabaseEntry XgemvSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
   }

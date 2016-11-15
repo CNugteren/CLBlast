@@ -20,7 +20,7 @@ const Database::DatabaseEntry XgemvFastHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
       }
     },
@@ -60,10 +60,10 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
         { "Iris Pro",                                        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
+        { "default",                                         { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
       }
     },
     { // Intel accelerators
@@ -126,7 +126,7 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW2",1}, {"WGS2",32}, {"WPT2",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Iris Pro",                                        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },

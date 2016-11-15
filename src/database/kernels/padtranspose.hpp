@@ -20,7 +20,7 @@ const Database::DatabaseEntry PadtransposeHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",2} } },
         { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
       }
     },

@@ -20,7 +20,7 @@ const Database::DatabaseEntry PadHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",8}, {"PAD_DIMY",32}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
         { "default",                                         { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
       }
     },
@@ -67,10 +67,10 @@ const Database::DatabaseEntry PadSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",2} } },
         { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
         { "Iris Pro",                                        { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "default",                                         { {"PAD_DIMX",16}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",2} } },
       }
     },
     { // Intel accelerators
@@ -140,10 +140,10 @@ const Database::DatabaseEntry PadComplexSingle = {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"PAD_DIMX",8}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } },
         { "Iris",                                            { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Iris Pro",                                        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",4} } },
       }
     },
     { // Intel accelerators
