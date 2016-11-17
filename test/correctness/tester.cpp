@@ -22,6 +22,24 @@
 namespace clblast {
 // =================================================================================================
 
+// Eror margings (relative and absolute)
+template <typename T>
+float getRelativeErrorMargin() {
+  return 0.005f; // 0.5% is considered acceptable for float/double-precision
+}
+template <>
+float getRelativeErrorMargin<half>() {
+  return 0.080f; // 8% (!) error is considered acceptable for half-precision
+}
+template <typename T>
+float getAbsoluteErrorMargin() {
+  return 0.001f;
+}
+template <>
+float getAbsoluteErrorMargin<half>() {
+  return 0.10f; // especially small values are inaccurate for half-precision
+}
+
 // Maximum number of test results printed on a single line
 template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = size_t{64};
 
@@ -118,6 +136,8 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
           kUnsupportedPrecision.c_str());
   fprintf(stdout, "   %s -> Test not completed: Reference CBLAS doesn't output error codes\n",
           kUnsupportedReference.c_str());
+  fprintf(stdout, "* Testing with error margins of %.1lf%% (relative) and %.3lf (absolute)\n",
+          100.0f * getRelativeErrorMargin<T>(), getAbsoluteErrorMargin<T>());
 
   // Initializes clBLAS
   #ifdef CLBLAST_REF_CLBLAS
@@ -404,9 +424,9 @@ bool TestSimilarityNear(const T val1, const T val2,
 // Default method for similarity testing
 template <typename T>
 bool TestSimilarity(const T val1, const T val2) {
-  constexpr auto kErrorMarginRelative = T(0.025);
-  constexpr auto kErrorMarginAbsolute = T(0.001);
-  return TestSimilarityNear(val1, val2, kErrorMarginRelative, kErrorMarginAbsolute);
+  const auto kErrorMarginRelative = static_cast<T>(getRelativeErrorMargin<T>());
+  const auto kErrorMarginAbsolute = static_cast<T>(getAbsoluteErrorMargin<T>());
+  return TestSimilarityNear(val1, val2, kErrorMarginAbsolute, kErrorMarginRelative);
 }
 
 // Compiles the default case for standard data-types
@@ -428,10 +448,10 @@ bool TestSimilarity(const double2 val1, const double2 val2) {
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {
-  constexpr auto kErrorMarginRelative = float(0.050);
-  constexpr auto kErrorMarginAbsolute = float(0.002);
+  const auto kErrorMarginRelative = getRelativeErrorMargin<half>();
+  const auto kErrorMarginAbsolute = getAbsoluteErrorMargin<half>();
   return TestSimilarityNear(HalfToFloat(val1), HalfToFloat(val2),
-                            kErrorMarginRelative, kErrorMarginAbsolute);
+                            kErrorMarginAbsolute, kErrorMarginRelative);
 }
 
 // =================================================================================================
