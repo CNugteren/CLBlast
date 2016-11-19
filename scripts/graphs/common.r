@@ -17,7 +17,6 @@ purplish  = "#550077" # [ 85,  0,119] lumi=26
 blueish   = "#4765b1" # [ 71,101,177] lumi=100
 redish    = "#d67568" # [214,117,104] lumi=136
 greenish  = "#9bd4ca" # [155,212,202] lumi=199
-colourset = c(blueish, redish, greenish, purplish)
 
 # Sets the graph markers (circles, triangles, etc.)
 pchs = c(15, 18, 17, 12)
@@ -39,7 +38,6 @@ xtics_subset_stepsize <- 8
 
 devices <- c("-platform","-device")
 options_string <- "-q -no_abbrv -cblas 0"
-library_names <- c("CLBlast", "clBLAS")
 
 # Command-line arguments
 command_line <- commandArgs(trailingOnly=TRUE)
@@ -53,6 +51,19 @@ device_id <- command_line[2]
 # Selects the device
 devices_values <- c(platform_id, device_id)
 devices_string <- paste(devices, devices_values, collapse=" ")
+
+
+# Filter the string: only lines containing a ";" can be valid lines
+filter_string <- function(raw_result_string) {
+  result_string <- c()
+  for (line in raw_result_string) {
+    if (grepl(";",line)) {
+      result_string <-
+       c(result_string, line)
+    }
+  }
+  return(result_string)
+}
 
 # ==================================================================================================
 
@@ -68,6 +79,12 @@ main <- function(routine_name, precision, test_names, test_values,
   if (precision == 3232) { display_name <- gsub("^X","C",display_name); }
   if (precision == 6464) { display_name <- gsub("^X","Z",display_name); }
   executable <- paste("./clblast_client_", routine_name, sep="")
+
+  # Display
+  library_names <- c("CLBlast", "clBLAS")
+  if (precision == 16) { library_names <- c("CLBlast FP16", "CLBlast FP32", "clBLAS FP32"); }
+  colourset <- c(blueish, redish)
+  if (precision == 16) { colourset <- c(blueish, purplish, redish); }
 
   # Configures the outputfile
   file_name <- paste(display_name, ".pdf", sep="")
@@ -98,18 +115,31 @@ main <- function(routine_name, precision, test_names, test_values,
       arguments <- paste(devices_string, params_string, options_string, sep=" ")
       print(paste("Running", executable, arguments, sep=" "))
       raw_result_string <- system2(command=executable, args=arguments, stdout=TRUE)
-
-      # Filter the string: only lines containing a ";" can be valid lines
-      result_string <- c()
-      for (line in raw_result_string) {
-        if (grepl(";",line)) {
-          result_string <-
-           c(result_string, line)
-        }
-      }
+      result_string <- filter_string(raw_result_string)
 
       # Reads the result into a dataframe
       command_db <- read.csv(text=result_string, sep=";")
+
+      # For half-precision: also runs the FP32 version for comparison
+      if (precision == 16) {
+        params_string <- gsub("-precision 16", "-precision 32", params_string)
+        arguments <- paste(devices_string, params_string, options_string, sep=" ")
+        print(paste("Running", executable, arguments, sep=" "))
+        raw_result_string <- system2(command=executable, args=arguments, stdout=TRUE)
+        result_string <- filter_string(raw_result_string)
+
+        # Reads the result into a dataframe
+        command_db_32 <- read.csv(text=result_string, sep=";")
+        stopifnot(nrow(command_db) == nrow(command_db_32))
+
+        # Combines the results
+        command_db["ms_FP32_1"] = command_db_32$ms_1
+        command_db["GFLOPS_FP32_1"] = command_db_32$GFLOPS_1
+        command_db["GBs_FP32_1"] = command_db_32$GBs_1
+        command_db["ms_FP32_2"] = command_db_32$ms_2
+        command_db["GFLOPS_FP32_2"] = command_db_32$GFLOPS_2
+        command_db["GBs_FP32_2"] = command_db_32$GBs_2
+      }
 
       # Append the results to the final dataframe
       if (command_id == 1) {
@@ -134,22 +164,36 @@ main <- function(routine_name, precision, test_names, test_values,
 
     # Plots the graph with GFLOPS on the Y-axis
     if (metric_gflops) {
-      plot_graph(xdata=xdata, ydata=list(db$GFLOPS_1, db$GFLOPS_2), log_setting=log_scale,
+      if (precision == 16) {
+        ydata = list(db$GFLOPS_1, db$GFLOPS_FP32_1, db$GFLOPS_FP32_2)
+        ymax = max(max(db$GFLOPS_1), max(db$GFLOPS_FP32_1), max(db$GFLOPS_FP32_2))
+      } else {
+        ydata = list(db$GFLOPS_1, db$GFLOPS_2)
+        ymax = max(max(db$GFLOPS_1), max(db$GFLOPS_2))
+      }
+      plot_graph(xdata=xdata, ydata=ydata, log_setting=log_scale,
                  xmin=min(xdata), xmax=max(xdata),
-                 ymin=0, ymax=max(max(db$GFLOPS_1),max(db$GFLOPS_2)),
+                 ymin=0, ymax=ymax,
                  xtics=xtics,
                  xlabel=test_xlabels[[test_id]], ylabel="GFLOPS (higher is better)",
                  graph_title=paste(display_name, test_names[[test_id]], sep=" "),
-                 multiple=50, experiment_names=library_names)
+                 multiple=50, experiment_names=library_names, colourset=colourset)
     # Plots the graph with GB/s on the Y-axis
     } else {
-      plot_graph(xdata=xdata, ydata=list(db$GBs_1, db$GBs_2), log_setting=log_scale,
+      if (precision == 16) {
+        ydata = list(db$GBs_1, db$GBs_FP32_1, db$GBs_FP32_2)
+        ymax = max(max(db$GBs_1), max(db$GBs_FP32_1), max(db$GBs_FP32_2))
+      } else {
+        ydata = list(db$GBs_1, db$GBs_2)
+        ymax = max(max(db$GBs_1), max(db$GBs_2))
+      }
+      plot_graph(xdata=xdata, ydata=ydata, log_setting=log_scale,
                  xmin=min(xdata), xmax=max(xdata),
-                 ymin=0, ymax=max(max(db$GBs_1),max(db$GBs_2)),
+                 ymin=0, ymax=ymax,
                  xtics=xtics,
                  xlabel=test_xlabels[[test_id]], ylabel="GB/s (higher is better)",
                  graph_title=paste(display_name, test_names[[test_id]], sep=" "),
-                 multiple=10, experiment_names=library_names)
+                 multiple=10, experiment_names=library_names, colourset=colourset)
     }
   }
 }
@@ -161,7 +205,7 @@ plot_graph <- function(xdata, ydata, log_setting,
                        xmin, xmax, ymin, ymax,
                        xtics, xlabel, ylabel,
                        graph_title,
-                       multiple, experiment_names) {
+                       multiple, experiment_names, colourset) {
 
   # Update the ymax to the next multiple of something
   ymax <- multiple*ceiling(ymax/multiple)
