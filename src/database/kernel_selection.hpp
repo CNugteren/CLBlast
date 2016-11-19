@@ -22,6 +22,7 @@ const Database::DatabaseEntry KernelSelectionHalf = {
   "KernelSelection", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"XGEMM_MIN_INDIRECT_SIZE",1*1*1} } },
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
       }
     },
@@ -44,6 +45,7 @@ const Database::DatabaseEntry KernelSelectionSingle = {
   "KernelSelection", Precision::kSingle, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"XGEMM_MIN_INDIRECT_SIZE",1*1*1} } },
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
       }
     },
@@ -66,6 +68,7 @@ const Database::DatabaseEntry KernelSelectionComplexSingle = {
   "KernelSelection", Precision::kComplexSingle, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"XGEMM_MIN_INDIRECT_SIZE",1*1*1} } },
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
       }
     },
@@ -88,6 +91,7 @@ const Database::DatabaseEntry KernelSelectionDouble = {
   "KernelSelection", Precision::kDouble, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"XGEMM_MIN_INDIRECT_SIZE",1*1*1} } },
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
       }
     },
@@ -110,6 +114,7 @@ const Database::DatabaseEntry KernelSelectionComplexDouble = {
   "KernelSelection", Precision::kComplexDouble, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"XGEMM_MIN_INDIRECT_SIZE",1*1*1} } },
         { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",384*384*384} } },
       }
     },
