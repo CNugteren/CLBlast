@@ -109,6 +109,11 @@ class Routine:
         """List of buffers without 'inc' or 'ld'"""
         return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap"]
 
+    def get_buffer_type(self, name, flavour):
+        if name in self.index_buffers():
+            return "int"
+        return flavour.buffer_type
+
     def length(self):
         """Retrieves the number of characters in the routine's name"""
         return len(self.name)
@@ -549,7 +554,6 @@ class Routine:
     def arguments_def_netlib(self, flavour):
         """As above, but for the Netlib CBLAS API"""
         return (self.options_def_c() + self.sizes_def_netlib() +
-                list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.scalar_buffers_first()])) +
                 self.scalar_def_void("alpha", flavour) +
                 list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.buffers_first()])) +
                 self.scalar_def_void("beta", flavour) +
@@ -645,8 +649,16 @@ class Routine:
 
     def routine_header_netlib(self, flavour, spaces, extra_qualifier):
         """As above, but now for the original Netlib CBLAS API"""
-        indent = " " * (spaces + self.length())
-        result = "void" + extra_qualifier + " cblas_" + flavour.name.lower() + self.name + "("
+        return_type = "void"
+        for output in self.outputs:
+            if output in self.index_buffers():
+                return_type = "int"
+                break
+            if output in self.scalar_buffers_first():
+                return_type = flavour.buffer_type.replace("2", "")
+                break
+        indent = " " * (spaces + len(return_type) + self.length())
+        result = return_type + extra_qualifier + " cblas_" + flavour.name.lower() + self.name + "("
         result += (",\n" + indent).join([a for a in self.arguments_def_netlib(flavour)]) + ")"
         return result
 

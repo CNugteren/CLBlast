@@ -155,118 +155,88 @@ void PUBLIC_API cblas_zaxpy(const int n,
                             void* y, const int y_inc);
 
 // Dot product of two vectors: SDOT/DDOT/HDOT
-void PUBLIC_API cblas_sdot(const int n,
-                           float* dot,
-                           const float* x, const int x_inc,
-                           const float* y, const int y_inc);
-void PUBLIC_API cblas_ddot(const int n,
-                           double* dot,
-                           const double* x, const int x_inc,
-                           const double* y, const int y_inc);
+float PUBLIC_API cblas_sdot(const int n,
+                            const float* x, const int x_inc,
+                            const float* y, const int y_inc);
+double PUBLIC_API cblas_ddot(const int n,
+                             const double* x, const int x_inc,
+                             const double* y, const int y_inc);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
-void PUBLIC_API cblas_cdotu(const int n,
-                            void* dot,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc);
-void PUBLIC_API cblas_zdotu(const int n,
-                            void* dot,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc);
+float PUBLIC_API cblas_cdotu(const int n,
+                             const void* x, const int x_inc,
+                             const void* y, const int y_inc);
+double PUBLIC_API cblas_zdotu(const int n,
+                              const void* x, const int x_inc,
+                              const void* y, const int y_inc);
 
 // Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
-void PUBLIC_API cblas_cdotc(const int n,
-                            void* dot,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc);
-void PUBLIC_API cblas_zdotc(const int n,
-                            void* dot,
-                            const void* x, const int x_inc,
-                            const void* y, const int y_inc);
+float PUBLIC_API cblas_cdotc(const int n,
+                             const void* x, const int x_inc,
+                             const void* y, const int y_inc);
+double PUBLIC_API cblas_zdotc(const int n,
+                              const void* x, const int x_inc,
+                              const void* y, const int y_inc);
 
 // Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
-void PUBLIC_API cblas_snrm2(const int n,
-                            float* nrm2,
-                            const float* x, const int x_inc);
-void PUBLIC_API cblas_dnrm2(const int n,
-                            double* nrm2,
-                            const double* x, const int x_inc);
-void PUBLIC_API cblas_scnrm2(const int n,
-                            void* nrm2,
-                            const void* x, const int x_inc);
-void PUBLIC_API cblas_dznrm2(const int n,
-                            void* nrm2,
-                            const void* x, const int x_inc);
+float PUBLIC_API cblas_snrm2(const int n,
+                             const float* x, const int x_inc);
+double PUBLIC_API cblas_dnrm2(const int n,
+                              const double* x, const int x_inc);
+float PUBLIC_API cblas_scnrm2(const int n,
+                             const void* x, const int x_inc);
+double PUBLIC_API cblas_dznrm2(const int n,
+                              const void* x, const int x_inc);
 
 // Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
-void PUBLIC_API cblas_sasum(const int n,
-                            float* asum,
-                            const float* x, const int x_inc);
-void PUBLIC_API cblas_dasum(const int n,
-                            double* asum,
-                            const double* x, const int x_inc);
-void PUBLIC_API cblas_scasum(const int n,
-                            void* asum,
-                            const void* x, const int x_inc);
-void PUBLIC_API cblas_dzasum(const int n,
-                            void* asum,
-                            const void* x, const int x_inc);
+float PUBLIC_API cblas_sasum(const int n,
+                             const float* x, const int x_inc);
+double PUBLIC_API cblas_dasum(const int n,
+                              const double* x, const int x_inc);
+float PUBLIC_API cblas_scasum(const int n,
+                             const void* x, const int x_inc);
+double PUBLIC_API cblas_dzasum(const int n,
+                              const void* x, const int x_inc);
 
 // Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
-void PUBLIC_API cblas_ssum(const int n,
-                           float* sum,
-                           const float* x, const int x_inc);
-void PUBLIC_API cblas_dsum(const int n,
-                           double* sum,
-                           const double* x, const int x_inc);
-void PUBLIC_API cblas_scsum(const int n,
-                           void* sum,
-                           const void* x, const int x_inc);
-void PUBLIC_API cblas_dzsum(const int n,
-                           void* sum,
-                           const void* x, const int x_inc);
+float PUBLIC_API cblas_ssum(const int n,
+                            const float* x, const int x_inc);
+double PUBLIC_API cblas_dsum(const int n,
+                             const double* x, const int x_inc);
+float PUBLIC_API cblas_scsum(const int n,
+                            const void* x, const int x_inc);
+double PUBLIC_API cblas_dzsum(const int n,
+                             const void* x, const int x_inc);
 
 // Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
-void PUBLIC_API cblas_isamax(const int n,
-                            float* imax,
-                            const float* x, const int x_inc);
-void PUBLIC_API cblas_idamax(const int n,
-                            double* imax,
-                            const double* x, const int x_inc);
-void PUBLIC_API cblas_icamax(const int n,
-                            void* imax,
-                            const void* x, const int x_inc);
-void PUBLIC_API cblas_izamax(const int n,
-                            void* imax,
-                            const void* x, const int x_inc);
+int PUBLIC_API cblas_isamax(const int n,
+                           const float* x, const int x_inc);
+int PUBLIC_API cblas_idamax(const int n,
+                           const double* x, const int x_inc);
+int PUBLIC_API cblas_icamax(const int n,
+                           const void* x, const int x_inc);
+int PUBLIC_API cblas_izamax(const int n,
+                           const void* x, const int x_inc);
 
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
-void PUBLIC_API cblas_ismax(const int n,
-                           float* imax,
-                           const float* x, const int x_inc);
-void PUBLIC_API cblas_idmax(const int n,
-                           double* imax,
-                           const double* x, const int x_inc);
-void PUBLIC_API cblas_icmax(const int n,
-                           void* imax,
-                           const void* x, const int x_inc);
-void PUBLIC_API cblas_izmax(const int n,
-                           void* imax,
-                           const void* x, const int x_inc);
+int PUBLIC_API cblas_ismax(const int n,
+                          const float* x, const int x_inc);
+int PUBLIC_API cblas_idmax(const int n,
+                          const double* x, const int x_inc);
+int PUBLIC_API cblas_icmax(const int n,
+                          const void* x, const int x_inc);
+int PUBLIC_API cblas_izmax(const int n,
+                          const void* x, const int x_inc);
 
 // Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
-void PUBLIC_API cblas_ismin(const int n,
-                           float* imin,
-                           const float* x, const int x_inc);
-void PUBLIC_API cblas_idmin(const int n,
-                           double* imin,
-                           const double* x, const int x_inc);
-void PUBLIC_API cblas_icmin(const int n,
-                           void* imin,
-                           const void* x, const int x_inc);
-void PUBLIC_API cblas_izmin(const int n,
-                           void* imin,
-                           const void* x, const int x_inc);
+int PUBLIC_API cblas_ismin(const int n,
+                          const float* x, const int x_inc);
+int PUBLIC_API cblas_idmin(const int n,
+                          const double* x, const int x_inc);
+int PUBLIC_API cblas_icmin(const int n,
+                          const void* x, const int x_inc);
+int PUBLIC_API cblas_izmin(const int n,
+                          const void* x, const int x_inc);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
