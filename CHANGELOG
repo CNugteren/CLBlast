@@ -6,6 +6,7 @@ Development version (next release)
 - Improved performance of GEMM kernels for small sizes by using a direct single-kernel implementation
 - Fixed a bug in the tests and samples related to waiting for an invalid event
 - Fixed a bug in the SYRK/SYR2K/HERK/HER2K routines that would occur with specific tuning parameters
+- Fixed a bug in the TRMM routine that would overwrite input data before consuming everything
 - Added support for compilation under Visual Studio 2013 (MSVC++ 12.0)
 - Added an option to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
 - Added an option to run tuned kernels multiple times to average execution times

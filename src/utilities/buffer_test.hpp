@@ -23,7 +23,7 @@ namespace clblast {
 // Tests matrix 'A' for validity
 template <typename T>
 void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
-                       const size_t offset, const size_t ld) {
+                 const size_t offset, const size_t ld) {
   if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
@@ -34,7 +34,7 @@ void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
 // Tests matrix 'B' for validity
 template <typename T>
 void TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
-                       const size_t offset, const size_t ld) {
+                 const size_t offset, const size_t ld) {
   if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
@@ -45,7 +45,7 @@ void TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
 // Tests matrix 'C' for validity
 template <typename T>
 void TestMatrixC(const size_t one, const size_t two, const Buffer<T> &buffer,
-                       const size_t offset, const size_t ld) {
+                 const size_t offset, const size_t ld) {
   if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimC); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
@@ -66,8 +66,7 @@ void TestMatrixAP(const size_t n, const Buffer<T> &buffer, const size_t offset) 
 
 // Tests vector 'X' for validity
 template <typename T>
-void TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
-                       const size_t inc) {
+void TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset, const size_t inc) {
   if (inc == 0) { throw BLASError(StatusCode::kInvalidIncrementX); }
   try {
     const auto required_size = ((n - 1) * inc + 1 + offset) * sizeof(T);
@@ -77,8 +76,7 @@ void TestVectorX(const size_t n, const Buffer<T> &buffer, const size_t offset,
 
 // Tests vector 'Y' for validity
 template <typename T>
-void TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset,
-                       const size_t inc) {
+void TestVectorY(const size_t n, const Buffer<T> &buffer, const size_t offset, const size_t inc) {
   if (inc == 0) { throw BLASError(StatusCode::kInvalidIncrementY); }
   try {
     const auto required_size = ((n - 1) * inc + 1 + offset) * sizeof(T);

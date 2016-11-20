@@ -30,11 +30,11 @@ Xtrmm<T>::Xtrmm(Queue &queue, EventPointer event, const std::string &name):
 // The main routine
 template <typename T>
 void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle triangle,
-                            const Transpose a_transpose, const Diagonal diagonal,
-                            const size_t m, const size_t n,
-                            const T alpha,
-                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
+                      const Transpose a_transpose, const Diagonal diagonal,
+                      const size_t m, const size_t n,
+                      const T alpha,
+                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                      const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
@@ -54,6 +54,11 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
 
   // Determines whether or not the triangular matrix is unit-diagonal
   auto unit_diagonal = (diagonal == Diagonal::kUnit) ? true : false;
+
+  // Creates a copy of B to avoid overwriting input in GEMM while computing output
+  const auto b_one = (layout == Layout::kRowMajor) ? m : n;
+  auto b_buffer_copy = Buffer<T>(context_, b_one*b_ld + b_offset);
+  b_buffer.CopyTo(queue_, b_one*b_ld + b_offset, b_buffer_copy);
 
   // Temporary buffer for a copy of the triangular matrix
   auto temp_triangular = Buffer<T>(context_, k*k);
@@ -91,7 +96,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
            m, n, k,
            alpha,
            temp_triangular, 0, k,
-           b_buffer, b_offset, b_ld,
+           b_buffer_copy, b_offset, b_ld,
            static_cast<T>(0.0),
            b_buffer, b_offset, b_ld);
   }
@@ -102,7 +107,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
       DoGemm(layout, Transpose::kNo, a_transpose,
              m, n, k,
              alpha,
-             b_buffer, b_offset, b_ld,
+             b_buffer_copy, b_offset, b_ld,
              temp_triangular, 0, k,
              static_cast<T>(0.0),
              b_buffer, b_offset, b_ld);
