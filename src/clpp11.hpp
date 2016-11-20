@@ -45,6 +45,7 @@
 #include <cstring>   // std::strlen
 
 // OpenCL
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
 #if defined(__APPLE__) || defined(__MACOSX)
   #include <OpenCL/opencl.h>
 #else
@@ -388,6 +389,7 @@ class Program {
 
   // Compiles the device program and returns whether or not there where any warnings/errors
   void Build(const Device &device, std::vector<std::string> &options) {
+    options.push_back("-cl-std=CL1.1");
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
     CheckError(clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
@@ -441,23 +443,8 @@ class Queue {
       queue_(new cl_command_queue, [](cl_command_queue* s) { CheckErrorDtor(clReleaseCommandQueue(*s));
                                                              delete s; }) {
     auto status = CL_SUCCESS;
-    #ifdef CL_VERSION_2_0
-      size_t ocl_version = device.VersionNumber();
-      if (ocl_version >= 200)
-      {
-        cl_queue_properties properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
-        *queue_ = clCreateCommandQueueWithProperties(context(), device(), properties, &status);
-        CLError::Check(status, "clCreateCommandQueueWithProperties");
-      }
-      else
-      {
-        *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
-        CLError::Check(status, "clCreateCommandQueue");
-      }
-    #else
-      *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
-      CLError::Check(status, "clCreateCommandQueue");
-    #endif
+    *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
+    CLError::Check(status, "clCreateCommandQueue");
   }
 
   // Synchronizes the queue
