@@ -112,6 +112,7 @@ def clblast_netlib_c_cc(routine):
         # There is a version available in CBLAS
         if flavour.precision_name in ["S", "D", "C", "Z"]:
             template = "<" + flavour.template + ">" if routine.no_scalars() else ""
+            name_postfix = "_sub" if routine.name in routine.routines_scalar_no_return() else ""
             indent = " " * (21 + routine.length() + len(template))
             result += routine.routine_header_netlib(flavour, 9, "") + " {" + NL
 
@@ -129,6 +130,8 @@ def clblast_netlib_c_cc(routine):
             for i, name in enumerate(routine.inputs + routine.outputs):
                 buffer_type = routine.get_buffer_type(name, flavour)
                 result += "  " + routine.create_buffer(name, buffer_type) + NL
+                if name in routine.scalar_buffers_second_non_pointer():
+                    result += "  " + buffer_type + " " + name + "_vec[1]; " + name + "_vec[0] = " + name + ";" + NL
             for name in routine.inputs + routine.outputs:
                 if name not in routine.scalar_buffers_first():
                     prefix = "" if name in routine.outputs else "const "
@@ -148,14 +151,14 @@ def clblast_netlib_c_cc(routine):
 
             # Copy back and clean-up
             for name in routine.outputs:
-                if name in routine.scalar_buffers_first():
+                if name in routine.scalar_buffers_first() and routine.name not in routine.routines_scalar_no_return():
                     buffer_type = routine.get_buffer_type(name, flavour)
                     result += "  " + buffer_type + " " + name + "[" + name + "_size];" + NL
             for name in routine.outputs:
                 buffer_type = routine.get_buffer_type(name, flavour)
                 result += "  " + routine.read_buffer(name, buffer_type) + NL
             for name in routine.outputs:
-                if name in routine.scalar_buffers_first():
+                if name in routine.scalar_buffers_first() and routine.name not in routine.routines_scalar_no_return():
                     result += "  return " + name + "[0]"
                     if flavour.buffer_type in ["float2", "double2"]:
                         if name not in routine.index_buffers():

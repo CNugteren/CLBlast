@@ -107,7 +107,7 @@ void cblas_drotg(double* sa,
 void cblas_srotmg(float* sd1,
                   float* sd2,
                   float* sx1,
-                  const float* sy1,
+                  const float sy1,
                   float* sparam) {
   auto device = get_device();
   auto context = clblast::Context(device);
@@ -118,11 +118,12 @@ void cblas_srotmg(float* sd1,
   const auto sx1_size = 1;
   const auto sparam_size = 1;
   auto sy1_buffer = clblast::Buffer<float>(context, sy1_size);
+  float sy1_vec[1]; sy1_vec[0] = sy1;
   auto sd1_buffer = clblast::Buffer<float>(context, sd1_size);
   auto sd2_buffer = clblast::Buffer<float>(context, sd2_size);
   auto sx1_buffer = clblast::Buffer<float>(context, sx1_size);
   auto sparam_buffer = clblast::Buffer<float>(context, sparam_size);
-  sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const float*>(sy1));
+  sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const float*>(sy1_vec));
   sd1_buffer.Write(queue, sd1_size, reinterpret_cast<float*>(sd1));
   sd2_buffer.Write(queue, sd2_size, reinterpret_cast<float*>(sd2));
   sx1_buffer.Write(queue, sx1_size, reinterpret_cast<float*>(sx1));
@@ -145,7 +146,7 @@ void cblas_srotmg(float* sd1,
 void cblas_drotmg(double* sd1,
                   double* sd2,
                   double* sx1,
-                  const double* sy1,
+                  const double sy1,
                   double* sparam) {
   auto device = get_device();
   auto context = clblast::Context(device);
@@ -156,11 +157,12 @@ void cblas_drotmg(double* sd1,
   const auto sx1_size = 1;
   const auto sparam_size = 1;
   auto sy1_buffer = clblast::Buffer<double>(context, sy1_size);
+  double sy1_vec[1]; sy1_vec[0] = sy1;
   auto sd1_buffer = clblast::Buffer<double>(context, sd1_size);
   auto sd2_buffer = clblast::Buffer<double>(context, sd2_size);
   auto sx1_buffer = clblast::Buffer<double>(context, sx1_size);
   auto sparam_buffer = clblast::Buffer<double>(context, sparam_size);
-  sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const double*>(sy1));
+  sy1_buffer.Write(queue, sy1_size, reinterpret_cast<const double*>(sy1_vec));
   sd1_buffer.Write(queue, sd1_size, reinterpret_cast<double*>(sd1));
   sd2_buffer.Write(queue, sd2_size, reinterpret_cast<double*>(sd2));
   sx1_buffer.Write(queue, sx1_size, reinterpret_cast<double*>(sx1));
@@ -722,9 +724,10 @@ double cblas_ddot(const int n,
 }
 
 // DOTU
-float cblas_cdotu(const int n,
-                  const void* x, const int x_inc,
-                  const void* y, const int y_inc) {
+void cblas_cdotu_sub(const int n,
+                     const void* x, const int x_inc,
+                     const void* y, const int y_inc,
+                     void* dot) {
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
@@ -745,13 +748,12 @@ float cblas_cdotu(const int n,
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
-  float2 dot[dot_size];
   dot_buffer.Read(queue, dot_size, reinterpret_cast<float2*>(dot));
-  return dot[0].real();
 }
-double cblas_zdotu(const int n,
-                   const void* x, const int x_inc,
-                   const void* y, const int y_inc) {
+void cblas_zdotu_sub(const int n,
+                     const void* x, const int x_inc,
+                     const void* y, const int y_inc,
+                     void* dot) {
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
@@ -772,15 +774,14 @@ double cblas_zdotu(const int n,
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
-  double2 dot[dot_size];
   dot_buffer.Read(queue, dot_size, reinterpret_cast<double2*>(dot));
-  return dot[0].real();
 }
 
 // DOTC
-float cblas_cdotc(const int n,
-                  const void* x, const int x_inc,
-                  const void* y, const int y_inc) {
+void cblas_cdotc_sub(const int n,
+                     const void* x, const int x_inc,
+                     const void* y, const int y_inc,
+                     void* dot) {
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
@@ -801,13 +802,12 @@ float cblas_cdotc(const int n,
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
-  float2 dot[dot_size];
   dot_buffer.Read(queue, dot_size, reinterpret_cast<float2*>(dot));
-  return dot[0].real();
 }
-double cblas_zdotc(const int n,
-                   const void* x, const int x_inc,
-                   const void* y, const int y_inc) {
+void cblas_zdotc_sub(const int n,
+                     const void* x, const int x_inc,
+                     const void* y, const int y_inc,
+                     void* dot) {
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
@@ -828,9 +828,7 @@ double cblas_zdotc(const int n,
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
-  double2 dot[dot_size];
   dot_buffer.Read(queue, dot_size, reinterpret_cast<double2*>(dot));
-  return dot[0].real();
 }
 
 // NRM2

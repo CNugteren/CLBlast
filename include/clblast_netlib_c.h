@@ -46,6 +46,24 @@ typedef enum CLBlastDiagonal_ { CLBlastDiagonalNonUnit = 131,
                                 CLBlastDiagonalUnit = 132 } CLBlastDiagonal;
 typedef enum CLBlastSide_ { CLBlastSideLeft = 141, CLBlastSideRight = 142 } CLBlastSide;
 
+// For full compatibility with CBLAS
+typedef CLBlastLayout CBLAS_ORDER;
+typedef CLBlastTranspose CBLAS_TRANSPOSE;
+typedef CLBlastTriangle CBLAS_UPLO;
+typedef CLBlastDiagonal CBLAS_DIAG;
+typedef CLBlastSide CBLAS_SIDE;
+#define CblasRowMajor CLBlastLayoutRowMajor
+#define CblasColMajor CLBlastLayoutColMajor
+#define CblasNoTrans CLBlastTransposeNo
+#define CblasTrans CLBlastTransposeYes
+#define CblasConjTrans CLBlastTransposeConjugate
+#define CblasUpper CLBlastTriangleUpper
+#define CblasLower CLBlastTriangleLower
+#define CblasNonUnit CLBlastDiagonalNonUnit
+#define CblasUnit CLBlastDiagonalUnit
+#define CblasLeft CLBlastSideLeft
+#define CblasRight CLBlastSideRight
+
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
 // =================================================================================================
@@ -64,12 +82,12 @@ void PUBLIC_API cblas_drotg(double* sa,
 void PUBLIC_API cblas_srotmg(float* sd1,
                              float* sd2,
                              float* sx1,
-                             const float* sy1,
+                             const float sy1,
                              float* sparam);
 void PUBLIC_API cblas_drotmg(double* sd1,
                              double* sd2,
                              double* sx1,
-                             const double* sy1,
+                             const double sy1,
                              double* sparam);
 
 // Apply givens plane rotation: SROT/DROT
@@ -163,20 +181,24 @@ double PUBLIC_API cblas_ddot(const int n,
                              const double* y, const int y_inc);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
-float PUBLIC_API cblas_cdotu(const int n,
-                             const void* x, const int x_inc,
-                             const void* y, const int y_inc);
-double PUBLIC_API cblas_zdotu(const int n,
-                              const void* x, const int x_inc,
-                              const void* y, const int y_inc);
+void PUBLIC_API cblas_cdotu_sub(const int n,
+                                const void* x, const int x_inc,
+                                const void* y, const int y_inc,
+                                void* dot);
+void PUBLIC_API cblas_zdotu_sub(const int n,
+                                const void* x, const int x_inc,
+                                const void* y, const int y_inc,
+                                void* dot);
 
 // Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
-float PUBLIC_API cblas_cdotc(const int n,
-                             const void* x, const int x_inc,
-                             const void* y, const int y_inc);
-double PUBLIC_API cblas_zdotc(const int n,
-                              const void* x, const int x_inc,
-                              const void* y, const int y_inc);
+void PUBLIC_API cblas_cdotc_sub(const int n,
+                                const void* x, const int x_inc,
+                                const void* y, const int y_inc,
+                                void* dot);
+void PUBLIC_API cblas_zdotc_sub(const int n,
+                                const void* x, const int x_inc,
+                                const void* y, const int y_inc,
+                                void* dot);
 
 // Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 float PUBLIC_API cblas_snrm2(const int n,
