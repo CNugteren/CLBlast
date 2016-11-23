@@ -27,6 +27,7 @@ option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
+option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
@@ -170,9 +171,11 @@ set(SOURCES
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
-  src/clblast_netlib_c.cpp
   src/routine.cpp
 )
+if(NETLIB)
+  set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
+endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
 endforeach()
@@ -214,7 +217,9 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
-install(FILES include/clblast_netlib_c.h DESTINATION include)
+if(NETLIB)
+  install(FILES include/clblast_netlib_c.h DESTINATION include)
+endif()
 
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
