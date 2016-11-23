@@ -192,8 +192,8 @@ void cblas_srot(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -219,8 +219,8 @@ void cblas_drot(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -247,8 +247,8 @@ void cblas_srotm(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto sparam_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
@@ -276,8 +276,8 @@ void cblas_drotm(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto sparam_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
@@ -306,8 +306,8 @@ void cblas_sswap(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
@@ -329,8 +329,8 @@ void cblas_dswap(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
@@ -352,8 +352,8 @@ void cblas_cswap(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto y_buffer = clblast::Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
@@ -375,8 +375,8 @@ void cblas_zswap(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto y_buffer = clblast::Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
@@ -401,7 +401,7 @@ void cblas_sscal(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
@@ -421,7 +421,7 @@ void cblas_dscal(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
@@ -441,7 +441,7 @@ void cblas_cscal(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
@@ -461,7 +461,7 @@ void cblas_zscal(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<double2*>(x));
   auto queue_cl = queue();
@@ -482,8 +482,8 @@ void cblas_scopy(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -504,8 +504,8 @@ void cblas_dcopy(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -526,8 +526,8 @@ void cblas_ccopy(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto y_buffer = clblast::Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -548,8 +548,8 @@ void cblas_zcopy(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto y_buffer = clblast::Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -574,8 +574,8 @@ void cblas_saxpy(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
@@ -599,8 +599,8 @@ void cblas_daxpy(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
@@ -624,8 +624,8 @@ void cblas_caxpy(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto y_buffer = clblast::Buffer<float2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
@@ -649,8 +649,8 @@ void cblas_zaxpy(const int n,
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto y_buffer = clblast::Buffer<double2>(context, y_size);
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
@@ -674,8 +674,8 @@ float cblas_sdot(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto y_buffer = clblast::Buffer<float>(context, y_size);
@@ -701,8 +701,8 @@ double cblas_ddot(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto y_buffer = clblast::Buffer<double>(context, y_size);
@@ -731,8 +731,8 @@ void cblas_cdotu_sub(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto y_buffer = clblast::Buffer<float2>(context, y_size);
@@ -757,8 +757,8 @@ void cblas_zdotu_sub(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto y_buffer = clblast::Buffer<double2>(context, y_size);
@@ -785,8 +785,8 @@ void cblas_cdotc_sub(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto y_buffer = clblast::Buffer<float2>(context, y_size);
@@ -811,8 +811,8 @@ void cblas_zdotc_sub(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
-  const auto y_size = n;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
   const auto dot_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto y_buffer = clblast::Buffer<double2>(context, y_size);
@@ -837,7 +837,7 @@ float cblas_snrm2(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto nrm2_buffer = clblast::Buffer<float>(context, nrm2_size);
@@ -859,7 +859,7 @@ double cblas_dnrm2(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto nrm2_buffer = clblast::Buffer<double>(context, nrm2_size);
@@ -881,7 +881,7 @@ float cblas_scnrm2(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto nrm2_buffer = clblast::Buffer<float2>(context, nrm2_size);
@@ -903,7 +903,7 @@ double cblas_dznrm2(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto nrm2_buffer = clblast::Buffer<double2>(context, nrm2_size);
@@ -927,7 +927,7 @@ float cblas_sasum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto asum_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto asum_buffer = clblast::Buffer<float>(context, asum_size);
@@ -949,7 +949,7 @@ double cblas_dasum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto asum_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto asum_buffer = clblast::Buffer<double>(context, asum_size);
@@ -971,7 +971,7 @@ float cblas_scasum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto asum_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto asum_buffer = clblast::Buffer<float2>(context, asum_size);
@@ -993,7 +993,7 @@ double cblas_dzasum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto asum_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto asum_buffer = clblast::Buffer<double2>(context, asum_size);
@@ -1017,7 +1017,7 @@ float cblas_ssum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto sum_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto sum_buffer = clblast::Buffer<float>(context, sum_size);
@@ -1039,7 +1039,7 @@ double cblas_dsum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto sum_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto sum_buffer = clblast::Buffer<double>(context, sum_size);
@@ -1061,7 +1061,7 @@ float cblas_scsum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto sum_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto sum_buffer = clblast::Buffer<float2>(context, sum_size);
@@ -1083,7 +1083,7 @@ double cblas_dzsum(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto sum_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto sum_buffer = clblast::Buffer<double2>(context, sum_size);
@@ -1107,7 +1107,7 @@ int cblas_isamax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1129,7 +1129,7 @@ int cblas_idamax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1151,7 +1151,7 @@ int cblas_icamax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1173,7 +1173,7 @@ int cblas_izamax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1197,7 +1197,7 @@ int cblas_ismax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1219,7 +1219,7 @@ int cblas_idmax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1241,7 +1241,7 @@ int cblas_icmax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1263,7 +1263,7 @@ int cblas_izmax(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imax_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto imax_buffer = clblast::Buffer<int>(context, imax_size);
@@ -1287,7 +1287,7 @@ int cblas_ismin(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imin_size = 1;
   auto x_buffer = clblast::Buffer<float>(context, x_size);
   auto imin_buffer = clblast::Buffer<int>(context, imin_size);
@@ -1309,7 +1309,7 @@ int cblas_idmin(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imin_size = 1;
   auto x_buffer = clblast::Buffer<double>(context, x_size);
   auto imin_buffer = clblast::Buffer<int>(context, imin_size);
@@ -1331,7 +1331,7 @@ int cblas_icmin(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imin_size = 1;
   auto x_buffer = clblast::Buffer<float2>(context, x_size);
   auto imin_buffer = clblast::Buffer<int>(context, imin_size);
@@ -1353,7 +1353,7 @@ int cblas_izmin(const int n,
   auto device = get_device();
   auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
-  const auto x_size = n;
+  const auto x_size = n * x_inc;
   const auto imin_size = 1;
   auto x_buffer = clblast::Buffer<double2>(context, x_size);
   auto imin_buffer = clblast::Buffer<int>(context, imin_size);
