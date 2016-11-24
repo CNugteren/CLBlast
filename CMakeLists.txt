@@ -27,6 +27,7 @@ option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
+option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
@@ -151,6 +152,9 @@ set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
+if(NETLIB)
+  set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
+endif()
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
@@ -172,6 +176,9 @@ set(SOURCES
   src/clblast_c.cpp
   src/routine.cpp
 )
+if(NETLIB)
+  set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
+endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
 endforeach()
@@ -213,6 +220,9 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+if(NETLIB)
+  install(FILES include/clblast_netlib_c.h DESTINATION include)
+endif()
 
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)

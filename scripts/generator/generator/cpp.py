@@ -95,6 +95,79 @@ def clblast_c_cc(routine):
     return result
 
 
+def clblast_netlib_c_h(routine):
+    """The Netlib CBLAS API header (.h)"""
+    result = NL + "// " + routine.description + ": " + routine.short_names() + NL
+    for flavour in routine.flavours:
+        if flavour.precision_name in ["S", "D", "C", "Z"]:
+            result += routine.routine_header_netlib(flavour, 20, " PUBLIC_API") + ";" + NL
+    return result
+
+
+def clblast_netlib_c_cc(routine):
+    """The Netlib CBLAS API implementation (.cpp)"""
+    result = NL + "// " + routine.name.upper() + NL
+    for flavour in routine.flavours:
+
+        # There is a version available in CBLAS
+        if flavour.precision_name in ["S", "D", "C", "Z"]:
+            template = "<" + flavour.template + ">" if routine.no_scalars() else ""
+            name_postfix = "_sub" if routine.name in routine.routines_scalar_no_return() else ""
+            indent = " " * (21 + routine.length() + len(template))
+            result += routine.routine_header_netlib(flavour, 9, "") + " {" + NL
+
+            # Initialize OpenCL
+            result += "  auto device = get_device();" + NL
+            result += "  auto context = clblast::Context(device);" + NL
+            result += "  auto queue = clblast::Queue(context, device);" + NL
+
+            # Set alpha and beta
+            result += "".join("  " + s + NL for s in routine.scalar_create_cpp(flavour))
+
+            # Copy data structures to the device
+            for i, name in enumerate(routine.inputs + routine.outputs):
+                result += "  " + routine.set_size(name, routine.buffer_sizes[i]) + NL
+            for i, name in enumerate(routine.inputs + routine.outputs):
+                buffer_type = routine.get_buffer_type(name, flavour)
+                result += "  " + routine.create_buffer(name, buffer_type) + NL
+                if name in routine.scalar_buffers_second_non_pointer():
+                    result += "  " + buffer_type + " " + name + "_vec[1]; " + name + "_vec[0] = " + name + ";" + NL
+            for name in routine.inputs + routine.outputs:
+                if name not in routine.scalar_buffers_first():
+                    prefix = "" if name in routine.outputs else "const "
+                    buffer_type = routine.get_buffer_type(name, flavour)
+                    result += "  " + routine.write_buffer(name, prefix + buffer_type) + NL
+
+            # The function call
+            result += "  auto queue_cl = queue();" + NL
+            result += "  auto s = clblast::" + routine.name.capitalize() + template + "("
+            result += ("," + NL + indent).join([a for a in routine.arguments_netlib(flavour, indent)])
+            result += "," + NL + indent + "&queue_cl);" + NL
+
+            # Error handling
+            result += "  if (s != clblast::StatusCode::kSuccess) {" + NL
+            result += "    throw std::runtime_error(\"CLBlast returned with error code \" + clblast::ToString(s));" + NL
+            result += "  }" + NL
+
+            # Copy back and clean-up
+            for name in routine.outputs:
+                if name in routine.scalar_buffers_first() and routine.name not in routine.routines_scalar_no_return():
+                    buffer_type = routine.get_buffer_type(name, flavour)
+                    result += "  " + buffer_type + " " + name + "[" + name + "_size];" + NL
+            for name in routine.outputs:
+                buffer_type = routine.get_buffer_type(name, flavour)
+                result += "  " + routine.read_buffer(name, buffer_type) + NL
+            for name in routine.outputs:
+                if name in routine.scalar_buffers_first() and routine.name not in routine.routines_scalar_no_return():
+                    result += "  return " + name + "[0]"
+                    if flavour.buffer_type in ["float2", "double2"]:
+                        if name not in routine.index_buffers():
+                            result += ".real()"
+                    result += ";" + NL
+            result += "}" + NL
+    return result
+
+
 def wrapper_clblas(routine):
     """The wrapper to the reference clBLAS routines (for performance/correctness testing)"""
     result = ""

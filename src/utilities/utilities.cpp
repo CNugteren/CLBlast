@@ -151,6 +151,10 @@ std::string ToString(Precision value) {
     case Precision::kComplexDouble: return ToString(static_cast<int>(value))+" (complex-double)";
   }
 }
+template <>
+std::string ToString(StatusCode value) {
+  return std::to_string(static_cast<int>(value));
+}
 
 // =================================================================================================
 

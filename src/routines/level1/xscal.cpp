@@ -55,12 +55,12 @@ void Xscal<T>::DoScal(const size_t n, const T alpha,
   // Sets the kernel arguments
   if (use_fast_kernel) {
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, alpha);
+    kernel.SetArgument(1, GetRealArg(alpha));
     kernel.SetArgument(2, x_buffer());
   }
   else {
     kernel.SetArgument(0, static_cast<int>(n));
-    kernel.SetArgument(1, alpha);
+    kernel.SetArgument(1, GetRealArg(alpha));
     kernel.SetArgument(2, x_buffer());
     kernel.SetArgument(3, static_cast<int>(x_offset));
     kernel.SetArgument(4, static_cast<int>(x_inc));
