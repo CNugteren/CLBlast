@@ -318,25 +318,25 @@ class Program {
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, std::string source):
-      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      // program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
       length_(source.length()),
       source_(std::move(source)),
       source_ptr_(&source_[0]) {
     auto status = CL_SUCCESS;
-    *program_ = clCreateProgramWithSource(context(), 1, &source_ptr_, &length_, &status);
+    program_ = clCreateProgramWithSource(context(), 1, &source_ptr_, &length_, &status);
     CheckError(status);
   }
 
   // Binary-based constructor with memory management
   explicit Program(const Device &device, const Context &context, const std::string& binary):
-      program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
+      // program_(new cl_program, [](cl_program* p) { CheckError(clReleaseProgram(*p)); delete p; }),
       length_(binary.length()),
       source_(binary),
       source_ptr_(&source_[0]) {
     auto status1 = CL_SUCCESS;
     auto status2 = CL_SUCCESS;
     const cl_device_id dev = device();
-    *program_ = clCreateProgramWithBinary(context(), 1, &dev, &length_,
+    program_ = clCreateProgramWithBinary(context(), 1, &dev, &length_,
                                           reinterpret_cast<const unsigned char**>(&source_ptr_),
                                           &status1, &status2);
     CheckError(status1);
@@ -347,7 +347,7 @@ class Program {
   BuildStatus Build(const Device &device, std::vector<std::string> &options) {
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
-    auto status = clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr);
+    auto status = clBuildProgram(program_, 1, &dev, options_string.c_str(), nullptr, nullptr);
     if (status == CL_BUILD_PROGRAM_FAILURE) {
       return BuildStatus::kError;
     }
@@ -364,28 +364,29 @@ class Program {
   std::string GetBuildInfo(const Device &device) const {
     auto bytes = size_t{0};
     auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, 0, nullptr, &bytes));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, 0, nullptr, &bytes));
     auto result = std::string{};
     result.resize(bytes);
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, bytes, &result[0], nullptr));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, bytes, &result[0], nullptr));
     return result;
   }
 
   // Retrieves a binary or an intermediate representation of the compiled program
   std::string GetIR() const {
     auto bytes = size_t{0};
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
     auto result = std::string{};
     result.resize(bytes);
     auto result_ptr = result.data();
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
     return result;
   }
 
   // Accessor to the private data-member
-  const cl_program& operator()() const { return *program_; }
+  const cl_program& operator()() const { return program_; }
  private:
-  std::shared_ptr<cl_program> program_;
+  // std::shared_ptr<cl_program> program_;
+  cl_program program_;
   size_t length_;
   std::string source_; // Note: the source can also be a binary or IR
   const char* source_ptr_;
