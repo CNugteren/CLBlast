@@ -16,8 +16,8 @@
 #ifndef CLBLAST_EXCEPTIONS_H_
 #define CLBLAST_EXCEPTIONS_H_
 
-#include "clblast.h"
 #include "clpp11.hpp"
+#include "clblast.h"
 
 namespace clblast {
 // =================================================================================================

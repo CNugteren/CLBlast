@@ -15,8 +15,8 @@
 
 #include <string>
 
-#include "clblast.h"
 #include "cache.hpp"
+#include "clblast.h"
 
 // BLAS level-1 includes
 #include "routines/level1/xswap.hpp"

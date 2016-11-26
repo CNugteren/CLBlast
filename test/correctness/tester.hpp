@@ -22,13 +22,13 @@
 #include <vector>
 #include <memory>
 
+#include "utilities/utilities.hpp"
+
 // The libraries
 #ifdef CLBLAST_REF_CLBLAS
   #include <clBLAS.h>
 #endif
 #include "clblast.h"
-
-#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

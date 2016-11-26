@@ -13,9 +13,9 @@
 
 #include <string>
 
+#include "utilities/utilities.hpp"
 #include "clblast_c.h"
 #include "clblast.h"
-#include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
 using float2 = clblast::float2;
