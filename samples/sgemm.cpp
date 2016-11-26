@@ -20,6 +20,9 @@
 #include <chrono>
 #include <vector>
 
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://www.khronos.org/registry/cl/api/1.1/cl.hpp
 #include "cl.hpp"
