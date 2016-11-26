@@ -361,7 +361,7 @@ enum class BuildStatus { kSuccess, kError, kInvalid };
 // C++11 version of 'cl_program'.
 class Program {
  public:
-  // Note that there is no constructor based on the regular OpenCL data-type because of extra state
+  Program() = default;
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source):

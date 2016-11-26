@@ -49,8 +49,7 @@ void Xscal<T>::DoScal(const size_t n, const T alpha,
   auto kernel_name = (use_fast_kernel) ? "XscalFast" : "Xscal";
 
   // Retrieves the Xscal kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the kernel arguments
   if (use_fast_kernel) {

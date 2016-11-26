@@ -57,6 +57,9 @@ class Routine {
   // OpenCL device properties
   const std::string device_name_;
 
+  // Compiled program (either retrieved from cache or compiled in slow path)
+  Program program_;
+
   // Connection to the database for all the device-specific parameters
   const Database db_;
 };

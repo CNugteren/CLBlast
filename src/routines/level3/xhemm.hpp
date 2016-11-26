@@ -30,6 +30,7 @@ class Xhemm: public Xgemm<T> {
   using Xgemm<T>::queue_;
   using Xgemm<T>::context_;
   using Xgemm<T>::device_;
+  using Xgemm<T>::program_;
   using Xgemm<T>::db_;
   using Xgemm<T>::DoGemm;
 

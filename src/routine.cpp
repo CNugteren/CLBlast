@@ -36,7 +36,10 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     db_(queue_, routines, precision_, userDatabase) {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  if (ProgramIsInCache(context_, precision_, routine_name_)) { return; }
+  bool has_program;
+  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), precision_, routine_name_ },
+                                          &has_program);
+  if (has_program) { return; }
 
   // Sets the build options from an environmental variable (if set)
   auto options = std::vector<std::string>();
@@ -47,11 +50,14 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
-  if (BinaryIsInCache(device_name_, precision_, routine_name_)) {
-    auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
-    auto program = Program(device_, context_, binary);
-    program.Build(device_, options);
-    StoreProgramToCache(program, context_, precision_, routine_name_);
+  bool has_binary;
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name_ },
+                                            &has_binary);
+  if (has_binary) {
+    program_ = Program(device_, context_, binary);
+    program_.Build(device_, options);
+    ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+                                   Program{ program_ });
     return;
   }
 
@@ -111,21 +117,23 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
   #endif
 
   // Compiles the kernel
-  auto program = Program(context_, source_string);
+  program_ = Program(context_, source_string);
   try {
-    program.Build(device_, options);
+    program_.Build(device_, options);
   } catch (const CLError &e) {
     if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
       fprintf(stdout, "OpenCL compiler error/warning: %s\n",
-              program.GetBuildInfo(device_).c_str());
+              program_.GetBuildInfo(device_).c_str());
     }
     throw;
   }
 
   // Store the compiled binary and program in the cache
-  const auto binary = program.GetIR();
-  StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
-  StoreProgramToCache(program, context_, precision_, routine_name_);
+  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name_ },
+                                program_.GetIR());
+
+  ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+                                 Program{ program_ });
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
   #ifdef VERBOSE

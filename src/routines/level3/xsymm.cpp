@@ -30,12 +30,12 @@ Xsymm<T>::Xsymm(Queue &queue, EventPointer event, const std::string &name):
 // The main routine
 template <typename T>
 void Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle triangle,
-                            const size_t m, const size_t n,
-                            const T alpha,
-                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                            const T beta,
-                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
+                      const size_t m, const size_t n,
+                      const T alpha,
+                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                      const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                      const T beta,
+                      const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0) ) { throw BLASError(StatusCode::kInvalidDimension); }
@@ -58,8 +58,7 @@ void Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle trian
 
   // Creates a general matrix from the symmetric matrix to be able to run the regular Xgemm
   // routine afterwards
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the arguments for the symmetric-to-squared kernel
   kernel.SetArgument(0, static_cast<int>(k));
