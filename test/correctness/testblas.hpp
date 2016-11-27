@@ -30,6 +30,7 @@ namespace clblast {
 template <typename T, typename U>
 class TestBlas: public Tester<T,U> {
  public:
+  static constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Uses several variables from the Tester class
   using Tester<T,U>::context_;
@@ -50,26 +51,26 @@ class TestBlas: public Tester<T,U> {
   using Tester<T,U>::GetSizesString;
 
   // Test settings for the regular test. Append to these lists in case more tests are required.
-  const std::vector<size_t> kVectorDims = { 7, 93, 4096 };
-  const std::vector<size_t> kIncrements = { 1, 2, 7 };
-  const std::vector<size_t> kMatrixDims = { 7, 64 };
-  const std::vector<size_t> kMatrixVectorDims = { 61, 512 };
-  const std::vector<size_t> kBandSizes = { 4, 19 };
-  const std::vector<size_t> kOffsets = GetOffsets();
-  const std::vector<U> kAlphaValues = GetExampleScalars<U>(full_test_);
-  const std::vector<U> kBetaValues = GetExampleScalars<U>(full_test_);
+  static const std::vector<size_t> kVectorDims;
+  static const std::vector<size_t> kIncrements;
+  static const std::vector<size_t> kMatrixDims;
+  static const std::vector<size_t> kMatrixVectorDims;
+  static const std::vector<size_t> kBandSizes;
+  const std::vector<size_t> kOffsets;
+  const std::vector<U> kAlphaValues;
+  const std::vector<U> kBetaValues;
 
   // Test settings for the invalid tests
-  const std::vector<size_t> kInvalidIncrements = { 0, 1 };
-  const size_t kBufferSize = 64;
-  const std::vector<size_t> kMatSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
-  const std::vector<size_t> kVecSizes = {0, kBufferSize - 1, kBufferSize};
+  static const std::vector<size_t> kInvalidIncrements;
+  static const size_t kBufferSize;
+  static const std::vector<size_t> kMatSizes;
+  static const std::vector<size_t> kVecSizes;
 
   // The layout/transpose/triangle options to test with
-  const std::vector<Layout> kLayouts = {Layout::kRowMajor, Layout::kColMajor};
-  const std::vector<Triangle> kTriangles = {Triangle::kUpper, Triangle::kLower};
-  const std::vector<Side> kSides = {Side::kLeft, Side::kRight};
-  const std::vector<Diagonal> kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
+  static const std::vector<Layout> kLayouts;
+  static const std::vector<Triangle> kTriangles;
+  static const std::vector<Side> kSides;
+  static const std::vector<Diagonal> kDiagonals;
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester
@@ -79,7 +80,7 @@ class TestBlas: public Tester<T,U> {
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestBlas(int argc, char *argv[], const bool silent,
+  TestBlas(const std::vector<std::string> &arguments, const bool silent,
            const std::string &name, const std::vector<std::string> &options,
            const Routine run_routine,
            const Routine run_reference1, const Routine run_reference2,
@@ -116,6 +117,7 @@ class TestBlas: public Tester<T,U> {
 // is automatically compiled for each routine, templated by the parameter "C".
 template <typename C, typename T, typename U>
 size_t RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
+  auto command_line_args = RetrieveCommandLineArguments(argc, argv);
 
   // Sets the reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
@@ -138,7 +140,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
 
   // Creates a tester
   auto options = C::GetOptions();
-  TestBlas<T,U> tester{argc, argv, silent, name, options,
+  TestBlas<T,U> tester{command_line_args, silent, name, options,
                        C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 

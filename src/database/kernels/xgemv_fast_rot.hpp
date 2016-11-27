@@ -12,13 +12,20 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotHalf = {
+const Database::DatabaseEntry XgemvFastRotHalf = {
   "XgemvFastRot", Precision::kHalf, {
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
   }
@@ -26,12 +33,13 @@ const Database::DatabaseEntry Database::XgemvFastRotHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotSingle = {
+const Database::DatabaseEntry XgemvFastRotSingle = {
   "XgemvFastRot", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
+        { "Tonga",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
     { // Intel CPUs
@@ -44,20 +52,23 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "GeForce GTX TITAN Black",                         { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
   }
@@ -65,12 +76,13 @@ const Database::DatabaseEntry Database::XgemvFastRotSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
+const Database::DatabaseEntry XgemvFastRotComplexSingle = {
   "XgemvFastRot", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
+        { "Tonga",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Intel CPUs
@@ -83,14 +95,15 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",128}, {"WPT3",8} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW3",4}, {"WGS3",32}, {"WPT3",8} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Iris Pro",                                        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",2}, {"WGS3",32}, {"WPT3",8} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
       }
     },
   }
@@ -98,11 +111,12 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotDouble = {
+const Database::DatabaseEntry XgemvFastRotDouble = {
   "XgemvFastRot", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
+        { "Tonga",                                           { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
@@ -114,8 +128,10 @@ const Database::DatabaseEntry Database::XgemvFastRotDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 750 Ti",                              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "GeForce GTX TITAN Black",                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
       }
     },
     { // Default
@@ -128,12 +144,13 @@ const Database::DatabaseEntry Database::XgemvFastRotDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastRotComplexDouble = {
+const Database::DatabaseEntry XgemvFastRotComplexDouble = {
   "XgemvFastRot", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
+        { "Tonga",                                           { {"VW3",4}, {"WGS3",16}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
       }
     },
     { // Intel CPUs
@@ -151,4 +168,5 @@ const Database::DatabaseEntry Database::XgemvFastRotComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

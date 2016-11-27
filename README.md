@@ -48,7 +48,7 @@ The pre-requisites for compilation of CLBlast are:
   - Clang 3.3 or newer
   - AppleClang 5.0 or newer
   - ICC 14.0 or newer
-  - MSVC (Visual Studio) 2015 or newer
+  - MSVC (Visual Studio) 2013 or newer
 * An OpenCL 1.1 or newer library, for example:
   - Apple OpenCL
   - NVIDIA CUDA SDK
@@ -74,6 +74,10 @@ A custom installation folder can be specified when calling CMake:
 
     cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/directory ..
 
+Building a static version of the library instead of shared one (.dylib/.so/.dll) can be done by disabling the `BUILD_SHARED_LIBS` option when calling CMake. For example:
+
+    cmake -DBUILD_SHARED_LIBS=OFF ..
+
 
 Using the library
 -------------
@@ -90,6 +94,12 @@ Afterwards, any of CLBlast's routines can be called directly: there is no need t
 
     cmake -DSAMPLES=ON ..
 
+Furthermore, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
+There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severly. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
+
+    #include <clblast_netlib_c.h>
+
 
 Using the tuners (optional)
 -------------
@@ -105,8 +115,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - GeForce GTX 750 Ti
   - GeForce GTX 980
   - GeForce GTX 1070
-  - GeForce GTX Titan
-  - GeForce GTX Titan X
+  - GeForce GTX TITAN
+  - GeForce GTX TITAN Black
+  - GeForce GTX TITAN X
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
@@ -115,10 +126,12 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Oland
   - Pitcairn
   - Tahiti
+  - Tonga
 * Intel GPUs:
   - HD Graphics 530
-  - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics 5500 BroadWell U-Processor GT2
+  - HD Graphics Haswell Ultrabook GT2 Mobile
+  - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
   - Iris
   - Iris Pro
@@ -134,9 +147,9 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.3.1 or higher).
+Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.6.0 or higher).
 
-Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
+Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables.
 
 The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
@@ -168,7 +181,7 @@ To build these tests, another BLAS library is needed to serve as a reference. Th
 
 Afterwards, executables in the form of `clblast_test_xxxxx` are available, in which `xxxxx` is the name of a routine (e.g. `xgemm`). Note that CLBlast is tested for correctness against [clBLAS](http://github.com/clMathLibraries/clBLAS) and/or a regular CPU BLAS library. If both are installed on your system, setting the command-line option `-clblas 1` or `-cblas 1` will select the library to test against for the `clblast_test_xxxxx` executables. All tests have a `-verbose` option to enable additional diagnostic output. They also have a `-full_test` option to increase coverage further.
 
-All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables before running CMake.
+All tests can be run directly together in one go through the `make alltests` target or using CTest (`make test` or `ctest`). In the latter case the output is less verbose. Both cases allow you to set the default device and platform to non-zero by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. Further options can be supplied through the `CLBLAST_ARGUMENTS` environmental variable (e.g. export CLBLAST_ARGUMENTS="-full_test -cblas 1 -clblas 0" on a UNIX system).
 
 
 Compiling the performance tests/clients (optional)
@@ -277,11 +290,11 @@ The `samples/haxpy.c` example shows how to use these convencience functions when
 Contributing
 -------------
 
-Contributions are welcome in the form of tuning results for OpenCL devices previously untested. Furthermore, merge requests are welcome as long as they contain unit additions or modifications. Furthermore, they should follow the CLBlast coding style, which is based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers.
+Contributions are welcome in the form of tuning results for OpenCL devices previously untested or pull requests. See [the contributing guidelines](CONTRIBUTING.md) for more details.
 
 The contributing authors (code, pull requests, testing) so far are:
 
-* [Cedric Nugteren](http://www.cedricnugteren.nl) - main author
+* [Cedric Nugteren](http://cnugteren.github.io) - main author
 * [Anton Lokhmotov](https://github.com/psyhtest)
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](http://marco-hutter.de/)
@@ -289,6 +302,7 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Gian-Carlo Pascutto](https://github.com/gcp)
 * [Ivan Shapovalov](https://github.com/intelfx)
 * [Dimitri Van Assche](https://github.com/dvasschemacq)
+* [Shehzan Mohammed](https://shehzan10.github.io)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -296,9 +310,10 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [ASCI DAS4 and DAS5](http://www.cs.vu.nl/das4/)
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
+* [ArrayFire](http://arrayfire.org)
 
 
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://cnugteren.github.io).

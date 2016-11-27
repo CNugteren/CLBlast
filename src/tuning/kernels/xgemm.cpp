@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
 
 namespace clblast {
@@ -52,6 +52,7 @@ class TuneXgemm {
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1024; }
   static double DefaultFraction() { return (V==1) ? 1.0 : 512.0; } // test all or sample randomly
+  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -126,10 +127,10 @@ class TuneXgemm {
   // Sets the local memory size
   static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
     auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return (((v[0]*v[1]*v[2]/v[3]) + (v[4]*v[5]*v[6]/v[7]))*GetBytes(args.precision));
+      return (((v[0]*v[1]*v[2]) + (v[3]*v[4]*v[5]))*GetBytes(args.precision));
     };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG", "VWM",
-                                                    "SB", "KWG", "NWG", "VWN"});
+    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG",
+                                                    "SB", "KWG", "NWG"});
   }
 
   // Sets the base thread configuration
@@ -177,7 +178,8 @@ using double2 = clblast::double2;
 // Function to tune a specific variation V (not within the clblast namespace)
 template <int V>
 void StartVariation(int argc, char *argv[]) {
-  switch(clblast::GetPrecision(argc, argv)) {
+  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  switch(clblast::GetPrecision(command_line_args)) {
     case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXgemm<half,V>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXgemm<float,V>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXgemm<double,V>, double>(argc, argv); break;

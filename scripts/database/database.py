@@ -18,7 +18,7 @@ import database.bests as bests
 import database.defaults as defaults
 
 # Server storing a copy of the database
-DATABASE_SERVER_URL = "http://www.cedricnugteren.nl/tuning/clblast.json"
+DATABASE_SERVER_URL = "https://raw.githubusercontent.com/CNugteren/CLBlast-database/master/database.json"
 
 # OpenCL vendor names and their short name
 VENDOR_TRANSLATION_TABLE = {

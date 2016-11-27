@@ -13,7 +13,8 @@ import generator.convert as convert
 class Routine:
     """Class holding routine-specific information (e.g. name, which arguments, which precisions)"""
     def __init__(self, implemented, has_tests, level, name, template, flavours, sizes, options,
-                 inputs, outputs, scalars, scratch, description, details, requirements):
+                 inputs, outputs, buffer_sizes, scalars, scratch,
+                 description, details, requirements):
         self.implemented = implemented
         self.has_tests = has_tests
         self.level = level
@@ -24,6 +25,7 @@ class Routine:
         self.options = options
         self.inputs = inputs
         self.outputs = outputs
+        self.buffer_sizes = buffer_sizes
         self.scalars = scalars
         self.scratch = scratch  # Scratch buffer (e.g. for xDOT)
         self.description = description
@@ -39,6 +41,11 @@ class Routine:
     def scalar_buffers_second():
         """List of scalar buffers"""
         return ["sa", "sb", "sc", "ss", "sd1", "sd2", "sx1", "sy1", "sparam"]
+
+    @staticmethod
+    def scalar_buffers_second_non_pointer():
+        """As above, but these ones are not passed as pointers but as scalars instead"""
+        return ["sy1"]
 
     @staticmethod
     def other_scalars():
@@ -65,6 +72,34 @@ class Routine:
         """Distinguish between vectors and matrices"""
         return ["a", "b", "c", "ap"]
 
+    @staticmethod
+    def routines_scalar_no_return():
+        return ["dotu", "dotc"]
+
+    @staticmethod
+    def set_size(name, size):
+        """Sets the size of a buffer"""
+        return "const auto " + name + "_size = " + size + ";"
+
+    @staticmethod
+    def create_buffer(name, template):
+        """Creates a new CLCudaAPI buffer"""
+        return "auto " + name + "_buffer = clblast::Buffer<" + template + ">(context, " + name + "_size);"
+
+    def write_buffer(self, name, template):
+        """Writes to a CLCudaAPI buffer"""
+        postfix = ""
+        if name in self.scalar_buffers_second_non_pointer():
+            postfix = "_vec"
+        data_structure = "reinterpret_cast<" + template + "*>(" + name + postfix + ")"
+        return name + "_buffer.Write(queue, " + name + "_size, " + data_structure + ");"
+
+    @staticmethod
+    def read_buffer(name, template):
+        """Reads from a CLCudaAPI buffer"""
+        data_structure = "reinterpret_cast<" + template + "*>(" + name + ")"
+        return name + "_buffer.Read(queue, " + name + "_size, " + data_structure + ");"
+
     def non_index_inputs(self):
         """Lists of input/output buffers not index (integer)"""
         buffers = self.inputs[:]  # make a copy
@@ -84,6 +119,11 @@ class Routine:
     def buffers_without_ld_inc(self):
         """List of buffers without 'inc' or 'ld'"""
         return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap"]
+
+    def get_buffer_type(self, name, flavour):
+        if name in self.index_buffers():
+            return "int"
+        return flavour.buffer_type
 
     def length(self):
         """Retrieves the number of characters in the routine's name"""
@@ -133,6 +173,15 @@ class Routine:
             return [", ".join(a + b + c)]
         return []
 
+    def buffer_zero_offset(self, name):
+        """As above, but with an offset value of zero"""
+        if name in self.inputs or name in self.outputs:
+            a = [name + "_buffer()"]
+            b = ["0"]
+            c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
+            return [", ".join(a + b + c)]
+        return []
+
     def buffer_def(self, name):
         """As above but with data-types"""
         prefix = "const " if name in self.inputs else ""
@@ -161,6 +210,17 @@ class Routine:
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
+        return []
+
+    def buffer_def_pointer(self, name, flavour):
+        """As above but as plain C pointer"""
+        prefix = "const " if name in self.inputs else ""
+        if name in self.inputs or name in self.outputs:
+            data_type = "void" if flavour.is_non_standard() else flavour.buffer_type
+            pointer = "" if name in self.scalar_buffers_second_non_pointer() else "*"
+            a = [prefix + data_type + pointer + " " + name + ""]
+            c = ["const int " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
+            return [", ".join(a + c)]
         return []
 
     def buffer_clcudaapi(self, name):
@@ -238,6 +298,12 @@ class Routine:
             return [name]
         return []
 
+    def scalar_cpp(self, name):
+        """As above, but with _cpp as a suffix"""
+        if name in self.scalars:
+            return [name + "_cpp"]
+        return []
+
     def scalar_half_to_float(self, name):
         """As above, but converts from float to half"""
         if name in self.scalars:
@@ -288,6 +354,16 @@ class Routine:
             return ["const " + flavour.beta_cpp + " " + name]
         return []
 
+    def scalar_def_void(self, name, flavour):
+        """Retrieves the definition of a scalar (alpha/beta) but make it a void pointer in case of non-standard types"""
+        if name in self.scalars:
+            if name == "alpha":
+                data_type = "void*" if flavour.is_complex("alpha") else flavour.alpha_cpp
+                return ["const " + data_type + " " + name]
+            data_type = "void*" if flavour.is_complex("beta") else flavour.beta_cpp
+            return ["const " + data_type + " " + name]
+        return []
+
     def scalar_type(self, name, flavour):
         """Retrieves the type of a scalar (alpha/beta)"""
         if name in self.scalars:
@@ -304,6 +380,16 @@ class Routine:
             return ["`const " + self.template.beta_cpp + " " + name + "`: Input scalar constant."]
         return []
 
+    def scalar_create_cpp(self, flavour):
+        """Creates a C++ version of a scalar based on a void*"""
+        result = []
+        for name in self.scalars:
+            if name == "alpha":
+                result.append("const auto alpha_cpp = " + flavour.use_alpha_clblast() + ";")
+            elif name == "beta":
+                result.append("const auto beta_cpp = " + flavour.use_beta_clblast() + ";")
+        return result
+
     def sizes_list(self):
         """Retrieves a list of comma-separated sizes (m, n, k)"""
         if self.sizes:
@@ -314,6 +400,12 @@ class Routine:
         """Retrieves the definition of the sizes (m,n,k)"""
         if self.sizes:
             return [", ".join(["const size_t " + s for s in self.sizes])]
+        return []
+
+    def sizes_def_netlib(self):
+        """Retrieves the definition of the sizes (m,n,k) for the CBLAS API"""
+        if self.sizes:
+            return [", ".join(["const int " + s for s in self.sizes])]
         return []
 
     def sizes_type(self):
@@ -346,6 +438,13 @@ class Routine:
         """Retrieves the definitions of the options (layout, transpose, side, etc.)"""
         if self.options:
             definitions = ["const " + convert.option_to_clblast(o) + " " + o for o in self.options]
+            return [", ".join(definitions)]
+        return []
+
+    def options_def_c(self):
+        """As above, but now for the C API"""
+        if self.options:
+            definitions = ["const CLBlast" + convert.option_to_clblast(o) + " " + o for o in self.options]
             return [", ".join(definitions)]
         return []
 
@@ -421,6 +520,17 @@ class Routine:
                 list(chain(*[self.buffer(b) for b in self.scalar_buffers_second()])) +
                 list(chain(*[self.scalar_use(s, flavour) for s in self.other_scalars()])))
 
+    def arguments_netlib(self, flavour, indent):
+        """As above, but for the Netlib CBLAS API"""
+        return (self.options_cast(indent) + self.sizes_list() +
+                list(chain(*[self.buffer_zero_offset(b) for b in self.scalar_buffers_first()])) +
+                self.scalar_cpp("alpha") +
+                list(chain(*[self.buffer_zero_offset(b) for b in self.buffers_first()])) +
+                self.scalar_cpp("beta") +
+                list(chain(*[self.buffer_zero_offset(b) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_zero_offset(b) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar(s) for s in self.other_scalars()])))
+
     def arguments_wrapper_clblas(self, flavour):
         """As above, but for the clBLAS wrapper"""
         return (self.options_list() + self.sizes_list() +
@@ -445,6 +555,30 @@ class Routine:
     def arguments_def(self, flavour):
         """Retrieves a combination of all the argument definitions"""
         return (self.options_def() + self.sizes_def() +
+                list(chain(*[self.buffer_def(b) for b in self.scalar_buffers_first()])) +
+                self.scalar_def("alpha", flavour) +
+                list(chain(*[self.buffer_def(b) for b in self.buffers_first()])) +
+                self.scalar_def("beta", flavour) +
+                list(chain(*[self.buffer_def(b) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_def(b) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])))
+
+    def arguments_def_netlib(self, flavour):
+        """As above, but for the Netlib CBLAS API"""
+        result=(self.options_def_c() + self.sizes_def_netlib() +
+                self.scalar_def_void("alpha", flavour) +
+                list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.buffers_first()])) +
+                self.scalar_def_void("beta", flavour) +
+                list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])))
+        if self.name in self.routines_scalar_no_return():
+            result += list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.scalar_buffers_first()]))
+        return result
+
+    def arguments_def_c(self, flavour):
+        """As above, but for the C API"""
+        return (self.options_def_c() + self.sizes_def() +
                 list(chain(*[self.buffer_def(b) for b in self.scalar_buffers_first()])) +
                 self.scalar_def("alpha", flavour) +
                 list(chain(*[self.buffer_def(b) for b in self.buffers_first()])) +
@@ -523,9 +657,28 @@ class Routine:
     def routine_header_c(self, flavour, spaces, extra_qualifier):
         """As above, but now for C"""
         indent = " " * (spaces + self.length())
-        result = "StatusCode" + extra_qualifier + " CLBlast" + flavour.name + self.name + "("
-        result += (",\n" + indent).join([a for a in self.arguments_def(flavour)])
+        result = "CLBlastStatusCode" + extra_qualifier + " CLBlast" + flavour.name + self.name + "("
+        result += (",\n" + indent).join([a for a in self.arguments_def_c(flavour)])
         result += ",\n" + indent + "cl_command_queue* queue, cl_event* event)"
+        return result
+
+    def routine_header_netlib(self, flavour, spaces, extra_qualifier):
+        """As above, but now for the original Netlib CBLAS API"""
+        return_type = "void"
+        for output in self.outputs:
+            if output in self.index_buffers():
+                return_type = "int"
+                break
+            if output in self.scalar_buffers_first() and self.name not in self.routines_scalar_no_return():
+                return_type = flavour.buffer_type.replace("2", "")
+                break
+        indent = " " * (spaces + len(return_type) + self.length())
+        routine_name = self.name
+        if self.name in self.routines_scalar_no_return():
+            routine_name += "_sub"
+            indent += "    "
+        result = return_type + extra_qualifier + " cblas_" + flavour.name.lower() + routine_name + "("
+        result += (",\n" + indent).join([a for a in self.arguments_def_netlib(flavour)]) + ")"
         return result
 
     def routine_header_wrapper_clblas(self, flavour, def_only, spaces):

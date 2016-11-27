@@ -106,14 +106,16 @@ void run_example_routine(const cl_device_id device) {
   clock_t start = clock();
 
   // Calls an example routine
-  StatusCode status = CLBlastSasum(n,
-                                   device_output, 0,
-                                   device_input, 0, 1,
-                                   &queue, &event);
+  CLBlastStatusCode status = CLBlastSasum(n,
+                                          device_output, 0,
+                                          device_input, 0, 1,
+                                          &queue, &event);
 
   // Wait for completion
-  clWaitForEvents(1, &event);
-  clReleaseEvent(event);
+  if (status == CLBlastSuccess) {
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+  }
 
   // Retrieves the execution time
   clock_t diff = clock() - start;

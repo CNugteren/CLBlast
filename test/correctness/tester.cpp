@@ -22,18 +22,60 @@
 namespace clblast {
 // =================================================================================================
 
+// Eror margings (relative and absolute)
+template <typename T>
+float getRelativeErrorMargin() {
+  return 0.005f; // 0.5% is considered acceptable for float/double-precision
+}
+template <>
+float getRelativeErrorMargin<half>() {
+  return 0.080f; // 8% (!) error is considered acceptable for half-precision
+}
+template <typename T>
+float getAbsoluteErrorMargin() {
+  return 0.001f;
+}
+template <>
+float getAbsoluteErrorMargin<half>() {
+  return 0.10f; // especially small values are inaccurate for half-precision
+}
+
+// Maximum number of test results printed on a single line
+template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = size_t{64};
+
+// Error percentage is not applicable: error was caused by an incorrect status
+template <typename T, typename U> const float Tester<T,U>::kStatusError = -1.0f;
+
+// Constants holding start and end strings for terminal-output in colour
+template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "\x1b[31m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "\x1b[32m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "\x1b[35m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "\x1b[1m";
+template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "\x1b[0m";
+
+// Sets the output error coding
+template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = kPrintSuccess + ":" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = kPrintSuccess + "." + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kErrorData = kPrintError + "X" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = kPrintError + "/" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = kPrintWarning + "\\" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = kPrintWarning + "o" + kPrintEnd;
+template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = kPrintWarning + "-" + kPrintEnd;
+
+// =================================================================================================
+
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T, typename U>
-Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
+Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent,
                     const std::string &name, const std::vector<std::string> &options):
     help_("Options given/available:\n"),
-    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0})))),
-    device_(Device(platform_, GetArgument(argc, argv, help_, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0})))),
+    platform_(Platform(GetArgument(arguments, help_, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0})))),
+    device_(Device(platform_, GetArgument(arguments, help_, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0})))),
     context_(Context(device_)),
     queue_(Queue(context_, device_)),
-    full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
-    verbose_(CheckArgument(argc, argv, help_, kArgVerbose)),
+    full_test_(CheckArgument(arguments, help_, kArgFullTest)),
+    verbose_(CheckArgument(arguments, help_, kArgVerbose)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
@@ -41,19 +83,19 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
     print_count_{0},
     tests_passed_{0},
     tests_skipped_{0},
-    tests_failed_{0},
-    options_{options} {
+    tests_failed_{0} {
+  options_ = options;
 
   // Determines which reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 0);
-    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 0);
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
   #elif CLBLAST_REF_CLBLAS
-    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 1);
     compare_cblas_ = 0;
   #elif CLBLAST_REF_CBLAS
     compare_clblas_ = 0;
-    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
   #else
     compare_clblas_ = 0;
     compare_cblas_ = 0;
@@ -94,6 +136,8 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
           kUnsupportedPrecision.c_str());
   fprintf(stdout, "   %s -> Test not completed: Reference CBLAS doesn't output error codes\n",
           kUnsupportedReference.c_str());
+  fprintf(stdout, "* Testing with error margins of %.1lf%% (relative) and %.3lf (absolute)\n",
+          100.0f * getRelativeErrorMargin<T>(), getAbsoluteErrorMargin<T>());
 
   // Initializes clBLAS
   #ifdef CLBLAST_REF_CLBLAS
@@ -224,7 +268,7 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   }
 
   // Could not compile the CLBlast kernel properly
-  else if (clblast_status == StatusCode::kBuildProgramFailure ||
+  else if (clblast_status == StatusCode::kOpenCLBuildProgramFailure ||
            clblast_status == StatusCode::kNotImplemented) {
     PrintTestResult(kSkippedCompilation);
     ReportSkipped();
@@ -358,26 +402,31 @@ void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
 // Compares two floating point values and returns whether they are within an acceptable error
 // margin. This replaces GTest's EXPECT_NEAR().
 template <typename T>
-bool TestSimilarity(const T val1, const T val2) {
+bool TestSimilarityNear(const T val1, const T val2,
+                        const T error_margin_absolute, const T error_margin_relative) {
   const auto difference = std::fabs(val1 - val2);
-
-  // Set the allowed error margin for floating-point comparisons
-  constexpr auto kErrorMarginRelative = T(0.025);
-  constexpr auto kErrorMarginAbsolute = T(1.0e-3);
 
   // Shortcut, handles infinities
   if (val1 == val2) {
     return true;
   }
   // The values are zero or very small: the relative error is less meaningful
-  else if (val1 == 0 || val2 == 0 || difference < kErrorMarginAbsolute) {
-    return (difference < kErrorMarginAbsolute);
+  else if (val1 == 0 || val2 == 0 || difference < error_margin_absolute) {
+    return (difference < error_margin_absolute);
   }
   // Use relative error
   else {
     const auto absolute_sum = std::fabs(val1) + std::fabs(val2);
-    return (difference / absolute_sum) < kErrorMarginRelative;
+    return (difference / absolute_sum) < error_margin_relative;
   }
+}
+
+// Default method for similarity testing
+template <typename T>
+bool TestSimilarity(const T val1, const T val2) {
+  const auto kErrorMarginRelative = static_cast<T>(getRelativeErrorMargin<T>());
+  const auto kErrorMarginAbsolute = static_cast<T>(getAbsoluteErrorMargin<T>());
+  return TestSimilarityNear(val1, val2, kErrorMarginAbsolute, kErrorMarginRelative);
 }
 
 // Compiles the default case for standard data-types
@@ -399,7 +448,10 @@ bool TestSimilarity(const double2 val1, const double2 val2) {
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {
-  return TestSimilarity(HalfToFloat(val1), HalfToFloat(val2));
+  const auto kErrorMarginRelative = getRelativeErrorMargin<half>();
+  const auto kErrorMarginAbsolute = getAbsoluteErrorMargin<half>();
+  return TestSimilarityNear(HalfToFloat(val1), HalfToFloat(val2),
+                            kErrorMarginAbsolute, kErrorMarginRelative);
 }
 
 // =================================================================================================

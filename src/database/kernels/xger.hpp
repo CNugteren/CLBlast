@@ -12,20 +12,21 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerHalf = {
+const Database::DatabaseEntry XgerHalf = {
   "Xger", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",4}, {"WGS2",8}, {"WPT",2} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",4}, {"WGS2",8}, {"WPT",2} } },
       }
     },
   }
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XgerHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerSingle = {
+const Database::DatabaseEntry XgerSingle = {
   "Xger", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -42,7 +43,8 @@ const Database::DatabaseEntry Database::XgerSingle = {
         { "Oland",                                           { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -63,7 +65,8 @@ const Database::DatabaseEntry Database::XgerSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",32}, {"WGS2",1}, {"WPT",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",8}, {"WGS2",8}, {"WPT",4} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WGS2",4}, {"WPT",4} } },
         { "Iris Pro",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
       }
@@ -76,8 +79,10 @@ const Database::DatabaseEntry Database::XgerSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",1}, {"WPT",4} } },
         { "GeForce GTX 750",                                 { {"WGS1",64}, {"WGS2",16}, {"WPT",4} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
       }
     },
     { // Default
@@ -90,7 +95,7 @@ const Database::DatabaseEntry Database::XgerSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerComplexSingle = {
+const Database::DatabaseEntry XgerComplexSingle = {
   "Xger", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -99,7 +104,8 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
         { "Oland",                                           { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -120,9 +126,10 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"WGS1",32}, {"WGS2",1}, {"WPT",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"WGS1",512}, {"WGS2",1}, {"WPT",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",16}, {"WGS2",1}, {"WPT",1} } },
         { "Iris Pro",                                        { {"WGS1",16}, {"WGS2",2}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
@@ -133,13 +140,15 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
         { "GeForce GTX 670",                                 { {"WGS1",16}, {"WGS2",32}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX 750",                                 { {"WGS1",32}, {"WGS2",16}, {"WPT",4} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
       }
     },
   }
@@ -147,7 +156,7 @@ const Database::DatabaseEntry Database::XgerComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerDouble = {
+const Database::DatabaseEntry XgerDouble = {
   "Xger", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -156,7 +165,8 @@ const Database::DatabaseEntry Database::XgerDouble = {
         { "Oland",                                           { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",8}, {"WGS2",16}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -180,8 +190,10 @@ const Database::DatabaseEntry Database::XgerDouble = {
         { "GeForce GTX 670",                                 { {"WGS1",32}, {"WGS2",32}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",128}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX 750",                                 { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",16}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",2}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
       }
     },
     { // Default
@@ -194,7 +206,7 @@ const Database::DatabaseEntry Database::XgerDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgerComplexDouble = {
+const Database::DatabaseEntry XgerComplexDouble = {
   "Xger", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -203,6 +215,7 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
         { "Oland",                                           { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
+        { "Tonga",                                           { {"WGS1",16}, {"WGS2",4}, {"WPT",1} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
       }
     },
@@ -227,7 +240,9 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
         { "GeForce GTX 670",                                 { {"WGS1",8}, {"WGS2",16}, {"WPT",2} } },
         { "GeForce GTX 680",                                 { {"WGS1",8}, {"WGS2",16}, {"WPT",1} } },
         { "GeForce GTX 750",                                 { {"WGS1",8}, {"WGS2",32}, {"WPT",4} } },
+        { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
+        { "GeForce GTX TITAN Black",                         { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "default",                                         { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
       }
     },
@@ -240,4 +255,5 @@ const Database::DatabaseEntry Database::XgerComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

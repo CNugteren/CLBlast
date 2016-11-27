@@ -18,7 +18,8 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  switch(clblast::GetPrecision(argc, argv, clblast::Precision::kSingle)) {
+  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  switch(clblast::GetPrecision(command_line_args, clblast::Precision::kSingle)) {
     case clblast::Precision::kHalf:
       clblast::RunClient<clblast::TestXtrmm<half>, half, half>(argc, argv); break;
     case clblast::Precision::kSingle:

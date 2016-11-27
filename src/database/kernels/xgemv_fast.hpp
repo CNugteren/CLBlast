@@ -12,14 +12,15 @@
 // =================================================================================================
 
 namespace clblast {
+namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastHalf = {
+const Database::DatabaseEntry XgemvFastHalf = {
   "XgemvFast", Precision::kHalf, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
       }
     },
@@ -33,7 +34,7 @@ const Database::DatabaseEntry Database::XgemvFastHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastSingle = {
+const Database::DatabaseEntry XgemvFastSingle = {
   "XgemvFast", Precision::kSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -42,6 +43,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",1}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -57,10 +59,11 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
         { "Intel(R) HD Graphics 530",                        { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
         { "Iris Pro",                                        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
-        { "default",                                         { {"VW2",2}, {"WGS2",64}, {"WPT2",2} } },
+        { "default",                                         { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
       }
     },
     { // Intel accelerators
@@ -77,9 +80,10 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
         { "GeForce GTX 670",                                 { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
         { "GeForce GTX 680",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 750",                                 { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
-        { "GeForce GTX 750 Ti",                              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX 750 Ti",                              { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "GeForce GTX 980",                                 { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN",                               { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX TITAN Black",                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
@@ -96,7 +100,7 @@ const Database::DatabaseEntry Database::XgemvFastSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
+const Database::DatabaseEntry XgemvFastComplexSingle = {
   "XgemvFast", Precision::kComplexSingle, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -105,6 +109,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -120,7 +125,8 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
         { "Intel(R) HD Graphics 530",                        { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",32}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW2",1}, {"WGS2",32}, {"WPT2",4} } },
+        { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Iris Pro",                                        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -139,7 +145,6 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
         { "GeForce GTX 480",                                 { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX 670",                                 { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX 680",                                 { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
-        { "GeForce GTX 750 Ti",                              { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -153,7 +158,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastDouble = {
+const Database::DatabaseEntry XgemvFastDouble = {
   "XgemvFast", Precision::kDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -162,6 +167,7 @@ const Database::DatabaseEntry Database::XgemvFastDouble = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -186,9 +192,10 @@ const Database::DatabaseEntry Database::XgemvFastDouble = {
         { "GeForce GTX 670",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 680",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 750",                                 { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
-        { "GeForce GTX 750 Ti",                              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX 750 Ti",                              { {"VW2",1}, {"WGS2",32}, {"WPT2",2} } },
         { "GeForce GTX 980",                                 { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX TITAN",                               { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX TITAN Black",                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
@@ -205,7 +212,7 @@ const Database::DatabaseEntry Database::XgemvFastDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry Database::XgemvFastComplexDouble = {
+const Database::DatabaseEntry XgemvFastComplexDouble = {
   "XgemvFast", Precision::kComplexDouble, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
@@ -214,6 +221,7 @@ const Database::DatabaseEntry Database::XgemvFastComplexDouble = {
         { "Oland",                                           { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tahiti",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Tonga",                                           { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
       }
     },
@@ -247,4 +255,5 @@ const Database::DatabaseEntry Database::XgemvFastComplexDouble = {
 };
 
 // =================================================================================================
+} // namespace database
 } // namespace clblast

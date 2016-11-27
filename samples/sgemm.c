@@ -77,18 +77,21 @@ int main(void) {
   clEnqueueWriteBuffer(queue, device_c, CL_TRUE, 0, m*n*sizeof(float), host_c, 0, NULL, NULL);
 
   // Call the SGEMM routine.
-  StatusCode status = CLBlastSgemm(kRowMajor, kNo, kNo,
-                                   m, n, k,
-                                   alpha,
-                                   device_a, 0, a_ld,
-                                   device_b, 0, b_ld,
-                                   beta,
-                                   device_c, 0, c_ld,
-                                   &queue, &event);
+  CLBlastStatusCode status = CLBlastSgemm(CLBlastLayoutRowMajor,
+                                          CLBlastTransposeNo, CLBlastTransposeNo,
+                                          m, n, k,
+                                          alpha,
+                                          device_a, 0, a_ld,
+                                          device_b, 0, b_ld,
+                                          beta,
+                                          device_c, 0, c_ld,
+                                          &queue, &event);
 
   // Wait for completion
-  clWaitForEvents(1, &event);
-  clReleaseEvent(event);
+  if (status == CLBlastSuccess) {
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+  }
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
   printf("Completed SGEMM with status %d\n", status);

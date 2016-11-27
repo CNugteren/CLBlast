@@ -27,8 +27,8 @@
 
 // Exports library functions under Windows when building a DLL. See also:
 // https://msdn.microsoft.com/en-us/library/a90k134d.aspx
-#ifdef _WIN32
-  #ifdef COMPILING_DLL
+#if defined(_WIN32) && defined(CLBLAST_DLL)
+  #if defined(COMPILING_DLL)
     #define PUBLIC_API __declspec(dllexport)
   #else
     #define PUBLIC_API __declspec(dllimport)
@@ -46,14 +46,34 @@ enum class StatusCode {
 
   // Status codes in common with the OpenCL standard
   kSuccess                   =   0, // CL_SUCCESS
+  kOpenCLCompilerNotAvailable=  -3, // CL_COMPILER_NOT_AVAILABLE
   kTempBufferAllocFailure    =  -4, // CL_MEM_OBJECT_ALLOCATION_FAILURE
-  kBuildProgramFailure       = -11, // CL_BUILD_PROGRAM_FAILURE: OpenCL compilation error
+  kOpenCLOutOfResources      =  -5, // CL_OUT_OF_RESOURCES
+  kOpenCLOutOfHostMemory     =  -6, // CL_OUT_OF_HOST_MEMORY
+  kOpenCLBuildProgramFailure = -11, // CL_BUILD_PROGRAM_FAILURE: OpenCL compilation error
+  kInvalidValue              = -30, // CL_INVALID_VALUE
+  kInvalidCommandQueue       = -36, // CL_INVALID_COMMAND_QUEUE
+  kInvalidMemObject          = -38, // CL_INVALID_MEM_OBJECT
   kInvalidBinary             = -42, // CL_INVALID_BINARY
+  kInvalidBuildOptions       = -43, // CL_INVALID_BUILD_OPTIONS
+  kInvalidProgram            = -44, // CL_INVALID_PROGRAM
+  kInvalidProgramExecutable  = -45, // CL_INVALID_PROGRAM_EXECUTABLE
+  kInvalidKernelName         = -46, // CL_INVALID_KERNEL_NAME
+  kInvalidKernelDefinition   = -47, // CL_INVALID_KERNEL_DEFINITION
   kInvalidKernel             = -48, // CL_INVALID_KERNEL
+  kInvalidArgIndex           = -49, // CL_INVALID_ARG_INDEX
+  kInvalidArgValue           = -50, // CL_INVALID_ARG_VALUE
+  kInvalidArgSize            = -51, // CL_INVALID_ARG_SIZE
+  kInvalidKernelArgs         = -52, // CL_INVALID_KERNEL_ARGS
   kInvalidLocalNumDimensions = -53, // CL_INVALID_WORK_DIMENSION: Too many thread dimensions
   kInvalidLocalThreadsTotal  = -54, // CL_INVALID_WORK_GROUP_SIZE: Too many threads in total
   kInvalidLocalThreadsDim    = -55, // CL_INVALID_WORK_ITEM_SIZE: ... or for a specific dimension
-  kInvalidTempBufferSize     = -61, // CL_INVALID_BUFFER_SIZE
+  kInvalidGlobalOffset       = -56, // CL_INVALID_GLOBAL_OFFSET
+  kInvalidEventWaitList      = -57, // CL_INVALID_EVENT_WAIT_LIST
+  kInvalidEvent              = -58, // CL_INVALID_EVENT
+  kInvalidOperation          = -59, // CL_INVALID_OPERATION
+  kInvalidBufferSize         = -61, // CL_INVALID_BUFFER_SIZE
+  kInvalidGlobalWorkSize     = -63, // CL_INVALID_GLOBAL_WORK_SIZE
 
   // Status codes in common with the clBLAS library
   kNotImplemented            = -1024, // Routine or functionality not implemented yet
@@ -75,13 +95,14 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
-  kKernelLaunchError         = -2048, // Problem occurred when enqueuing the kernel
-  kKernelRunError            = -2047, // Problem occurred while running the kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
   kInvalidVectorScalar       = -2043, // The unit-sized vector is not a valid OpenCL buffer
   kInsufficientMemoryScalar  = -2042, // The unit-sized vector's OpenCL buffer is too small
+  kDatabaseError             = -2041, // Entry for the device was not found in the database
+  kUnknownError              = -2040, // A catch-all error code representing an unspecified error
+  kUnexpectedError           = -2039, // A catch-all error code representing an unexpected exception
 };
 
 // Matrix layout and transpose types

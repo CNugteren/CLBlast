@@ -54,6 +54,22 @@ class DataType:
             return self.beta_cl + "{{beta.real(), beta.imag()}}"
         return "beta"
 
+    def use_alpha_clblast(self):
+        """Transforms a Netlib CBLAS parameter to CLBlast style"""
+        if self.alpha_cpp == D_FLOAT2:
+            return self.alpha_cpp + "{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]}"
+        elif self.alpha_cpp == D_DOUBLE2:
+            return self.alpha_cpp + "{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]}"
+        return "alpha"
+
+    def use_beta_clblast(self):
+        """As above, but for beta instead of alpha"""
+        if self.beta_cpp == D_FLOAT2:
+            return self.beta_cpp + "{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]}"
+        elif self.beta_cpp == D_DOUBLE2:
+            return self.beta_cpp + "{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]}"
+        return "beta"
+
     def test_template(self):
         """Returns the template as used in the correctness/performance tests"""
         if self.buffer_type != self.beta_cpp:
@@ -64,6 +80,10 @@ class DataType:
         """Current scalar is complex"""
         return ((scalar == "alpha" and self.alpha_cpp in [D_FLOAT2, D_DOUBLE2]) or
                 (scalar == "beta" and self.beta_cpp in [D_FLOAT2, D_DOUBLE2]))
+
+    def is_non_standard(self):
+        """Current type is of a non-standard type"""
+        return self.buffer_type in [D_HALF, D_FLOAT2, D_DOUBLE2]
 
 
 # Regular data-types

@@ -18,14 +18,16 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 9)
+set(clblast_VERSION_MINOR 10)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
+option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
+option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
@@ -64,12 +66,24 @@ elseif(MSVC)
   endif()
 endif()
 
+# DLL Settings
+if(MSVC)
+  if(BUILD_SHARED_LIBS)
+    add_definitions(" /DCLBLAST_DLL")
+  endif()
+endif(MSVC)
+
 # C++ compiler settings
 if(MSVC)
   set(FLAGS "/Ox")
   set(FLAGS "${FLAGS} /wd4715")
 else()
-  set(FLAGS "-O3 -std=c++11")
+  set(FLAGS "-std=c++11")
+  if(VERBOSE)
+    set(FLAGS "${FLAGS} -O1 -g")
+  else()
+    set(FLAGS "${FLAGS} -O3")
+  endif()
   if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     set(FLAGS "${FLAGS} -Wall -Wno-comment -Wno-return-type -Wno-switch -Wno-missing-noreturn")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.0)
@@ -134,9 +148,13 @@ endif()
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
-set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger xgemm xgemv)
+set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
+            xgemm xgemm_direct xgemv)
 set(SAMPLE_PROGRAMS_CPP sgemm)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
+if(NETLIB)
+  set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
+endif()
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
@@ -151,12 +169,16 @@ set(PRECISIONS 32 64 3232 6464 16)
 set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
+  src/utilities/clblast_exceptions.cpp
+  src/utilities/utilities.cpp
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
   src/routine.cpp
-  src/utilities.cpp
 )
+if(NETLIB)
+  set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
+endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
 endforeach()
@@ -171,7 +193,12 @@ foreach(ROUTINE ${LEVELX_ROUTINES})
 endforeach()
 
 # Creates and links the library
-add_library(clblast SHARED ${SOURCES})
+if(BUILD_SHARED_LIBS)
+  add_library(clblast SHARED ${SOURCES})
+else(BUILD_SHARED_LIBS)
+  add_library(clblast STATIC ${SOURCES})
+endif()
+
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
 
 # Includes directories: CLBlast and OpenCL
@@ -183,7 +210,9 @@ target_include_directories(clblast PUBLIC
 
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
-  target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  if(BUILD_SHARED_LIBS)
+    target_compile_definitions(clblast PRIVATE COMPILING_DLL=1) # requires at least CMake 2.8.11
+  endif()
 endif()
 
 # Installs the library
@@ -191,19 +220,19 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+if(NETLIB)
+  install(FILES include/clblast_netlib_c.h DESTINATION include)
+endif()
 
 # Installs the config for find_package in dependent projects
 install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
 
-# ==================================================================================================
-
-# Sets a default platform ($DEVICEPLATFORM) and device ($CLBLAST_DEVICE) to run tuners and tests on
-set(DEVICEPLATFORM )
-if(DEFINED ENV{CLBLAST_DEVICE})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -device $ENV{CLBLAST_DEVICE})
-endif()
-if(DEFINED ENV{CLBLAST_PLATFORM})
-  set(DEVICEPLATFORM ${DEVICEPLATFORM} -platform $ENV{CLBLAST_PLATFORM})
+# Install pkg-config file on Linux
+if(UNIX)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/clblast.pc.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc
+            DESTINATION lib/pkgconfig)
 endif()
 
 # ==================================================================================================
@@ -239,7 +268,7 @@ if(TUNERS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TUNERS_COMMON )
   if(MSVC)
-    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities.cpp)
+    set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities/utilities.cpp)
   endif()
 
   # Adds tuning executables
@@ -255,7 +284,7 @@ if(TUNERS)
   set(ALLTUNERSDEPENDS )
   foreach(KERNEL ${KERNELS})
     foreach(PRECISION ${PRECISIONS})
-      set(ALLTUNERS ${ALLTUNERS} COMMAND clblast_tuner_${KERNEL} -precision ${PRECISION} ${DEVICEPLATFORM})
+      set(ALLTUNERS ${ALLTUNERS} COMMAND clblast_tuner_${KERNEL} -precision ${PRECISION})
     endforeach()
     set(ALLTUNERSDEPENDS clblast_tuner_${KERNEL})
   endforeach()
@@ -272,9 +301,10 @@ if(CLIENTS OR TESTS)
   set(REF_INCLUDES )
   set(REF_LIBRARIES )
   if(CLBLAS_FOUND)
+    find_package(Threads)
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(REF_INCLUDES ${REF_INCLUDES} ${CLBLAS_INCLUDE_DIRS})
-    set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES})
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC)
       add_definitions(" /DCLBLAST_REF_CLBLAS")
     else()
       add_definitions(" -DCLBLAST_REF_CLBLAS")
@@ -283,7 +313,7 @@ if(CLIENTS OR TESTS)
   if(CBLAS_FOUND)
     set(REF_INCLUDES ${REF_INCLUDES} ${CBLAS_INCLUDE_DIRS})
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CBLAS_LIBRARIES})
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC)
       add_definitions(" /DCLBLAST_REF_CBLAS")
     else()
       add_definitions(" -DCLBLAST_REF_CBLAS")
@@ -301,7 +331,7 @@ if(CLIENTS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(CLIENTS_COMMON )
   if(MSVC)
-    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities.cpp test/performance/client.cpp)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/performance/client.cpp)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
     add_library(test_performance_common OBJECT test/performance/client.cpp)
@@ -309,7 +339,7 @@ if(CLIENTS)
     # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR})
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     set(CLIENTS_COMMON ${CLIENTS_COMMON} $<TARGET_OBJECTS:test_performance_common>)
   endif()
 
@@ -348,7 +378,7 @@ if(TESTS)
   # Visual Studio requires the sources of non-exported objects/libraries
   set(TESTS_COMMON )
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/utilities.cpp
+    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp
         test/correctness/tester.cpp test/correctness/testblas.cpp)
   else()
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
@@ -356,7 +386,7 @@ if(TESTS)
                 test/correctness/tester.cpp test/correctness/testblas.cpp)
     target_include_directories(test_correctness_common PUBLIC
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR})
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     set(TESTS_COMMON ${TESTS_COMMON} $<TARGET_OBJECTS:test_correctness_common>)
   endif()
 
@@ -381,14 +411,14 @@ if(TESTS)
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
     target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
-    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE})
   endforeach()
 
   # Adds 'alltests' target: runs all tests
   set(ALLTESTS )
   set(ALLTESTSDEPENDS )
   foreach(ROUTINE ${ROUTINES})
-    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE} ${DEVICEPLATFORM})
+    set(ALLTESTS ${ALLTESTS} COMMAND clblast_test_${ROUTINE})
     set(ALLTESTSDEPENDS clblast_test_${ROUTINE})
   endforeach()
   add_custom_target(alltests ${ALLTESTS} DEPENDS ${ALLTESTSDEPENDS})

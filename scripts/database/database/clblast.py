@@ -54,19 +54,20 @@ def get_cpp_header(family):
 //
 // This file populates the database with best-found tuning parameters for the '%s' kernels.
 //\n"""
-            % family.title() + get_cpp_separator() + "\n\nnamespace clblast {\n" + get_cpp_separator())
+            % family.title() + get_cpp_separator() + \
+             "\n\nnamespace clblast {\n" + "namespace database {\n" + get_cpp_separator())
 
 
 def get_cpp_footer():
     """Retrieves the C++ footer"""
-    return "\n} // namespace clblast\n"
+    return "\n} // namespace database\n" + "} // namespace clblast\n"
 
 
 def get_cpp_precision(family, precision):
     """Retrieves the C++ code for the start of a new precision"""
     precision_string = precision_to_string(precision)
     camelcase_name = family.title().replace("_", "")
-    return("\n\nconst Database::DatabaseEntry Database::%s%s = {\n  \"%s\", Precision::k%s, {\n"
+    return("\n\nconst Database::DatabaseEntry %s%s = {\n  \"%s\", Precision::k%s, {\n"
            % (camelcase_name, precision_string, camelcase_name, precision_string))
 
 

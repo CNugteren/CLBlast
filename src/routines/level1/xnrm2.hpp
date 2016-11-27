@@ -28,9 +28,9 @@ class Xnrm2: public Routine {
   Xnrm2(Queue &queue, EventPointer event, const std::string &name = "NRM2");
 
   // Templated-precision implementation of the routine
-  StatusCode DoNrm2(const size_t n,
-                    const Buffer<T> &nrm2_buffer, const size_t nrm2_offset,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoNrm2(const size_t n,
+              const Buffer<T> &nrm2_buffer, const size_t nrm2_offset,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
 };
 
 // =================================================================================================

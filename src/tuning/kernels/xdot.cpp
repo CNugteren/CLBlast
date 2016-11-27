@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
 
 namespace clblast {
@@ -47,6 +47,7 @@ class TuneXdot {
   static size_t DefaultN() { return 2*1024*1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
+  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) { return args.n; }
@@ -118,7 +119,8 @@ using double2 = clblast::double2;
 // Function to tune a specific variation V (not within the clblast namespace)
 template <int V>
 void StartVariation(int argc, char *argv[]) {
-  switch(clblast::GetPrecision(argc, argv)) {
+  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  switch(clblast::GetPrecision(command_line_args)) {
     case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXdot<half, V>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXdot<float, V>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXdot<double, V>, double>(argc, argv); break;

@@ -24,6 +24,8 @@
 #include "clblast.h"
 #include "clblast_half.h"
 #include "clpp11.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/msvc.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -183,6 +185,9 @@ std::string ToString(T value);
 
 // =================================================================================================
 
+// Parses command-line and environmental-variable arguments into a std::vector of strings
+std::vector<std::string> RetrieveCommandLineArguments(int argc, char *argv[]);
+
 // Helper for the function "GetArgument"
 template <typename T>
 T ConvertArgument(const char* value);
@@ -193,20 +198,15 @@ T ConvertArgument(const char* value, T default_value);
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
-T GetArgument(const int argc, char **argv, std::string &help,
+T GetArgument(const std::vector<std::string> &arguments, std::string &help,
               const std::string &option, const T default_value);
 
 // Returns the precision only
-Precision GetPrecision(const int argc, char *argv[],
+Precision GetPrecision(const std::vector<std::string> &arguments,
                        const Precision default_precision = Precision::kSingle);
 
 // As in "GetArgument", but now only checks whether an argument is given or not
-bool CheckArgument(const int argc, char *argv[], std::string &help, const std::string &option);
-
-// =================================================================================================
-
-// Helper function to check for errors in the status code
-constexpr bool ErrorIn(const StatusCode s) { return (s != StatusCode::kSuccess); }
+bool CheckArgument(const std::vector<std::string> &arguments, std::string &help, const std::string &option);
 
 // =================================================================================================
 
@@ -219,7 +219,7 @@ constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>
-void PopulateVector(std::vector<T> &vector);
+void PopulateVector(std::vector<T> &vector, const unsigned int seed);
 
 // =================================================================================================
 

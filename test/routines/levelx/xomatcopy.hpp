@@ -22,6 +22,65 @@
 namespace clblast {
 // =================================================================================================
 
+template <typename T>
+StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+
+  // Data transfer from OpenCL to std::vector
+  std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
+  std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
+  buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
+  buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
+
+  // Checking for invalid arguments
+  const auto a_rotated = (args.layout == Layout::kRowMajor);
+  const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
+                         (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
+  const auto a_base = (a_rotated) ? args.a_ld*(args.m-1) + args.n : args.a_ld*(args.n-1) + args.m;
+  const auto b_base = (b_rotated) ? args.b_ld*(args.m-1) + args.n : args.b_ld*(args.n-1) + args.m;
+  if ((args.m == 0) || (args.n == 0)) { return StatusCode::kInvalidDimension; }
+  if ((args.a_ld < args.m && !a_rotated) || (args.a_ld < args.n && a_rotated)) { return StatusCode::kInvalidLeadDimA; }
+  if ((args.b_ld < args.m && !b_rotated) || (args.b_ld < args.n && b_rotated)) { return StatusCode::kInvalidLeadDimB; }
+  if (buffers.a_mat.GetSize() < (a_base + args.a_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryA; }
+  if (buffers.b_mat.GetSize() < (b_base + args.b_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryB; }
+
+  // Matrix copy, scaling, and/or transpose
+  for (auto id1 = size_t{0}; id1 < args.m; ++id1) {
+    for (auto id2 = size_t{0}; id2 < args.n; ++id2) {
+      const auto a_one = (a_rotated) ? id2 : id1;
+      const auto a_two = (a_rotated) ? id1 : id2;
+      const auto b_one = (b_rotated) ? id2 : id1;
+      const auto b_two = (b_rotated) ? id1 : id2;
+      const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
+      const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
+      b_mat_cpu[b_index] = args.alpha * a_mat_cpu[a_index];
+    }
+  }
+
+  // Data transfer back to OpenCL
+  buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
+  return StatusCode::kSuccess;
+}
+
+// Half-precision version calling the above reference implementation after conversions
+template <>
+StatusCode RunReference<half>(const Arguments<half> &args, Buffers<half> &buffers, Queue &queue) {
+  auto a_buffer2 = HalfToFloatBuffer(buffers.a_mat, queue());
+  auto b_buffer2 = HalfToFloatBuffer(buffers.b_mat, queue());
+  auto dummy = clblast::Buffer<float>(0);
+  auto buffers2 = Buffers<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
+  auto args2 = Arguments<float>();
+  args2.a_size = args.a_size; args2.b_size = args.b_size;
+  args2.a_ld = args.a_ld; args2.b_ld = args.b_ld; args2.m = args.m; args2.n = args.n;
+  args2.a_offset = args.a_offset; args2.b_offset = args.b_offset;
+  args2.layout = args.layout; args2.a_transpose = args.a_transpose;
+  args2.alpha = HalfToFloat(args.alpha);
+  auto status = RunReference(args2, buffers2, queue);
+  FloatToHalfBuffer(buffers.b_mat, b_buffer2, queue());
+  return status;
+}
+
+// =================================================================================================
+
 // See comment at top of file for a description of the class
 template <typename T>
 class TestXomatcopy {
@@ -77,52 +136,18 @@ class TestXomatcopy {
                               buffers.a_mat(), args.a_offset, args.a_ld,
                               buffers.b_mat(), args.b_offset, args.b_ld,
                               &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 
   // Describes how to run a naive version of the routine (for correctness/performance comparison).
   // Note that a proper clBLAS or CPU BLAS comparison is not available for non-BLAS routines.
   static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      return RunReference2(args, buffers, queue);
+    return RunReference(args, buffers, queue);
   }
 
   static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-
-    // Data transfer from OpenCL to std::vector
-    std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-    std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
-    buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-    buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
-
-    // Checking for invalid arguments
-    const auto a_rotated = (args.layout == Layout::kRowMajor);
-    const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
-                           (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-    const auto a_base = (a_rotated) ? args.a_ld*(args.m-1) + args.n : args.a_ld*(args.n-1) + args.m;
-    const auto b_base = (b_rotated) ? args.b_ld*(args.m-1) + args.n : args.b_ld*(args.n-1) + args.m;
-    if ((args.m == 0) || (args.n == 0)) { return StatusCode::kInvalidDimension; }
-    if ((args.a_ld < args.m && !a_rotated) || (args.a_ld < args.n && a_rotated)) { return StatusCode::kInvalidLeadDimA; }
-    if ((args.b_ld < args.m && !b_rotated) || (args.b_ld < args.n && b_rotated)) { return StatusCode::kInvalidLeadDimB; }
-    if (buffers.a_mat.GetSize() < (a_base + args.a_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryA; }
-    if (buffers.b_mat.GetSize() < (b_base + args.b_offset) * sizeof(T)) { return StatusCode::kInsufficientMemoryB; }
-
-    // Matrix copy, scaling, and/or transpose
-    for (auto id1 = size_t{0}; id1 < args.m; ++id1) {
-      for (auto id2 = size_t{0}; id2 < args.n; ++id2) {
-        const auto a_one = (a_rotated) ? id2 : id1;
-        const auto a_two = (a_rotated) ? id1 : id2;
-        const auto b_one = (b_rotated) ? id2 : id1;
-        const auto b_two = (b_rotated) ? id1 : id2;
-        const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
-        const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
-        b_mat_cpu[b_index] = args.alpha * a_mat_cpu[a_index];
-      }
-    }
-
-    // Data transfer back to OpenCL
-    buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
-    return StatusCode::kSuccess;
+    return RunReference(args, buffers, queue);
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)

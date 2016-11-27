@@ -84,7 +84,7 @@ class TestXhpr2 {
                        buffers.y_vec(), args.y_offset, args.y_inc,
                        buffers.ap_mat(), args.ap_offset,
                        &queue_plain, &event);
-    clWaitForEvents(1, &event);
+    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
   }
 

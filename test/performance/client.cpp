@@ -46,6 +46,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
                                          const GetMetric default_a_ld,
                                          const GetMetric default_b_ld,
                                          const GetMetric default_c_ld) {
+  const auto command_line_args = RetrieveCommandLineArguments(argc, argv);
   auto args = Arguments<U>{};
   auto help = std::string{"\n* Options given/available:\n"};
 
@@ -53,67 +54,67 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
   for (auto &o: options_) {
 
     // Data-sizes
-    if (o == kArgM)  { args.m   = GetArgument(argc, argv, help, kArgM, size_t{512}); }
-    if (o == kArgN)  { args.n   = GetArgument(argc, argv, help, kArgN, size_t{512}); }
-    if (o == kArgK)  { args.k   = GetArgument(argc, argv, help, kArgK, size_t{512}); }
-    if (o == kArgKU) { args.ku  = GetArgument(argc, argv, help, kArgKU, size_t{128}); }
-    if (o == kArgKL) { args.kl  = GetArgument(argc, argv, help, kArgKL, size_t{128}); }
+    if (o == kArgM)  { args.m   = GetArgument(command_line_args, help, kArgM, size_t{512}); }
+    if (o == kArgN)  { args.n   = GetArgument(command_line_args, help, kArgN, size_t{512}); }
+    if (o == kArgK)  { args.k   = GetArgument(command_line_args, help, kArgK, size_t{512}); }
+    if (o == kArgKU) { args.ku  = GetArgument(command_line_args, help, kArgKU, size_t{128}); }
+    if (o == kArgKL) { args.kl  = GetArgument(command_line_args, help, kArgKL, size_t{128}); }
 
     // Data-layouts
-    if (o == kArgLayout)   { args.layout      = GetArgument(argc, argv, help, kArgLayout, Layout::kRowMajor); }
-    if (o == kArgATransp)  { args.a_transpose = GetArgument(argc, argv, help, kArgATransp, Transpose::kNo); }
-    if (o == kArgBTransp)  { args.b_transpose = GetArgument(argc, argv, help, kArgBTransp, Transpose::kNo); }
-    if (o == kArgSide)     { args.side        = GetArgument(argc, argv, help, kArgSide, Side::kLeft); }
-    if (o == kArgTriangle) { args.triangle    = GetArgument(argc, argv, help, kArgTriangle, Triangle::kUpper); }
-    if (o == kArgDiagonal) { args.diagonal    = GetArgument(argc, argv, help, kArgDiagonal, Diagonal::kUnit); }
+    if (o == kArgLayout)   { args.layout      = GetArgument(command_line_args, help, kArgLayout, Layout::kRowMajor); }
+    if (o == kArgATransp)  { args.a_transpose = GetArgument(command_line_args, help, kArgATransp, Transpose::kNo); }
+    if (o == kArgBTransp)  { args.b_transpose = GetArgument(command_line_args, help, kArgBTransp, Transpose::kNo); }
+    if (o == kArgSide)     { args.side        = GetArgument(command_line_args, help, kArgSide, Side::kLeft); }
+    if (o == kArgTriangle) { args.triangle    = GetArgument(command_line_args, help, kArgTriangle, Triangle::kUpper); }
+    if (o == kArgDiagonal) { args.diagonal    = GetArgument(command_line_args, help, kArgDiagonal, Diagonal::kUnit); }
 
     // Vector arguments
-    if (o == kArgXInc)    { args.x_inc    = GetArgument(argc, argv, help, kArgXInc, size_t{1}); }
-    if (o == kArgYInc)    { args.y_inc    = GetArgument(argc, argv, help, kArgYInc, size_t{1}); }
-    if (o == kArgXOffset) { args.x_offset = GetArgument(argc, argv, help, kArgXOffset, size_t{0}); }
-    if (o == kArgYOffset) { args.y_offset = GetArgument(argc, argv, help, kArgYOffset, size_t{0}); }
+    if (o == kArgXInc)    { args.x_inc    = GetArgument(command_line_args, help, kArgXInc, size_t{1}); }
+    if (o == kArgYInc)    { args.y_inc    = GetArgument(command_line_args, help, kArgYInc, size_t{1}); }
+    if (o == kArgXOffset) { args.x_offset = GetArgument(command_line_args, help, kArgXOffset, size_t{0}); }
+    if (o == kArgYOffset) { args.y_offset = GetArgument(command_line_args, help, kArgYOffset, size_t{0}); }
 
     // Matrix arguments
-    if (o == kArgALeadDim) { args.a_ld     = GetArgument(argc, argv, help, kArgALeadDim, default_a_ld(args)); }
-    if (o == kArgBLeadDim) { args.b_ld     = GetArgument(argc, argv, help, kArgBLeadDim, default_b_ld(args)); }
-    if (o == kArgCLeadDim) { args.c_ld     = GetArgument(argc, argv, help, kArgCLeadDim, default_c_ld(args)); }
-    if (o == kArgAOffset)  { args.a_offset = GetArgument(argc, argv, help, kArgAOffset, size_t{0}); }
-    if (o == kArgBOffset)  { args.b_offset = GetArgument(argc, argv, help, kArgBOffset, size_t{0}); }
-    if (o == kArgCOffset)  { args.c_offset = GetArgument(argc, argv, help, kArgCOffset, size_t{0}); }
-    if (o == kArgAPOffset) { args.ap_offset= GetArgument(argc, argv, help, kArgAPOffset, size_t{0}); }
+    if (o == kArgALeadDim) { args.a_ld     = GetArgument(command_line_args, help, kArgALeadDim, default_a_ld(args)); }
+    if (o == kArgBLeadDim) { args.b_ld     = GetArgument(command_line_args, help, kArgBLeadDim, default_b_ld(args)); }
+    if (o == kArgCLeadDim) { args.c_ld     = GetArgument(command_line_args, help, kArgCLeadDim, default_c_ld(args)); }
+    if (o == kArgAOffset)  { args.a_offset = GetArgument(command_line_args, help, kArgAOffset, size_t{0}); }
+    if (o == kArgBOffset)  { args.b_offset = GetArgument(command_line_args, help, kArgBOffset, size_t{0}); }
+    if (o == kArgCOffset)  { args.c_offset = GetArgument(command_line_args, help, kArgCOffset, size_t{0}); }
+    if (o == kArgAPOffset) { args.ap_offset= GetArgument(command_line_args, help, kArgAPOffset, size_t{0}); }
 
     // Scalar result arguments
-    if (o == kArgDotOffset)  { args.dot_offset = GetArgument(argc, argv, help, kArgDotOffset, size_t{0}); }
-    if (o == kArgNrm2Offset)  { args.nrm2_offset = GetArgument(argc, argv, help, kArgNrm2Offset, size_t{0}); }
-    if (o == kArgAsumOffset)  { args.asum_offset = GetArgument(argc, argv, help, kArgAsumOffset, size_t{0}); }
-    if (o == kArgImaxOffset)  { args.imax_offset = GetArgument(argc, argv, help, kArgImaxOffset, size_t{0}); }
+    if (o == kArgDotOffset)  { args.dot_offset = GetArgument(command_line_args, help, kArgDotOffset, size_t{0}); }
+    if (o == kArgNrm2Offset)  { args.nrm2_offset = GetArgument(command_line_args, help, kArgNrm2Offset, size_t{0}); }
+    if (o == kArgAsumOffset)  { args.asum_offset = GetArgument(command_line_args, help, kArgAsumOffset, size_t{0}); }
+    if (o == kArgImaxOffset)  { args.imax_offset = GetArgument(command_line_args, help, kArgImaxOffset, size_t{0}); }
 
     // Scalar values 
-    if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
-    if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
+    if (o == kArgAlpha) { args.alpha = GetArgument(command_line_args, help, kArgAlpha, GetScalar<U>()); }
+    if (o == kArgBeta)  { args.beta  = GetArgument(command_line_args, help, kArgBeta, GetScalar<U>()); }
   }
 
   // These are the options common to all routines
-  args.platform_id    = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
-  args.device_id      = GetArgument(argc, argv, help, kArgDevice, size_t{0});
-  args.precision      = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
+  args.platform_id    = GetArgument(command_line_args, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
+  args.device_id      = GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
+  args.precision      = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
   #ifdef CLBLAST_REF_CLBLAS
-    args.compare_clblas = GetArgument(argc, argv, help, kArgCompareclblas, 1);
+    args.compare_clblas = GetArgument(command_line_args, help, kArgCompareclblas, 1);
   #else
     args.compare_clblas = 0;
   #endif
   #ifdef CLBLAST_REF_CBLAS
-    args.compare_cblas  = GetArgument(argc, argv, help, kArgComparecblas, 1);
+    args.compare_cblas  = GetArgument(command_line_args, help, kArgComparecblas, 1);
   #else
     args.compare_cblas = 0;
   #endif
-  args.step           = GetArgument(argc, argv, help, kArgStepSize, size_t{1});
-  args.num_steps      = GetArgument(argc, argv, help, kArgNumSteps, size_t{0});
-  args.num_runs       = GetArgument(argc, argv, help, kArgNumRuns, size_t{10});
-  args.print_help     = CheckArgument(argc, argv, help, kArgHelp);
-  args.silent         = CheckArgument(argc, argv, help, kArgQuiet);
-  args.no_abbrv       = CheckArgument(argc, argv, help, kArgNoAbbreviations);
-  warm_up_            = CheckArgument(argc, argv, help, kArgWarmUp);
+  args.step           = GetArgument(command_line_args, help, kArgStepSize, size_t{1});
+  args.num_steps      = GetArgument(command_line_args, help, kArgNumSteps, size_t{0});
+  args.num_runs       = GetArgument(command_line_args, help, kArgNumRuns, size_t{10});
+  args.print_help     = CheckArgument(command_line_args, help, kArgHelp);
+  args.silent         = CheckArgument(command_line_args, help, kArgQuiet);
+  args.no_abbrv       = CheckArgument(command_line_args, help, kArgNoAbbreviations);
+  warm_up_            = CheckArgument(command_line_args, help, kArgWarmUp);
 
   // Prints the chosen (or defaulted) arguments to screen. This also serves as the help message,
   // which is thus always displayed (unless silence is specified).
@@ -178,13 +179,13 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> c_source(args.c_size);
     std::vector<T> ap_source(args.ap_size);
     std::vector<T> scalar_source(args.scalar_size);
-    PopulateVector(x_source);
-    PopulateVector(y_source);
-    PopulateVector(a_source);
-    PopulateVector(b_source);
-    PopulateVector(c_source);
-    PopulateVector(ap_source);
-    PopulateVector(scalar_source);
+    PopulateVector(x_source, kSeed);
+    PopulateVector(y_source, kSeed);
+    PopulateVector(a_source, kSeed);
+    PopulateVector(b_source, kSeed);
+    PopulateVector(c_source, kSeed);
+    PopulateVector(ap_source, kSeed);
+    PopulateVector(scalar_source, kSeed);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);

@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
 
 namespace clblast {
@@ -47,6 +47,7 @@ class TunePadTranspose {
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
+  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -120,7 +121,8 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  switch(clblast::GetPrecision(argc, argv)) {
+  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  switch(clblast::GetPrecision(command_line_args)) {
     case clblast::Precision::kHalf: clblast::Tuner<clblast::TunePadTranspose<half>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TunePadTranspose<float>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TunePadTranspose<double>, double>(argc, argv); break;

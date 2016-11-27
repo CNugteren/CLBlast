@@ -11,7 +11,7 @@
 //
 // =================================================================================================
 
-#include "utilities.hpp"
+#include "utilities/utilities.hpp"
 
 #include <string>
 #include <vector>
@@ -151,8 +151,33 @@ std::string ToString(Precision value) {
     case Precision::kComplexDouble: return ToString(static_cast<int>(value))+" (complex-double)";
   }
 }
+template <>
+std::string ToString(StatusCode value) {
+  return std::to_string(static_cast<int>(value));
+}
 
 // =================================================================================================
+
+// Retrieves the command-line arguments in a C++ fashion. Also adds command-line arguments from
+// pre-defined environmental variables
+std::vector<std::string> RetrieveCommandLineArguments(int argc, char *argv[]) {
+
+  // Regular command-line arguments
+  auto command_line_args = std::vector<std::string>();
+  for (auto i=0; i<argc; ++i) {
+    command_line_args.push_back(std::string{argv[i]});
+  }
+
+  // Extra CLBlast arguments
+  const auto extra_args = ConvertArgument(std::getenv("CLBLAST_ARGUMENTS"), std::string{""});
+  std::stringstream extra_args_stream;
+  extra_args_stream.str(extra_args);
+  std::string extra_arg;
+  while (std::getline(extra_args_stream, extra_arg, ' ')) {
+    command_line_args.push_back(extra_arg);
+  }
+  return command_line_args;
+}
 
 // Helper for the below function to convert the argument to the value type. Adds specialization for
 // complex data-types. Note that complex arguments are accepted as regular values and are copied to
@@ -163,6 +188,9 @@ T ConvertArgument(const char* value) {
 }
 template size_t ConvertArgument(const char* value);
 
+template <> std::string ConvertArgument(const char* value) {
+  return std::string{value};
+}
 template <> half ConvertArgument(const char* value) {
   return FloatToHalf(static_cast<float>(std::stod(value)));
 }
@@ -189,21 +217,22 @@ T ConvertArgument(const char* value, T default_value) {
   return default_value;
 }
 template size_t ConvertArgument(const char* value, size_t default_value);
+template std::string ConvertArgument(const char* value, std::string default_value);
 
 // This function matches patterns in the form of "-option value" or "--option value". It returns a
 // default value in case the option is not found in the argument string.
 template <typename T>
-T GetArgument(const int argc, char **argv, std::string &help,
+T GetArgument(const std::vector<std::string> &arguments, std::string &help,
               const std::string &option, const T default_value) {
 
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = static_cast<T>(default_value);
-  for (int c=0; c<argc; ++c) {
-    auto item = std::string{argv[c]};
+  for (auto c=size_t{0}; c<arguments.size(); ++c) {
+    auto item = arguments[c];
     if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) {
       ++c;
-      return_value = ConvertArgument<T>(argv[c]);
+      return_value = ConvertArgument<T>(arguments[c].c_str());
       break;
     }
   }
@@ -215,39 +244,39 @@ T GetArgument(const int argc, char **argv, std::string &help,
 }
 
 // Compiles the above function
-template int GetArgument<int>(const int, char **, std::string&, const std::string&, const int);
-template size_t GetArgument<size_t>(const int, char **, std::string&, const std::string&, const size_t);
-template half GetArgument<half>(const int, char **, std::string&, const std::string&, const half);
-template float GetArgument<float>(const int, char **, std::string&, const std::string&, const float);
-template double GetArgument<double>(const int, char **, std::string&, const std::string&, const double);
-template float2 GetArgument<float2>(const int, char **, std::string&, const std::string&, const float2);
-template double2 GetArgument<double2>(const int, char **, std::string&, const std::string&, const double2);
-template Layout GetArgument<Layout>(const int, char **, std::string&, const std::string&, const Layout);
-template Transpose GetArgument<Transpose>(const int, char **, std::string&, const std::string&, const Transpose);
-template Side GetArgument<Side>(const int, char **, std::string&, const std::string&, const Side);
-template Triangle GetArgument<Triangle>(const int, char **, std::string&, const std::string&, const Triangle);
-template Diagonal GetArgument<Diagonal>(const int, char **, std::string&, const std::string&, const Diagonal);
-template Precision GetArgument<Precision>(const int, char **, std::string&, const std::string&, const Precision);
+template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, const int);
+template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, const size_t);
+template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, const half);
+template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float);
+template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
+template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
+template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&, const Transpose);
+template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);
+template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&, const Triangle);
+template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&, const Diagonal);
+template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&, const Precision);
 
 // =================================================================================================
 
 // Returns only the precision argument
-Precision GetPrecision(const int argc, char *argv[], const Precision default_precision) {
+Precision GetPrecision(const std::vector<std::string> &arguments, const Precision default_precision) {
   auto dummy = std::string{};
-  return GetArgument(argc, argv, dummy, kArgPrecision, default_precision);
+  return GetArgument(arguments, dummy, kArgPrecision, default_precision);
 }
 
 // =================================================================================================
 
 // Checks whether an argument is given. Returns true or false.
-bool CheckArgument(const int argc, char *argv[], std::string &help,
+bool CheckArgument(const std::vector<std::string> &arguments, std::string &help,
                    const std::string &option) {
 
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = false;
-  for (int c=0; c<argc; ++c) {
-    auto item = std::string{argv[c]};
+  for (auto c=size_t{0}; c<arguments.size(); ++c) {
+    auto item = arguments[c];
     if (item.compare("-"+option) == 0 || item.compare("--"+option) == 0) {
       ++c;
       return_value = true;
@@ -270,40 +299,40 @@ unsigned int GetRandomSeed() {
 
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
-void PopulateVector(std::vector<T> &vector) {
+void PopulateVector(std::vector<T> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<T>(kTestDataLowerLimit);
   auto upper_limit = static_cast<T>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<T> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = dist(mt); }
 }
-template void PopulateVector<float>(std::vector<float>&);
-template void PopulateVector<double>(std::vector<double>&);
+template void PopulateVector<float>(std::vector<float>&, const unsigned int);
+template void PopulateVector<double>(std::vector<double>&, const unsigned int);
 
 // Specialized versions of the above for complex data-types
 template <>
-void PopulateVector(std::vector<float2> &vector) {
+void PopulateVector(std::vector<float2> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<float>(kTestDataLowerLimit);
   auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 template <>
-void PopulateVector(std::vector<double2> &vector) {
+void PopulateVector(std::vector<double2> &vector, const unsigned int seed) {
   auto lower_limit = static_cast<double>(kTestDataLowerLimit);
   auto upper_limit = static_cast<double>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<double> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 
 // Specialized versions of the above for half-precision
 template <>
-void PopulateVector(std::vector<half> &vector) {
+void PopulateVector(std::vector<half> &vector, const unsigned int seed) {
   const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
   const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(GetRandomSeed());
+  std::mt19937 mt(seed);
   std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
   for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
 }

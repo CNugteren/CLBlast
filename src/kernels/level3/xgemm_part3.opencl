@@ -113,7 +113,7 @@ void XgemmUpper(const int kSizeN, const int kSizeK,
   const real beta = GetRealArg(arg_beta);
 
   // Skip these threads if they do not contain threads contributing to the upper-triangle
-  if (GetGroupID1()*NWG < GetGroupID0()*MWG) {
+  if ((GetGroupID1() + 1)*NWG < GetGroupID0()*MWG) {
     return;
   }
 
@@ -153,7 +153,7 @@ void XgemmLower(const int kSizeN, const int kSizeK,
   const real beta = GetRealArg(arg_beta);
 
   // Skip these threads if they do not contain threads contributing to the lower-triangle
-  if (GetGroupID1()*NWG > GetGroupID0()*MWG) {
+  if (GetGroupID1()*NWG > (GetGroupID0() + 1)*MWG) {
     return;
   }
 
