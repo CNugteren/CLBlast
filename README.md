@@ -147,7 +147,7 @@ If your device is not (yet) among this list or if you want to tune CLBlast for s
 
     cmake -DTUNERS=ON ..
 
-Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.5.0 or higher).
+Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https://github.com/CNugteren/CLTune), which has to be installed separately (requires version 2.6.0 or higher).
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables.
 
@@ -294,7 +294,7 @@ Contributions are welcome in the form of tuning results for OpenCL devices previ
 
 The contributing authors (code, pull requests, testing) so far are:
 
-* [Cedric Nugteren](http://www.cedricnugteren.nl) - main author
+* [Cedric Nugteren](http://cnugteren.github.io) - main author
 * [Anton Lokhmotov](https://github.com/psyhtest)
 * [Dragan Djuric](https://github.com/blueberry)
 * [Marco Hutter](http://marco-hutter.de/)
@@ -316,4 +316,4 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://www.cedricnugteren.nl).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://cnugteren.github.io).
