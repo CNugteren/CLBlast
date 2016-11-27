@@ -296,8 +296,9 @@ def performance_test(routine, level_string):
     result += "using double2 = clblast::double2;" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
     result += "int main(int argc, char *argv[]) {" + NL
+    result += "  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);" + NL
     default = convert.precision_to_full_name(routine.flavours[0].precision_name)
-    result += "  switch(clblast::GetPrecision(argc, argv, clblast::Precision::k" + default + ")) {" + NL
+    result += "  switch(clblast::GetPrecision(command_line_args, clblast::Precision::k" + default + ")) {" + NL
     for precision in ["H", "S", "D", "C", "Z"]:
         result += "    case clblast::Precision::k" + convert.precision_to_full_name(precision) + ":"
         found = False

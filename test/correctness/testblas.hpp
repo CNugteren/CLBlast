@@ -80,7 +80,7 @@ class TestBlas: public Tester<T,U> {
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestBlas(int argc, char *argv[], const bool silent,
+  TestBlas(const std::vector<std::string> &arguments, const bool silent,
            const std::string &name, const std::vector<std::string> &options,
            const Routine run_routine,
            const Routine run_reference1, const Routine run_reference2,
@@ -117,6 +117,7 @@ class TestBlas: public Tester<T,U> {
 // is automatically compiled for each routine, templated by the parameter "C".
 template <typename C, typename T, typename U>
 size_t RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
+  auto command_line_args = RetrieveCommandLineArguments(argc, argv);
 
   // Sets the reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
@@ -139,7 +140,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
 
   // Creates a tester
   auto options = C::GetOptions();
-  TestBlas<T,U> tester{argc, argv, silent, name, options,
+  TestBlas<T,U> tester{command_line_args, silent, name, options,
                        C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 

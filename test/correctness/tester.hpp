@@ -70,7 +70,7 @@ class Tester {
 
   // Creates an instance of the tester, running on a particular OpenCL platform and device. It
   // takes the routine's names as an additional parameter.
-  explicit Tester(int argc, char *argv[], const bool silent,
+  explicit Tester(const std::vector<std::string> &arguments, const bool silent,
                   const std::string &name, const std::vector<std::string> &options);
   ~Tester();
 

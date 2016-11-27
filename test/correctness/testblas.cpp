@@ -49,13 +49,13 @@ template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes =
 
 // Constructor, initializes the base class tester and input data
 template <typename T, typename U>
-TestBlas<T,U>::TestBlas(int argc, char *argv[], const bool silent,
+TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool silent,
                         const std::string &name, const std::vector<std::string> &options,
                         const Routine run_routine,
                         const Routine run_reference1, const Routine run_reference2,
                         const ResultGet get_result, const ResultIndex get_index,
                         const ResultIterator get_id1, const ResultIterator get_id2):
-    Tester<T,U>(argc, argv, silent, name, options),
+    Tester<T,U>(arguments, silent, name, options),
     kOffsets(GetOffsets()),
     kAlphaValues(GetExampleScalars<U>(full_test_)),
     kBetaValues(GetExampleScalars<U>(full_test_)),

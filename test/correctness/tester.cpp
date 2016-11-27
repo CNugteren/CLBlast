@@ -67,15 +67,15 @@ template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedRef
 // General constructor for all CLBlast testers. It prints out the test header to stdout and sets-up
 // the clBLAS library for reference.
 template <typename T, typename U>
-Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
+Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent,
                     const std::string &name, const std::vector<std::string> &options):
     help_("Options given/available:\n"),
-    platform_(Platform(GetArgument(argc, argv, help_, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0})))),
-    device_(Device(platform_, GetArgument(argc, argv, help_, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0})))),
+    platform_(Platform(GetArgument(arguments, help_, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0})))),
+    device_(Device(platform_, GetArgument(arguments, help_, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0})))),
     context_(Context(device_)),
     queue_(Queue(context_, device_)),
-    full_test_(CheckArgument(argc, argv, help_, kArgFullTest)),
-    verbose_(CheckArgument(argc, argv, help_, kArgVerbose)),
+    full_test_(CheckArgument(arguments, help_, kArgFullTest)),
+    verbose_(CheckArgument(arguments, help_, kArgVerbose)),
     error_log_{},
     num_passed_{0},
     num_skipped_{0},
@@ -88,14 +88,14 @@ Tester<T,U>::Tester(int argc, char *argv[], const bool silent,
 
   // Determines which reference to test against
   #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 0);
-    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 0);
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
   #elif CLBLAST_REF_CLBLAS
-    compare_clblas_ = GetArgument(argc, argv, help_, kArgCompareclblas, 1);
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 1);
     compare_cblas_ = 0;
   #elif CLBLAST_REF_CBLAS
     compare_clblas_ = 0;
-    compare_cblas_  = GetArgument(argc, argv, help_, kArgComparecblas, 1);
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
   #else
     compare_clblas_ = 0;
     compare_cblas_ = 0;

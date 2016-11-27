@@ -33,20 +33,21 @@ void Tuner(int argc, char* argv[]) {
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Sets the parameters and platform/device for which to tune (command-line options)
+  auto command_line_args = RetrieveCommandLineArguments(argc, argv);
   auto help = std::string{"* Options given/available:\n"};
   auto args = Arguments<T>{};
-  args.platform_id = GetArgument(argc, argv, help, kArgPlatform, size_t{0});
-  args.device_id   = GetArgument(argc, argv, help, kArgDevice, size_t{0});
-  args.precision   = GetArgument(argc, argv, help, kArgPrecision, Precision::kSingle);
+  args.platform_id = GetArgument(command_line_args, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
+  args.device_id   = GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
+  args.precision   = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
   for (auto &o: C::GetOptions()) {
-    if (o == kArgM)        { args.m        = GetArgument(argc, argv, help, kArgM, C::DefaultM()); }
-    if (o == kArgN)        { args.n        = GetArgument(argc, argv, help, kArgN, C::DefaultN()); }
-    if (o == kArgK)        { args.k        = GetArgument(argc, argv, help, kArgK, C::DefaultK()); }
-    if (o == kArgAlpha)    { args.alpha    = GetArgument(argc, argv, help, kArgAlpha, GetScalar<T>()); }
-    if (o == kArgBeta)     { args.beta     = GetArgument(argc, argv, help, kArgBeta, GetScalar<T>()); }
-    if (o == kArgFraction) { args.fraction = GetArgument(argc, argv, help, kArgFraction, C::DefaultFraction()); }
+    if (o == kArgM)        { args.m        = GetArgument(command_line_args, help, kArgM, C::DefaultM()); }
+    if (o == kArgN)        { args.n        = GetArgument(command_line_args, help, kArgN, C::DefaultN()); }
+    if (o == kArgK)        { args.k        = GetArgument(command_line_args, help, kArgK, C::DefaultK()); }
+    if (o == kArgAlpha)    { args.alpha    = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
+    if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
+    if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, C::DefaultFraction()); }
   }
-  const auto num_runs = GetArgument(argc, argv, help, kArgNumRuns, C::DefaultNumRuns());
+  const auto num_runs = GetArgument(command_line_args, help, kArgNumRuns, C::DefaultNumRuns());
 
   fprintf(stdout, "%s\n", help.c_str());
 

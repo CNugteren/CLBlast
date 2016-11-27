@@ -119,7 +119,8 @@ using double2 = clblast::double2;
 // Function to tune a specific variation V (not within the clblast namespace)
 template <int V>
 void StartVariation(int argc, char *argv[]) {
-  switch(clblast::GetPrecision(argc, argv)) {
+  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  switch(clblast::GetPrecision(command_line_args)) {
     case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneXdot<half, V>, half>(argc, argv); break;
     case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneXdot<float, V>, float>(argc, argv); break;
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXdot<double, V>, double>(argc, argv); break;

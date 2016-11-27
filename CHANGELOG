@@ -12,6 +12,7 @@ Development version (next release)
 - Added an option to set OpenCL compiler options through the env variable CLBLAST_BUILD_OPTIONS
 - Added an option to run tuned kernels multiple times to average execution times
 - Added an option to build a static version of the library
+- Made it possible to use the command-line environmental vars everywhere and without re-running CMake
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 
