@@ -52,6 +52,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     auto program = Program(device_, context_, binary);
     program.Build(device_, options);
     StoreProgramToCache(program, context_, precision_, routine_name_);
+    return;
   }
 
   // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
