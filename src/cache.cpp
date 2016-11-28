@@ -15,6 +15,7 @@
 #include <vector>
 #include <mutex>
 
+#include "database/database.hpp"
 #include "cache.hpp"
 
 namespace clblast {
@@ -87,6 +88,11 @@ template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const;
 
 template class Cache<ProgramKey, Program>;
 template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
+
+// =================================================================================================
+
+template class Cache<DatabaseKey, Database>;
+template Database DatabaseCache::Get(const DatabaseKeyRef &, bool *) const;
 
 // =================================================================================================
 } // namespace clblast

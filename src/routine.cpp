@@ -32,8 +32,28 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
-    device_name_(device_.Name()),
-    db_(queue_, routines, precision_, userDatabase) {
+    device_name_(device_.Name()) {
+
+  InitDatabase(routines, userDatabase);
+  InitProgram(source);
+}
+
+void Routine::InitDatabase(const std::vector<std::string> &routines,
+                           const std::vector<const Database::DatabaseEntry*> &userDatabase) {
+
+  // Queries the cache to see whether or not the kernel parameter database is already there
+  bool has_db;
+  db_ = DatabaseCache::Instance().Get(DatabaseKeyRef{ precision_, device_name_, routines },
+                                      &has_db);
+  if (has_db) { return; }
+
+  // Builds the parameter database for this device and routine set and stores it in the cache
+  db_ = Database(queue_, routines, precision_, userDatabase);
+  DatabaseCache::Instance().Store(DatabaseKey{ precision_, device_name_, routines },
+                                  Database{ db_ });
+}
+
+void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
   bool has_program;

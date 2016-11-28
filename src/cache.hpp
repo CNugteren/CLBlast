@@ -86,6 +86,20 @@ extern template class Cache<ProgramKey, Program>;
 extern template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
 
 // =================================================================================================
+
+class Database;
+
+// The key struct for the cache of database maps.
+// Order of fields: precision, device_name, routines (smaller fields first)
+typedef std::tuple<Precision, std::string, std::vector<std::string>> DatabaseKey;
+typedef std::tuple<const Precision &, const std::string &, const std::vector<std::string> &> DatabaseKeyRef;
+
+typedef Cache<DatabaseKey, Database> DatabaseCache;
+
+extern template class Cache<DatabaseKey, Database>;
+extern template Database DatabaseCache::Get(const DatabaseKeyRef &, bool *) const;
+
+// =================================================================================================
 } // namespace clblast
 
 // CLBLAST_CACHE_H_
