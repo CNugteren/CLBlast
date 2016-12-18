@@ -2708,6 +2708,77 @@ Requirements for TRMM:
 
 
 
+xTRSM: Solves a triangular system of equations
+-------------
+
+Solves the equation _A * X = alpha * B_ for the unknown _m_ by _n_ matrix X, in which _A_ is an _n_ by _n_ unit or non-unit triangular matrix and B is an _m_ by _n_ matrix. The matrix _B_ is overwritten by the solution _X_.
+
+C++ API:
+```
+template <typename T>
+StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_half alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to TRSM:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Side side`: The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `cl_mem b_buffer`: OpenCL buffer to store the output B matrix.
+* `const size_t b_offset`: The offset in elements from the start of the output B matrix.
+* `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xOMATCOPY: Scaling and out-place transpose/copy (non-BLAS function)
 -------------
 
