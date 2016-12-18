@@ -126,16 +126,16 @@ void Xgemm<T>::DoGemm(const Layout layout,
 // overhead of these extra kernels might not be ideal for certain devices/arguments.
 template <typename T>
 void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
-                                  const T alpha,
-                                  const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                                  const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                                  const T beta,
-                                  const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
-                                  const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                                  const bool a_conjugate, const bool b_conjugate,
-                                  const size_t a_one, const size_t a_two, const bool a_want_rotated,
-                                  const size_t b_one, const size_t b_two, const bool b_want_rotated,
-                                  const size_t c_one, const size_t c_two, const bool c_want_rotated) {
+                            const T alpha,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                            const T beta,
+                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                            const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
+                            const bool a_conjugate, const bool b_conjugate,
+                            const size_t a_one, const size_t a_two, const bool a_want_rotated,
+                            const size_t b_one, const size_t b_two, const bool b_want_rotated,
+                            const size_t c_one, const size_t c_two, const bool c_want_rotated) {
   // Calculates the ceiled versions of m, n, and k
   const auto m_ceiled = Ceil(m, db_["MWG"]);
   const auto n_ceiled = Ceil(n, db_["NWG"]);
@@ -247,13 +247,13 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
 // The direct version of GEMM, requiring just one kernel, no pre or post-processing kernels.
 template <typename T>
 void Xgemm<T>::GemmDirect(const size_t m, const size_t n, const size_t k,
-                                const T alpha,
-                                const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                                const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                                const T beta,
-                                const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
-                                const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                                const bool a_conjugate, const bool b_conjugate) {
+                          const T alpha,
+                          const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                          const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                          const T beta,
+                          const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                          const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
+                          const bool a_conjugate, const bool b_conjugate) {
 
   // Loads the program from the database
   const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);

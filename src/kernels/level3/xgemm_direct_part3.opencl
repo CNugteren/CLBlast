@@ -53,13 +53,13 @@ inline void XgemmDirect(const int kSizeM, const int kSizeN, const int kSizeK,
     for (; kwg < (kSizeK/WGD) * WGD; kwg+=WGD) {
 
       // Loads data: off-chip --> local (matrix A and B)
-      if (a_ld % VWMD == 0) {
+      if (a_ld % VWMD == 0 && a_offset % VWMD == 0) {
         GlobalToLocalDirectA(agm, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
       }
       else {
         GlobalToLocalScalarA(agms, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
       }
-      if (b_ld % VWND == 0) {
+      if (b_ld % VWND == 0 && b_offset % VWND == 0) {
         GlobalToLocalDirectB(bgm, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate);
       }
       else {
