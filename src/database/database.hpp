@@ -75,7 +75,7 @@ class Database {
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
-  explicit Database(const Queue &queue, const std::vector<std::string> &routines,
+  explicit Database(const Device &device, const std::vector<std::string> &routines,
                     const Precision precision, const std::vector<const DatabaseEntry*> &overlay);
 
   // Accessor of values by key

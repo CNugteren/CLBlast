@@ -48,7 +48,7 @@ void Routine::InitDatabase(const std::vector<std::string> &routines,
   if (has_db) { return; }
 
   // Builds the parameter database for this device and routine set and stores it in the cache
-  db_ = Database(queue_, routines, precision_, userDatabase);
+  db_ = Database(device_, routines, precision_, userDatabase);
   DatabaseCache::Instance().Store(DatabaseKey{ precision_, device_name_, routines },
                                   Database{ db_ });
 }

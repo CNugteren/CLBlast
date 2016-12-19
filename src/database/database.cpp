@@ -63,12 +63,11 @@ const std::unordered_map<std::string, std::string> Database::kVendorNames{
 
 // Constructor, computing device properties and populating the parameter-vector from the database.
 // This takes an optional overlay database in case of custom tuning or custom kernels.
-Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
+Database::Database(const Device &device, const std::vector<std::string> &kernels,
                    const Precision precision, const std::vector<const DatabaseEntry*> &overlay):
   parameters_(std::make_shared<Parameters>()) {
 
   // Finds information of the current device
-  auto device = queue.GetDevice();
   auto device_type = device.Type();
   auto device_vendor = device.Vendor();
   auto device_name = device.Name();
