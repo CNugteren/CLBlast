@@ -100,6 +100,36 @@ extern template class Cache<DatabaseKey, Database>;
 extern template Database DatabaseCache::Get(const DatabaseKeyRef &, bool *) const;
 
 // =================================================================================================
+
+namespace plugin {
+
+class Library;
+
+} // namespace plugin
+
+typedef Cache<std::string, plugin::Library> PluginLibraryCache;
+
+extern template class Cache<std::string, plugin::Library>;
+extern template plugin::Library PluginLibraryCache::Get(const std::string &, bool *) const;
+
+// =================================================================================================
+
+namespace plugin {
+
+class Plugin;
+
+} // namespace plugin
+
+// order of fields: precision, routine_name, device_name (smaller fields first)
+typedef std::tuple<Precision, std::string, std::string> PluginKey;
+typedef std::tuple<const Precision &, const std::string &, const std::string &> PluginKeyRef;
+
+typedef Cache<PluginKey, plugin::Plugin> PluginCache;
+
+extern template class Cache<PluginKey, plugin::Plugin>;
+extern template plugin::Plugin PluginCache::Get(const PluginKeyRef &, bool *) const;
+
+// =================================================================================================
 } // namespace clblast
 
 // CLBLAST_CACHE_H_
