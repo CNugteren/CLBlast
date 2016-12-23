@@ -24,6 +24,7 @@
 #include "utilities/buffer_test.hpp"
 #include "database/database.hpp"
 #include "routines/common.hpp"
+#include "utilities/plugin.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -51,6 +52,9 @@ class Routine {
   void InitDatabase(const std::vector<std::string> &routines,
                     const std::vector<const Database::DatabaseEntry*> &userDatabase);
 
+  // Initializes plugin_, fetching cached plugin entry or building one
+  void InitPlugin(const std::string &routine_name);
+
  protected:
 
   // Non-static variable for the precision
@@ -73,6 +77,9 @@ class Routine {
 
   // Connection to the database for all the device-specific parameters
   Database db_;
+
+  // Device-specific routine override
+  plugin::Plugin plugin_;
 };
 
 // =================================================================================================

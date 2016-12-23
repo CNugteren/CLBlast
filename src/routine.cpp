@@ -34,8 +34,26 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     device_(queue_.GetDevice()),
     device_name_(device_.Name()) {
 
+  InitPlugin(name);
   InitDatabase(routines, userDatabase);
   InitProgram(source);
+}
+
+void Routine::InitPlugin(const std::string &routine_name) {
+
+  auto device_name = device_.Name();
+
+  // Queries the cache to see whether or not the plugin entry is already there
+  bool has_plugin;
+  plugin_ = PluginCache::Instance().Get(PluginKeyRef{ precision_, routine_name, device_name },
+                                        &has_plugin);
+
+  if (has_plugin) { return; }
+
+  // Acquires the plugin entry for this device and routine and stores it in the cache
+  plugin_ = plugin::Plugin(device_, routine_name, precision_);
+  PluginCache::Instance().Store(PluginKey{ precision_, routine_name, device_name },
+                                plugin::Plugin{ plugin_ });
 }
 
 void Routine::InitDatabase(const std::vector<std::string> &routines,
