@@ -44,6 +44,47 @@ inline namespace version_1 {
 
 // =================================================================================================
 
+namespace database {
+
+using Parameters = std::unordered_map<std::string, size_t>;
+
+// Database tree leaf entry: describes a single device model
+struct Device {
+  // clGetDeviceInfo(CL_DEVICE_NAME) or "default"
+  std::string name;
+
+  // Actual parameters for this device and routine
+  Parameters parameters;
+};
+
+// Database tree vendor entry: group of entries for a single device vendor
+struct Vendor {
+  // clGetDeviceInfo(CL_DEVICE_TYPE) as string: "CPU", "GPU", "accelerator" or "default"
+  std::string type;
+
+  // clGetDeviceInfo(CL_DEVICE_VENDOR) or "default"
+  std::string name;
+
+  // Entries for this vendor
+  std::vector<Device> devices;
+};
+
+// Database tree routine entry: group of entries for a single routine tag
+struct Routine {
+  // Routine tag (see src/routines/*/*.cpp), multiple tags are used per each real BLAS routine
+  std::string kernel;
+
+  // Input data precision corresponding to these parameters
+  Precision precision;
+
+  // Entries for this routine
+  std::vector<Vendor> vendors;
+};
+
+} // namespace database
+
+// =================================================================================================
+
 class Routine;
 
 class Interface : public Base {
@@ -61,6 +102,11 @@ class Interface : public Base {
 class Routine : public Base {
  public:
   virtual ~Routine();
+
+  // Custom database entries
+  // NOTE: custom database entries completely override built-in ones on a per-routine basis
+  // (i. e. if Xgemm/32 is overridden, then the built-in database is never looked up for Xgemm/32)
+  std::vector<const database::Routine *> database;
 };
 
 // =================================================================================================

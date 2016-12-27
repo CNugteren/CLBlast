@@ -24,7 +24,6 @@ namespace clblast {
 // The constructor does all heavy work, errors are returned as exceptions
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
                  const std::vector<std::string> &routines, const Precision precision,
-                 const std::vector<const Database::DatabaseEntry*> &userDatabase,
                  std::initializer_list<const char *> source):
     precision_(precision),
     routine_name_(name),
@@ -35,7 +34,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     device_name_(device_.Name()) {
 
   InitPlugin(name);
-  InitDatabase(routines, userDatabase);
+  InitDatabase(routines);
   InitProgram(source);
 }
 
@@ -56,8 +55,7 @@ void Routine::InitPlugin(const std::string &routine_name) {
                                 plugin::Plugin{ plugin_ });
 }
 
-void Routine::InitDatabase(const std::vector<std::string> &routines,
-                           const std::vector<const Database::DatabaseEntry*> &userDatabase) {
+void Routine::InitDatabase(const std::vector<std::string> &routines) {
 
   // Queries the cache to see whether or not the kernel parameter database is already there
   bool has_db;
@@ -66,7 +64,7 @@ void Routine::InitDatabase(const std::vector<std::string> &routines,
   if (has_db) { return; }
 
   // Builds the parameter database for this device and routine set and stores it in the cache
-  db_ = Database(device_, routines, precision_, userDatabase);
+  db_ = Database(device_, routines, precision_, plugin_);
   DatabaseCache::Instance().Store(DatabaseKey{ precision_, device_name_, routines },
                                   Database{ db_ });
 }
