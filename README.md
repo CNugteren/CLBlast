@@ -127,6 +127,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Pitcairn
   - Tahiti
   - Tonga
+  - Turks
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -137,6 +138,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Iris Pro
 * Intel CPUs:
   - Core i5-6200U
+  - Core i7-2670QM
   - Core i7-3770K
   - Core i7-5930K
 * Other devices:

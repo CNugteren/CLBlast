@@ -43,7 +43,8 @@ const Database::DatabaseEntry XgemmSingle = {
         { "Pitcairn",                                        { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
         { "Tahiti",                                          { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",32}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",1} } },
         { "Tonga",                                           { {"KWG",16}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",8} } },
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
+        { "Turks",                                           { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
       }
     },
     { // ARM GPUs
@@ -54,10 +55,11 @@ const Database::DatabaseEntry XgemmSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"KWG",32}, {"KWI",8}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"KWG",32}, {"KWI",8}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",64}, {"NDIMB",32}, {"NDIMC",32}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
+        { "default",                                         { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
       }
     },
     { // Intel GPUs
@@ -116,7 +118,8 @@ const Database::DatabaseEntry XgemmComplexSingle = {
         { "Pitcairn",                                        { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",4}, {"VWN",2} } },
         { "Tahiti",                                          { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",32}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",2}, {"VWN",1} } },
         { "Tonga",                                           { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",32}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",2} } },
+        { "Turks",                                           { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
       }
     },
     { // ARM GPUs
@@ -127,10 +130,11 @@ const Database::DatabaseEntry XgemmComplexSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",1}, {"VWM",1}, {"VWN",2} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",32}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",32}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",16}, {"MWG",16}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",4} } },
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
+        { "default",                                         { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
       }
     },
     { // Intel GPUs
@@ -171,7 +175,7 @@ const Database::DatabaseEntry XgemmComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",1} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",16}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
   }
@@ -200,10 +204,11 @@ const Database::DatabaseEntry XgemmDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",128}, {"SA",1}, {"SB",1}, {"STRM",1}, {"STRN",1}, {"VWM",2}, {"VWN",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",1}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",2}, {"VWN",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",16}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",1}, {"STRN",1}, {"VWM",1}, {"VWN",8} } },
-        { "default",                                         { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",32}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",1} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",4} } },
       }
     },
     { // Intel accelerators
@@ -232,7 +237,7 @@ const Database::DatabaseEntry XgemmDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",4}, {"VWN",4} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",32}, {"MWG",64}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",64}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
       }
     },
   }
@@ -261,10 +266,11 @@ const Database::DatabaseEntry XgemmComplexDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWG",16}, {"KWI",2}, {"MDIMA",32}, {"MDIMC",8}, {"MWG",64}, {"NDIMB",16}, {"NDIMC",8}, {"NWG",128}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",1}, {"VWM",2}, {"VWN",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"KWG",32}, {"KWI",2}, {"MDIMA",16}, {"MDIMC",32}, {"MWG",128}, {"NDIMB",16}, {"NDIMC",16}, {"NWG",64}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",128}, {"NDIMB",8}, {"NDIMC",16}, {"NWG",128}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",1}, {"VWM",1}, {"VWN",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"KWG",32}, {"KWI",8}, {"MDIMA",8}, {"MDIMC",32}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
+        { "default",                                         { {"KWG",16}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",32}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } },
       }
     },
     { // Intel accelerators
@@ -292,7 +298,7 @@ const Database::DatabaseEntry XgemmComplexDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",2}, {"VWN",2} } },
+        { "default",                                         { {"KWG",32}, {"KWI",2}, {"MDIMA",8}, {"MDIMC",8}, {"MWG",16}, {"NDIMB",8}, {"NDIMC",8}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",2} } },
       }
     },
   }

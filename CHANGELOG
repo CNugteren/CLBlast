@@ -1,6 +1,7 @@
 
 Development version (next release)
 - Fixed a bug when using offsets in the direct version of the GEMM kernels
+- Added tuned parameters for various devices (see README)
 
 Version 0.10.0
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header

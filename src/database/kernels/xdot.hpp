@@ -43,13 +43,15 @@ const Database::DatabaseEntry XdotSingle = {
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",128}, {"WGS2",32} } },
         { "Tonga",                                           { {"WGS1",64}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
+        { "Turks",                                           { {"WGS1",128}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",1024}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
     { // Intel GPUs
@@ -81,7 +83,7 @@ const Database::DatabaseEntry XdotSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
   }
@@ -98,13 +100,15 @@ const Database::DatabaseEntry XdotComplexSingle = {
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",32} } },
         { "Tonga",                                           { {"WGS1",256}, {"WGS2",64} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
+        { "Turks",                                           { {"WGS1",128}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",128}, {"WGS2",64} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",1024}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
     { // Intel GPUs
@@ -136,7 +140,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
     },
   }
@@ -158,8 +162,9 @@ const Database::DatabaseEntry XdotDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",64}, {"WGS2",128} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",512}, {"WGS2",64} } },
-        { "default",                                         { {"WGS1",512}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
     { // NVIDIA GPUs
@@ -202,8 +207,9 @@ const Database::DatabaseEntry XdotComplexDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WGS2",128} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",1024}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
     { // NVIDIA GPUs

@@ -44,6 +44,7 @@ const Database::DatabaseEntry XgerSingle = {
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
         { "Tonga",                                           { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "Turks",                                           { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
         { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",1} } },
       }
     },
@@ -55,9 +56,10 @@ const Database::DatabaseEntry XgerSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WGS2",4}, {"WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",128}, {"WGS2",2}, {"WPT",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"WGS1",128}, {"WGS2",1}, {"WPT",4} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",8}, {"WPT",4} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
       }
     },
     { // Intel GPUs
@@ -105,7 +107,8 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
         { "Tonga",                                           { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
+        { "Turks",                                           { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -116,9 +119,10 @@ const Database::DatabaseEntry XgerComplexSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",128}, {"WGS2",2}, {"WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"WGS1",512}, {"WGS2",4}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",512}, {"WGS2",4}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
       }
     },
     { // Intel GPUs
@@ -177,9 +181,10 @@ const Database::DatabaseEntry XgerDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",512}, {"WGS2",16}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"WGS1",512}, {"WGS2",8}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",512}, {"WGS2",8}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",4}, {"WPT",2} } },
       }
     },
     { // NVIDIA GPUs
@@ -227,6 +232,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",128}, {"WGS2",4}, {"WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",512}, {"WGS2",4}, {"WPT",2} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
         { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
