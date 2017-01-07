@@ -241,7 +241,7 @@ endif()
 if(SAMPLES)
 
   # Downloads the cl.hpp file from Khronos
-  file(DOWNLOAD https://www.khronos.org/registry/cl/api/1.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+  file(DOWNLOAD https://www.khronos.org/registry/OpenCL/api/2.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
 
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
