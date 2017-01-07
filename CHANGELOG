@@ -1,6 +1,7 @@
 
 Development version (next release)
 - Fixed a bug when using offsets in the direct version of the GEMM kernels
+- Fixed a missing cl_khr_fp64 when running double-precision on Intel CPUs
 - Added tuned parameters for various devices (see README)
 
 Version 0.10.0
