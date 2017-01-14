@@ -333,7 +333,10 @@ class Context {
 
   // Regular constructor with memory management
   explicit Context(const Device &device):
-      context_(new cl_context, [](cl_context* c) { CheckErrorDtor(clReleaseContext(*c)); delete c; }) {
+      context_(new cl_context, [](cl_context* c) {
+        if (*c) { CheckErrorDtor(clReleaseContext(*c)); }
+        delete c;
+      }) {
     auto status = CL_SUCCESS;
     const cl_device_id dev = device();
     *context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
@@ -362,7 +365,10 @@ class Program {
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source):
-      program_(new cl_program, [](cl_program* p) { CheckErrorDtor(clReleaseProgram(*p)); delete p; }) {
+      program_(new cl_program, [](cl_program* p) {
+        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
+        delete p;
+      }) {
     const char *source_ptr = &source[0];
     size_t length = source.length();
     auto status = CL_SUCCESS;
@@ -371,8 +377,11 @@ class Program {
   }
 
   // Binary-based constructor with memory management
-  explicit Program(const Device &device, const Context &context, const std::string& binary):
-      program_(new cl_program, [](cl_program* p) { CheckErrorDtor(clReleaseProgram(*p)); delete p; }) {
+  explicit Program(const Device &device, const Context &context, const std::string &binary):
+      program_(new cl_program, [](cl_program* p) {
+        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
+        delete p;
+      }) {
     const char *binary_ptr = &binary[0];
     size_t length = binary.length();
     auto status1 = CL_SUCCESS;
@@ -435,8 +444,10 @@ class Queue {
 
   // Regular constructor with memory management
   explicit Queue(const Context &context, const Device &device):
-      queue_(new cl_command_queue, [](cl_command_queue* s) { CheckErrorDtor(clReleaseCommandQueue(*s));
-                                                             delete s; }) {
+      queue_(new cl_command_queue, [](cl_command_queue* s) {
+        if (*s) { CheckErrorDtor(clReleaseCommandQueue(*s)); }
+        delete s;
+      }) {
     auto status = CL_SUCCESS;
     *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
     CLError::Check(status, "clCreateCommandQueue");
@@ -660,7 +671,10 @@ class Kernel {
 
   // Regular constructor with memory management
   explicit Kernel(const Program &program, const std::string &name):
-      kernel_(new cl_kernel, [](cl_kernel* k) { CheckErrorDtor(clReleaseKernel(*k)); delete k; }) {
+      kernel_(new cl_kernel, [](cl_kernel* k) {
+        if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
+        delete k;
+      }) {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program(), name.c_str(), &status);
     CLError::Check(status, "clCreateKernel");
