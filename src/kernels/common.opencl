@@ -162,6 +162,13 @@ R"(
   #define AbsoluteValue(value) value = fabs(value)
 #endif
 
+// Negation (component-wise)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Negate(value) value.x = -(value.x); value.y = -(value.y)
+#else
+  #define Negate(value) value = -(value)
+#endif
+
 // Adds two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
   #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
@@ -191,6 +198,13 @@ R"(
   #else
     #define MultiplyAdd(c, a, b) c += a * b
   #endif
+#endif
+
+// The scalar division function
+#if PRECISION == 3232 || PRECISION == 6464
+  #define DivideReal(c, a, b) c.x = a.x / b.x; c.y = a.x
+#else
+  #define DivideReal(c, a, b) c = a / b
 #endif
 
 // The scalar AXPBY function

@@ -102,6 +102,10 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 template <typename T>
 T GetScalar();
 
+// Returns a scalar of value 0
+template <typename T>
+T ConstantZero();
+
 // Returns a scalar of value 1
 template <typename T>
 T ConstantOne();

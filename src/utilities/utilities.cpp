@@ -46,6 +46,30 @@ double2 GetScalar() {
   return {2.0, 0.5};
 }
 
+// Returns a scalar of value 0
+template <typename T>
+T ConstantZero() {
+  return static_cast<T>(0.0);
+}
+template float ConstantZero<float>();
+template double ConstantZero<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half ConstantZero() {
+  return FloatToHalf(0.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 ConstantZero() {
+  return {0.0f, 0.0f};
+}
+template <>
+double2 ConstantZero() {
+  return {0.0, 0.0};
+}
+
 // Returns a scalar of value 1
 template <typename T>
 T ConstantOne() {
