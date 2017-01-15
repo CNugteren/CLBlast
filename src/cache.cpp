@@ -24,7 +24,7 @@ namespace clblast {
 void StoreBinaryToCache(const std::string &binary, const std::string &device_name,
                         const Precision &precision, const std::string &routine_name) {
   #ifdef VERBOSE
-    printf("[DEBUG] Storing binary in cache\n");
+    printf("[DEBUG] Storing binary '%s' in cache\n", routine_name.c_str());
   #endif
   binary_cache_mutex_.lock();
   binary_cache_.push_back(BinaryCache{binary, device_name, precision, routine_name});
@@ -35,7 +35,7 @@ void StoreBinaryToCache(const std::string &binary, const std::string &device_nam
 void StoreProgramToCache(const Program &program, const Context &context,
                          const Precision &precision, const std::string &routine_name) {
   #ifdef VERBOSE
-    printf("[DEBUG] Storing program in cache\n");
+    printf("[DEBUG] Storing program '%s' in cache\n", routine_name.c_str());
   #endif
   program_cache_mutex_.lock();
   program_cache_.push_back(ProgramCache{program, context(), precision, routine_name});
@@ -47,7 +47,7 @@ void StoreProgramToCache(const Program &program, const Context &context,
 const std::string& GetBinaryFromCache(const std::string &device_name, const Precision &precision,
                                       const std::string &routine_name) {
   #ifdef VERBOSE
-    printf("[DEBUG] Retrieving binary from cache\n");
+    printf("[DEBUG] Retrieving binary '%s' from cache\n", routine_name.c_str());
   #endif
   binary_cache_mutex_.lock();
   for (auto &cached_binary: binary_cache_) {
@@ -65,7 +65,7 @@ const std::string& GetBinaryFromCache(const std::string &device_name, const Prec
 const Program& GetProgramFromCache(const Context &context, const Precision &precision,
                                    const std::string &routine_name) {
   #ifdef VERBOSE
-    printf("[DEBUG] Retrieving program from cache\n");
+    printf("[DEBUG] Retrieving program '%s' from cache\n", routine_name.c_str());
   #endif
   program_cache_mutex_.lock();
   for (auto &cached_program: program_cache_) {
