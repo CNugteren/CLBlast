@@ -48,12 +48,12 @@ class TestXtrsm {
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeA(const Arguments<T> &args) {
-    auto k = (args.side == Side::kLeft) ? args.m : args.n;
+    const auto k = (args.side == Side::kLeft) ? args.m : args.n;
     return k * args.a_ld + args.a_offset;
   }
   static size_t GetSizeB(const Arguments<T> &args) {
-    auto b_rotated = (args.layout == Layout::kRowMajor);
-    auto b_two = (b_rotated) ? args.m : args.n;
+    const auto b_rotated = (args.layout == Layout::kRowMajor);
+    const auto b_two = (b_rotated) ? args.m : args.n;
     return b_two * args.b_ld + args.b_offset;
   }
 

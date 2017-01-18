@@ -27,6 +27,7 @@ namespace clblast {
 template <typename T>
 Xinvert<T>::Xinvert(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name, {"Invert"}, PrecisionValue<T>(), {}, {
+    #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/invert_diagonal_blocks.opencl"
     }) {
 }
@@ -91,8 +92,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   const auto local = std::vector<size_t>{internal_block_size};
   const auto global = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
-  RunKernel(kernel, queue_, device_, global, local, base_kernel_event.pointer(), event_wait_list);
-  event_wait_list.push_back(base_kernel_event);
+  auto base_kernel_event_pointer = (internal_block_size == block_size) ? event_ : base_kernel_event.pointer();
+  RunKernel(kernel, queue_, device_, global, local, base_kernel_event_pointer, event_wait_list);
+  if (internal_block_size == block_size) { event_wait_list.push_back(base_kernel_event); }
 
   // Builds up block_size x block_size blocks. For example, internal_block_size=16:
   // use   16 x 16  blocks to build  32 x 32  blocks,  1 x (1 x npages) grid,  4 x 4 threads;
@@ -130,8 +132,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     kernel2.SetArgument(3, static_cast<int>(npages));
     kernel2.SetArgument(4, static_cast<int>(block_size));
     auto kernel2_event = Event();
-    auto eventPointer = (is_last_kernel) ? event_ : kernel2_event.pointer();
-    RunKernel(kernel2, queue_, device_, global, local, eventPointer, event_wait_list);
+    auto kernel2_event_pointer = (is_last_kernel) ? event_ : kernel2_event.pointer();
+    RunKernel(kernel2, queue_, device_, global, local, kernel2_event_pointer, event_wait_list);
     if (!is_last_kernel) { event_wait_list.push_back(kernel2_event); }
 
     // Exit in case we reach beyond the bounds of the input matrix

@@ -110,6 +110,10 @@ T ConstantZero();
 template <typename T>
 T ConstantOne();
 
+// Returns a scalar of value -1
+template <typename T>
+T ConstantNegOne();
+
 // =================================================================================================
 
 // Structure containing all possible arguments for test clients, including their default values

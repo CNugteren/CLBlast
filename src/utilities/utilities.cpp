@@ -94,6 +94,30 @@ double2 ConstantOne() {
   return {1.0, 0.0};
 }
 
+// Returns a scalar of value -1
+template <typename T>
+T ConstantNegOne() {
+  return static_cast<T>(-1.0);
+}
+template float ConstantNegOne<float>();
+template double ConstantNegOne<double>();
+
+// Specialized version of the above for half-precision
+template <>
+half ConstantNegOne() {
+  return FloatToHalf(-1.0f);
+}
+
+// Specialized versions of the above for complex data-types
+template <>
+float2 ConstantNegOne() {
+  return {-1.0f, 0.0f};
+}
+template <>
+double2 ConstantNegOne() {
+  return {-1.0, 0.0};
+}
+
 // =================================================================================================
 
 // Implements the string conversion using std::to_string if possible
