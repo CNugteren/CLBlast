@@ -53,6 +53,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",1}, {"WGS2",32}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",2}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
       }
     },
@@ -78,6 +79,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
         { "GeForce GTX 1070",                                { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX 1080",                                { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 480",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 670",                                 { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
         { "GeForce GTX 680",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
@@ -121,7 +123,8 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",2}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",4}, {"WGS2",16}, {"WPT2",4} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
       }
     },
     { // Intel GPUs
@@ -180,6 +183,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",1}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
       }
     },
@@ -193,6 +197,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX 1070",                                { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "GeForce GTX 1080",                                { {"VW2",1}, {"WGS2",32}, {"WPT2",2} } },
         { "GeForce GTX 480",                                 { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "GeForce GTX 670",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "GeForce GTX 680",                                 { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
@@ -235,6 +240,7 @@ const Database::DatabaseEntry XgemvFastComplexDouble = {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",4}, {"WGS2",32}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",2}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",1}, {"WGS2",16}, {"WPT2",2} } },
         { "default",                                         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
       }
     },
