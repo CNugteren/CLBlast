@@ -123,6 +123,18 @@ class Routine : public Base {
     // Custom kernel replaces all built-in code
     Custom
   } kernel_mode;
+
+  // Specifies whether to use custom host routine (provided via a corresponding virtual function
+  // in a derived class).
+  // NOTE: host<-> device API/ABI is not considered stable, so avoid calling built-in kernels
+  // from custom routines.
+  enum class RoutineMode {
+    // Custom host routine is ignored
+    Default = 0,
+
+    // Custom host routine replaces the built-in one
+    Custom
+  } routine_mode;
 };
 
 // =================================================================================================
