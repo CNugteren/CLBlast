@@ -41,7 +41,7 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [117, 74, 118, 22, 29, 41, 65, 32]
+HEADER_LINES = [117, 75, 118, 22, 29, 41, 65, 32]
 FOOTER_LINES = [17, 80, 19, 18, 6, 6, 9, 2]
 
 # Different possibilities for requirements
@@ -129,7 +129,7 @@ ROUTINES = [
   Routine(True,  True,  "2a", "trmv",  T,  [S,D,C,Z,H],    ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "n",   "Triangular matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is triangular instead.", [ald_n]),
   Routine(True,  True,  "2a", "tbmv",  T,  [S,D,C,Z,H],    ["n","k"],           ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "n",   "Triangular banded matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is triangular and banded instead.", [ald_k_one]),
   Routine(True,  True,  "2a", "tpmv",  T,  [S,D,C,Z,H],    ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["ap"],     ["x"],                        [apn,xn],      [],               "n",   "Triangular packed matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is a triangular packed matrix instead and repreented as _AP_.", []),
-  Routine(False, True,  "2a", "trsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a triangular system of equations", "", []),
+  Routine(True,  True,  "2a", "trsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a triangular system of equations", "", []),
   Routine(False, True,  "2a", "tbsv",  T,  [S,D,C,Z],      ["n","k"],           ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a banded triangular system of equations", "", [ald_k_one]),
   Routine(False, True,  "2a", "tpsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["ap"],     ["x"],                        [apn,xn],      [],               "",    "Solves a packed triangular system of equations", "", []),
   # Level 2: matrix update

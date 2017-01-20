@@ -45,6 +45,7 @@
 #include "routines/level2/xtrmv.hpp"
 #include "routines/level2/xtbmv.hpp"
 #include "routines/level2/xtpmv.hpp"
+#include "routines/level2/xtrsv.hpp"
 #include "routines/level2/xger.hpp"
 #include "routines/level2/xgeru.hpp"
 #include "routines/level2/xgerc.hpp"
@@ -1146,12 +1147,20 @@ template StatusCode PUBLIC_API Tpmv<half>(const Layout, const Triangle, const Tr
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
-StatusCode Trsv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrsv<T>(queue_cpp, event);
+    routine.DoTrsv(layout, triangle, a_transpose, diagonal,
+                   n,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t,

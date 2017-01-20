@@ -1445,6 +1445,63 @@ Arguments to TPMV:
 
 
 
+xTRSV: Solves a triangular system of equations
+-------------
+
+
+
+C++ API:
+```
+template <typename T>
+StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastStrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to TRSV:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
+* `const size_t x_offset`: The offset in elements from the start of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xGER: General rank-1 matrix update
 -------------
 
