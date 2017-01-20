@@ -127,23 +127,27 @@ std::string ToString(T value) {
 }
 template std::string ToString<int>(int value);
 template std::string ToString<size_t>(size_t value);
-template std::string ToString<float>(float value);
-template std::string ToString<double>(double value);
+template <>
+std::string ToString(float value) {
+  std::ostringstream result;
+  result << std::fixed << std::setprecision(2) << value;
+  return result.str();
+}
+template <>
+std::string ToString(double value) {
+  std::ostringstream result;
+  result << std::fixed << std::setprecision(2) << value;
+  return result.str();
+}
 
 // If not possible directly: special cases for complex data-types
 template <>
 std::string ToString(float2 value) {
-  std::ostringstream real, imag;
-  real << std::setprecision(2) << value.real();
-  imag << std::setprecision(2) << value.imag();
-  return real.str()+"+"+imag.str()+"i";
+  return ToString(value.real())+"+"+ToString(value.imag())+"i";
 }
 template <>
 std::string ToString(double2 value) {
-  std::ostringstream real, imag;
-  real << std::setprecision(2) << value.real();
-  imag << std::setprecision(2) << value.imag();
-  return real.str()+"+"+imag.str()+"i";
+  return ToString(value.real())+"+"+ToString(value.imag())+"i";
 }
 
 // If not possible directly: special case for half-precision
