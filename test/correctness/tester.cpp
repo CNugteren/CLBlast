@@ -402,7 +402,9 @@ void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
       fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
     }
     else {
-      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
+      fprintf(stdout, "   Status code %d (expected %d): ",
+              static_cast<int>(entry.status_found),
+              static_cast<int>(entry.status_expect));
     }
     fprintf(stdout, "%s\n", GetOptionsString(entry.args).c_str());
   }

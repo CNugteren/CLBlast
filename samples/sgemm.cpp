@@ -106,7 +106,7 @@ int main() {
   auto time_ms = std::chrono::duration<double,std::milli>(elapsed_time).count();
 
   // Example completed. See "clblast.h" for status codes (0 -> success).
-  printf("Completed SGEMM in %.3lf ms with status %d\n", time_ms, status);
+  printf("Completed SGEMM in %.3lf ms with status %d\n", time_ms, static_cast<int>(status));
   return 0;
 }
 
