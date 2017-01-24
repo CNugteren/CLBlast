@@ -79,7 +79,7 @@ class Database {
                     const Precision precision, const std::vector<const DatabaseEntry*> &overlay);
 
   // Accessor of values by key
-  size_t operator[](const std::string key) const { return parameters_->find(key)->second; }
+  size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
 
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;
