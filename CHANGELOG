@@ -1,7 +1,10 @@
 
 Development version (next release)
+- Improved the internal program source and binary caches for scalability and speed (thanks to 'intelfx')
+- Fixed a bug having to re-create the binary even if it was in the cache
 - Fixed a bug when using offsets in the direct version of the GEMM kernels
 - Fixed a missing cl_khr_fp64 when running double-precision on Intel CPUs
+- Tests now also exit with an error code when OpenCL errors or compilation errors occur
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 
