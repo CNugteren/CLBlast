@@ -43,9 +43,8 @@ void Xasum<T>::DoAsum(const size_t n,
   TestVectorScalar(1, asum_buffer, asum_offset);
 
   // Retrieves the Xasum kernels from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel1 = Kernel(program, "Xasum");
-  auto kernel2 = Kernel(program, "XasumEpilogue");
+  auto kernel1 = Kernel(program_, "Xasum");
+  auto kernel2 = Kernel(program_, "XasumEpilogue");
 
   // Creates the buffer for intermediate values
   auto temp_size = 2*db_["WGS2"];

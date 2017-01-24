@@ -46,9 +46,8 @@ void Xdot<T>::DoDot(const size_t n,
   TestVectorScalar(1, dot_buffer, dot_offset);
 
   // Retrieves the Xdot kernels from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel1 = Kernel(program, "Xdot");
-  auto kernel2 = Kernel(program, "XdotEpilogue");
+  auto kernel1 = Kernel(program_, "Xdot");
+  auto kernel2 = Kernel(program_, "XdotEpilogue");
 
   // Creates the buffer for intermediate values
   auto temp_size = 2*db_["WGS2"];

@@ -65,14 +65,11 @@ void Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_transpose,
   TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
   TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
 
-  // Loads the program from the database
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-
   auto emptyEventList = std::vector<Event>();
   PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList,
                          a_one, a_two, a_ld, a_offset, a_buffer,
                          b_one, b_two, b_ld, b_offset, b_buffer,
-                         alpha, program, false, transpose, conjugate);
+                         alpha, program_, false, transpose, conjugate);
 }
 
 // =================================================================================================

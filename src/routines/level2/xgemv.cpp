@@ -122,8 +122,7 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   }
 
   // Retrieves the Xgemv kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m_real));

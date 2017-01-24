@@ -2165,7 +2165,8 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
 // Clears the cache of stored binaries
 StatusCode ClearCache() {
   try {
-    CacheClearAll();
+    ProgramCache::Instance().Invalidate();
+    BinaryCache::Instance().Invalidate();
   } catch (...) { return DispatchException(); }
   return StatusCode::kSuccess;
 }

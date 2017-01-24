@@ -53,8 +53,7 @@ void Xger<T>::DoGer(const Layout layout,
   TestVectorY(n, y_buffer, y_offset, y_inc);
 
   // Retrieves the kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, "Xger");
+  auto kernel = Kernel(program_, "Xger");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(a_one));

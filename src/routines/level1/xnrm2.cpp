@@ -43,9 +43,8 @@ void Xnrm2<T>::DoNrm2(const size_t n,
   TestVectorScalar(1, nrm2_buffer, nrm2_offset);
 
   // Retrieves the Xnrm2 kernels from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel1 = Kernel(program, "Xnrm2");
-  auto kernel2 = Kernel(program, "Xnrm2Epilogue");
+  auto kernel1 = Kernel(program_, "Xnrm2");
+  auto kernel2 = Kernel(program_, "Xnrm2Epilogue");
 
   // Creates the buffer for intermediate values
   auto temp_size = 2*db_["WGS2"];

@@ -52,8 +52,7 @@ void Xswap<T>::DoSwap(const size_t n,
   auto kernel_name = (use_fast_kernel) ? "XswapFast" : "Xswap";
 
   // Retrieves the Xswap kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the kernel arguments
   if (use_fast_kernel) {

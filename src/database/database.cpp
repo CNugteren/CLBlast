@@ -63,12 +63,11 @@ const std::unordered_map<std::string, std::string> Database::kVendorNames{
 
 // Constructor, computing device properties and populating the parameter-vector from the database.
 // This takes an optional overlay database in case of custom tuning or custom kernels.
-Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
+Database::Database(const Device &device, const std::vector<std::string> &kernels,
                    const Precision precision, const std::vector<const DatabaseEntry*> &overlay):
-  parameters_{} {
+  parameters_(std::make_shared<Parameters>()) {
 
   // Finds information of the current device
-  auto device = queue.GetDevice();
   auto device_type = device.Type();
   auto device_vendor = device.Vendor();
   auto device_name = device.Name();
@@ -87,7 +86,7 @@ Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
     for (auto &db: { database, overlay}) {
       search_result = Search(kernel, device_type, device_vendor, device_name, precision, db);
       if (search_result) {
-        parameters_.insert(search_result->begin(), search_result->end());
+        parameters_->insert(search_result->begin(), search_result->end());
         break;
       }
     }
@@ -101,7 +100,7 @@ Database::Database(const Queue &queue, const std::vector<std::string> &kernels,
 // Returns a list of OpenCL pre-processor defines in string form
 std::string Database::GetDefines() const {
   std::string defines{};
-  for (auto &parameter: parameters_) {
+  for (auto &parameter: *parameters_) {
     defines += "#define "+parameter.first+" "+ToString(parameter.second)+"\n";
   }
   return defines;
