@@ -25,13 +25,13 @@
 #include <vector>
 #include <utility>
 
+#include "utilities/utilities.hpp"
+
 // The libraries to test
 #ifdef CLBLAST_REF_CLBLAS
   #include <clBLAS.h>
 #endif
 #include "clblast.h"
-
-#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

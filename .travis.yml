@@ -2,14 +2,6 @@ language: cpp
 sudo: required
 dist: trusty
 
-os:
-  - linux
-  - osx
-
-compiler:
-  - gcc
-  - clang
-
 addons:
   apt:
     sources:
@@ -18,6 +10,14 @@ addons:
     packages:
       - cmake
       - ocl-icd-opencl-dev
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+    - os: linux
+      compiler: clang
+    - os: osx
 
 env:
   global:
