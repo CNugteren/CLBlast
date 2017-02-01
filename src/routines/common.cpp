@@ -20,8 +20,8 @@ namespace clblast {
 // =================================================================================================
 
 // Enqueues a kernel, waits for completion, and checks for errors
-void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
-               std::vector<size_t> global, const std::vector<size_t> &local,
+void RunKernel(const Kernel &kernel, const Queue &queue, const Device &device,
+               const std::vector<size_t> &global, const std::vector<size_t> &local,
                EventPointer event, const std::vector<Event> &waitForEvents) {
 
   if (!local.empty()) {
@@ -43,7 +43,9 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
 
     // Make sure the global thread sizes are at least equal to the local sizes
     for (auto i=size_t{0}; i<global.size(); ++i) {
-      if (global[i] < local[i]) { global[i] = local[i]; }
+      if (global[i] < local[i]) {
+        throw RuntimeErrorCode(StatusCode::kInvalidLocalThreadsTotal);
+      }
     }
   }
 
