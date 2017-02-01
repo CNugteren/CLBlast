@@ -41,6 +41,45 @@ public:
 
 // WARNING: if any definition inside this namespace is altered, the version must be incremented.
 inline namespace version_1 {
+// =================================================================================================
+
+// Plugin interface to the database class
+class Database {
+ public:
+  virtual ~Database();
+
+  // Accessor of values by key
+  virtual size_t operator[](const std::string &key) const = 0;
+};
+
+// =================================================================================================
+
+// Plugin interface to clblast::RunKernel() using C types for ABI stability
+// Enqueues a kernel, waits for completion, and checks for errors
+void RunKernel(cl_kernel kernel, cl_command_queue queue, cl_device_id device,
+               const std::vector<size_t> &global, const std::vector<size_t> &local,
+               cl_event *event, const std::vector<cl_event> &waitForEvents = {});
+
+// =================================================================================================
+
+// Plugin interface to clblast::PadCopyTransposeMatrix() using C types for ABI stability
+// Copies or transposes a matrix and optionally pads/unpads it with zeros. This method is also able
+// to write to symmetric and triangular matrices through optional arguments.
+template <typename T>
+void PadCopyTransposeMatrix(cl_command_queue queue, cl_device_id device,
+                            const Database &db,
+                            cl_event *event, const std::vector<cl_event> &waitForEvents,
+                            const size_t src_one, const size_t src_two,
+                            const size_t src_ld, const size_t src_offset,
+                            cl_mem src,
+                            const size_t dest_one, const size_t dest_two,
+                            const size_t dest_ld, const size_t dest_offset,
+                            cl_mem dest,
+                            const T alpha,
+                            cl_program program, const bool do_pad,
+                            const bool do_transpose, const bool do_conjugate,
+                            const bool upper = false, const bool lower = false,
+                            const bool diagonal_imag_zero = false);
 
 // =================================================================================================
 

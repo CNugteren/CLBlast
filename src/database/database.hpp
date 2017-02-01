@@ -50,7 +50,7 @@ class Plugin;
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-class Database {
+class Database : public plugin::Database {
  public:
 
   // These data structures are part of the plugin interface now
