@@ -363,6 +363,12 @@ class Program {
  public:
   Program() = default;
 
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Program(const cl_program program):
+      program_(new cl_program) {
+    *program_ = program;
+  }
+
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source):
       program_(new cl_program, [](cl_program* p) {
