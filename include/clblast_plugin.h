@@ -177,6 +177,25 @@ class Routine : public Base {
 };
 
 // =================================================================================================
+
+template <typename T>
+class RoutineXgemm : virtual public Routine {
+public:
+  // This signature is almost equivalent to clblast::Xgemm<T>::DoGemm(),
+  // but has additional parameters for in/out events and replaces C++ wrapped data types
+  // with raw OpenCL C API data types to aid ABI stability.
+  virtual void DoGemm(cl_event *event, const Database *database,
+                      const Layout layout,
+                      const Transpose a_transpose, const Transpose b_transpose,
+                      const size_t m, const size_t n, const size_t k,
+                      const T alpha,
+                      const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                      const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                      const T beta,
+                      const cl_mem c_buffer, const size_t c_offset, const size_t c_ld) const;
+};
+
+// =================================================================================================
 } // inline namespace version_X
 
 } // namespace plugin

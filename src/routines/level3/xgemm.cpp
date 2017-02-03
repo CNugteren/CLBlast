@@ -60,6 +60,9 @@ void Xgemm<T>::DoGemm(const Layout layout,
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0) || (k == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
 
+  // Acquires the plugin object for this routine
+  const auto &routine = plugin_.GetRoutine<plugin::RoutineXgemm<T>>();
+
   // Computes whether or not the matrices are transposed in memory. This is based on their layout
   // (row or column-major) and whether or not they are requested to be pre-transposed. Note
   // that the Xgemm kernel expects either matrices A and C (in case of row-major) or B (in case of
@@ -70,16 +73,6 @@ void Xgemm<T>::DoGemm(const Layout layout,
   const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
                          (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
   const auto c_rotated = (layout == Layout::kRowMajor);
-  static const auto a_want_rotated = false;
-  static const auto b_want_rotated = true;
-  static const auto c_want_rotated = false;
-  const auto a_do_transpose = a_rotated != a_want_rotated;
-  const auto b_do_transpose = b_rotated != b_want_rotated;
-  const auto c_do_transpose = c_rotated != c_want_rotated;
-
-  // In case of complex data-types, the transpose can also become a conjugate transpose
-  const auto a_conjugate = (a_transpose == Transpose::kConjugate);
-  const auto b_conjugate = (b_transpose == Transpose::kConjugate);
 
   // Computes the first and second dimensions of the 3 matrices taking into account whether the
   // matrices are rotated or not
@@ -100,6 +93,32 @@ void Xgemm<T>::DoGemm(const Layout layout,
   TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
   TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
   TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
+
+  // Checks if we want to run the plugin-provided custom routine, in which case directly calls
+  // the routine, skipping all input transformations
+  if (routine.routine_mode == plugin::Routine::RoutineMode::Custom) {
+    return routine.DoGemm(event_, &db_,
+                          layout,
+                          a_transpose, b_transpose,
+                          m, n, k,
+                          alpha,
+                          a_buffer(), a_offset, a_ld,
+                          b_buffer(), b_offset, b_ld,
+                          beta,
+                          c_buffer(), c_offset, c_ld);
+  }
+
+  // Computes desired transformations of input matrices
+  static const auto a_want_rotated = false;
+  static const auto b_want_rotated = true;
+  static const auto c_want_rotated = false;
+  const auto a_do_transpose = a_rotated != a_want_rotated;
+  const auto b_do_transpose = b_rotated != b_want_rotated;
+  const auto c_do_transpose = c_rotated != c_want_rotated;
+
+  // In case of complex data-types, the transpose can also become a conjugate transpose
+  const auto a_conjugate = (a_transpose == Transpose::kConjugate);
+  const auto b_conjugate = (b_transpose == Transpose::kConjugate);
 
   // Selects which version of GEMM to run
   const auto do_gemm_direct = (m * n * k < db_["XGEMM_MIN_INDIRECT_SIZE"]);

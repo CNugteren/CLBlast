@@ -176,10 +176,27 @@ Routine::Routine():
 
 // =================================================================================================
 
+template <typename T>
+void RoutineXgemm<T>::DoGemm(cl_event *, const Database *,
+                             const Layout,
+                             const Transpose, const Transpose,
+                             const size_t, const size_t, const size_t,
+                             const T,
+                             const cl_mem, const size_t, const size_t,
+                             const cl_mem, const size_t, const size_t,
+                             const T,
+                             const cl_mem, const size_t, const size_t) const {
+
+  throw LogicError("plugin::RoutineXgemm: stub host routine called");
+}
+
+// =================================================================================================
+
 const Routine *Plugin::PickStubRoutine() {
 
   // This class must inherit from all device-specific entry subclasses
-  struct RoutineStub : virtual public Routine {
+  struct RoutineStub : RoutineXgemm<half>, RoutineXgemm<float>, RoutineXgemm<double>,
+                       RoutineXgemm<float2>, RoutineXgemm<double2> {
   } static stub_routine;
 
   return &stub_routine;
