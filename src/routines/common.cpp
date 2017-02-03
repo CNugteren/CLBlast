@@ -77,7 +77,7 @@ void RunKernel(const Kernel &kernel, const Queue &queue, const Device &device,
 // =================================================================================================
 
 template <typename T>
-void PadCopyTransposeMatrix(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix(const Queue &queue, const Device &device,
                             const Database &db,
                             EventPointer event, const std::vector<Event> &waitForEvents,
                             const size_t src_one, const size_t src_two,
@@ -197,7 +197,7 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
 }
 
 template
-void PadCopyTransposeMatrix<half>(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix<half>(const Queue &queue, const Device &device,
                                   const Database &db,
                                   EventPointer event, const std::vector<Event> &waitForEvents,
                                   const size_t src_one, const size_t src_two,
@@ -213,7 +213,7 @@ void PadCopyTransposeMatrix<half>(Queue &queue, const Device &device,
                                   const bool diagonal_imag_zero);
 
 template
-void PadCopyTransposeMatrix<float>(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix<float>(const Queue &queue, const Device &device,
                                    const Database &db,
                                    EventPointer event, const std::vector<Event> &waitForEvents,
                                    const size_t src_one, const size_t src_two,
@@ -229,7 +229,7 @@ void PadCopyTransposeMatrix<float>(Queue &queue, const Device &device,
                                    const bool diagonal_imag_zero);
 
 template
-void PadCopyTransposeMatrix<float2>(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix<float2>(const Queue &queue, const Device &device,
                                     const Database &db,
                                     EventPointer event, const std::vector<Event> &waitForEvents,
                                     const size_t src_one, const size_t src_two,
@@ -245,7 +245,7 @@ void PadCopyTransposeMatrix<float2>(Queue &queue, const Device &device,
                                     const bool diagonal_imag_zero);
 
 template
-void PadCopyTransposeMatrix<double>(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix<double>(const Queue &queue, const Device &device,
                                     const Database &db,
                                     EventPointer event, const std::vector<Event> &waitForEvents,
                                     const size_t src_one, const size_t src_two,
@@ -261,7 +261,7 @@ void PadCopyTransposeMatrix<double>(Queue &queue, const Device &device,
                                     const bool diagonal_imag_zero);
 
 template
-void PadCopyTransposeMatrix<double2>(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix<double2>(const Queue &queue, const Device &device,
                                      const Database &db,
                                      EventPointer event, const std::vector<Event> &waitForEvents,
                                      const size_t src_one, const size_t src_two,

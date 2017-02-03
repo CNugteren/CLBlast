@@ -36,7 +36,7 @@ void RunKernel(const Kernel &kernel, const Queue &queue, const Device &device,
 // Copies or transposes a matrix and optionally pads/unpads it with zeros. This method is also able
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
-void PadCopyTransposeMatrix(Queue &queue, const Device &device,
+void PadCopyTransposeMatrix(const Queue &queue, const Device &device,
                             const Database &db,
                             EventPointer event, const std::vector<Event> &waitForEvents,
                             const size_t src_one, const size_t src_two,
