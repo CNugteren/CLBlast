@@ -101,12 +101,28 @@ class Interface : public Base {
 // (which inherit from Xgemm).
 class Routine : public Base {
  public:
+  Routine();
   virtual ~Routine();
 
   // Custom database entries
   // NOTE: custom database entries completely override built-in ones on a per-routine basis
   // (i. e. if Xgemm/32 is overridden, then the built-in database is never looked up for Xgemm/32)
   std::vector<const database::Routine *> database;
+
+  // Custom OpenCL kernel source, to be used alongside/instead of the built-in OpenCL kernel
+  // NOTE: host<->device API/ABI is not considered stable, so avoid using built-in host routines
+  // with custom kernels.
+  std::string kernel;
+  enum class KernelMode {
+    // Custom kernel is ignored
+    Default = 0,
+
+    // Custom kernel is appended to built-in PadCopyTransform code
+    NeedPCT,
+
+    // Custom kernel replaces all built-in code
+    Custom
+  } kernel_mode;
 };
 
 // =================================================================================================

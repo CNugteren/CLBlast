@@ -28,7 +28,7 @@ Xomatcopy<T>::Xomatcopy(Queue &queue, EventPointer event, const std::string &nam
     #include "../../kernels/level3/copy_pad.opencl"
     #include "../../kernels/level3/transpose_fast.opencl"
     #include "../../kernels/level3/transpose_pad.opencl"
-    }) {
+    }, {}) {
 }
 
 // =================================================================================================

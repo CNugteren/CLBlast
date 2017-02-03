@@ -28,6 +28,7 @@ Xsyrk<T>::Xsyrk(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/copy_pad.opencl"
     #include "../../kernels/level3/transpose_fast.opencl"
     #include "../../kernels/level3/transpose_pad.opencl"
+    }, {
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"

@@ -24,6 +24,7 @@ namespace clblast {
 // The constructor does all heavy work, errors are returned as exceptions
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
                  const std::vector<std::string> &routines, const Precision precision,
+                 std::initializer_list<const char *> source_pct,
                  std::initializer_list<const char *> source):
     precision_(precision),
     routine_name_(name),
@@ -35,7 +36,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 
   InitPlugin(name);
   InitDatabase(routines);
-  InitProgram(source);
+  InitProgram(source_pct, source);
 }
 
 void Routine::InitPlugin(const std::string &routine_name) {
@@ -69,7 +70,8 @@ void Routine::InitDatabase(const std::vector<std::string> &routines) {
                                   Database{ db_ });
 }
 
-void Routine::InitProgram(std::initializer_list<const char *> source) {
+void Routine::InitProgram(std::initializer_list<const char *> source_pct,
+                          std::initializer_list<const char *> source) {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
   bool has_program;
@@ -135,14 +137,27 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
     source_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
+  const plugin::Routine &routine = plugin_.GetRoutine<plugin::Routine>();
+
   // Loads the common header (typedefs and defines and such)
   source_string +=
     #include "kernels/common.opencl"
   ;
 
-  // Adds routine-specific code to the constructed source string
-  for (const char *s: source) {
-    source_string += s;
+  // Adds ancillary routine-specific code to the constructed source string
+  if (routine.kernel_mode != plugin::Routine::KernelMode::Custom) {
+    for (const char *s: source_pct) {
+      source_string += s;
+    }
+  }
+
+  // Adds main routine-specific code to the constructed source string
+  if (routine.kernel_mode == plugin::Routine::KernelMode::Default) {
+    for (const char *s: source) {
+      source_string += s;
+    }
+  } else {
+    source_string += routine.kernel;
   }
 
   // Prints details of the routine to compile in case of debugging in verbose mode

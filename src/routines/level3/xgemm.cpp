@@ -33,10 +33,11 @@ Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/convert_symmetric.opencl"
     #include "../../kernels/level3/convert_triangular.opencl"
     #include "../../kernels/level3/convert_hermitian.opencl"
+    }, {
+    // keep in mind C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_direct_part1.opencl"
     #include "../../kernels/level3/xgemm_direct_part2.opencl"
     #include "../../kernels/level3/xgemm_direct_part3.opencl"
-    , // separated in two parts to prevent C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"

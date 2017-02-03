@@ -38,12 +38,14 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
+                   std::initializer_list<const char *> source_pct,
                    std::initializer_list<const char *> source);
 
  private:
 
   // Initializes program_, fetching cached program or building one
-  void InitProgram(std::initializer_list<const char *> source);
+  void InitProgram(std::initializer_list<const char *> source_pct,
+                   std::initializer_list<const char *> source);
 
   // Initializes db_, fetching cached database or building one
   void InitDatabase(const std::vector<std::string> &routines);

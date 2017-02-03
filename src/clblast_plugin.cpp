@@ -27,6 +27,12 @@ Routine::~Routine() = default;
 
 // =================================================================================================
 
+Routine::Routine():
+    kernel_mode(KernelMode::Default)
+{}
+
+// =================================================================================================
+
 const Routine *Plugin::PickStubRoutine() {
 
   // This class must inherit from all device-specific entry subclasses
