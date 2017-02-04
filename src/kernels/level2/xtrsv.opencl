@@ -30,58 +30,78 @@ void FillVector(const int n, const int inc, const int offset,
 
 // =================================================================================================
 
-// TODO: Put variable in database
-#define TRSV_BLOCK_SIZE 256
+// Parameters set by the tuner or by the database. Here they are given a basic default value in case
+// this kernel file is used outside of the CLBlast library.
 
-__kernel __attribute__((reqd_work_group_size(1, 1, 1)))
+#ifndef TRSV_BLOCK_SIZE
+  #define TRSV_BLOCK_SIZE 32    // The block size for forward or backward substition
+#endif
+
+// =================================================================================================
+
+__kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
 void trsv_forward(int n,
-                  const __global float *A, const int a_offset, int lda,
-                  __global float *b, const int b_offset, int b_inc,
-                  __global float *x, const int x_offset, int x_inc,
+                  const __global real *A, const int a_offset, int lda,
+                  __global real *b, const int b_offset, int b_inc,
+                  __global real *x, const int x_offset, int x_inc,
                   const int is_transposed, const int is_unit_diagonal) {
-  __local float sx[TRSV_BLOCK_SIZE];
+  __local real sx[TRSV_BLOCK_SIZE];
+  const int tid = get_local_id(0);
+  if (tid < n) {
+    sx[tid] = b[tid*b_inc + b_offset];
+  }
   barrier(CLK_LOCAL_MEM_FENCE);
   for (int i = 0; i < n; ++i) {
-    real sum = b[i*b_inc + b_offset];
-    for (int j = 0; j < i; ++j) {
-      real a_value;
-      if (is_transposed == 0) { a_value = A[i + j*lda + a_offset]; }
-      else { a_value = A[j + i*lda + a_offset]; }
-      sum -= a_value * sx[j];
+    if (tid == 0) {
+      real sum = sx[i];
+      for (int j = 0; j < i; ++j) {
+        real a_value;
+        if (is_transposed == 0) { a_value = A[i + j*lda + a_offset]; }
+        else { a_value = A[j + i*lda + a_offset]; }
+        sum -= a_value * sx[j];
+      }
+      sum -= x[i*x_inc + x_offset];
+      if (is_unit_diagonal == 0) { sum /= A[i + i*lda + a_offset]; }
+      sx[i] = sum;
     }
-    sum -= x[i*x_inc + x_offset];
-    if (is_unit_diagonal == 0) { sum /= A[i + i*lda + a_offset]; }
-    sx[i] = sum;
     barrier(CLK_LOCAL_MEM_FENCE);
   }
-  for (int i = 0; i < n; ++i) {
-    x[i*x_inc + x_offset] = sx[i];
+  barrier(CLK_LOCAL_MEM_FENCE);
+  if (tid < n) {
+    x[tid*x_inc + x_offset] = sx[tid];
   }
 }
 
-__kernel __attribute__((reqd_work_group_size(1, 1, 1)))
+__kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
 void trsv_backward(int n,
-                   const __global float *A, const int a_offset, int lda,
-                   __global float *b, const int b_offset, int b_inc,
-                   __global float *x, const int x_offset, int x_inc,
+                   const __global real *A, const int a_offset, int lda,
+                   __global real *b, const int b_offset, int b_inc,
+                   __global real *x, const int x_offset, int x_inc,
                    const int is_trans, const int is_unit_diagonal) {
-  __local float sx[TRSV_BLOCK_SIZE];
+  __local real sx[TRSV_BLOCK_SIZE];
+  const int tid = get_local_id(0);
+  if (tid < n) {
+    sx[tid] = b[tid*b_inc + b_offset];
+  }
   barrier(CLK_LOCAL_MEM_FENCE);
   for (int i = n - 1; i >= 0; --i) {
-    real sum = b[i*b_inc + b_offset];
-    for (int j = i + 1; j < n; ++j) {
-      real a_value;
-      if (is_trans == 0) { a_value = A[i + j*lda + a_offset]; }
-      else { a_value = A[j + i*lda + a_offset]; }
-      sum -= a_value * sx[j];
+    if (tid == 0) {
+      real sum = sx[i];
+      for (int j = i + 1; j < n; ++j) {
+        real a_value;
+        if (is_trans == 0) { a_value = A[i + j*lda + a_offset]; }
+        else { a_value = A[j + i*lda + a_offset]; }
+        sum -= a_value * sx[j];
+      }
+      sum -= x[i*x_inc + x_offset];
+      if (is_unit_diagonal == 0) { sum /= A[i + i*lda + a_offset]; }
+      sx[i] = sum;
     }
-    sum -= x[i*x_inc + x_offset];
-    if (is_unit_diagonal == 0) { sum /= A[i + i*lda + a_offset]; }
-    sx[i] = sum;
     barrier(CLK_LOCAL_MEM_FENCE);
   }
-  for (int i = 0; i < n; ++i) {
-    x[i*x_inc + x_offset] = sx[i];
+  barrier(CLK_LOCAL_MEM_FENCE);
+  if (tid < n) {
+    x[tid*x_inc + x_offset] = sx[tid];
   }
 }
 

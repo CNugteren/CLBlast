@@ -25,9 +25,6 @@ Xtrsv<T>::Xtrsv(Queue &queue, EventPointer event, const std::string &name):
     Xgemv<T>(queue, event, name) {
 }
 
-// TODO: Temporary variable, put in database instead
-constexpr size_t TRSV_BLOCK_SIZE = 9;
-
 // =================================================================================================
 
 template <typename T>
@@ -38,7 +35,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
                             const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc,
                             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
 
-  if (n > TRSV_BLOCK_SIZE) { throw BLASError(StatusCode::kUnexpectedError); };
+  if (n > db_["TRSV_BLOCK_SIZE"]) { throw BLASError(StatusCode::kUnexpectedError); };
 
   // Retrieves the program from the cache
   const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), "TRSV");
@@ -71,7 +68,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
   kernel.SetArgument(11, static_cast<int>(is_unit_diagonal));
 
   // Launches the kernel
-  const auto local = std::vector<size_t>{1};
+  const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};
   const auto global = std::vector<size_t>{1};
   auto event = Event();
   RunKernel(kernel, queue_, device_, global, local, event.pointer());
@@ -113,51 +110,35 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
              n, x_inc, x_offset, x_buffer, ConstantZero<T>());
   fill_vector_event.WaitForCompletion();
 
-  // The data is either in the upper or lower triangle
+  // Derives properties based on the arguments
   const auto is_upper = ((triangle == Triangle::kUpper && a_transpose == Transpose::kNo) ||
                          (triangle == Triangle::kLower && a_transpose != Transpose::kNo));
+  const auto is_transposed = ((layout == Layout::kColMajor && a_transpose == Transpose::kNo) ||
+                              (layout != Layout::kColMajor && a_transpose != Transpose::kNo));
 
   // Loops over the blocks
   auto col = n; // the initial column position
-  for (auto i = size_t{0}; i < n; i += TRSV_BLOCK_SIZE) {
-    const auto block_size = std::min(TRSV_BLOCK_SIZE, n - i);
+  for (auto i = size_t{0}; i < n; i += db_["TRSV_BLOCK_SIZE"]) {
+    const auto block_size = std::min(db_["TRSV_BLOCK_SIZE"], n - i);
 
     // Sets the next column position
     col = (is_upper) ? col - block_size : i;
 
     // Sets the offsets for upper or lower triangular
+    const auto extra_offset_a = (is_transposed) ?
+                                (is_upper ? col + (col+block_size)*a_ld : col) :
+                                (is_upper ? col+block_size + col*a_ld : col*a_ld);
     const auto extra_offset_x = (is_upper) ? (col+block_size)*x_inc : 0;
     const auto extra_offset_b = col*x_inc;
 
-    if (a_transpose == Transpose::kNo) {
-
-      // Sets the offsets for upper or lower triangular
-      const auto extra_offset_a = (layout == Layout::kColMajor) ?
-                                  ((triangle == Triangle::kUpper) ? col + (col+block_size)*a_ld : col) :
-                                  ((triangle == Triangle::kUpper) ? col+block_size + (col)*a_ld : col*a_ld);
-
-      // Runs the GEMV routine to compute x' = A * x
-      if (i > 0) {
-        DoGemv(layout, a_transpose, block_size, i, ConstantOne<T>(),
-               a_buffer, a_offset + extra_offset_a, a_ld,
-               x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
-               x_buffer, x_offset + extra_offset_b, x_inc );
-      }
-    }
-    else {
-
-      // Sets the offsets for upper or lower triangular
-      const auto extra_offset_a = (layout == Layout::kColMajor) ?
-                                  ((triangle == Triangle::kLower) ? col+block_size + col*a_ld : col*a_ld) :
-                                  ((triangle == Triangle::kLower) ? col + (col+block_size)*a_ld : col);
-
-      // Runs the GEMV routine to compute x' = A * x
-      if (i > 0) {
-        DoGemv(layout, a_transpose, i, block_size, ConstantOne<T>(),
-               a_buffer, a_offset + extra_offset_a, a_ld,
-               x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
-               x_buffer, x_offset + extra_offset_b, x_inc );
-      }
+    // Runs the GEMV routine to compute x' = A * x
+    if (i > 0) {
+      const auto gemv_m = (a_transpose == Transpose::kNo) ? block_size : i;
+      const auto gemv_n = (a_transpose == Transpose::kNo) ? i : block_size;
+      DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
+             a_buffer, a_offset + extra_offset_a, a_ld,
+             x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
+             x_buffer, x_offset + extra_offset_b, x_inc );
     }
 
     // Runs the triangular substitution for the block size
