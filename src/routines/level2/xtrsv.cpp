@@ -44,6 +44,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
   const auto is_unit_diagonal = (diagonal == Diagonal::kNonUnit) ? 0 : 1;
   const auto is_transposed = ((a_transpose == Transpose::kNo && layout == Layout::kColMajor) ||
                               (a_transpose != Transpose::kNo && layout != Layout::kColMajor)) ? 0 : 1;
+  const auto do_conjugate = (a_transpose == Transpose::kConjugate) ? 1 : 0;
 
   // The data is either in the upper or lower triangle
   const auto is_upper = ((triangle == Triangle::kUpper && a_transpose == Transpose::kNo) ||
@@ -66,6 +67,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
   kernel.SetArgument(9, static_cast<int>(x_inc));
   kernel.SetArgument(10, static_cast<int>(is_transposed));
   kernel.SetArgument(11, static_cast<int>(is_unit_diagonal));
+  kernel.SetArgument(12, static_cast<int>(do_conjugate));
 
   // Launches the kernel
   const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};

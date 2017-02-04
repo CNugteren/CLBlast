@@ -176,6 +176,13 @@ R"(
   #define Add(c, a, b) c = a + b
 #endif
 
+// Subtracts two complex variables
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Subtract(c, a, b) c.x = a.x - b.x; c.y = a.y - b.y
+#else
+  #define Subtract(c, a, b) c = a - b
+#endif
+
 // Multiply two complex variables (used in the defines below)
 #if PRECISION == 3232 || PRECISION == 6464
   #define MulReal(a, b) a.x*b.x - a.y*b.y
@@ -198,6 +205,13 @@ R"(
   #else
     #define MultiplyAdd(c, a, b) c += a * b
   #endif
+#endif
+
+// The scalar multiply-subtract function
+#if PRECISION == 3232 || PRECISION == 6464
+  #define MultiplySubtract(c, a, b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
+#else
+  #define MultiplySubtract(c, a, b) c -= a * b
 #endif
 
 // The scalar division function
