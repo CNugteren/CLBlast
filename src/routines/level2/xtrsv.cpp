@@ -49,8 +49,8 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
                               (a_transpose != Transpose::kNo && layout != Layout::kColMajor)) ? 0 : 1;
 
   // The data is either in the upper or lower triangle
-  auto is_upper = ((triangle == Triangle::kUpper && a_transpose == Transpose::kNo) ||
-                   (triangle == Triangle::kLower && a_transpose != Transpose::kNo));
+  const auto is_upper = ((triangle == Triangle::kUpper && a_transpose == Transpose::kNo) ||
+                         (triangle == Triangle::kLower && a_transpose != Transpose::kNo));
 
   // Retrieves the kernel from the compiled binary
   const auto kernel_name = (is_upper) ? "trsv_backward" : "trsv_forward";
@@ -113,22 +113,28 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
              n, x_inc, x_offset, x_buffer, ConstantZero<T>());
   fill_vector_event.WaitForCompletion();
 
-  // TODO: Not working for row-major at the moment
-  const auto is_transposed = ((a_transpose == Transpose::kNo && layout == Layout::kRowMajor) ||
-                              (a_transpose != Transpose::kNo && layout != Layout::kRowMajor));
+  // The data is either in the upper or lower triangle
+  const auto is_upper = ((triangle == Triangle::kUpper && a_transpose == Transpose::kNo) ||
+                         (triangle == Triangle::kLower && a_transpose != Transpose::kNo));
 
   // Loops over the blocks
   auto col = n; // the initial column position
   for (auto i = size_t{0}; i < n; i += TRSV_BLOCK_SIZE) {
     const auto block_size = std::min(TRSV_BLOCK_SIZE, n - i);
 
-    if (!is_transposed) {
+    // Sets the next column position
+    col = (is_upper) ? col - block_size : i;
+
+    // Sets the offsets for upper or lower triangular
+    const auto extra_offset_x = (is_upper) ? (col+block_size)*x_inc : 0;
+    const auto extra_offset_b = col*x_inc;
+
+    if (a_transpose == Transpose::kNo) {
 
       // Sets the offsets for upper or lower triangular
-      col = (triangle == Triangle::kUpper) ? col - block_size : i;
-      const auto extra_offset_a = (triangle == Triangle::kUpper) ? col + (col+block_size)*a_ld : col;
-      const auto extra_offset_x = (triangle == Triangle::kUpper) ? (col+block_size)*x_inc : 0;
-      const auto extra_offset_b = col*x_inc;
+      const auto extra_offset_a = (layout == Layout::kColMajor) ?
+                                  ((triangle == Triangle::kUpper) ? col + (col+block_size)*a_ld : col) :
+                                  ((triangle == Triangle::kUpper) ? col+block_size + (col)*a_ld : col*a_ld);
 
       // Runs the GEMV routine to compute x' = A * x
       if (i > 0) {
@@ -141,10 +147,9 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
     else {
 
       // Sets the offsets for upper or lower triangular
-      col = (triangle == Triangle::kLower) ? col - block_size : i;
-      const auto extra_offset_a = (triangle == Triangle::kLower) ? col+block_size + col*a_ld : col*a_ld;
-      const auto extra_offset_x = (triangle == Triangle::kLower) ? (col+block_size)*x_inc : 0;
-      const auto extra_offset_b = col*x_inc;
+      const auto extra_offset_a = (layout == Layout::kColMajor) ?
+                                  ((triangle == Triangle::kLower) ? col+block_size + col*a_ld : col*a_ld) :
+                                  ((triangle == Triangle::kLower) ? col + (col+block_size)*a_ld : col);
 
       // Runs the GEMV routine to compute x' = A * x
       if (i > 0) {
