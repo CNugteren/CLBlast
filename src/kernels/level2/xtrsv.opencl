@@ -55,12 +55,16 @@ void trsv_forward(int n,
     if (is_transposed == 0) {
       for (int i = 0; i < n; ++i) {
         alm[i][tid] = A[i + tid*a_ld + a_offset];
-        if (do_conjugate) { COMPLEX_CONJUGATE(alm[i][tid]); }
       }
     }
     else {
       for (int i = 0; i < n; ++i) {
         alm[i][tid] = A[tid + i*a_ld + a_offset];
+      }
+    }
+    if (do_conjugate) {
+      for (int i = 0; i < n; ++i) {
+        COMPLEX_CONJUGATE(alm[i][tid]);
       }
     }
   }
@@ -72,7 +76,7 @@ void trsv_forward(int n,
       for (int j = 0; j < i; ++j) {
         MultiplySubtract(xlm[i], alm[i][j], xlm[j]);
       }
-      if (is_unit_diagonal == 0) { DivideReal(xlm[i], xlm[i], alm[i][i]); }
+      if (is_unit_diagonal == 0) { DivideFull(xlm[i], xlm[i], alm[i][i]); }
     }
   }
   barrier(CLK_LOCAL_MEM_FENCE);
@@ -99,12 +103,16 @@ void trsv_backward(int n,
     if (is_transposed == 0) {
       for (int i = 0; i < n; ++i) {
         alm[i][tid] = A[i + tid*a_ld + a_offset];
-        if (do_conjugate) { COMPLEX_CONJUGATE(alm[i][tid]); }
       }
     }
     else {
       for (int i = 0; i < n; ++i) {
         alm[i][tid] = A[tid + i*a_ld + a_offset];
+      }
+    }
+    if (do_conjugate) {
+      for (int i = 0; i < n; ++i) {
+        COMPLEX_CONJUGATE(alm[i][tid]);
       }
     }
   }
@@ -116,7 +124,7 @@ void trsv_backward(int n,
       for (int j = i + 1; j < n; ++j) {
         MultiplySubtract(xlm[i], alm[i][j], xlm[j]);
       }
-      if (is_unit_diagonal == 0) { DivideReal(xlm[i], xlm[i], alm[i][i]); }
+      if (is_unit_diagonal == 0) { DivideFull(xlm[i], xlm[i], alm[i][i]); }
     }
   }
   barrier(CLK_LOCAL_MEM_FENCE);

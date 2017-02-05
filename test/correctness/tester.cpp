@@ -410,6 +410,10 @@ bool TestSimilarityNear(const T val1, const T val2,
   if (val1 == val2) {
     return true;
   }
+  // Handles cases with both results NaN
+  else if (std::isnan(val1) && std::isnan(val2)) {
+    return true;
+  }
   // The values are zero or very small: the relative error is less meaningful
   else if (val1 == 0 || val2 == 0 || difference < error_margin_absolute) {
     return (difference < error_margin_absolute);
