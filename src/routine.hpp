@@ -35,10 +35,21 @@ class Routine {
   // Base class constructor. The user database is an optional extra database to override the
   // built-in database.
   // All heavy preparation work is done inside this constructor.
+  // NOTE: the caller must provide the same userDatabase for each combination of device, precision
+  // and routine list, otherwise the caching logic will break.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
                    const std::vector<const Database::DatabaseEntry*> &userDatabase,
                    std::initializer_list<const char *> source);
+
+ private:
+
+  // Initializes program_, fetching cached program or building one
+  void InitProgram(std::initializer_list<const char *> source);
+
+  // Initializes db_, fetching cached database or building one
+  void InitDatabase(const std::vector<std::string> &routines,
+                    const std::vector<const Database::DatabaseEntry*> &userDatabase);
 
  protected:
 
@@ -57,8 +68,11 @@ class Routine {
   // OpenCL device properties
   const std::string device_name_;
 
+  // Compiled program (either retrieved from cache or compiled in slow path)
+  Program program_;
+
   // Connection to the database for all the device-specific parameters
-  const Database db_;
+  Database db_;
 };
 
 // =================================================================================================

@@ -19,8 +19,8 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
 #include "clpp11.hpp"
+#include "clblast.h"
 #include "database/database.hpp"
 
 namespace clblast {

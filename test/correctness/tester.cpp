@@ -248,8 +248,29 @@ template <typename T, typename U>
 void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCode clblast_status,
                                  const Arguments<U> &args) {
 
+  // Either an OpenCL or CLBlast internal error occurred, fail the test immediately
+  // NOTE: the OpenCL error codes grow downwards without any declared lower bound, hence the magic
+  // number. The last error code is atm around -70, but -500 is chosen to be on the safe side.
+  if (clblast_status != StatusCode::kSuccess &&
+      (clblast_status > static_cast<StatusCode>(-500) /* matches OpenCL errors (see above) */ ||
+       clblast_status < StatusCode::kNotImplemented) /* matches CLBlast internal errors */) {
+    PrintTestResult(kErrorStatus);
+    ReportError({StatusCode::kSuccess, clblast_status, kStatusError, args});
+    if (verbose_) {
+      fprintf(stdout, "\n");
+      PrintErrorLog({{StatusCode::kSuccess, clblast_status, kStatusError, args}});
+      fprintf(stdout, "   ");
+    }
+  }
+
+  // Routine is not implemented
+  else if (clblast_status == StatusCode::kNotImplemented) {
+    PrintTestResult(kSkippedCompilation);
+    ReportSkipped();
+  }
+
   // Cannot compare error codes against a library other than clBLAS
-  if (compare_cblas_) {
+  else if (compare_cblas_) {
     PrintTestResult(kUnsupportedReference);
     ReportSkipped();
   }
@@ -264,13 +285,6 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   else if (clblast_status == StatusCode::kNoDoublePrecision ||
            clblast_status == StatusCode::kNoHalfPrecision) {
     PrintTestResult(kUnsupportedPrecision);
-    ReportSkipped();
-  }
-
-  // Could not compile the CLBlast kernel properly
-  else if (clblast_status == StatusCode::kOpenCLBuildProgramFailure ||
-           clblast_status == StatusCode::kNotImplemented) {
-    PrintTestResult(kSkippedCompilation);
     ReportSkipped();
   }
 
@@ -388,7 +402,9 @@ void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
       fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
     }
     else {
-      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
+      fprintf(stdout, "   Status code %d (expected %d): ",
+              static_cast<int>(entry.status_found),
+              static_cast<int>(entry.status_expect));
     }
     fprintf(stdout, "%s\n", GetOptionsString(entry.args).c_str());
   }

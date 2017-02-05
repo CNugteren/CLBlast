@@ -27,11 +27,11 @@ class Xtrsv: public Xgemv<T> {
  public:
 
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::routine_name_;
   using Xgemv<T>::queue_;
   using Xgemv<T>::context_;
   using Xgemv<T>::device_;
   using Xgemv<T>::db_;
+  using Xgemv<T>::program_;
   using Xgemv<T>::DoGemv;
 
   // Constructor

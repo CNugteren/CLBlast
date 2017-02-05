@@ -39,13 +39,16 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
         { "Tonga",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+        { "Turks",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",16} } },
         { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Intel GPUs
@@ -60,6 +63,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 1080",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
@@ -68,7 +72,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
   }
@@ -82,13 +86,16 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
         { "Tonga",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
-        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Turks",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Intel GPUs
@@ -122,12 +129,15 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GTX 1080",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX 750 Ti",                              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
@@ -155,13 +165,15 @@ const Database::DatabaseEntry XgemvFastRotComplexDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
   }

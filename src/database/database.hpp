@@ -72,12 +72,14 @@ class Database {
   // The database consists of separate database entries, stored together in a vector
   static const std::vector<const DatabaseEntry*> database;
 
+  Database() = default;
+
   // The constructor with a user-provided database overlay (potentially an empty vector)
-  explicit Database(const Queue &queue, const std::vector<std::string> &routines,
+  explicit Database(const Device &device, const std::vector<std::string> &routines,
                     const Precision precision, const std::vector<const DatabaseEntry*> &overlay);
 
   // Accessor of values by key
-  size_t operator[](const std::string key) const { return parameters_.find(key)->second; }
+  size_t operator[](const std::string key) const { return parameters_->find(key)->second; }
 
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;
@@ -90,7 +92,7 @@ class Database {
                        const std::vector<const DatabaseEntry*> &db) const;
 
   // Found parameters suitable for this device/kernel
-  Parameters parameters_;
+  std::shared_ptr<Parameters> parameters_;
 };
 
 // =================================================================================================

@@ -70,8 +70,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
 
   // Creates a general matrix from the triangular matrix to be able to run the regular Xgemm
   // routine afterwards
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the arguments for the triangular-to-squared kernel
   kernel.SetArgument(0, static_cast<int>(k));

@@ -69,18 +69,15 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
                          (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   const auto name_postfix = (is_upper) ? "Upper" : "Lower";
 
-  // Retrieves the program from the cache
-  auto event_wait_list = std::vector<Event>();
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), "INVERT");
-
   // Fills the output buffer with zeros
+  auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program, db_, fill_matrix_event.pointer(), event_wait_list,
+  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), event_wait_list,
              num_blocks * block_size, block_size, 0, dest, ConstantZero<T>());
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
-  auto kernel = Kernel(program, "InvertDiagonalBlock");
+  auto kernel = Kernel(program_, "InvertDiagonalBlock");
   kernel.SetArgument(0, static_cast<int>(n));
   kernel.SetArgument(1, src());
   kernel.SetArgument(2, static_cast<int>(offset));
@@ -110,7 +107,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     const auto global = std::vector<size_t>{(current_size/local[1]), npages*(current_size/16)*local[1]};
 
     // Part 1
-    auto kernel1 = Kernel(program, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
+    auto kernel1 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
     kernel1.SetArgument(0, static_cast<int>(n));
     kernel1.SetArgument(1, src());
     kernel1.SetArgument(2, static_cast<int>(offset));
@@ -125,7 +122,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
 
     // Part 2
     const bool is_last_kernel = (current_size * 2 >= block_size);
-    auto kernel2 = Kernel(program, "TripleMatMul" + ToString(current_size) + "Part2" + name_postfix);
+    auto kernel2 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part2" + name_postfix);
     kernel2.SetArgument(0, static_cast<int>(n));
     kernel2.SetArgument(1, dest());
     kernel2.SetArgument(2, static_cast<int>(current_size));

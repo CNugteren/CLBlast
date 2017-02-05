@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+
 // Includes the CLBlast library (C interface)
 #include <clblast_c.h>
 

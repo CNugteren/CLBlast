@@ -67,8 +67,7 @@ void Xher<T,U>::DoHer(const Layout layout, const Triangle triangle,
   const auto matching_alpha = GetAlpha(alpha);
 
   // Retrieves the kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, "Xher");
+  auto kernel = Kernel(program_, "Xher");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n));

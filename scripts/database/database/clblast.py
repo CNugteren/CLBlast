@@ -123,7 +123,7 @@ def print_cpp_database(database, output_dir):
                         devices = sorted(set([s["device"] for s in type_database]))
                         for device_name in devices:
                             device_database = [s for s in type_database if s["device"] == device_name]
-                            device_name_quoted = "\"%s\"," % device_name
+                            device_name_quoted = "\"%s\"," % device_name.strip()
                             device_name_cpp = "        { %-50s { " % device_name_quoted
                             f.write(device_name_cpp)
 

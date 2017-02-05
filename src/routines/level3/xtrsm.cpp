@@ -79,9 +79,8 @@ void Xtrsm<T>::DoTrsm(const Layout layout, const Side side, const Triangle trian
 
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), "TRSM");
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program, db_, fill_matrix_event.pointer(), eventWaitList,
+  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), eventWaitList,
              x_one, x_ld, x_offset, x_buffer, ConstantZero<T>());
   fill_matrix_event.WaitForCompletion();
 

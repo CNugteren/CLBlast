@@ -79,9 +79,6 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   // Decides which kernel to run: the upper-triangular or lower-triangular version
   auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
 
-  // Loads the program from the database
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-
   // Determines whether or not temporary matrices are needed
   auto a_no_temp = a_one == n_ceiled && a_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
                    a_rotated == false && a_conjugate == false;
@@ -109,7 +106,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                            a_one, a_two, a_ld, a_offset, a_buffer,
                            n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            true, a_rotated, a_conjugate);
     eventWaitList.push_back(eventProcessA);
   }
@@ -118,7 +115,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
                            a_one, a_two, a_ld, a_offset, a_buffer,
                            n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            true, a_rotated, b_conjugate);
     eventWaitList.push_back(eventProcessB);
   }
@@ -129,12 +126,12 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                          n, n, c_ld, c_offset, c_buffer,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
-                         ConstantOne<T>(), program,
+                         ConstantOne<T>(), program_,
                          true, c_rotated, false);
   eventWaitList.push_back(eventProcessC);
 
   // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n_ceiled));
@@ -163,7 +160,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                          n, n, c_ld, c_offset, c_buffer,
-                         ConstantOne<T>(), program,
+                         ConstantOne<T>(), program_,
                          false, c_rotated, false, upper, lower, true);
 }
 

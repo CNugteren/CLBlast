@@ -31,9 +31,7 @@ R"(
 
 // Enable support for double-precision
 #if PRECISION == 64 || PRECISION == 6464
-  #if __OPENCL_VERSION__ <= CL_VERSION_1_1
-     #pragma OPENCL EXTENSION cl_khr_fp64: enable
-  #endif
+   #pragma OPENCL EXTENSION cl_khr_fp64: enable
 #endif
 
 // Half-precision

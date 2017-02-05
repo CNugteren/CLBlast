@@ -21,9 +21,9 @@
 #include <functional>
 #include <complex>
 
+#include "clpp11.hpp"
 #include "clblast.h"
 #include "clblast_half.h"
-#include "clpp11.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/msvc.hpp"
 
