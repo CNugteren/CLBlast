@@ -62,6 +62,7 @@ const Database::DatabaseEntry XgemmDirectSingle = {
         { "GeForce GTX 1080",                                { {"KWID",16}, {"MDIMAD",16}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",32} } },
         { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
         { "GeForce GTX TITAN Black",                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
+        { "TITAN X (Pascal)",                                { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",32} } },
         { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
       }
     },
@@ -104,12 +105,13 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
         { "GeForce GTX 1080",                                { {"KWID",8}, {"MDIMAD",8}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
         { "GeForce GTX 750 Ti",                              { {"KWID",16}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",1}, {"WGD",16} } },
         { "GeForce GTX TITAN Black",                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",16}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
+        { "TITAN X (Pascal)",                                { {"KWID",16}, {"MDIMAD",16}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
         { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",16} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
       }
     },
   }
@@ -138,12 +140,13 @@ const Database::DatabaseEntry XgemmDirectDouble = {
         { "GeForce GTX 1080",                                { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
         { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
         { "GeForce GTX TITAN Black",                         { {"KWID",8}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",0}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
+        { "TITAN X (Pascal)",                                { {"KWID",8}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",1}, {"WGD",16} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",16} } },
       }
     },
   }
@@ -172,6 +175,7 @@ const Database::DatabaseEntry XgemmDirectComplexDouble = {
         { "GeForce GTX 1080",                                { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
         { "GeForce GTX 750 Ti",                              { {"KWID",2}, {"MDIMAD",32}, {"MDIMCD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",32} } },
         { "GeForce GTX TITAN Black",                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",8} } },
+        { "TITAN X (Pascal)",                                { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",0}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
         { "default",                                         { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",16} } },
       }
     },

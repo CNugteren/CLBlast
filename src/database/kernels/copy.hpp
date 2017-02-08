@@ -96,6 +96,7 @@ const Database::DatabaseEntry CopySingle = {
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",4} } },
         { "GeForce GTX TITAN Black",                         { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
+        { "TITAN X (Pascal)",                                { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
         { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",2} } },
         { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
@@ -165,9 +166,10 @@ const Database::DatabaseEntry CopyComplexSingle = {
         { "GeForce GTX 980",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",4} } },
         { "Tesla K40m",                                      { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
-        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
       }
     },
     { // Default
@@ -229,14 +231,15 @@ const Database::DatabaseEntry CopyDouble = {
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "GeForce GTX TITAN Black",                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",8} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
-        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
+        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
+        { "default",                                         { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",1} } },
       }
     },
   }
@@ -293,6 +296,7 @@ const Database::DatabaseEntry CopyComplexDouble = {
         { "GeForce GTX TITAN",                               { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "Tesla K20m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",2} } },
         { "Tesla K40m",                                      { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },
         { "default",                                         { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",1}, {"COPY_WPT",1} } },

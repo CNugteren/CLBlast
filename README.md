@@ -119,6 +119,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
+  - TITAN X (Pascal)
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
