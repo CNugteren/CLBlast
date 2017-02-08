@@ -22,6 +22,7 @@
 #include <unordered_map>
 
 #include "utilities/utilities.hpp"
+#include "clblast_plugin.h"
 
 namespace clblast {
 // =================================================================================================
@@ -37,31 +38,27 @@ namespace database {
 
 } // namespace database
 
+
+// =================================================================================================
+
+namespace plugin {
+
+class Plugin;
+
+} // namespace plugin
+
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-class Database {
+class Database : public plugin::Database {
  public:
 
-  // Type alias for the database parameters
-  using Parameters = std::unordered_map<std::string,size_t>;
+  // These data structures are part of the plugin interface now
+  using Parameters = plugin::database::Parameters;
   using ParametersPtr = const Parameters*;
-
-  // Structures for content inside the database
-  struct DatabaseDevice {
-    std::string name;
-    Parameters parameters;
-  };
-  struct DatabaseVendor {
-    std::string type;
-    std::string name;
-    std::vector<DatabaseDevice> devices;
-  };
-  struct DatabaseEntry {
-    std::string kernel;
-    Precision precision;
-    std::vector<DatabaseVendor> vendors;
-  };
+  using DatabaseDevice = plugin::database::Device;
+  using DatabaseVendor = plugin::database::Vendor;
+  using DatabaseEntry = plugin::database::Routine;
 
   // The OpenCL device vendors
   static const std::string kDeviceVendorAll;
@@ -76,10 +73,10 @@ class Database {
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
   explicit Database(const Device &device, const std::vector<std::string> &routines,
-                    const Precision precision, const std::vector<const DatabaseEntry*> &overlay);
+                    const Precision precision, const plugin::Plugin &plugin);
 
   // Accessor of values by key
-  size_t operator[](const std::string key) const { return parameters_->find(key)->second; }
+  size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
 
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;

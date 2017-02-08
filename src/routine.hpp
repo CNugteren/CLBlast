@@ -24,6 +24,7 @@
 #include "utilities/buffer_test.hpp"
 #include "database/database.hpp"
 #include "routines/common.hpp"
+#include "utilities/plugin.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -35,21 +36,22 @@ class Routine {
   // Base class constructor. The user database is an optional extra database to override the
   // built-in database.
   // All heavy preparation work is done inside this constructor.
-  // NOTE: the caller must provide the same userDatabase for each combination of device, precision
-  // and routine list, otherwise the caching logic will break.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
-                   const std::vector<const Database::DatabaseEntry*> &userDatabase,
+                   std::initializer_list<const char *> source_pct,
                    std::initializer_list<const char *> source);
 
  private:
 
   // Initializes program_, fetching cached program or building one
-  void InitProgram(std::initializer_list<const char *> source);
+  void InitProgram(std::initializer_list<const char *> source_pct,
+                   std::initializer_list<const char *> source);
 
   // Initializes db_, fetching cached database or building one
-  void InitDatabase(const std::vector<std::string> &routines,
-                    const std::vector<const Database::DatabaseEntry*> &userDatabase);
+  void InitDatabase(const std::vector<std::string> &routines);
+
+  // Initializes plugin_, fetching cached plugin entry or building one
+  void InitPlugin(const std::string &routine_name);
 
  protected:
 
@@ -73,6 +75,9 @@ class Routine {
 
   // Connection to the database for all the device-specific parameters
   Database db_;
+
+  // Device-specific routine override
+  plugin::Plugin plugin_;
 };
 
 // =================================================================================================

@@ -129,10 +129,8 @@ class Event {
   }
 
   // Accessor to the private data-member
-  cl_event& operator()() { return *event_; }
   const cl_event& operator()() const { return *event_; }
   cl_event* pointer() { return &(*event_); }
-  const cl_event* pointer() const { return &(*event_); }
  private:
   std::shared_ptr<cl_event> event_;
 };
@@ -345,7 +343,7 @@ class Context {
 
   // Accessor to the private data-member
   const cl_context& operator()() const { return *context_; }
-  cl_context* pointer() const { return &(*context_); }
+  cl_context* pointer() { return &(*context_); }
  private:
   std::shared_ptr<cl_context> context_;
 };
@@ -362,6 +360,12 @@ enum class BuildStatus { kSuccess, kError, kInvalid };
 class Program {
  public:
   Program() = default;
+
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Program(const cl_program program):
+      program_(new cl_program) {
+    *program_ = program;
+  }
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source):
@@ -395,9 +399,9 @@ class Program {
   }
 
   // Compiles the device program and returns whether or not there where any warnings/errors
-  void Build(const Device &device, std::vector<std::string> &options) {
-    options.push_back("-cl-std=CL1.1");
+  void Build(const Device &device, const std::vector<std::string> &options) const {
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
+    options_string += " -cl-std=CL1.1";
     const cl_device_id dev = device();
     CheckError(clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
   }
@@ -682,18 +686,18 @@ class Kernel {
 
   // Sets a kernel argument at the indicated position
   template <typename T>
-  void SetArgument(const size_t index, const T &value) {
+  void SetArgument(const size_t index, const T &value) const {
     CheckError(clSetKernelArg(*kernel_, static_cast<cl_uint>(index), sizeof(T), &value));
   }
   template <typename T>
-  void SetArgument(const size_t index, Buffer<T> &value) {
+  void SetArgument(const size_t index, Buffer<T> &value) const {
     SetArgument(index, value());
   }
 
   // Sets all arguments in one go using parameter packs. Note that this overwrites previously set
   // arguments using 'SetArgument' or 'SetArguments'.
   template <typename... Args>
-  void SetArguments(Args&... args) {
+  void SetArguments(Args&... args) const {
     SetArgumentsRecursive(0, args...);
   }
 
@@ -718,7 +722,7 @@ class Kernel {
 
   // Launches a kernel onto the specified queue
   void Launch(const Queue &queue, const std::vector<size_t> &global,
-              const std::vector<size_t> &local, EventPointer event) {
+              const std::vector<size_t> &local, EventPointer event) const {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()),
                                       nullptr, global.data(), local.data(),
                                       0, nullptr, event));
@@ -727,7 +731,7 @@ class Kernel {
   // As above, but with an event waiting list
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
-              const std::vector<Event> &waitForEvents) {
+              const std::vector<Event> &waitForEvents) const {
 
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
@@ -750,11 +754,11 @@ class Kernel {
 
   // Internal implementation for the recursive SetArguments function.
   template <typename T>
-  void SetArgumentsRecursive(const size_t index, T &first) {
+  void SetArgumentsRecursive(const size_t index, T &first) const {
     SetArgument(index, first);
   }
   template <typename T, typename... Args>
-  void SetArgumentsRecursive(const size_t index, T &first, Args&... args) {
+  void SetArgumentsRecursive(const size_t index, T &first, Args&... args) const {
     SetArgument(index, first);
     SetArgumentsRecursive(index+1, args...);
   }

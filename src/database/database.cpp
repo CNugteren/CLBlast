@@ -12,6 +12,7 @@
 // =================================================================================================
 
 #include "utilities/utilities.hpp"
+#include "utilities/plugin.hpp"
 
 #include "database/database.hpp"
 #include "database/kernels/xaxpy.hpp"
@@ -64,7 +65,7 @@ const std::unordered_map<std::string, std::string> Database::kVendorNames{
 // Constructor, computing device properties and populating the parameter-vector from the database.
 // This takes an optional overlay database in case of custom tuning or custom kernels.
 Database::Database(const Device &device, const std::vector<std::string> &kernels,
-                   const Precision precision, const std::vector<const DatabaseEntry*> &overlay):
+                   const Precision precision, const plugin::Plugin &plugin):
   parameters_(std::make_shared<Parameters>()) {
 
   // Finds information of the current device
@@ -79,12 +80,15 @@ Database::Database(const Device &device, const std::vector<std::string> &kernels
     }
   }
 
+  // Get the overlay database from the plugin
+  auto &entry = plugin.GetRoutine<plugin::Routine>();
+
   // Iterates over all kernels to include, and retrieves the parameters for each of them
   for (auto &kernel: kernels) {
     auto search_result = ParametersPtr{};
 
-    for (auto &db: { database, overlay}) {
-      search_result = Search(kernel, device_type, device_vendor, device_name, precision, db);
+    for (auto db: { &entry.database, &database }) {
+      search_result = Search(kernel, device_type, device_vendor, device_name, precision, *db);
       if (search_result) {
         parameters_->insert(search_result->begin(), search_result->end());
         break;

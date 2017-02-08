@@ -99,7 +99,7 @@ else()
     set(FLAGS "${FLAGS} -Wextra -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded")
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
     set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
-    set(FLAGS "${FLAGS} -Wno-deprecated-declarations")
+    set(FLAGS "${FLAGS} -Wno-deprecated-declarations -Wno-undefined-var-template")
   endif()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS}")
@@ -145,6 +145,23 @@ if(CLIENTS OR TESTS)
   endif()
 endif()
 
+# Check plugin support
+find_path(DLFCN_H "dlfcn.h")
+if(DLFCN_H)
+  message(STATUS "Found <dlfcn.h>, enabling plugins using POSIX dynamic linker interface")
+  set(PLUGINS TRUE)
+  set(SOURCES_PLUGINS
+    src/utilities/plugin_posix.cpp
+  )
+endif()
+
+if(NOT PLUGINS)
+  message(STATUS "Disabling plugin support")
+  set(SOURCES_PLUGINS
+    src/utilities/plugin_none.cpp
+  )
+endif()
+
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
@@ -171,10 +188,13 @@ set(SOURCES
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
   src/utilities/utilities.cpp
+  src/utilities/plugin.cpp
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
+  src/clblast_plugin.cpp
   src/routine.cpp
+  ${SOURCES_PLUGINS}
 )
 if(NETLIB)
   set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
@@ -220,6 +240,7 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+install(FILES include/clblast_plugin.h DESTINATION include)
 if(NETLIB)
   install(FILES include/clblast_netlib_c.h DESTINATION include)
 endif()
