@@ -42,6 +42,10 @@ public:
   void Store(Key &&key, Value &&value);
   void Invalidate();
 
+  // Removes all entries with a given key
+  void Remove(const Key &key);
+  template <int I1, int I2> void RemoveBySubset(const Key key); // currently only supports 2 indices
+
   static Cache<Key, Value> &Instance();
 
 private:
@@ -71,7 +75,6 @@ typedef Cache<BinaryKey, std::string> BinaryCache;
 
 extern template class Cache<BinaryKey, std::string>;
 extern template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const;
-
 
 // =================================================================================================
 
