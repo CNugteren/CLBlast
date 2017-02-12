@@ -48,16 +48,16 @@ class Routine {
   void InitProgram(std::initializer_list<const char *> source);
 
   // Initializes db_, fetching cached database or building one
-  void InitDatabase(const std::vector<std::string> &routines,
-                    const std::vector<const Database::DatabaseEntry*> &userDatabase);
+  void InitDatabase(const std::vector<const Database::DatabaseEntry*> &userDatabase);
 
  protected:
 
   // Non-static variable for the precision
   const Precision precision_;
 
-  // The routine's name
+  // The routine's name and the corresponding kernels
   const std::string routine_name_;
+  const std::vector<std::string> kernel_names_;
 
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
@@ -72,7 +72,7 @@ class Routine {
   Program program_;
 
   // Connection to the database for all the device-specific parameters
-  Database db_;
+  Databases db_;
 };
 
 // =================================================================================================

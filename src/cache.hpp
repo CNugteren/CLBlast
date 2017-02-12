@@ -93,9 +93,9 @@ extern template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
 class Database;
 
 // The key struct for the cache of database maps.
-// Order of fields: precision, device_name, routines (smaller fields first)
-typedef std::tuple<Precision, std::string, std::vector<std::string>> DatabaseKey;
-typedef std::tuple<const Precision &, const std::string &, const std::vector<std::string> &> DatabaseKeyRef;
+// Order of fields: precision, device_name, kernel_name (smaller fields first)
+typedef std::tuple<Precision, std::string, std::string> DatabaseKey;
+typedef std::tuple<const Precision &, const std::string &, const std::string &> DatabaseKeyRef;
 
 typedef Cache<DatabaseKey, Database> DatabaseCache;
 

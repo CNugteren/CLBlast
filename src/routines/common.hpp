@@ -37,7 +37,7 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
 void PadCopyTransposeMatrix(Queue &queue, const Device &device,
-                            const Database &db,
+                            const Databases &db,
                             EventPointer event, const std::vector<Event> &waitForEvents,
                             const size_t src_one, const size_t src_two,
                             const size_t src_ld, const size_t src_offset,
