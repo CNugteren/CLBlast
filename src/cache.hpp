@@ -44,7 +44,7 @@ public:
 
   // Removes all entries with a given key
   void Remove(const Key &key);
-  template <int I1, int I2> void RemoveBySubset(const Key key); // currently only supports 2 indices
+  template <int I1, int I2> void RemoveBySubset(const Key &key); // currently supports 2 indices
 
   static Cache<Key, Value> &Instance();
 

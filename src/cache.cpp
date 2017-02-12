@@ -82,7 +82,7 @@ void Cache<Key, Value>::Remove(const Key &key) {
 
 template <typename Key, typename Value>
 template <int I1, int I2>
-void Cache<Key, Value>::RemoveBySubset(const Key key) {
+void Cache<Key, Value>::RemoveBySubset(const Key &key) {
   std::lock_guard<std::mutex> lock(cache_mutex_);
   auto it = cache_.begin();
   while (it != cache_.end()) {
@@ -119,7 +119,7 @@ template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const;
 
 template class Cache<ProgramKey, Program>;
 template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
-template void ProgramCache::RemoveBySubset<1, 2>(const ProgramKey); // by precision and routine name
+template void ProgramCache::RemoveBySubset<1, 2>(const ProgramKey &); // precision and routine name
 
 // =================================================================================================
 
