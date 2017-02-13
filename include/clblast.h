@@ -17,6 +17,8 @@
 #define CLBLAST_CLBLAST_H_
 
 #include <cstdlib> // For size_t
+#include <string> // For OverrideParameters function
+#include <unordered_map> // For OverrideParameters function
 
 // Includes the normal OpenCL C header
 #if defined(__APPLE__) || defined(__MACOSX)
@@ -614,6 +616,12 @@ StatusCode PUBLIC_API ClearCache();
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 StatusCode PUBLIC_API FillCache(const cl_device_id device);
+
+// =================================================================================================
+
+StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::string &kernel_name,
+                                         const Precision precision,
+                                         const std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 

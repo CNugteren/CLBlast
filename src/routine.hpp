@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "utilities/utilities.hpp"
 #include "cache.hpp"
@@ -41,6 +42,15 @@ class Routine {
                    const std::vector<std::string> &routines, const Precision precision,
                    const std::vector<const Database::DatabaseEntry*> &userDatabase,
                    std::initializer_list<const char *> source);
+
+  // List of kernel-routine look-ups
+  static const std::vector<std::string> routines_axpy;
+  static const std::vector<std::string> routines_dot;
+  static const std::vector<std::string> routines_ger;
+  static const std::vector<std::string> routines_gemv;
+  static const std::vector<std::string> routines_gemm;
+  static const std::vector<std::string> routines_gemm_syrk;
+  static const std::unordered_map<std::string, const std::vector<std::string>> routines_by_kernel;
 
  private:
 

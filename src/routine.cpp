@@ -21,6 +21,31 @@
 namespace clblast {
 // =================================================================================================
 
+// For each kernel this map contains a list of routines it is used in
+const std::vector<std::string> Routine::routines_axpy = {"AXPY", "COPY", "SCAL", "SWAP"};
+const std::vector<std::string> Routine::routines_dot = {"AMAX", "ASUM", "DOT", "DOTC", "DOTU", "MAX", "MIN", "NRM2", "SUM"};
+const std::vector<std::string> Routine::routines_ger = {"GER", "GERC", "GERU", "HER", "HER2", "HPR", "HPR2", "SPR", "SPR2", "SYR", "SYR2"};
+const std::vector<std::string> Routine::routines_gemv = {"GBMV", "GEMV", "HBMV", "HEMV", "HPMV", "SBMV", "SPMV", "SYMV", "TMBV", "TPMV", "TRMV"};
+const std::vector<std::string> Routine::routines_gemm = {"GEMM", "HEMM", "SYMM", "TRMM"};
+const std::vector<std::string> Routine::routines_gemm_syrk = {"GEMM", "HEMM", "HER2K", "HERK", "SYMM", "SYR2K", "SYRK", "TRMM"};
+const std::unordered_map<std::string, const std::vector<std::string>> Routine::routines_by_kernel = {
+  {"Xaxpy", routines_axpy},
+  {"Xdot", routines_dot},
+  {"Xgemv", routines_gemv},
+  {"XgemvFast", routines_gemv},
+  {"XgemvFastRot", routines_gemv},
+  {"Xgemv", {}},
+  {"Xger", routines_ger},
+  {"Copy", routines_gemm_syrk},
+  {"Pad", routines_gemm_syrk},
+  {"Transpose", routines_gemm_syrk},
+  {"Padtranspose", routines_gemm_syrk},
+  {"Xgemm", routines_gemm_syrk},
+  {"XgemmDirect", routines_gemm},
+  {"KernelSelection", routines_gemm},
+};
+// =================================================================================================
+
 // The constructor does all heavy work, errors are returned as exceptions
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
                  const std::vector<std::string> &kernel_names, const Precision precision,
