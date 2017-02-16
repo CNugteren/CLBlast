@@ -2255,6 +2255,7 @@ StatusCode FillCache(const cl_device_id device) {
 
 // =================================================================================================
 
+// Overrides the tuning parameters for this device-precision-kernel combination
 StatusCode OverrideParameters(const cl_device_id device, const std::string &kernel_name,
                               const Precision precision,
                               const std::unordered_map<std::string,size_t> &parameters) {
