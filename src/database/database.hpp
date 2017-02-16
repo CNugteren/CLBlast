@@ -85,6 +85,9 @@ class Database {
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;
 
+  // Retrieves the names of all the parameters
+  std::vector<std::string> GetParameterNames() const;
+
  private:
   // Search method for a specified database, returning pointer (possibly a nullptr)
   ParametersPtr Search(const std::string &this_kernel, const std::string &this_type,

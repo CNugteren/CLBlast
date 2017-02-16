@@ -103,6 +103,15 @@ std::string Database::GetDefines() const {
   return defines;
 }
 
+// Retrieves the names of all the parameters
+std::vector<std::string> Database::GetParameterNames() const {
+  auto parameter_names = std::vector<std::string>();
+  for (auto &parameter: *parameters_) {
+    parameter_names.push_back(parameter.first);
+  }
+  return parameter_names;
+}
+
 // =================================================================================================
 
 // Searches a particular database for the right kernel and precision
