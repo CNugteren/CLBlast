@@ -2781,3 +2781,38 @@ Requirements for OMATCOPY:
 
 
 
+ClearCache: Resets the cache of compiled binaries (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache can be cleared to free up system memory or it can be useful in case of debugging.
+
+C++ API:
+```
+StatusCode ClearCache()
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastClearCache()
+```
+
+
+
+FillCache: Populates the cache of compiled binaries for a specific device (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache is automatically populated whenever a new binary is created. Thus, the first run of a specific kernel could take extra time. For debugging or performance evaluation purposes, it might be useful to populate the cache upfront. This function populates the cache for all kernels in CLBlast for all precisions, but for a specific device only.
+
+C++ API:
+```
+StatusCode FillCache(const cl_device_id device)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastFillCache(const cl_device_id device)
+```
+
+Arguments to FillCache:
+
+* `const cl_device_id device`: The OpenCL device to fill the cache for.
