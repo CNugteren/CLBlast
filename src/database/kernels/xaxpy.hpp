@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry XaxpyHalf = {
   "Xaxpy", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"VW",4}, {"WGS",128}, {"WPT",4} } },
+        { "default",                                         { {"VW",4}, {"WGS",128}, {"WPT",4} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -26,7 +32,7 @@ const Database::DatabaseEntry XaxpyHalf = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",8}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",8}, {"WGS",256}, {"WPT",4} } },
       }
     },
   }
@@ -39,13 +45,14 @@ const Database::DatabaseEntry XaxpySingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Tonga",                                           { {"VW",1}, {"WGS",256}, {"WPT",8} } },
         { "Turks",                                           { {"VW",2}, {"WGS",256}, {"WPT",1} } },
-        { "default",                                         { {"VW",2}, {"WGS",64}, {"WPT",2} } },
+        { "default",                                         { {"VW",2}, {"WGS",256}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -117,6 +124,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
+        { "Ellesmere",                                       { {"VW",2}, {"WGS",256}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -195,6 +203,7 @@ const Database::DatabaseEntry XaxpyDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",256}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",2}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -247,7 +256,7 @@ const Database::DatabaseEntry XaxpyDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",2} } },
+        { "default",                                         { {"VW",2}, {"WGS",256}, {"WPT",1} } },
       }
     },
   }
@@ -260,6 +269,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Oland",                                           { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },

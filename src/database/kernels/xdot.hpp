@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry XdotHalf = {
   "Xdot", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"WGS1",256}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"WGS1",256}, {"WGS2",32} } },
@@ -39,12 +45,13 @@ const Database::DatabaseEntry XdotSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WGS2",32} } },
+        { "Ellesmere",                                       { {"WGS1",128}, {"WGS2",32} } },
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",128}, {"WGS2",32} } },
         { "Tonga",                                           { {"WGS1",64}, {"WGS2",32} } },
         { "Turks",                                           { {"WGS1",128}, {"WGS2",64} } },
-        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }
     },
     { // Intel CPUs
@@ -99,6 +106,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",32} } },
+        { "Ellesmere",                                       { {"WGS1",256}, {"WGS2",32} } },
         { "Oland",                                           { {"WGS1",128}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",32} } },
@@ -159,6 +167,7 @@ const Database::DatabaseEntry XdotDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",128} } },
+        { "Ellesmere",                                       { {"WGS1",128}, {"WGS2",64} } },
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },
@@ -207,6 +216,7 @@ const Database::DatabaseEntry XdotComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",32} } },
+        { "Ellesmere",                                       { {"WGS1",256}, {"WGS2",32} } },
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",32} } },

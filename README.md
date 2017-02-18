@@ -124,6 +124,7 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Tesla K40m
 * AMD GPUs:
   - AMD Radeon R9 M370X Compute Engine
+  - Ellesmere
   - Hawaii
   - Oland
   - Pitcairn
