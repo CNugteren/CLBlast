@@ -3487,9 +3487,9 @@ CLBlastStatusCode CLBlastFillCache(const cl_device_id device) {
 // =================================================================================================
 
 // Overrides the tuning parameters for this device-precision-kernel combination
-CLBlastStatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const char* kernel_name,
-                                                const CLBlastPrecision precision, const size_t num_parameters,
-                                                const char** parameters_names, const size_t* parameters_values) {
+CLBlastStatusCode PUBLIC_API CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                                       const CLBlastPrecision precision, const size_t num_parameters,
+                                                       const char** parameters_names, const size_t* parameters_values) {
   try {
     const auto kernel_name_cpp = std::string(kernel_name);
     const auto precision_cpp = static_cast<clblast::Precision>(precision);

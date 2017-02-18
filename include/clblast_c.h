@@ -1345,12 +1345,11 @@ CLBlastStatusCode PUBLIC_API CLBlastFillCache(const cl_device_id device);
 
 // =================================================================================================
 
-// Overrides tuning parameters for a specific device-precision-routine combination. The next time
-// (and all further times) the target routine is called it will re-compile and use the new
-// parameters.
-CLBlastStatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const char* kernel_name,
-                                                const CLBlastPrecision precision, const size_t num_parameters,
-                                                const char** parameters_names, const size_t* parameters_values);
+// Overrides tuning parameters for a specific device-precision-kernel combination. The next time
+// the target routine is called it will re-compile and use the new parameters from then on.
+CLBlastStatusCode PUBLIC_API CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                                       const CLBlastPrecision precision, const size_t num_parameters,
+                                                       const char** parameters_names, const size_t* parameters_values);
 
 // =================================================================================================
 
