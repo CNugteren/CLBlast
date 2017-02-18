@@ -41,8 +41,10 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [117, 73, 118, 22, 29, 41, 65, 32]
-FOOTER_LINES = [17, 95, 19, 18, 6, 6, 9, 2]
+HEADER_LINES = [121, 73, 125, 23, 29, 41, 65, 32]
+FOOTER_LINES = [25, 139, 27, 38, 6, 6, 9, 2]
+HEADER_LINES_DOC = 0
+FOOTER_LINES_DOC = 63
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."
@@ -233,11 +235,20 @@ def main(argv):
                     f.write(cpp.performance_test(routine, level_string))
                     f.write(cpp.FOOTER)
 
-    # Outputs the API documentation
+    # API documentation
     filename = cl_args.clblast_root + "/doc/clblast.md"
+
+    # Stores the header and the footer of the original documentation file
+    with open(filename) as f:
+        original = f.readlines()
+    file_header = original[:HEADER_LINES_DOC]
+    file_footer = original[-FOOTER_LINES_DOC:]
+
+    # Outputs the API documentation
     with open(filename, "w") as f:
 
         # Outputs the header
+        f.write("".join(file_header))
         doc_header = doc.header()
         f.write(doc_header)
 
@@ -247,6 +258,9 @@ def main(argv):
                 if routine.implemented:
                     doc_routine = doc.generate(routine)
                     f.write(doc_routine)
+
+        # Outputs the footer
+        f.write("".join(file_footer))
 
 if __name__ == '__main__':
     main(sys.argv[1:])

@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "utilities/utilities.hpp"
 #include "cache.hpp"
@@ -42,22 +43,31 @@ class Routine {
                    const std::vector<const Database::DatabaseEntry*> &userDatabase,
                    std::initializer_list<const char *> source);
 
+  // List of kernel-routine look-ups
+  static const std::vector<std::string> routines_axpy;
+  static const std::vector<std::string> routines_dot;
+  static const std::vector<std::string> routines_ger;
+  static const std::vector<std::string> routines_gemv;
+  static const std::vector<std::string> routines_gemm;
+  static const std::vector<std::string> routines_gemm_syrk;
+  static const std::unordered_map<std::string, const std::vector<std::string>> routines_by_kernel;
+
  private:
 
   // Initializes program_, fetching cached program or building one
   void InitProgram(std::initializer_list<const char *> source);
 
   // Initializes db_, fetching cached database or building one
-  void InitDatabase(const std::vector<std::string> &routines,
-                    const std::vector<const Database::DatabaseEntry*> &userDatabase);
+  void InitDatabase(const std::vector<const Database::DatabaseEntry*> &userDatabase);
 
  protected:
 
   // Non-static variable for the precision
   const Precision precision_;
 
-  // The routine's name
+  // The routine's name and the corresponding kernels
   const std::string routine_name_;
+  const std::vector<std::string> kernel_names_;
 
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
@@ -72,7 +82,7 @@ class Routine {
   Program program_;
 
   // Connection to the database for all the device-specific parameters
-  Database db_;
+  Databases db_;
 };
 
 // =================================================================================================

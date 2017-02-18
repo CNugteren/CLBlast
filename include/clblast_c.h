@@ -96,6 +96,8 @@ typedef enum CLBlastStatusCode_ {
   CLBlastInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  CLBlastInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
+  CLBlastMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   CLBlastInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   CLBlastNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   CLBlastNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
@@ -116,6 +118,11 @@ typedef enum CLBlastTriangle_ { CLBlastTriangleUpper = 121,
 typedef enum CLBlastDiagonal_ { CLBlastDiagonalNonUnit = 131,
                                 CLBlastDiagonalUnit = 132 } CLBlastDiagonal;
 typedef enum CLBlastSide_ { CLBlastSideLeft = 141, CLBlastSideRight = 142 } CLBlastSide;
+
+// Precision enum (values in bits)
+typedef enum CLBlastPrecision_ { CLBlastPrecisionHalf = 16, CLBlastPrecisionSingle = 32,
+                                 CLBlastPrecisionDouble = 64, CLBlastPrecisionComplexSingle = 3232,
+                                 CLBlastPrecisionComplexDouble = 6464 } CLBlastPrecision;
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
@@ -1335,6 +1342,14 @@ CLBlastStatusCode PUBLIC_API CLBlastClearCache();
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 CLBlastStatusCode PUBLIC_API CLBlastFillCache(const cl_device_id device);
+
+// =================================================================================================
+
+// Overrides tuning parameters for a specific device-precision-kernel combination. The next time
+// the target routine is called it will re-compile and use the new parameters from then on.
+CLBlastStatusCode PUBLIC_API CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                                       const CLBlastPrecision precision, const size_t num_parameters,
+                                                       const char** parameters_names, const size_t* parameters_values);
 
 // =================================================================================================
 
