@@ -42,9 +42,9 @@ FILES = [
     "/src/clblast_netlib_c.cpp",
 ]
 HEADER_LINES = [121, 73, 125, 23, 29, 41, 65, 32]
-FOOTER_LINES = [26, 139, 28, 38, 6, 6, 9, 2]
+FOOTER_LINES = [25, 139, 27, 38, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
-FOOTER_LINES_DOC = 35
+FOOTER_LINES_DOC = 63
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."
