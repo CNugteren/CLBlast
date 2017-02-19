@@ -18,6 +18,7 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
+#include <cmath>
 
 namespace clblast {
 // =================================================================================================
@@ -117,6 +118,14 @@ template <>
 double2 ConstantNegOne() {
   return {-1.0, 0.0};
 }
+
+// Returns the absolute value of a scalar
+template <typename T> T AbsoluteValue(const T value) { return std::fabs(value); }
+template float AbsoluteValue<float>(const float);
+template double AbsoluteValue<double>(const double);
+template <> half AbsoluteValue(const half value) { return FloatToHalf(std::fabs(HalfToFloat(value))); }
+template <> float2 AbsoluteValue(const float2 value) { return std::abs(value); }
+template <> double2 AbsoluteValue(const double2 value) { return std::abs(value); }
 
 // =================================================================================================
 

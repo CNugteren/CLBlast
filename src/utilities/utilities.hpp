@@ -114,6 +114,10 @@ T ConstantOne();
 template <typename T>
 T ConstantNegOne();
 
+// Returns the absolute value of a scalar
+template <typename T>
+T AbsoluteValue(const T value);
+
 // =================================================================================================
 
 // Structure containing all possible arguments for test clients, including their default values
