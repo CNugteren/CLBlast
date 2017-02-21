@@ -415,7 +415,7 @@ if(TESTS)
   endforeach()
 
   # Miscellaneous tests
-  set(MISC_TESTS override_parameters)
+  set(MISC_TESTS override_parameters multithreading)
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
                    test/correctness/misc/${MISC_TEST}.cpp)

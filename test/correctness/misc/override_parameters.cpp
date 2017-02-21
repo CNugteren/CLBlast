@@ -43,9 +43,9 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   const auto platform_id = GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
   const auto device_id = GetArgument(arguments, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   auto args = Arguments<T>{};
-  args.m = GetArgument(arguments, help, kArgM, size_t{256});
-  args.n = GetArgument(arguments, help, kArgN, size_t{256});
-  args.k = GetArgument(arguments, help, kArgK, size_t{256});
+  args.m = GetArgument(arguments, help, kArgM, size_t{128});
+  args.n = GetArgument(arguments, help, kArgN, size_t{128});
+  args.k = GetArgument(arguments, help, kArgK, size_t{128});
   args.a_ld = GetArgument(arguments, help, kArgALeadDim, args.k);
   args.b_ld = GetArgument(arguments, help, kArgBLeadDim, args.n);
   args.c_ld = GetArgument(arguments, help, kArgCLeadDim, args.n);
