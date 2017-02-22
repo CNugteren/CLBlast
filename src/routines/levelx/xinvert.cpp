@@ -41,8 +41,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
                                             const Buffer<T> &src, const size_t offset, const size_t ld_src,
                                             Buffer<T> &dest) {
 
-  // Makes sure all dimensions are larger than zero and the block size is smaller than n
-  if ((block_size == 0) || (n == 0) || (block_size > n)) {
+  // Makes sure all dimensions are larger than zero
+  if ((block_size == 0) || (n == 0)) {
     throw BLASError(StatusCode::kInvalidDimension);
   }
 
@@ -56,7 +56,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // This routine only supports block sizes which are a multiple of the internal block size and
   // block sizes up to and including 128
   if ((block_size % internal_block_size != 0) || (block_size > 128)) {
-    throw BLASError(StatusCode::kInvalidDimension);
+    throw BLASError(StatusCode::kUnknownError);
   }
 
   // Checks for validity of the source and destination matrices
