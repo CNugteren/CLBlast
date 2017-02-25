@@ -46,10 +46,10 @@ void PrepareData(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto diagonal = a_mat_cpu[i*args.a_ld + i + args.a_offset];
     diagonal = AbsoluteValue(diagonal) + static_cast<T>(args.n / size_t{4});
     for (auto j = size_t{0}; j < args.n; ++j) {
-      a_mat_cpu[j*args.a_ld + i + args.a_offset] /= T{2.0};
+      a_mat_cpu[j*args.a_ld + i + args.a_offset] /= ConstantTwo<T>();
     }
     a_mat_cpu[i*args.a_ld + i + args.a_offset] = diagonal;
-    x_vec_cpu[i * args.x_inc + args.x_offset] /= T{2.0};
+    x_vec_cpu[i * args.x_inc + args.x_offset] /= ConstantTwo<T>();
   }
 
   // Copies input buffers back to the OpenCL device

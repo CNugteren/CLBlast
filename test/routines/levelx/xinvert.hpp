@@ -41,8 +41,13 @@ StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &qu
   const auto num_blocks = CeilDiv(args.n, block_size);
   const auto a_ld = args.a_ld;
   const auto b_ld = block_size;
-  if ((block_size == 0) || (args.n == 0) || (block_size > args.n)) {
+
+  // Checks for valid arguments
+  if ((block_size == 0) || (args.n == 0)) {
     return StatusCode::kInvalidDimension;
+  }
+  if ((block_size % 16 != 0) || (block_size > 128)) {
+    return StatusCode::kUnknownError;
   }
 
   // Loops over the amount of diagonal blocks of size args.m by args.m each

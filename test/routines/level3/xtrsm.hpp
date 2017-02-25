@@ -29,6 +29,37 @@
 namespace clblast {
 // =================================================================================================
 
+// Prepares the data
+template <typename T>
+void PrepareData(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+  const auto k = (args.side == Side::kLeft) ? args.m : args.n;
+  if (args.a_ld < k) { return; }
+
+  // Copies input buffers to the host
+  std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
+  std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
+  buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
+  buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
+
+  // Generates 'proper' input for the TRSM routine
+  // TODO: Improve this
+  for (auto i = size_t{0}; i < k; ++i) {
+    for (auto j = size_t{0}; j < k; ++j) {
+      auto value = a_mat_cpu[j*args.a_ld + i + args.a_offset];
+      value *= ConstantTwo<T>();
+      if (IsCloseToZero(value)) { value += ConstantOne<T>(); }
+      a_mat_cpu[j*args.a_ld + i + args.a_offset] = value;
+    }
+  }
+
+  // Copies input buffers back to the OpenCL device
+  buffers.a_mat.Write(queue, args.a_size, a_mat_cpu);
+  buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
+  return;
+}
+
+// =================================================================================================
+
 // See comment at top of file for a description of the class
 template <typename T>
 class TestXtrsm {
@@ -75,6 +106,7 @@ class TestXtrsm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    PrepareData(args, buffers, queue);
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Trsm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
@@ -89,6 +121,7 @@ class TestXtrsm {
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      PrepareData(args, buffers, queue);
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXtrsm(convertToCLBLAS(args.layout),
@@ -108,6 +141,7 @@ class TestXtrsm {
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
     static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      PrepareData(args, buffers, queue);
       std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
       std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
       buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
