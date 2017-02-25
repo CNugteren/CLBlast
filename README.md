@@ -254,6 +254,7 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xSPR     | ✔ | ✔ | - | - | ✔ |
 | xSYR2    | ✔ | ✔ | - | - | ✔ |
 | xSPR2    | ✔ | ✔ | - | - | ✔ |
+| xTRSV    | ✔ | ✔ | ✔ | ✔ | ✔ | (experimental, un-optimized)
 
 | Level-3  | S | D | C | Z | H |
 | ---------|---|---|---|---|---|
@@ -265,6 +266,7 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xSYR2K   | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xHER2K   | - | - | ✔ | ✔ | - |
 | xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xTRSM    | ✔ | ✔ | ✔ | ✔ | ✔ | (experimental, un-optimized)
 
 In addition, some extra non-BLAS routines are also supported by CLBlast, classified as level-X. They are experimental and should be used with care:
 
@@ -275,7 +277,7 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTRSV, xTBSV, xTPSV, and xTRSM.
+Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTBSV, and xTPSV.
 
 
 Half precision (fp16)
