@@ -34,6 +34,7 @@ template <typename T>
 void PrepareData(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
   const auto k = (args.side == Side::kLeft) ? args.m : args.n;
   if (args.a_ld < k) { return; }
+  if (args.a_size <= 0 || args.b_size <= 0) { return; }
 
   // Copies input buffers to the host
   std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));

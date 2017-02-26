@@ -33,6 +33,7 @@ namespace clblast {
 template <typename T>
 void PrepareData(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
   if (args.a_ld < args.n) { return; }
+  if (args.a_size <= 0 || args.x_size <= 0) { return; }
 
   // Copies input buffers to the host
   std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
