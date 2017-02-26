@@ -212,13 +212,6 @@ R"(
   #define MultiplySubtract(c, a, b) c -= a * b
 #endif
 
-// The scalar division function: real-value only
-#if PRECISION == 3232 || PRECISION == 6464
-  #define DivideReal(c, a, b) c.x = a.x / b.x; c.y = a.y
-#else
-  #define DivideReal(c, a, b) c = a / b
-#endif
-
 // The scalar division function: full division
 #if PRECISION == 3232 || PRECISION == 6464
   #define DivideFull(c, a, b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom

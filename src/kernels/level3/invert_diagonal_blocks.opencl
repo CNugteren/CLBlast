@@ -102,7 +102,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
     if (!IsZero(diagonal_value)) { // Only for non-singular values and values inside the matrix
       real constant_one;
       SetToOne(constant_one);
-      DivideReal(inverted_diagonal, constant_one, diagonal_value);
+      DivideFull(inverted_diagonal, constant_one, diagonal_value);
     }
   }
   lm[thread_index][thread_index] = inverted_diagonal;
