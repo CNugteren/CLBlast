@@ -36,7 +36,7 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
 // Sets all elements of a matrix to a constant value
 template <typename T>
 void FillMatrix(Queue &queue, const Device &device,
-                const Program &program, const Database &,
+                const Program &program, const Databases &,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t m, const size_t n, const size_t ld, const size_t offset,
                 const Buffer<T> &dest,
@@ -56,7 +56,7 @@ void FillMatrix(Queue &queue, const Device &device,
 // Sets all elements of a vector to a constant value
 template <typename T>
 void FillVector(Queue &queue, const Device &device,
-                const Program &program, const Database &,
+                const Program &program, const Databases &,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t n, const size_t inc, const size_t offset,
                 const Buffer<T> &dest,
@@ -78,7 +78,7 @@ void FillVector(Queue &queue, const Device &device,
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
 void PadCopyTransposeMatrix(Queue &queue, const Device &device,
-                            const Database &db,
+                            const Databases &db,
                             EventPointer event, const std::vector<Event> &waitForEvents,
                             const size_t src_one, const size_t src_two,
                             const size_t src_ld, const size_t src_offset,

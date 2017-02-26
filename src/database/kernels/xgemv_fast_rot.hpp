@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry XgemvFastRotHalf = {
   "XgemvFastRot", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
@@ -38,6 +44,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
+        { "Ellesmere",                                       { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "Tonga",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
         { "Turks",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",16} } },
         { "default",                                         { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
@@ -67,6 +74,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
         { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
+        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
@@ -85,6 +93,7 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
+        { "Ellesmere",                                       { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
         { "Tonga",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Turks",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",8} } },
         { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
@@ -123,6 +132,7 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
+        { "Ellesmere",                                       { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "Tonga",                                           { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
@@ -141,6 +151,7 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
         { "GeForce GTX 750 Ti",                              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
+        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
         { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
       }
     },
@@ -159,6 +170,7 @@ const Database::DatabaseEntry XgemvFastRotComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
+        { "Ellesmere",                                       { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "Tonga",                                           { {"VW3",4}, {"WGS3",16}, {"WPT3",8} } },
         { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
       }

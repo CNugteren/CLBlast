@@ -119,10 +119,12 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
+  - TITAN X (Pascal)
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
   - AMD Radeon R9 M370X Compute Engine
+  - Ellesmere
   - Hawaii
   - Oland
   - Pitcairn
@@ -155,7 +157,7 @@ Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https:/
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables.
 
-The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python (2.7 or 3.x) script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
 In summary, tuning the entire library for your device can be done as follows (starting from the root of the CLBlast folder):
 
@@ -166,6 +168,8 @@ In summary, tuning the entire library for your device can be done as follows (st
     make alltuners
     python ../scripts/database/database.py . ..
     make
+
+Alternatively, you can also supply your tuning parameters programmatically through the CLBlast API. This is especially useful if you tune for specific non-standard arguments (e.g. a rectangular or a very small matrix). To do so, you can call the `OverrideParameters` function which will set new parameters for a specific kernel. At the first next call of the target routine, CLBlast will compile a new binary and use it together with the new parameters from then on. Until `OverrideParameters` is called again of course. See the [API documentation](doc/clblast.md#overrideparameters-override-tuning-parameters-auxiliary-function) for more details.
 
 
 Compiling the correctness tests (optional)

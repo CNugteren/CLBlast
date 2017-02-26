@@ -17,6 +17,8 @@
 #define CLBLAST_CLBLAST_H_
 
 #include <cstdlib> // For size_t
+#include <string> // For OverrideParameters function
+#include <unordered_map> // For OverrideParameters function
 
 // Includes the normal OpenCL C header
 #if defined(__APPLE__) || defined(__MACOSX)
@@ -95,6 +97,8 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
+  kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
@@ -614,6 +618,14 @@ StatusCode PUBLIC_API ClearCache();
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 StatusCode PUBLIC_API FillCache(const cl_device_id device);
+
+// =================================================================================================
+
+// Overrides tuning parameters for a specific device-precision-kernel combination. The next time
+// the target routine is called it will re-compile and use the new parameters from then on.
+StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::string &kernel_name,
+                                         const Precision precision,
+                                         const std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 

@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry XaxpyHalf = {
   "Xaxpy", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"VW",4}, {"WGS",128}, {"WPT",4} } },
+        { "default",                                         { {"VW",4}, {"WGS",128}, {"WPT",4} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -26,7 +32,7 @@ const Database::DatabaseEntry XaxpyHalf = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",8}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",8}, {"WGS",256}, {"WPT",4} } },
       }
     },
   }
@@ -39,13 +45,14 @@ const Database::DatabaseEntry XaxpySingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Tonga",                                           { {"VW",1}, {"WGS",256}, {"WPT",8} } },
         { "Turks",                                           { {"VW",2}, {"WGS",256}, {"WPT",1} } },
-        { "default",                                         { {"VW",2}, {"WGS",64}, {"WPT",2} } },
+        { "default",                                         { {"VW",2}, {"WGS",256}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -96,6 +103,7 @@ const Database::DatabaseEntry XaxpySingle = {
         { "GeForce GTX TITAN",                               { {"VW",4}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW",4}, {"WGS",128}, {"WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
         { "default",                                         { {"VW",4}, {"WGS",256}, {"WPT",1} } },
@@ -116,6 +124,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
+        { "Ellesmere",                                       { {"VW",2}, {"WGS",256}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -173,6 +182,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
         { "GeForce GTX TITAN",                               { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",256}, {"WPT",1} } },
@@ -193,6 +203,7 @@ const Database::DatabaseEntry XaxpyDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",256}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",2}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -237,6 +248,7 @@ const Database::DatabaseEntry XaxpyDouble = {
         { "GeForce GTX TITAN",                               { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",512}, {"WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"VW",2}, {"WGS",256}, {"WPT",4} } },
         { "Tesla K20m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",2}, {"WGS",128}, {"WPT",1} } },
         { "default",                                         { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
@@ -244,7 +256,7 @@ const Database::DatabaseEntry XaxpyDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW",1}, {"WGS",128}, {"WPT",2} } },
+        { "default",                                         { {"VW",2}, {"WGS",256}, {"WPT",1} } },
       }
     },
   }
@@ -257,6 +269,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Ellesmere",                                       { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Oland",                                           { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -301,6 +314,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
         { "GeForce GTX TITAN",                               { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "GeForce GTX TITAN Black",                         { {"VW",1}, {"WGS",128}, {"WPT",4} } },
         { "GeForce GTX TITAN X",                             { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },

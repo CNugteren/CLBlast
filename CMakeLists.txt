@@ -415,6 +415,18 @@ if(TESTS)
     add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE})
   endforeach()
 
+  # Miscellaneous tests
+  set(MISC_TESTS override_parameters)
+  foreach(MISC_TEST ${MISC_TESTS})
+    add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
+                   test/correctness/misc/${MISC_TEST}.cpp)
+    target_link_libraries(clblast_test_${MISC_TEST} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_include_directories(clblast_test_${MISC_TEST} PUBLIC
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
+    add_test(clblast_test_${MISC_TEST} clblast_test_${MISC_TEST})
+  endforeach()
+
   # Adds 'alltests' target: runs all tests
   set(ALLTESTS )
   set(ALLTESTSDEPENDS )

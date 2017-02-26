@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry XgemvFastHalf = {
   "XgemvFast", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
+        { "default",                                         { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
@@ -39,6 +45,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "Ellesmere",                                       { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -89,6 +96,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "GeForce GTX TITAN",                               { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "TITAN X (Pascal)",                                { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
@@ -109,6 +117,7 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
+        { "Ellesmere",                                       { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -170,6 +179,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "Ellesmere",                                       { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -207,6 +217,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
         { "GeForce GTX TITAN",                               { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "TITAN X (Pascal)",                                { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
@@ -227,6 +238,7 @@ const Database::DatabaseEntry XgemvFastComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
+        { "Ellesmere",                                       { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },

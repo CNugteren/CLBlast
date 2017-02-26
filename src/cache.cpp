@@ -65,6 +65,37 @@ void Cache<Key, Value>::Store(Key &&key, Value &&value) {
 }
 
 template <typename Key, typename Value>
+void Cache<Key, Value>::Remove(const Key &key) {
+  std::lock_guard<std::mutex> lock(cache_mutex_);
+#if __cplusplus >= 201402L
+  cache_.erase(key);
+#else
+  auto it = cache_.begin();
+  while (it != cache_.end()) {
+    if ((*it).first == key) {
+      it = cache_.erase(it);
+    }
+    else ++it;
+  }
+#endif
+}
+
+template <typename Key, typename Value>
+template <int I1, int I2>
+void Cache<Key, Value>::RemoveBySubset(const Key &key) {
+  std::lock_guard<std::mutex> lock(cache_mutex_);
+  auto it = cache_.begin();
+  while (it != cache_.end()) {
+    const auto current_key = (*it).first;
+    if ((std::get<I1>(key) == std::get<I1>(current_key)) &&
+        (std::get<I2>(key) == std::get<I2>(current_key))) {
+      it = cache_.erase(it);
+    }
+    else ++it;
+  }
+}
+
+template <typename Key, typename Value>
 void Cache<Key, Value>::Invalidate() {
   std::lock_guard<std::mutex> lock(cache_mutex_);
 
@@ -88,6 +119,7 @@ template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const;
 
 template class Cache<ProgramKey, Program>;
 template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
+template void ProgramCache::RemoveBySubset<1, 2>(const ProgramKey &); // precision and routine name
 
 // =================================================================================================
 

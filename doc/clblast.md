@@ -2903,3 +2903,66 @@ Requirements for OMATCOPY:
 
 
 
+ClearCache: Resets the cache of compiled binaries (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache can be cleared to free up system memory or it can be useful in case of debugging.
+
+C++ API:
+```
+StatusCode ClearCache()
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastClearCache()
+```
+
+
+
+FillCache: Populates the cache of compiled binaries for a specific device (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache is automatically populated whenever a new binary is created. Thus, the first run of a specific kernel could take extra time. For debugging or performance evaluation purposes, it might be useful to populate the cache upfront. This function populates the cache for all kernels in CLBlast for all precisions, but for a specific device only.
+
+C++ API:
+```
+StatusCode FillCache(const cl_device_id device)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastFillCache(const cl_device_id device)
+```
+
+Arguments to FillCache:
+
+* `const cl_device_id device`: The OpenCL device to fill the cache for.
+
+
+
+OverrideParameters: Override tuning parameters (auxiliary function)
+-------------
+
+This function overrides tuning parameters for a specific device-precision-kernel combination. The next time the target routine is called it will be re-compiled and use the new parameters. All further times (until `OverrideParameters` is called again) it will load the kernel from the cache and thus continue to use the new parameters. Note that the first time after calling `OverrideParameters` a performance drop can be observable due to the re-compilation of the kernel.
+
+C++ API:
+```
+StatusCode OverrideParameters(const cl_device_id device, const std::string &kernel_name,
+                              const Precision precision,
+                              const std::unordered_map<std::string,size_t> &parameters)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                            const CLBlastPrecision precision, const size_t num_parameters,
+                                            const char** parameters_names, const size_t* parameters_values)
+```
+
+Arguments to OverrideParameters (C++ version):
+
+* `const cl_device_id device`: The OpenCL device to set the new parameters for.
+* `const std::string &kernel_name`: The target kernel name. This has to be one of the existing CLBlast kernels (Xaxpy, Xdot, Xgemv, XgemvFast, XgemvFastRot, Xgemv, Xger, Copy, Pad, Transpose, Padtranspose, Xgemm, or XgemmDirect). If this argument is incorrect, this function will return with the `clblast::kInvalidOverrideKernel` status-code.
+* `const Precision precision`: The CLBlast precision enum to set the new parameters for.
+* `const std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This has to contain all the tuning parameters for a specific kernel as reported by the included tuners (e.g. `{ {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} }` for the `Copy` kernel). If this argument is incorrect, this function will return with the `clblast::kMissingOverrideParameter` status-code.
