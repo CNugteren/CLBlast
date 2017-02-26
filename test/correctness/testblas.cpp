@@ -138,7 +138,10 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
 
     // Don't continue with CBLAS if there are incorrect parameters
     if (compare_cblas_ && status2 != StatusCode::kSuccess) {
-      if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
+      if (verbose_) {
+        fprintf(stdout, " -> %d -> ", static_cast<int>(status2));
+        std::cout << std::flush;
+      }
       TestErrorCodes(status2, status2, args);
       continue;
     }

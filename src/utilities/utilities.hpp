@@ -99,12 +99,20 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 // =================================================================================================
 
 // Returns a scalar with a default value
-template <typename T>
-T GetScalar();
+template <typename T> T GetScalar();
 
-// Returns a scalar of value 1
-template <typename T>
-T ConstantOne();
+// Fixed value scalars
+template <typename T> T ConstantZero();
+template <typename T> T ConstantOne();
+template <typename T> T ConstantNegOne();
+template <typename T> T ConstantTwo();
+template <typename T> T SmallConstant();
+
+// Returns the absolute value of a scalar
+template <typename T> T AbsoluteValue(const T value);
+
+// Returns whether a scalar is close to zero
+template <typename T> bool IsCloseToZero(const T value);
 
 // =================================================================================================
 

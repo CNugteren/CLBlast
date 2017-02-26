@@ -862,7 +862,7 @@ void PUBLIC_API cblas_ztrmm(const CLBlastLayout layout, const CLBlastSide side, 
                             const void* a, const int a_ld,
                             void* b, const int b_ld);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 void PUBLIC_API cblas_strsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                             const int m, const int n,
                             const float alpha,

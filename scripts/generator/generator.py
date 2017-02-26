@@ -41,8 +41,8 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [121, 73, 125, 23, 29, 41, 65, 32]
-FOOTER_LINES = [25, 139, 27, 38, 6, 6, 9, 2]
+HEADER_LINES = [121, 75, 125, 23, 29, 41, 65, 32]
+FOOTER_LINES = [25, 138, 27, 38, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
 
@@ -131,7 +131,7 @@ ROUTINES = [
   Routine(True,  True,  "2a", "trmv",  T,  [S,D,C,Z,H],    ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "n",   "Triangular matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is triangular instead.", [ald_n]),
   Routine(True,  True,  "2a", "tbmv",  T,  [S,D,C,Z,H],    ["n","k"],           ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "n",   "Triangular banded matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is triangular and banded instead.", [ald_k_one]),
   Routine(True,  True,  "2a", "tpmv",  T,  [S,D,C,Z,H],    ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["ap"],     ["x"],                        [apn,xn],      [],               "n",   "Triangular packed matrix-vector multiplication", "Same operation as xGEMV, but matrix _A_ is a triangular packed matrix instead and repreented as _AP_.", []),
-  Routine(False, True,  "2a", "trsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a triangular system of equations", "", []),
+  Routine(True,  True,  "2a", "trsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a triangular system of equations", "", []),
   Routine(False, True,  "2a", "tbsv",  T,  [S,D,C,Z],      ["n","k"],           ["layout","triangle","a_transpose","diagonal"],         ["a"],      ["x"],                        [an,xn],       [],               "",    "Solves a banded triangular system of equations", "", [ald_k_one]),
   Routine(False, True,  "2a", "tpsv",  T,  [S,D,C,Z],      ["n"],               ["layout","triangle","a_transpose","diagonal"],         ["ap"],     ["x"],                        [apn,xn],      [],               "",    "Solves a packed triangular system of equations", "", []),
   # Level 2: matrix update
@@ -156,7 +156,7 @@ ROUTINES = [
   Routine(True,  True,  "3", "syr2k", T,  [S,D,C,Z,H],     ["n","k"],            ["layout","triangle","ab_transpose"],                  ["a","b"],  ["c"],                        [ankab,bnkab,cn],["alpha","beta"], "",    "Rank-2K update of a symmetric matrix", "Performs the matrix product _C = alpha * A * B^T + alpha * B * A^T + beta * C_ or _C = alpha * A^T * B + alpha * B^T * A + beta * C_, in which _A_ and _B_ are general matrices and _A^T_ and _B^T_ are their transposed versions, _C_ (_n_ by _n_) is the symmetric matrix to be updated, and _alpha_ and _beta_ are scalar values.", [ald_trans_n_k, bld_trans_n_k, cld_n]),
   Routine(True,  True,  "3", "her2k", TU, [Ccs,Zzd],       ["n","k"],            ["layout","triangle","ab_transpose"],                  ["a","b"],  ["c"],                        [ankab,bnkab,cn],["alpha","beta"], "",    "Rank-2K update of a hermitian matrix", "Same operation as xSYR2K, but _C_ is an Hermitian matrix instead.", [ald_trans_n_k, bld_trans_n_k, cld_n]),
   Routine(True,  True,  "3", "trmm",  T,  [S,D,C,Z,H],     ["m","n"],            ["layout","side","triangle","a_transpose","diagonal"], ["a"],      ["b"],                        [amns,bmn],      ["alpha"],        "",    "Triangular matrix-matrix multiplication", "Performs the matrix product _B = alpha * A * B_ or _B = alpha * B * A_, in which _A_ is a unit or non-unit triangular matrix, _B_ (_m_ by _n_) is the general matrix to be updated, and _alpha_ is a scalar value.", [ald_side_m_n, bld_m]),
-  Routine(False, True,  "3", "trsm",  T,  [S,D,C,Z,H],     ["m","n"],            ["layout","side","triangle","a_transpose","diagonal"], ["a"],      ["b"],                        [amns,bmn],      ["alpha"],        "",    "Solves a triangular system of equations", "", []),
+  Routine(True,  True,  "3", "trsm",  T,  [S,D,C,Z],       ["m","n"],            ["layout","side","triangle","a_transpose","diagonal"], ["a"],      ["b"],                        [amns,bmn],      ["alpha"],        "",    "Solves a triangular system of equations", "Solves the equation _A * X = alpha * B_ for the unknown _m_ by _n_ matrix X, in which _A_ is an _n_ by _n_ unit or non-unit triangular matrix and B is an _m_ by _n_ matrix. The matrix _B_ is overwritten by the solution _X_.", []),
 ],
 [  # Level X: extra routines (not part of BLAS)
   Routine(True,  True,  "x", "omatcopy", T, [S,D,C,Z,H],   ["m","n"],            ["layout","a_transpose"],                              ["a"],      ["b"],                        [amn,bnma],      ["alpha"],        "",    "Scaling and out-place transpose/copy (non-BLAS function)", "Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.", [ald_m, bld_n]),

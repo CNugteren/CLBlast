@@ -25,16 +25,17 @@ namespace clblast {
 const std::vector<std::string> Routine::routines_axpy = {"AXPY", "COPY", "SCAL", "SWAP"};
 const std::vector<std::string> Routine::routines_dot = {"AMAX", "ASUM", "DOT", "DOTC", "DOTU", "MAX", "MIN", "NRM2", "SUM"};
 const std::vector<std::string> Routine::routines_ger = {"GER", "GERC", "GERU", "HER", "HER2", "HPR", "HPR2", "SPR", "SPR2", "SYR", "SYR2"};
-const std::vector<std::string> Routine::routines_gemv = {"GBMV", "GEMV", "HBMV", "HEMV", "HPMV", "SBMV", "SPMV", "SYMV", "TMBV", "TPMV", "TRMV"};
+const std::vector<std::string> Routine::routines_gemv = {"GBMV", "GEMV", "HBMV", "HEMV", "HPMV", "SBMV", "SPMV", "SYMV", "TMBV", "TPMV", "TRMV", "TRSV"};
 const std::vector<std::string> Routine::routines_gemm = {"GEMM", "HEMM", "SYMM", "TRMM"};
-const std::vector<std::string> Routine::routines_gemm_syrk = {"GEMM", "HEMM", "HER2K", "HERK", "SYMM", "SYR2K", "SYRK", "TRMM"};
+const std::vector<std::string> Routine::routines_gemm_syrk = {"GEMM", "HEMM", "HER2K", "HERK", "SYMM", "SYR2K", "SYRK", "TRMM", "TRSM"};
+const std::vector<std::string> Routine::routines_trsm = {"TRSM"};
 const std::unordered_map<std::string, const std::vector<std::string>> Routine::routines_by_kernel = {
   {"Xaxpy", routines_axpy},
   {"Xdot", routines_dot},
   {"Xgemv", routines_gemv},
   {"XgemvFast", routines_gemv},
   {"XgemvFastRot", routines_gemv},
-  {"Xgemv", {}},
+  {"Xtrsv", routines_gemv},
   {"Xger", routines_ger},
   {"Copy", routines_gemm_syrk},
   {"Pad", routines_gemm_syrk},
@@ -43,6 +44,7 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
   {"Xgemm", routines_gemm_syrk},
   {"XgemmDirect", routines_gemm},
   {"KernelSelection", routines_gemm},
+  {"Invert", routines_trsm},
 };
 // =================================================================================================
 

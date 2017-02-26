@@ -3350,27 +3350,6 @@ CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide sid
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-CLBlastStatusCode CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                               const size_t m, const size_t n,
-                               const cl_half alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               cl_command_queue* queue, cl_event* event) {
-  try {
-    return static_cast<CLBlastStatusCode>(
-      clblast::Trsm(static_cast<clblast::Layout>(layout),
-                    static_cast<clblast::Side>(side),
-                    static_cast<clblast::Triangle>(triangle),
-                    static_cast<clblast::Transpose>(a_transpose),
-                    static_cast<clblast::Diagonal>(diagonal),
-                    m, n,
-                    alpha,
-                    a_buffer, a_offset, a_ld,
-                    b_buffer, b_offset, b_ld,
-                    queue, event)
-    );
-  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
-}
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)

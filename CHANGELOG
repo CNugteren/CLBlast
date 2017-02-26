@@ -8,6 +8,10 @@ Development version (next release)
 - Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added level-2 routines:
+  * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
+- Added level-3 routines:
+  * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)
 
 Version 0.10.0
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header

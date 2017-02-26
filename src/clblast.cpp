@@ -45,6 +45,7 @@
 #include "routines/level2/xtrmv.hpp"
 #include "routines/level2/xtbmv.hpp"
 #include "routines/level2/xtpmv.hpp"
+#include "routines/level2/xtrsv.hpp"
 #include "routines/level2/xger.hpp"
 #include "routines/level2/xgeru.hpp"
 #include "routines/level2/xgerc.hpp"
@@ -66,6 +67,7 @@
 #include "routines/level3/xsyr2k.hpp"
 #include "routines/level3/xher2k.hpp"
 #include "routines/level3/xtrmm.hpp"
+#include "routines/level3/xtrsm.hpp"
 
 // Level-x includes (non-BLAS)
 #include "routines/levelx/xomatcopy.hpp"
@@ -1145,12 +1147,20 @@ template StatusCode PUBLIC_API Tpmv<half>(const Layout, const Triangle, const Tr
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
-StatusCode Trsv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrsv<T>(queue_cpp, event);
+    routine.DoTrsv(layout, triangle, a_transpose, diagonal,
+                   n,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t,
@@ -2065,15 +2075,24 @@ template StatusCode PUBLIC_API Trmm<half>(const Layout, const Side, const Triang
                                           cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
-StatusCode Trsm(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrsm<T>(queue_cpp, event);
+    routine.DoTrsm(layout, side, triangle, a_transpose, diagonal,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trsm<float>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
                                            const size_t, const size_t,
@@ -2099,12 +2118,6 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsm<half>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
-                                          const size_t, const size_t,
-                                          const half,
-                                          const cl_mem, const size_t, const size_t,
-                                          cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
@@ -2159,7 +2172,6 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
                                               const cl_mem, const size_t, const size_t,
                                               cl_mem, const size_t, const size_t,
                                               cl_command_queue*, cl_event*);
-
 // =================================================================================================
 
 // Clears the cache of stored binaries

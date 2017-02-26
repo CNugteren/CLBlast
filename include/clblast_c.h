@@ -1265,7 +1265,7 @@ CLBlastStatusCode PUBLIC_API CLBlastHtrmm(const CLBlastLayout layout, const CLBl
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 CLBlastStatusCode PUBLIC_API CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const float alpha,
@@ -1287,12 +1287,6 @@ CLBlastStatusCode PUBLIC_API CLBlastCtrsm(const CLBlastLayout layout, const CLBl
 CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const cl_double2 alpha,
-                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                                          cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                                          cl_command_queue* queue, cl_event* event);
-CLBlastStatusCode PUBLIC_API CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                                          const size_t m, const size_t n,
-                                          const cl_half alpha,
                                           const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);

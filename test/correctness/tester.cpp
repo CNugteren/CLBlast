@@ -40,6 +40,12 @@ float getAbsoluteErrorMargin<half>() {
   return 0.10f; // especially small values are inaccurate for half-precision
 }
 
+// Error margin: numbers beyond this value are considered equal to inf or NaN
+template <typename T>
+T getAlmostInfNumber() {
+  return T{1e35}; // used for correctness testing of TRSV and TRSM routines
+}
+
 // Maximum number of test results printed on a single line
 template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = size_t{64};
 
@@ -426,6 +432,21 @@ bool TestSimilarityNear(const T val1, const T val2,
   if (val1 == val2) {
     return true;
   }
+  // Handles cases with both results NaN or inf
+  else if ((std::isnan(val1) && std::isnan(val2)) || (std::isinf(val1) && std::isinf(val2))) {
+    return true;
+  }
+  // Also considers it OK if one of the results in NaN and the other is inf
+  // Note: for TRSV and TRSM routines
+  else if ((std::isnan(val1) && std::isinf(val2)) || (std::isinf(val1) && std::isnan(val2))) {
+    return true;
+  }
+  // Also considers it OK if one of the values is super large and the other is inf or NaN
+  // Note: for TRSV and TRSM routines
+  else if ((std::abs(val1) > getAlmostInfNumber<T>() && (std::isinf(val2) || std::isnan(val2))) ||
+           (std::abs(val2) > getAlmostInfNumber<T>() && (std::isinf(val1) || std::isnan(val1)))) {
+    return true;
+  }
   // The values are zero or very small: the relative error is less meaningful
   else if (val1 == 0 || val2 == 0 || difference < error_margin_absolute) {
     return (difference < error_margin_absolute);
@@ -452,15 +473,21 @@ template bool TestSimilarity<double>(const double, const double);
 // Specialisations for non-standard data-types
 template <>
 bool TestSimilarity(const float2 val1, const float2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const double2 val1, const double2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {

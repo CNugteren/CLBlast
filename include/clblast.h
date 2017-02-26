@@ -587,7 +587,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,

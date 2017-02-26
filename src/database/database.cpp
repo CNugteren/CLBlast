@@ -20,12 +20,14 @@
 #include "database/kernels/xgemv_fast.hpp"
 #include "database/kernels/xgemv_fast_rot.hpp"
 #include "database/kernels/xger.hpp"
+#include "database/kernels/xtrsv.hpp"
 #include "database/kernels/xgemm.hpp"
 #include "database/kernels/xgemm_direct.hpp"
 #include "database/kernels/copy.hpp"
 #include "database/kernels/pad.hpp"
 #include "database/kernels/transpose.hpp"
 #include "database/kernels/padtranspose.hpp"
+#include "database/kernels/invert.hpp"
 #include "database/kernel_selection.hpp"
 
 namespace clblast {
@@ -39,12 +41,14 @@ const std::vector<const Database::DatabaseEntry*> Database::database = {
   &database::XgemvFastHalf, &database::XgemvFastSingle, &database::XgemvFastDouble, &database::XgemvFastComplexSingle, &database::XgemvFastComplexDouble,
   &database::XgemvFastRotHalf, &database::XgemvFastRotSingle, &database::XgemvFastRotDouble, &database::XgemvFastRotComplexSingle, &database::XgemvFastRotComplexDouble,
   &database::XgerHalf, &database::XgerSingle, &database::XgerDouble, &database::XgerComplexSingle, &database::XgerComplexDouble,
+  &database::XtrsvHalf, &database::XtrsvSingle, &database::XtrsvDouble, &database::XtrsvComplexSingle, &database::XtrsvComplexDouble,
   &database::XgemmHalf, &database::XgemmSingle, &database::XgemmDouble, &database::XgemmComplexSingle, &database::XgemmComplexDouble,
   &database::XgemmDirectHalf, &database::XgemmDirectSingle, &database::XgemmDirectDouble, &database::XgemmDirectComplexSingle, &database::XgemmDirectComplexDouble,
   &database::CopyHalf, &database::CopySingle, &database::CopyDouble, &database::CopyComplexSingle, &database::CopyComplexDouble,
   &database::PadHalf, &database::PadSingle, &database::PadDouble, &database::PadComplexSingle, &database::PadComplexDouble,
   &database::TransposeHalf, &database::TransposeSingle, &database::TransposeDouble, &database::TransposeComplexSingle, &database::TransposeComplexDouble,
   &database::PadtransposeHalf, &database::PadtransposeSingle, &database::PadtransposeDouble, &database::PadtransposeComplexSingle, &database::PadtransposeComplexDouble,
+  &database::InvertHalf, &database::InvertSingle, &database::InvertDouble, &database::InvertComplexSingle, &database::InvertComplexDouble,
   &database::KernelSelectionHalf, &database::KernelSelectionSingle, &database::KernelSelectionDouble, &database::KernelSelectionComplexSingle, &database::KernelSelectionComplexDouble
 };
 

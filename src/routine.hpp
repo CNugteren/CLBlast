@@ -50,6 +50,7 @@ class Routine {
   static const std::vector<std::string> routines_gemv;
   static const std::vector<std::string> routines_gemm;
   static const std::vector<std::string> routines_gemm_syrk;
+  static const std::vector<std::string> routines_trsm;
   static const std::unordered_map<std::string, const std::vector<std::string>> routines_by_kernel;
 
  private:
