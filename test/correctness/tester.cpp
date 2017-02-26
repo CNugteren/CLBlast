@@ -473,15 +473,21 @@ template bool TestSimilarity<double>(const double, const double);
 // Specialisations for non-standard data-types
 template <>
 bool TestSimilarity(const float2 val1, const float2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const double2 val1, const double2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {
