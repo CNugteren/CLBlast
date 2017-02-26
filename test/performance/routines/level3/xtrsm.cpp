@@ -20,8 +20,7 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args, clblast::Precision::kSingle)) {
-    case clblast::Precision::kHalf:
-      clblast::RunClient<clblast::TestXtrsm<half>, half, half>(argc, argv); break;
+    case clblast::Precision::kHalf: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kSingle:
       clblast::RunClient<clblast::TestXtrsm<float>, float, float>(argc, argv); break;
     case clblast::Precision::kDouble:

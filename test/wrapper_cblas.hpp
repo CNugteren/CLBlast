@@ -2103,20 +2103,6 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
 }
-void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
-                const size_t m, const size_t n,
-                const half alpha,
-                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
-                std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld) {
-  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
-  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
-  cblasXtrsm(layout, side, triangle, a_transpose, diagonal,
-             m, n,
-             HalfToFloat(alpha),
-             a_buffer_bis, a_offset, a_ld,
-             b_buffer_bis, b_offset, b_ld);
-  FloatToHalfBuffer(b_buffer, b_buffer_bis);
-}
 
 // =================================================================================================
 } // namespace clblast

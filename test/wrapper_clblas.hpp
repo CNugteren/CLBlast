@@ -2865,24 +2865,6 @@ clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const 
                      b_buffer(), b_offset, b_ld,
                      num_queues, queues, num_wait_events, wait_events, events);
 }
-clblasStatus clblasXtrsm(const clblasOrder layout, const clblasSide side, const clblasUplo triangle, const clblasTranspose a_transpose, const clblasDiag diagonal,
-                         const size_t m, const size_t n,
-                         const half alpha,
-                         const Buffer<half>& a_buffer, const size_t a_offset, const size_t a_ld,
-                         Buffer<half>& b_buffer, const size_t b_offset, const size_t b_ld,
-                         cl_uint num_queues, cl_command_queue *queues,
-                         cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
-  auto a_buffer_bis = HalfToFloatBuffer(a_buffer, queues[0]);
-  auto b_buffer_bis = HalfToFloatBuffer(b_buffer, queues[0]);
-  auto status = clblasXtrsm(layout, side, triangle, a_transpose, diagonal,
-                            m, n,
-                            HalfToFloat(alpha),
-                            a_buffer_bis, a_offset, a_ld,
-                            b_buffer_bis, b_offset, b_ld,
-                            num_queues, queues, num_wait_events, wait_events, events);
-  FloatToHalfBuffer(b_buffer, b_buffer_bis, queues[0]);
-  return status;
-}
 
 // =================================================================================================
 } // namespace clblast

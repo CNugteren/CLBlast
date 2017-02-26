@@ -2075,7 +2075,7 @@ template StatusCode PUBLIC_API Trmm<half>(const Layout, const Side, const Triang
                                           cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
@@ -2118,12 +2118,6 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsm<half>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
-                                          const size_t, const size_t,
-                                          const half,
-                                          const cl_mem, const size_t, const size_t,
-                                          cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
@@ -2178,7 +2172,6 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
                                               const cl_mem, const size_t, const size_t,
                                               cl_mem, const size_t, const size_t,
                                               cl_command_queue*, cl_event*);
-
 // =================================================================================================
 
 // Clears the cache of stored binaries

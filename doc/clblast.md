@@ -2807,12 +2807,6 @@ CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide sid
                                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                cl_command_queue* queue, cl_event* event)
-CLBlastStatusCode CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                               const size_t m, const size_t n,
-                               const cl_half alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               cl_command_queue* queue, cl_event* event)
 ```
 
 Arguments to TRSM:
