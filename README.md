@@ -21,6 +21,7 @@ Use CLBlast instead of clBLAS:
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
 * When you run on exotic OpenCL devices for which you need to tune yourself.
 * When you are still running on OpenCL 1.1 hardware.
+* When you prefer a C++ API over a C API (C API also available in CLBlast).
 * When you value an organized and modern C++ codebase.
 * When you target Intel CPUs and GPUs or embedded devices
 * When you can benefit from the increased performance of half-precision fp16 data-types.
@@ -90,21 +91,23 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the above mentioned include files and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in the `samples` subfolder. They can optionally be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the above mentioned include files and the included [API documentation](doc/clblast.md). The API is kept as close as possible to the Netlib BLAS and the cuBLAS/clBLAS APIs.
+
+To get started quickly, a couple of stand-alone example programs are included in the `samples` subfolder. They can optionally be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
 
     cmake -DSAMPLES=ON ..
-
-Furthermore, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
 
 There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severly. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
 
     #include <clblast_netlib_c.h>
 
+For all of CLBlast's APIs, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
 
 Using the tuners (optional)
 -------------
 
-The CLBlast library will be tuned in the future for the most commonly used OpenCL devices. This pre-release of CLBlast is only tuned for a limited number of devices, in particular those with the following `CL_DEVICE_NAME` values:
+The CLBlast library is already tuned for the most commonly used OpenCL devices and it's gradually being extended to other devices as well. For unseen devices CLBlast will make use of common-best tuning values for similar devices (e.g. AMD GPUs), so performance might still be decent. The current release of CLBlast is tuned for devices with the following `CL_DEVICE_NAME` values:
 
 * NVIDIA GPUs:
   - GRID K520
