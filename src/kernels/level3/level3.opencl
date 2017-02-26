@@ -77,12 +77,12 @@ R"(
 #if defined(ROUTINE_INVERT) || defined(ROUTINE_TRSM)
 
 __kernel __attribute__((reqd_work_group_size(8, 8, 1)))
-void FillMatrix(const int n, const int ld, const int offset,
+void FillMatrix(const int m, const int n, const int ld, const int offset,
                 __global real* restrict dest, const real_arg arg_value) {
   const real value = GetRealArg(arg_value);
   const int id_one = get_global_id(0);
   const int id_two = get_global_id(1);
-  if (id_one < ld && id_two < n) {
+  if (id_one < m && id_two < n) {
     dest[id_two*ld + id_one + offset] = value;
   }
 }

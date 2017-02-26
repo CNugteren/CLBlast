@@ -91,6 +91,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
   // Creates a copy of B to avoid overwriting input in GEMM while computing output
   const auto b_size = b_ld * (n - 1) + m + b_offset;
   const auto x_one = m;
+  const auto x_two = n;
   const auto x_size = b_size;
   const auto x_ld = b_ld;
   const auto x_offset = b_offset;
@@ -105,7 +106,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
   auto eventWaitList = std::vector<Event>();
   auto fill_matrix_event = Event();
   FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), eventWaitList,
-             x_one, x_ld, x_offset, x_buffer, ConstantZero<T>());
+             x_one, x_two, x_ld, x_offset, x_buffer, ConstantZero<T>());
   fill_matrix_event.WaitForCompletion();
 
   // Inverts the diagonal blocks
