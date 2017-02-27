@@ -23,7 +23,7 @@ namespace clblast {
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 4096 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 512 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
 
 // Test settings for the invalid tests
@@ -182,23 +182,39 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto result1 = get_result_(args, buffers1, queue_);
     auto result2 = get_result_(args, buffers2, queue_);
 
+    // Computes the L2 error
+    const auto kErrorMarginL2 = getL2ErrorMargin<T>();
+    auto l2error = 0.0;
+    for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
+      for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
+        auto index = get_index_(args, id1, id2);
+        l2error += SquaredDifference(result1[index], result2[index]);
+      }
+    }
+    l2error /= (get_id1_(args) * get_id2_(args));
+
     // Checks for differences in the output
     auto errors = size_t{0};
     for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
       for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
         auto index = get_index_(args, id1, id2);
         if (!TestSimilarity(result1[index], result2[index])) {
-          errors++;
+          if (l2error >= kErrorMarginL2) { errors++; }
           if (verbose_) {
             if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
             else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
             fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
             fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
+            if (l2error < kErrorMarginL2) {
+              fprintf(stdout, " - error suppressed by a low total L2 error\n");
+            }
           }
         }
       }
     }
-    if (verbose_ && errors > 0) { fprintf(stdout, "\n   "); }
+    if (verbose_ && errors > 0) {
+      fprintf(stdout, "\n   Combined L2 error: %.2e\n   ", l2error);
+    }
 
     // Tests the error count (should be zero)
     TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);

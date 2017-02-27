@@ -6,6 +6,7 @@ Development version (next release)
 - Fixed a missing cl_khr_fp64 when running double-precision on Intel CPUs
 - Fixed bugs in the half-precision routines HTBMV/HTPMV/HTRMV/HSYR2K/HTRMM
 - Tests now also exit with an error code when OpenCL errors or compilation errors occur
+- Tests now also check for the L2 error in case of half-precision
 - Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
