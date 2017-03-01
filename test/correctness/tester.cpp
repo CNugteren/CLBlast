@@ -67,7 +67,7 @@ double getL2ErrorMargin<half>() {
 // Error margin: numbers beyond this value are considered equal to inf or NaN
 template <typename T>
 T getAlmostInfNumber() {
-  return T{1e35}; // used for correctness testing of TRSV and TRSM routines
+  return static_cast<T>(1e35); // used for correctness testing of TRSV and TRSM routines
 }
 
 // Maximum number of test results printed on a single line
