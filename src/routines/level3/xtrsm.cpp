@@ -131,15 +131,15 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                current_block_size, n, current_block_size, gemm_alpha,
                a_inv_buffer, i * block_size, block_size,
-               b_buffer, i, b_ld, ConstantZero<T>(),
-               x_buffer, i, x_ld);
+               b_buffer, b_offset + i, b_ld, ConstantZero<T>(),
+               x_buffer, x_offset + i, x_ld);
         if (i + block_size >= m) { break; }
         const auto this_a_offset = (a_transpose == Transpose::kNo) ? (i + block_size) + i * a_ld : i + (block_size + i) * a_ld;
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                m - i - block_size, n, block_size, ConstantNegOne<T>(),
                a_buffer, this_a_offset, a_ld,
-               x_buffer, i, x_ld, ConstantOne<T>(),
-               b_buffer, i + block_size, b_ld);
+               x_buffer, x_offset + i, x_ld, ConstantOne<T>(),
+               b_buffer, b_offset + i + block_size, b_ld);
       }
     }
 
@@ -152,15 +152,15 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                current_block_size, n, current_block_size, gemm_alpha,
                a_inv_buffer, i * block_size, block_size,
-               b_buffer, i, b_ld, ConstantZero<T>(),
-               x_buffer, i, x_ld);
+               b_buffer, b_offset + i, b_ld, ConstantZero<T>(),
+               x_buffer, x_offset + i, x_ld);
         if (i - static_cast<int>(block_size) < 0) { break; }
         const auto this_a_offset = (a_transpose == Transpose::kNo) ? i * a_ld : i;
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                i, n, block_size, ConstantNegOne<T>(),
                a_buffer, this_a_offset, a_ld,
-               x_buffer, i, x_ld, ConstantOne<T>(),
-               b_buffer, 0, b_ld);
+               x_buffer, x_offset + i, x_ld, ConstantOne<T>(),
+               b_buffer, b_offset, b_ld);
       }
     }
   }
@@ -176,16 +176,16 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         const auto gemm_alpha = (i == i_start) ? alpha : ConstantOne<T>();
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
                m, current_block_size, current_block_size, gemm_alpha,
-               b_buffer, i * b_ld, b_ld,
+               b_buffer, b_offset + i * b_ld, b_ld,
                a_inv_buffer, i * block_size, block_size, ConstantZero<T>(),
-               x_buffer, i * x_ld, x_ld);
+               x_buffer, x_offset + i * x_ld, x_ld);
         if (i - static_cast<int>(block_size) < 0) { break; }
         const auto this_a_offset = (a_transpose == Transpose::kNo) ? i : i * a_ld;
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
                m, i, current_block_size, ConstantNegOne<T>(),
-               x_buffer, i * x_ld, x_ld,
+               x_buffer, x_offset + i * x_ld, x_ld,
                a_buffer, this_a_offset, a_ld, ConstantOne<T>(),
-               b_buffer, 0, b_ld);
+               b_buffer, b_offset, b_ld);
       }
     }
 
@@ -196,16 +196,16 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         const auto current_block_size = std::min(n - i, block_size);
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
                m, current_block_size, current_block_size, gemm_alpha,
-               b_buffer, i * b_ld, b_ld,
+               b_buffer, b_offset + i * b_ld, b_ld,
                a_inv_buffer, i * block_size, block_size, ConstantZero<T>(),
-               x_buffer, i * x_ld, x_ld);
+               x_buffer, x_offset + i * x_ld, x_ld);
         if (i + block_size >= n) { break; }
         const auto this_a_offset = (a_transpose == Transpose::kNo) ? i + (block_size + i) * a_ld : (i + block_size) + i * a_ld;
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
                m, n - i - block_size, block_size, ConstantNegOne<T>(),
-               x_buffer, i * x_ld, x_ld,
+               x_buffer, x_offset + i * x_ld, x_ld,
                a_buffer, this_a_offset, a_ld, ConstantOne<T>(),
-               b_buffer, (i + block_size) * b_ld, b_ld);
+               b_buffer, b_offset + (i + block_size) * b_ld, b_ld);
       }
     }
   }
