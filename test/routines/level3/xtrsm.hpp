@@ -76,7 +76,7 @@ class TestXtrsm {
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
   // Describes how to prepare the input data
-  static void PrepareData(const Arguments<T> &args, Queue &queue, const int seed,
+  static void PrepareData(const Arguments<T> &args, Queue&, const int seed,
                           std::vector<T>&, std::vector<T>&,
                           std::vector<T>& a_source_, std::vector<T>& b_source_, std::vector<T>&,
                           std::vector<T>&, std::vector<T>&) {
