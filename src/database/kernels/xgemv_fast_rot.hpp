@@ -44,6 +44,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
+        { "ATI Radeon HD 6750M",                             { {"VW3",8}, {"WGS3",128}, {"WPT3",16} } },
         { "Ellesmere",                                       { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "Tonga",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",32} } },
         { "Turks",                                           { {"VW3",8}, {"WGS3",128}, {"WPT3",16} } },
@@ -93,6 +94,7 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
+        { "ATI Radeon HD 6750M",                             { {"VW3",8}, {"WGS3",32}, {"WPT3",8} } },
         { "Ellesmere",                                       { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
         { "Tonga",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Turks",                                           { {"VW3",4}, {"WGS3",32}, {"WPT3",8} } },
@@ -119,7 +121,7 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
   }

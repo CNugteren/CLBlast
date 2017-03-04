@@ -45,6 +45,7 @@ const Database::DatabaseEntry XaxpySingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "ATI Radeon HD 6750M",                             { {"VW",1}, {"WGS",256}, {"WPT",2} } },
         { "Ellesmere",                                       { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -124,6 +125,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
+        { "ATI Radeon HD 6750M",                             { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Ellesmere",                                       { {"VW",2}, {"WGS",256}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },

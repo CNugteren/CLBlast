@@ -45,6 +45,7 @@ const Database::DatabaseEntry XdotSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WGS2",32} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",256}, {"WGS2",32} } },
         { "Ellesmere",                                       { {"WGS1",128}, {"WGS2",32} } },
         { "Oland",                                           { {"WGS1",256}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",32} } },
@@ -106,6 +107,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",32} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",256}, {"WGS2",256} } },
         { "Ellesmere",                                       { {"WGS1",256}, {"WGS2",32} } },
         { "Oland",                                           { {"WGS1",128}, {"WGS2",32} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WGS2",32} } },

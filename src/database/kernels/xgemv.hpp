@@ -45,6 +45,7 @@ const Database::DatabaseEntry XgemvSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",32}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",256}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",128}, {"WPT1",1} } },
@@ -117,6 +118,7 @@ const Database::DatabaseEntry XgemvComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",64}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",32}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",64}, {"WPT1",1} } },

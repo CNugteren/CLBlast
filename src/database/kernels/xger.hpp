@@ -45,6 +45,7 @@ const Database::DatabaseEntry XgerSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",16}, {"WGS2",16}, {"WPT",4} } },
         { "Ellesmere",                                       { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
         { "Oland",                                           { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
@@ -52,7 +53,7 @@ const Database::DatabaseEntry XgerSingle = {
         { "Tahiti",                                          { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
         { "Tonga",                                           { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
         { "Turks",                                           { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
-        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",16}, {"WGS2",16}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -99,7 +100,7 @@ const Database::DatabaseEntry XgerSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
+        { "default",                                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
       }
     },
   }
@@ -112,6 +113,7 @@ const Database::DatabaseEntry XgerComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",16}, {"WGS2",16}, {"WPT",1} } },
         { "Ellesmere",                                       { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
         { "Oland",                                           { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },

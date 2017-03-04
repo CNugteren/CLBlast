@@ -127,6 +127,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Tesla K40m
 * AMD GPUs:
   - AMD Radeon R9 M370X Compute Engine
+  - ATI Radeon HD 6750M
   - Ellesmere
   - Hawaii
   - Oland
