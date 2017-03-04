@@ -29,36 +29,6 @@
 namespace clblast {
 // =================================================================================================
 
-// Prepares the data
-template <typename T>
-void PrepareData(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-  if (args.a_ld < args.n) { return; }
-  if (args.a_size <= 0 || args.x_size <= 0) { return; }
-
-  // Copies input buffers to the host
-  std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-  std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-  buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-  buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
-
-  // Generates 'proper' input for the TRSV routine
-  // TODO: Improve this, currently loosely based on clBLAS's implementation
-  for (auto i = size_t{0}; i < args.n; ++i) {
-    auto diagonal = a_mat_cpu[i*args.a_ld + i + args.a_offset];
-    diagonal = AbsoluteValue(diagonal) + static_cast<T>(args.n / size_t{4});
-    for (auto j = size_t{0}; j < args.n; ++j) {
-      a_mat_cpu[j*args.a_ld + i + args.a_offset] /= ConstantTwo<T>();
-    }
-    a_mat_cpu[i*args.a_ld + i + args.a_offset] = diagonal;
-    x_vec_cpu[i * args.x_inc + args.x_offset] /= ConstantTwo<T>();
-  }
-
-  // Copies input buffers back to the OpenCL device
-  buffers.a_mat.Write(queue, args.a_size, a_mat_cpu);
-  buffers.x_vec.Write(queue, args.x_size, x_vec_cpu);
-  return;
-}
-
 // See comment at top of file for a description of the class
 template <typename T>
 class TestXtrsv {
@@ -99,9 +69,28 @@ class TestXtrsv {
   static Transposes GetATransposes(const Transposes &all) { return all; }
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
+  // Describes how to prepare the input data
+  static void PrepareData(const Arguments<T> &args, Queue&, const int, std::vector<T> &x_source,
+                          std::vector<T>&, std::vector<T> &a_source, std::vector<T>&, std::vector<T>&,
+                          std::vector<T>&, std::vector<T>&) {
+    if (args.a_ld < args.n) { return; }
+    if (args.a_size <= 0 || args.x_size <= 0) { return; }
+
+    // Generates 'proper' input for the TRSV routine
+    // TODO: Improve this, currently loosely based on clBLAS's implementation
+    for (auto i = size_t{0}; i < args.n; ++i) {
+      auto diagonal = a_source[i*args.a_ld + i + args.a_offset];
+      diagonal = static_cast<T>(AbsoluteValue(diagonal)) + static_cast<T>(args.n / size_t{4});
+      for (auto j = size_t{0}; j < args.n; ++j) {
+        a_source[j*args.a_ld + i + args.a_offset] /= Constant<T>(2.0);
+      }
+      a_source[i*args.a_ld + i + args.a_offset] = diagonal;
+      x_source[i * args.x_inc + args.x_offset] /= Constant<T>(2.0);
+    }
+  }
+
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    PrepareData(args, buffers, queue);
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Trsv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
@@ -116,7 +105,6 @@ class TestXtrsv {
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      PrepareData(args, buffers, queue);
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXtrsv<T>(convertToCLBLAS(args.layout),
@@ -135,7 +123,6 @@ class TestXtrsv {
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
     static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      PrepareData(args, buffers, queue);
       std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
       std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
       buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);

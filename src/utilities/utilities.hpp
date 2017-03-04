@@ -98,6 +98,13 @@ constexpr auto kArgNoAbbreviations = "no_abbrv";
 
 // =================================================================================================
 
+// Converts a regular or complex type to it's base type (e.g. float2 to float)
+template <typename T> struct BaseType { using Type = T; };
+template <> struct BaseType<float2> { using Type = float; };
+template <> struct BaseType<double2> { using Type = double; };
+
+// =================================================================================================
+
 // Returns a scalar with a default value
 template <typename T> T GetScalar();
 
@@ -105,11 +112,11 @@ template <typename T> T GetScalar();
 template <typename T> T ConstantZero();
 template <typename T> T ConstantOne();
 template <typename T> T ConstantNegOne();
-template <typename T> T ConstantTwo();
+template <typename T> T Constant(const double val);
 template <typename T> T SmallConstant();
 
-// Returns the absolute value of a scalar
-template <typename T> T AbsoluteValue(const T value);
+// Returns the absolute value of a scalar (modulus in case of complex numbers)
+template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value);
 
 // Returns whether a scalar is close to zero
 template <typename T> bool IsCloseToZero(const T value);

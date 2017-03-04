@@ -80,6 +80,11 @@ class TestXher2k {
   static Transposes GetATransposes(const Transposes &) { return {Transpose::kNo, Transpose::kConjugate}; }
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
 
+  // Describes how to prepare the input data
+  static void PrepareData(const Arguments<U>&, Queue&, const int, std::vector<T>&,
+                          std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&,
+                          std::vector<T>&, std::vector<T>&) {} // N/A for this routine
+
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();

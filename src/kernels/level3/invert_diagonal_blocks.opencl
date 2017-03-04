@@ -140,7 +140,9 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
         for (int k = j + 1; k < INTERNAL_BLOCK_SIZE; ++k) {
           MultiplyAdd(sum, lm[thread_index][k], lm[k][j]);
         }
-        Multiply(lm[thread_index][j], -lm[j][j], sum);
+        real diagonal_value = lm[j][j];
+        Negate(diagonal_value);
+        Multiply(lm[thread_index][j], diagonal_value, sum);
       }
       barrier(CLK_LOCAL_MEM_FENCE);
     }

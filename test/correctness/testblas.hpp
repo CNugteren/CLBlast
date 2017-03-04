@@ -74,6 +74,10 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester
+  using DataPrepare = std::function<void(const Arguments<U>&, Queue&, const int,
+                                         std::vector<T>&, std::vector<T>&,
+                                         std::vector<T>&, std::vector<T>&, std::vector<T>&,
+                                         std::vector<T>&, std::vector<T>&)>;
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultIndex = std::function<size_t(const Arguments<U>&, const size_t, const size_t)>;
@@ -82,6 +86,7 @@ class TestBlas: public Tester<T,U> {
   // Constructor, initializes the base class tester and input data
   TestBlas(const std::vector<std::string> &arguments, const bool silent,
            const std::string &name, const std::vector<std::string> &options,
+           const DataPrepare prepare_data,
            const Routine run_routine,
            const Routine run_reference1, const Routine run_reference2,
            const ResultGet get_result, const ResultIndex get_index,
@@ -103,6 +108,7 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> scalar_source_;
   
   // The routine-specific functions passed to the tester
+  DataPrepare prepare_data_;
   Routine run_routine_;
   Routine run_reference_;
   ResultGet get_result_;
@@ -141,7 +147,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
   // Creates a tester
   auto options = C::GetOptions();
   TestBlas<T,U> tester{command_line_args, silent, name, options,
-                       C::RunRoutine, reference_routine1, reference_routine2,
+                       C::PrepareData, C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 
   // This variable holds the arguments relevant for this routine

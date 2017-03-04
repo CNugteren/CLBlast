@@ -55,29 +55,35 @@ template <> half ConstantNegOne() { return FloatToHalf(-1.0f); }
 template <> float2 ConstantNegOne() { return {-1.0f, 0.0f}; }
 template <> double2 ConstantNegOne() { return {-1.0, 0.0}; }
 
-// Returns a scalar of value 1
-template <typename T> T ConstantTwo() { return static_cast<T>(2.0); }
-template float ConstantTwo<float>();
-template double ConstantTwo<double>();
-template <> half ConstantTwo() { return FloatToHalf(2.0f); }
-template <> float2 ConstantTwo() { return {2.0f, 0.0f}; }
-template <> double2 ConstantTwo() { return {2.0, 0.0}; }
+// Returns a scalar of some value
+template <typename T> T Constant(const double val) { return static_cast<T>(val); }
+template float Constant<float>(const double);
+template double Constant<double>(const double);
+template <> half Constant(const double val) { return FloatToHalf(static_cast<float>(val)); }
+template <> float2 Constant(const double val) { return {static_cast<float>(val), 0.0f}; }
+template <> double2 Constant(const double val) { return {val, 0.0}; }
 
 // Returns a small scalar value just larger than 0
-template <typename T> T SmallConstant() { return static_cast<T>(1e7); }
+template <typename T> T SmallConstant() { return static_cast<T>(1e-4); }
 template float SmallConstant<float>();
 template double SmallConstant<double>();
-template <> half SmallConstant() { return FloatToHalf(1e7); }
-template <> float2 SmallConstant() { return {1e7, 0.0f}; }
-template <> double2 SmallConstant() { return {1e7, 0.0}; }
+template <> half SmallConstant() { return FloatToHalf(1e-4); }
+template <> float2 SmallConstant() { return {1e-4, 0.0f}; }
+template <> double2 SmallConstant() { return {1e-4, 0.0}; }
 
-// Returns the absolute value of a scalar
-template <typename T> T AbsoluteValue(const T value) { return std::fabs(value); }
+// Returns the absolute value of a scalar (modulus in case of a complex number)
+template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value) { return std::fabs(value); }
 template float AbsoluteValue<float>(const float);
 template double AbsoluteValue<double>(const double);
 template <> half AbsoluteValue(const half value) { return FloatToHalf(std::fabs(HalfToFloat(value))); }
-template <> float2 AbsoluteValue(const float2 value) { return std::abs(value); }
-template <> double2 AbsoluteValue(const double2 value) { return std::abs(value); }
+template <> float AbsoluteValue(const float2 value) {
+  if (value.real() == 0.0f && value.imag() == 0.0f) { return 0.0f; }
+  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+}
+template <> double AbsoluteValue(const double2 value) {
+  if (value.real() == 0.0 && value.imag() == 0.0) { return 0.0; }
+  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+}
 
 // Returns whether a scalar is close to zero
 template <typename T> bool IsCloseToZero(const T value) { return (value > -SmallConstant<T>()) && (value < SmallConstant<T>()); }

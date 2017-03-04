@@ -51,6 +51,7 @@ template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes =
 template <typename T, typename U>
 TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool silent,
                         const std::string &name, const std::vector<std::string> &options,
+                        const DataPrepare prepare_data,
                         const Routine run_routine,
                         const Routine run_reference1, const Routine run_reference2,
                         const ResultGet get_result, const ResultIndex get_index,
@@ -59,6 +60,7 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
     kOffsets(GetOffsets()),
     kAlphaValues(GetExampleScalars<U>(full_test_)),
     kBetaValues(GetExampleScalars<U>(full_test_)),
+    prepare_data_(prepare_data),
     run_routine_(run_routine),
     get_result_(get_result),
     get_index_(get_index),
@@ -111,6 +113,11 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
       fprintf(stdout, "   Testing: %s", GetOptionsString(args).c_str());
       std::cout << std::flush;
     }
+
+    // Optionally prepares the input data
+    prepare_data_(args, queue_, kSeed,
+                  x_source_, y_source_, a_source_, b_source_, c_source_,
+                  ap_source_, scalar_source_);
 
     // Set-up for the CLBlast run
     auto x_vec2 = Buffer<T>(context_, args.x_size);

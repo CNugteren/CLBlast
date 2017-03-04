@@ -365,6 +365,8 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgCOffset)  { result += kArgCOffset + equals + ToString(args.c_offset) + " "; }
     if (o == kArgAPOffset) { result += kArgAPOffset + equals + ToString(args.ap_offset) + " "; }
     if (o == kArgDotOffset){ result += kArgDotOffset + equals + ToString(args.dot_offset) + " "; }
+    if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
+    if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
   }
   return result;
 }
