@@ -94,6 +94,9 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(command_line_args, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(command_line_args, help, kArgBeta, GetScalar<U>()); }
+
+    // Batch arguments
+    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, size_t{1}); }
   }
 
   // These are the options common to all routines
@@ -174,13 +177,13 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     set_sizes(args);
 
     // Populates input host matrices with random data
-    std::vector<T> x_source(args.x_size);
-    std::vector<T> y_source(args.y_size);
-    std::vector<T> a_source(args.a_size);
-    std::vector<T> b_source(args.b_size);
-    std::vector<T> c_source(args.c_size);
-    std::vector<T> ap_source(args.ap_size);
-    std::vector<T> scalar_source(args.scalar_size);
+    std::vector<T> x_source(args.batch_count * args.x_size);
+    std::vector<T> y_source(args.batch_count * args.y_size);
+    std::vector<T> a_source(args.batch_count * args.a_size);
+    std::vector<T> b_source(args.batch_count * args.b_size);
+    std::vector<T> c_source(args.batch_count * args.c_size);
+    std::vector<T> ap_source(args.batch_count * args.ap_size);
+    std::vector<T> scalar_source(args.batch_count * args.scalar_size);
     std::mt19937 mt(kSeed);
     std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
     PopulateVector(x_source, mt, dist);
@@ -192,21 +195,24 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     PopulateVector(scalar_source, mt, dist);
 
     // Creates the matrices on the device
-    auto x_vec = Buffer<T>(context, args.x_size);
-    auto y_vec = Buffer<T>(context, args.y_size);
-    auto a_mat = Buffer<T>(context, args.a_size);
-    auto b_mat = Buffer<T>(context, args.b_size);
-    auto c_mat = Buffer<T>(context, args.c_size);
-    auto ap_mat = Buffer<T>(context, args.ap_size);
-    auto scalar = Buffer<T>(context, args.scalar_size);
-    x_vec.Write(queue, args.x_size, x_source);
-    y_vec.Write(queue, args.y_size, y_source);
-    a_mat.Write(queue, args.a_size, a_source);
-    b_mat.Write(queue, args.b_size, b_source);
-    c_mat.Write(queue, args.c_size, c_source);
-    ap_mat.Write(queue, args.ap_size, ap_source);
-    scalar.Write(queue, args.scalar_size, scalar_source);
-    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar};
+    auto buffers = std::vector<Buffers<T>>();
+    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+      auto x_vec = Buffer<T>(context, args.x_size);
+      auto y_vec = Buffer<T>(context, args.y_size);
+      auto a_mat = Buffer<T>(context, args.a_size);
+      auto b_mat = Buffer<T>(context, args.b_size);
+      auto c_mat = Buffer<T>(context, args.c_size);
+      auto ap_mat = Buffer<T>(context, args.ap_size);
+      auto scalar = Buffer<T>(context, args.scalar_size);
+      x_vec.Write(queue, args.x_size, &x_source[batch * args.x_size]);
+      y_vec.Write(queue, args.y_size, &y_source[batch * args.y_size]);
+      a_mat.Write(queue, args.a_size, &a_source[batch * args.a_size]);
+      b_mat.Write(queue, args.b_size, &b_source[batch * args.b_size]);
+      c_mat.Write(queue, args.c_size, &c_source[batch * args.c_size]);
+      ap_mat.Write(queue, args.ap_size, &ap_source[batch * args.ap_size]);
+      scalar.Write(queue, args.scalar_size, &scalar_source[batch * args.scalar_size]);
+      buffers.push_back(Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar});
+    }
 
     // Runs the routines and collects the timings
     auto timings = std::vector<std::pair<std::string, double>>();
@@ -248,7 +254,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 // value found in the vector of timing results. The return value is in milliseconds.
 template <typename T, typename U>
 double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
-                                   Buffers<T> &buffers, Queue &queue,
+                                   std::vector<Buffers<T>> &buffers, Queue &queue,
                                    Routine run_blas, const std::string &library_name) {
   auto status = StatusCode::kSuccess;
 
@@ -339,6 +345,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgNrm2Offset){integers.push_back(args.nrm2_offset); }
     else if (o == kArgAsumOffset){integers.push_back(args.asum_offset); }
     else if (o == kArgImaxOffset){integers.push_back(args.imax_offset); }
+    else if (o == kArgBatchCount){integers.push_back(args.batch_count); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

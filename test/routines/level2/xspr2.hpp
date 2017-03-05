@@ -80,14 +80,14 @@ class TestXspr2 {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Spr2(args.layout, args.triangle,
                        args.n, args.alpha,
-                       buffers.x_vec(), args.x_offset, args.x_inc,
-                       buffers.y_vec(), args.y_offset, args.y_inc,
-                       buffers.ap_mat(), args.ap_offset,
+                       buffers[0].x_vec(), args.x_offset, args.x_inc,
+                       buffers[0].y_vec(), args.y_offset, args.y_inc,
+                       buffers[0].ap_mat(), args.ap_offset,
                        &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
@@ -95,15 +95,15 @@ class TestXspr2 {
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXspr2(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.triangle),
                                 args.n, args.alpha,
-                                buffers.x_vec, args.x_offset, args.x_inc,
-                                buffers.y_vec, args.y_offset, args.y_inc,
-                                buffers.ap_mat, args.ap_offset,
+                                buffers[0].x_vec, args.x_offset, args.x_inc,
+                                buffers[0].y_vec, args.y_offset, args.y_inc,
+                                buffers[0].ap_mat, args.ap_offset,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);
@@ -112,20 +112,20 @@ class TestXspr2 {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       std::vector<T> ap_mat_cpu(args.ap_size, static_cast<T>(0));
       std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
       std::vector<T> y_vec_cpu(args.y_size, static_cast<T>(0));
-      buffers.ap_mat.Read(queue, args.ap_size, ap_mat_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
-      buffers.y_vec.Read(queue, args.y_size, y_vec_cpu);
+      buffers[0].ap_mat.Read(queue, args.ap_size, ap_mat_cpu);
+      buffers[0].x_vec.Read(queue, args.x_size, x_vec_cpu);
+      buffers[0].y_vec.Read(queue, args.y_size, y_vec_cpu);
       cblasXspr2(convertToCBLAS(args.layout),
                  convertToCBLAS(args.triangle),
                  args.n, args.alpha,
                  x_vec_cpu, args.x_offset, args.x_inc,
                  y_vec_cpu, args.y_offset, args.y_inc,
                  ap_mat_cpu, args.ap_offset);
-      buffers.ap_mat.Write(queue, args.ap_size, ap_mat_cpu);
+      buffers[0].ap_mat.Write(queue, args.ap_size, ap_mat_cpu);
       return StatusCode::kSuccess;
     }
   #endif

@@ -75,13 +75,13 @@ class TestXtrmv {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Trmv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
                           args.n,
-                          buffers.a_mat(), args.a_offset, args.a_ld,
-                          buffers.x_vec(), args.x_offset, args.x_inc,
+                          buffers[0].a_mat(), args.a_offset, args.a_ld,
+                          buffers[0].x_vec(), args.x_offset, args.x_inc,
                           &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
@@ -89,7 +89,7 @@ class TestXtrmv {
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXtrmv<T>(convertToCLBLAS(args.layout),
@@ -97,8 +97,8 @@ class TestXtrmv {
                                    convertToCLBLAS(args.a_transpose),
                                    convertToCLBLAS(args.diagonal),
                                    args.n,
-                                   buffers.a_mat, args.a_offset, args.a_ld,
-                                   buffers.x_vec, args.x_offset, args.x_inc,
+                                   buffers[0].a_mat, args.a_offset, args.a_ld,
+                                   buffers[0].x_vec, args.x_offset, args.x_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);
@@ -107,11 +107,11 @@ class TestXtrmv {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
       std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+      buffers[0].a_mat.Read(queue, args.a_size, a_mat_cpu);
+      buffers[0].x_vec.Read(queue, args.x_size, x_vec_cpu);
       cblasXtrmv(convertToCBLAS(args.layout),
                  convertToCBLAS(args.triangle),
                  convertToCBLAS(args.a_transpose),
@@ -119,7 +119,7 @@ class TestXtrmv {
                  args.n,
                  a_mat_cpu, args.a_offset, args.a_ld,
                  x_vec_cpu, args.x_offset, args.x_inc);
-      buffers.x_vec.Write(queue, args.x_size, x_vec_cpu);
+      buffers[0].x_vec.Write(queue, args.x_size, x_vec_cpu);
       return StatusCode::kSuccess;
     }
   #endif

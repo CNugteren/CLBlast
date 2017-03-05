@@ -86,14 +86,14 @@ class TestXgbmv {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Gbmv(args.layout, args.a_transpose,
                        args.m, args.n, args.kl, args.ku, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.x_vec(), args.x_offset, args.x_inc, args.beta,
-                       buffers.y_vec(), args.y_offset, args.y_inc,
+                       buffers[0].a_mat(), args.a_offset, args.a_ld,
+                       buffers[0].x_vec(), args.x_offset, args.x_inc, args.beta,
+                       buffers[0].y_vec(), args.y_offset, args.y_inc,
                        &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
@@ -101,15 +101,15 @@ class TestXgbmv {
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXgbmv(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.a_transpose),
                                 args.m, args.n, args.kl, args.ku, args.alpha,
-                                buffers.a_mat, args.a_offset, args.a_ld,
-                                buffers.x_vec, args.x_offset, args.x_inc, args.beta,
-                                buffers.y_vec, args.y_offset, args.y_inc,
+                                buffers[0].a_mat, args.a_offset, args.a_ld,
+                                buffers[0].x_vec, args.x_offset, args.x_inc, args.beta,
+                                buffers[0].y_vec, args.y_offset, args.y_inc,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);
@@ -118,20 +118,20 @@ class TestXgbmv {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
       std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
       std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
       std::vector<T> y_vec_cpu(args.y_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
-      buffers.y_vec.Read(queue, args.y_size, y_vec_cpu);
+      buffers[0].a_mat.Read(queue, args.a_size, a_mat_cpu);
+      buffers[0].x_vec.Read(queue, args.x_size, x_vec_cpu);
+      buffers[0].y_vec.Read(queue, args.y_size, y_vec_cpu);
       cblasXgbmv(convertToCBLAS(args.layout),
                  convertToCBLAS(args.a_transpose),
                  args.m, args.n, args.kl, args.ku, args.alpha,
                  a_mat_cpu, args.a_offset, args.a_ld,
                  x_vec_cpu, args.x_offset, args.x_inc, args.beta,
                  y_vec_cpu, args.y_offset, args.y_inc);
-      buffers.y_vec.Write(queue, args.y_size, y_vec_cpu);
+      buffers[0].y_vec.Write(queue, args.y_size, y_vec_cpu);
       return StatusCode::kSuccess;
     }
   #endif

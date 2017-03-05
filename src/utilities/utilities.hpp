@@ -73,6 +73,7 @@ constexpr auto kArgAsumOffset = "offasum";
 constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
+constexpr auto kArgBatchCount = "batch_count";
 
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
@@ -156,6 +157,8 @@ struct Arguments {
   size_t imax_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
+  size_t batch_count = 1;
+  // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
   size_t a_size = 1;
