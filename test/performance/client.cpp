@@ -11,13 +11,15 @@
 //
 // =================================================================================================
 
-#include "test/performance/client.hpp"
-
 #include <string>
 #include <vector>
 #include <utility>
 #include <algorithm>
 #include <chrono>
+#include <random>
+
+#include "utilities/utilities.hpp"
+#include "test/performance/client.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -179,13 +181,15 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> c_source(args.c_size);
     std::vector<T> ap_source(args.ap_size);
     std::vector<T> scalar_source(args.scalar_size);
-    PopulateVector(x_source, kSeed);
-    PopulateVector(y_source, kSeed);
-    PopulateVector(a_source, kSeed);
-    PopulateVector(b_source, kSeed);
-    PopulateVector(c_source, kSeed);
-    PopulateVector(ap_source, kSeed);
-    PopulateVector(scalar_source, kSeed);
+    std::mt19937 mt(kSeed);
+    std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+    PopulateVector(x_source, mt, dist);
+    PopulateVector(y_source, mt, dist);
+    PopulateVector(a_source, mt, dist);
+    PopulateVector(b_source, mt, dist);
+    PopulateVector(c_source, mt, dist);
+    PopulateVector(ap_source, mt, dist);
+    PopulateVector(scalar_source, mt, dist);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);

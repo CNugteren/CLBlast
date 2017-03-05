@@ -19,7 +19,7 @@
 #include <vector>
 #include <string>
 
-#include "routines/levelx/xinvert.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

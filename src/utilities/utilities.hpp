@@ -20,6 +20,7 @@
 #include <string>
 #include <functional>
 #include <complex>
+#include <random>
 
 #include "clpp11.hpp"
 #include "clblast.h"
@@ -234,7 +235,7 @@ constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>
-void PopulateVector(std::vector<T> &vector, const unsigned int seed);
+void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
 
 // =================================================================================================
 

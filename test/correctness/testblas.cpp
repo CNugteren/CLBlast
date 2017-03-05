@@ -13,7 +13,9 @@
 
 #include <algorithm>
 #include <iostream>
+#include <random>
 
+#include "utilities/utilities.hpp"
 #include "test/correctness/testblas.hpp"
 
 namespace clblast {
@@ -88,13 +90,15 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
   c_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
   ap_source_.resize(std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
   scalar_source_.resize(std::max(max_mat, max_matvec) + max_offset);
-  PopulateVector(x_source_, kSeed);
-  PopulateVector(y_source_, kSeed);
-  PopulateVector(a_source_, kSeed);
-  PopulateVector(b_source_, kSeed);
-  PopulateVector(c_source_, kSeed);
-  PopulateVector(ap_source_, kSeed);
-  PopulateVector(scalar_source_, kSeed);
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+  PopulateVector(x_source_, mt, dist);
+  PopulateVector(y_source_, mt, dist);
+  PopulateVector(a_source_, mt, dist);
+  PopulateVector(b_source_, mt, dist);
+  PopulateVector(c_source_, mt, dist);
+  PopulateVector(ap_source_, mt, dist);
+  PopulateVector(scalar_source_, mt, dist);
 }
 
 // ===============================================================================================
