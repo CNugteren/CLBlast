@@ -96,6 +96,7 @@ typedef enum CLBlastStatusCode_ {
   CLBlastInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  CLBlastInvalidBatchCount         = -2049, // The batch count needs to be positive
   CLBlastInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   CLBlastMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   CLBlastInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
@@ -1330,32 +1331,32 @@ CLBlastStatusCode PUBLIC_API CLBlastHomatcopy(const CLBlastLayout layout, const 
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 CLBlastStatusCode PUBLIC_API CLBlastSaxpyBatched(const size_t n,
                                                  const float *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                                 const cl_mem *x_buffers, const size_t x_inc,
+                                                 cl_mem *y_buffers, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastDaxpyBatched(const size_t n,
                                                  const double *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                                 const cl_mem *x_buffers, const size_t x_inc,
+                                                 cl_mem *y_buffers, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastCaxpyBatched(const size_t n,
                                                  const cl_float2 *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                                 const cl_mem *x_buffers, const size_t x_inc,
+                                                 cl_mem *y_buffers, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastZaxpyBatched(const size_t n,
                                                  const cl_double2 *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                                 const cl_mem *x_buffers, const size_t x_inc,
+                                                 cl_mem *y_buffers, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastHaxpyBatched(const size_t n,
                                                  const cl_half *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                                 const cl_mem *x_buffers, const size_t x_inc,
+                                                 cl_mem *y_buffers, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 

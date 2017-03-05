@@ -3450,8 +3450,8 @@ CLBlastStatusCode CLBlastHomatcopy(const CLBlastLayout layout, const CLBlastTran
 // AXPY
 CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
                                       const float *alphas,
-                                      const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                      cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                      const cl_mem *x_buffers, const size_t x_inc,
+                                      cl_mem *y_buffers, const size_t y_inc,
                                       const size_t batch_count,
                                       cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<float>();
@@ -3462,8 +3462,8 @@ CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
     return static_cast<CLBlastStatusCode>(
       clblast::AxpyBatched(n,
                            alphas_cpp.data(),
-                           x_buffers, x_offset, x_inc,
-                           y_buffers, y_offset, y_inc,
+                           x_buffers, x_inc,
+                           y_buffers, y_inc,
                            batch_count,
                            queue, event)
     );
@@ -3471,8 +3471,8 @@ CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
 }
 CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
                                       const double *alphas,
-                                      const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                      cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                      const cl_mem *x_buffers, const size_t x_inc,
+                                      cl_mem *y_buffers, const size_t y_inc,
                                       const size_t batch_count,
                                       cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<double>();
@@ -3483,8 +3483,8 @@ CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
     return static_cast<CLBlastStatusCode>(
       clblast::AxpyBatched(n,
                            alphas_cpp.data(),
-                           x_buffers, x_offset, x_inc,
-                           y_buffers, y_offset, y_inc,
+                           x_buffers, x_inc,
+                           y_buffers, y_inc,
                            batch_count,
                            queue, event)
     );
@@ -3492,8 +3492,8 @@ CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
 }
 CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
                                       const cl_float2 *alphas,
-                                      const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                      cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                      const cl_mem *x_buffers, const size_t x_inc,
+                                      cl_mem *y_buffers, const size_t y_inc,
                                       const size_t batch_count,
                                       cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<float2>();
@@ -3504,8 +3504,8 @@ CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
     return static_cast<CLBlastStatusCode>(
       clblast::AxpyBatched(n,
                            alphas_cpp.data(),
-                           x_buffers, x_offset, x_inc,
-                           y_buffers, y_offset, y_inc,
+                           x_buffers, x_inc,
+                           y_buffers, y_inc,
                            batch_count,
                            queue, event)
     );
@@ -3513,8 +3513,8 @@ CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
 }
 CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
                                       const cl_double2 *alphas,
-                                      const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                      cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                      const cl_mem *x_buffers, const size_t x_inc,
+                                      cl_mem *y_buffers, const size_t y_inc,
                                       const size_t batch_count,
                                       cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<double2>();
@@ -3525,8 +3525,8 @@ CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
     return static_cast<CLBlastStatusCode>(
       clblast::AxpyBatched(n,
                            alphas_cpp.data(),
-                           x_buffers, x_offset, x_inc,
-                           y_buffers, y_offset, y_inc,
+                           x_buffers, x_inc,
+                           y_buffers, y_inc,
                            batch_count,
                            queue, event)
     );
@@ -3534,8 +3534,8 @@ CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
 }
 CLBlastStatusCode CLBlastHaxpyBatched(const size_t n,
                                       const cl_half *alphas,
-                                      const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                                      cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                                      const cl_mem *x_buffers, const size_t x_inc,
+                                      cl_mem *y_buffers, const size_t y_inc,
                                       const size_t batch_count,
                                       cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<half>();
@@ -3546,8 +3546,8 @@ CLBlastStatusCode CLBlastHaxpyBatched(const size_t n,
     return static_cast<CLBlastStatusCode>(
       clblast::AxpyBatched(n,
                            alphas_cpp.data(),
-                           x_buffers, x_offset, x_inc,
-                           y_buffers, y_offset, y_inc,
+                           x_buffers, x_inc,
+                           y_buffers, y_inc,
                            batch_count,
                            queue, event)
     );

@@ -223,7 +223,7 @@ class Routine:
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
         if name in self.inputs or name in self.outputs:
             a = [name + "_buffer" + self.b_s()]
-            b = [name + "_offset"]
+            b = [name + "_offset"] if not self.batched else []
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -251,7 +251,7 @@ class Routine:
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
             a = [prefix + "cl_mem " + self.b_star() + name + "_buffer" + self.b_s()]
-            b = ["const size_t " + name + "_offset"]
+            b = ["const size_t " + name + "_offset"] if not self.batched else []
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
         return []
@@ -295,7 +295,7 @@ class Routine:
                 a = [name + "_buffers_cpp"]
             else:
                 a = ["Buffer<" + buffer_type + ">(" + name + "_buffer)"]
-            b = [name + "_offset"]
+            b = [name + "_offset"] if not self.batched else []
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -337,7 +337,7 @@ class Routine:
         prefix = "const " if (name in self.inputs) else ""
         if (name in self.inputs) or (name in self.outputs):
             a = [prefix + "cl_mem" + self.b_star()]
-            b = ["const size_t"]
+            b = ["const size_t"] if not self.batched else []
             c = ["const size_t"] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -350,12 +350,13 @@ class Routine:
             math_name = name.upper() + " matrix" + self.b_s() if (name in self.buffers_matrix()) else name + " vector" + self.b_s()
             inc_ld_description = "Leading dimension " if (name in self.buffers_matrix()) else "Stride/increment "
             a = ["`" + prefix + "cl_mem " + self.b_star() + name + "_buffer" + self.b_s() + "`: OpenCL buffer" + self.b_s() + " to store the " + inout + " " + math_name + "."]
-            b = ["`const size_t " + name + "_offset`: The offset in elements from the start of the " + inout + " " + math_name + "."]
+            b = []
+            if not self.batched:
+                b = ["`const size_t " + name + "_offset`: The offset in elements from the start of the " + inout + " " + math_name + "."]
+            c = []
             if name not in self.buffers_without_ld_inc():
                 c = ["`const size_t " + name + "_" + self.postfix(name) + "`: " +
                      inc_ld_description + "of the " + inout + " " + math_name + ". This value must be greater than 0."]
-            else:
-                c = []
             return a + b + c
         return []
 

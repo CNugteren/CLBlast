@@ -97,6 +97,7 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInvalidBatchCount         = -2049, // The batch count needs to be positive
   kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
@@ -613,8 +614,8 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
 template <typename T>
 StatusCode AxpyBatched(const size_t n,
                        const T *alphas,
-                       const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                       cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                       const cl_mem *x_buffers, const size_t x_inc,
+                       cl_mem *y_buffers, const size_t y_inc,
                        const size_t batch_count,
                        cl_command_queue* queue, cl_event* event = nullptr);
 

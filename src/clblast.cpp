@@ -2178,8 +2178,8 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
 template <typename T>
 StatusCode AxpyBatched(const size_t n,
                        const T *alphas,
-                       const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
-                       cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                       const cl_mem *x_buffers, const size_t x_inc,
+                       cl_mem *y_buffers, const size_t y_inc,
                        const size_t batch_count,
                        cl_command_queue* queue, cl_event* event) {
   try {
@@ -2195,40 +2195,40 @@ StatusCode AxpyBatched(const size_t n,
     }
     routine.DoAxpyBatched(n,
                           alphas_cpp,
-                          x_buffers_cpp, x_offset, x_inc,
-                          y_buffers_cpp, y_offset, y_inc,
+                          x_buffers_cpp, x_inc,
+                          y_buffers_cpp, y_inc,
                           batch_count);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API AxpyBatched<float>(const size_t,
                                                   const float*,
-                                                  const cl_mem*, const size_t, const size_t,
-                                                  cl_mem*, const size_t, const size_t,
+                                                  const cl_mem*, const size_t,
+                                                  cl_mem*, const size_t,
                                                   const size_t,
                                                   cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API AxpyBatched<double>(const size_t,
                                                    const double*,
-                                                   const cl_mem*, const size_t, const size_t,
-                                                   cl_mem*, const size_t, const size_t,
+                                                   const cl_mem*, const size_t,
+                                                   cl_mem*, const size_t,
                                                    const size_t,
                                                    cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API AxpyBatched<float2>(const size_t,
                                                    const float2*,
-                                                   const cl_mem*, const size_t, const size_t,
-                                                   cl_mem*, const size_t, const size_t,
+                                                   const cl_mem*, const size_t,
+                                                   cl_mem*, const size_t,
                                                    const size_t,
                                                    cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API AxpyBatched<double2>(const size_t,
                                                     const double2*,
-                                                    const cl_mem*, const size_t, const size_t,
-                                                    cl_mem*, const size_t, const size_t,
+                                                    const cl_mem*, const size_t,
+                                                    cl_mem*, const size_t,
                                                     const size_t,
                                                     cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API AxpyBatched<half>(const size_t,
                                                  const half*,
-                                                 const cl_mem*, const size_t, const size_t,
-                                                 cl_mem*, const size_t, const size_t,
+                                                 const cl_mem*, const size_t,
+                                                 cl_mem*, const size_t,
                                                  const size_t,
                                                  cl_command_queue*, cl_event*);
 // =================================================================================================
