@@ -609,6 +609,15 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                     cl_command_queue* queue, cl_event* event = nullptr);
 
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
+                       cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on

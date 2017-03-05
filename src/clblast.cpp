@@ -71,6 +71,7 @@
 
 // Level-x includes (non-BLAS)
 #include "routines/levelx/xomatcopy.hpp"
+#include "routines/levelx/xaxpybatched.hpp"
 
 namespace clblast {
 
@@ -2172,6 +2173,64 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
                                               const cl_mem, const size_t, const size_t,
                                               cl_mem, const size_t, const size_t,
                                               cl_command_queue*, cl_event*);
+
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem *x_buffers, const size_t x_offset, const size_t x_inc,
+                       cl_mem *y_buffers, const size_t y_offset, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = XaxpyBatched<T>(queue_cpp, event);
+    auto alphas_cpp = std::vector<T>();
+    auto x_buffers_cpp = std::vector<Buffer<T>>();
+    auto y_buffers_cpp = std::vector<Buffer<T>>();
+    for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+      alphas_cpp.push_back(alphas[batch]);
+      x_buffers_cpp.push_back(Buffer<T>(x_buffers[batch]));
+      y_buffers_cpp.push_back(Buffer<T>(y_buffers[batch]));
+    }
+    routine.DoAxpyBatched(n,
+                          alphas_cpp,
+                          x_buffers_cpp, x_offset, x_inc,
+                          y_buffers_cpp, y_offset, y_inc,
+                          batch_count);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API AxpyBatched<float>(const size_t,
+                                                  const float*,
+                                                  const cl_mem*, const size_t, const size_t,
+                                                  cl_mem*, const size_t, const size_t,
+                                                  const size_t,
+                                                  cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double>(const size_t,
+                                                   const double*,
+                                                   const cl_mem*, const size_t, const size_t,
+                                                   cl_mem*, const size_t, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<float2>(const size_t,
+                                                   const float2*,
+                                                   const cl_mem*, const size_t, const size_t,
+                                                   cl_mem*, const size_t, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double2>(const size_t,
+                                                    const double2*,
+                                                    const cl_mem*, const size_t, const size_t,
+                                                    cl_mem*, const size_t, const size_t,
+                                                    const size_t,
+                                                    cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<half>(const size_t,
+                                                 const half*,
+                                                 const cl_mem*, const size_t, const size_t,
+                                                 cl_mem*, const size_t, const size_t,
+                                                 const size_t,
+                                                 cl_command_queue*, cl_event*);
 // =================================================================================================
 
 // Clears the cache of stored binaries
