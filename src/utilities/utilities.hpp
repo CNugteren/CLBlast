@@ -73,7 +73,7 @@ constexpr auto kArgAsumOffset = "offasum";
 constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
-constexpr auto kArgBatchCount = "batch_count";
+constexpr auto kArgBatchCount = "batch_num";
 
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";

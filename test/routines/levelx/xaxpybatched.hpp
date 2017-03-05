@@ -43,7 +43,7 @@ class TestXaxpyBatched {
   static std::vector<std::string> GetOptions() {
     return {kArgN,
             kArgXInc, kArgYInc,
-            kArgAlpha, kArgBatchCount};
+            kArgBatchCount, kArgAlpha};
   }
 
   // Helper to determine a different alpha value per batch

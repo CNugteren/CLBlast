@@ -91,12 +91,12 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     if (o == kArgAsumOffset)  { args.asum_offset = GetArgument(command_line_args, help, kArgAsumOffset, size_t{0}); }
     if (o == kArgImaxOffset)  { args.imax_offset = GetArgument(command_line_args, help, kArgImaxOffset, size_t{0}); }
 
+    // Batch arguments
+    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, size_t{1}); }
+
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(command_line_args, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(command_line_args, help, kArgBeta, GetScalar<U>()); }
-
-    // Batch arguments
-    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, size_t{1}); }
   }
 
   // These are the options common to all routines
@@ -373,8 +373,8 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
   for (const auto& timing : timings) {
 
     // Computes the GFLOPS and GB/s metrics
-    auto flops = get_flops_(args);
-    auto bytes = get_bytes_(args);
+    auto flops = get_flops_(args) * args.batch_count;
+    auto bytes = get_bytes_(args) * args.batch_count;
     auto gflops = (timing.second != 0.0) ? (flops*1e-6)/timing.second : 0;
     auto gbs = (timing.second != 0.0) ? (bytes*1e-6)/timing.second : 0;
 
