@@ -126,24 +126,21 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
                   ap_source_, scalar_source_);
 
     // Set-up for the CLBlast run
-    auto buffers2 = std::vector<Buffers<T>>();
-    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-      auto x_vec2 = Buffer<T>(context_, args.x_size);
-      auto y_vec2 = Buffer<T>(context_, args.y_size);
-      auto a_mat2 = Buffer<T>(context_, args.a_size);
-      auto b_mat2 = Buffer<T>(context_, args.b_size);
-      auto c_mat2 = Buffer<T>(context_, args.c_size);
-      auto ap_mat2 = Buffer<T>(context_, args.ap_size);
-      auto scalar2 = Buffer<T>(context_, args.scalar_size);
-      x_vec2.Write(queue_, args.x_size, &x_source_[batch * args.x_size]);
-      y_vec2.Write(queue_, args.y_size, &y_source_[batch * args.y_size]);
-      a_mat2.Write(queue_, args.a_size, &a_source_[batch * args.a_size]);
-      b_mat2.Write(queue_, args.b_size, &b_source_[batch * args.b_size]);
-      c_mat2.Write(queue_, args.c_size, &c_source_[batch * args.c_size]);
-      ap_mat2.Write(queue_, args.ap_size, &ap_source_[batch * args.ap_size]);
-      scalar2.Write(queue_, args.scalar_size, &scalar_source_[batch * args.scalar_size]);
-      buffers2.push_back(Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2});
-    }
+    auto x_vec2 = Buffer<T>(context_, args.x_size);
+    auto y_vec2 = Buffer<T>(context_, args.y_size);
+    auto a_mat2 = Buffer<T>(context_, args.a_size);
+    auto b_mat2 = Buffer<T>(context_, args.b_size);
+    auto c_mat2 = Buffer<T>(context_, args.c_size);
+    auto ap_mat2 = Buffer<T>(context_, args.ap_size);
+    auto scalar2 = Buffer<T>(context_, args.scalar_size);
+    x_vec2.Write(queue_, args.x_size, x_source_);
+    y_vec2.Write(queue_, args.y_size, y_source_);
+    a_mat2.Write(queue_, args.a_size, a_source_);
+    b_mat2.Write(queue_, args.b_size, b_source_);
+    c_mat2.Write(queue_, args.c_size, c_source_);
+    ap_mat2.Write(queue_, args.ap_size, ap_source_);
+    scalar2.Write(queue_, args.scalar_size, scalar_source_);
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
 
     // Runs CLBlast
     if (verbose_) {
@@ -163,24 +160,21 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     }
 
     // Set-up for the reference run
-    auto buffers1 = std::vector<Buffers<T>>();
-    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-      auto x_vec1 = Buffer<T>(context_, args.x_size);
-      auto y_vec1 = Buffer<T>(context_, args.y_size);
-      auto a_mat1 = Buffer<T>(context_, args.a_size);
-      auto b_mat1 = Buffer<T>(context_, args.b_size);
-      auto c_mat1 = Buffer<T>(context_, args.c_size);
-      auto ap_mat1 = Buffer<T>(context_, args.ap_size);
-      auto scalar1 = Buffer<T>(context_, args.scalar_size);
-      x_vec1.Write(queue_, args.x_size, &x_source_[batch * args.x_size]);
-      y_vec1.Write(queue_, args.y_size, &y_source_[batch * args.y_size]);
-      a_mat1.Write(queue_, args.a_size, &a_source_[batch * args.a_size]);
-      b_mat1.Write(queue_, args.b_size, &b_source_[batch * args.b_size]);
-      c_mat1.Write(queue_, args.c_size, &c_source_[batch * args.c_size]);
-      ap_mat1.Write(queue_, args.ap_size, &ap_source_[batch * args.ap_size]);
-      scalar1.Write(queue_, args.scalar_size, &scalar_source_[batch * args.scalar_size]);
-      buffers1.push_back(Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1});
-    }
+    auto x_vec1 = Buffer<T>(context_, args.x_size);
+    auto y_vec1 = Buffer<T>(context_, args.y_size);
+    auto a_mat1 = Buffer<T>(context_, args.a_size);
+    auto b_mat1 = Buffer<T>(context_, args.b_size);
+    auto c_mat1 = Buffer<T>(context_, args.c_size);
+    auto ap_mat1 = Buffer<T>(context_, args.ap_size);
+    auto scalar1 = Buffer<T>(context_, args.scalar_size);
+    x_vec1.Write(queue_, args.x_size, x_source_);
+    y_vec1.Write(queue_, args.y_size, y_source_);
+    a_mat1.Write(queue_, args.a_size, a_source_);
+    b_mat1.Write(queue_, args.b_size, b_source_);
+    c_mat1.Write(queue_, args.c_size, c_source_);
+    ap_mat1.Write(queue_, args.ap_size, ap_source_);
+    scalar1.Write(queue_, args.scalar_size, scalar_source_);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
 
     // Runs the reference code
     if (verbose_) {
@@ -197,47 +191,40 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
       continue;
     }
 
-    // Error checking for each batch
-    auto errors = size_t{0};
+    // Downloads the results
+    auto result1 = get_result_(args, buffers1, queue_);
+    auto result2 = get_result_(args, buffers2, queue_);
+
+    // Computes the L2 error
     auto l2error = 0.0;
-    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-
-      // Downloads the results
-      auto result1 = get_result_(args, buffers1[batch], queue_);
-      auto result2 = get_result_(args, buffers2[batch], queue_);
-
-      // Computes the L2 error
-      auto l2error_batch = 0.0;
-      const auto kErrorMarginL2 = getL2ErrorMargin<T>();
-      for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
-        for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
-          auto index = get_index_(args, id1, id2);
-          l2error_batch += SquaredDifference(result1[index], result2[index]);
-        }
+    const auto kErrorMarginL2 = getL2ErrorMargin<T>();
+    for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
+      for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
+        auto index = get_index_(args, id1, id2);
+        l2error += SquaredDifference(result1[index], result2[index]);
       }
-      l2error_batch /= static_cast<double>(get_id1_(args) * get_id2_(args));
-      l2error += l2error_batch;
+    }
+    l2error /= static_cast<double>(get_id1_(args) * get_id2_(args));
 
-      // Checks for differences in the output
-      for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
-        for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
-          auto index = get_index_(args, id1, id2);
-          if (!TestSimilarity(result1[index], result2[index])) {
-            if (l2error_batch >= kErrorMarginL2) { errors++; }
-            if (verbose_) {
-              if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
-              else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
-              fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
-              fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
-              if (l2error_batch < kErrorMarginL2) {
-                fprintf(stdout, " - error suppressed by a low total L2 error\n");
-              }
+    // Checks for differences in the output
+    auto errors = size_t{0};
+    for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
+      for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
+        auto index = get_index_(args, id1, id2);
+        if (!TestSimilarity(result1[index], result2[index])) {
+          if (l2error >= kErrorMarginL2) { errors++; }
+          if (verbose_) {
+            if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
+            else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
+            fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
+            fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
+            if (l2error < kErrorMarginL2) {
+              fprintf(stdout, " - error suppressed by a low total L2 error\n");
             }
           }
         }
       }
     }
-    l2error /= static_cast<double>(args.batch_count);
 
     // Report the results
     if (verbose_ && errors > 0) {
@@ -245,7 +232,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     }
 
     // Tests the error count (should be zero)
-    TestErrorCount(errors, get_id1_(args)*get_id2_(args)*args.batch_count, args);
+    TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);
   }
   TestEnd();
 }
@@ -272,40 +259,36 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
 
     // Creates the OpenCL buffers. Note: we are not using the C++ version since we explicitly
     // want to be able to create invalid buffers (no error checking here).
-    auto buffers1 = std::vector<Buffers<T>>();
-    auto buffers2 = std::vector<Buffers<T>>();
-    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-      auto x1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-      auto y1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-      auto a1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-      auto b1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-      auto c1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-      auto ap1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-      auto d1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-      auto x_vec1 = Buffer<T>(x1);
-      auto y_vec1 = Buffer<T>(y1);
-      auto a_mat1 = Buffer<T>(a1);
-      auto b_mat1 = Buffer<T>(b1);
-      auto c_mat1 = Buffer<T>(c1);
-      auto ap_mat1 = Buffer<T>(ap1);
-      auto scalar1 = Buffer<T>(d1);
-      auto x2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-      auto y2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-      auto a2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-      auto b2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-      auto c2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-      auto ap2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-      auto d2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-      auto x_vec2 = Buffer<T>(x2);
-      auto y_vec2 = Buffer<T>(y2);
-      auto a_mat2 = Buffer<T>(a2);
-      auto b_mat2 = Buffer<T>(b2);
-      auto c_mat2 = Buffer<T>(c2);
-      auto ap_mat2 = Buffer<T>(ap2);
-      auto scalar2 = Buffer<T>(d2);
-      buffers1.push_back(Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1});
-      buffers2.push_back(Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2});
-    }
+    auto x1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
+    auto y1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
+    auto a1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
+    auto b1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
+    auto c1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
+    auto ap1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
+    auto d1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
+    auto x_vec1 = Buffer<T>(x1);
+    auto y_vec1 = Buffer<T>(y1);
+    auto a_mat1 = Buffer<T>(a1);
+    auto b_mat1 = Buffer<T>(b1);
+    auto c_mat1 = Buffer<T>(c1);
+    auto ap_mat1 = Buffer<T>(ap1);
+    auto scalar1 = Buffer<T>(d1);
+    auto x2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
+    auto y2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
+    auto a2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
+    auto b2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
+    auto c2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
+    auto ap2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
+    auto d2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
+    auto x_vec2 = Buffer<T>(x2);
+    auto y_vec2 = Buffer<T>(y2);
+    auto a_mat2 = Buffer<T>(a2);
+    auto b_mat2 = Buffer<T>(b2);
+    auto c_mat2 = Buffer<T>(c2);
+    auto ap_mat2 = Buffer<T>(ap2);
+    auto scalar2 = Buffer<T>(d2);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
 
     // Runs CLBlast
     if (verbose_) {

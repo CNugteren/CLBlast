@@ -79,13 +79,13 @@ class TestXsyrk {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Syrk(args.layout, args.triangle, args.a_transpose,
                        args.n, args.k, args.alpha,
-                       buffers[0].a_mat(), args.a_offset, args.a_ld, args.beta,
-                       buffers[0].c_mat(), args.c_offset, args.c_ld,
+                       buffers.a_mat(), args.a_offset, args.a_ld, args.beta,
+                       buffers.c_mat(), args.c_offset, args.c_ld,
                        &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
@@ -93,15 +93,15 @@ class TestXsyrk {
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXsyrk(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.triangle),
                                 convertToCLBLAS(args.a_transpose),
                                 args.n, args.k, args.alpha,
-                                buffers[0].a_mat, args.a_offset, args.a_ld, args.beta,
-                                buffers[0].c_mat, args.c_offset, args.c_ld,
+                                buffers.a_mat, args.a_offset, args.a_ld, args.beta,
+                                buffers.c_mat, args.c_offset, args.c_ld,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
       return static_cast<StatusCode>(status);
@@ -110,18 +110,18 @@ class TestXsyrk {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
       std::vector<T> c_mat_cpu(args.c_size, static_cast<T>(0));
-      buffers[0].a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers[0].c_mat.Read(queue, args.c_size, c_mat_cpu);
+      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
+      buffers.c_mat.Read(queue, args.c_size, c_mat_cpu);
       cblasXsyrk(convertToCBLAS(args.layout),
                  convertToCBLAS(args.triangle),
                  convertToCBLAS(args.a_transpose),
                  args.n, args.k, args.alpha,
                  a_mat_cpu, args.a_offset, args.a_ld, args.beta,
                  c_mat_cpu, args.c_offset, args.c_ld);
-      buffers[0].c_mat.Write(queue, args.c_size, c_mat_cpu);
+      buffers.c_mat.Write(queue, args.c_size, c_mat_cpu);
       return StatusCode::kSuccess;
     }
   #endif

@@ -614,8 +614,8 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
 template <typename T>
 StatusCode AxpyBatched(const size_t n,
                        const T *alphas,
-                       const cl_mem *x_buffers, const size_t x_inc,
-                       cl_mem *y_buffers, const size_t y_inc,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                        const size_t batch_count,
                        cl_command_queue* queue, cl_event* event = nullptr);
 

@@ -79,7 +79,7 @@ class TestBlas: public Tester<T,U> {
                                          std::vector<T>&, std::vector<T>&,
                                          std::vector<T>&, std::vector<T>&, std::vector<T>&,
                                          std::vector<T>&, std::vector<T>&)>;
-  using Routine = std::function<StatusCode(const Arguments<U>&, std::vector<Buffers<T>>&, Queue&)>;
+  using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultIndex = std::function<size_t(const Arguments<U>&, const size_t, const size_t)>;
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;

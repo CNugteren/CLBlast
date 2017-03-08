@@ -600,9 +600,6 @@ class Buffer {
 
   // Copies from host to device: writing the device buffer a-synchronously
   void WriteAsync(const Queue &queue, const size_t size, const T* host, const size_t offset = 0) {
-    if (access_ == BufferAccess::kReadOnly) {
-      throw LogicError("Buffer: writing to a read-only buffer");
-    }
     if (GetSize() < (offset+size)*sizeof(T)) {
       throw LogicError("Buffer: target device buffer is too small");
     }

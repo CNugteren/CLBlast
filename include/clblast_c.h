@@ -1331,32 +1331,32 @@ CLBlastStatusCode PUBLIC_API CLBlastHomatcopy(const CLBlastLayout layout, const 
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 CLBlastStatusCode PUBLIC_API CLBlastSaxpyBatched(const size_t n,
                                                  const float *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_inc,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastDaxpyBatched(const size_t n,
                                                  const double *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_inc,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastCaxpyBatched(const size_t n,
                                                  const cl_float2 *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_inc,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastZaxpyBatched(const size_t n,
                                                  const cl_double2 *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_inc,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastHaxpyBatched(const size_t n,
                                                  const cl_half *alphas,
-                                                 const cl_mem *x_buffers, const size_t x_inc,
-                                                 cl_mem *y_buffers, const size_t y_inc,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 

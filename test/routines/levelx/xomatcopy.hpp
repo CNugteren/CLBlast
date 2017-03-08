@@ -133,13 +133,13 @@ class TestXomatcopy {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto status = Omatcopy<T>(args.layout, args.a_transpose,
                               args.m, args.n, args.alpha,
-                              buffers[0].a_mat(), args.a_offset, args.a_ld,
-                              buffers[0].b_mat(), args.b_offset, args.b_ld,
+                              buffers.a_mat(), args.a_offset, args.a_ld,
+                              buffers.b_mat(), args.b_offset, args.b_ld,
                               &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     return status;
@@ -147,12 +147,12 @@ class TestXomatcopy {
 
   // Describes how to run a naive version of the routine (for correctness/performance comparison).
   // Note that a proper clBLAS or CPU BLAS comparison is not available for non-BLAS routines.
-  static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
-    return RunReference(args, buffers[0], queue);
+  static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    return RunReference(args, buffers, queue);
   }
 
-  static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
-    return RunReference(args, buffers[0], queue);
+  static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    return RunReference(args, buffers, queue);
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)

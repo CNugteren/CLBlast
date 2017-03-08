@@ -51,18 +51,28 @@ class TestXaxpyBatched {
     return alpha_base + Constant<T>(batch_id);
   }
 
-  // Describes how to obtain the sizes of the buffers (per item, not for the full batch)
+  // Helper for the sizes per batch
+  static size_t PerBatchSizeX(const Arguments<T> &args) { return args.n * args.x_inc; }
+  static size_t PerBatchSizeY(const Arguments<T> &args) { return args.n * args.y_inc; }
+
+  // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
-    return args.n * args.x_inc;
+    return PerBatchSizeX(args) * args.batch_count + args.x_offset;
   }
   static size_t GetSizeY(const Arguments<T> &args) {
-    return args.n * args.y_inc;
+    return PerBatchSizeY(args) * args.batch_count + args.y_offset;
   }
 
-  // Describes how to set the sizes of all the buffers (per item, not for the full batch)
+  // Describes how to set the sizes of all the buffers
   static void SetSizes(Arguments<T> &args) {
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
+    args.x_offsets = std::vector<size_t>(args.batch_count);
+    args.y_offsets = std::vector<size_t>(args.batch_count);
+    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+      args.x_offsets[batch] = batch * PerBatchSizeX(args) + args.x_offset;
+      args.y_offsets[batch] = batch * PerBatchSizeY(args) + args.y_offset;
+    }
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -81,20 +91,16 @@ class TestXaxpyBatched {
                           std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
-  static StatusCode RunRoutine(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+  static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
     auto alphas = std::vector<T>();
-    auto x_buffers = std::vector<cl_mem>();
-    auto y_buffers = std::vector<cl_mem>();
     for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
       alphas.push_back(GetAlpha(args.alpha, batch));
-      x_buffers.push_back(buffers[batch].x_vec());
-      y_buffers.push_back(buffers[batch].y_vec());
     }
     auto status = AxpyBatched(args.n, alphas.data(),
-                              x_buffers.data(), args.x_inc,
-                              y_buffers.data(), args.y_inc,
+                              buffers.x_vec(), args.x_offsets.data(), args.x_inc,
+                              buffers.y_vec(), args.y_offsets.data(), args.y_inc,
                               args.batch_count,
                               &queue_plain, &event);
     if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
@@ -103,13 +109,13 @@ class TestXaxpyBatched {
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CLBLAS
-    static StatusCode RunReference1(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+    static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
         auto event = cl_event{};
         auto status = clblasXaxpy(args.n, GetAlpha(args.alpha, batch),
-                                  buffers[batch].x_vec, 0, args.x_inc,
-                                  buffers[batch].y_vec, 0, args.y_inc,
+                                  buffers.x_vec, args.x_offsets[batch], args.x_inc,
+                                  buffers.y_vec, args.y_offsets[batch], args.y_inc,
                                   1, &queue_plain, 0, nullptr, &event);
         clWaitForEvents(1, &event);
         if (static_cast<StatusCode>(status) != StatusCode::kSuccess) {
@@ -122,41 +128,41 @@ class TestXaxpyBatched {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, std::vector<Buffers<T>> &buffers, Queue &queue) {
+    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
+      std::vector<T> y_vec_cpu(args.y_size, static_cast<T>(0));
+      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+      buffers.y_vec.Read(queue, args.y_size, y_vec_cpu);
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-        std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-        std::vector<T> y_vec_cpu(args.y_size, static_cast<T>(0));
-        buffers[batch].x_vec.Read(queue, args.x_size, x_vec_cpu);
-        buffers[batch].y_vec.Read(queue, args.y_size, y_vec_cpu);
         cblasXaxpy(args.n, GetAlpha(args.alpha, batch),
-                   x_vec_cpu, 0, args.x_inc,
-                   y_vec_cpu, 0, args.y_inc);
-        buffers[batch].y_vec.Write(queue, args.y_size, y_vec_cpu);
+                   x_vec_cpu, args.x_offsets[batch], args.x_inc,
+                   y_vec_cpu, args.y_offsets[batch], args.y_inc);
       }
+      buffers.y_vec.Write(queue, args.y_size, y_vec_cpu);
       return StatusCode::kSuccess;
     }
   #endif
 
-  // Describes how to download the results of the computation (per item, not for the full batch)
+  // Describes how to download the results of the computation
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.y_size, static_cast<T>(0));
     buffers.y_vec.Read(queue, args.y_size, result);
     return result;
   }
 
-  // Describes how to compute the indices of the result buffer (per item, not for the full batch)
+  // Describes how to compute the indices of the result buffer
   static size_t ResultID1(const Arguments<T> &args) { return args.n; }
-  static size_t ResultID2(const Arguments<T> &) { return 1; } // N/A for this routine
-  static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t) {
-    return id1 * args.y_inc;
+  static size_t ResultID2(const Arguments<T> &args) { return args.batch_count; }
+  static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t id2) {
+    return (id1 * args.y_inc) + args.y_offsets[id2];
   }
 
-  // Describes how to compute performance metrics (per item, not for the full batch)
+  // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return 2 * args.n;
+    return args.batch_count * (2 * args.n);
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    return (3 * args.n) * sizeof(T);
+    return args.batch_count * (3 * args.n) * sizeof(T);
   }
 };
 

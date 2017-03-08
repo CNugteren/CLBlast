@@ -22,7 +22,10 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 XaxpyBatched<T>::XaxpyBatched(Queue &queue, EventPointer event, const std::string &name):
-    Xaxpy<T>(queue, event, name) {
+    Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {}, {
+    #include "../../kernels/level1/level1.opencl"
+    #include "../../kernels/level1/xaxpy.opencl"
+    }) {
 }
 
 // =================================================================================================
@@ -30,19 +33,55 @@ XaxpyBatched<T>::XaxpyBatched(Queue &queue, EventPointer event, const std::strin
 // The main routine
 template <typename T>
 void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T> &alphas,
-                                    const std::vector<Buffer<T>> &x_buffers, const size_t x_inc,
-                                    const std::vector<Buffer<T>> &y_buffers, const size_t y_inc,
+                                    const Buffer<T> &x_buffer, const std::vector<size_t> &x_offsets, const size_t x_inc,
+                                    const Buffer<T> &y_buffer, const std::vector<size_t> &y_offsets, const size_t y_inc,
                                     const size_t batch_count) {
-  if (batch_count < 1) { throw BLASError(StatusCode::kInvalidBatchCount); }
-  if (alphas.size() != batch_count) { throw BLASError(StatusCode::kInvalidBatchCount); }
-  if (x_buffers.size() != batch_count) { throw BLASError(StatusCode::kInvalidBatchCount); }
-  if (y_buffers.size() != batch_count) { throw BLASError(StatusCode::kInvalidBatchCount); }
+
+  // Tests for a valid batch count
+  if ((batch_count < 1) || (alphas.size() != batch_count) ||
+      (x_offsets.size() != batch_count) || (y_offsets.size() != batch_count)) {
+    throw BLASError(StatusCode::kInvalidBatchCount);
+  }
+
+  // Makes sure all dimensions are larger than zero
+  if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+
+  // Tests the vectors for validity
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    TestVectorX(n, x_buffer, x_offsets[batch], x_inc);
+    TestVectorY(n, y_buffer, y_offsets[batch], y_inc);
+  }
+
+  // Upload the arguments to the device
+  std::vector<int> x_offsets_int(x_offsets.begin(), x_offsets.end());
+  std::vector<int> y_offsets_int(y_offsets.begin(), y_offsets.end());
+  auto x_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
+  auto y_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
+  x_offsets_device.Write(queue_, batch_count, x_offsets_int);
+  y_offsets_device.Write(queue_, batch_count, y_offsets_int);
+
+  // Retrieves the Xaxpy kernel from the compiled binary
+  auto kernel = Kernel(program_, "XaxpyBatched");
 
   // Naive implementation: calls regular Axpy multiple times
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
-    DoAxpy(n, alphas[batch],
-           x_buffers[batch], 0, x_inc,
-           y_buffers[batch], 0, y_inc);
+
+    // Sets the kernel arguments
+    kernel.SetArgument(0, static_cast<int>(n));
+    kernel.SetArgument(1, GetRealArg(alphas[batch]));
+    kernel.SetArgument(2, x_buffer());
+    kernel.SetArgument(3, static_cast<int>(x_offsets[batch]));
+    kernel.SetArgument(4, static_cast<int>(x_inc));
+    kernel.SetArgument(5, y_buffer());
+    kernel.SetArgument(6, static_cast<int>(y_offsets[batch]));
+    kernel.SetArgument(7, static_cast<int>(y_inc));
+    kernel.SetArgument(8, static_cast<int>(batch));
+
+    // Launches the kernel
+    auto n_ceiled = Ceil(n, db_["WGS"]*db_["WPT"]);
+    auto global = std::vector<size_t>{n_ceiled/db_["WPT"]};
+    auto local = std::vector<size_t>{db_["WGS"]};
+    RunKernel(kernel, queue_, device_, global, local, event_);
   }
 }
 

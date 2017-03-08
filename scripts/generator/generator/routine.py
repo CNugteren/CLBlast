@@ -72,12 +72,12 @@ class Routine:
         for scalar in self.scalars:
             result.append("auto " + scalar + "s_cpp = std::vector<T>();")
         for buffer_name in self.inputs + self.outputs:
-            result.append("auto " + buffer_name + "_buffers_cpp = std::vector<Buffer<T>>();")
+            result.append("auto " + buffer_name + "_offsets_cpp = std::vector<size_t>();")
         result.append("for (auto batch = size_t{0}; batch < batch_count; ++batch) {")
         for scalar in self.scalars:
             result.append("  " + scalar + "s_cpp.push_back(" + scalar + "s[batch]);")
         for buffer_name in self.inputs + self.outputs:
-            result.append("  " + buffer_name + "_buffers_cpp.push_back(Buffer<T>(" + buffer_name + "_buffers[batch]));")
+            result.append("  " + buffer_name + "_offsets_cpp.push_back(" + buffer_name + "_offsets[batch]);")
         result.append("}")
         return result
 
@@ -222,8 +222,8 @@ class Routine:
     def buffer(self, name):
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
         if name in self.inputs or name in self.outputs:
-            a = [name + "_buffer" + self.b_s()]
-            b = [name + "_offset"] if not self.batched else []
+            a = [name + "_buffer"]
+            b = [name + "_offset" + self.b_s()]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -250,8 +250,8 @@ class Routine:
         """As above but with data-types"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = [prefix + "cl_mem " + self.b_star() + name + "_buffer" + self.b_s()]
-            b = ["const size_t " + name + "_offset"] if not self.batched else []
+            a = [prefix + "cl_mem " + name + "_buffer"]
+            b = ["const size_t " + self.b_star() + name + "_offset" + self.b_s()]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
         return []
@@ -291,11 +291,8 @@ class Routine:
         """As above but with CLCudaAPI buffers"""
         if name in self.inputs or name in self.outputs:
             buffer_type = "unsigned int" if (name in self.index_buffers()) else self.template.buffer_type
-            if self.batched:
-                a = [name + "_buffers_cpp"]
-            else:
-                a = ["Buffer<" + buffer_type + ">(" + name + "_buffer)"]
-            b = [name + "_offset"] if not self.batched else []
+            a = ["Buffer<" + buffer_type + ">(" + name + "_buffer)"]
+            b = [name + "_offsets_cpp"] if self.batched else [name + "_offset"]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -336,8 +333,8 @@ class Routine:
         """As above, but only data-types"""
         prefix = "const " if (name in self.inputs) else ""
         if (name in self.inputs) or (name in self.outputs):
-            a = [prefix + "cl_mem" + self.b_star()]
-            b = ["const size_t"] if not self.batched else []
+            a = [prefix + "cl_mem"]
+            b = ["const size_t" + self.b_star()]
             c = ["const size_t"] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -347,12 +344,10 @@ class Routine:
         prefix = "const " if (name in self.inputs) else ""
         inout = "input" if (name in self.inputs) else "output"
         if (name in self.inputs) or (name in self.outputs):
-            math_name = name.upper() + " matrix" + self.b_s() if (name in self.buffers_matrix()) else name + " vector" + self.b_s()
+            math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " vector"
             inc_ld_description = "Leading dimension " if (name in self.buffers_matrix()) else "Stride/increment "
-            a = ["`" + prefix + "cl_mem " + self.b_star() + name + "_buffer" + self.b_s() + "`: OpenCL buffer" + self.b_s() + " to store the " + inout + " " + math_name + "."]
-            b = []
-            if not self.batched:
-                b = ["`const size_t " + name + "_offset`: The offset in elements from the start of the " + inout + " " + math_name + "."]
+            a = ["`" + prefix + "cl_mem " + name + "_buffer`: OpenCL buffer to store the " + inout + " " + math_name + "."]
+            b = ["`const size_t " + self.b_star() + name + "_offset" + self.b_s() + "`: The offset" + self.b_s() + " in elements from the start of the " + inout + " " + math_name + "."]
             c = []
             if name not in self.buffers_without_ld_inc():
                 c = ["`const size_t " + name + "_" + self.postfix(name) + "`: " +
