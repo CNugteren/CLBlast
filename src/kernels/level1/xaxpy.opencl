@@ -57,9 +57,9 @@ void XaxpyFast(const int n, const real_arg arg_alpha,
 
 // Full version of the kernel with offsets and strided accesses: batched version
 __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
-void XaxpyBatched(const int n, const __global real_arg* arg_alphas,
-                  const __global real* restrict xgm, const __global int* restrict x_offsets, const int x_inc,
-                  __global real* ygm, const __global int* restrict y_offsets, const int y_inc) {
+void XaxpyBatched(const int n, const __constant real_arg* arg_alphas,
+                  const __global real* restrict xgm, const __constant int* x_offsets, const int x_inc,
+                  __global real* ygm, const __constant int* y_offsets, const int y_inc) {
   const int batch = get_group_id(1);
   const real alpha = GetRealArg(arg_alphas[batch]);
 
