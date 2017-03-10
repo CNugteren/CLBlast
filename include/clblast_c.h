@@ -1360,6 +1360,53 @@ CLBlastStatusCode PUBLIC_API CLBlastHaxpyBatched(const size_t n,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const float *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const float *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const double *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const double *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_float2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_float2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_double2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_double2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_half *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_half *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
