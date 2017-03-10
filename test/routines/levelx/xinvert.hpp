@@ -190,11 +190,11 @@ class TestXinvert {
   // Describes how to run a naive version of the routine (for correctness/performance comparison).
   // Note that a proper clBLAS or CPU BLAS comparison is not available for non-BLAS routines.
   static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    return RunReference(args, buffers[0], queue);
+    return RunReference(args, buffers, queue);
   }
 
   static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    return RunReference(args, buffers[0], queue);
+    return RunReference(args, buffers, queue);
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
