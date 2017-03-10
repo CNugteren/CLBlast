@@ -67,8 +67,8 @@ template <> double2 Constant(const double val) { return {val, 0.0}; }
 template <typename T> T SmallConstant() { return static_cast<T>(1e-4); }
 template float SmallConstant<float>();
 template double SmallConstant<double>();
-template <> half SmallConstant() { return FloatToHalf(1e-4); }
-template <> float2 SmallConstant() { return {1e-4, 0.0f}; }
+template <> half SmallConstant() { return FloatToHalf(1e-4f); }
+template <> float2 SmallConstant() { return {1e-4f, 0.0f}; }
 template <> double2 SmallConstant() { return {1e-4, 0.0}; }
 
 // Returns the absolute value of a scalar (modulus in case of a complex number)
