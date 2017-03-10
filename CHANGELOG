@@ -7,13 +7,14 @@ Development version (next release)
 - Fixed bugs in the half-precision routines HTBMV/HTPMV/HTRMV/HSYR2K/HTRMM
 - Tests now also exit with an error code when OpenCL errors or compilation errors occur
 - Tests now also check for the L2 error in case of half-precision
-- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
-- Added level-2 routines:
+- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Added triangular solver (level-2 & level-3) routines:
   * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
-- Added level-3 routines:
   * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)
+- Added batched (non-BLAS) routines:
+  * SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED (batched version of AXPY)
 
 Version 0.10.0
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header

@@ -13,7 +13,9 @@
 
 #include <algorithm>
 #include <iostream>
+#include <random>
 
+#include "utilities/utilities.hpp"
 #include "test/correctness/testblas.hpp"
 
 namespace clblast {
@@ -25,6 +27,7 @@ template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncr
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBatchCounts = { 1, 3 };
 
 // Test settings for the invalid tests
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
@@ -79,22 +82,25 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
   const auto max_ld = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
   const auto max_matvec = *std::max_element(kMatrixVectorDims.begin(), kMatrixVectorDims.end());
   const auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
+  const auto max_batch_count = *std::max_element(kBatchCounts.begin(), kBatchCounts.end());
 
   // Creates test input data
-  x_source_.resize(std::max(max_vec, max_matvec)*max_inc + max_offset);
-  y_source_.resize(std::max(max_vec, max_matvec)*max_inc + max_offset);
-  a_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  b_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  c_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  ap_source_.resize(std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
-  scalar_source_.resize(std::max(max_mat, max_matvec) + max_offset);
-  PopulateVector(x_source_, kSeed);
-  PopulateVector(y_source_, kSeed);
-  PopulateVector(a_source_, kSeed);
-  PopulateVector(b_source_, kSeed);
-  PopulateVector(c_source_, kSeed);
-  PopulateVector(ap_source_, kSeed);
-  PopulateVector(scalar_source_, kSeed);
+  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
+  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
+  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
+  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset);
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+  PopulateVector(x_source_, mt, dist);
+  PopulateVector(y_source_, mt, dist);
+  PopulateVector(a_source_, mt, dist);
+  PopulateVector(b_source_, mt, dist);
+  PopulateVector(c_source_, mt, dist);
+  PopulateVector(ap_source_, mt, dist);
+  PopulateVector(scalar_source_, mt, dist);
 }
 
 // ===============================================================================================
@@ -190,15 +196,15 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto result2 = get_result_(args, buffers2, queue_);
 
     // Computes the L2 error
-    const auto kErrorMarginL2 = getL2ErrorMargin<T>();
     auto l2error = 0.0;
+    const auto kErrorMarginL2 = getL2ErrorMargin<T>();
     for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
       for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
         auto index = get_index_(args, id1, id2);
         l2error += SquaredDifference(result1[index], result2[index]);
       }
     }
-    l2error /= (get_id1_(args) * get_id2_(args));
+    l2error /= static_cast<double>(get_id1_(args) * get_id2_(args));
 
     // Checks for differences in the output
     auto errors = size_t{0};
@@ -219,8 +225,10 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         }
       }
     }
+
+    // Report the results
     if (verbose_ && errors > 0) {
-      fprintf(stdout, "\n   Combined L2 error: %.2e\n   ", l2error);
+      fprintf(stdout, "\n   Combined average L2 error: %.2e\n   ", l2error);
     }
 
     // Tests the error count (should be zero)

@@ -2903,6 +2903,72 @@ Requirements for OMATCOPY:
 
 
 
+xAXPYBATCHED: Batched version of AXPY
+-------------
+
+As AXPY, but multiple operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
+                                      const float *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
+                                      const double *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
+                                      const cl_float2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
+                                      const cl_double2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHaxpyBatched(const size_t n,
+                                      const cl_half *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to AXPYBATCHED:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T *alphas`: Input scalar constants.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t *x_offsets`: The offsets in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
+* `const size_t *y_offsets`: The offsets in elements from the start of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 ClearCache: Resets the cache of compiled binaries (auxiliary function)
 -------------
 

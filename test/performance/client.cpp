@@ -11,13 +11,15 @@
 //
 // =================================================================================================
 
-#include "test/performance/client.hpp"
-
 #include <string>
 #include <vector>
 #include <utility>
 #include <algorithm>
 #include <chrono>
+#include <random>
+
+#include "utilities/utilities.hpp"
+#include "test/performance/client.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -88,6 +90,9 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     if (o == kArgNrm2Offset)  { args.nrm2_offset = GetArgument(command_line_args, help, kArgNrm2Offset, size_t{0}); }
     if (o == kArgAsumOffset)  { args.asum_offset = GetArgument(command_line_args, help, kArgAsumOffset, size_t{0}); }
     if (o == kArgImaxOffset)  { args.imax_offset = GetArgument(command_line_args, help, kArgImaxOffset, size_t{0}); }
+
+    // Batch arguments
+    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, size_t{1}); }
 
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(command_line_args, help, kArgAlpha, GetScalar<U>()); }
@@ -179,13 +184,15 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     std::vector<T> c_source(args.c_size);
     std::vector<T> ap_source(args.ap_size);
     std::vector<T> scalar_source(args.scalar_size);
-    PopulateVector(x_source, kSeed);
-    PopulateVector(y_source, kSeed);
-    PopulateVector(a_source, kSeed);
-    PopulateVector(b_source, kSeed);
-    PopulateVector(c_source, kSeed);
-    PopulateVector(ap_source, kSeed);
-    PopulateVector(scalar_source, kSeed);
+    std::mt19937 mt(kSeed);
+    std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+    PopulateVector(x_source, mt, dist);
+    PopulateVector(y_source, mt, dist);
+    PopulateVector(a_source, mt, dist);
+    PopulateVector(b_source, mt, dist);
+    PopulateVector(c_source, mt, dist);
+    PopulateVector(ap_source, mt, dist);
+    PopulateVector(scalar_source, mt, dist);
 
     // Creates the matrices on the device
     auto x_vec = Buffer<T>(context, args.x_size);
@@ -335,6 +342,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgNrm2Offset){integers.push_back(args.nrm2_offset); }
     else if (o == kArgAsumOffset){integers.push_back(args.asum_offset); }
     else if (o == kArgImaxOffset){integers.push_back(args.imax_offset); }
+    else if (o == kArgBatchCount){integers.push_back(args.batch_count); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

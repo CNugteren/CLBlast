@@ -11,10 +11,13 @@
 //
 // =================================================================================================
 
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <random>
+
 #include "utilities/utilities.hpp"
 #include "test/routines/level3/xgemm.hpp"
-
-#include <unordered_map>
 
 namespace clblast {
 // =================================================================================================
@@ -71,9 +74,11 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto host_a = std::vector<T>(args.m * args.k);
   auto host_b = std::vector<T>(args.n * args.k);
   auto host_c = std::vector<T>(args.m * args.n);
-  PopulateVector(host_a, kSeed);
-  PopulateVector(host_b, kSeed);
-  PopulateVector(host_c, kSeed);
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+  PopulateVector(host_a, mt, dist);
+  PopulateVector(host_b, mt, dist);
+  PopulateVector(host_c, mt, dist);
 
   // Copy the matrices to the device
   auto device_a = Buffer<T>(context, host_a.size());

@@ -30,17 +30,17 @@ class DataType:
         self.beta_cl = scalars[3]
         self.buffer_type = buffer_type
 
-    def use_alpha(self):
+    def use_alpha(self, postfix=""):
         """Outputs the name of the data-type (alpha/beta), possibly transforming into the right type"""
         if self.alpha_cpp in [D_FLOAT2, D_DOUBLE2]:
-            return self.alpha_cpp + "{alpha.s[0], alpha.s[1]}"
-        return "alpha"
+            return self.alpha_cpp + "{alpha" + postfix + ".s[0], alpha" + postfix + ".s[1]}"
+        return "alpha" + postfix
 
-    def use_beta(self):
+    def use_beta(self, postfix=""):
         """As above, but for beta instead of alpha"""
         if self.beta_cpp in [D_FLOAT2, D_DOUBLE2]:
-            return self.beta_cpp + "{beta.s[0], beta.s[1]}"
-        return "beta"
+            return self.beta_cpp + "{beta" + postfix + ".s[0], beta" + postfix + ".s[1]}"
+        return "beta" + postfix
 
     def use_alpha_opencl(self):
         """As above, but the transformation is in the opposite direction"""

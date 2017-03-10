@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <string>
+#include <random>
 
 #include <cltune.h>
 
@@ -77,12 +78,14 @@ void Tuner(int argc, char* argv[]) {
   auto b_mat = std::vector<T>(C::GetSizeB(args));
   auto c_mat = std::vector<T>(C::GetSizeC(args));
   auto temp = std::vector<T>(C::GetSizeTemp(args));
-  PopulateVector(x_vec, kSeed);
-  PopulateVector(y_vec, kSeed);
-  PopulateVector(a_mat, kSeed);
-  PopulateVector(b_mat, kSeed);
-  PopulateVector(c_mat, kSeed);
-  PopulateVector(temp, kSeed);
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+  PopulateVector(x_vec, mt, dist);
+  PopulateVector(y_vec, mt, dist);
+  PopulateVector(a_mat, mt, dist);
+  PopulateVector(b_mat, mt, dist);
+  PopulateVector(c_mat, mt, dist);
+  PopulateVector(temp, mt, dist);
 
   // Initializes the tuner for the chosen device
   cltune::Tuner tuner(args.platform_id, args.device_id);

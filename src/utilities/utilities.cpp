@@ -67,8 +67,8 @@ template <> double2 Constant(const double val) { return {val, 0.0}; }
 template <typename T> T SmallConstant() { return static_cast<T>(1e-4); }
 template float SmallConstant<float>();
 template double SmallConstant<double>();
-template <> half SmallConstant() { return FloatToHalf(1e-4); }
-template <> float2 SmallConstant() { return {1e-4, 0.0f}; }
+template <> half SmallConstant() { return FloatToHalf(1e-4f); }
+template <> float2 SmallConstant() { return {1e-4f, 0.0f}; }
 template <> double2 SmallConstant() { return {1e-4, 0.0}; }
 
 // Returns the absolute value of a scalar (modulus in case of a complex number)
@@ -326,42 +326,29 @@ unsigned int GetRandomSeed() {
 
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
-void PopulateVector(std::vector<T> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<T>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<T>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<T> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element = dist(mt); }
+void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) { element = static_cast<T>(dist(mt)); }
 }
-template void PopulateVector<float>(std::vector<float>&, const unsigned int);
-template void PopulateVector<double>(std::vector<double>&, const unsigned int);
+template void PopulateVector<float>(std::vector<float>&, std::mt19937&, std::uniform_real_distribution<double>&);
+template void PopulateVector<double>(std::vector<double>&, std::mt19937&, std::uniform_real_distribution<double>&);
 
 // Specialized versions of the above for complex data-types
 template <>
-void PopulateVector(std::vector<float2> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<float>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
+void PopulateVector(std::vector<float2> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) {
+    element.real(static_cast<float>(dist(mt)));
+    element.imag(static_cast<float>(dist(mt)));
+  }
 }
 template <>
-void PopulateVector(std::vector<double2> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<double>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<double>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<double> dist(lower_limit, upper_limit);
+void PopulateVector(std::vector<double2> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 
 // Specialized versions of the above for half-precision
 template <>
-void PopulateVector(std::vector<half> &vector, const unsigned int seed) {
-  const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
-  const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
+void PopulateVector(std::vector<half> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) { element = FloatToHalf(static_cast<float>(dist(mt))); }
 }
 
 // =================================================================================================

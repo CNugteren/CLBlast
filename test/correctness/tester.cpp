@@ -367,6 +367,7 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgDotOffset){ result += kArgDotOffset + equals + ToString(args.dot_offset) + " "; }
     if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
     if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
+    if (o == kArgBatchCount){result += kArgBatchCount + equals + ToString(args.batch_count) + " "; }
   }
   return result;
 }
