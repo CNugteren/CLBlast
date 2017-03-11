@@ -276,6 +276,13 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xTRSM    | ✔ | ✔ | ✔ | ✔ |   | (experimental, un-optimized)
 
+Futhermore, there are also batched versions of BLAS routines available, processing multiple smaller computations in one go for better performance:
+
+| Batched      | S | D | C | Z | H |
+| -------------|---|---|---|---|---|
+| xAXPYBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGEMMBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
+
 In addition, some extra non-BLAS routines are also supported by CLBlast, classified as level-X. They are experimental and should be used with care:
 
 | Level-X    | S | D | C | Z | H |

@@ -104,19 +104,19 @@ void Xgemm<T>::DoGemm(const Layout layout,
   // Selects which version of GEMM to run
   const auto do_gemm_direct = (m * n * k < db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // for small sizes (single kernel)
-    return GemmDirect(m, n, k, alpha,
-                      a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
-                      c_buffer, c_offset, c_ld,
-                      a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
+    GemmDirect(m, n, k, alpha,
+               a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
+               c_buffer, c_offset, c_ld,
+               a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
   }
   else { // for larger sizes (pre/post-processing plus a very fast kernel)
-    return GemmIndirect(m, n, k, alpha,
-                        a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
-                        c_buffer, c_offset, c_ld,
-                        a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
-                        a_one, a_two, a_want_rotated,
-                        b_one, b_two, b_want_rotated,
-                        c_one, c_two, c_want_rotated);
+    GemmIndirect(m, n, k, alpha,
+                 a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
+                 c_buffer, c_offset, c_ld,
+                 a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
+                 a_one, a_two, a_want_rotated,
+                 b_one, b_two, b_want_rotated,
+                 c_one, c_two, c_want_rotated);
   }
 }
 

@@ -22,25 +22,12 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 XgemmBatched<T>::XgemmBatched(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name,
-            {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","KernelSelection"},
-            PrecisionValue<T>(), {}, {
-    #include "../../kernels/level3/level3.opencl"
-    #include "../../kernels/level3/copy_fast.opencl"
-    #include "../../kernels/level3/copy_pad.opencl"
-    #include "../../kernels/level3/transpose_fast.opencl"
-    #include "../../kernels/level3/transpose_pad.opencl"
-    #include "../../kernels/level3/convert_symmetric.opencl"
-    #include "../../kernels/level3/convert_triangular.opencl"
-    #include "../../kernels/level3/convert_hermitian.opencl"
-    , // separated in multiple parts to prevent C1091 in MSVC 2013
+    Routine(queue, event, name, {"XgemmDirect"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/xgemm_direct_part1.opencl"
     #include "../../kernels/level3/xgemm_direct_part2.opencl"
     #include "../../kernels/level3/xgemm_direct_part3.opencl"
     , // separated in multiple parts to prevent C1091 in MSVC 2013
-    #include "../../kernels/level3/xgemm_part1.opencl"
-    #include "../../kernels/level3/xgemm_part2.opencl"
-    #include "../../kernels/level3/xgemm_part3.opencl"
+    #include "../../kernels/level3/xgemm_direct_batched.opencl"
     }) {
 }
 
@@ -99,7 +86,57 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
     TestMatrixC(c_one, c_two, c_buffer, c_offsets[batch], c_ld);
   }
 
-  // StatusCode::kNotImplemented;
+  // Upload the arguments to the device
+  std::vector<int> a_offsets_int(a_offsets.begin(), a_offsets.end());
+  std::vector<int> b_offsets_int(b_offsets.begin(), b_offsets.end());
+  std::vector<int> c_offsets_int(c_offsets.begin(), c_offsets.end());
+  auto a_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
+  auto b_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
+  auto c_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
+  auto alphas_device = Buffer<T>(context_, BufferAccess::kReadOnly, batch_count);
+  auto betas_device = Buffer<T>(context_, BufferAccess::kReadOnly, batch_count);
+  a_offsets_device.Write(queue_, batch_count, a_offsets_int);
+  b_offsets_device.Write(queue_, batch_count, b_offsets_int);
+  c_offsets_device.Write(queue_, batch_count, c_offsets_int);
+  alphas_device.Write(queue_, batch_count, alphas);
+  betas_device.Write(queue_, batch_count, betas);
+
+  // Retrieves the proper XgemmDirect kernel from the compiled binary
+  const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectBatchedTT" : "XgemmDirectBatchedTN") :
+                                       (b_do_transpose ? "XgemmDirectBatchedNT" : "XgemmDirectBatchedNN");
+  auto kernel = Kernel(program_, name);
+
+  // Sets the kernel arguments
+  kernel.SetArgument(0, static_cast<int>(m));
+  kernel.SetArgument(1, static_cast<int>(n));
+  kernel.SetArgument(2, static_cast<int>(k));
+  kernel.SetArgument(3, alphas_device());
+  kernel.SetArgument(4, betas_device());
+  kernel.SetArgument(5, a_buffer());
+  kernel.SetArgument(6, a_offsets_device());
+  kernel.SetArgument(7, static_cast<int>(a_ld));
+  kernel.SetArgument(8, b_buffer());
+  kernel.SetArgument(9, b_offsets_device());
+  kernel.SetArgument(10, static_cast<int>(b_ld));
+  kernel.SetArgument(11, c_buffer());
+  kernel.SetArgument(12, c_offsets_device());
+  kernel.SetArgument(13, static_cast<int>(c_ld));
+  kernel.SetArgument(14, static_cast<int>(c_do_transpose));
+  kernel.SetArgument(15, static_cast<int>(a_conjugate));
+  kernel.SetArgument(16, static_cast<int>(b_conjugate));
+
+  // Computes the global and local thread sizes
+  const auto m_ceiled = Ceil(m, db_["WGD"]);
+  const auto n_ceiled = Ceil(n, db_["WGD"]);
+  const auto global = std::vector<size_t>{
+    (m_ceiled * db_["MDIMCD"]) / db_["WGD"],
+    (n_ceiled * db_["NDIMCD"]) / db_["WGD"],
+    batch_count
+  };
+  const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"], 1};
+
+  // Launches the kernel
+  RunKernel(kernel, queue_, device_, global, local, event_);
 }
 
 // =================================================================================================
