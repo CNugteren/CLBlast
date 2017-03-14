@@ -47,6 +47,7 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgAlpha)    { args.alpha    = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
     if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, C::DefaultFraction()); }
+    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, C::DefaultBatchCount()); }
   }
   const auto num_runs = GetArgument(command_line_args, help, kArgNumRuns, C::DefaultNumRuns());
 
@@ -158,6 +159,7 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgK)     { metadata.push_back({"arg_k", std::to_string(args.k)}); }
     if (o == kArgAlpha) { metadata.push_back({"arg_alpha", ToString(args.alpha)}); }
     if (o == kArgBeta)  { metadata.push_back({"arg_beta", ToString(args.beta)}); }
+    if (o == kArgBatchCount) { metadata.push_back({"arg_batch_count", ToString(args.batch_count)}); }
   }
   tuner.PrintJSON("clblast_"+C::KernelFamily()+"_"+precision_string+".json", metadata);
 }

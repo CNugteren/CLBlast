@@ -51,6 +51,7 @@ class TuneXgemm {
   static size_t DefaultM() { return 1024; }
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1024; }
+  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return (V==1) ? 1.0 : 512.0; } // test all or sample randomly
   static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
 
