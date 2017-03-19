@@ -24,7 +24,7 @@
 namespace clblast {
 // =================================================================================================
 
-template <typename T, typename U> const auto Client<T,U>::kSeed = 42; // fixed seed for reproducibility
+template <typename T, typename U> const int Client<T,U>::kSeed = 42; // fixed seed for reproducibility
 
 // Constructor
 template <typename T, typename U>
