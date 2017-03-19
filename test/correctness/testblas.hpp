@@ -30,7 +30,7 @@ namespace clblast {
 template <typename T, typename U>
 class TestBlas: public Tester<T,U> {
  public:
-  static constexpr auto kSeed = 42; // fixed seed for reproducibility
+  static const int kSeed;
 
   // Uses several variables from the Tester class
   using Tester<T,U>::context_;

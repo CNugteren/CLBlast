@@ -15,6 +15,7 @@ Development version (next release)
   * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)
 - Added batched (non-BLAS) routines:
   * SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED (batched version of AXPY)
+  * SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED (batched version of GEMM)
 
 Version 0.10.0
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header

@@ -40,7 +40,7 @@ namespace clblast {
 template <typename T, typename U>
 class Client {
  public:
-  static constexpr auto kSeed = 42; // fixed seed for reproducibility
+  static const int kSeed;
 
   // Shorthand for the routine-specific functions passed to the tester
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;

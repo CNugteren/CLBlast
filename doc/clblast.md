@@ -2969,6 +2969,105 @@ Arguments to AXPYBATCHED:
 
 
 
+xGEMMBATCHED: Batched version of GEMM
+-------------
+
+As GEMM, but multiple operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const float *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const float *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const double *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const double *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_float2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_float2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_double2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_double2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_half *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_half *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to GEMMBATCHED:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const T *alphas`: Input scalar constants.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t *a_offsets`: The offsets in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
+* `const size_t *b_offsets`: The offsets in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const T *betas`: Input scalar constants.
+* `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
+* `const size_t *c_offsets`: The offsets in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMMBATCHED:
+
+* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* The value of `c_ld` must be at least `m`.
+
+
+
 ClearCache: Resets the cache of compiled binaries (auxiliary function)
 -------------
 

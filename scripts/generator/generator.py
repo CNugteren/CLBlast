@@ -41,7 +41,7 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [122, 76, 126, 23, 29, 41, 65, 32]
+HEADER_LINES = [123, 76, 126, 23, 29, 41, 65, 32]
 FOOTER_LINES = [25, 138, 27, 38, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
@@ -163,6 +163,7 @@ ROUTINES = [
   Routine(True,  True,  False, "x", "omatcopy", T, [S,D,C,Z,H],   ["m","n"],            ["layout","a_transpose"],                              ["a"],      ["b"],                        [amn,bnma],      ["alpha"],        "",    "Scaling and out-place transpose/copy (non-BLAS function)", "Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.", [ald_m, bld_n]),
   # Batched routines:
   Routine(True,  True,  True,  "x", "axpy",     T, [S,D,C,Z,H],   ["n"],                [],                                                    ["x"],      ["y"],                        [xn,yn],         ["alpha"],        "",    "Batched version of AXPY", "As AXPY, but multiple operations are batched together for better performance.", []),
+  Routine(True,  True,  True,  "x", "gemm",     T, [S,D,C,Z,H],   ["m","n","k"],        ["layout","a_transpose","b_transpose"],                ["a","b"],  ["c"],                        [amk,bkn,cmn],   ["alpha","beta"], "",    "Batched version of GEMM", "As GEMM, but multiple operations are batched together for better performance.", [ald_transa_m_k, bld_transb_k_n, cld_m]),
 ]]
 
 

@@ -619,6 +619,18 @@ StatusCode AxpyBatched(const size_t n,
                        const size_t batch_count,
                        cl_command_queue* queue, cl_event* event = nullptr);
 
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
