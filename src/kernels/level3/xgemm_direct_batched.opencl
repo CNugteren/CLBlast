@@ -7,8 +7,8 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the batched version of the GEMM kernels. See part 1 for information about the
-// non-batched version of the kernel.
+// This file contains the batched version of the direct GEMM kernels. See part 1 for information
+// about the non-batched version of the kernel.
 //
 // =================================================================================================
 
@@ -18,7 +18,7 @@ R"(
 
 // =================================================================================================
 
-// Direct version of the GEMM kernel with [A, B] = [non-transposed, non-transposed]
+// Direct version of the batched GEMM kernel with [A, B] = [non-transposed, non-transposed]
 __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 __kernel void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
@@ -39,7 +39,7 @@ __kernel void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int
               alm, blm, 0, 0, c_transpose, a_conjugate, b_conjugate);
 }
 
-// Direct version of the GEMM kernel with [A, B] = [non-transposed, transposed]
+// Direct version of the batched GEMM kernel with [A, B] = [non-transposed, transposed]
 __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 __kernel void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
@@ -60,7 +60,7 @@ __kernel void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int
               alm, blm, 0, 1, c_transpose, a_conjugate, b_conjugate);
 }
 
-// Direct version of the GEMM kernel with [A, B] = [transposed, non-transposed]
+// Direct version of the batched GEMM kernel with [A, B] = [transposed, non-transposed]
 __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 __kernel void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
@@ -81,7 +81,7 @@ __kernel void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int
               alm, blm, 1, 0, c_transpose, a_conjugate, b_conjugate);
 }
 
-// Direct version of the GEMM kernel with [A, B] = [transposed, transposed]
+// Direct version of the batched GEMM kernel with [A, B] = [transposed, transposed]
 __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 __kernel void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
