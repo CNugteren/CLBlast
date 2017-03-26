@@ -205,9 +205,9 @@ To test the performance of CLBlast and compare optionally against [clBLAS](http:
 
 The performance tests come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against optionally clBLAS and/or a CPU BLAS library. You can use the command-line options `-clblas 1` or `-cblas 1` to select a library to test against.
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable. Finally, run one of the graph-scripts found in `scripts/graphs` using R. For example, to generate the Xgemm PDF on device 1 of platform 0 from the `build` subdirectory:
+The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable (shipped with clBLAS). Finally, run the Python/Matplotlib graph-script found in `scripts/benchmark/benchmark.py`. For example, to generate the SGEMM PDF on device 1 of platform 0 from the `build` subdirectory:
 
-    Rscript ../scripts/graphs/xgemm.r 0 1
+    python ../scripts/benchmark/benchmark.py --platform 0 --device 1 --benchmark gemm
 
 Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
 
