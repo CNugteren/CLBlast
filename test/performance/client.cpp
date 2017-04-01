@@ -29,13 +29,17 @@ template <typename T, typename U> const int Client<T,U>::kSeed = 42; // fixed se
 // Constructor
 template <typename T, typename U>
 Client<T,U>::Client(const Routine run_routine,
-                    const Routine run_reference1, const Routine run_reference2,
+                    const Reference1 run_reference1, const Reference2 run_reference2,
                     const std::vector<std::string> &options,
+                    const std::vector<std::string> &buffers_in,
+                    const std::vector<std::string> &buffers_out,
                     const GetMetric get_flops, const GetMetric get_bytes):
   run_routine_(run_routine),
   run_reference1_(run_reference1),
   run_reference2_(run_reference2),
   options_(options),
+  buffers_in_(buffers_in),
+  buffers_out_(buffers_out),
   get_flops_(get_flops),
   get_bytes_(get_bytes) {
 }
@@ -222,7 +226,10 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
       timings.push_back(std::pair<std::string, double>("clBLAS", ms_clblas));
     }
     if (args.compare_cblas) {
-      auto ms_cblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference2_, "CPU BLAS");
+      auto buffers_host = BuffersHost<T>();
+      DeviceToHost(args, buffers, buffers_host, queue, buffers_in_);
+      auto ms_cblas = TimedExecution(args.num_runs, args, buffers_host, queue, run_reference2_, "CPU BLAS");
+      HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
       timings.push_back(std::pair<std::string, double>("CPU BLAS", ms_cblas));
     }
 
@@ -252,9 +259,10 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 // timing is performed using the milliseconds chrono functions. The function returns the minimum
 // value found in the vector of timing results. The return value is in milliseconds.
 template <typename T, typename U>
+template <typename BufferType, typename RoutineType>
 double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
-                                   Buffers<T> &buffers, Queue &queue,
-                                   Routine run_blas, const std::string &library_name) {
+                                   BufferType &buffers, Queue &queue,
+                                   RoutineType run_blas, const std::string &library_name) {
   auto status = StatusCode::kSuccess;
 
   // Do an optional warm-up to omit compilation times and initialisations from the measurements

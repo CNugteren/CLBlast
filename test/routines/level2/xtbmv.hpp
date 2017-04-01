@@ -44,6 +44,8 @@ class TestXtbmv {
             kArgALeadDim, kArgXInc,
             kArgAOffset, kArgXOffset};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufVecX}; }
+  static std::vector<std::string> BuffersOut() { return {kBufVecX}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
@@ -107,19 +109,14 @@ class TestXtbmv {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXtbmv(convertToCBLAS(args.layout),
                  convertToCBLAS(args.triangle),
                  convertToCBLAS(args.a_transpose),
                  convertToCBLAS(args.diagonal),
                  args.n, args.kl,
-                 a_mat_cpu, args.a_offset, args.a_ld,
-                 x_vec_cpu, args.x_offset, args.x_inc);
-      buffers.x_vec.Write(queue, args.x_size, x_vec_cpu);
+                 buffers_host.a_mat, args.a_offset, args.a_ld,
+                 buffers_host.x_vec, args.x_offset, args.x_inc);
       return StatusCode::kSuccess;
     }
   #endif

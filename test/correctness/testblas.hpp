@@ -109,16 +109,23 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> scalar_source_;
   
   // The routine-specific functions passed to the tester
-  DataPrepare prepare_data_;
-  Routine run_routine_;
-  Routine run_reference_;
-  ResultGet get_result_;
-  ResultIndex get_index_;
-  ResultIterator get_id1_;
-  ResultIterator get_id2_;
+  const DataPrepare prepare_data_;
+  const Routine run_routine_;
+  const Routine run_reference1_;
+  const Routine run_reference2_;
+  const ResultGet get_result_;
+  const ResultIndex get_index_;
+  const ResultIterator get_id1_;
+  const ResultIterator get_id2_;
 };
 
 // =================================================================================================
+
+// Bogus reference function, in case a comparison library is not available
+template <typename T, typename U, typename BufferType>
+static StatusCode ReferenceNotAvailable(const Arguments<U> &, BufferType &, Queue &) {
+  return StatusCode::kNotImplemented;
+}
 
 // The interface to the correctness tester. This is a separate function in the header such that it
 // is automatically compiled for each routine, templated by the parameter "C".
@@ -126,16 +133,24 @@ template <typename C, typename T, typename U>
 size_t RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
   auto command_line_args = RetrieveCommandLineArguments(argc, argv);
 
-  // Sets the reference to test against
-  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    const auto reference_routine1 = C::RunReference1; // clBLAS
-    const auto reference_routine2 = C::RunReference2; // CBLAS
-  #elif CLBLAST_REF_CLBLAS
-    const auto reference_routine1 = C::RunReference1; // clBLAS
-    const auto reference_routine2 = C::RunReference1; // not used, dummy
-  #elif CLBLAST_REF_CBLAS
-    const auto reference_routine1 = C::RunReference2; // not used, dummy
-    const auto reference_routine2 = C::RunReference2; // CBLAS
+  // Sets the clBLAS reference to test against
+  #ifdef CLBLAST_REF_CLBLAS
+    auto reference_routine1 = C::RunReference1; // clBLAS when available
+  #else
+    auto reference_routine1 = ReferenceNotAvailable<T,U,Buffers<T>>;
+  #endif
+
+  // Sets the CBLAS reference to test against
+  #ifdef CLBLAST_REF_CBLAS
+    auto reference_routine2 = [](const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) -> StatusCode {
+      auto buffers_host = BuffersHost<T>();
+      DeviceToHost(args, buffers, buffers_host, queue, C::BuffersIn());
+      C::RunReference2(args, buffers_host, queue);
+      HostToDevice(args, buffers, buffers_host, queue, C::BuffersOut());
+      return StatusCode::kSuccess;
+    };
+  #else
+    auto reference_routine2 = ReferenceNotAvailable<T,U,Buffers<T>>;
   #endif
 
   // Non-BLAS routines cannot be fully tested

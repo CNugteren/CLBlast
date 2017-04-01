@@ -25,16 +25,9 @@ namespace clblast {
 // =================================================================================================
 
 template <typename T>
-StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
   const bool is_upper = ((args.triangle == Triangle::kUpper && args.layout != Layout::kRowMajor) ||
                          (args.triangle == Triangle::kLower && args.layout == Layout::kRowMajor));
-
-  // Data transfer from OpenCL to std::vector
-  std::vector<T> a_mat_cpu(args.a_size, T{0.0});
-  buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-
-  // Creates the output buffer
-  std::vector<T> b_mat_cpu(args.b_size, T{0.0});
 
   // Helper variables
   const auto block_size = args.m;
@@ -60,11 +53,11 @@ StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &qu
       auto a_value = T{1.0};
       if (args.diagonal == Diagonal::kNonUnit) {
         if (i + block_id * block_size < args.n) {
-          if (a_mat_cpu[i * a_ld + i + a_offset] == T{0.0}) { return StatusCode::kUnknownError; }
-          a_value = T{1.0} / a_mat_cpu[i * a_ld + i + a_offset];
+          if (buffers_host.a_mat[i * a_ld + i + a_offset] == T{0.0}) { return StatusCode::kUnknownError; }
+          a_value = T{1.0} / buffers_host.a_mat[i * a_ld + i + a_offset];
         }
       }
-      b_mat_cpu[i * b_ld + i + b_offset] = a_value;
+      buffers_host.b_mat[i * b_ld + i + b_offset] = a_value;
     }
 
     // Inverts the upper triangle row by row
@@ -75,11 +68,11 @@ StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &qu
           for (auto k = i + 1; k <= j; ++k) {
             auto a_value = T{0.0};
             if ((i + block_id * block_size < args.n) && (k + block_id * block_size < args.n)) {
-              a_value = a_mat_cpu[k * a_ld + i + a_offset];
+              a_value = buffers_host.a_mat[k * a_ld + i + a_offset];
             }
-            sum += a_value * b_mat_cpu[j * b_ld + k + b_offset];
+            sum += a_value * buffers_host.b_mat[j * b_ld + k + b_offset];
           }
-          b_mat_cpu[j * b_ld + i + b_offset] = - sum * b_mat_cpu[i * b_ld + i + b_offset];
+          buffers_host.b_mat[j * b_ld + i + b_offset] = - sum * buffers_host.b_mat[i * b_ld + i + b_offset];
         }
       }
     }
@@ -92,35 +85,32 @@ StatusCode RunReference(const Arguments<T> &args, Buffers<T> &buffers, Queue &qu
           for (auto k = j; k < i; ++k) {
             auto a_value = T{0.0};
             if ((i + block_id * block_size < args.n) && (k + block_id * block_size < args.n)) {
-              a_value = a_mat_cpu[k * a_ld + i + a_offset];
+              a_value = buffers_host.a_mat[k * a_ld + i + a_offset];
             }
-            sum += a_value * b_mat_cpu[j * b_ld + k + b_offset];
+            sum += a_value * buffers_host.b_mat[j * b_ld + k + b_offset];
           }
-          b_mat_cpu[j * b_ld + i + b_offset] = - sum * b_mat_cpu[i * b_ld + i + b_offset];
+          buffers_host.b_mat[j * b_ld + i + b_offset] = - sum * buffers_host.b_mat[i * b_ld + i + b_offset];
         }
       }
     }
   }
-
-  // Data transfer back to OpenCL
-  buffers.b_mat.Write(queue, args.b_size, b_mat_cpu);
   return StatusCode::kSuccess;
 }
 
 // Half-precision version calling the above reference implementation after conversions
 template <>
-StatusCode RunReference<half>(const Arguments<half> &args, Buffers<half> &buffers, Queue &queue) {
-  auto a_buffer2 = HalfToFloatBuffer(buffers.a_mat, queue());
-  auto b_buffer2 = HalfToFloatBuffer(buffers.b_mat, queue());
-  auto dummy = clblast::Buffer<float>(0);
-  auto buffers2 = Buffers<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
+StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &buffers_host) {
+  auto a_buffer2 = HalfToFloatBuffer(buffers_host.a_mat);
+  auto b_buffer2 = HalfToFloatBuffer(buffers_host.b_mat);
+  auto dummy = std::vector<float>(0);
+  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size;
   args2.a_ld = args.a_ld; args2.m = args.m; args2.n = args.n;
   args2.a_offset = args.a_offset;
   args2.layout = args.layout; args2.triangle = args.triangle; args2.diagonal = args.diagonal;
-  auto status = RunReference(args2, buffers2, queue);
-  FloatToHalfBuffer(buffers.b_mat, b_buffer2, queue());
+  auto status = RunReference(args2, buffers2);
+  FloatToHalfBuffer(buffers_host.b_mat, b_buffer2);
   return status;
 }
 
@@ -140,6 +130,8 @@ class TestXinvert {
             kArgLayout, kArgTriangle, kArgDiagonal,
             kArgALeadDim, kArgAOffset};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB}; }
+  static std::vector<std::string> BuffersOut() { return {kBufMatB}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeA(const Arguments<T> &args) {
@@ -190,11 +182,15 @@ class TestXinvert {
   // Describes how to run a naive version of the routine (for correctness/performance comparison).
   // Note that a proper clBLAS or CPU BLAS comparison is not available for non-BLAS routines.
   static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    return RunReference(args, buffers, queue);
+    auto buffers_host = BuffersHost<T>();
+    DeviceToHost(args, buffers, buffers_host, queue, BuffersIn());
+    const auto status = RunReference(args, buffers_host);
+    HostToDevice(args, buffers, buffers_host, queue, BuffersOut());
+    return status;
   }
 
-  static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    return RunReference(args, buffers, queue);
+  static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue&) {
+    return RunReference(args, buffers_host);
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
