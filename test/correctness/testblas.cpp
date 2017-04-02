@@ -67,15 +67,17 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
     kBetaValues(GetExampleScalars<U>(full_test_)),
     prepare_data_(prepare_data),
     run_routine_(run_routine),
+    run_reference1_(run_reference1),
+    run_reference2_(run_reference2),
     get_result_(get_result),
     get_index_(get_index),
     get_id1_(get_id1),
     get_id2_(get_id2) {
 
-  // Sets the reference to test against
-  if (compare_clblas_) { run_reference_ = run_reference1; }
-  else if (compare_cblas_) { run_reference_ = run_reference2; }
-  else { throw std::runtime_error("Invalid configuration: no reference to test against"); }
+  // Sanity check
+  if (!compare_clblas_ && !compare_cblas_) {
+    throw std::runtime_error("Invalid configuration: no reference to test against");
+  }
 
   // Computes the maximum sizes. This allows for a single set of input/output buffers.
   const auto max_vec = *std::max_element(kVectorDims.begin(), kVectorDims.end());
@@ -184,7 +186,9 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
       else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
       std::cout << std::flush;
     }
-    const auto status1 = run_reference_(args, buffers1, queue_);
+    auto status1 = StatusCode::kSuccess;
+    if (compare_clblas_) { status1 = run_reference1_(args, buffers1, queue_); }
+    else if (compare_cblas_) { status1 = run_reference2_(args, buffers1, queue_); }
 
     // Tests for equality of the two status codes
     if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
@@ -305,7 +309,9 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
       else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
       std::cout << std::flush;
     }
-    const auto status1 = run_reference_(args, buffers1, queue_);
+    auto status1 = StatusCode::kSuccess;
+    if (compare_clblas_) { status1 = run_reference1_(args, buffers1, queue_); }
+    else if (compare_cblas_) { status1 = run_reference2_(args, buffers1, queue_); }
 
     // Tests for equality of the two status codes
     if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }

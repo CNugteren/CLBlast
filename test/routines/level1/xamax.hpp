@@ -43,6 +43,8 @@ class TestXamax {
             kArgXInc,
             kArgXOffset, kArgImaxOffset};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufScalar}; }
+  static std::vector<std::string> BuffersOut() { return {kBufScalar}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
@@ -101,15 +103,10 @@ class TestXamax {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> scalar_cpu(args.scalar_size, static_cast<T>(0));
-      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      buffers.scalar.Read(queue, args.scalar_size, scalar_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXamax(args.n,
-                 scalar_cpu, args.imax_offset,
-                 x_vec_cpu, args.x_offset, args.x_inc);
-      buffers.scalar.Write(queue, args.scalar_size, scalar_cpu);
+                 buffers_host.scalar, args.imax_offset,
+                 buffers_host.x_vec, args.x_offset, args.x_inc);
       return StatusCode::kSuccess;
     }
   #endif

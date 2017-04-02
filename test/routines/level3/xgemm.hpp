@@ -45,6 +45,8 @@ class TestXgemm {
             kArgAOffset, kArgBOffset, kArgCOffset,
             kArgAlpha, kArgBeta};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB, kBufMatC}; }
+  static std::vector<std::string> BuffersOut() { return {kBufMatC}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeA(const Arguments<T> &args) {
@@ -121,21 +123,14 @@ class TestXgemm {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-      std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
-      std::vector<T> c_mat_cpu(args.c_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
-      buffers.c_mat.Read(queue, args.c_size, c_mat_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXgemm(convertToCBLAS(args.layout),
                  convertToCBLAS(args.a_transpose),
                  convertToCBLAS(args.b_transpose),
                  args.m, args.n, args.k, args.alpha,
-                 a_mat_cpu, args.a_offset, args.a_ld,
-                 b_mat_cpu, args.b_offset, args.b_ld, args.beta,
-                 c_mat_cpu, args.c_offset, args.c_ld);
-      buffers.c_mat.Write(queue, args.c_size, c_mat_cpu);
+                 buffers_host.a_mat, args.a_offset, args.a_ld,
+                 buffers_host.b_mat, args.b_offset, args.b_ld, args.beta,
+                 buffers_host.c_mat, args.c_offset, args.c_ld);
       return StatusCode::kSuccess;
     }
   #endif

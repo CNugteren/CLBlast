@@ -45,6 +45,8 @@ class TestXaxpyBatched {
             kArgXInc, kArgYInc,
             kArgBatchCount, kArgAlpha};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufVecY}; }
+  static std::vector<std::string> BuffersOut() { return {kBufVecY}; }
 
   // Helper for the sizes per batch
   static size_t PerBatchSizeX(const Arguments<T> &args) { return args.n * args.x_inc; }
@@ -123,17 +125,12 @@ class TestXaxpyBatched {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      std::vector<T> y_vec_cpu(args.y_size, static_cast<T>(0));
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
-      buffers.y_vec.Read(queue, args.y_size, y_vec_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
         cblasXaxpy(args.n, args.alphas[batch],
-                   x_vec_cpu, args.x_offsets[batch], args.x_inc,
-                   y_vec_cpu, args.y_offsets[batch], args.y_inc);
+                   buffers_host.x_vec, args.x_offsets[batch], args.x_inc,
+                   buffers_host.y_vec, args.y_offsets[batch], args.y_inc);
       }
-      buffers.y_vec.Write(queue, args.y_size, y_vec_cpu);
       return StatusCode::kSuccess;
     }
   #endif

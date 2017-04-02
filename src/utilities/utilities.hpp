@@ -98,6 +98,15 @@ constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
 
+// The buffer names
+constexpr auto kBufVecX = "X";
+constexpr auto kBufVecY = "Y";
+constexpr auto kBufMatA = "A";
+constexpr auto kBufMatB = "B";
+constexpr auto kBufMatC = "C";
+constexpr auto kBufMatAP = "AP";
+constexpr auto kBufScalar = "Scalar";
+
 // =================================================================================================
 
 // Converts a regular or complex type to it's base type (e.g. float2 to float)
@@ -202,6 +211,16 @@ struct Buffers {
   Buffer<T> ap_mat;
   Buffer<T> scalar;
 };
+template <typename T>
+struct BuffersHost {
+  std::vector<T> x_vec;
+  std::vector<T> y_vec;
+  std::vector<T> a_mat;
+  std::vector<T> b_mat;
+  std::vector<T> c_mat;
+  std::vector<T> ap_mat;
+  std::vector<T> scalar;
+};
 
 // =================================================================================================
 
@@ -247,6 +266,18 @@ constexpr auto kTestDataUpperLimit = 2.0;
 // Populates a vector with random data
 template <typename T>
 void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
+
+// =================================================================================================
+
+// Copies buffers from the OpenCL device to the host
+template <typename T, typename U>
+void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names);
+
+// Copies buffers from the host to the OpenCL device
+template <typename T, typename U>
+void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names);
 
 // =================================================================================================
 

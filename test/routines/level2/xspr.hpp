@@ -45,6 +45,8 @@ class TestXspr {
             kArgAPOffset, kArgXOffset,
             kArgAlpha};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufMatAP, kBufVecX}; }
+  static std::vector<std::string> BuffersOut() { return {kBufMatAP}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
@@ -106,17 +108,12 @@ class TestXspr {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> ap_mat_cpu(args.ap_size, static_cast<T>(0));
-      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      buffers.ap_mat.Read(queue, args.ap_size, ap_mat_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXspr(convertToCBLAS(args.layout),
                 convertToCBLAS(args.triangle),
                 args.n, args.alpha,
-                x_vec_cpu, args.x_offset, args.x_inc,
-                ap_mat_cpu, args.ap_offset);
-      buffers.ap_mat.Write(queue, args.ap_size, ap_mat_cpu);
+                buffers_host.x_vec, args.x_offset, args.x_inc,
+                buffers_host.ap_mat, args.ap_offset);
       return StatusCode::kSuccess;
     }
   #endif

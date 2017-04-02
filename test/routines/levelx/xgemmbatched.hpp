@@ -45,6 +45,8 @@ class TestXgemmBatched {
             kArgAOffset, kArgBOffset, kArgCOffset,
             kArgBatchCount, kArgAlpha, kArgBeta};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB, kBufMatC}; }
+  static std::vector<std::string> BuffersOut() { return {kBufMatC}; }
 
   // Helper for the sizes per batch
   static size_t PerBatchSizeA(const Arguments<T> &args) {
@@ -152,23 +154,16 @@ class TestXgemmBatched {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> a_mat_cpu(args.a_size, static_cast<T>(0));
-      std::vector<T> b_mat_cpu(args.b_size, static_cast<T>(0));
-      std::vector<T> c_mat_cpu(args.c_size, static_cast<T>(0));
-      buffers.a_mat.Read(queue, args.a_size, a_mat_cpu);
-      buffers.b_mat.Read(queue, args.b_size, b_mat_cpu);
-      buffers.c_mat.Read(queue, args.c_size, c_mat_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
         cblasXgemm(convertToCBLAS(args.layout),
                    convertToCBLAS(args.a_transpose),
                    convertToCBLAS(args.b_transpose),
                    args.m, args.n, args.k, args.alphas[batch],
-                   a_mat_cpu, args.a_offsets[batch], args.a_ld,
-                   b_mat_cpu, args.b_offsets[batch], args.b_ld, args.betas[batch],
-                   c_mat_cpu, args.c_offsets[batch], args.c_ld);
+                   buffers_host.a_mat, args.a_offsets[batch], args.a_ld,
+                   buffers_host.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
+                   buffers_host.c_mat, args.c_offsets[batch], args.c_ld);
       }
-      buffers.c_mat.Write(queue, args.c_size, c_mat_cpu);
       return StatusCode::kSuccess;
     }
   #endif
