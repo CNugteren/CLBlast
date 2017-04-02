@@ -16,17 +16,8 @@
 #ifndef CLBLAST_TEST_ROUTINES_XTRSM_H_
 #define CLBLAST_TEST_ROUTINES_XTRSM_H_
 
-#include <vector>
-#include <string>
-
+#include "test/routines/common.hpp"
 #include "test/routines/level3/xtrsm_data.hpp"
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
 
 namespace clblast {
 // =================================================================================================

@@ -16,17 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XAXPYBATCHED_H_
 #define CLBLAST_TEST_ROUTINES_XAXPYBATCHED_H_
 
-#include <vector>
-#include <string>
-
-#include "utilities/utilities.hpp"
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
