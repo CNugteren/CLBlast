@@ -130,17 +130,23 @@ if(TUNERS)
 endif()
 
 # Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
-# and "FindCBLAS.cmake" are included.
+# and "FindCBLAS.cmake" are included, "FindCUDA.cmake" is provided by CMake.
 if(CLIENTS OR TESTS)
   find_package(clBLAS)
   find_package(CBLAS)
-  if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
+  find_package(CUDA QUIET)  # for cuBLAS
+  if(CUDA_FOUND)
+    message(STATUS "CUDA and cuBLAS found")
+  else()
+    message(STATUS "Could not find cuBLAS as a reference")
+  endif()
+  if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND AND NOT CUDA_FOUND)
     if(TESTS)
-      message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
+      message(STATUS "Could NOT find clBLAS nor a CPU BLAS nor cuBLAS, disabling the compilation of the tests")
       set(TESTS OFF)
     endif()
     if(CLIENTS)
-      message(STATUS "Could NOT find clBLAS nor a CPU BLAS, head-to-head performance comparison not supported in the clients")
+      message(STATUS "Could NOT find clBLAS nor a CPU BLAS nor cuBLAS, head-to-head performance comparison not supported in the clients")
     endif()
   endif()
 endif()
@@ -320,13 +326,22 @@ if(CLIENTS OR TESTS)
       add_definitions(" -DCLBLAST_REF_CBLAS")
     endif()
   endif()
+  if(CUDA_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CUDA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES})
+    if(MSVC)
+      add_definitions(" /DCLBLAST_REF_CUBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CUBLAS")
+    endif()
+  endif()
 
 endif()
 
 # ==================================================================================================
 
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
-# library, either clBLAS or a CPU BLAS.
+# library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
 
   # Visual Studio requires the sources of non-exported objects/libraries
@@ -372,7 +387,7 @@ endif()
 # ==================================================================================================
 
 # Section for the correctness tests. Note that these tests require the presence of clBLAS and/or a
-# CPU BLAS library to act as a reference.
+# CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
 

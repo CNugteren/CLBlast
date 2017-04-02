@@ -30,13 +30,14 @@ template <typename T, typename U> const int Client<T,U>::kSeed = 42; // fixed se
 template <typename T, typename U>
 Client<T,U>::Client(const Routine run_routine,
                     const Reference1 run_reference1, const Reference2 run_reference2,
-                    const std::vector<std::string> &options,
+                    const Reference3 run_reference3, const std::vector<std::string> &options,
                     const std::vector<std::string> &buffers_in,
                     const std::vector<std::string> &buffers_out,
                     const GetMetric get_flops, const GetMetric get_bytes):
   run_routine_(run_routine),
   run_reference1_(run_reference1),
   run_reference2_(run_reference2),
+  run_reference3_(run_reference3),
   options_(options),
   buffers_in_(buffers_in),
   buffers_out_(buffers_out),
@@ -119,6 +120,11 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
   #else
     args.compare_cblas = 0;
   #endif
+  #ifdef CLBLAST_REF_CUBLAS
+    args.compare_cublas  = GetArgument(command_line_args, help, kArgComparecublas, 1);
+  #else
+    args.compare_cublas = 0;
+  #endif
   args.step           = GetArgument(command_line_args, help, kArgStepSize, size_t{1});
   args.num_steps      = GetArgument(command_line_args, help, kArgNumSteps, size_t{0});
   args.num_runs       = GetArgument(command_line_args, help, kArgNumRuns, size_t{10});
@@ -133,24 +139,26 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
 
   // Comparison against a non-BLAS routine is not supported
   if (level == 4) { // level-4 == level-X
-    if (args.compare_clblas != 0 || args.compare_cblas != 0) {
+    if (args.compare_clblas != 0 || args.compare_cblas != 0 || args.compare_cublas != 0) {
       if (!args.silent) {
-        fprintf(stdout, "* Disabling clBLAS and CPU BLAS comparisons for this non-BLAS routine\n\n");
+        fprintf(stdout, "* Disabling clBLAS/CBLAS/cuBLAS comparisons for this non-BLAS routine\n\n");
       }
     }
     args.compare_clblas = 0;
     args.compare_cblas = 0;
+    args.compare_cublas = 0;
   }
 
-  // Comparison against clBLAS or a CPU BLAS library is not supported in case of half-precision
+  // Comparison against other BLAS libraries is not supported in case of half-precision
   if (args.precision == Precision::kHalf) {
-    if (args.compare_clblas != 0 || args.compare_cblas != 0) {
+    if (args.compare_clblas != 0 || args.compare_cblas != 0 || args.compare_cublas != 0) {
       if (!args.silent) {
-        fprintf(stdout, "* Disabling clBLAS and CPU BLAS comparisons for half-precision\n\n");
+        fprintf(stdout, "* Disabling clBLAS/CBLAS/cuBLAS comparisons for half-precision\n\n");
       }
     }
     args.compare_clblas = 0;
     args.compare_cblas = 0;
+    args.compare_cublas = 0;
   }
 
   // Returns the arguments
@@ -173,6 +181,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   auto queue = Queue(context, device);
   #ifdef CLBLAST_REF_CLBLAS
     if (args.compare_clblas) { clblasSetup(); }
+  #endif
+  #ifdef CLBLAST_REF_CUBLAS
+    cudaSetDevice(static_cast<int>(args.device_id));
   #endif
 
   // Iterates over all "num_step" values jumping by "step" each time
@@ -231,6 +242,16 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
       auto ms_cblas = TimedExecution(args.num_runs, args, buffers_host, queue, run_reference2_, "CPU BLAS");
       HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
       timings.push_back(std::pair<std::string, double>("CPU BLAS", ms_cblas));
+    }
+    if (args.compare_cublas) {
+      auto buffers_host = BuffersHost<T>();
+      auto buffers_cuda = BuffersCUDA<T>();
+      DeviceToHost(args, buffers, buffers_host, queue, buffers_in_);
+      HostToCUDA(args, buffers_cuda, buffers_host, buffers_in_);
+      auto ms_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
+      CUDAToHost(args, buffers_cuda, buffers_host, buffers_out_);
+      HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
+      timings.push_back(std::pair<std::string, double>("cuBLAS", ms_cublas));
     }
 
     // Prints the performance of the tested libraries
@@ -307,6 +328,7 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
     fprintf(stdout, " | <--       CLBlast       -->");
     if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
     if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
+    if (args.compare_cublas) { fprintf(stdout, " | <--       cuBLAS        -->"); }
     fprintf(stdout, " |\n");
   }
 
@@ -315,6 +337,7 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
   if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
   if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }
+  if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_4", "GFLOPS_4", "GBs_4"); }
   fprintf(stdout, "\n");
 }
 

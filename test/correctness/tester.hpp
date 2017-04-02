@@ -113,6 +113,7 @@ class Tester {
   // Testing against reference implementations
   int compare_cblas_;
   int compare_clblas_;
+  int compare_cublas_;
 
  private:
 

@@ -116,23 +116,37 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
     tests_failed_{0} {
   options_ = options;
 
+  // Determines which reference is the default
+  auto default_clblas = 0;
+  auto default_cblas = 0;
+  auto default_cublas = 0;
+  #if defined(CLBLAST_REF_CBLAS)
+    default_cblas = 1;
+  #elif defined(CLBLAST_REF_CLBLAS)
+    default_clblas = 1;
+  #elif defined(CLBLAST_REF_CUBLAS)
+    default_cublas = 1;
+  #endif
+
   // Determines which reference to test against
-  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 0);
-    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
-  #elif CLBLAST_REF_CLBLAS
-    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 1);
-    compare_cblas_ = 0;
-  #elif CLBLAST_REF_CBLAS
-    compare_clblas_ = 0;
-    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
-  #else
-    compare_clblas_ = 0;
-    compare_cblas_ = 0;
+  compare_clblas_ = 0;
+  compare_cblas_ = 0;
+  compare_cublas_ = 0;
+  #if defined(CLBLAST_REF_CBLAS)
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, default_cblas);
+  #endif
+  #if defined(CLBLAST_REF_CLBLAS)
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, default_clblas);
+  #endif
+  #if defined(CLBLAST_REF_CUBLAS)
+    compare_cublas_  = GetArgument(arguments, help_, kArgComparecublas, default_cublas);
   #endif
 
   // Prints the help message (command-line arguments)
   if (!silent) { fprintf(stdout, "\n* %s\n", help_.c_str()); }
+
+  // Support for cuBLAS not available yet
+  if (compare_cublas_) { throw std::runtime_error("Cannot test against cuBLAS; not implemented yet"); }
 
   // Can only test against a single reference (not two, not zero)
   if (compare_clblas_ && compare_cblas_) {
