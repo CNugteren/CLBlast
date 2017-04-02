@@ -36,7 +36,7 @@ def run_benchmark(name, arguments_list, precision, num_runs, platform, device):
         # Sets the arguments
         constant_arguments = ["-warm_up", "-q", "-no_abbrv", "-cblas 0"]
         common_arguments = ["-precision %d" % precision, "-runs %d" % num_runs]
-        opencl_arguments = ["-platform %s" % platform, "-device %s" % device]
+        opencl_arguments = ["-platform %d" % platform, "-device %d" % device]
         all_arguments = opencl_arguments + common_arguments + constant_arguments
         for name, value in arguments.items():
             all_arguments.append("-" + name + " " + str(value))
@@ -64,14 +64,15 @@ def main(argv):
 
     # Parses the command-line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--benchmark", help="The benchmark to perform (choose from %s)" % EXPERIMENTS.keys())
-    parser.add_argument("-p", "--platform", help="The ID of the OpenCL platform to test on")
-    parser.add_argument("-d", "--device", help="The ID of the OpenCL device to test on")
+    parser.add_argument("-b", "--benchmark", required=True, help="The benchmark to perform (choose from %s)" % EXPERIMENTS.keys())
+    parser.add_argument("-p", "--platform", required=True, type=int, help="The ID of the OpenCL platform to test on")
+    parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
     parser.add_argument("-n", "--num_runs", type=int, default=10, help="The number of benchmark repeats for averaging")
     parser.add_argument("-x", "--precision", type=int, default=32,
                         help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
     parser.add_argument("-l", "--load_from_disk", action="store_true", help="Increase verbosity of the script")
     parser.add_argument("-t", "--plot_title", default=None, help="The title for the plots, defaults to benchmark name")
+    parser.add_argument("-z", "--tight_plot", action="store_true", help="Enables tight plot layout for in paper or presentation")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -96,10 +97,12 @@ def main(argv):
     else:
 
         # Runs all the individual benchmarks
+        print("[benchmark] Running on platform %d, device %d" % (cl_args.platform, cl_args.device))
         print("[benchmark] Running %d benchmarks for settings '%s'" % (len(benchmarks), cl_args.benchmark))
         results = {"label_names": experiment["label_names"], "num_rows": experiment["num_rows"],
                    "num_cols": experiment["num_cols"], "benchmarks": []}
         for benchmark in benchmarks:
+            print("[benchmark] Running benchmark '%s:%s'" % (benchmark["name"], benchmark["title"]))
             result = run_benchmark(benchmark["name"], benchmark["arguments"], cl_args.precision, cl_args.num_runs,
                                    cl_args.platform, cl_args.device)
             results["benchmarks"].append(result)
@@ -126,7 +129,7 @@ def main(argv):
     # Plots the graphs
     plot.plot_graphs(results["benchmarks"], pdf_file_name, results["num_rows"], results["num_cols"],
                      x_keys, y_keys, titles, x_labels, y_labels,
-                     label_names, cl_args.plot_title, cl_args.verbose)
+                     label_names, cl_args.plot_title, cl_args.tight_plot, cl_args.verbose)
 
     print("[benchmark] All done")
 
