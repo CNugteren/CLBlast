@@ -295,9 +295,6 @@ def performance_test(routine, level_string):
     result = ""
     result += "#include \"test/performance/client.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
-    result += "// Shortcuts to the clblast namespace" + NL
-    result += "using float2 = clblast::float2;" + NL
-    result += "using double2 = clblast::double2;" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);" + NL
@@ -324,9 +321,6 @@ def correctness_test(routine, level_string):
     result = ""
     result += "#include \"test/correctness/testblas.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
-    result += "// Shortcuts to the clblast namespace" + NL
-    result += "using float2 = clblast::float2;" + NL
-    result += "using double2 = clblast::double2;" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  auto errors = size_t{0};" + NL

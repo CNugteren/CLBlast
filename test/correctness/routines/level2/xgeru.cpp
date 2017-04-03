@@ -12,15 +12,11 @@
 #include "test/correctness/testblas.hpp"
 #include "test/routines/level2/xgeru.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
-  errors += clblast::RunTests<clblast::TestXgeru<float2>, float2, float2>(argc, argv, false, "CGERU");
-  errors += clblast::RunTests<clblast::TestXgeru<double2>, double2, double2>(argc, argv, true, "ZGERU");
+  errors += clblast::RunTests<clblast::TestXgeru<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, false, "CGERU");
+  errors += clblast::RunTests<clblast::TestXgeru<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZGERU");
   if (errors > 0) { return 1; } else { return 0; }
 }
 
