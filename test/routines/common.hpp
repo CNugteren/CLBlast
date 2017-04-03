@@ -25,6 +25,9 @@
 #ifdef CLBLAST_REF_CBLAS
   #include "test/wrapper_cblas.hpp"
 #endif
+#ifdef CLBLAST_REF_CUBLAS
+  #include "test/wrapper_cuda.hpp"
+#endif
 
 // =================================================================================================
 

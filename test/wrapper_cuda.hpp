@@ -22,7 +22,7 @@
 #include "utilities/utilities.hpp"
 
 #ifdef CLBLAST_REF_CUBLAS
-  #include <cuda.h>
+  #include <cuda_runtime.h>
   #include <cublas_v2.h>
 #endif
 
@@ -32,33 +32,33 @@ namespace clblast {
 // Copies data from the CUDA device to the host and frees-up the CUDA memory afterwards
 #ifdef CLBLAST_REF_CUBLAS
   template <typename T>
-  void CUDAToHost(const T* buffer_cuda, const std::vector<T> &buffer_host, const size_t size) {
+  void CUDAToHost(T* buffer_cuda, std::vector<T> &buffer_host, const size_t size) {
     cudaMemcpy(
-      std::reinterpret_cast<void*>(buffer_host.data()),
-      std::reinterpret_cast<void*>(buffer_cuda),
+      reinterpret_cast<void*>(buffer_host.data()),
+      reinterpret_cast<void*>(buffer_cuda),
       size*sizeof(T),
       cudaMemcpyDeviceToHost
     );
     cudaFree(buffer_cuda);
 }
 #else
-  template <typename T> void CUDAToHost(const T*, const std::vector<T>&, const size_t) { }
+  template <typename T> void CUDAToHost(T*, const std::vector<T>&, const size_t) { }
 #endif
 
 // Allocates space on the CUDA device and copies in data from the host
 #ifdef CLBLAST_REF_CUBLAS
   template <typename T>
-  void HostToCUDA(const T* buffer_cuda, const std::vector<T> &buffer_host, const size_t size) {
-    cudaMalloc(std::reinterpret_cast<void**>&buffer_cuda, size*sizeof(T));
+  void HostToCUDA(T* buffer_cuda, std::vector<T> &buffer_host, const size_t size) {
+    cudaMalloc(reinterpret_cast<void**>(&buffer_cuda), size*sizeof(T));
     cudaMemcpy(
-      std::reinterpret_cast<void*>(buffer_cuda),
-      std::reinterpret_cast<void*>(buffer_host.data()),
+      reinterpret_cast<void*>(buffer_cuda),
+      reinterpret_cast<void*>(buffer_host.data()),
       size*sizeof(T),
       cudaMemcpyHostToDevice
     );
   }
 #else
-  template <typename T> void HostToCUDA(const T*, const std::vector<T>&, const size_t) { }
+  template <typename T> void HostToCUDA(T*, const std::vector<T>&, const size_t) { }
 #endif
 
 // =================================================================================================
