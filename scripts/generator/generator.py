@@ -38,11 +38,12 @@ FILES = [
     "/src/clblast_c.cpp",
     "/test/wrapper_clblas.hpp",
     "/test/wrapper_cblas.hpp",
+    "/test/wrapper_cublas.hpp",
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [123, 76, 126, 23, 29, 41, 65, 32]
-FOOTER_LINES = [25, 138, 27, 38, 6, 6, 9, 2]
+HEADER_LINES = [123, 76, 126, 23, 29, 41, 29, 65, 32]
+FOOTER_LINES = [25, 138, 27, 38, 6, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
 
@@ -194,7 +195,7 @@ def main(argv):
         # Re-writes the body of the file
         with open(library_root + FILES[i], "w") as f:
             body = ""
-            levels = [1, 2, 3] if (i == 4 or i == 5) else [1, 2, 3, 4]
+            levels = [1, 2, 3] if (i == 4 or i == 5 or i == 6) else [1, 2, 3, 4]
             for level in levels:
                 body += cpp.LEVEL_SEPARATORS[level - 1] + "\n"
                 for routine in ROUTINES[level - 1]:
@@ -211,9 +212,11 @@ def main(argv):
                     if i == 5:
                         body += cpp.wrapper_cblas(routine)
                     if i == 6:
+                        body += cpp.wrapper_cublas(routine)
+                    if i == 7:
                         if not routine.batched:
                             body += cpp.clblast_netlib_c_h(routine)
-                    if i == 7:
+                    if i == 8:
                         if not routine.batched:
                             body += cpp.clblast_netlib_c_cc(routine)
             f.write("".join(file_header))

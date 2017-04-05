@@ -56,6 +56,19 @@ def option_to_cblas(x):
     }[x]
 
 
+def option_to_cublas(x):
+    """As above, but for clBLAS data-types"""
+    return {
+        'layout': "cublas_has_no_layout",
+        'a_transpose': "cublasOperation_t",
+        'b_transpose': "cublasOperation_t",
+        'ab_transpose': "cublasOperation_t",
+        'side': "cublasSideMode_t",
+        'triangle': "cublasFillMode_t",
+        'diagonal': "cublasDiagType_t",
+    }[x]
+
+
 def option_to_documentation(x):
     """Translates an option name to a documentation string"""
     return {
