@@ -87,6 +87,11 @@ class DataType:
         """Current type is of a non-standard type"""
         return self.buffer_type in [D_HALF, D_FLOAT2, D_DOUBLE2]
 
+    def name_cublas(self):
+        if "i" in self.name:
+            return "I" + self.name[1].lower()
+        return self.name
+
 
 # Regular data-types
 H = DataType("H", "H", D_HALF, [D_HALF] * 2 + [D_HALF_OPENCL] * 2, D_HALF)  # half (16)

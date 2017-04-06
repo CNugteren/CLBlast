@@ -304,8 +304,22 @@ def wrapper_cublas(routine):
             if flavour.precision_name in ["S", "D", "C", "Z"]:
                 indent = " " * (24 + routine.length())
                 arguments = routine.arguments_wrapper_cublas(flavour)
+
+                # Handles row-major
+                if routine.has_layout():
+                    result += "  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }" + NL
+
+                # Complex scalars
+                for scalar in routine.scalars:
+                    if flavour.is_complex(scalar):
+                        cuda_complex = "cuDoubleComplex" if flavour.precision_name == "Z" else "cuComplex"
+                        result += "  " + cuda_complex + " " + scalar + "_cuda;" + NL
+                        result += "  " + scalar + "_cuda.x = " + scalar + ".real();" + NL
+                        result += "  " + scalar + "_cuda.y = " + scalar + ".imag();" + NL
+
+                # Calls the cuBLAS routine
                 result += "  cublasHandle_t handle;" + NL
-                result += "  auto status = cublas" + flavour.name + routine.name + "(handle, "
+                result += "  auto status = cublas" + flavour.name_cublas() + routine.name + "(handle, "
                 result += ("," + NL + indent).join([a for a in arguments]) + ");" + NL
                 result += "  cublasDestroy(handle);" + NL
                 result += "  return status;"

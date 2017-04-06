@@ -197,6 +197,10 @@ class Routine:
         """Determines whether or not this routine has scalar arguments (alpha/beta)"""
         return self.scalars == []
 
+    def has_layout(self):
+        """Determines whether the layout is an argument"""
+        return "layout" in self.options
+
     def short_names(self):
         """Returns the upper-case names of these routines (all flavours)"""
         return "/".join([f.name + self.upper_name() for f in self.flavours])
@@ -339,10 +343,16 @@ class Routine:
             return [", ".join(a + c)]
         return []
 
-    def buffer_wrapper_cublas(self, name):
+    def buffer_wrapper_cublas(self, name, flavour):
         """As above but for cuBLAS the wrapper"""
+        prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = ["&" + name + "_buffer[" + name + "_offset]"]
+            if flavour.precision_name in ["C", "Z"]:
+                cuda_complex = "cuDoubleComplex" if flavour.precision_name == "Z" else "cuComplex"
+                a = ["reinterpret_cast<" + prefix + cuda_complex + "*>" +
+                     "(&" + name + "_buffer[" + name + "_offset])"]
+            else:
+                a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
             if name in ["x", "y"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
@@ -421,22 +431,20 @@ class Routine:
             return [name]
         return []
 
-    def scalar_use_wrapper_by_ref(self, name, flavour):
-        """As above, but for the cuBLAS wrapper"""
-        if name in self.scalars:
-            if name == "alpha":
-                return ["&" + flavour.use_alpha_opencl()]
-            elif name == "beta":
-                return ["&" + flavour.use_beta_opencl()]
-            return [name]
-        return []
-
     def scalar_use_wrapper_cblas(self, name, flavour):
         """As above, but for the CBLAS wrapper"""
         if name in self.scalars:
             if flavour.is_complex(name):
                 return [name + "_array.data()"]
             return [name]
+        return []
+
+    def scalar_use_wrapper_cublas(self, name, flavour):
+        """As above, but for the cuBLAS wrapper"""
+        if name in self.scalars:
+            if flavour.is_complex(name):
+                return ["&" + name + "_cuda"]
+            return ["&" + name]
         return []
 
     def scalar_def(self, name, flavour):
@@ -532,6 +540,15 @@ class Routine:
         """Retrieves a list of options"""
         if self.options:
             return [", ".join(self.options)]
+        return []
+
+    def options_list_no_layout(self):
+        """Retrieves a list of options"""
+        options = self.options[:]
+        if "layout" in options:
+            options.remove("layout")
+        if options:
+            return [", ".join(options)]
         return []
 
     def options_cast(self, indent):
@@ -670,14 +687,14 @@ class Routine:
 
     def arguments_wrapper_cublas(self, flavour):
         """As above, but for the cuBLAS wrapper"""
-        return (self.options_list() + self.sizes_list_as_int() +
-                list(chain(*[self.buffer_wrapper_cublas(b) for b in self.scalar_buffers_first()])) +
-                self.scalar_use_wrapper_by_ref("alpha", flavour) +
-                list(chain(*[self.buffer_wrapper_cublas(b) for b in self.buffers_first()])) +
-                self.scalar_use_wrapper_by_ref("beta", flavour) +
-                list(chain(*[self.buffer_wrapper_cublas(b) for b in self.buffers_second()])) +
-                list(chain(*[self.buffer_wrapper_cublas(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_use_wrapper_by_ref(s, flavour) for s in self.other_scalars()])))
+        return (self.options_list_no_layout() + self.sizes_list_as_int() +
+                self.scalar_use_wrapper_cublas("alpha", flavour) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.buffers_first()])) +
+                self.scalar_use_wrapper_cublas("beta", flavour) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.scalar_buffers_first()])) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar_use_wrapper_cublas(s, flavour) for s in self.other_scalars()])))
 
     def arguments_def(self, flavour):
         """Retrieves a combination of all the argument definitions"""

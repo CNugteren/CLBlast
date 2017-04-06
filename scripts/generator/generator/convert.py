@@ -59,7 +59,7 @@ def option_to_cblas(x):
 def option_to_cublas(x):
     """As above, but for clBLAS data-types"""
     return {
-        'layout': "cublas_has_no_layout",
+        'layout': "Layout",
         'a_transpose': "cublasOperation_t",
         'b_transpose': "cublasOperation_t",
         'ab_transpose': "cublasOperation_t",

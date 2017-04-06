@@ -113,8 +113,8 @@ cublasStatus_t cublasXrot(const size_t n,
   auto status = cublasSrot(handle, static_cast<int>(n),
                            &x_buffer[x_offset], static_cast<int>(x_inc),
                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                           cos,
-                           sin);
+                           &cos,
+                           &sin);
   cublasDestroy(handle);
   return status;
 }
@@ -127,8 +127,8 @@ cublasStatus_t cublasXrot(const size_t n,
   auto status = cublasDrot(handle, static_cast<int>(n),
                            &x_buffer[x_offset], static_cast<int>(x_inc),
                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                           cos,
-                           sin);
+                           &cos,
+                           &sin);
   cublasDestroy(handle);
   return status;
 }
@@ -199,8 +199,8 @@ cublasStatus_t cublasXswap<float2>(const size_t n,
                                    float2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasCswap(handle, static_cast<int>(n),
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -210,8 +210,8 @@ cublasStatus_t cublasXswap<double2>(const size_t n,
                                     double2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasZswap(handle, static_cast<int>(n),
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -246,20 +246,26 @@ cublasStatus_t cublasXscal(const size_t n,
 cublasStatus_t cublasXscal(const size_t n,
                            const float2 alpha,
                            float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
   auto status = cublasCscal(handle, static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 cublasStatus_t cublasXscal(const size_t n,
                            const double2 alpha,
                            double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
   auto status = cublasZscal(handle, static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -302,8 +308,8 @@ cublasStatus_t cublasXcopy<float2>(const size_t n,
                                    float2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasCcopy(handle, static_cast<int>(n),
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -313,8 +319,8 @@ cublasStatus_t cublasXcopy<double2>(const size_t n,
                                     double2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasZcopy(handle, static_cast<int>(n),
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -354,11 +360,14 @@ cublasStatus_t cublasXaxpy(const size_t n,
                            const float2 alpha,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
   auto status = cublasCaxpy(handle, static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -366,11 +375,14 @@ cublasStatus_t cublasXaxpy(const size_t n,
                            const double2 alpha,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
   auto status = cublasZaxpy(handle, static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
@@ -394,9 +406,9 @@ cublasStatus_t cublasXdot<float>(const size_t n,
                                  const float* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasSdot(handle, static_cast<int>(n),
-                           &dot_buffer[dot_offset],
                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &y_buffer[y_offset], static_cast<int>(y_inc));
+                           &y_buffer[y_offset], static_cast<int>(y_inc),
+                           &dot_buffer[dot_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -407,9 +419,9 @@ cublasStatus_t cublasXdot<double>(const size_t n,
                                   const double* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasDdot(handle, static_cast<int>(n),
-                           &dot_buffer[dot_offset],
                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &y_buffer[y_offset], static_cast<int>(y_inc));
+                           &y_buffer[y_offset], static_cast<int>(y_inc),
+                           &dot_buffer[dot_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -434,9 +446,9 @@ cublasStatus_t cublasXdotu<float2>(const size_t n,
                                    const float2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasCdotu(handle, static_cast<int>(n),
-                            &dot_buffer[dot_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&dot_buffer[dot_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -447,9 +459,9 @@ cublasStatus_t cublasXdotu<double2>(const size_t n,
                                     const double2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasZdotu(handle, static_cast<int>(n),
-                            &dot_buffer[dot_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&dot_buffer[dot_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -467,9 +479,9 @@ cublasStatus_t cublasXdotc<float2>(const size_t n,
                                    const float2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasCdotc(handle, static_cast<int>(n),
-                            &dot_buffer[dot_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&dot_buffer[dot_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -480,9 +492,9 @@ cublasStatus_t cublasXdotc<double2>(const size_t n,
                                     const double2* y_buffer, const size_t y_offset, const size_t y_inc) {
   cublasHandle_t handle;
   auto status = cublasZdotc(handle, static_cast<int>(n),
-                            &dot_buffer[dot_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&dot_buffer[dot_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -498,8 +510,8 @@ cublasStatus_t cublasXnrm2<float>(const size_t n,
                                   const float* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasSnrm2(handle, static_cast<int>(n),
-                            &nrm2_buffer[nrm2_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &nrm2_buffer[nrm2_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -509,8 +521,8 @@ cublasStatus_t cublasXnrm2<double>(const size_t n,
                                    const double* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasDnrm2(handle, static_cast<int>(n),
-                            &nrm2_buffer[nrm2_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &nrm2_buffer[nrm2_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -520,8 +532,8 @@ cublasStatus_t cublasXnrm2<float2>(const size_t n,
                                    const float2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasScnrm2(handle, static_cast<int>(n),
-                            &nrm2_buffer[nrm2_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&nrm2_buffer[nrm2_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -531,8 +543,8 @@ cublasStatus_t cublasXnrm2<double2>(const size_t n,
                                     const double2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasDznrm2(handle, static_cast<int>(n),
-                            &nrm2_buffer[nrm2_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&nrm2_buffer[nrm2_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -554,8 +566,8 @@ cublasStatus_t cublasXasum<float>(const size_t n,
                                   const float* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasSasum(handle, static_cast<int>(n),
-                            &asum_buffer[asum_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &asum_buffer[asum_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -565,8 +577,8 @@ cublasStatus_t cublasXasum<double>(const size_t n,
                                    const double* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasDasum(handle, static_cast<int>(n),
-                            &asum_buffer[asum_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &asum_buffer[asum_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -576,8 +588,8 @@ cublasStatus_t cublasXasum<float2>(const size_t n,
                                    const float2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasScasum(handle, static_cast<int>(n),
-                            &asum_buffer[asum_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&asum_buffer[asum_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -587,8 +599,8 @@ cublasStatus_t cublasXasum<double2>(const size_t n,
                                     const double2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
   auto status = cublasDzasum(handle, static_cast<int>(n),
-                            &asum_buffer[asum_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&asum_buffer[asum_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -609,9 +621,9 @@ cublasStatus_t cublasXamax<float>(const size_t n,
                                   float* imax_buffer, const size_t imax_offset,
                                   const float* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
-  auto status = cublasiSamax(handle, static_cast<int>(n),
-                            &imax_buffer[imax_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+  auto status = cublasIsamax(handle, static_cast<int>(n),
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &imax_buffer[imax_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -620,9 +632,9 @@ cublasStatus_t cublasXamax<double>(const size_t n,
                                    double* imax_buffer, const size_t imax_offset,
                                    const double* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
-  auto status = cublasiDamax(handle, static_cast<int>(n),
-                            &imax_buffer[imax_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+  auto status = cublasIdamax(handle, static_cast<int>(n),
+                            &x_buffer[x_offset], static_cast<int>(x_inc),
+                            &imax_buffer[imax_offset]);
   cublasDestroy(handle);
   return status;
 }
@@ -631,9 +643,9 @@ cublasStatus_t cublasXamax<float2>(const size_t n,
                                    float2* imax_buffer, const size_t imax_offset,
                                    const float2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
-  auto status = cublasiCamax(handle, static_cast<int>(n),
-                            &imax_buffer[imax_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+  auto status = cublasIcamax(handle, static_cast<int>(n),
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuComplex*>(&imax_buffer[imax_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -642,9 +654,9 @@ cublasStatus_t cublasXamax<double2>(const size_t n,
                                     double2* imax_buffer, const size_t imax_offset,
                                     const double2* x_buffer, const size_t x_offset, const size_t x_inc) {
   cublasHandle_t handle;
-  auto status = cublasiZamax(handle, static_cast<int>(n),
-                            &imax_buffer[imax_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+  auto status = cublasIzamax(handle, static_cast<int>(n),
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&imax_buffer[imax_offset]));
   cublasDestroy(handle);
   return status;
 }
@@ -660,15 +672,16 @@ cublasStatus_t cublasXamax<half>(const size_t n,
 // =================================================================================================
 
 // Forwards the cuBLAS calls for SGEMV/DGEMV/CGEMV/ZGEMV
-cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgemv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float beta,
                            float* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSgemv(handle, layout, a_transpose,
+  auto status = cublasSgemv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -678,15 +691,16 @@ cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgemv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double beta,
                            double* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDgemv(handle, layout, a_transpose,
+  auto status = cublasDgemv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -696,43 +710,57 @@ cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgemv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2 beta,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCgemv(handle, layout, a_transpose,
+  auto status = cublasCgemv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgemv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2 beta,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZgemv(handle, layout, a_transpose,
+  auto status = cublasZgemv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgemv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -743,15 +771,16 @@ cublasStatus_t cublasXgemv(const cublas_has_no_layout layout, const cublasOperat
 }
 
 // Forwards the cuBLAS calls for SGBMV/DGBMV/CGBMV/ZGBMV
-cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgbmv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float beta,
                            float* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSgbmv(handle, layout, a_transpose,
+  auto status = cublasSgbmv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -761,15 +790,16 @@ cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgbmv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double beta,
                            double* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDgbmv(handle, layout, a_transpose,
+  auto status = cublasDgbmv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -779,43 +809,57 @@ cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgbmv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2 beta,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCgbmv(handle, layout, a_transpose,
+  auto status = cublasCgbmv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgbmv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2 beta,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZgbmv(handle, layout, a_transpose,
+  auto status = cublasZgbmv(handle, a_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXgbmv(const Layout layout, const cublasOperation_t a_transpose,
                            const size_t m, const size_t n, const size_t kl, const size_t ku,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -826,129 +870,172 @@ cublasStatus_t cublasXgbmv(const cublas_has_no_layout layout, const cublasOperat
 }
 
 // Forwards the cuBLAS calls for CHEMV/ZHEMV
-cublasStatus_t cublasXhemv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhemv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2 beta,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasChemv(handle, layout, triangle,
+  auto status = cublasChemv(handle, triangle,
                             static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhemv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhemv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2 beta,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZhemv(handle, layout, triangle,
+  auto status = cublasZhemv(handle, triangle,
                             static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHBMV/ZHBMV
-cublasStatus_t cublasXhbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhbmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n, const size_t k,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2 beta,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasChbmv(handle, layout, triangle,
+  auto status = cublasChbmv(handle, triangle,
                             static_cast<int>(n), static_cast<int>(k),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhbmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n, const size_t k,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2 beta,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZhbmv(handle, layout, triangle,
+  auto status = cublasZhbmv(handle, triangle,
                             static_cast<int>(n), static_cast<int>(k),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHPMV/ZHPMV
-cublasStatus_t cublasXhpmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float2 alpha,
                            const float2* ap_buffer, const size_t ap_offset,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2 beta,
                            float2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasChpmv(handle, layout, triangle,
+  auto status = cublasChpmv(handle, triangle,
                             static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhpmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double2 alpha,
                            const double2* ap_buffer, const size_t ap_offset,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2 beta,
                            double2* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZhpmv(handle, layout, triangle,
+  auto status = cublasZhpmv(handle, triangle,
                             static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &y_buffer[y_offset], static_cast<int>(y_inc));
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for SSYMV/DSYMV
-cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float beta,
                            float* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsymv(handle, layout, triangle,
+  auto status = cublasSsymv(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -958,15 +1045,16 @@ cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double beta,
                            double* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsymv(handle, layout, triangle,
+  auto status = cublasDsymv(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -976,7 +1064,7 @@ cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -987,15 +1075,16 @@ cublasStatus_t cublasXsymv(const cublas_has_no_layout layout, const cublasFillMo
 }
 
 // Forwards the cuBLAS calls for SSBMV/DSBMV
-cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsbmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n, const size_t k,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float beta,
                            float* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsbmv(handle, layout, triangle,
+  auto status = cublasSsbmv(handle, triangle,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1005,15 +1094,16 @@ cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsbmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n, const size_t k,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double beta,
                            double* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsbmv(handle, layout, triangle,
+  auto status = cublasDsbmv(handle, triangle,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1023,7 +1113,7 @@ cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsbmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n, const size_t k,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -1034,15 +1124,16 @@ cublasStatus_t cublasXsbmv(const cublas_has_no_layout layout, const cublasFillMo
 }
 
 // Forwards the cuBLAS calls for SSPMV/DSPMV
-cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float alpha,
                            const float* ap_buffer, const size_t ap_offset,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float beta,
                            float* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSspmv(handle, layout, triangle,
+  auto status = cublasSspmv(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &ap_buffer[ap_offset],
@@ -1052,15 +1143,16 @@ cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double alpha,
                            const double* ap_buffer, const size_t ap_offset,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double beta,
                            double* y_buffer, const size_t y_offset, const size_t y_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDspmv(handle, layout, triangle,
+  auto status = cublasDspmv(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &ap_buffer[ap_offset],
@@ -1070,7 +1162,7 @@ cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspmv(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const half alpha,
                            const half* ap_buffer, const size_t ap_offset,
@@ -1082,17 +1174,18 @@ cublasStatus_t cublasXspmv(const cublas_has_no_layout layout, const cublasFillMo
 
 // Forwards the cuBLAS calls for STRMV/DTRMV/CTRMV/ZTRMV
 template <typename T>
-cublasStatus_t cublasXtrmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n,
                            const T* a_buffer, const size_t a_offset, const size_t a_ld,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtrmv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n,
                                   const float* a_buffer, const size_t a_offset, const size_t a_ld,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStrmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStrmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1100,12 +1193,13 @@ cublasStatus_t cublasXtrmv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtrmv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const double* a_buffer, const size_t a_offset, const size_t a_ld,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtrmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtrmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1113,33 +1207,35 @@ cublasStatus_t cublasXtrmv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtrmv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtrmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtrmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtrmv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n,
                                     const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtrmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtrmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtrmv<half>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmv<half>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                  const size_t n,
                                  const half* a_buffer, const size_t a_offset, const size_t a_ld,
                                  half* x_buffer, const size_t x_offset, const size_t x_inc) {
@@ -1148,17 +1244,18 @@ cublasStatus_t cublasXtrmv<half>(const cublas_has_no_layout layout, const cublas
 
 // Forwards the cuBLAS calls for STBMV/DTBMV/CTBMV/ZTBMV
 template <typename T>
-cublasStatus_t cublasXtbmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n, const size_t k,
                            const T* a_buffer, const size_t a_offset, const size_t a_ld,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtbmv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n, const size_t k,
                                   const float* a_buffer, const size_t a_offset, const size_t a_ld,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStbmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStbmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1166,12 +1263,13 @@ cublasStatus_t cublasXtbmv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtbmv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n, const size_t k,
                                    const double* a_buffer, const size_t a_offset, const size_t a_ld,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtbmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtbmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1179,33 +1277,35 @@ cublasStatus_t cublasXtbmv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtbmv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n, const size_t k,
                                    const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtbmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtbmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtbmv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n, const size_t k,
                                     const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtbmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtbmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtbmv<half>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbmv<half>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                  const size_t n, const size_t k,
                                  const half* a_buffer, const size_t a_offset, const size_t a_ld,
                                  half* x_buffer, const size_t x_offset, const size_t x_inc) {
@@ -1214,17 +1314,18 @@ cublasStatus_t cublasXtbmv<half>(const cublas_has_no_layout layout, const cublas
 
 // Forwards the cuBLAS calls for STPMV/DTPMV/CTPMV/ZTPMV
 template <typename T>
-cublasStatus_t cublasXtpmv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n,
                            const T* ap_buffer, const size_t ap_offset,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtpmv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n,
                                   const float* ap_buffer, const size_t ap_offset,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStpmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStpmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &ap_buffer[ap_offset],
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1232,12 +1333,13 @@ cublasStatus_t cublasXtpmv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtpmv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const double* ap_buffer, const size_t ap_offset,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtpmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtpmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &ap_buffer[ap_offset],
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1245,33 +1347,35 @@ cublasStatus_t cublasXtpmv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtpmv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const float2* ap_buffer, const size_t ap_offset,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtpmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtpmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtpmv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n,
                                     const double2* ap_buffer, const size_t ap_offset,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtpmv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtpmv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtpmv<half>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpmv<half>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                  const size_t n,
                                  const half* ap_buffer, const size_t ap_offset,
                                  half* x_buffer, const size_t x_offset, const size_t x_inc) {
@@ -1280,17 +1384,18 @@ cublasStatus_t cublasXtpmv<half>(const cublas_has_no_layout layout, const cublas
 
 // Forwards the cuBLAS calls for STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
-cublasStatus_t cublasXtrsv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n,
                            const T* a_buffer, const size_t a_offset, const size_t a_ld,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtrsv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n,
                                   const float* a_buffer, const size_t a_offset, const size_t a_ld,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStrsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStrsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1298,12 +1403,13 @@ cublasStatus_t cublasXtrsv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtrsv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const double* a_buffer, const size_t a_offset, const size_t a_ld,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtrsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtrsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1311,45 +1417,48 @@ cublasStatus_t cublasXtrsv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtrsv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtrsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtrsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtrsv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n,
                                     const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtrsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtrsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for STBSV/DTBSV/CTBSV/ZTBSV
 template <typename T>
-cublasStatus_t cublasXtbsv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbsv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n, const size_t k,
                            const T* a_buffer, const size_t a_offset, const size_t a_ld,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtbsv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbsv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n, const size_t k,
                                   const float* a_buffer, const size_t a_offset, const size_t a_ld,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStbsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStbsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1357,12 +1466,13 @@ cublasStatus_t cublasXtbsv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtbsv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbsv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n, const size_t k,
                                    const double* a_buffer, const size_t a_offset, const size_t a_ld,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtbsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtbsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
                             &a_buffer[a_offset], a_ld,
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1370,45 +1480,48 @@ cublasStatus_t cublasXtbsv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtbsv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbsv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n, const size_t k,
                                    const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtbsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtbsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtbsv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtbsv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n, const size_t k,
                                     const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtbsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtbsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n), static_cast<int>(k),
-                            &a_buffer[a_offset], a_ld,
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for STPSV/DTPSV/CTPSV/ZTPSV
 template <typename T>
-cublasStatus_t cublasXtpsv(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpsv(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t n,
                            const T* ap_buffer, const size_t ap_offset,
                            T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
-cublasStatus_t cublasXtpsv<float>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpsv<float>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                   const size_t n,
                                   const float* ap_buffer, const size_t ap_offset,
                                   float* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStpsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasStpsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &ap_buffer[ap_offset],
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1416,12 +1529,13 @@ cublasStatus_t cublasXtpsv<float>(const cublas_has_no_layout layout, const cubla
   return status;
 }
 template <>
-cublasStatus_t cublasXtpsv<double>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpsv<double>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const double* ap_buffer, const size_t ap_offset,
                                    double* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtpsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasDtpsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
                             &ap_buffer[ap_offset],
                             &x_buffer[x_offset], static_cast<int>(x_inc));
@@ -1429,42 +1543,44 @@ cublasStatus_t cublasXtpsv<double>(const cublas_has_no_layout layout, const cubl
   return status;
 }
 template <>
-cublasStatus_t cublasXtpsv<float2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpsv<float2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                    const size_t n,
                                    const float2* ap_buffer, const size_t ap_offset,
                                    float2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCtpsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasCtpsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 template <>
-cublasStatus_t cublasXtpsv<double2>(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtpsv<double2>(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                                     const size_t n,
                                     const double2* ap_buffer, const size_t ap_offset,
                                     double2* x_buffer, const size_t x_offset, const size_t x_inc) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZtpsv(handle, layout, triangle, a_transpose, diagonal,
+  auto status = cublasZtpsv(handle, triangle, a_transpose, diagonal,
                             static_cast<int>(n),
-                            &ap_buffer[ap_offset],
-                            &x_buffer[x_offset], static_cast<int>(x_inc));
+                            reinterpret_cast<const cuDoubleComplex*>(&ap_buffer[ap_offset]),
+                            reinterpret_cast<cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for SGER/DGER
-cublasStatus_t cublasXger(const cublas_has_no_layout layout,
+cublasStatus_t cublasXger(const Layout layout,
                           const size_t m, const size_t n,
                           const float alpha,
                           const float* x_buffer, const size_t x_offset, const size_t x_inc,
                           const float* y_buffer, const size_t y_offset, const size_t y_inc,
                           float* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSger(handle, layout,
-                           static_cast<int>(m), static_cast<int>(n),
+  auto status = cublasSger(handle, static_cast<int>(m), static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
                            &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1472,15 +1588,15 @@ cublasStatus_t cublasXger(const cublas_has_no_layout layout,
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXger(const cublas_has_no_layout layout,
+cublasStatus_t cublasXger(const Layout layout,
                           const size_t m, const size_t n,
                           const double alpha,
                           const double* x_buffer, const size_t x_offset, const size_t x_inc,
                           const double* y_buffer, const size_t y_offset, const size_t y_inc,
                           double* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDger(handle, layout,
-                           static_cast<int>(m), static_cast<int>(n),
+  auto status = cublasDger(handle, static_cast<int>(m), static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
                            &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1488,7 +1604,7 @@ cublasStatus_t cublasXger(const cublas_has_no_layout layout,
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXger(const cublas_has_no_layout layout,
+cublasStatus_t cublasXger(const Layout layout,
                           const size_t m, const size_t n,
                           const half alpha,
                           const half* x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1498,209 +1614,242 @@ cublasStatus_t cublasXger(const cublas_has_no_layout layout,
 }
 
 // Forwards the cuBLAS calls for CGERU/ZGERU
-cublasStatus_t cublasXgeru(const cublas_has_no_layout layout,
+cublasStatus_t cublasXgeru(const Layout layout,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2* y_buffer, const size_t y_offset, const size_t y_inc,
                            float2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCgeru(handle, layout,
-                            static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+  auto status = cublasCgeru(handle, static_cast<int>(m), static_cast<int>(n),
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgeru(const cublas_has_no_layout layout,
+cublasStatus_t cublasXgeru(const Layout layout,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2* y_buffer, const size_t y_offset, const size_t y_inc,
                            double2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZgeru(handle, layout,
-                            static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+  auto status = cublasZgeru(handle, static_cast<int>(m), static_cast<int>(n),
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CGERC/ZGERC
-cublasStatus_t cublasXgerc(const cublas_has_no_layout layout,
+cublasStatus_t cublasXgerc(const Layout layout,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2* y_buffer, const size_t y_offset, const size_t y_inc,
                            float2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCgerc(handle, layout,
-                            static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+  auto status = cublasCgerc(handle, static_cast<int>(m), static_cast<int>(n),
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgerc(const cublas_has_no_layout layout,
+cublasStatus_t cublasXgerc(const Layout layout,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2* y_buffer, const size_t y_offset, const size_t y_inc,
                            double2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZgerc(handle, layout,
-                            static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+  auto status = cublasZgerc(handle, static_cast<int>(m), static_cast<int>(n),
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHER/ZHER
-cublasStatus_t cublasXher(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXher(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const float alpha,
                           const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                           float2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCher(handle, layout, triangle,
+  auto status = cublasCher(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
-                           &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &a_buffer[a_offset], a_ld);
+                           reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                           reinterpret_cast<cuComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXher(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXher(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const double alpha,
                           const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                           double2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZher(handle, layout, triangle,
+  auto status = cublasZher(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
-                           &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &a_buffer[a_offset], a_ld);
+                           reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                           reinterpret_cast<cuDoubleComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHPR/ZHPR
-cublasStatus_t cublasXhpr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const float alpha,
                           const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                           float2* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasChpr(handle, layout, triangle,
+  auto status = cublasChpr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
-                           &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &ap_buffer[ap_offset]);
+                           reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                           reinterpret_cast<cuComplex*>(&ap_buffer[ap_offset]));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhpr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const double alpha,
                           const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                           double2* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZhpr(handle, layout, triangle,
+  auto status = cublasZhpr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
-                           &x_buffer[x_offset], static_cast<int>(x_inc),
-                           &ap_buffer[ap_offset]);
+                           reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                           reinterpret_cast<cuDoubleComplex*>(&ap_buffer[ap_offset]));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHER2/ZHER2
-cublasStatus_t cublasXher2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXher2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float2 alpha,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2* y_buffer, const size_t y_offset, const size_t y_inc,
                            float2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCher2(handle, layout, triangle,
+  auto status = cublasCher2(handle, triangle,
                             static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXher2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXher2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double2 alpha,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2* y_buffer, const size_t y_offset, const size_t y_inc,
                            double2* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZher2(handle, layout, triangle,
+  auto status = cublasZher2(handle, triangle,
                             static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &a_buffer[a_offset], a_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&a_buffer[a_offset]), a_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for CHPR2/ZHPR2
-cublasStatus_t cublasXhpr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float2 alpha,
                            const float2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float2* y_buffer, const size_t y_offset, const size_t y_inc,
                            float2* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasChpr2(handle, layout, triangle,
+  auto status = cublasChpr2(handle, triangle,
                             static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &ap_buffer[ap_offset]);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuComplex*>(&ap_buffer[ap_offset]));
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhpr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhpr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double2 alpha,
                            const double2* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double2* y_buffer, const size_t y_offset, const size_t y_inc,
                            double2* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZhpr2(handle, layout, triangle,
+  auto status = cublasZhpr2(handle, triangle,
                             static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &x_buffer[x_offset], static_cast<int>(x_inc),
-                            &y_buffer[y_offset], static_cast<int>(y_inc),
-                            &ap_buffer[ap_offset]);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
+                            reinterpret_cast<const cuDoubleComplex*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
+                            reinterpret_cast<cuDoubleComplex*>(&ap_buffer[ap_offset]));
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for SSYR/DSYR
-cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const float alpha,
                           const float* x_buffer, const size_t x_offset, const size_t x_inc,
                           float* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsyr(handle, layout, triangle,
+  auto status = cublasSsyr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1708,13 +1857,14 @@ cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMod
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const double alpha,
                           const double* x_buffer, const size_t x_offset, const size_t x_inc,
                           double* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsyr(handle, layout, triangle,
+  auto status = cublasDsyr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1722,7 +1872,7 @@ cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMod
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const half alpha,
                           const half* x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1731,13 +1881,14 @@ cublasStatus_t cublasXsyr(const cublas_has_no_layout layout, const cublasFillMod
 }
 
 // Forwards the cuBLAS calls for SSPR/DSPR
-cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const float alpha,
                           const float* x_buffer, const size_t x_offset, const size_t x_inc,
                           float* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSspr(handle, layout, triangle,
+  auto status = cublasSspr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1745,13 +1896,14 @@ cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMod
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const double alpha,
                           const double* x_buffer, const size_t x_offset, const size_t x_inc,
                           double* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDspr(handle, layout, triangle,
+  auto status = cublasDspr(handle, triangle,
                            static_cast<int>(n),
                            &alpha,
                            &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1759,7 +1911,7 @@ cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMod
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr(const Layout layout, const cublasFillMode_t triangle,
                           const size_t n,
                           const half alpha,
                           const half* x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1768,14 +1920,15 @@ cublasStatus_t cublasXspr(const cublas_has_no_layout layout, const cublasFillMod
 }
 
 // Forwards the cuBLAS calls for SSYR2/DSYR2
-cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float alpha,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float* y_buffer, const size_t y_offset, const size_t y_inc,
                            float* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsyr2(handle, layout, triangle,
+  auto status = cublasSsyr2(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1784,14 +1937,15 @@ cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double alpha,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double* y_buffer, const size_t y_offset, const size_t y_inc,
                            double* a_buffer, const size_t a_offset, const size_t a_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsyr2(handle, layout, triangle,
+  auto status = cublasDsyr2(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1800,7 +1954,7 @@ cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsyr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const half alpha,
                            const half* x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1810,14 +1964,15 @@ cublasStatus_t cublasXsyr2(const cublas_has_no_layout layout, const cublasFillMo
 }
 
 // Forwards the cuBLAS calls for SSPR2/DSPR2
-cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const float alpha,
                            const float* x_buffer, const size_t x_offset, const size_t x_inc,
                            const float* y_buffer, const size_t y_offset, const size_t y_inc,
                            float* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSspr2(handle, layout, triangle,
+  auto status = cublasSspr2(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1826,14 +1981,15 @@ cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const double alpha,
                            const double* x_buffer, const size_t x_offset, const size_t x_inc,
                            const double* y_buffer, const size_t y_offset, const size_t y_inc,
                            double* ap_buffer, const size_t ap_offset) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDspr2(handle, layout, triangle,
+  auto status = cublasDspr2(handle, triangle,
                             static_cast<int>(n),
                             &alpha,
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -1842,7 +1998,7 @@ cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMode_t triangle,
+cublasStatus_t cublasXspr2(const Layout layout, const cublasFillMode_t triangle,
                            const size_t n,
                            const half alpha,
                            const half* x_buffer, const size_t x_offset, const size_t x_inc,
@@ -1856,15 +2012,16 @@ cublasStatus_t cublasXspr2(const cublas_has_no_layout layout, const cublasFillMo
 // =================================================================================================
 
 // Forwards the cuBLAS calls for SGEMM/DGEMM/CGEMM/ZGEMM
-cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
+cublasStatus_t cublasXgemm(const Layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
                            const size_t m, const size_t n, const size_t k,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* b_buffer, const size_t b_offset, const size_t b_ld,
                            const float beta,
                            float* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSgemm(handle, layout, a_transpose, b_transpose,
+  auto status = cublasSgemm(handle, a_transpose, b_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1874,15 +2031,16 @@ cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
+cublasStatus_t cublasXgemm(const Layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
                            const size_t m, const size_t n, const size_t k,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* b_buffer, const size_t b_offset, const size_t b_ld,
                            const double beta,
                            double* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDgemm(handle, layout, a_transpose, b_transpose,
+  auto status = cublasDgemm(handle, a_transpose, b_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1892,43 +2050,57 @@ cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperat
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
+cublasStatus_t cublasXgemm(const Layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
                            const size_t m, const size_t n, const size_t k,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const float2 beta,
                            float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCgemm(handle, layout, a_transpose, b_transpose,
+  auto status = cublasCgemm(handle, a_transpose, b_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
+cublasStatus_t cublasXgemm(const Layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
                            const size_t m, const size_t n, const size_t k,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const double2 beta,
                            double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZgemm(handle, layout, a_transpose, b_transpose,
+  auto status = cublasZgemm(handle, a_transpose, b_transpose,
                             static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
+cublasStatus_t cublasXgemm(const Layout layout, const cublasOperation_t a_transpose, const cublasOperation_t b_transpose,
                            const size_t m, const size_t n, const size_t k,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -1939,15 +2111,16 @@ cublasStatus_t cublasXgemm(const cublas_has_no_layout layout, const cublasOperat
 }
 
 // Forwards the cuBLAS calls for SSYMM/DSYMM/CSYMM/ZSYMM
-cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float* b_buffer, const size_t b_offset, const size_t b_ld,
                            const float beta,
                            float* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsymm(handle, layout, side, triangle,
+  auto status = cublasSsymm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1957,15 +2130,16 @@ cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double* b_buffer, const size_t b_offset, const size_t b_ld,
                            const double beta,
                            double* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsymm(handle, layout, side, triangle,
+  auto status = cublasDsymm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -1975,43 +2149,57 @@ cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const float2 beta,
                            float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCsymm(handle, layout, side, triangle,
+  auto status = cublasCsymm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const double2 beta,
                            double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZsymm(handle, layout, side, triangle,
+  auto status = cublasZsymm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXsymm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -2022,52 +2210,67 @@ cublasStatus_t cublasXsymm(const cublas_has_no_layout layout, const cublasSideMo
 }
 
 // Forwards the cuBLAS calls for CHEMM/ZHEMM
-cublasStatus_t cublasXhemm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhemm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const float2 beta,
                            float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasChemm(handle, layout, side, triangle,
+  auto status = cublasChemm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXhemm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
+cublasStatus_t cublasXhemm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2* b_buffer, const size_t b_offset, const size_t b_ld,
                            const double2 beta,
                            double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZhemm(handle, layout, side, triangle,
+  auto status = cublasZhemm(handle, side, triangle,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld,
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&b_buffer[b_offset]), b_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for SSYRK/DSYRK/CSYRK/ZSYRK
-cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXsyrk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float beta,
                            float* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsyrk(handle, layout, triangle, a_transpose,
+  auto status = cublasSsyrk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2076,14 +2279,15 @@ cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXsyrk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double beta,
                            double* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsyrk(handle, layout, triangle, a_transpose,
+  auto status = cublasDsyrk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2092,39 +2296,53 @@ cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXsyrk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float2 beta,
                            float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCsyrk(handle, layout, triangle, a_transpose,
+  auto status = cublasCsyrk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &cl_float2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXsyrk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double2 beta,
                            double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZsyrk(handle, layout, triangle, a_transpose,
+  auto status = cublasZsyrk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &cl_double2{{beta.real(), beta.imag()}},
-                            &c_buffer[c_offset], c_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            &beta_cuda,
+                            reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXsyrk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -2134,49 +2352,52 @@ cublasStatus_t cublasXsyrk(const cublas_has_no_layout layout, const cublasFillMo
 }
 
 // Forwards the cuBLAS calls for CHERK/ZHERK
-cublasStatus_t cublasXherk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXherk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const float alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const float beta,
                            float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasCherk(handle, layout, triangle, a_transpose,
+  auto status = cublasCherk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
-                            &a_buffer[a_offset], a_ld,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
                             &beta,
-                            &c_buffer[c_offset], c_ld);
+                            reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXherk(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
+cublasStatus_t cublasXherk(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t a_transpose,
                            const size_t n, const size_t k,
                            const double alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            const double beta,
                            double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasZherk(handle, layout, triangle, a_transpose,
+  auto status = cublasZherk(handle, triangle, a_transpose,
                             static_cast<int>(n), static_cast<int>(k),
                             &alpha,
-                            &a_buffer[a_offset], a_ld,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
                             &beta,
-                            &c_buffer[c_offset], c_ld);
+                            reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for SSYR2K/DSYR2K/CSYR2K/ZSYR2K
-cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXsyr2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const float alpha,
                             const float* a_buffer, const size_t a_offset, const size_t a_ld,
                             const float* b_buffer, const size_t b_offset, const size_t b_ld,
                             const float beta,
                             float* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasSsyr2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasSsyr2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
                              &alpha,
                              &a_buffer[a_offset], a_ld,
@@ -2186,15 +2407,16 @@ cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillM
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXsyr2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const double alpha,
                             const double* a_buffer, const size_t a_offset, const size_t a_ld,
                             const double* b_buffer, const size_t b_offset, const size_t b_ld,
                             const double beta,
                             double* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDsyr2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasDsyr2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
                              &alpha,
                              &a_buffer[a_offset], a_ld,
@@ -2204,43 +2426,57 @@ cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillM
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXsyr2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const float2 alpha,
                             const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                             const float2* b_buffer, const size_t b_offset, const size_t b_ld,
                             const float2 beta,
                             float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasCsyr2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasCsyr2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
-                             &cl_float2{{alpha.real(), alpha.imag()}},
-                             &a_buffer[a_offset], a_ld,
-                             &b_buffer[b_offset], b_ld,
-                             &cl_float2{{beta.real(), beta.imag()}},
-                             &c_buffer[c_offset], c_ld);
+                             &alpha_cuda,
+                             reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                             reinterpret_cast<const cuComplex*>(&b_buffer[b_offset]), b_ld,
+                             &beta_cuda,
+                             reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXsyr2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const double2 alpha,
                             const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                             const double2* b_buffer, const size_t b_offset, const size_t b_ld,
                             const double2 beta,
                             double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
+  cuDoubleComplex beta_cuda;
+  beta_cuda.x = beta.real();
+  beta_cuda.y = beta.imag();
   cublasHandle_t handle;
-  auto status = cublasZsyr2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasZsyr2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
-                             &cl_double2{{alpha.real(), alpha.imag()}},
-                             &a_buffer[a_offset], a_ld,
-                             &b_buffer[b_offset], b_ld,
-                             &cl_double2{{beta.real(), beta.imag()}},
-                             &c_buffer[c_offset], c_ld);
+                             &alpha_cuda,
+                             reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                             reinterpret_cast<const cuDoubleComplex*>(&b_buffer[b_offset]), b_ld,
+                             &beta_cuda,
+                             reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXsyr2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const half alpha,
                             const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -2251,51 +2487,60 @@ cublasStatus_t cublasXsyr2k(const cublas_has_no_layout layout, const cublasFillM
 }
 
 // Forwards the cuBLAS calls for CHER2K/ZHER2K
-cublasStatus_t cublasXher2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXher2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const float2 alpha,
                             const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                             const float2* b_buffer, const size_t b_offset, const size_t b_ld,
                             const float beta,
                             float2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCher2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasCher2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
-                             &cl_float2{{alpha.real(), alpha.imag()}},
-                             &a_buffer[a_offset], a_ld,
-                             &b_buffer[b_offset], b_ld,
+                             &alpha_cuda,
+                             reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                             reinterpret_cast<const cuComplex*>(&b_buffer[b_offset]), b_ld,
                              &beta,
-                             &c_buffer[c_offset], c_ld);
+                             reinterpret_cast<cuComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXher2k(const cublas_has_no_layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
+cublasStatus_t cublasXher2k(const Layout layout, const cublasFillMode_t triangle, const cublasOperation_t ab_transpose,
                             const size_t n, const size_t k,
                             const double2 alpha,
                             const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                             const double2* b_buffer, const size_t b_offset, const size_t b_ld,
                             const double beta,
                             double2* c_buffer, const size_t c_offset, const size_t c_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZher2k(handle, layout, triangle, ab_transpose,
+  auto status = cublasZher2k(handle, triangle, ab_transpose,
                              static_cast<int>(n), static_cast<int>(k),
-                             &cl_double2{{alpha.real(), alpha.imag()}},
-                             &a_buffer[a_offset], a_ld,
-                             &b_buffer[b_offset], b_ld,
+                             &alpha_cuda,
+                             reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                             reinterpret_cast<const cuDoubleComplex*>(&b_buffer[b_offset]), b_ld,
                              &beta,
-                             &c_buffer[c_offset], c_ld);
+                             reinterpret_cast<cuDoubleComplex*>(&c_buffer[c_offset]), c_ld);
   cublasDestroy(handle);
   return status;
 }
 
 // Forwards the cuBLAS calls for STRMM/DTRMM/CTRMM/ZTRMM
-cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            float* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStrmm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasStrmm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2303,13 +2548,14 @@ cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            double* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtrmm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasDtrmm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2317,35 +2563,43 @@ cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            float2* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCtrmm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasCtrmm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&b_buffer[b_offset]), b_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            double2* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZtrmm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasZtrmm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&b_buffer[b_offset]), b_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrmm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const half alpha,
                            const half* a_buffer, const size_t a_offset, const size_t a_ld,
@@ -2354,13 +2608,14 @@ cublasStatus_t cublasXtrmm(const cublas_has_no_layout layout, const cublasSideMo
 }
 
 // Forwards the cuBLAS calls for STRSM/DTRSM/CTRSM/ZTRSM
-cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const float alpha,
                            const float* a_buffer, const size_t a_offset, const size_t a_ld,
                            float* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasStrsm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasStrsm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2368,13 +2623,14 @@ cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const double alpha,
                            const double* a_buffer, const size_t a_offset, const size_t a_ld,
                            double* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
   cublasHandle_t handle;
-  auto status = cublasDtrsm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasDtrsm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
                             &alpha,
                             &a_buffer[a_offset], a_ld,
@@ -2382,31 +2638,39 @@ cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMo
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const float2 alpha,
                            const float2* a_buffer, const size_t a_offset, const size_t a_ld,
                            float2* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasCtrsm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasCtrsm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_float2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuComplex*>(&b_buffer[b_offset]), b_ld);
   cublasDestroy(handle);
   return status;
 }
-cublasStatus_t cublasXtrsm(const cublas_has_no_layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
+cublasStatus_t cublasXtrsm(const Layout layout, const cublasSideMode_t side, const cublasFillMode_t triangle, const cublasOperation_t a_transpose, const cublasDiagType_t diagonal,
                            const size_t m, const size_t n,
                            const double2 alpha,
                            const double2* a_buffer, const size_t a_offset, const size_t a_ld,
                            double2* b_buffer, const size_t b_offset, const size_t b_ld) {
+  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }
+  cuDoubleComplex alpha_cuda;
+  alpha_cuda.x = alpha.real();
+  alpha_cuda.y = alpha.imag();
   cublasHandle_t handle;
-  auto status = cublasZtrsm(handle, layout, side, triangle, a_transpose, diagonal,
+  auto status = cublasZtrsm(handle, side, triangle, a_transpose, diagonal,
                             static_cast<int>(m), static_cast<int>(n),
-                            &cl_double2{{alpha.real(), alpha.imag()}},
-                            &a_buffer[a_offset], a_ld,
-                            &b_buffer[b_offset], b_ld);
+                            &alpha_cuda,
+                            reinterpret_cast<const cuDoubleComplex*>(&a_buffer[a_offset]), a_ld,
+                            reinterpret_cast<cuDoubleComplex*>(&b_buffer[b_offset]), b_ld);
   cublasDestroy(handle);
   return status;
 }
