@@ -72,6 +72,9 @@ class Database {
   // The database consists of separate database entries, stored together in a vector
   static const std::vector<const DatabaseEntry*> database;
 
+  // Database for a special case: Apple CPUs support limited number of threads
+  static const std::vector<const DatabaseEntry*> apple_cpu_fallback;
+
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)

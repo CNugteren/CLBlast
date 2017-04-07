@@ -176,6 +176,7 @@ std::string ToString(Precision value) {
     case Precision::kDouble: return ToString(static_cast<int>(value))+" (double)";
     case Precision::kComplexSingle: return ToString(static_cast<int>(value))+" (complex-single)";
     case Precision::kComplexDouble: return ToString(static_cast<int>(value))+" (complex-double)";
+    case Precision::kAny: return ToString(static_cast<int>(value))+" (any)";
   }
 }
 template <>
@@ -467,6 +468,7 @@ size_t GetBytes(const Precision precision) {
     case Precision::kDouble: return 8;
     case Precision::kComplexSingle: return 8;
     case Precision::kComplexDouble: return 16;
+    case Precision::kAny: return -1;
   }
 }
 

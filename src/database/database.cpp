@@ -11,6 +11,8 @@
 //
 // =================================================================================================
 
+#include <list>
+
 #include "utilities/utilities.hpp"
 
 #include "database/database.hpp"
@@ -28,12 +30,13 @@
 #include "database/kernels/transpose.hpp"
 #include "database/kernels/padtranspose.hpp"
 #include "database/kernels/invert.hpp"
+#include "database/apple_cpu_fallback.hpp"
 #include "database/kernel_selection.hpp"
 
 namespace clblast {
 // =================================================================================================
 
-// Initializes the database
+// Initializes the databases
 const std::vector<const Database::DatabaseEntry*> Database::database = {
   &database::XaxpyHalf, &database::XaxpySingle, &database::XaxpyDouble, &database::XaxpyComplexSingle, &database::XaxpyComplexDouble,
   &database::XdotHalf, &database::XdotSingle, &database::XdotDouble, &database::XdotComplexSingle, &database::XdotComplexDouble,
@@ -51,8 +54,15 @@ const std::vector<const Database::DatabaseEntry*> Database::database = {
   &database::InvertHalf, &database::InvertSingle, &database::InvertDouble, &database::InvertComplexSingle, &database::InvertComplexDouble,
   &database::KernelSelectionHalf, &database::KernelSelectionSingle, &database::KernelSelectionDouble, &database::KernelSelectionComplexSingle, &database::KernelSelectionComplexDouble
 };
+const std::vector<const Database::DatabaseEntry*> Database::apple_cpu_fallback = {
+  &database::XaxpyApple, &database::XdotApple,
+  &database::XgemvApple, &database::XgemvFastApple, &database::XgemvFastRotApple, &database::XgerApple, &database::XtrsvApple,
+  &database::XgemmApple, &database::XgemmDirectApple,
+  &database::CopyApple, &database::PadApple, &database::TransposeApple, &database::PadtransposeApple,
+  &database::InvertApple
+};
 
-// The OpenCL device vendors
+// The default values
 const std::string Database::kDeviceVendorAll = "default";
 
 // Alternative names for some OpenCL vendors
@@ -83,9 +93,23 @@ Database::Database(const Device &device, const std::string &kernel_name,
     }
   }
 
+  // Sets the databases to search through
+  auto databases = std::list<const std::vector<const DatabaseEntry*>>{overlay, database};
+
+  // Special case: modifies the database if the device is a CPU with Apple OpenCL
+  #if defined(__APPLE__) || defined(__MACOSX)
+    if (device.Type() == "CPU") {
+      auto extensions = device.Capabilities();
+      const auto is_apple = (extensions.find("cl_APPLE_SetMemObjectDestructor") == std::string::npos) ? false : true;
+      if (is_apple) {
+        databases.push_front(apple_cpu_fallback);
+      }
+    }
+  #endif
+
   // Searches potentially multiple databases
   auto search_result = ParametersPtr{};
-  for (auto &db: { overlay, database}) {
+  for (auto &db: databases) {
     search_result = Search(kernel_name, device_type, device_vendor, device_name, precision, db);
     if (search_result) {
       parameters_->insert(search_result->begin(), search_result->end());
@@ -128,7 +152,8 @@ Database::ParametersPtr Database::Search(const std::string &this_kernel,
 
   // Selects the right kernel
   for (auto &db: this_database) {
-    if (db->kernel == this_kernel && db->precision == this_precision) {
+    if ((db->kernel == this_kernel) &&
+        (db->precision == this_precision || db->precision == Precision::kAny)) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.

@@ -119,7 +119,7 @@ enum class Side { kLeft = 141, kRight = 142 };
 
 // Precision scoped enum (values in bits)
 enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
-                       kComplexSingle = 3232, kComplexDouble = 6464 };
+                       kComplexSingle = 3232, kComplexDouble = 6464, kAny = -1 };
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
