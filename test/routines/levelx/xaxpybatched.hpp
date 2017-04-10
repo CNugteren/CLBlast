@@ -125,6 +125,19 @@ class TestXaxpyBatched {
     }
   #endif
 
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+        auto status = cublasXaxpy(args.n, args.alphas[batch],
+                                  buffers.x_vec, args.x_offsets[batch], args.x_inc,
+                                  buffers.y_vec, args.y_offsets[batch], args.y_inc);
+        if (status != CUBLAS_STATUS_SUCCESS) { return StatusCode::kUnknownError; }
+      }
+      return StatusCode::kSuccess;
+    }
+  #endif
+
   // Describes how to download the results of the computation
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.y_size, static_cast<T>(0));

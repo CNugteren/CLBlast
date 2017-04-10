@@ -119,6 +119,21 @@ class TestXtrmm {
     }
   #endif
 
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXtrmm(args.layout,
+                                convertToCUBLAS(args.side),
+                                convertToCUBLAS(args.triangle),
+                                convertToCUBLAS(args.a_transpose),
+                                convertToCUBLAS(args.diagonal),
+                                args.m, args.n, args.alpha,
+                                buffers.a_mat, args.a_offset, args.a_ld,
+                                buffers.b_mat, args.b_offset, args.b_ld);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
+    }
+  #endif
+
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.b_size, static_cast<T>(0));

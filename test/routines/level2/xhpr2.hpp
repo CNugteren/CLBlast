@@ -117,6 +117,19 @@ class TestXhpr2 {
     }
   #endif
 
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXhpr2(args.layout,
+                                convertToCUBLAS(args.triangle),
+                                args.n, args.alpha,
+                                buffers.x_vec, args.x_offset, args.x_inc,
+                                buffers.y_vec, args.y_offset, args.y_inc,
+                                buffers.ap_mat, args.ap_offset);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
+    }
+  #endif
+
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.ap_size, static_cast<T>(0));

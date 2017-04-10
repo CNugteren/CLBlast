@@ -123,6 +123,19 @@ class TestXgemv {
     }
   #endif
 
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXgemv(args.layout,
+                                convertToCUBLAS(args.a_transpose),
+                                args.m, args.n, args.alpha,
+                                buffers.a_mat, args.a_offset, args.a_ld,
+                                buffers.x_vec, args.x_offset, args.x_inc, args.beta,
+                                buffers.y_vec, args.y_offset, args.y_inc);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
+    }
+  #endif
+
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.y_size, static_cast<T>(0));

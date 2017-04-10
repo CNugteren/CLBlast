@@ -117,9 +117,15 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
   options_ = options;
 
   // Determines which reference is the default
-  auto default_clblas = 0;
-  auto default_cblas = 0;
-  auto default_cublas = 0;
+  #if defined(CLBLAST_REF_CBLAS)
+      auto default_cblas = 0;
+  #endif
+  #if defined(CLBLAST_REF_CLBLAS)
+      auto default_clblas = 0;
+  #endif
+  #if defined(CLBLAST_REF_CUBLAS)
+      auto default_cublas = 0;
+  #endif
   #if defined(CLBLAST_REF_CBLAS)
     default_cblas = 1;
   #elif defined(CLBLAST_REF_CLBLAS)

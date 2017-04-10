@@ -128,6 +128,20 @@ class TestXher2k {
     }
   #endif
 
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXher2k(args.layout,
+                                 convertToCUBLAS(args.triangle),
+                                 convertToCUBLAS(args.a_transpose),
+                                 args.n, args.k, alpha2,
+                                 buffers.a_mat, args.a_offset, args.a_ld,
+                                 buffers.b_mat, args.b_offset, args.b_ld, args.beta,
+                                 buffers.c_mat, args.c_offset, args.c_ld);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
+    }
+  #endif
+
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<T> result(args.c_size, static_cast<T>(0));
