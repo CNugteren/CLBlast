@@ -4,6 +4,7 @@ Development version (next release)
 - Fixed a bug having to re-create the binary even if it was in the cache
 - Fixed a bug when using offsets in the direct version of the GEMM kernels
 - Fixed a missing cl_khr_fp64 when running double-precision on Intel CPUs
+- Fixed tests on Apple's CPU OpenCL implementation; still not fast but correct at least
 - Fixed bugs in the half-precision routines HTBMV/HTPMV/HTRMV/HSYR2K/HTRMM
 - Tests now also exit with an error code when OpenCL errors or compilation errors occur
 - Tests now also check for the L2 error in case of half-precision

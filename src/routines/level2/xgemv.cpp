@@ -70,14 +70,14 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   if (m == 0 || n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
 
   // Computes whether or not the matrix has an alternative layout (row or column-major).
-  auto a_altlayout = (layout == Layout::kRowMajor);
+  const auto a_altlayout = (layout == Layout::kRowMajor);
   auto a_one = (a_altlayout) ? n : m;
-  auto a_two = (a_altlayout) ? m : n;
+  const auto a_two = (a_altlayout) ? m : n;
 
   // Swap m and n if the matrix is transposed
-  auto a_transposed = (a_transpose != Transpose::kNo);
-  auto m_real = (a_transposed) ? n : m;
-  auto n_real = (a_transposed) ? m : n;
+  const auto a_transposed = (a_transpose != Transpose::kNo);
+  const auto m_real = (a_transposed) ? n : m;
+  const auto n_real = (a_transposed) ? m : n;
 
   // Special adjustments for banded matrices
   if (kl != 0 || ku != 0) {
@@ -85,10 +85,10 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   }
 
   // Determines whether the kernel needs to perform rotated access ('^' is the XOR operator)
-  auto a_rotated = a_transposed ^ a_altlayout;
+  const auto a_rotated = a_transposed ^ a_altlayout;
 
   // In case of complex data-types, the transpose can also become a conjugate transpose
-  auto a_conjugate = (a_transpose == Transpose::kConjugate);
+  const auto a_conjugate = (a_transpose == Transpose::kConjugate);
 
   // Tests the matrix and the vectors for validity
   if (packed) { TestMatrixAP(n, a_buffer, a_offset); }
@@ -107,8 +107,8 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
                     IsMultiple(a_ld, db_["VW3"]);
 
   // If possible, run the fast-version (rotated or non-rotated) of the kernel
-  auto kernel_name = "Xgemv";
-  auto m_ceiled = Ceil(m_real, db_["WGS1"]*db_["WPT1"]);
+  auto kernel_name = std::string{"Xgemv"};
+  const auto m_ceiled = Ceil(m_real, db_["WGS1"]*db_["WPT1"]);
   auto global_size = m_ceiled / db_["WPT1"];
   auto local_size = db_["WGS1"];
   if (fast_kernel) {
