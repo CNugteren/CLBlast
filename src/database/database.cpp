@@ -37,7 +37,7 @@ namespace clblast {
 // =================================================================================================
 
 // Initializes the databases
-const auto Database::database = std::vector<Database::DatabaseEntry>{
+const std::vector<Database::DatabaseEntry> Database::database = std::vector<Database::DatabaseEntry>{
   database::XaxpyHalf, database::XaxpySingle, database::XaxpyDouble, database::XaxpyComplexSingle, database::XaxpyComplexDouble,
   database::XdotHalf, database::XdotSingle, database::XdotDouble, database::XdotComplexSingle, database::XdotComplexDouble,
   database::XgemvHalf, database::XgemvSingle, database::XgemvDouble, database::XgemvComplexSingle, database::XgemvComplexDouble,
@@ -54,7 +54,7 @@ const auto Database::database = std::vector<Database::DatabaseEntry>{
   database::InvertHalf, database::InvertSingle, database::InvertDouble, database::InvertComplexSingle, database::InvertComplexDouble,
   database::KernelSelectionHalf, database::KernelSelectionSingle, database::KernelSelectionDouble, database::KernelSelectionComplexSingle, database::KernelSelectionComplexDouble
 };
-const auto Database::apple_cpu_fallback = std::vector<Database::DatabaseEntry>{
+const std::vector<Database::DatabaseEntry> Database::apple_cpu_fallback = std::vector<Database::DatabaseEntry>{
   database::XaxpyApple, database::XdotApple,
   database::XgemvApple, database::XgemvFastApple, database::XgemvFastRotApple, database::XgerApple, database::XtrsvApple,
   database::XgemmApple, database::XgemmDirectApple,
