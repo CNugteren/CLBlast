@@ -70,16 +70,16 @@ class Database {
   static const std::unordered_map<std::string, std::string> kVendorNames;
 
   // The database consists of separate database entries, stored together in a vector
-  static const std::vector<const DatabaseEntry*> database;
+  static const std::vector<DatabaseEntry> database;
 
   // Database for a special case: Apple CPUs support limited number of threads
-  static const std::vector<const DatabaseEntry*> apple_cpu_fallback;
+  static const std::vector<DatabaseEntry> apple_cpu_fallback;
 
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
   explicit Database(const Device &device, const std::string &kernel_name,
-                    const Precision precision, const std::vector<const DatabaseEntry*> &overlay);
+                    const Precision precision, const std::vector<DatabaseEntry> &overlay);
 
   // Accessor of values by key
   size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
@@ -96,7 +96,7 @@ class Database {
   ParametersPtr Search(const std::string &this_kernel, const std::string &this_type,
                        const std::string &this_vendor, const std::string &this_device,
                        const Precision this_precision,
-                       const std::vector<const DatabaseEntry*> &db) const;
+                       const std::vector<DatabaseEntry> &db) const;
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<Parameters> parameters_;
