@@ -2441,7 +2441,8 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
     const auto database_device = Database::DatabaseDevice{"default", parameters};
     const auto database_vendor = Database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_device}};
     const auto database_entry = Database::DatabaseEntry{kernel_name, precision, {database_vendor}};
-    const auto database = Database(device_cpp, kernel_name, precision, {&database_entry});
+    const auto database_entries = std::vector<Database::DatabaseEntry>{database_entry};
+    const auto database = Database(device_cpp, kernel_name, precision, database_entries);
 
     // Removes the old database entry and stores the new one in the cache
     DatabaseCache::Instance().Remove(DatabaseKey{ precision, device_name, kernel_name });

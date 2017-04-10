@@ -69,7 +69,7 @@ R"(
 
 // Complex single-precision
 #elif PRECISION == 3232
-  typedef struct cfloat {float x; float y;} real;
+  typedef float2 real;
   typedef struct cfloat2 {real x; real y;} real2;
   typedef struct cfloat4 {real x; real y; real z; real w;} real4;
   typedef struct cfloat8 {real s0; real s1; real s2; real s3;
@@ -84,7 +84,7 @@ R"(
 
 // Complex double-precision
 #elif PRECISION == 6464
-  typedef struct cdouble {double x; double y;} real;
+  typedef double2 real;
   typedef struct cdouble2 {real x; real y;} real2;
   typedef struct cdouble4 {real x; real y; real z; real w;} real4;
   typedef struct cdouble8 {real s0; real s1; real s2; real s3;
