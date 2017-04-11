@@ -319,6 +319,7 @@ def wrapper_cublas(routine):
 
                 # Calls the cuBLAS routine
                 result += "  cublasHandle_t handle;" + NL
+                result += "  if (cublasCreate(&handle) != CUBLAS_STATUS_SUCCESS) { return CUBLAS_STATUS_NOT_INITIALIZED; }" + NL
                 result += "  auto status = cublas" + flavour.name_cublas() + routine.name + "(handle, "
                 result += ("," + NL + indent).join([a for a in arguments]) + ");" + NL
                 result += "  cublasDestroy(handle);" + NL

@@ -117,7 +117,7 @@ class TestXherk {
 
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
-    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+    static StatusCode RunReference3(const Arguments<U> &args, BuffersCUDA<T> &buffers, Queue &) {
       auto status = cublasXherk(args.layout,
                                 convertToCUBLAS(args.triangle),
                                 convertToCUBLAS(args.a_transpose),

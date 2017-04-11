@@ -129,15 +129,11 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
 // =================================================================================================
 } // namespace clblast
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunOverrideTests<float>(argc, argv, false, "SGEMM");
-  errors += clblast::RunOverrideTests<float2>(argc, argv, true, "CGEMM");
+  errors += clblast::RunOverrideTests<clblast::float2>(argc, argv, true, "CGEMM");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

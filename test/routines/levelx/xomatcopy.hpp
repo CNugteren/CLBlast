@@ -16,8 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XOMATCOPY_H_
 #define CLBLAST_TEST_ROUTINES_XOMATCOPY_H_
 
-#include <vector>
-#include <string>
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================

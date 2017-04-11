@@ -122,8 +122,8 @@ class TestXsyrk {
                                 convertToCUBLAS(args.triangle),
                                 convertToCUBLAS(args.a_transpose),
                                 args.n, args.k, args.alpha,
-                                buffer.a_mat, args.a_offset, args.a_ld, args.beta,
-                                buffer.c_mat, args.c_offset, args.c_ld);
+                                buffers.a_mat, args.a_offset, args.a_ld, args.beta,
+                                buffers.c_mat, args.c_offset, args.c_ld);
       if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
   #endif

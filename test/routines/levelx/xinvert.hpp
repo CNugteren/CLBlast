@@ -16,10 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XINVERT_H_
 #define CLBLAST_TEST_ROUTINES_XINVERT_H_
 
-#include <vector>
-#include <string>
-
-#include "utilities/utilities.hpp"
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================

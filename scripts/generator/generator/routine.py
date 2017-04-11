@@ -347,7 +347,12 @@ class Routine:
         """As above but for cuBLAS the wrapper"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            if flavour.precision_name in ["C", "Z"]:
+            if name in self.index_buffers():
+                a = ["reinterpret_cast<int*>(&" + name + "_buffer[" + name + "_offset])"]
+            elif name in self.outputs and flavour.name in ["Sc", "Dz"]:
+                dtype = "float" if flavour.name == "Sc" else "double"
+                a = ["reinterpret_cast<" + dtype + "*>(&" + name + "_buffer[" + name + "_offset])"]
+            elif flavour.precision_name in ["C", "Z"]:
                 cuda_complex = "cuDoubleComplex" if flavour.precision_name == "Z" else "cuComplex"
                 a = ["reinterpret_cast<" + prefix + cuda_complex + "*>" +
                      "(&" + name + "_buffer[" + name + "_offset])"]
@@ -358,7 +363,10 @@ class Routine:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
-            return [", ".join(a + c)]
+            result = [", ".join(a + c)]
+            if self.name == "trmm" and name == "a":
+                result *= 2
+            return result
         return []
 
     def buffer_type(self, name):
