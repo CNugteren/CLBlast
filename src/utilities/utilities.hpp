@@ -193,6 +193,9 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  #ifdef CLBLAST_REF_CUBLAS
+    void* cublas_handle; // cublasHandle_t
+  #endif
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;

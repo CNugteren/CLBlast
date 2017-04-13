@@ -106,7 +106,7 @@ class TestXamax {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXamax(args.n,
+      auto status = cublasXamax(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n,
                                 buffers.scalar, args.imax_offset,
                                 buffers.x_vec, args.x_offset, args.x_inc);
       if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }

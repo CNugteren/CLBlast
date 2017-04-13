@@ -164,7 +164,7 @@ class TestXgemmBatched {
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-        auto status = cublasXgemm(args.layout,
+        auto status = cublasXgemm(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                   convertToCUBLAS(args.a_transpose),
                                   convertToCUBLAS(args.b_transpose),
                                   args.m, args.n, args.k, args.alphas[batch],

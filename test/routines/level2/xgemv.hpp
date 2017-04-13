@@ -126,7 +126,7 @@ class TestXgemv {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXgemv(args.layout,
+      auto status = cublasXgemv(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                 convertToCUBLAS(args.a_transpose),
                                 args.m, args.n, args.alpha,
                                 buffers.a_mat, args.a_offset, args.a_ld,

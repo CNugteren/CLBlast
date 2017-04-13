@@ -183,7 +183,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     if (args.compare_clblas) { clblasSetup(); }
   #endif
   #ifdef CLBLAST_REF_CUBLAS
-    cudaSetDevice(static_cast<int>(args.device_id));
+    if (args.compare_cublas) { cublasSetup(args); }
   #endif
 
   // Iterates over all "num_step" values jumping by "step" each time
@@ -271,6 +271,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   // Cleans-up and returns
   #ifdef CLBLAST_REF_CLBLAS
     if (args.compare_clblas) { clblasTeardown(); }
+  #endif
+  #ifdef CLBLAST_REF_CUBLAS
+    if (args.compare_cublas) { cublasTeardown(args); }
   #endif
 }
 

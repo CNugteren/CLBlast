@@ -884,6 +884,6 @@ class Routine:
             if def_only:
                 result += flavour.name
             result += ">\n"
-        result += "cublasStatus_t cublasX" + self.name + template + "("
+        result += "cublasStatus_t cublasX" + self.name + template + "(cublasHandle_t handle, "
         result += (",\n" + indent).join([a for a in self.arguments_def_wrapper_cublas(flavour)]) + ")"
         return result

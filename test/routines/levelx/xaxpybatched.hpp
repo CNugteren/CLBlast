@@ -129,7 +129,7 @@ class TestXaxpyBatched {
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-        auto status = cublasXaxpy(args.n, args.alphas[batch],
+        auto status = cublasXaxpy(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n, args.alphas[batch],
                                   buffers.x_vec, args.x_offsets[batch], args.x_inc,
                                   buffers.y_vec, args.y_offsets[batch], args.y_inc);
         if (status != CUBLAS_STATUS_SUCCESS) { return StatusCode::kUnknownError; }

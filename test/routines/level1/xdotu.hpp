@@ -113,7 +113,7 @@ class TestXdotu {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXdotu(args.n,
+      auto status = cublasXdotu(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n,
                                 buffers.scalar, args.dot_offset,
                                 buffers.x_vec, args.x_offset, args.x_inc,
                                 buffers.y_vec, args.y_offset, args.y_inc);

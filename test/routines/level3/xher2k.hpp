@@ -132,7 +132,7 @@ class TestXher2k {
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<U> &args, BuffersCUDA<T> &buffers, Queue &) {
       auto alpha2 = T{args.alpha, args.alpha};
-      auto status = cublasXher2k(args.layout,
+      auto status = cublasXher2k(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                  convertToCUBLAS(args.triangle),
                                  convertToCUBLAS(args.a_transpose),
                                  args.n, args.k, alpha2,

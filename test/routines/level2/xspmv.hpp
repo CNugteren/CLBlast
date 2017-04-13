@@ -120,7 +120,7 @@ class TestXspmv {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXspmv(args.layout,
+      auto status = cublasXspmv(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                 convertToCUBLAS(args.triangle),
                                 args.n, args.alpha,
                                 buffers.ap_mat, args.ap_offset,

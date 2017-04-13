@@ -318,11 +318,9 @@ def wrapper_cublas(routine):
                         result += "  " + scalar + "_cuda.y = " + scalar + ".imag();" + NL
 
                 # Calls the cuBLAS routine
-                result += "  cublasHandle_t handle;" + NL
-                result += "  if (cublasCreate(&handle) != CUBLAS_STATUS_SUCCESS) { return CUBLAS_STATUS_NOT_INITIALIZED; }" + NL
                 result += "  auto status = cublas" + flavour.name_cublas() + routine.name + "(handle, "
                 result += ("," + NL + indent).join([a for a in arguments]) + ");" + NL
-                result += "  cublasDestroy(handle);" + NL
+                result += "  cudaDeviceSynchronize();" + NL
                 result += "  return status;"
 
             # There is no cuBLAS available, forward the call to one of the available functions
@@ -335,11 +333,10 @@ def wrapper_cublas(routine):
             #         result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
 
             #     # Call the float routine
-            #     result += "  cublasHandle_t handle;" + NL
-            #     result += "  auto status = cublasX" + routine.name + "(handle,"
+            #     result += "  return cublasX" + routine.name + "(handle,"
             #     result += ("," + NL + indent).join([a for a in routine.arguments_half()]) + ");" + NL
-            #     result += "  cublasDestroy(handle);" + NL
-            #     result += "  return status;" + NL
+            #     result += "  cudaDeviceSynchronize();" + NL
+            #     result += "  return status;"
 
             #     # Convert back to half
             #     for buf in routine.outputs:

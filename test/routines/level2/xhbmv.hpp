@@ -120,7 +120,7 @@ class TestXhbmv {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXhbmv(args.layout,
+      auto status = cublasXhbmv(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                 convertToCUBLAS(args.triangle),
                                 args.n, args.kl, args.alpha,
                                 buffers.a_mat, args.a_offset, args.a_ld,

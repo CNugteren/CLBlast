@@ -120,7 +120,7 @@ class TestXspr2 {
   // Describes how to run the cuBLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
-      auto status = cublasXspr2(args.layout,
+      auto status = cublasXspr2(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                 convertToCUBLAS(args.triangle),
                                 args.n, args.alpha,
                                 buffers.x_vec, args.x_offset, args.x_inc,
