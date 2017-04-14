@@ -60,53 +60,59 @@ def run_benchmark(name, arguments_list, precision, num_runs, platform, device):
     return results
 
 
-def main(argv):
-
-    # Parses the command-line arguments
-    parser = argparse.ArgumentParser()
+def parse_arguments(argv):
+    parser = argparse.ArgumentParser(description="Runs a full benchmark for a specific routine on a specific device")
     parser.add_argument("-b", "--benchmark", required=True, help="The benchmark to perform (choose from %s)" % EXPERIMENTS.keys())
     parser.add_argument("-p", "--platform", required=True, type=int, help="The ID of the OpenCL platform to test on")
     parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
     parser.add_argument("-n", "--num_runs", type=int, default=None, help="Overrides the default number of benchmark repeats for averaging")
-    parser.add_argument("-x", "--precision", type=int, default=32,
-                        help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
+    parser.add_argument("-x", "--precision", type=int, default=32, help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
     parser.add_argument("-l", "--load_from_disk", action="store_true", help="Increase verbosity of the script")
-    parser.add_argument("-t", "--plot_title", default=None, help="The title for the plots, defaults to benchmark name")
+    parser.add_argument("-t", "--plot_title", default="", help="The title for the plots, defaults to benchmark name")
     parser.add_argument("-z", "--tight_plot", action="store_true", help="Enables tight plot layout for in paper or presentation")
     parser.add_argument("-o", "--output_folder", default=os.getcwd(), help="Sets the folder for output plots (defaults to current folder)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
+    return vars(cl_args)
+
+
+def benchmark_single(benchmark, platform, device, num_runs, precision, load_from_disk,
+                     plot_title, tight_plot, output_folder, verbose):
+
+    # Sanity check
+    if not os.path.isdir(output_folder):
+        print("[benchmark] Error: folder '%s' doesn't exist" % output_folder)
+        return
 
     # The benchmark name and plot title
-    benchmark_name = utils.precision_to_letter(cl_args.precision) + cl_args.benchmark.upper()
-    if cl_args.plot_title is None:
-        cl_args.plot_title = benchmark_name
+    benchmark_name = utils.precision_to_letter(precision) + benchmark.upper()
+    plot_title = benchmark_name if plot_title is "" else benchmark_name + ": " + plot_title
 
     # Retrieves the benchmark settings
-    if cl_args.benchmark not in EXPERIMENTS.keys():
-        print("[benchmark] Invalid benchmark '%s', choose from %s" % (cl_args.benchmark, EXPERIMENTS.keys()))
+    if benchmark not in EXPERIMENTS.keys():
+        print("[benchmark] Invalid benchmark '%s', choose from %s" % (benchmark, EXPERIMENTS.keys()))
         return
-    experiment = EXPERIMENTS[cl_args.benchmark]
+    experiment = EXPERIMENTS[benchmark]
     benchmarks = experiment["benchmarks"]
 
     # Either run the benchmarks for this experiment or load old results from disk
-    json_file_name = os.path.join(cl_args.output_folder, benchmark_name.lower() + "_benchmarks.json")
-    if cl_args.load_from_disk and os.path.isfile(json_file_name):
+    json_file_name = os.path.join(output_folder, benchmark_name.lower() + "_benchmarks.json")
+    if load_from_disk and os.path.isfile(json_file_name):
         print("[benchmark] Loading previous benchmark results from '" + json_file_name + "'")
         with open(json_file_name) as f:
             results = json.load(f)
     else:
 
         # Runs all the individual benchmarks
-        print("[benchmark] Running on platform %d, device %d" % (cl_args.platform, cl_args.device))
-        print("[benchmark] Running %d benchmarks for settings '%s'" % (len(benchmarks), cl_args.benchmark))
+        print("[benchmark] Running on platform %d, device %d" % (platform, device))
+        print("[benchmark] Running %d benchmarks for settings '%s'" % (len(benchmarks), benchmark))
         results = {"label_names": experiment["label_names"], "num_rows": experiment["num_rows"],
                    "num_cols": experiment["num_cols"], "benchmarks": []}
-        for benchmark in benchmarks:
-            num_runs = benchmark["num_runs"] if cl_args.num_runs is None else cl_args.num_runs
-            print("[benchmark] Running benchmark '%s:%s'" % (benchmark["name"], benchmark["title"]))
-            result = run_benchmark(benchmark["name"], benchmark["arguments"], cl_args.precision, num_runs,
-                                   cl_args.platform, cl_args.device)
+        for bench in benchmarks:
+            num_runs_benchmark = bench["num_runs"] if num_runs is None else num_runs
+            print("[benchmark] Running benchmark '%s:%s'" % (bench["name"], bench["title"]))
+            result = run_benchmark(bench["name"], bench["arguments"], precision, num_runs_benchmark,
+                                   platform, device)
             results["benchmarks"].append(result)
 
         # Stores the results to disk
@@ -115,9 +121,9 @@ def main(argv):
             json.dump(results, f, sort_keys=True, indent=4)
 
     # Retrieves the data from the benchmark settings
-    file_name_suffix = "_tight" if cl_args.tight_plot else ""
-    pdf_file_name = os.path.join(cl_args.output_folder, benchmark_name.lower() + "_plot" + file_name_suffix + ".pdf")
-    titles = [utils.precision_to_letter(cl_args.precision) + b["name"].upper() + " " + b["title"] for b in benchmarks]
+    file_name_suffix = "_tight" if tight_plot else ""
+    pdf_file_name = os.path.join(output_folder, benchmark_name.lower() + "_plot" + file_name_suffix + ".pdf")
+    titles = [utils.precision_to_letter(precision) + b["name"].upper() + " " + b["title"] for b in benchmarks]
     x_keys = [b["x_keys"] for b in benchmarks]
     y_keys = [b["y_keys"] for b in benchmarks]
     x_labels = [b["x_label"] for b in benchmarks]
@@ -125,17 +131,18 @@ def main(argv):
     label_names = results["label_names"]
 
     # For half-precision: also adds single-precision results for comparison
-    if cl_args.precision == 16:
+    if precision == 16:
         label_names = ["CLBlast FP16", "clBLAS FP32", "CLBlast FP32"]
         y_keys = [y_key + [y_key[0] + "_FP32"] for y_key in y_keys]
 
     # Plots the graphs
     plot.plot_graphs(results["benchmarks"], pdf_file_name, results["num_rows"], results["num_cols"],
                      x_keys, y_keys, titles, x_labels, y_labels,
-                     label_names, cl_args.plot_title, cl_args.tight_plot, cl_args.verbose)
+                     label_names, plot_title, tight_plot, verbose)
 
     print("[benchmark] All done")
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    parsed_arguments = parse_arguments(sys.argv[1:])
+    benchmark_single(**parsed_arguments)
