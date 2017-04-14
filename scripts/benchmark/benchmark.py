@@ -67,7 +67,7 @@ def main(argv):
     parser.add_argument("-b", "--benchmark", required=True, help="The benchmark to perform (choose from %s)" % EXPERIMENTS.keys())
     parser.add_argument("-p", "--platform", required=True, type=int, help="The ID of the OpenCL platform to test on")
     parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
-    parser.add_argument("-n", "--num_runs", type=int, default=10, help="The number of benchmark repeats for averaging")
+    parser.add_argument("-n", "--num_runs", type=int, default=None, help="Overrides the default number of benchmark repeats for averaging")
     parser.add_argument("-x", "--precision", type=int, default=32,
                         help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
     parser.add_argument("-l", "--load_from_disk", action="store_true", help="Increase verbosity of the script")
@@ -102,8 +102,9 @@ def main(argv):
         results = {"label_names": experiment["label_names"], "num_rows": experiment["num_rows"],
                    "num_cols": experiment["num_cols"], "benchmarks": []}
         for benchmark in benchmarks:
+            num_runs = benchmark["num_runs"] if cl_args.num_runs is None else cl_args.num_runs
             print("[benchmark] Running benchmark '%s:%s'" % (benchmark["name"], benchmark["title"]))
-            result = run_benchmark(benchmark["name"], benchmark["arguments"], cl_args.precision, cl_args.num_runs,
+            result = run_benchmark(benchmark["name"], benchmark["arguments"], cl_args.precision, num_runs,
                                    cl_args.platform, cl_args.device)
             results["benchmarks"].append(result)
 
