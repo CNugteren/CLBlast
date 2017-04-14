@@ -24,7 +24,7 @@ namespace clblast {
 template <typename T, typename U> const int TestBlas<T,U>::kSeed = 42; // fixed seed for reproducibility
 
 // Test settings for the regular test. Append to these lists in case more tests are required.
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 4096 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 144, 4096 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };

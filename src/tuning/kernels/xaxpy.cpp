@@ -27,7 +27,7 @@ class TuneXaxpy {
 
   // The representative kernel and the source code
   static std::string KernelFamily() { return "xaxpy"; }
-  static std::string KernelName() { return "XaxpyFast"; }
+  static std::string KernelName() { return "XaxpyFastest"; }
   static std::string GetSources() {
     return
       #include "../src/kernels/common.opencl"
@@ -42,7 +42,7 @@ class TuneXaxpy {
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &args) {
     if (!IsMultiple(args.n, 64)) {
-      throw std::runtime_error("'XaxpyFast' requires 'n' to be a multiple of WGS*WPT*VW");
+      throw std::runtime_error("'XaxpyFastest' requires 'n' to be a multiple of WGS*WPT*VW");
     }
   }
 
@@ -52,7 +52,7 @@ class TuneXaxpy {
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
+  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) { return args.n; }
