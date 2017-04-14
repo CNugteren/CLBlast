@@ -6,6 +6,8 @@
 
 import utils
 
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
@@ -112,5 +114,5 @@ def plot_graphs(results, file_name, num_rows, num_cols,
             leg.draw_frame(False)
 
     # Saves the plot to disk
+    print("[benchmark] Saving plot to '" + file_name + "'")
     fig.savefig(file_name, bbox_inches=bounding_box)
-    # plt.show()

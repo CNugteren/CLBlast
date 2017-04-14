@@ -73,6 +73,7 @@ def main(argv):
     parser.add_argument("-l", "--load_from_disk", action="store_true", help="Increase verbosity of the script")
     parser.add_argument("-t", "--plot_title", default=None, help="The title for the plots, defaults to benchmark name")
     parser.add_argument("-z", "--tight_plot", action="store_true", help="Enables tight plot layout for in paper or presentation")
+    parser.add_argument("-o", "--output_folder", default=os.getcwd(), help="Sets the folder for output plots (defaults to current folder)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -89,7 +90,7 @@ def main(argv):
     benchmarks = experiment["benchmarks"]
 
     # Either run the benchmarks for this experiment or load old results from disk
-    json_file_name = benchmark_name.lower() + "_benchmarks.json"
+    json_file_name = os.path.join(cl_args.output_folder, benchmark_name.lower() + "_benchmarks.json")
     if cl_args.load_from_disk and os.path.isfile(json_file_name):
         print("[benchmark] Loading previous benchmark results from '" + json_file_name + "'")
         with open(json_file_name) as f:
@@ -114,7 +115,8 @@ def main(argv):
             json.dump(results, f, sort_keys=True, indent=4)
 
     # Retrieves the data from the benchmark settings
-    pdf_file_name = benchmark_name.lower() + "_plot.pdf"
+    file_name_suffix = "_tight" if cl_args.tight_plot else ""
+    pdf_file_name = os.path.join(cl_args.output_folder, benchmark_name.lower() + "_plot" + file_name_suffix + ".pdf")
     titles = [utils.precision_to_letter(cl_args.precision) + b["name"].upper() + " " + b["title"] for b in benchmarks]
     x_keys = [b["x_keys"] for b in benchmarks]
     y_keys = [b["y_keys"] for b in benchmarks]
