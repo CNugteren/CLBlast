@@ -35,14 +35,14 @@ AXPY = {
             "arguments": [{"n": utils.m(1), "incx": 1, "incy": 1, "step": 1, "num_steps": 16}],
         },
         {
-            "name": "axpy", "num_runs": 40,
+            "name": "axpy", "num_runs": 20,
             "title": "around 16M",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": utils.m(16), "incx": 1, "incy": 1, "step": 1, "num_steps": 16}],
         },
         {
-            "name": "axpy", "num_runs": 40,
+            "name": "axpy", "num_runs": 20,
             "title": "strides n=8M",
             "x_label": "increments for x,y", "x_keys": ["incx", "incy"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
@@ -65,42 +65,42 @@ GEMV = {
     "num_rows": 2, "num_cols": 3,
     "benchmarks": [
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 40,
             "title": "multiples of 256",
             "x_label": "sizes (n=m)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": 256, "m": 256, "incx": 1, "incy": 1, "layout": 102, "step": 256, "num_steps": 20}],
         },
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 40,
             "title": "multiples of 257",
             "x_label": "sizes (n=m)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": 257, "m": 257, "incx": 1, "incy": 1, "layout": 102, "step": 257, "num_steps": 20}],
         },
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 20,
             "title": "around 4K",
             "x_label": "sizes (n=m)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": 4096, "m": 4096, "incx": 1, "incy": 1, "layout": 102, "step": 1, "num_steps": 16}],
         },
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 40,
             "title": "multiples of 256 rotated",
             "x_label": "sizes (n=m)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": 256, "m": 256, "incx": 1, "incy": 1, "layout": 101, "step": 256, "num_steps": 20}],
         },
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 40,
             "title": "multiples of 257 rotated",
             "x_label": "sizes (n=m)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
             "arguments": [{"n": 257, "m": 257, "incx": 1, "incy": 1, "layout": 101, "step": 257, "num_steps": 20}],
         },
         {
-            "name": "gemv", "num_runs": 10,
+            "name": "gemv", "num_runs": 20,
             "title": "strides n=m=4K",
             "x_label": "increments/strides for x,y", "x_keys": ["incx", "incy"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
@@ -115,7 +115,7 @@ GEMM = {
     "num_rows": 2, "num_cols": 3,
     "benchmarks": [
         {
-            "name": "gemm", "num_runs": 10,
+            "name": "gemm", "num_runs": 20,
             "title": "multiples of 128",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
@@ -123,7 +123,7 @@ GEMM = {
                            "transA": 111, "transB": 111, "step": 128, "num_steps": 20}],
         },
         {
-            "name": "gemm", "num_runs": 10,
+            "name": "gemm", "num_runs": 20,
             "title": "multiples of 129",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
@@ -131,7 +131,7 @@ GEMM = {
                            "transA": 111, "transB": 111, "step": 129, "num_steps": 20}],
         },
         {
-            "name": "gemm", "num_runs": 10,
+            "name": "gemm", "num_runs": 20,
             "title": "around 512",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
