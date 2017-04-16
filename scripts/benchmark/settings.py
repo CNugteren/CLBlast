@@ -65,26 +65,28 @@ AXPYBATCHED = {
     "num_rows": 1, "num_cols": 3,
     "benchmarks": [
         {
-            "name": "axpybatched", "num_runs": 40,
-            "title": "10 batches",
+            "name": "axpybatched", "num_runs": 30,
+            "title": "8 batches",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
-            "arguments": [{"batch_num": 10, "n": utils.k(32), "incx": 1, "incy": 1, "step": utils.k(16), "num_steps": 16}],
+            "arguments": [{"batch_num": 8, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
+                          for n in utils.powers_of_2(utils.k(8), utils.m(2))],
         },
         {
             "name": "axpybatched", "num_runs": 20,
-            "title": "50 batches",
-            "x_label": "sizes (m=n=k)", "x_keys": ["n"],
+            "title": "64 batches",
+            "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
-            "arguments": [{"batch_num": 50, "n": utils.k(32), "incx": 1, "incy": 1, "step": utils.k(16), "num_steps": 16}],
+            "arguments": [{"batch_num": 64, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
+                          for n in utils.powers_of_2(utils.k(8), utils.m(2))],
         },
         {
             "name": "axpybatched", "num_runs": 40,
-            "title": "n=128K",
+            "title": "n=512K",
             "x_label": "number of batches", "x_keys": ["batch_num"],
             "y_label": "GB/s (higher is better)", "y_keys": ["GBs_1", "GBs_2"],
-            "arguments": [{"batch_num": b, "n": utils.k(128), "incx": 1, "incy": 1, "step": 1, "num_steps": 1}
-                          for b in utils.powers_of_2(1, 128)],
+            "arguments": [{"batch_num": b, "n": utils.k(512), "incx": 1, "incy": 1, "step": 1, "num_steps": 1}
+                          for b in utils.powers_of_2(1, 256)],
         }
     ]
 }
@@ -226,27 +228,27 @@ GEMMBATCHED = {
     "benchmarks": [
         {
             "name": "gemmbatched", "num_runs": 40,
-            "title": "10 batches",
+            "title": "8 batches",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
-            "arguments": [{"batch_num": 10, "m": 16, "n": 16, "k": 16, "layout": 102,
-                           "transA": 111, "transB": 111, "step": 16, "num_steps": 16}],
+            "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
+                           "transA": 111, "transB": 111, "step": 32, "num_steps": 16}],
         },
         {
             "name": "gemmbatched", "num_runs": 20,
-            "title": "50 batches",
+            "title": "64 batches",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
-            "arguments": [{"batch_num": 50, "m": 16, "n": 16, "k": 16, "layout": 102,
-                           "transA": 111, "transB": 111, "step": 16, "num_steps": 16}],
+            "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
+                           "transA": 111, "transB": 111, "step": 32, "num_steps": 16}],
         },
         {
-            "name": "gemmbatched", "num_runs": 40,
-            "title": "m=n=k=32",
+            "name": "gemmbatched", "num_runs": 30,
+            "title": "m=n=k=64",
             "x_label": "number of batches", "x_keys": ["batch_num"],
             "y_label": "GFLOPS (higher is better)", "y_keys": ["GFLOPS_1", "GFLOPS_2"],
-            "arguments": [{"batch_num": b, "m": 32, "n": 32, "k": 32, "layout": 102,
-                           "transA": 111, "transB": 111} for b in utils.powers_of_2(1, 128)],
+            "arguments": [{"batch_num": b, "m": 64, "n": 64, "k": 64, "layout": 102,
+                           "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(8))],
         }
     ]
 }

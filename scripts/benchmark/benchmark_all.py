@@ -13,7 +13,7 @@ import sys
 from benchmark import benchmark_single
 
 
-BENCHMARKS = ["axpy", "gemv", "gemm", "summary"]
+BENCHMARKS = ["axpy", "gemv", "gemm", "summary", "axpybatched", "gemmbatched"]
 
 
 def parse_arguments(argv):

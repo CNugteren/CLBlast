@@ -36,7 +36,7 @@ def run_benchmark(name, arguments_list, precision, num_runs, platform, device):
     for arguments in arguments_list:
 
         # Sets the arguments
-        constant_arguments = ["-warm_up", "-q", "-no_abbrv", "-cblas 0"]
+        constant_arguments = ["-warm_up", "-q", "-no_abbrv", "-cblas 0", "-cublas 0"]
         common_arguments = ["-precision %d" % precision, "-runs %d" % num_runs]
         opencl_arguments = ["-platform %d" % platform, "-device %d" % device]
         all_arguments = opencl_arguments + common_arguments + constant_arguments
