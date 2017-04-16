@@ -12,17 +12,13 @@
 #include "test/correctness/testblas.hpp"
 #include "test/routines/level3/xsymm.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunTests<clblast::TestXsymm<float>, float, float>(argc, argv, false, "SSYMM");
   errors += clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
-  errors += clblast::RunTests<clblast::TestXsymm<float2>, float2, float2>(argc, argv, true, "CSYMM");
-  errors += clblast::RunTests<clblast::TestXsymm<double2>, double2, double2>(argc, argv, true, "ZSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZSYMM");
   errors += clblast::RunTests<clblast::TestXsymm<half>, half, half>(argc, argv, true, "HSYMM");
   if (errors > 0) { return 1; } else { return 0; }
 }

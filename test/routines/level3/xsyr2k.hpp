@@ -16,15 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XSYR2K_H_
 #define CLBLAST_TEST_ROUTINES_XSYR2K_H_
 
-#include <vector>
-#include <string>
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -130,6 +122,20 @@ class TestXsyr2k {
                   buffers_host.b_mat, args.b_offset, args.b_ld, args.beta,
                   buffers_host.c_mat, args.c_offset, args.c_ld);
       return StatusCode::kSuccess;
+    }
+  #endif
+
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXsyr2k(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
+                                 convertToCUBLAS(args.triangle),
+                                 convertToCUBLAS(args.a_transpose),
+                                 args.n, args.k, args.alpha,
+                                 buffers.a_mat, args.a_offset, args.a_ld,
+                                 buffers.b_mat, args.b_offset, args.b_ld, args.beta,
+                                 buffers.c_mat, args.c_offset, args.c_ld);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
   #endif
 

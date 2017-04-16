@@ -16,15 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XGEMMBATCHED_H_
 #define CLBLAST_TEST_ROUTINES_XGEMMBATCHED_H_
 
-#include <vector>
-#include <string>
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -163,6 +155,23 @@ class TestXgemmBatched {
                    buffers_host.a_mat, args.a_offsets[batch], args.a_ld,
                    buffers_host.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
                    buffers_host.c_mat, args.c_offsets[batch], args.c_ld);
+      }
+      return StatusCode::kSuccess;
+    }
+  #endif
+
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+        auto status = cublasXgemm(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
+                                  convertToCUBLAS(args.a_transpose),
+                                  convertToCUBLAS(args.b_transpose),
+                                  args.m, args.n, args.k, args.alphas[batch],
+                                  buffers.a_mat, args.a_offsets[batch], args.a_ld,
+                                  buffers.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
+                                  buffers.c_mat, args.c_offsets[batch], args.c_ld);
+      if (status != CUBLAS_STATUS_SUCCESS) { return StatusCode::kUnknownError; }
       }
       return StatusCode::kSuccess;
     }

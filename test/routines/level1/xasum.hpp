@@ -16,15 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XASUM_H_
 #define CLBLAST_TEST_ROUTINES_XASUM_H_
 
-#include <vector>
-#include <string>
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -108,6 +100,16 @@ class TestXasum {
                  buffers_host.scalar, args.asum_offset,
                  buffers_host.x_vec, args.x_offset, args.x_inc);
       return StatusCode::kSuccess;
+    }
+  #endif
+
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXasum(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n,
+                                buffers.scalar, args.asum_offset,
+                                buffers.x_vec, args.x_offset, args.x_inc);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
   #endif
 

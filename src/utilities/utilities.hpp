@@ -81,6 +81,7 @@ constexpr auto kArgFraction = "fraction";
 // The client-specific arguments in string form
 constexpr auto kArgCompareclblas = "clblas";
 constexpr auto kArgComparecblas = "cblas";
+constexpr auto kArgComparecublas = "cublas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
@@ -188,9 +189,13 @@ struct Arguments {
   // Client-specific arguments
   int compare_clblas = 1;
   int compare_cblas = 1;
+  int compare_cublas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  #ifdef CLBLAST_REF_CUBLAS
+    void* cublas_handle; // cublasHandle_t
+  #endif
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;

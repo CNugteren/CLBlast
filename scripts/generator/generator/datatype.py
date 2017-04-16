@@ -72,9 +72,11 @@ class DataType:
 
     def test_template(self):
         """Returns the template as used in the correctness/performance tests"""
+        buffer_type = "clblast::" + self.buffer_type if self.buffer_type in [D_FLOAT2, D_DOUBLE2] else self.buffer_type
+        beta_cpp = "clblast::" + self.beta_cpp if self.beta_cpp in [D_FLOAT2, D_DOUBLE2] else self.beta_cpp
         if self.buffer_type != self.beta_cpp:
-            return "<" + self.buffer_type + "," + self.beta_cpp + ">, " + self.buffer_type + ", " + self.beta_cpp
-        return "<" + self.buffer_type + ">, " + self.buffer_type + ", " + self.beta_cpp
+            return "<" + buffer_type + "," + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
+        return "<" + buffer_type + ">, " + buffer_type + ", " + beta_cpp
 
     def is_complex(self, scalar):
         """Current scalar is complex"""
@@ -84,6 +86,11 @@ class DataType:
     def is_non_standard(self):
         """Current type is of a non-standard type"""
         return self.buffer_type in [D_HALF, D_FLOAT2, D_DOUBLE2]
+
+    def name_cublas(self):
+        if "i" in self.name:
+            return "I" + self.name[1].lower()
+        return self.name
 
 
 # Regular data-types

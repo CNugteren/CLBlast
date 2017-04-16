@@ -16,17 +16,8 @@
 #ifndef CLBLAST_TEST_ROUTINES_XTRSM_H_
 #define CLBLAST_TEST_ROUTINES_XTRSM_H_
 
-#include <vector>
-#include <string>
-
+#include "test/routines/common.hpp"
 #include "test/routines/level3/xtrsm_data.hpp"
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
 
 namespace clblast {
 // =================================================================================================
@@ -136,6 +127,21 @@ class TestXtrsm {
                  buffers_host.a_mat, args.a_offset, args.a_ld,
                  buffers_host.b_mat, args.b_offset, args.b_ld);
       return StatusCode::kSuccess;
+    }
+  #endif
+
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXtrsm(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
+                                convertToCUBLAS(args.side),
+                                convertToCUBLAS(args.triangle),
+                                convertToCUBLAS(args.a_transpose),
+                                convertToCUBLAS(args.diagonal),
+                                args.m, args.n, args.alpha,
+                                buffers.a_mat, args.a_offset, args.a_ld,
+                                buffers.b_mat, args.b_offset, args.b_ld);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
   #endif
 

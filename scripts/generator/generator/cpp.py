@@ -290,14 +290,69 @@ def wrapper_cblas(routine):
     return result
 
 
+def wrapper_cublas(routine):
+    """The wrapper to the reference cuBLAS routines (for performance/correctness testing)"""
+    result = ""
+    if routine.has_tests:
+        result += NL + "// Forwards the cuBLAS calls for %s" % routine.short_names_tested() + NL
+        if routine.no_scalars():
+            result += routine.routine_header_wrapper_cublas(routine.template, True, 23) + ";" + NL
+        for flavour in routine.flavours:
+            result += routine.routine_header_wrapper_cublas(flavour, False, 23) + " {" + NL
+
+            # There is a version available in cuBLAS
+            if flavour.precision_name in ["S", "D", "C", "Z"]:
+                indent = " " * (24 + routine.length())
+                arguments = routine.arguments_wrapper_cublas(flavour)
+
+                # Handles row-major
+                if routine.has_layout():
+                    result += "  if (layout == Layout::kRowMajor) { return CUBLAS_STATUS_NOT_SUPPORTED; }" + NL
+
+                # Complex scalars
+                for scalar in routine.scalars:
+                    if flavour.is_complex(scalar):
+                        cuda_complex = "cuDoubleComplex" if flavour.precision_name == "Z" else "cuComplex"
+                        result += "  " + cuda_complex + " " + scalar + "_cuda;" + NL
+                        result += "  " + scalar + "_cuda.x = " + scalar + ".real();" + NL
+                        result += "  " + scalar + "_cuda.y = " + scalar + ".imag();" + NL
+
+                # Calls the cuBLAS routine
+                result += "  auto status = cublas" + flavour.name_cublas() + routine.name + "(handle, "
+                result += ("," + NL + indent).join([a for a in arguments]) + ");" + NL
+                result += "  cudaDeviceSynchronize();" + NL
+                result += "  return status;"
+
+            # There is no cuBLAS available, forward the call to one of the available functions
+            else:  # Half-precision
+                result += "  return CUBLAS_STATUS_NOT_SUPPORTED;"
+            #     indent = " " * (24 + routine.length())
+
+            #     # Convert to float (note: also integer buffers are stored as half/float)
+            #     for buf in routine.inputs + routine.outputs:
+            #         result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
+
+            #     # Call the float routine
+            #     result += "  return cublasX" + routine.name + "(handle,"
+            #     result += ("," + NL + indent).join([a for a in routine.arguments_half()]) + ");" + NL
+            #     result += "  cudaDeviceSynchronize();" + NL
+            #     result += "  return status;"
+
+            #     # Convert back to half
+            #     for buf in routine.outputs:
+            #         result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis, queues[0]);" + NL
+            #     result += "  return status;"
+
+            # Complete
+            result += NL + "}" + NL
+    return result
+
+
 def performance_test(routine, level_string):
     """Generates the body of a performance test for a specific routine"""
     result = ""
     result += "#include \"test/performance/client.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
-    result += "// Shortcuts to the clblast namespace" + NL
-    result += "using float2 = clblast::float2;" + NL
-    result += "using double2 = clblast::double2;" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);" + NL
@@ -324,9 +379,6 @@ def correctness_test(routine, level_string):
     result = ""
     result += "#include \"test/correctness/testblas.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
-    result += "// Shortcuts to the clblast namespace" + NL
-    result += "using float2 = clblast::float2;" + NL
-    result += "using double2 = clblast::double2;" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  auto errors = size_t{0};" + NL

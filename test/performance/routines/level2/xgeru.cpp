@@ -12,10 +12,6 @@
 #include "test/performance/client.hpp"
 #include "test/routines/level2/xgeru.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
@@ -24,9 +20,9 @@ int main(int argc, char *argv[]) {
     case clblast::Precision::kSingle: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kDouble: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kComplexSingle:
-      clblast::RunClient<clblast::TestXgeru<float2>, float2, float2>(argc, argv); break;
+      clblast::RunClient<clblast::TestXgeru<clblast::float2>, clblast::float2, clblast::float2>(argc, argv); break;
     case clblast::Precision::kComplexDouble:
-      clblast::RunClient<clblast::TestXgeru<double2>, double2, double2>(argc, argv); break;
+      clblast::RunClient<clblast::TestXgeru<clblast::double2>, clblast::double2, clblast::double2>(argc, argv); break;
   }
   return 0;
 }

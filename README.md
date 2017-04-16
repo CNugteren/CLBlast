@@ -199,7 +199,7 @@ All tests can be run directly together in one go through the `make alltests` tar
 Compiling the performance tests/clients (optional)
 -------------
 
-To test the performance of CLBlast and compare optionally against [clBLAS](http://github.com/clMathLibraries/clBLAS) or a CPU BLAS library (see above for requirements), compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
+To test the performance of CLBlast and compare optionally against [clBLAS](http://github.com/clMathLibraries/clBLAS), cuBLAS (if testing on an NVIDIA GPU and `-DCUBLAS=ON` set), or a CPU BLAS library (see above for requirements), compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
 
     cmake -DCLIENTS=ON ..
 

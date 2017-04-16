@@ -7,18 +7,30 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
+// This file contains all the common includes for the clients and tests
+//
 // =================================================================================================
 
-#include "test/correctness/testblas.hpp"
-#include "test/routines/level2/xsyr.hpp"
+#ifndef CLBLAST_TEST_ROUTINES_COMMON_H_
+#define CLBLAST_TEST_ROUTINES_COMMON_H_
 
-// Main function (not within the clblast namespace)
-int main(int argc, char *argv[]) {
-  auto errors = size_t{0};
-  errors += clblast::RunTests<clblast::TestXsyr<float>, float, float>(argc, argv, false, "SSYR");
-  errors += clblast::RunTests<clblast::TestXsyr<double>, double, double>(argc, argv, true, "DSYR");
-  errors += clblast::RunTests<clblast::TestXsyr<half>, half, half>(argc, argv, true, "HSYR");
-  if (errors > 0) { return 1; } else { return 0; }
-}
+#include <vector>
+#include <string>
+
+#include "utilities/utilities.hpp"
+
+#ifdef CLBLAST_REF_CLBLAS
+  #include "test/wrapper_clblas.hpp"
+#endif
+#ifdef CLBLAST_REF_CBLAS
+  #include "test/wrapper_cblas.hpp"
+#endif
+#include "test/wrapper_cuda.hpp"
+#ifdef CLBLAST_REF_CUBLAS
+  #include "test/wrapper_cublas.hpp"
+#endif
 
 // =================================================================================================
+
+// CLBLAST_TEST_ROUTINES_COMMON_H_
+#endif

@@ -12,10 +12,6 @@
 #include "test/correctness/testblas.hpp"
 #include "test/routines/level2/xspmv.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};

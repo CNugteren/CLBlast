@@ -28,6 +28,7 @@ option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
+option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
 
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
@@ -129,11 +130,14 @@ if(TUNERS)
   endif()
 endif()
 
-# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
-# and "FindCBLAS.cmake" are included.
+# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake",
+# "FindCBLAS.cmake" and "FindcuBLAS.cmake" are included.
 if(CLIENTS OR TESTS)
   find_package(clBLAS)
   find_package(CBLAS)
+  if(CUBLAS)
+    find_package(cuBLAS)
+  endif()
   if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
     if(TESTS)
       message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
@@ -320,13 +324,22 @@ if(CLIENTS OR TESTS)
       add_definitions(" -DCLBLAST_REF_CBLAS")
     endif()
   endif()
+  if(CUBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CUDA_LIBRARIES} ${CUBLAS_LIBRARIES})
+    if(MSVC)
+      add_definitions(" /DCLBLAST_REF_CUBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CUBLAS")
+    endif()
+  endif()
 
 endif()
 
 # ==================================================================================================
 
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
-# library, either clBLAS or a CPU BLAS.
+# library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
 
   # Visual Studio requires the sources of non-exported objects/libraries
@@ -372,7 +385,7 @@ endif()
 # ==================================================================================================
 
 # Section for the correctness tests. Note that these tests require the presence of clBLAS and/or a
-# CPU BLAS library to act as a reference.
+# CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
 
