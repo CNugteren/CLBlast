@@ -17,9 +17,11 @@ import utils
 
 EXPERIMENTS = {
     "axpy": settings.AXPY,
+    "axpybatched": settings.AXPYBATCHED,
     "gemv": settings.GEMV,
     "gemm": settings.GEMM,
     "gemm_small": settings.GEMM_SMALL,
+    "gemmbatched": settings.GEMMBATCHED,
     "symm": settings.SYMM,
     "syrk": settings.SYRK,
     "summary": settings.SUMMARY,
@@ -62,7 +64,7 @@ def run_benchmark(name, arguments_list, precision, num_runs, platform, device):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser(description="Runs a full benchmark for a specific routine on a specific device")
-    parser.add_argument("-b", "--benchmark", required=True, help="The benchmark to perform (choose from %s)" % EXPERIMENTS.keys())
+    parser.add_argument("-b", "--benchmark", required=True, help="The benchmark to perform (choose from %s)" % sorted(EXPERIMENTS.keys()))
     parser.add_argument("-p", "--platform", required=True, type=int, help="The ID of the OpenCL platform to test on")
     parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
     parser.add_argument("-n", "--num_runs", type=int, default=None, help="Overrides the default number of benchmark repeats for averaging")
