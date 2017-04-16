@@ -8,6 +8,7 @@ Development version (next release)
 - Fixed bugs in the half-precision routines HTBMV/HTPMV/HTRMV/HSYR2K/HTRMM
 - Tests now also exit with an error code when OpenCL errors or compilation errors occur
 - Tests now also check for the L2 error in case of half-precision
+- Clients can now test against cuBLAS on NVIDIA systems for performance comparisons (-DCUBLAS=ON)
 - Replaced the R graph scripts with Python/Matplotlib scripts
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)

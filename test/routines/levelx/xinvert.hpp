@@ -16,10 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XINVERT_H_
 #define CLBLAST_TEST_ROUTINES_XINVERT_H_
 
-#include <vector>
-#include <string>
-
-#include "utilities/utilities.hpp"
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -191,6 +188,9 @@ class TestXinvert {
 
   static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue&) {
     return RunReference(args, buffers_host);
+  }
+  static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+    return StatusCode::kUnknownError;
   }
 
   // Describes how to download the results of the computation (more importantly: which buffer)

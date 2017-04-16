@@ -12,10 +12,6 @@
 #include "test/performance/client.hpp"
 #include "test/routines/level2/xher.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
@@ -24,9 +20,9 @@ int main(int argc, char *argv[]) {
     case clblast::Precision::kSingle: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kDouble: throw std::runtime_error("Unsupported precision mode");
     case clblast::Precision::kComplexSingle:
-      clblast::RunClient<clblast::TestXher<float2,float>, float2, float>(argc, argv); break;
+      clblast::RunClient<clblast::TestXher<clblast::float2,float>, clblast::float2, float>(argc, argv); break;
     case clblast::Precision::kComplexDouble:
-      clblast::RunClient<clblast::TestXher<double2,double>, double2, double>(argc, argv); break;
+      clblast::RunClient<clblast::TestXher<clblast::double2,double>, clblast::double2, double>(argc, argv); break;
   }
   return 0;
 }
