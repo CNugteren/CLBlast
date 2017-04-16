@@ -72,7 +72,7 @@ namespace clblast {
     *buffer_cuda = nullptr;
 }
 #else
-  template <typename T> void CUDAToHost(T*, const std::vector<T>&, const size_t) { }
+  template <typename T> void CUDAToHost(T**, const std::vector<T>&, const size_t) { }
 #endif
 
 // Allocates space on the CUDA device and copies in data from the host
@@ -96,7 +96,7 @@ namespace clblast {
     }
   }
 #else
-  template <typename T> void HostToCUDA(T*, const std::vector<T>&, const size_t) { }
+  template <typename T> void HostToCUDA(T**, const std::vector<T>&, const size_t) { }
 #endif
 
 // =================================================================================================
