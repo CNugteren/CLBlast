@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXtrmm<double>, double, double>(argc, argv, true, "DTRMM");
   errors += clblast::RunTests<clblast::TestXtrmm<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CTRMM");
   errors += clblast::RunTests<clblast::TestXtrmm<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZTRMM");
-  errors += clblast::RunTests<clblast::TestXtrmm<half>, half, half>(argc, argv, true, "HTRMM");
+  errors += clblast::RunTests<clblast::TestXtrmm<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HTRMM");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

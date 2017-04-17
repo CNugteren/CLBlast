@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXaxpyBatched<double>, double, double>(argc, argv, true, "DAXPYBATCHED");
   errors += clblast::RunTests<clblast::TestXaxpyBatched<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CAXPYBATCHED");
   errors += clblast::RunTests<clblast::TestXaxpyBatched<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZAXPYBATCHED");
-  errors += clblast::RunTests<clblast::TestXaxpyBatched<half>, half, half>(argc, argv, true, "HAXPYBATCHED");
+  errors += clblast::RunTests<clblast::TestXaxpyBatched<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HAXPYBATCHED");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

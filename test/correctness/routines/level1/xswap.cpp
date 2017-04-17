@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXswap<double>, double, double>(argc, argv, true, "DSWAP");
   errors += clblast::RunTests<clblast::TestXswap<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CSWAP");
   errors += clblast::RunTests<clblast::TestXswap<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZSWAP");
-  errors += clblast::RunTests<clblast::TestXswap<half>, half, half>(argc, argv, true, "HSWAP");
+  errors += clblast::RunTests<clblast::TestXswap<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HSWAP");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

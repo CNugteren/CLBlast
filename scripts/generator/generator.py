@@ -42,7 +42,7 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [122, 77, 126, 23, 29, 41, 29, 65, 32]
+HEADER_LINES = [122, 77, 126, 24, 29, 41, 29, 65, 32]
 FOOTER_LINES = [25, 139, 27, 38, 6, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63

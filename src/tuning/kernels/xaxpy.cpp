@@ -108,6 +108,7 @@ class TuneXaxpy {
 } // namespace clblast
 
 // Shortcuts to the clblast namespace
+using half = clblast::half;
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 

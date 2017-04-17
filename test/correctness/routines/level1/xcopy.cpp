@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXcopy<double>, double, double>(argc, argv, true, "DCOPY");
   errors += clblast::RunTests<clblast::TestXcopy<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CCOPY");
   errors += clblast::RunTests<clblast::TestXcopy<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZCOPY");
-  errors += clblast::RunTests<clblast::TestXcopy<half>, half, half>(argc, argv, true, "HCOPY");
+  errors += clblast::RunTests<clblast::TestXcopy<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HCOPY");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXgemmBatched<double>, double, double>(argc, argv, true, "DGEMMBATCHED");
   errors += clblast::RunTests<clblast::TestXgemmBatched<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CGEMMBATCHED");
   errors += clblast::RunTests<clblast::TestXgemmBatched<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZGEMMBATCHED");
-  errors += clblast::RunTests<clblast::TestXgemmBatched<half>, half, half>(argc, argv, true, "HGEMMBATCHED");
+  errors += clblast::RunTests<clblast::TestXgemmBatched<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HGEMMBATCHED");
   if (errors > 0) { return 1; } else { return 0; }
 }
 
