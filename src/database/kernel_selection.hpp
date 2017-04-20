@@ -27,7 +27,8 @@ const Database::DatabaseEntry KernelSelectionHalf = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+        { "TITAN X (Pascal)",                                { {"XGEMM_MIN_INDIRECT_SIZE",2048*2048*2048} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1024*1024*1024} } },
       }
     },
     { // Default
