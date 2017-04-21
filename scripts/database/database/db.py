@@ -5,6 +5,9 @@
 # Author(s):
 #   Cedric Nugteren <www.cedricnugteren.nl>
 
+import itertools
+from operator import itemgetter
+
 import clblast
 
 
@@ -62,3 +65,14 @@ def combine_result(old_results, new_result):
     # No match found: append a new result
     old_results.append(new_result)
     return old_results
+
+
+def group_by(database, attributes):
+    """Returns an list with the name of the group and the corresponding entries in the database"""
+    assert len(database) > 0
+    attributes = [a for a in attributes if a in database[0]]
+    database.sort(key=itemgetter(*attributes))
+    result = []
+    for key, data in itertools.groupby(database, key=itemgetter(*attributes)):
+        result.append((key, list(data)))
+    return result
