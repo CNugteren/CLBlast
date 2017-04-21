@@ -73,7 +73,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW2",2}, {"WGS2",32}, {"WPT2",2} } },
         { "Iris",                                            { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
-        { "Iris Pro",                                        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
+        { "Iris Pro",                                        { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
         { "default",                                         { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
       }
     },
