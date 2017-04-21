@@ -88,7 +88,8 @@ def benchmark_single(benchmark, platform, device, num_runs, precision, load_from
 
     # The benchmark name and plot title
     benchmark_name = utils.precision_to_letter(precision) + benchmark.upper()
-    plot_title = benchmark_name if plot_title is "" else benchmark_name + ": " + plot_title
+    if benchmark.upper() != "SUMMARY":
+        plot_title = benchmark_name if plot_title is "" else benchmark_name + ": " + plot_title
 
     # Retrieves the benchmark settings
     if benchmark not in EXPERIMENTS.keys():
