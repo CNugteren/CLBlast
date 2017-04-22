@@ -27,8 +27,7 @@ const Database::DatabaseEntry KernelSelectionHalf = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "TITAN X (Pascal)",                                { {"XGEMM_MIN_INDIRECT_SIZE",2048*2048*2048} } },
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1024*1024*1024} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1280*1280*1280} } },
       }
     },
     { // Default
@@ -50,7 +49,7 @@ const Database::DatabaseEntry KernelSelectionSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1280*1280*1280} } },
       }
     },
     { // Default
@@ -72,7 +71,7 @@ const Database::DatabaseEntry KernelSelectionComplexSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1280*1280*1280} } },
       }
     },
     { // Default
@@ -94,7 +93,7 @@ const Database::DatabaseEntry KernelSelectionDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1280*1280*1280} } },
       }
     },
     { // Default
@@ -116,7 +115,7 @@ const Database::DatabaseEntry KernelSelectionComplexDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",768*768*768} } },
+        { "default",                                         { {"XGEMM_MIN_INDIRECT_SIZE",1280*1280*1280} } },
       }
     },
     { // Default
