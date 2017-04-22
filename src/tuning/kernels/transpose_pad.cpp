@@ -48,7 +48,7 @@ class TunePadTranspose {
   static size_t DefaultK() { return 1; } // N/A for this kernel
   static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
+  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
