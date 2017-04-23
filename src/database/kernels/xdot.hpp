@@ -87,9 +87,9 @@ const Database::DatabaseEntry XdotSingle = {
         { "GeForce GTX 980",                                 { {"WGS1",256}, {"WGS2",32} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",512}, {"WGS2",64} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",256}, {"WGS2",512} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",1024}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",1024}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",512} } },
+        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
     },
     { // Default
@@ -198,7 +198,7 @@ const Database::DatabaseEntry XdotDouble = {
         { "GeForce GTX 980",                                 { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",256}, {"WGS2",32} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",256}, {"WGS2",32} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",128}, {"WGS2",32} } },
         { "Tesla K20m",                                      { {"WGS1",512}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",128} } },
       }
@@ -247,7 +247,7 @@ const Database::DatabaseEntry XdotComplexDouble = {
         { "GeForce GTX 980",                                 { {"WGS1",64}, {"WGS2",32} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",128}, {"WGS2",32} } },
         { "GeForce GTX TITAN X",                             { {"WGS1",128}, {"WGS2",32} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",128}, {"WGS2",512} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",128}, {"WGS2",64} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }

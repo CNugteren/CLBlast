@@ -97,7 +97,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "GeForce GTX TITAN",                               { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN Black",                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "GeForce GTX TITAN X",                             { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
-        { "TITAN X (Pascal)",                                { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "TITAN X (Pascal)",                                { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Tesla K20m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Tesla K40m",                                      { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "default",                                         { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },

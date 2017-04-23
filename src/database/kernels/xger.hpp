@@ -94,8 +94,8 @@ const Database::DatabaseEntry XgerSingle = {
         { "GeForce GTX 750 Ti",                              { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",128}, {"WGS2",4}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",512}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
       }
     },
     { // Default
@@ -217,8 +217,8 @@ const Database::DatabaseEntry XgerDouble = {
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",16}, {"WPT",1} } },
         { "GeForce GTX TITAN",                               { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",32}, {"WGS2",16}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",2}, {"WPT",2} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",32}, {"WGS2",2}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
       }
     },
     { // Default
@@ -272,7 +272,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
         { "GeForce GTX 750 Ti",                              { {"WGS1",32}, {"WGS2",8}, {"WPT",2} } },
         { "GeForce GTX TITAN",                               { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "GeForce GTX TITAN Black",                         { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
-        { "TITAN X (Pascal)",                                { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },
         { "default",                                         { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
       }
     },
