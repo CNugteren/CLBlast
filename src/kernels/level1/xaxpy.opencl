@@ -36,12 +36,31 @@ void Xaxpy(const int n, const real_arg arg_alpha,
   }
 }
 
+// Faster version of the kernel without offsets and strided accesses but with if-statement. Also
+// assumes that 'n' is dividable by 'VW' and 'WPT'.
+__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+void XaxpyFaster(const int n, const real_arg arg_alpha,
+                 const __global realV* restrict xgm,
+                 __global realV* ygm) {
+  const real alpha = GetRealArg(arg_alpha);
+
+  if (get_global_id(0) < n / (VW)) {
+    #pragma unroll
+    for (int w=0; w<WPT; ++w) {
+      const int id = w*get_global_size(0) + get_global_id(0);
+      realV xvalue = xgm[id];
+      realV yvalue = ygm[id];
+      ygm[id] = MultiplyAddVector(yvalue, alpha, xvalue);
+    }
+  }
+}
+
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
 __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
-void XaxpyFast(const int n, const real_arg arg_alpha,
-               const __global realV* restrict xgm,
-               __global realV* ygm) {
+void XaxpyFastest(const int n, const real_arg arg_alpha,
+                  const __global realV* restrict xgm,
+                  __global realV* ygm) {
   const real alpha = GetRealArg(arg_alpha);
 
   #pragma unroll

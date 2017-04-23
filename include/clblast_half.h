@@ -32,9 +32,8 @@
 
 // =================================================================================================
 
-// Host data-type for half-precision floating-point (16-bit). This is based on the OpenCL type,
-// which is a typedef for unsigned short.
-typedef cl_half half;
+// The host data-type for half-precision floating-point (16-bit) is based on the `cl_half` OpenCL
+// type, which is a typedef for unsigned short.
 
 // 32-bit union for conversions
 typedef union ConversionBits_ {
@@ -47,7 +46,7 @@ typedef union ConversionBits_ {
 // Converts a IEEE-compliant single-precision value to half-precision floating-point. This function
 // applies simple truncation (round toward zero, but with overflows set to infinity) as rounding
 // mode.
-inline half FloatToHalf(const float value) {
+inline cl_half FloatToHalf(const float value) {
   static const unsigned short base_table[512] = { 
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -108,7 +107,7 @@ inline half FloatToHalf(const float value) {
 }
 
 // Converts a half-precision value to IEEE-compliant single-precision floating-point
-inline float HalfToFloat(const half value) {
+inline float HalfToFloat(const cl_half value) {
   static const unsigned int mantissa_table[2048] = { 
     0x00000000, 0x33800000, 0x34000000, 0x34400000, 0x34800000, 0x34A00000, 0x34C00000, 0x34E00000, 0x35000000, 0x35100000, 0x35200000, 0x35300000, 0x35400000, 0x35500000, 0x35600000, 0x35700000,
     0x35800000, 0x35880000, 0x35900000, 0x35980000, 0x35A00000, 0x35A80000, 0x35B00000, 0x35B80000, 0x35C00000, 0x35C80000, 0x35D00000, 0x35D80000, 0x35E00000, 0x35E80000, 0x35F00000, 0x35F80000,

@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXsymm<double>, double, double>(argc, argv, true, "DSYMM");
   errors += clblast::RunTests<clblast::TestXsymm<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CSYMM");
   errors += clblast::RunTests<clblast::TestXsymm<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZSYMM");
-  errors += clblast::RunTests<clblast::TestXsymm<half>, half, half>(argc, argv, true, "HSYMM");
+  errors += clblast::RunTests<clblast::TestXsymm<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HSYMM");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

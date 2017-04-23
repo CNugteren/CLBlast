@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXsyr2k<double>, double, double>(argc, argv, true, "DSYR2K");
   errors += clblast::RunTests<clblast::TestXsyr2k<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CSYR2K");
   errors += clblast::RunTests<clblast::TestXsyr2k<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZSYR2K");
-  errors += clblast::RunTests<clblast::TestXsyr2k<half>, half, half>(argc, argv, true, "HSYR2K");
+  errors += clblast::RunTests<clblast::TestXsyr2k<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HSYR2K");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

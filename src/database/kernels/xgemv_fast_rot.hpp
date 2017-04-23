@@ -65,7 +65,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
         { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"VW3",2}, {"WGS3",32}, {"WPT3",16} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
-        { "Iris Pro",                                        { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
+        { "Iris Pro",                                        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",4}, {"WGS3",64}, {"WPT3",16} } },
       }
     },
@@ -75,7 +75,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
         { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",4}, {"WGS3",128}, {"WPT3",16} } },
-        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
+        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",64}, {"WPT3",32} } },
         { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
@@ -153,7 +153,7 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
         { "GeForce GTX 750 Ti",                              { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
         { "GeForce GTX TITAN Black",                         { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },
-        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
+        { "TITAN X (Pascal)",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",16} } },
       }
     },

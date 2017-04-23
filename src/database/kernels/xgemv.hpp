@@ -73,7 +73,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2} } },
-        { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2} } },
+        { "Iris Pro",                                        { {"WGS1",128}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
@@ -100,7 +100,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "TITAN X (Pascal)",                                { {"WGS1",32}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",256}, {"WPT1",1} } },
       }
     },
     { // Default
@@ -233,7 +233,7 @@ const Database::DatabaseEntry XgemvDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
   }

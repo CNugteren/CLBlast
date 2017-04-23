@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXtpmv<double>, double, double>(argc, argv, true, "DTPMV");
   errors += clblast::RunTests<clblast::TestXtpmv<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CTPMV");
   errors += clblast::RunTests<clblast::TestXtpmv<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZTPMV");
-  errors += clblast::RunTests<clblast::TestXtpmv<half>, half, half>(argc, argv, true, "HTPMV");
+  errors += clblast::RunTests<clblast::TestXtpmv<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HTPMV");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

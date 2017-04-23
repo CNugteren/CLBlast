@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXamax<double>, double, double>(argc, argv, true, "iDAMAX");
   errors += clblast::RunTests<clblast::TestXamax<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "iCAMAX");
   errors += clblast::RunTests<clblast::TestXamax<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "iZAMAX");
-  errors += clblast::RunTests<clblast::TestXamax<half>, half, half>(argc, argv, true, "iHAMAX");
+  errors += clblast::RunTests<clblast::TestXamax<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "iHAMAX");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

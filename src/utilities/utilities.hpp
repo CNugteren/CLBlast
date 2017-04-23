@@ -31,6 +31,9 @@
 namespace clblast {
 // =================================================================================================
 
+// Shorthands for half-precision
+using half = cl_half; // based on the OpenCL type, which is actually an 'unsigned short'
+
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;

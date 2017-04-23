@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXasum<double>, double, double>(argc, argv, true, "DASUM");
   errors += clblast::RunTests<clblast::TestXasum<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "ScASUM");
   errors += clblast::RunTests<clblast::TestXasum<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "DzASUM");
-  errors += clblast::RunTests<clblast::TestXasum<half>, half, half>(argc, argv, true, "HASUM");
+  errors += clblast::RunTests<clblast::TestXasum<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HASUM");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

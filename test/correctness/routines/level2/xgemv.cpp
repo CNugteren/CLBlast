@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   errors += clblast::RunTests<clblast::TestXgemv<double>, double, double>(argc, argv, true, "DGEMV");
   errors += clblast::RunTests<clblast::TestXgemv<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CGEMV");
   errors += clblast::RunTests<clblast::TestXgemv<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZGEMV");
-  errors += clblast::RunTests<clblast::TestXgemv<half>, half, half>(argc, argv, true, "HGEMV");
+  errors += clblast::RunTests<clblast::TestXgemv<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HGEMV");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

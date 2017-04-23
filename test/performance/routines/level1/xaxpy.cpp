@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args, clblast::Precision::kSingle)) {
     case clblast::Precision::kHalf:
-      clblast::RunClient<clblast::TestXaxpy<half>, half, half>(argc, argv); break;
+      clblast::RunClient<clblast::TestXaxpy<clblast::half>, clblast::half, clblast::half>(argc, argv); break;
     case clblast::Precision::kSingle:
       clblast::RunClient<clblast::TestXaxpy<float>, float, float>(argc, argv); break;
     case clblast::Precision::kDouble:

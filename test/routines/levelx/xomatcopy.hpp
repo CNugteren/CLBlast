@@ -150,7 +150,7 @@ class TestXomatcopy {
   static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue&) {
     return RunReference(args, buffers_host);
   }
-  static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+  static StatusCode RunReference3(const Arguments<T> &, BuffersCUDA<T> &, Queue &) {
     return StatusCode::kUnknownError;
   }
 

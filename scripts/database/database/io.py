@@ -56,5 +56,11 @@ def load_tuning_results(filename):
         assert json_data["precision"] == str(result["parameters"]["PRECISION"])
         result["parameters"].pop("PRECISION", None)
 
+    # Fixes the scalar argument values
+    for value, replacement in zip(["2.00", "2.00+0.50i"], ["2.000000", "2+0.5i"]):
+        for field in ["arg_alpha", "arg_beta"]:
+            if field in json_data.keys() and json_data[field] == value:
+                json_data[field] = replacement
+
     # All done
     return json_data
