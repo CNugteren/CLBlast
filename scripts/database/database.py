@@ -63,12 +63,28 @@ def remove_mismatched_arguments(database):
         assert len(group_by_arguments) == 1
 
 
+def remove_database_entries(database, remove_if_matches_fields):
+    assert len(remove_if_matches_fields.keys()) > 0
+
+    def remove_this_entry(section):
+        for key in remove_if_matches_fields.keys():
+            if section[key] != remove_if_matches_fields[key]:
+                return False
+        return True
+
+    old_length = len(database["sections"])
+    database["sections"] = [x for x in database["sections"] if not remove_this_entry(x)]
+    new_length = len(database["sections"])
+    print("[database] Removed %d entries from the database" % (old_length - new_length))
+
+
 def main(argv):
 
     # Parses the command-line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("source_folder", help="The folder with JSON files to parse to add to the database")
     parser.add_argument("clblast_root", help="Root of the CLBlast sources")
+    parser.add_argument("-r", "--remove_device", type=str, default=None, help="Removes all entries for a specific device")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -115,6 +131,12 @@ def main(argv):
 
     # Stores the modified database back to disk
     if len(glob.glob(json_files)) >= 1:
+        io.save_database(database, database_filename)
+
+    # Removes database entries before continuing
+    if cl_args.remove_device is not None:
+        print("[database] Removing all results for device '%s'" % cl_args.remove_device)
+        remove_database_entries(database, {"device": cl_args.remove_device})
         io.save_database(database, database_filename)
 
     # Retrieves the best performing results
