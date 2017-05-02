@@ -46,8 +46,9 @@ class TuneXger {
   static size_t DefaultM() { return 1024; }
   static size_t DefaultN() { return 1024; }
   static size_t DefaultK() { return 1; } // N/A for this kernel
+  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
+  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) { return args.m; }
@@ -112,6 +113,7 @@ class TuneXger {
 } // namespace clblast
 
 // Shortcuts to the clblast namespace
+using half = clblast::half;
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 

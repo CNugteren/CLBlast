@@ -17,6 +17,12 @@ namespace database {
 
 const Database::DatabaseEntry PadtransposeHalf = {
   "Padtranspose", Precision::kHalf, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "Ellesmere",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
+        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
@@ -39,11 +45,14 @@ const Database::DatabaseEntry PadtransposeSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
+        { "ATI Radeon HD 6750M",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "Ellesmere",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Hawaii",                                          { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Oland",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Pitcairn",                                        { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Tahiti",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Tonga",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "Turks",                                           { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
       }
     },
@@ -55,8 +64,10 @@ const Database::DatabaseEntry PadtransposeSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
       }
@@ -83,6 +94,7 @@ const Database::DatabaseEntry PadtransposeSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
         { "GeForce GTX 1070",                                { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "GeForce GTX 1080",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "GeForce GTX 480",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "GeForce GTX 670",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
         { "GeForce GTX 680",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
@@ -92,6 +104,7 @@ const Database::DatabaseEntry PadtransposeSingle = {
         { "GeForce GTX TITAN",                               { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "GeForce GTX TITAN Black",                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
         { "GeForce GTX TITAN X",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Tesla K20m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Tesla K40m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
         { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",2} } },
@@ -112,11 +125,14 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
+        { "ATI Radeon HD 6750M",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "Ellesmere",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Hawaii",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Oland",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Pitcairn",                                        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Tahiti",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Tonga",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "Turks",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
       }
     },
@@ -128,10 +144,12 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
-        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
       }
     },
     { // Intel GPUs
@@ -156,6 +174,7 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 1070",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "GeForce GTX 1080",                                { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 480",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 670",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 680",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
@@ -165,6 +184,7 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
         { "GeForce GTX TITAN",                               { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "Tesla K20m",                                      { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "Tesla K40m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
@@ -185,6 +205,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
+        { "Ellesmere",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Hawaii",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Oland",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",4} } },
         { "Pitcairn",                                        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
@@ -201,8 +222,10 @@ const Database::DatabaseEntry PadtransposeDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
       }
@@ -217,6 +240,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 1070",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "GeForce GTX 1080",                                { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 480",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 670",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 680",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
@@ -226,6 +250,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
         { "GeForce GTX TITAN",                               { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "Tesla K20m",                                      { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "Tesla K40m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
@@ -233,7 +258,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
+        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
       }
     },
   }
@@ -246,6 +271,7 @@ const Database::DatabaseEntry PadtransposeComplexDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "Ellesmere",                                       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Hawaii",                                          { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Oland",                                           { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Pitcairn",                                        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
@@ -262,10 +288,12 @@ const Database::DatabaseEntry PadtransposeComplexDouble = {
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
+        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
-        { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "default",                                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
       }
     },
     { // Intel accelerators
@@ -278,6 +306,7 @@ const Database::DatabaseEntry PadtransposeComplexDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 1070",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "GeForce GTX 1080",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 480",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 670",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX 680",                                 { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
@@ -287,6 +316,7 @@ const Database::DatabaseEntry PadtransposeComplexDouble = {
         { "GeForce GTX TITAN",                               { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN Black",                         { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "GeForce GTX TITAN X",                             { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
+        { "TITAN X (Pascal)",                                { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",1} } },
         { "Tesla K20m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "Tesla K40m",                                      { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
         { "default",                                         { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },

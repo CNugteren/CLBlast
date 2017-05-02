@@ -12,16 +12,12 @@
 #include "test/correctness/testblas.hpp"
 #include "test/routines/level2/xspmv.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunTests<clblast::TestXspmv<float>, float, float>(argc, argv, false, "SSPMV");
   errors += clblast::RunTests<clblast::TestXspmv<double>, double, double>(argc, argv, true, "DSPMV");
-  errors += clblast::RunTests<clblast::TestXspmv<half>, half, half>(argc, argv, true, "HSPMV");
+  errors += clblast::RunTests<clblast::TestXspmv<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HSPMV");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

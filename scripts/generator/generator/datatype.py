@@ -30,17 +30,17 @@ class DataType:
         self.beta_cl = scalars[3]
         self.buffer_type = buffer_type
 
-    def use_alpha(self):
+    def use_alpha(self, postfix=""):
         """Outputs the name of the data-type (alpha/beta), possibly transforming into the right type"""
         if self.alpha_cpp in [D_FLOAT2, D_DOUBLE2]:
-            return self.alpha_cpp + "{alpha.s[0], alpha.s[1]}"
-        return "alpha"
+            return self.alpha_cpp + "{alpha" + postfix + ".s[0], alpha" + postfix + ".s[1]}"
+        return "alpha" + postfix
 
-    def use_beta(self):
+    def use_beta(self, postfix=""):
         """As above, but for beta instead of alpha"""
         if self.beta_cpp in [D_FLOAT2, D_DOUBLE2]:
-            return self.beta_cpp + "{beta.s[0], beta.s[1]}"
-        return "beta"
+            return self.beta_cpp + "{beta" + postfix + ".s[0], beta" + postfix + ".s[1]}"
+        return "beta" + postfix
 
     def use_alpha_opencl(self):
         """As above, but the transformation is in the opposite direction"""
@@ -72,9 +72,11 @@ class DataType:
 
     def test_template(self):
         """Returns the template as used in the correctness/performance tests"""
+        buffer_type = "clblast::" + self.buffer_type if self.is_non_standard() else self.buffer_type
+        beta_cpp = "clblast::" + self.beta_cpp if self.beta_cpp in [D_HALF, D_FLOAT2, D_DOUBLE2] else self.beta_cpp
         if self.buffer_type != self.beta_cpp:
-            return "<" + self.buffer_type + "," + self.beta_cpp + ">, " + self.buffer_type + ", " + self.beta_cpp
-        return "<" + self.buffer_type + ">, " + self.buffer_type + ", " + self.beta_cpp
+            return "<" + buffer_type + "," + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
+        return "<" + buffer_type + ">, " + buffer_type + ", " + beta_cpp
 
     def is_complex(self, scalar):
         """Current scalar is complex"""
@@ -84,6 +86,11 @@ class DataType:
     def is_non_standard(self):
         """Current type is of a non-standard type"""
         return self.buffer_type in [D_HALF, D_FLOAT2, D_DOUBLE2]
+
+    def name_cublas(self):
+        if "i" in self.name:
+            return "I" + self.name[1].lower()
+        return self.name
 
 
 # Regular data-types

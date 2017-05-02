@@ -21,6 +21,7 @@ Use CLBlast instead of clBLAS:
 * When you want to be able to inspect the BLAS kernels or easily customize them to your needs.
 * When you run on exotic OpenCL devices for which you need to tune yourself.
 * When you are still running on OpenCL 1.1 hardware.
+* When you prefer a C++ API over a C API (C API also available in CLBlast).
 * When you value an organized and modern C++ codebase.
 * When you target Intel CPUs and GPUs or embedded devices
 * When you can benefit from the increased performance of half-precision fp16 data-types.
@@ -90,21 +91,23 @@ Or alternatively the plain C version:
 
     #include <clblast_c.h>
 
-Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the above mentioned include files and the included [API documentation](doc/clblast.md). Additionally, a couple of stand-alone example programs are included in the `samples` subfolder. They can optionally be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
+Afterwards, any of CLBlast's routines can be called directly: there is no need to initialize the library. The available routines and the required arguments are described in the above mentioned include files and the included [API documentation](doc/clblast.md). The API is kept as close as possible to the Netlib BLAS and the cuBLAS/clBLAS APIs.
+
+To get started quickly, a couple of stand-alone example programs are included in the `samples` subfolder. They can optionally be compiled using the CMake infrastructure of CLBlast by providing the `-DSAMPLES=ON` flag, for example as follows:
 
     cmake -DSAMPLES=ON ..
-
-Furthermore, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
 
 There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severly. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
 
     #include <clblast_netlib_c.h>
 
+For all of CLBlast's APIs, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
 
 Using the tuners (optional)
 -------------
 
-The CLBlast library will be tuned in the future for the most commonly used OpenCL devices. This pre-release of CLBlast is only tuned for a limited number of devices, in particular those with the following `CL_DEVICE_NAME` values:
+The CLBlast library is already tuned for the most commonly used OpenCL devices and it's gradually being extended to other devices as well. For unseen devices CLBlast will make use of common-best tuning values for similar devices (e.g. AMD GPUs), so performance might still be decent. The current release of CLBlast is tuned for devices with the following `CL_DEVICE_NAME` values:
 
 * NVIDIA GPUs:
   - GRID K520
@@ -115,18 +118,23 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - GeForce GTX 750 Ti
   - GeForce GTX 980
   - GeForce GTX 1070
+  - GeForce GTX 1080
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
+  - TITAN X (Pascal)
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
   - AMD Radeon R9 M370X Compute Engine
+  - ATI Radeon HD 6750M
+  - Ellesmere
   - Hawaii
   - Oland
   - Pitcairn
   - Tahiti
   - Tonga
+  - Turks
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -137,7 +145,9 @@ The CLBlast library will be tuned in the future for the most commonly used OpenC
   - Iris Pro
 * Intel CPUs:
   - Core i5-6200U
+  - Core i7-2670QM
   - Core i7-3770K
+  - Core i7-4790K
   - Core i7-5930K
 * Other devices:
   - ARM Mali-T628 GPU
@@ -151,7 +161,7 @@ Note that CLBlast's tuners are based on the [CLTune auto-tuning library](https:/
 
 Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clblast_tuner_xxxxx`, in which `xxxxx` corresponds to a `.opencl` kernel file as found in `src/kernels`. These kernels corresponds to routines (e.g. `xgemm`) or to common pre-processing or post-processing kernels (`copy` and `transpose`). Running such a tuner will test a number of parameter-value combinations on your device and report which one gave the best performance. Running `make alltuners` runs all tuners for all precisions in one go. You can set the default device and platform for `alltuners` by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables.
 
-The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
+The tuners output a JSON-file with the results. The best results need to be added to `src/database/kernels/xxxxx.hpp` in the appropriate section. However, this can be done automatically based on the JSON-data using a Python (2.7 or 3.x) script in `scripts/database/database.py`. If you want the found parameters to be included in future releases of CLBlast, please attach the JSON files to the corresponding issue on GitHub or [email the main author](http://www.cedricnugteren.nl).
 
 In summary, tuning the entire library for your device can be done as follows (starting from the root of the CLBlast folder):
 
@@ -162,6 +172,8 @@ In summary, tuning the entire library for your device can be done as follows (st
     make alltuners
     python ../scripts/database/database.py . ..
     make
+
+Alternatively, you can also supply your tuning parameters programmatically through the CLBlast API. This is especially useful if you tune for specific non-standard arguments (e.g. a rectangular or a very small matrix). To do so, you can call the `OverrideParameters` function which will set new parameters for a specific kernel. At the first next call of the target routine, CLBlast will compile a new binary and use it together with the new parameters from then on. Until `OverrideParameters` is called again of course. See the [API documentation](doc/clblast.md#overrideparameters-override-tuning-parameters-auxiliary-function) for more details.
 
 
 Compiling the correctness tests (optional)
@@ -187,15 +199,15 @@ All tests can be run directly together in one go through the `make alltests` tar
 Compiling the performance tests/clients (optional)
 -------------
 
-To test the performance of CLBlast and compare optionally against [clBLAS](http://github.com/clMathLibraries/clBLAS) or a CPU BLAS library (see above for requirements), compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
+To test the performance of CLBlast and compare optionally against [clBLAS](http://github.com/clMathLibraries/clBLAS), cuBLAS (if testing on an NVIDIA GPU and `-DCUBLAS=ON` set), or a CPU BLAS library (see above for requirements), compile with the clients enabled by specifying `-DCLIENTS=ON`, for example as follows:
 
     cmake -DCLIENTS=ON ..
 
 The performance tests come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against optionally clBLAS and/or a CPU BLAS library. You can use the command-line options `-clblas 1` or `-cblas 1` to select a library to test against.
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable. Finally, run one of the graph-scripts found in `scripts/graphs` using R. For example, to generate the Xgemm PDF on device 1 of platform 0 from the `build` subdirectory:
+The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable (shipped with clBLAS). Finally, run the Python/Matplotlib graph-script found in `scripts/benchmark/benchmark.py`. For example, to generate the SGEMM PDF on device 1 of platform 0 from the `build` subdirectory:
 
-    Rscript ../scripts/graphs/xgemm.r 0 1
+    python ../scripts/benchmark/benchmark.py --platform 0 --device 1 --benchmark gemm
 
 Note that the CLBlast library provides pre-tuned parameter-values for some devices only: if your device is not among these, then out-of-the-box performance might be poor. See above under `Using the tuners` to find out how to tune for your device.
 
@@ -250,6 +262,7 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xSPR     | ✔ | ✔ | - | - | ✔ |
 | xSYR2    | ✔ | ✔ | - | - | ✔ |
 | xSPR2    | ✔ | ✔ | - | - | ✔ |
+| xTRSV    | ✔ | ✔ | ✔ | ✔ |   | (experimental, un-optimized)
 
 | Level-3  | S | D | C | Z | H |
 | ---------|---|---|---|---|---|
@@ -261,6 +274,14 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xSYR2K   | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xHER2K   | - | - | ✔ | ✔ | - |
 | xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xTRSM    | ✔ | ✔ | ✔ | ✔ |   | (experimental, un-optimized)
+
+Futhermore, there are also batched versions of BLAS routines available, processing multiple smaller computations in one go for better performance:
+
+| Batched      | S | D | C | Z | H |
+| -------------|---|---|---|---|---|
+| xAXPYBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGEMMBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 In addition, some extra non-BLAS routines are also supported by CLBlast, classified as level-X. They are experimental and should be used with care:
 
@@ -271,7 +292,7 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |
 
-Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTRSV, xTBSV, xTPSV, and xTRSM.
+Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTBSV, and xTPSV.
 
 
 Half precision (fp16)

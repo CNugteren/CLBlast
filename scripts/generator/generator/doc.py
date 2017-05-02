@@ -20,7 +20,7 @@ def generate(routine):
     result = ""
 
     # Routine header
-    result += "x" + routine.name.upper() + ": " + routine.description + NL
+    result += "x" + routine.upper_name() + ": " + routine.description + NL
     result += "-------------" + NL + NL
     result += routine.details + NL + NL
 
@@ -36,7 +36,7 @@ def generate(routine):
     result += "```" + NL + NL
 
     # Routine arguments
-    result += "Arguments to " + routine.name.upper() + ":" + NL + NL
+    result += "Arguments to " + routine.upper_name() + ":" + NL + NL
     for argument in routine.arguments_doc():
         result += "* " + argument + NL
     result += "* `cl_command_queue* queue`: "
@@ -47,7 +47,7 @@ def generate(routine):
 
     # Routine requirements
     if len(routine.requirements_doc()) > 0:
-        result += "Requirements for " + routine.name.upper() + ":" + NL + NL
+        result += "Requirements for " + routine.upper_name() + ":" + NL + NL
         for requirement in routine.requirements_doc():
             result += "* " + requirement + NL
         result += NL

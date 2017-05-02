@@ -12,12 +12,14 @@
 // =================================================================================================
 
 #include <string>
+#include <unordered_map>
 
+#include "utilities/utilities.hpp"
 #include "clblast_c.h"
 #include "clblast.h"
-#include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
+using half = clblast::half;
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 
@@ -3349,27 +3351,6 @@ CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide sid
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
-CLBlastStatusCode CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                               const size_t m, const size_t n,
-                               const cl_half alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               cl_command_queue* queue, cl_event* event) {
-  try {
-    return static_cast<CLBlastStatusCode>(
-      clblast::Trsm(static_cast<clblast::Layout>(layout),
-                    static_cast<clblast::Side>(side),
-                    static_cast<clblast::Triangle>(triangle),
-                    static_cast<clblast::Transpose>(a_transpose),
-                    static_cast<clblast::Diagonal>(diagonal),
-                    m, n,
-                    alpha,
-                    a_buffer, a_offset, a_ld,
-                    b_buffer, b_offset, b_ld,
-                    queue, event)
-    );
-  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
-}
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
@@ -3467,6 +3448,270 @@ CLBlastStatusCode CLBlastHomatcopy(const CLBlastLayout layout, const CLBlastTran
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
+// AXPY
+CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
+                                      const float *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<float>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::AxpyBatched(n,
+                           alphas_cpp.data(),
+                           x_buffer, x_offsets, x_inc,
+                           y_buffer, y_offsets, y_inc,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
+                                      const double *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<double>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::AxpyBatched(n,
+                           alphas_cpp.data(),
+                           x_buffer, x_offsets, x_inc,
+                           y_buffer, y_offsets, y_inc,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
+                                      const cl_float2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<float2>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(float2{alphas[batch].s[0], alphas[batch].s[1]});
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::AxpyBatched(n,
+                           alphas_cpp.data(),
+                           x_buffer, x_offsets, x_inc,
+                           y_buffer, y_offsets, y_inc,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
+                                      const cl_double2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<double2>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(double2{alphas[batch].s[0], alphas[batch].s[1]});
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::AxpyBatched(n,
+                           alphas_cpp.data(),
+                           x_buffer, x_offsets, x_inc,
+                           y_buffer, y_offsets, y_inc,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastHaxpyBatched(const size_t n,
+                                      const cl_half *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<half>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::AxpyBatched(n,
+                           alphas_cpp.data(),
+                           x_buffer, x_offsets, x_inc,
+                           y_buffer, y_offsets, y_inc,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
+// GEMM
+CLBlastStatusCode CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const float *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const float *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<float>();
+  auto betas_cpp = std::vector<float>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+    betas_cpp.push_back(betas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::GemmBatched(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Transpose>(b_transpose),
+                           m, n, k,
+                           alphas_cpp.data(),
+                           a_buffer, a_offsets, a_ld,
+                           b_buffer, b_offsets, b_ld,
+                           betas_cpp.data(),
+                           c_buffer, c_offsets, c_ld,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const double *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const double *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<double>();
+  auto betas_cpp = std::vector<double>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+    betas_cpp.push_back(betas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::GemmBatched(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Transpose>(b_transpose),
+                           m, n, k,
+                           alphas_cpp.data(),
+                           a_buffer, a_offsets, a_ld,
+                           b_buffer, b_offsets, b_ld,
+                           betas_cpp.data(),
+                           c_buffer, c_offsets, c_ld,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_float2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_float2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<float2>();
+  auto betas_cpp = std::vector<float2>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(float2{alphas[batch].s[0], alphas[batch].s[1]});
+    betas_cpp.push_back(float2{betas[batch].s[0], betas[batch].s[1]});
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::GemmBatched(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Transpose>(b_transpose),
+                           m, n, k,
+                           alphas_cpp.data(),
+                           a_buffer, a_offsets, a_ld,
+                           b_buffer, b_offsets, b_ld,
+                           betas_cpp.data(),
+                           c_buffer, c_offsets, c_ld,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_double2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_double2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<double2>();
+  auto betas_cpp = std::vector<double2>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(double2{alphas[batch].s[0], alphas[batch].s[1]});
+    betas_cpp.push_back(double2{betas[batch].s[0], betas[batch].s[1]});
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::GemmBatched(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Transpose>(b_transpose),
+                           m, n, k,
+                           alphas_cpp.data(),
+                           a_buffer, a_offsets, a_ld,
+                           b_buffer, b_offsets, b_ld,
+                           betas_cpp.data(),
+                           c_buffer, c_offsets, c_ld,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_half *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_half *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event) {
+  auto alphas_cpp = std::vector<half>();
+  auto betas_cpp = std::vector<half>();
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+    alphas_cpp.push_back(alphas[batch]);
+    betas_cpp.push_back(betas[batch]);
+  }
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::GemmBatched(static_cast<clblast::Layout>(layout),
+                           static_cast<clblast::Transpose>(a_transpose),
+                           static_cast<clblast::Transpose>(b_transpose),
+                           m, n, k,
+                           alphas_cpp.data(),
+                           a_buffer, a_offsets, a_ld,
+                           b_buffer, b_offsets, b_ld,
+                           betas_cpp.data(),
+                           c_buffer, c_offsets, c_ld,
+                           batch_count,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
 // =================================================================================================
 
 // Clears the cache of stored binaries
@@ -3480,6 +3725,26 @@ CLBlastStatusCode CLBlastClearCache() {
 CLBlastStatusCode CLBlastFillCache(const cl_device_id device) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::FillCache(device));
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
+// =================================================================================================
+
+// Overrides the tuning parameters for this device-precision-kernel combination
+CLBlastStatusCode PUBLIC_API CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                                       const CLBlastPrecision precision, const size_t num_parameters,
+                                                       const char** parameters_names, const size_t* parameters_values) {
+  try {
+    const auto kernel_name_cpp = std::string(kernel_name);
+    const auto precision_cpp = static_cast<clblast::Precision>(precision);
+    auto parameters = std::unordered_map<std::string, size_t>();
+    for (auto i = size_t{0}; i < num_parameters; ++i) {
+      const auto parameter_name = std::string(parameters_names[i]);
+      const auto parameter_value = parameters_values[i];
+      parameters[parameter_name] = parameter_value;
+    }
+    const auto status = clblast::OverrideParameters(device, kernel_name_cpp, precision_cpp, parameters);
+    return static_cast<CLBlastStatusCode>(status);
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 

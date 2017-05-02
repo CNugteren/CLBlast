@@ -30,7 +30,7 @@ namespace clblast {
 template <typename T, typename U>
 class TestBlas: public Tester<T,U> {
  public:
-  static constexpr auto kSeed = 42; // fixed seed for reproducibility
+  static const int kSeed;
 
   // Uses several variables from the Tester class
   using Tester<T,U>::context_;
@@ -56,6 +56,7 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<size_t> kMatrixDims;
   static const std::vector<size_t> kMatrixVectorDims;
   static const std::vector<size_t> kBandSizes;
+  static const std::vector<size_t> kBatchCounts;
   const std::vector<size_t> kOffsets;
   const std::vector<U> kAlphaValues;
   const std::vector<U> kBetaValues;
@@ -74,6 +75,10 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
 
   // Shorthand for the routine-specific functions passed to the tester
+  using DataPrepare = std::function<void(const Arguments<U>&, Queue&, const int,
+                                         std::vector<T>&, std::vector<T>&,
+                                         std::vector<T>&, std::vector<T>&, std::vector<T>&,
+                                         std::vector<T>&, std::vector<T>&)>;
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultGet = std::function<std::vector<T>(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using ResultIndex = std::function<size_t(const Arguments<U>&, const size_t, const size_t)>;
@@ -82,6 +87,7 @@ class TestBlas: public Tester<T,U> {
   // Constructor, initializes the base class tester and input data
   TestBlas(const std::vector<std::string> &arguments, const bool silent,
            const std::string &name, const std::vector<std::string> &options,
+           const DataPrepare prepare_data,
            const Routine run_routine,
            const Routine run_reference1, const Routine run_reference2,
            const ResultGet get_result, const ResultIndex get_index,
@@ -103,15 +109,23 @@ class TestBlas: public Tester<T,U> {
   std::vector<T> scalar_source_;
   
   // The routine-specific functions passed to the tester
-  Routine run_routine_;
-  Routine run_reference_;
-  ResultGet get_result_;
-  ResultIndex get_index_;
-  ResultIterator get_id1_;
-  ResultIterator get_id2_;
+  const DataPrepare prepare_data_;
+  const Routine run_routine_;
+  const Routine run_reference1_;
+  const Routine run_reference2_;
+  const ResultGet get_result_;
+  const ResultIndex get_index_;
+  const ResultIterator get_id1_;
+  const ResultIterator get_id2_;
 };
 
 // =================================================================================================
+
+// Bogus reference function, in case a comparison library is not available
+template <typename T, typename U, typename BufferType>
+static StatusCode ReferenceNotAvailable(const Arguments<U> &, BufferType &, Queue &) {
+  return StatusCode::kNotImplemented;
+}
 
 // The interface to the correctness tester. This is a separate function in the header such that it
 // is automatically compiled for each routine, templated by the parameter "C".
@@ -119,16 +133,24 @@ template <typename C, typename T, typename U>
 size_t RunTests(int argc, char *argv[], const bool silent, const std::string &name) {
   auto command_line_args = RetrieveCommandLineArguments(argc, argv);
 
-  // Sets the reference to test against
-  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    const auto reference_routine1 = C::RunReference1; // clBLAS
-    const auto reference_routine2 = C::RunReference2; // CBLAS
-  #elif CLBLAST_REF_CLBLAS
-    const auto reference_routine1 = C::RunReference1; // clBLAS
-    const auto reference_routine2 = C::RunReference1; // not used, dummy
-  #elif CLBLAST_REF_CBLAS
-    const auto reference_routine1 = C::RunReference2; // not used, dummy
-    const auto reference_routine2 = C::RunReference2; // CBLAS
+  // Sets the clBLAS reference to test against
+  #ifdef CLBLAST_REF_CLBLAS
+    auto reference_routine1 = C::RunReference1; // clBLAS when available
+  #else
+    auto reference_routine1 = ReferenceNotAvailable<T,U,Buffers<T>>;
+  #endif
+
+  // Sets the CBLAS reference to test against
+  #ifdef CLBLAST_REF_CBLAS
+    auto reference_routine2 = [](const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) -> StatusCode {
+      auto buffers_host = BuffersHost<T>();
+      DeviceToHost(args, buffers, buffers_host, queue, C::BuffersIn());
+      C::RunReference2(args, buffers_host, queue);
+      HostToDevice(args, buffers, buffers_host, queue, C::BuffersOut());
+      return StatusCode::kSuccess;
+    };
+  #else
+    auto reference_routine2 = ReferenceNotAvailable<T,U,Buffers<T>>;
   #endif
 
   // Non-BLAS routines cannot be fully tested
@@ -141,7 +163,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
   // Creates a tester
   auto options = C::GetOptions();
   TestBlas<T,U> tester{command_line_args, silent, name, options,
-                       C::RunRoutine, reference_routine1, reference_routine2,
+                       C::PrepareData, C::RunRoutine, reference_routine1, reference_routine2,
                        C::DownloadResult, C::GetResultIndex, C::ResultID1, C::ResultID2};
 
   // This variable holds the arguments relevant for this routine
@@ -177,6 +199,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
   auto imax_offsets = std::vector<size_t>{args.imax_offset};
   auto alphas = std::vector<U>{args.alpha};
   auto betas = std::vector<U>{args.beta};
+  auto batch_counts = std::vector<size_t>{args.batch_count};
   auto x_sizes = std::vector<size_t>{args.x_size};
   auto y_sizes = std::vector<size_t>{args.y_size};
   auto a_sizes = std::vector<size_t>{args.a_size};
@@ -220,6 +243,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
     if (option == kArgImaxOffset) { imax_offsets = tester.kOffsets; }
     if (option == kArgAlpha) { alphas = tester.kAlphaValues; }
     if (option == kArgBeta) { betas = tester.kBetaValues; }
+    if (option == kArgBatchCount) { batch_counts = tester.kBatchCounts; }
 
     if (option == kArgXOffset) { x_sizes = tester.kVecSizes; }
     if (option == kArgYOffset) { y_sizes = tester.kVecSizes; }
@@ -262,8 +286,10 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
                                                     for (auto &imax_offset: imax_offsets) { r_args.imax_offset = imax_offset;
                                                       for (auto &alpha: alphas) { r_args.alpha = alpha;
                                                         for (auto &beta: betas) { r_args.beta = beta;
-                                                          C::SetSizes(r_args);
-                                                          regular_test_vector.push_back(r_args);
+                                                          for (auto &batch_count: batch_counts) { r_args.batch_count = batch_count;
+                                                            C::SetSizes(r_args);
+                                                            regular_test_vector.push_back(r_args);
+                                                          }
                                                         }
                                                       }
                                                     }

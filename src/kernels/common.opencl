@@ -31,9 +31,7 @@ R"(
 
 // Enable support for double-precision
 #if PRECISION == 64 || PRECISION == 6464
-  #if __OPENCL_VERSION__ <= CL_VERSION_1_1
-     #pragma OPENCL EXTENSION cl_khr_fp64: enable
-  #endif
+   #pragma OPENCL EXTENSION cl_khr_fp64: enable
 #endif
 
 // Half-precision
@@ -71,7 +69,7 @@ R"(
 
 // Complex single-precision
 #elif PRECISION == 3232
-  typedef struct cfloat {float x; float y;} real;
+  typedef float2 real;
   typedef struct cfloat2 {real x; real y;} real2;
   typedef struct cfloat4 {real x; real y; real z; real w;} real4;
   typedef struct cfloat8 {real s0; real s1; real s2; real s3;
@@ -86,7 +84,7 @@ R"(
 
 // Complex double-precision
 #elif PRECISION == 6464
-  typedef struct cdouble {double x; double y;} real;
+  typedef double2 real;
   typedef struct cdouble2 {real x; real y;} real2;
   typedef struct cdouble4 {real x; real y; real z; real w;} real4;
   typedef struct cdouble8 {real s0; real s1; real s2; real s3;
@@ -162,11 +160,25 @@ R"(
   #define AbsoluteValue(value) value = fabs(value)
 #endif
 
+// Negation (component-wise)
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Negate(value) value.x = -(value.x); value.y = -(value.y)
+#else
+  #define Negate(value) value = -(value)
+#endif
+
 // Adds two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
   #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
 #else
   #define Add(c, a, b) c = a + b
+#endif
+
+// Subtracts two complex variables
+#if PRECISION == 3232 || PRECISION == 6464
+  #define Subtract(c, a, b) c.x = a.x - b.x; c.y = a.y - b.y
+#else
+  #define Subtract(c, a, b) c = a - b
 #endif
 
 // Multiply two complex variables (used in the defines below)
@@ -191,6 +203,20 @@ R"(
   #else
     #define MultiplyAdd(c, a, b) c += a * b
   #endif
+#endif
+
+// The scalar multiply-subtract function
+#if PRECISION == 3232 || PRECISION == 6464
+  #define MultiplySubtract(c, a, b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
+#else
+  #define MultiplySubtract(c, a, b) c -= a * b
+#endif
+
+// The scalar division function: full division
+#if PRECISION == 3232 || PRECISION == 6464
+  #define DivideFull(c, a, b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom
+#else
+  #define DivideFull(c, a, b) c = a / b
 #endif
 
 // The scalar AXPBY function

@@ -70,8 +70,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
 
   // Creates a general matrix from the triangular matrix to be able to run the regular Xgemm
   // routine afterwards
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, kernel_name);
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the arguments for the triangular-to-squared kernel
   kernel.SetArgument(0, static_cast<int>(k));
@@ -102,7 +101,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
            alpha,
            temp_triangular, 0, k,
            b_buffer_copy, b_offset, b_ld,
-           static_cast<T>(0.0),
+           ConstantZero<T>(),
            b_buffer, b_offset, b_ld);
   }
 
@@ -114,7 +113,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
              alpha,
              b_buffer_copy, b_offset, b_ld,
              temp_triangular, 0, k,
-             static_cast<T>(0.0),
+             ConstantZero<T>(),
              b_buffer, b_offset, b_ld);
     } catch (BLASError &e) {
       // A and B are now reversed, so also reverse the error codes returned from the Xgemm routine

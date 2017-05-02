@@ -21,22 +21,75 @@
 namespace clblast {
 // =================================================================================================
 
+// For each kernel this map contains a list of routines it is used in
+const std::vector<std::string> Routine::routines_axpy = {"AXPY", "COPY", "SCAL", "SWAP"};
+const std::vector<std::string> Routine::routines_dot = {"AMAX", "ASUM", "DOT", "DOTC", "DOTU", "MAX", "MIN", "NRM2", "SUM"};
+const std::vector<std::string> Routine::routines_ger = {"GER", "GERC", "GERU", "HER", "HER2", "HPR", "HPR2", "SPR", "SPR2", "SYR", "SYR2"};
+const std::vector<std::string> Routine::routines_gemv = {"GBMV", "GEMV", "HBMV", "HEMV", "HPMV", "SBMV", "SPMV", "SYMV", "TMBV", "TPMV", "TRMV", "TRSV"};
+const std::vector<std::string> Routine::routines_gemm = {"GEMM", "HEMM", "SYMM", "TRMM"};
+const std::vector<std::string> Routine::routines_gemm_syrk = {"GEMM", "HEMM", "HER2K", "HERK", "SYMM", "SYR2K", "SYRK", "TRMM", "TRSM"};
+const std::vector<std::string> Routine::routines_trsm = {"TRSM"};
+const std::unordered_map<std::string, const std::vector<std::string>> Routine::routines_by_kernel = {
+  {"Xaxpy", routines_axpy},
+  {"Xdot", routines_dot},
+  {"Xgemv", routines_gemv},
+  {"XgemvFast", routines_gemv},
+  {"XgemvFastRot", routines_gemv},
+  {"Xtrsv", routines_gemv},
+  {"Xger", routines_ger},
+  {"Copy", routines_gemm_syrk},
+  {"Pad", routines_gemm_syrk},
+  {"Transpose", routines_gemm_syrk},
+  {"Padtranspose", routines_gemm_syrk},
+  {"Xgemm", routines_gemm_syrk},
+  {"XgemmDirect", routines_gemm},
+  {"KernelSelection", routines_gemm},
+  {"Invert", routines_trsm},
+};
+// =================================================================================================
+
 // The constructor does all heavy work, errors are returned as exceptions
 Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
-                 const std::vector<std::string> &routines, const Precision precision,
-                 const std::vector<const Database::DatabaseEntry*> &userDatabase,
+                 const std::vector<std::string> &kernel_names, const Precision precision,
+                 const std::vector<Database::DatabaseEntry> &userDatabase,
                  std::initializer_list<const char *> source):
     precision_(precision),
     routine_name_(name),
+    kernel_names_(kernel_names),
     queue_(queue),
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
     device_name_(device_.Name()),
-    db_(queue_, routines, precision_, userDatabase) {
+    db_(kernel_names) {
+
+  InitDatabase(userDatabase);
+  InitProgram(source);
+}
+
+void Routine::InitDatabase(const std::vector<Database::DatabaseEntry> &userDatabase) {
+  for (const auto &kernel_name : kernel_names_) {
+
+    // Queries the cache to see whether or not the kernel parameter database is already there
+    bool has_db;
+    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ precision_, device_name_, kernel_name },
+                                                     &has_db);
+    if (has_db) { continue; }
+
+    // Builds the parameter database for this device and routine set and stores it in the cache
+    db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
+    DatabaseCache::Instance().Store(DatabaseKey{ precision_, device_name_, kernel_name },
+                                    Database{ db_(kernel_name) });
+  }
+}
+
+void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  if (ProgramIsInCache(context_, precision_, routine_name_)) { return; }
+  bool has_program;
+  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), precision_, routine_name_ },
+                                          &has_program);
+  if (has_program) { return; }
 
   // Sets the build options from an environmental variable (if set)
   auto options = std::vector<std::string>();
@@ -47,33 +100,36 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
-  if (BinaryIsInCache(device_name_, precision_, routine_name_)) {
-    auto& binary = GetBinaryFromCache(device_name_, precision_, routine_name_);
-    auto program = Program(device_, context_, binary);
-    program.Build(device_, options);
-    StoreProgramToCache(program, context_, precision_, routine_name_);
+  bool has_binary;
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name_ },
+                                            &has_binary);
+  if (has_binary) {
+    program_ = Program(device_, context_, binary);
+    program_.Build(device_, options);
+    ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+                                   Program{ program_ });
+    return;
   }
 
   // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
   // program will be added to the cache.
 
   // Inspects whether or not cl_khr_fp64 is supported in case of double precision
-  const auto extensions = device_.Capabilities();
-  if (precision_ == Precision::kDouble || precision_ == Precision::kComplexDouble) {
-    if (extensions.find(kKhronosDoublePrecision) == std::string::npos) {
-      throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
-    }
+  if ((precision_ == Precision::kDouble && !PrecisionSupported<double>(device_)) ||
+      (precision_ == Precision::kComplexDouble && !PrecisionSupported<double2>(device_))) {
+    throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
   }
 
   // As above, but for cl_khr_fp16 (half precision)
-  if (precision_ == Precision::kHalf) {
-    if (extensions.find(kKhronosHalfPrecision) == std::string::npos) {
-      throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
-    }
+  if (precision_ == Precision::kHalf && !PrecisionSupported<half>(device_)) {
+    throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
   }
 
   // Collects the parameters for this device in the form of defines, and adds the precision
-  auto source_string = db_.GetDefines();
+  auto source_string = std::string{""};
+  for (const auto &kernel_name : kernel_names_) {
+    source_string += db_(kernel_name).GetDefines();
+  }
   source_string += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
 
   // Adds the name of the routine as a define
@@ -114,21 +170,23 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
   #endif
 
   // Compiles the kernel
-  auto program = Program(context_, source_string);
+  program_ = Program(context_, source_string);
   try {
-    program.Build(device_, options);
+    program_.Build(device_, options);
   } catch (const CLError &e) {
     if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
       fprintf(stdout, "OpenCL compiler error/warning: %s\n",
-              program.GetBuildInfo(device_).c_str());
+              program_.GetBuildInfo(device_).c_str());
     }
     throw;
   }
 
   // Store the compiled binary and program in the cache
-  const auto binary = program.GetIR();
-  StoreBinaryToCache(binary, device_name_, precision_, routine_name_);
-  StoreProgramToCache(program, context_, precision_, routine_name_);
+  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name_ },
+                                program_.GetIR());
+
+  ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+                                 Program{ program_ });
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
   #ifdef VERBOSE

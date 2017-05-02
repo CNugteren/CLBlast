@@ -1445,6 +1445,63 @@ Arguments to TPMV:
 
 
 
+xTRSV: Solves a triangular system of equations
+-------------
+
+
+
+C++ API:
+```
+template <typename T>
+StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastStrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t n,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to TRSV:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `cl_mem x_buffer`: OpenCL buffer to store the output x vector.
+* `const size_t x_offset`: The offset in elements from the start of the output x vector.
+* `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xGER: General rank-1 matrix update
 -------------
 
@@ -2708,6 +2765,71 @@ Requirements for TRMM:
 
 
 
+xTRSM: Solves a triangular system of equations
+-------------
+
+Solves the equation _A * X = alpha * B_ for the unknown _m_ by _n_ matrix X, in which _A_ is an _n_ by _n_ unit or non-unit triangular matrix and B is an _m_ by _n_ matrix. The matrix _B_ is overwritten by the solution _X_.
+
+C++ API:
+```
+template <typename T>
+StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const float alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const double alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_float2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
+                               const size_t m, const size_t n,
+                               const cl_double2 alpha,
+                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                               cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to TRSM:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Side side`: The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).
+* `const Triangle triangle`: The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Diagonal diagonal`: The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `cl_mem b_buffer`: OpenCL buffer to store the output B matrix.
+* `const size_t b_offset`: The offset in elements from the start of the output B matrix.
+* `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xOMATCOPY: Scaling and out-place transpose/copy (non-BLAS function)
 -------------
 
@@ -2781,3 +2903,231 @@ Requirements for OMATCOPY:
 
 
 
+xAXPYBATCHED: Batched version of AXPY
+-------------
+
+As AXPY, but multiple operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
+                                      const float *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDaxpyBatched(const size_t n,
+                                      const double *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCaxpyBatched(const size_t n,
+                                      const cl_float2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZaxpyBatched(const size_t n,
+                                      const cl_double2 *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHaxpyBatched(const size_t n,
+                                      const cl_half *alphas,
+                                      const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                      cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to AXPYBATCHED:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T *alphas`: Input scalar constants.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t *x_offsets`: The offsets in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `cl_mem y_buffer`: OpenCL buffer to store the output y vector.
+* `const size_t *y_offsets`: The offsets in elements from the start of the output y vector.
+* `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
+xGEMMBATCHED: Batched version of GEMM
+-------------
+
+As GEMM, but multiple operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const float *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const float *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const double *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const double *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_float2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_float2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_double2 *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_double2 *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                      const size_t m, const size_t n, const size_t k,
+                                      const cl_half *alphas,
+                                      const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                      const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                      const cl_half *betas,
+                                      cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                      const size_t batch_count,
+                                      cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to GEMMBATCHED:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const T *alphas`: Input scalar constants.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t *a_offsets`: The offsets in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
+* `const size_t *b_offsets`: The offsets in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const T *betas`: Input scalar constants.
+* `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
+* `const size_t *c_offsets`: The offsets in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMMBATCHED:
+
+* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* The value of `c_ld` must be at least `m`.
+
+
+
+ClearCache: Resets the cache of compiled binaries (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache can be cleared to free up system memory or it can be useful in case of debugging.
+
+C++ API:
+```
+StatusCode ClearCache()
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastClearCache()
+```
+
+
+
+FillCache: Populates the cache of compiled binaries for a specific device (auxiliary function)
+-------------
+
+CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on for the same device. This cache is automatically populated whenever a new binary is created. Thus, the first run of a specific kernel could take extra time. For debugging or performance evaluation purposes, it might be useful to populate the cache upfront. This function populates the cache for all kernels in CLBlast for all precisions, but for a specific device only.
+
+C++ API:
+```
+StatusCode FillCache(const cl_device_id device)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastFillCache(const cl_device_id device)
+```
+
+Arguments to FillCache:
+
+* `const cl_device_id device`: The OpenCL device to fill the cache for.
+
+
+
+OverrideParameters: Override tuning parameters (auxiliary function)
+-------------
+
+This function overrides tuning parameters for a specific device-precision-kernel combination. The next time the target routine is called it will be re-compiled and use the new parameters. All further times (until `OverrideParameters` is called again) it will load the kernel from the cache and thus continue to use the new parameters. Note that the first time after calling `OverrideParameters` a performance drop can be observable due to the re-compilation of the kernel.
+
+C++ API:
+```
+StatusCode OverrideParameters(const cl_device_id device, const std::string &kernel_name,
+                              const Precision precision,
+                              const std::unordered_map<std::string,size_t> &parameters)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                            const CLBlastPrecision precision, const size_t num_parameters,
+                                            const char** parameters_names, const size_t* parameters_values)
+```
+
+Arguments to OverrideParameters (C++ version):
+
+* `const cl_device_id device`: The OpenCL device to set the new parameters for.
+* `const std::string &kernel_name`: The target kernel name. This has to be one of the existing CLBlast kernels (Xaxpy, Xdot, Xgemv, XgemvFast, XgemvFastRot, Xgemv, Xger, Copy, Pad, Transpose, Padtranspose, Xgemm, or XgemmDirect). If this argument is incorrect, this function will return with the `clblast::kInvalidOverrideKernel` status-code.
+* `const Precision precision`: The CLBlast precision enum to set the new parameters for.
+* `const std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This has to contain all the tuning parameters for a specific kernel as reported by the included tuners (e.g. `{ {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} }` for the `Copy` kernel). If this argument is incorrect, this function will return with the `clblast::kMissingOverrideParameter` status-code.

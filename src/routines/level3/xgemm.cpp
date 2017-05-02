@@ -33,10 +33,11 @@ Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     #include "../../kernels/level3/convert_symmetric.opencl"
     #include "../../kernels/level3/convert_triangular.opencl"
     #include "../../kernels/level3/convert_hermitian.opencl"
+    , // separated in multiple parts to prevent C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_direct_part1.opencl"
     #include "../../kernels/level3/xgemm_direct_part2.opencl"
     #include "../../kernels/level3/xgemm_direct_part3.opencl"
-    , // separated in two parts to prevent C1091 in MSVC 2013
+    , // separated in multiple parts to prevent C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"
@@ -103,19 +104,19 @@ void Xgemm<T>::DoGemm(const Layout layout,
   // Selects which version of GEMM to run
   const auto do_gemm_direct = (m * n * k < db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // for small sizes (single kernel)
-    return GemmDirect(m, n, k, alpha,
-                      a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
-                      c_buffer, c_offset, c_ld,
-                      a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
+    GemmDirect(m, n, k, alpha,
+               a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
+               c_buffer, c_offset, c_ld,
+               a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
   }
   else { // for larger sizes (pre/post-processing plus a very fast kernel)
-    return GemmIndirect(m, n, k, alpha,
-                        a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
-                        c_buffer, c_offset, c_ld,
-                        a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
-                        a_one, a_two, a_want_rotated,
-                        b_one, b_two, b_want_rotated,
-                        c_one, c_two, c_want_rotated);
+    GemmIndirect(m, n, k, alpha,
+                 a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
+                 c_buffer, c_offset, c_ld,
+                 a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
+                 a_one, a_two, a_want_rotated,
+                 b_one, b_two, b_want_rotated,
+                 c_one, c_two, c_want_rotated);
   }
 }
 
@@ -126,16 +127,16 @@ void Xgemm<T>::DoGemm(const Layout layout,
 // overhead of these extra kernels might not be ideal for certain devices/arguments.
 template <typename T>
 void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
-                                  const T alpha,
-                                  const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                                  const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                                  const T beta,
-                                  const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
-                                  const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                                  const bool a_conjugate, const bool b_conjugate,
-                                  const size_t a_one, const size_t a_two, const bool a_want_rotated,
-                                  const size_t b_one, const size_t b_two, const bool b_want_rotated,
-                                  const size_t c_one, const size_t c_two, const bool c_want_rotated) {
+                            const T alpha,
+                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                            const T beta,
+                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                            const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
+                            const bool a_conjugate, const bool b_conjugate,
+                            const size_t a_one, const size_t a_two, const bool a_want_rotated,
+                            const size_t b_one, const size_t b_two, const bool b_want_rotated,
+                            const size_t c_one, const size_t c_two, const bool c_want_rotated) {
   // Calculates the ceiled versions of m, n, and k
   const auto m_ceiled = Ceil(m, db_["MWG"]);
   const auto n_ceiled = Ceil(n, db_["NWG"]);
@@ -149,9 +150,6 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   const auto b_two_i = (b_want_rotated) ? k_ceiled : n_ceiled;
   const auto c_one_i = (c_want_rotated) ? n_ceiled : m_ceiled;
   const auto c_two_i = (c_want_rotated) ? m_ceiled : n_ceiled;
-
-  // Loads the program from the database
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
 
   // Determines whether or not temporary matrices are needed
   auto a_no_temp = a_one == a_one_i && a_two == a_two_i && a_ld == a_one && a_offset == 0 &&
@@ -178,7 +176,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                            a_one, a_two, a_ld, a_offset, a_buffer,
                            a_one_i, a_two_i, a_one_i, 0, a_temp,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            true, a_do_transpose, a_conjugate);
     eventWaitList.push_back(eventProcessA);
   }
@@ -189,7 +187,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
                            b_one, b_two, b_ld, b_offset, b_buffer,
                            b_one_i, b_two_i, b_one_i, 0, b_temp,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            true, b_do_transpose, b_conjugate);
     eventWaitList.push_back(eventProcessB);
   }
@@ -200,13 +198,13 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                            c_one, c_two, c_ld, c_offset, c_buffer,
                            c_one_i, c_two_i, c_one_i, 0, c_temp,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            true, c_do_transpose, false);
     eventWaitList.push_back(eventProcessC);
   }
 
   // Retrieves the Xgemm kernel from the compiled binary
-  auto kernel = Kernel(program, "Xgemm");
+  auto kernel = Kernel(program_, "Xgemm");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m_ceiled));
@@ -236,7 +234,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                            c_one_i, c_two_i, c_one_i, 0, c_temp,
                            c_one, c_two, c_ld, c_offset, c_buffer,
-                           ConstantOne<T>(), program,
+                           ConstantOne<T>(), program_,
                            false, c_do_transpose, false);
   }
 }
@@ -247,21 +245,18 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
 // The direct version of GEMM, requiring just one kernel, no pre or post-processing kernels.
 template <typename T>
 void Xgemm<T>::GemmDirect(const size_t m, const size_t n, const size_t k,
-                                const T alpha,
-                                const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                                const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                                const T beta,
-                                const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
-                                const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                                const bool a_conjugate, const bool b_conjugate) {
-
-  // Loads the program from the database
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
+                          const T alpha,
+                          const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                          const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                          const T beta,
+                          const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                          const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
+                          const bool a_conjugate, const bool b_conjugate) {
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
   const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectTT" : "XgemmDirectTN") :
                                        (b_do_transpose ? "XgemmDirectNT" : "XgemmDirectNN");
-  auto kernel = Kernel(program, name);
+  auto kernel = Kernel(program_, name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m));

@@ -43,9 +43,8 @@ void Xamax<T>::DoAmax(const size_t n,
   TestVectorIndex(1, imax_buffer, imax_offset);
 
   // Retrieves the Xamax kernels from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel1 = Kernel(program, "Xamax");
-  auto kernel2 = Kernel(program, "XamaxEpilogue");
+  auto kernel1 = Kernel(program_, "Xamax");
+  auto kernel2 = Kernel(program_, "XamaxEpilogue");
 
   // Creates the buffer for intermediate values
   auto temp_size = 2*db_["WGS2"];

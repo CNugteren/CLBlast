@@ -29,12 +29,62 @@ VENDOR_TRANSLATION_TABLE = {
 }
 
 
+def remove_mismatched_arguments(database):
+    """Checks for tuning results with mis-matched entries and removes them according to user preferences"""
+    kernel_attributes = clblast.DEVICE_TYPE_ATTRIBUTES + clblast.KERNEL_ATTRIBUTES + ["kernel"]
+
+    # For Python 2 and 3 compatibility
+    try:
+        user_input = raw_input
+    except NameError:
+        user_input = input
+        pass
+
+    # Check for mis-matched entries
+    for kernel_group_name, kernel_group in db.group_by(database["sections"], kernel_attributes):
+        group_by_arguments = db.group_by(kernel_group, clblast.ARGUMENT_ATTRIBUTES)
+        if len(group_by_arguments) != 1:
+            print("[database] WARNING: entries for a single kernel with multiple argument values " + str(kernel_group_name))
+            print("[database] Either quit now, or remove all but one of the argument combinations below:")
+            for index, (attribute_group_name, mismatching_entries) in enumerate(group_by_arguments):
+                print("[database]     %d: %s" % (index, attribute_group_name))
+            for attribute_group_name, mismatching_entries in group_by_arguments:
+                response = user_input("[database] Remove entries corresponding to %s, [y/n]? " % str(attribute_group_name))
+                if response == "y":
+                    for entry in mismatching_entries:
+                        database["sections"].remove(entry)
+                    print("[database] Removed %d entry/entries" % len(mismatching_entries))
+
+    # Sanity-check: all mis-matched entries should be removed
+    for kernel_group_name, kernel_group in db.group_by(database["sections"], kernel_attributes):
+        group_by_arguments = db.group_by(kernel_group, clblast.ARGUMENT_ATTRIBUTES)
+        if len(group_by_arguments) != 1:
+            print("[database] ERROR: entries for a single kernel with multiple argument values " + str(kernel_group_name))
+        assert len(group_by_arguments) == 1
+
+
+def remove_database_entries(database, remove_if_matches_fields):
+    assert len(remove_if_matches_fields.keys()) > 0
+
+    def remove_this_entry(section):
+        for key in remove_if_matches_fields.keys():
+            if section[key] != remove_if_matches_fields[key]:
+                return False
+        return True
+
+    old_length = len(database["sections"])
+    database["sections"] = [x for x in database["sections"] if not remove_this_entry(x)]
+    new_length = len(database["sections"])
+    print("[database] Removed %d entries from the database" % (old_length - new_length))
+
+
 def main(argv):
 
     # Parses the command-line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("source_folder", help="The folder with JSON files to parse to add to the database")
     parser.add_argument("clblast_root", help="Root of the CLBlast sources")
+    parser.add_argument("-r", "--remove_device", type=str, default=None, help="Removes all entries for a specific device")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -76,8 +126,17 @@ def main(argv):
         new_size = db.length(database)
         print("with " + str(new_size - old_size) + " new items")  # Newline printed here
 
+    # Checks for tuning results with mis-matched entries
+    remove_mismatched_arguments(database)
+
     # Stores the modified database back to disk
     if len(glob.glob(json_files)) >= 1:
+        io.save_database(database, database_filename)
+
+    # Removes database entries before continuing
+    if cl_args.remove_device is not None:
+        print("[database] Removing all results for device '%s'" % cl_args.remove_device)
+        remove_database_entries(database, {"device": cl_args.remove_device})
         io.save_database(database, database_filename)
 
     # Retrieves the best performing results

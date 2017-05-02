@@ -42,7 +42,7 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      const realMD avec = agm[idk*(a_ld/VWMD) + idm + a_offset];
+      const realMD avec = agm[idk*(a_ld/VWMD) + idm + (a_offset/VWMD)];
       #if VWMD == 1
          alm[kg*(WGD + PADA) + mg] = avec;
       #elif VWMD == 2
@@ -113,7 +113,7 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      const realND bvec = bgm[idk*(b_ld/VWND) + idn + b_offset];
+      const realND bvec = bgm[idk*(b_ld/VWND) + idn + (b_offset/VWND)];
       #if VWND == 1
          blm[kg*(WGD + PADB) + ng] = bvec;
       #elif VWND == 2

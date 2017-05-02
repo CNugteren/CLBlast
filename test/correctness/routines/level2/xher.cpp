@@ -12,15 +12,11 @@
 #include "test/correctness/testblas.hpp"
 #include "test/routines/level2/xher.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
-  errors += clblast::RunTests<clblast::TestXher<float2,float>, float2, float>(argc, argv, false, "CHER");
-  errors += clblast::RunTests<clblast::TestXher<double2,double>, double2, double>(argc, argv, true, "ZHER");
+  errors += clblast::RunTests<clblast::TestXher<clblast::float2,float>, clblast::float2, float>(argc, argv, false, "CHER");
+  errors += clblast::RunTests<clblast::TestXher<clblast::double2,double>, clblast::double2, double>(argc, argv, true, "ZHER");
   if (errors > 0) { return 1; } else { return 0; }
 }
 

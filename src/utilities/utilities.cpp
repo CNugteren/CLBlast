@@ -18,57 +18,80 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
+#include <cmath>
 
 namespace clblast {
 // =================================================================================================
 
 // Returns a scalar with a default value
-template <typename T>
-T GetScalar() {
-  return static_cast<T>(2.0);
-}
+template <typename T> T GetScalar() { return static_cast<T>(2.0); }
 template float GetScalar<float>();
 template double GetScalar<double>();
+template <> half GetScalar() { return FloatToHalf(2.0f); }
+template <> float2 GetScalar() { return {2.0f, 0.5f}; }
+template <> double2 GetScalar() { return {2.0, 0.5}; }
 
-// Specialized version of the above for half-precision
-template <>
-half GetScalar() {
-  return FloatToHalf(2.0f);
-}
-
-// Specialized versions of the above for complex data-types
-template <>
-float2 GetScalar() {
-  return {2.0f, 0.5f};
-}
-template <>
-double2 GetScalar() {
-  return {2.0, 0.5};
-}
+// Returns a scalar of value 0
+template <typename T> T ConstantZero() { return static_cast<T>(0.0); }
+template float ConstantZero<float>();
+template double ConstantZero<double>();
+template <> half ConstantZero() { return FloatToHalf(0.0f); }
+template <> float2 ConstantZero() { return {0.0f, 0.0f}; }
+template <> double2 ConstantZero() { return {0.0, 0.0}; }
 
 // Returns a scalar of value 1
-template <typename T>
-T ConstantOne() {
-  return static_cast<T>(1.0);
-}
+template <typename T> T ConstantOne() { return static_cast<T>(1.0); }
 template float ConstantOne<float>();
 template double ConstantOne<double>();
+template <> half ConstantOne() { return FloatToHalf(1.0f); }
+template <> float2 ConstantOne() { return {1.0f, 0.0f}; }
+template <> double2 ConstantOne() { return {1.0, 0.0}; }
 
-// Specialized version of the above for half-precision
-template <>
-half ConstantOne() {
-  return FloatToHalf(1.0f);
+// Returns a scalar of value -1
+template <typename T> T ConstantNegOne() { return static_cast<T>(-1.0); }
+template float ConstantNegOne<float>();
+template double ConstantNegOne<double>();
+template <> half ConstantNegOne() { return FloatToHalf(-1.0f); }
+template <> float2 ConstantNegOne() { return {-1.0f, 0.0f}; }
+template <> double2 ConstantNegOne() { return {-1.0, 0.0}; }
+
+// Returns a scalar of some value
+template <typename T> T Constant(const double val) { return static_cast<T>(val); }
+template float Constant<float>(const double);
+template double Constant<double>(const double);
+template <> half Constant(const double val) { return FloatToHalf(static_cast<float>(val)); }
+template <> float2 Constant(const double val) { return {static_cast<float>(val), 0.0f}; }
+template <> double2 Constant(const double val) { return {val, 0.0}; }
+
+// Returns a small scalar value just larger than 0
+template <typename T> T SmallConstant() { return static_cast<T>(1e-4); }
+template float SmallConstant<float>();
+template double SmallConstant<double>();
+template <> half SmallConstant() { return FloatToHalf(1e-4f); }
+template <> float2 SmallConstant() { return {1e-4f, 0.0f}; }
+template <> double2 SmallConstant() { return {1e-4, 0.0}; }
+
+// Returns the absolute value of a scalar (modulus in case of a complex number)
+template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value) { return std::fabs(value); }
+template float AbsoluteValue<float>(const float);
+template double AbsoluteValue<double>(const double);
+template <> half AbsoluteValue(const half value) { return FloatToHalf(std::fabs(HalfToFloat(value))); }
+template <> float AbsoluteValue(const float2 value) {
+  if (value.real() == 0.0f && value.imag() == 0.0f) { return 0.0f; }
+  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+}
+template <> double AbsoluteValue(const double2 value) {
+  if (value.real() == 0.0 && value.imag() == 0.0) { return 0.0; }
+  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
 }
 
-// Specialized versions of the above for complex data-types
-template <>
-float2 ConstantOne() {
-  return {1.0f, 0.0f};
-}
-template <>
-double2 ConstantOne() {
-  return {1.0, 0.0};
-}
+// Returns whether a scalar is close to zero
+template <typename T> bool IsCloseToZero(const T value) { return (value > -SmallConstant<T>()) && (value < SmallConstant<T>()); }
+template bool IsCloseToZero<float>(const float);
+template bool IsCloseToZero<double>(const double);
+template <> bool IsCloseToZero(const half value) { return IsCloseToZero(HalfToFloat(value)); }
+template <> bool IsCloseToZero(const float2 value) { return IsCloseToZero(value.real()) || IsCloseToZero(value.imag()); }
+template <> bool IsCloseToZero(const double2 value) { return IsCloseToZero(value.real()) || IsCloseToZero(value.imag()); }
 
 // =================================================================================================
 
@@ -79,23 +102,27 @@ std::string ToString(T value) {
 }
 template std::string ToString<int>(int value);
 template std::string ToString<size_t>(size_t value);
-template std::string ToString<float>(float value);
-template std::string ToString<double>(double value);
+template <>
+std::string ToString(float value) {
+  std::ostringstream result;
+  result << std::fixed << std::setprecision(2) << value;
+  return result.str();
+}
+template <>
+std::string ToString(double value) {
+  std::ostringstream result;
+  result << std::fixed << std::setprecision(2) << value;
+  return result.str();
+}
 
 // If not possible directly: special cases for complex data-types
 template <>
 std::string ToString(float2 value) {
-  std::ostringstream real, imag;
-  real << std::setprecision(2) << value.real();
-  imag << std::setprecision(2) << value.imag();
-  return real.str()+"+"+imag.str()+"i";
+  return ToString(value.real())+"+"+ToString(value.imag())+"i";
 }
 template <>
 std::string ToString(double2 value) {
-  std::ostringstream real, imag;
-  real << std::setprecision(2) << value.real();
-  imag << std::setprecision(2) << value.imag();
-  return real.str()+"+"+imag.str()+"i";
+  return ToString(value.real())+"+"+ToString(value.imag())+"i";
 }
 
 // If not possible directly: special case for half-precision
@@ -149,6 +176,7 @@ std::string ToString(Precision value) {
     case Precision::kDouble: return ToString(static_cast<int>(value))+" (double)";
     case Precision::kComplexSingle: return ToString(static_cast<int>(value))+" (complex-single)";
     case Precision::kComplexDouble: return ToString(static_cast<int>(value))+" (complex-double)";
+    case Precision::kAny: return ToString(static_cast<int>(value))+" (any)";
   }
 }
 template <>
@@ -299,43 +327,78 @@ unsigned int GetRandomSeed() {
 
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
-void PopulateVector(std::vector<T> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<T>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<T>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<T> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element = dist(mt); }
+void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) { element = static_cast<T>(dist(mt)); }
 }
-template void PopulateVector<float>(std::vector<float>&, const unsigned int);
-template void PopulateVector<double>(std::vector<double>&, const unsigned int);
+template void PopulateVector<float>(std::vector<float>&, std::mt19937&, std::uniform_real_distribution<double>&);
+template void PopulateVector<double>(std::vector<double>&, std::mt19937&, std::uniform_real_distribution<double>&);
 
 // Specialized versions of the above for complex data-types
 template <>
-void PopulateVector(std::vector<float2> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<float>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
+void PopulateVector(std::vector<float2> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) {
+    element.real(static_cast<float>(dist(mt)));
+    element.imag(static_cast<float>(dist(mt)));
+  }
 }
 template <>
-void PopulateVector(std::vector<double2> &vector, const unsigned int seed) {
-  auto lower_limit = static_cast<double>(kTestDataLowerLimit);
-  auto upper_limit = static_cast<double>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<double> dist(lower_limit, upper_limit);
+void PopulateVector(std::vector<double2> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
   for (auto &element: vector) { element.real(dist(mt)); element.imag(dist(mt)); }
 }
 
 // Specialized versions of the above for half-precision
 template <>
-void PopulateVector(std::vector<half> &vector, const unsigned int seed) {
-  const auto lower_limit = static_cast<float>(kTestDataLowerLimit);
-  const auto upper_limit = static_cast<float>(kTestDataUpperLimit);
-  std::mt19937 mt(seed);
-  std::uniform_real_distribution<float> dist(lower_limit, upper_limit);
-  for (auto &element: vector) { element = FloatToHalf(dist(mt)); }
+void PopulateVector(std::vector<half> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
+  for (auto &element: vector) { element = FloatToHalf(static_cast<float>(dist(mt))); }
 }
+
+// =================================================================================================
+
+template <typename T, typename U>
+void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names) {
+  for (auto &name: names) {
+    if (name == kBufVecX) {buffers_host.x_vec = std::vector<T>(args.x_size, static_cast<T>(0)); buffers.x_vec.Read(queue, args.x_size, buffers_host.x_vec); }
+    else if (name == kBufVecY) { buffers_host.y_vec = std::vector<T>(args.y_size, static_cast<T>(0)); buffers.y_vec.Read(queue, args.y_size, buffers_host.y_vec); }
+    else if (name == kBufMatA) { buffers_host.a_mat = std::vector<T>(args.a_size, static_cast<T>(0)); buffers.a_mat.Read(queue, args.a_size, buffers_host.a_mat); }
+    else if (name == kBufMatB) { buffers_host.b_mat = std::vector<T>(args.b_size, static_cast<T>(0)); buffers.b_mat.Read(queue, args.b_size, buffers_host.b_mat); }
+    else if (name == kBufMatC) { buffers_host.c_mat = std::vector<T>(args.c_size, static_cast<T>(0)); buffers.c_mat.Read(queue, args.c_size, buffers_host.c_mat); }
+    else if (name == kBufMatAP) { buffers_host.ap_mat = std::vector<T>(args.ap_size, static_cast<T>(0)); buffers.ap_mat.Read(queue, args.ap_size, buffers_host.ap_mat); }
+    else if (name == kBufScalar) { buffers_host.scalar = std::vector<T>(args.scalar_size, static_cast<T>(0)); buffers.scalar.Read(queue, args.scalar_size, buffers_host.scalar); }
+    else { throw std::runtime_error("Invalid buffer name"); }
+  }
+}
+
+template <typename T, typename U>
+void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names) {
+  for (auto &name: names) {
+    if (name == kBufVecX) { buffers.x_vec.Write(queue, args.x_size, buffers_host.x_vec); }
+    else if (name == kBufVecY) { buffers.y_vec.Write(queue, args.y_size, buffers_host.y_vec); }
+    else if (name == kBufMatA) { buffers.a_mat.Write(queue, args.a_size, buffers_host.a_mat); }
+    else if (name == kBufMatB) { buffers.b_mat.Write(queue, args.b_size, buffers_host.b_mat); }
+    else if (name == kBufMatC) { buffers.c_mat.Write(queue, args.c_size, buffers_host.c_mat); }
+    else if (name == kBufMatAP) { buffers.ap_mat.Write(queue, args.ap_size, buffers_host.ap_mat); }
+    else if (name == kBufScalar) { buffers.scalar.Write(queue, args.scalar_size, buffers_host.scalar); }
+    else { throw std::runtime_error("Invalid buffer name"); }
+  }
+}
+
+// Compiles the above functions
+template void DeviceToHost(const Arguments<half>&, Buffers<half>&, BuffersHost<half>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<float>&, Buffers<float>&, BuffersHost<float>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<double>&, Buffers<double>&, BuffersHost<double>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<float>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<double>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<float2>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
+template void DeviceToHost(const Arguments<double2>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<half>&, Buffers<half>&, BuffersHost<half>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<float>&, Buffers<float>&, BuffersHost<float>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<double>&, Buffers<double>&, BuffersHost<double>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<float>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<double>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<float2>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
+template void HostToDevice(const Arguments<double2>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
 
 // =================================================================================================
 
@@ -405,6 +468,7 @@ size_t GetBytes(const Precision precision) {
     case Precision::kDouble: return 8;
     case Precision::kComplexSingle: return 8;
     case Precision::kComplexDouble: return 16;
+    case Precision::kAny: return -1;
   }
 }
 

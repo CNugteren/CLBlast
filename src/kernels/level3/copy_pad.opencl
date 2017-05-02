@@ -24,16 +24,14 @@ R"(
 // Copies a matrix from source to destination. The output is padded with zero values in case the
 // destination matrix dimensions are larger than the source matrix dimensions. Additionally, the ld
 // value and offset can be different.
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-void CopyPadMatrix(const int src_one, const int src_two,
-                   const int src_ld, const int src_offset,
-                   __global const real* restrict src,
-                   const int dest_one, const int dest_two,
-                   const int dest_ld, const int dest_offset,
-                   __global real* dest,
-                   const real_arg arg_alpha,
-                   const int do_conjugate) {
-  const real alpha = GetRealArg(arg_alpha);
+inline void _CopyPadMatrix(const int src_one, const int src_two,
+                           const int src_ld, const int src_offset,
+                           __global const real* restrict src,
+                           const int dest_one, const int dest_two,
+                           const int dest_ld, const int dest_offset,
+                           __global real* dest,
+                           const real alpha,
+                           const int do_conjugate) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -60,22 +58,36 @@ void CopyPadMatrix(const int src_one, const int src_two,
   }
 }
 
+// Interface to the above function
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyPadMatrix(const int src_one, const int src_two,
+                   const int src_ld, const int src_offset,
+                   __global const real* restrict src,
+                   const int dest_one, const int dest_two,
+                   const int dest_ld, const int dest_offset,
+                   __global real* dest,
+                   const real_arg arg_alpha,
+                   const int do_conjugate) {
+  const real alpha = GetRealArg(arg_alpha);
+  _CopyPadMatrix(src_one, src_two, src_ld, src_offset, src,
+                 dest_one, dest_two, dest_ld, dest_offset, dest,
+                 alpha, do_conjugate);
+}
+
 // =================================================================================================
 
 // Same as above, but now un-pads a matrix. This kernel reads data from a padded source matrix, but
 // writes only the actual data back to the destination matrix. Again, the ld value and offset can
 // be different.
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
-void CopyMatrix(const int src_one, const int src_two,
-                const int src_ld, const int src_offset,
-                __global const real* restrict src,
-                const int dest_one, const int dest_two,
-                const int dest_ld, const int dest_offset,
-                __global real* dest,
-                const real_arg arg_alpha,
-                const int upper, const int lower,
-                const int diagonal_imag_zero) {
-  const real alpha = GetRealArg(arg_alpha);
+inline void _CopyMatrix(const int src_one, const int src_two,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_one, const int dest_two,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest,
+                        const real alpha,
+                        const int upper, const int lower,
+                        const int diagonal_imag_zero) {
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
@@ -105,6 +117,62 @@ void CopyMatrix(const int src_one, const int src_two,
   }
 }
 
+// Interface to the above function
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyMatrix(const int src_one, const int src_two,
+                const int src_ld, const int src_offset,
+                __global const real* restrict src,
+                const int dest_one, const int dest_two,
+                const int dest_ld, const int dest_offset,
+                __global real* dest,
+                const real_arg arg_alpha,
+                const int upper, const int lower,
+                const int diagonal_imag_zero) {
+  const real alpha = GetRealArg(arg_alpha);
+  _CopyMatrix(src_one, src_two, src_ld, src_offset, src,
+              dest_one, dest_two, dest_ld, dest_offset, dest,
+              alpha, upper, lower, diagonal_imag_zero);
+}
+
+// =================================================================================================
+#if defined(ROUTINE_GEMMBATCHED)
+
+// Batched version of the above
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyPadMatrixBatched(const int src_one, const int src_two,
+                          const int src_ld, const __constant int* src_offsets,
+                          __global const real* restrict src,
+                          const int dest_one, const int dest_two,
+                          const int dest_ld, const __constant int* dest_offsets,
+                          __global real* dest,
+                          const int do_conjugate) {
+  const int batch = get_group_id(2);
+  const int src_offset = src_offsets[batch];
+  const int dest_offset = dest_offsets[batch];
+  real alpha; SetToOne(alpha);
+  _CopyPadMatrix(src_one, src_two, src_ld, src_offset, src,
+                 dest_one, dest_two, dest_ld, dest_offset, dest,
+                 alpha, do_conjugate);
+}
+
+// Batched version of the above
+__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+void CopyMatrixBatched(const int src_one, const int src_two,
+                       const int src_ld, const __constant int* src_offsets,
+                       __global const real* restrict src,
+                       const int dest_one, const int dest_two,
+                       const int dest_ld, const __constant int* dest_offsets,
+                       __global real* dest) {
+  const int batch = get_group_id(2);
+  const int src_offset = src_offsets[batch];
+  const int dest_offset = dest_offsets[batch];
+  real alpha; SetToOne(alpha);
+  _CopyMatrix(src_one, src_two, src_ld, src_offset, src,
+              dest_one, dest_two, dest_ld, dest_offset, dest,
+              alpha, 0, 0, 0);
+}
+
+#endif
 // =================================================================================================
 
 // End of the C++11 raw string literal

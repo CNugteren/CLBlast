@@ -96,6 +96,9 @@ typedef enum CLBlastStatusCode_ {
   CLBlastInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  CLBlastInvalidBatchCount         = -2049, // The batch count needs to be positive
+  CLBlastInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
+  CLBlastMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   CLBlastInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   CLBlastNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   CLBlastNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
@@ -116,6 +119,11 @@ typedef enum CLBlastTriangle_ { CLBlastTriangleUpper = 121,
 typedef enum CLBlastDiagonal_ { CLBlastDiagonalNonUnit = 131,
                                 CLBlastDiagonalUnit = 132 } CLBlastDiagonal;
 typedef enum CLBlastSide_ { CLBlastSideLeft = 141, CLBlastSideRight = 142 } CLBlastSide;
+
+// Precision enum (values in bits)
+typedef enum CLBlastPrecision_ { CLBlastPrecisionHalf = 16, CLBlastPrecisionSingle = 32,
+                                 CLBlastPrecisionDouble = 64, CLBlastPrecisionComplexSingle = 3232,
+                                 CLBlastPrecisionComplexDouble = 6464 } CLBlastPrecision;
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
@@ -1258,7 +1266,7 @@ CLBlastStatusCode PUBLIC_API CLBlastHtrmm(const CLBlastLayout layout, const CLBl
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 CLBlastStatusCode PUBLIC_API CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const float alpha,
@@ -1280,12 +1288,6 @@ CLBlastStatusCode PUBLIC_API CLBlastCtrsm(const CLBlastLayout layout, const CLBl
 CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const cl_double2 alpha,
-                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                                          cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                                          cl_command_queue* queue, cl_event* event);
-CLBlastStatusCode PUBLIC_API CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                                          const size_t m, const size_t n,
-                                          const cl_half alpha,
                                           const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
@@ -1326,6 +1328,85 @@ CLBlastStatusCode PUBLIC_API CLBlastHomatcopy(const CLBlastLayout layout, const 
                                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                               cl_command_queue* queue, cl_event* event);
 
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSaxpyBatched(const size_t n,
+                                                 const float *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDaxpyBatched(const size_t n,
+                                                 const double *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCaxpyBatched(const size_t n,
+                                                 const cl_float2 *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZaxpyBatched(const size_t n,
+                                                 const cl_double2 *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHaxpyBatched(const size_t n,
+                                                 const cl_half *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const float *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const float *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const double *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const double *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_float2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_float2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_double2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_double2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_half *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_half *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
@@ -1335,6 +1416,14 @@ CLBlastStatusCode PUBLIC_API CLBlastClearCache();
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 CLBlastStatusCode PUBLIC_API CLBlastFillCache(const cl_device_id device);
+
+// =================================================================================================
+
+// Overrides tuning parameters for a specific device-precision-kernel combination. The next time
+// the target routine is called it will re-compile and use the new parameters from then on.
+CLBlastStatusCode PUBLIC_API CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name,
+                                                       const CLBlastPrecision precision, const size_t num_parameters,
+                                                       const char** parameters_names, const size_t* parameters_values);
 
 // =================================================================================================
 

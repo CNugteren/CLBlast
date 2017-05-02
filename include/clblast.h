@@ -17,6 +17,8 @@
 #define CLBLAST_CLBLAST_H_
 
 #include <cstdlib> // For size_t
+#include <string> // For OverrideParameters function
+#include <unordered_map> // For OverrideParameters function
 
 // Includes the normal OpenCL C header
 #if defined(__APPLE__) || defined(__MACOSX)
@@ -95,6 +97,9 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInvalidBatchCount         = -2049, // The batch count needs to be positive
+  kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
+  kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
   kNoHalfPrecision           = -2045, // Half precision (16-bits) not supported by the device
   kNoDoublePrecision         = -2044, // Double precision (64-bits) not supported by the device
@@ -114,7 +119,7 @@ enum class Side { kLeft = 141, kRight = 142 };
 
 // Precision scoped enum (values in bits)
 enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
-                       kComplexSingle = 3232, kComplexDouble = 6464 };
+                       kComplexSingle = 3232, kComplexDouble = 6464, kAny = -1 };
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
@@ -583,7 +588,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
@@ -605,6 +610,27 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                     cl_command_queue* queue, cl_event* event = nullptr);
 
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
+
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
@@ -614,6 +640,14 @@ StatusCode PUBLIC_API ClearCache();
 // The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 StatusCode PUBLIC_API FillCache(const cl_device_id device);
+
+// =================================================================================================
+
+// Overrides tuning parameters for a specific device-precision-kernel combination. The next time
+// the target routine is called it will re-compile and use the new parameters from then on.
+StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::string &kernel_name,
+                                         const Precision precision,
+                                         const std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 

@@ -22,22 +22,52 @@
 namespace clblast {
 // =================================================================================================
 
-// Eror margings (relative and absolute)
+// Relative error margins
 template <typename T>
 float getRelativeErrorMargin() {
   return 0.005f; // 0.5% is considered acceptable for float/double-precision
 }
+template float getRelativeErrorMargin<float>(); // as the above default
+template float getRelativeErrorMargin<double>(); // as the above default
+template float getRelativeErrorMargin<float2>(); // as the above default
+template float getRelativeErrorMargin<double2>(); // as the above default
 template <>
 float getRelativeErrorMargin<half>() {
   return 0.080f; // 8% (!) error is considered acceptable for half-precision
 }
+
+// Absolute error margins
 template <typename T>
 float getAbsoluteErrorMargin() {
   return 0.001f;
 }
+template float getAbsoluteErrorMargin<float>(); // as the above default
+template float getAbsoluteErrorMargin<double>(); // as the above default
+template float getAbsoluteErrorMargin<float2>(); // as the above default
+template float getAbsoluteErrorMargin<double2>(); // as the above default
 template <>
 float getAbsoluteErrorMargin<half>() {
-  return 0.10f; // especially small values are inaccurate for half-precision
+  return 0.15f; // especially small values are inaccurate for half-precision
+}
+
+// L2 error margins
+template <typename T>
+double getL2ErrorMargin() {
+  return 0.0f; // zero means don't look at the L2 error margin at all, use the other metrics
+}
+template double getL2ErrorMargin<float>(); // as the above default
+template double getL2ErrorMargin<double>(); // as the above default
+template double getL2ErrorMargin<float2>(); // as the above default
+template double getL2ErrorMargin<double2>(); // as the above default
+template <>
+double getL2ErrorMargin<half>() {
+  return 0.05; // half-precision results are considered OK as long as the L2 error is low enough
+}
+
+// Error margin: numbers beyond this value are considered equal to inf or NaN
+template <typename T>
+T getAlmostInfNumber() {
+  return static_cast<T>(1e35); // used for correctness testing of TRSV and TRSM routines
 }
 
 // Maximum number of test results printed on a single line
@@ -86,23 +116,43 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
     tests_failed_{0} {
   options_ = options;
 
+  // Determines which reference is the default
+  #if defined(CLBLAST_REF_CBLAS)
+      auto default_cblas = 0;
+  #endif
+  #if defined(CLBLAST_REF_CLBLAS)
+      auto default_clblas = 0;
+  #endif
+  #if defined(CLBLAST_REF_CUBLAS)
+      auto default_cublas = 0;
+  #endif
+  #if defined(CLBLAST_REF_CBLAS)
+    default_cblas = 1;
+  #elif defined(CLBLAST_REF_CLBLAS)
+    default_clblas = 1;
+  #elif defined(CLBLAST_REF_CUBLAS)
+    default_cublas = 1;
+  #endif
+
   // Determines which reference to test against
-  #if defined(CLBLAST_REF_CLBLAS) && defined(CLBLAST_REF_CBLAS)
-    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 0);
-    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
-  #elif CLBLAST_REF_CLBLAS
-    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, 1);
-    compare_cblas_ = 0;
-  #elif CLBLAST_REF_CBLAS
-    compare_clblas_ = 0;
-    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, 1);
-  #else
-    compare_clblas_ = 0;
-    compare_cblas_ = 0;
+  compare_clblas_ = 0;
+  compare_cblas_ = 0;
+  compare_cublas_ = 0;
+  #if defined(CLBLAST_REF_CBLAS)
+    compare_cblas_  = GetArgument(arguments, help_, kArgComparecblas, default_cblas);
+  #endif
+  #if defined(CLBLAST_REF_CLBLAS)
+    compare_clblas_ = GetArgument(arguments, help_, kArgCompareclblas, default_clblas);
+  #endif
+  #if defined(CLBLAST_REF_CUBLAS)
+    compare_cublas_  = GetArgument(arguments, help_, kArgComparecublas, default_cublas);
   #endif
 
   // Prints the help message (command-line arguments)
   if (!silent) { fprintf(stdout, "\n* %s\n", help_.c_str()); }
+
+  // Support for cuBLAS not available yet
+  if (compare_cublas_) { throw std::runtime_error("Cannot test against cuBLAS; not implemented yet"); }
 
   // Can only test against a single reference (not two, not zero)
   if (compare_clblas_ && compare_cblas_) {
@@ -138,6 +188,9 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
           kUnsupportedReference.c_str());
   fprintf(stdout, "* Testing with error margins of %.1lf%% (relative) and %.3lf (absolute)\n",
           100.0f * getRelativeErrorMargin<T>(), getAbsoluteErrorMargin<T>());
+  if (getL2ErrorMargin<T>() != 0.0f) {
+    fprintf(stdout, "* and a combined maximum allowed L2 error of %.2e\n", getL2ErrorMargin<T>());
+  }
 
   // Initializes clBLAS
   #ifdef CLBLAST_REF_CLBLAS
@@ -248,8 +301,29 @@ template <typename T, typename U>
 void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCode clblast_status,
                                  const Arguments<U> &args) {
 
+  // Either an OpenCL or CLBlast internal error occurred, fail the test immediately
+  // NOTE: the OpenCL error codes grow downwards without any declared lower bound, hence the magic
+  // number. The last error code is atm around -70, but -500 is chosen to be on the safe side.
+  if (clblast_status != StatusCode::kSuccess &&
+      (clblast_status > static_cast<StatusCode>(-500) /* matches OpenCL errors (see above) */ ||
+       clblast_status < StatusCode::kNotImplemented) /* matches CLBlast internal errors */) {
+    PrintTestResult(kErrorStatus);
+    ReportError({StatusCode::kSuccess, clblast_status, kStatusError, args});
+    if (verbose_) {
+      fprintf(stdout, "\n");
+      PrintErrorLog({{StatusCode::kSuccess, clblast_status, kStatusError, args}});
+      fprintf(stdout, "   ");
+    }
+  }
+
+  // Routine is not implemented
+  else if (clblast_status == StatusCode::kNotImplemented) {
+    PrintTestResult(kSkippedCompilation);
+    ReportSkipped();
+  }
+
   // Cannot compare error codes against a library other than clBLAS
-  if (compare_cblas_) {
+  else if (compare_cblas_) {
     PrintTestResult(kUnsupportedReference);
     ReportSkipped();
   }
@@ -264,13 +338,6 @@ void Tester<T,U>::TestErrorCodes(const StatusCode clblas_status, const StatusCod
   else if (clblast_status == StatusCode::kNoDoublePrecision ||
            clblast_status == StatusCode::kNoHalfPrecision) {
     PrintTestResult(kUnsupportedPrecision);
-    ReportSkipped();
-  }
-
-  // Could not compile the CLBlast kernel properly
-  else if (clblast_status == StatusCode::kOpenCLBuildProgramFailure ||
-           clblast_status == StatusCode::kNotImplemented) {
-    PrintTestResult(kSkippedCompilation);
     ReportSkipped();
   }
 
@@ -318,6 +385,9 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgCOffset)  { result += kArgCOffset + equals + ToString(args.c_offset) + " "; }
     if (o == kArgAPOffset) { result += kArgAPOffset + equals + ToString(args.ap_offset) + " "; }
     if (o == kArgDotOffset){ result += kArgDotOffset + equals + ToString(args.dot_offset) + " "; }
+    if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
+    if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
+    if (o == kArgBatchCount){result += kArgBatchCount + equals + ToString(args.batch_count) + " "; }
   }
   return result;
 }
@@ -385,10 +455,12 @@ template <typename T, typename U>
 void Tester<T,U>::PrintErrorLog(const std::vector<ErrorLogEntry> &error_log) {
   for (auto &entry: error_log) {
     if (entry.error_percentage != kStatusError) {
-      fprintf(stdout, "   Error rate %.1lf%%: ", entry.error_percentage);
+      fprintf(stdout, "   Error rate %.2lf%%: ", entry.error_percentage);
     }
     else {
-      fprintf(stdout, "   Status code %d (expected %d): ", entry.status_found, entry.status_expect);
+      fprintf(stdout, "   Status code %d (expected %d): ",
+              static_cast<int>(entry.status_found),
+              static_cast<int>(entry.status_expect));
     }
     fprintf(stdout, "%s\n", GetOptionsString(entry.args).c_str());
   }
@@ -408,6 +480,21 @@ bool TestSimilarityNear(const T val1, const T val2,
 
   // Shortcut, handles infinities
   if (val1 == val2) {
+    return true;
+  }
+  // Handles cases with both results NaN or inf
+  else if ((std::isnan(val1) && std::isnan(val2)) || (std::isinf(val1) && std::isinf(val2))) {
+    return true;
+  }
+  // Also considers it OK if one of the results in NaN and the other is inf
+  // Note: for TRSV and TRSM routines
+  else if ((std::isnan(val1) && std::isinf(val2)) || (std::isinf(val1) && std::isnan(val2))) {
+    return true;
+  }
+  // Also considers it OK if one of the values is super large and the other is inf or NaN
+  // Note: for TRSV and TRSM routines
+  else if ((std::abs(val1) > getAlmostInfNumber<T>() && (std::isinf(val2) || std::isnan(val2))) ||
+           (std::abs(val2) > getAlmostInfNumber<T>() && (std::isinf(val1) || std::isnan(val1)))) {
     return true;
   }
   // The values are zero or very small: the relative error is less meaningful
@@ -436,15 +523,21 @@ template bool TestSimilarity<double>(const double, const double);
 // Specialisations for non-standard data-types
 template <>
 bool TestSimilarity(const float2 val1, const float2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const double2 val1, const double2 val2) {
-  auto real = TestSimilarity(val1.real(), val2.real());
-  auto imag = TestSimilarity(val1.imag(), val2.imag());
-  return (real && imag);
+  const auto real = TestSimilarity(val1.real(), val2.real());
+  const auto imag = TestSimilarity(val1.imag(), val2.imag());
+  if (real && imag) { return true; }
+  // also OK if one is good and the combined is good (indicates a big diff between real & imag)
+  if (real || imag) { return TestSimilarity(val1.real() + val1.imag(), val2.real() + val2.imag()); }
+  return false; // neither real nor imag is good, return false
 }
 template <>
 bool TestSimilarity(const half val1, const half val2) {
@@ -452,6 +545,37 @@ bool TestSimilarity(const half val1, const half val2) {
   const auto kErrorMarginAbsolute = getAbsoluteErrorMargin<half>();
   return TestSimilarityNear(HalfToFloat(val1), HalfToFloat(val2),
                             kErrorMarginAbsolute, kErrorMarginRelative);
+}
+
+// =================================================================================================
+
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2) {
+  const auto difference = (val1 - val2);
+  return static_cast<double>(difference * difference);
+}
+
+// Compiles the default case for standard data-types
+template double SquaredDifference<float>(const float, const float);
+template double SquaredDifference<double>(const double, const double);
+
+// Specialisations for non-standard data-types
+template <>
+double SquaredDifference(const float2 val1, const float2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
+}
+template <>
+double SquaredDifference(const double2 val1, const double2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
+}
+template <>
+double SquaredDifference(const half val1, const half val2) {
+  return SquaredDifference(HalfToFloat(val1), HalfToFloat(val2));
 }
 
 // =================================================================================================

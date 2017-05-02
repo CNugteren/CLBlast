@@ -54,8 +54,7 @@ void Xher2<T>::DoHer2(const Layout layout, const Triangle triangle,
   TestVectorY(n, y_buffer, y_offset, y_inc);
 
   // Retrieves the kernel from the compiled binary
-  const auto program = GetProgramFromCache(context_, PrecisionValue<T>(), routine_name_);
-  auto kernel = Kernel(program, "Xher2");
+  auto kernel = Kernel(program_, "Xher2");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n));

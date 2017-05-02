@@ -94,7 +94,7 @@ void cblasXrot(const size_t n,
                std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc,
                const float cos,
                const float sin) {
-  cblas_srot(n,
+  cblas_srot(static_cast<int>(n),
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
              cos,
@@ -105,7 +105,7 @@ void cblasXrot(const size_t n,
                std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc,
                const double cos,
                const double sin) {
-  cblas_drot(n,
+  cblas_drot(static_cast<int>(n),
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
              cos,
@@ -117,7 +117,7 @@ void cblasXrotm(const size_t n,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<float>& sparam_buffer, const size_t sparam_offset) {
-  cblas_srotm(n,
+  cblas_srotm(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
               &sparam_buffer[sparam_offset]);
@@ -126,7 +126,7 @@ void cblasXrotm(const size_t n,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<double>& sparam_buffer, const size_t sparam_offset) {
-  cblas_drotm(n,
+  cblas_drotm(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
               &sparam_buffer[sparam_offset]);
@@ -136,28 +136,28 @@ void cblasXrotm(const size_t n,
 void cblasXswap(const size_t n,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_sswap(n,
+  cblas_sswap(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
 void cblasXswap(const size_t n,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_dswap(n,
+  cblas_dswap(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
 void cblasXswap(const size_t n,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_cswap(n,
+  cblas_cswap(static_cast<int>(n),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
 void cblasXswap(const size_t n,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_zswap(n,
+  cblas_zswap(static_cast<int>(n),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
@@ -177,14 +177,14 @@ void cblasXswap(const size_t n,
 void cblasXscal(const size_t n,
                 const float alpha,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  cblas_sscal(n,
+  cblas_sscal(static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXscal(const size_t n,
                 const double alpha,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  cblas_dscal(n,
+  cblas_dscal(static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -192,7 +192,7 @@ void cblasXscal(const size_t n,
                 const float2 alpha,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
-  cblas_cscal(n,
+  cblas_cscal(static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -200,7 +200,7 @@ void cblasXscal(const size_t n,
                 const double2 alpha,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
-  cblas_zscal(n,
+  cblas_zscal(static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -218,28 +218,28 @@ void cblasXscal(const size_t n,
 void cblasXcopy(const size_t n,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_scopy(n,
+  cblas_scopy(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
 void cblasXcopy(const size_t n,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_dcopy(n,
+  cblas_dcopy(static_cast<int>(n),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
 }
 void cblasXcopy(const size_t n,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_ccopy(n,
+  cblas_ccopy(static_cast<int>(n),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
 void cblasXcopy(const size_t n,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_zcopy(n,
+  cblas_zcopy(static_cast<int>(n),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
 }
@@ -259,7 +259,7 @@ void cblasXaxpy(const size_t n,
                 const float alpha,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_saxpy(n,
+  cblas_saxpy(static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -268,7 +268,7 @@ void cblasXaxpy(const size_t n,
                 const double alpha,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_daxpy(n,
+  cblas_daxpy(static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -278,7 +278,7 @@ void cblasXaxpy(const size_t n,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<float2>& y_buffer, const size_t y_offset, const size_t y_inc) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
-  cblas_caxpy(n,
+  cblas_caxpy(static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -288,7 +288,7 @@ void cblasXaxpy(const size_t n,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 std::vector<double2>& y_buffer, const size_t y_offset, const size_t y_inc) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
-  cblas_zaxpy(n,
+  cblas_zaxpy(static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -311,7 +311,7 @@ void cblasXdot(const size_t n,
                std::vector<float>& dot_buffer, const size_t dot_offset,
                const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                const std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  dot_buffer[dot_offset] = cblas_sdot(n,
+  dot_buffer[dot_offset] = cblas_sdot(static_cast<int>(n),
                                       &x_buffer[x_offset], static_cast<int>(x_inc),
                                       &y_buffer[y_offset], static_cast<int>(y_inc));
 }
@@ -319,7 +319,7 @@ void cblasXdot(const size_t n,
                std::vector<double>& dot_buffer, const size_t dot_offset,
                const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                const std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  dot_buffer[dot_offset] = cblas_ddot(n,
+  dot_buffer[dot_offset] = cblas_ddot(static_cast<int>(n),
                                       &x_buffer[x_offset], static_cast<int>(x_inc),
                                       &y_buffer[y_offset], static_cast<int>(y_inc));
 }
@@ -342,7 +342,7 @@ void cblasXdotu(const size_t n,
                 std::vector<float2>& dot_buffer, const size_t dot_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 const std::vector<float2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_cdotu_sub(n,
+  cblas_cdotu_sub(static_cast<int>(n),
                   reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
                   reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
                   reinterpret_cast<return_pointer_float>(&dot_buffer[dot_offset]));
@@ -351,7 +351,7 @@ void cblasXdotu(const size_t n,
                 std::vector<double2>& dot_buffer, const size_t dot_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 const std::vector<double2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_zdotu_sub(n,
+  cblas_zdotu_sub(static_cast<int>(n),
                   reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
                   reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
                   reinterpret_cast<return_pointer_double>(&dot_buffer[dot_offset]));
@@ -362,7 +362,7 @@ void cblasXdotc(const size_t n,
                 std::vector<float2>& dot_buffer, const size_t dot_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 const std::vector<float2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_cdotc_sub(n,
+  cblas_cdotc_sub(static_cast<int>(n),
                   reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
                   reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
                   reinterpret_cast<return_pointer_float>(&dot_buffer[dot_offset]));
@@ -371,7 +371,7 @@ void cblasXdotc(const size_t n,
                 std::vector<double2>& dot_buffer, const size_t dot_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                 const std::vector<double2>& y_buffer, const size_t y_offset, const size_t y_inc) {
-  cblas_zdotc_sub(n,
+  cblas_zdotc_sub(static_cast<int>(n),
                   reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
                   reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
                   reinterpret_cast<return_pointer_double>(&dot_buffer[dot_offset]));
@@ -381,25 +381,25 @@ void cblasXdotc(const size_t n,
 void cblasXnrm2(const size_t n,
                 std::vector<float>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset] = cblas_snrm2(n,
+  nrm2_buffer[nrm2_offset] = cblas_snrm2(static_cast<int>(n),
                                          &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXnrm2(const size_t n,
                 std::vector<double>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset] = cblas_dnrm2(n,
+  nrm2_buffer[nrm2_offset] = cblas_dnrm2(static_cast<int>(n),
                                          &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXnrm2(const size_t n,
                 std::vector<float2>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset].real(cblas_scnrm2(n,
+  nrm2_buffer[nrm2_offset].real(cblas_scnrm2(static_cast<int>(n),
                                             reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXnrm2(const size_t n,
                 std::vector<double2>& nrm2_buffer, const size_t nrm2_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  nrm2_buffer[nrm2_offset].real(cblas_dznrm2(n,
+  nrm2_buffer[nrm2_offset].real(cblas_dznrm2(static_cast<int>(n),
                                             reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXnrm2(const size_t n,
@@ -417,25 +417,25 @@ void cblasXnrm2(const size_t n,
 void cblasXasum(const size_t n,
                 std::vector<float>& asum_buffer, const size_t asum_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset] = cblas_sasum(n,
+  asum_buffer[asum_offset] = cblas_sasum(static_cast<int>(n),
                                          &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXasum(const size_t n,
                 std::vector<double>& asum_buffer, const size_t asum_offset,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset] = cblas_dasum(n,
+  asum_buffer[asum_offset] = cblas_dasum(static_cast<int>(n),
                                          &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXasum(const size_t n,
                 std::vector<float2>& asum_buffer, const size_t asum_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset].real(cblas_scasum(n,
+  asum_buffer[asum_offset].real(cblas_scasum(static_cast<int>(n),
                                             reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXasum(const size_t n,
                 std::vector<double2>& asum_buffer, const size_t asum_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  asum_buffer[asum_offset].real(cblas_dzasum(n,
+  asum_buffer[asum_offset].real(cblas_dzasum(static_cast<int>(n),
                                             reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXasum(const size_t n,
@@ -453,25 +453,25 @@ void cblasXasum(const size_t n,
 void cblasXamax(const size_t n,
                 std::vector<float>& imax_buffer, const size_t imax_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_isamax(n,
+  ((int*)&imax_buffer[0])[imax_offset] = cblas_isamax(static_cast<int>(n),
                                                      &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
                 std::vector<double>& imax_buffer, const size_t imax_offset,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_idamax(n,
+  ((int*)&imax_buffer[0])[imax_offset] = cblas_idamax(static_cast<int>(n),
                                                      &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
                 std::vector<float2>& imax_buffer, const size_t imax_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_icamax(n,
+  ((int*)&imax_buffer[0])[imax_offset] = cblas_icamax(static_cast<int>(n),
                                                      reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
                 std::vector<double2>& imax_buffer, const size_t imax_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_izamax(n,
+  ((int*)&imax_buffer[0])[imax_offset] = cblas_izamax(static_cast<int>(n),
                                                      reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
@@ -498,7 +498,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
                 const float beta,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_sgemv(layout, a_transpose,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -513,7 +513,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
                 const double beta,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_dgemv(layout, a_transpose,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -530,7 +530,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_cgemv(layout, a_transpose,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -547,7 +547,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zgemv(layout, a_transpose,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -583,7 +583,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
                 const float beta,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_sgbmv(layout, a_transpose,
-              m, n, kl, ku,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -598,7 +598,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
                 const double beta,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_dgbmv(layout, a_transpose,
-              m, n, kl, ku,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -615,7 +615,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_cgbmv(layout, a_transpose,
-              m, n, kl, ku,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -632,7 +632,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zgbmv(layout, a_transpose,
-              m, n, kl, ku,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -670,7 +670,7 @@ void cblasXhemv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_chemv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -687,7 +687,7 @@ void cblasXhemv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zhemv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -706,7 +706,7 @@ void cblasXhbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_chbmv(layout, triangle,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -723,7 +723,7 @@ void cblasXhbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zhbmv(layout, triangle,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -742,7 +742,7 @@ void cblasXhpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_chpmv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&ap_buffer[ap_offset]),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -759,7 +759,7 @@ void cblasXhpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zhpmv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&ap_buffer[ap_offset]),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -776,7 +776,7 @@ void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const float beta,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_ssymv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -791,7 +791,7 @@ void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const double beta,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_dsymv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -827,7 +827,7 @@ void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const float beta,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_ssbmv(layout, triangle,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -842,7 +842,7 @@ void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const double beta,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_dsbmv(layout, triangle,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -878,7 +878,7 @@ void cblasXspmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const float beta,
                 std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_sspmv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -893,7 +893,7 @@ void cblasXspmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const double beta,
                 std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc) {
   cblas_dspmv(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -926,7 +926,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_strmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -935,7 +935,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtrmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -944,7 +944,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctrmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -953,7 +953,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztrmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -976,7 +976,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stbmv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -985,7 +985,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtbmv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -994,7 +994,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctbmv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1003,7 +1003,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztbmv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1026,7 +1026,7 @@ void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& ap_buffer, const size_t ap_offset,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stpmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1035,7 +1035,7 @@ void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& ap_buffer, const size_t ap_offset,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtpmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1044,7 +1044,7 @@ void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& ap_buffer, const size_t ap_offset,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctpmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const float*>(&ap_buffer[ap_offset]),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1053,7 +1053,7 @@ void cblasXtpmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& ap_buffer, const size_t ap_offset,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztpmv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const double*>(&ap_buffer[ap_offset]),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1076,7 +1076,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_strsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1085,7 +1085,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtrsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1094,7 +1094,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctrsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1103,7 +1103,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztrsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1114,7 +1114,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stbsv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1123,7 +1123,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtbsv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               &a_buffer[a_offset], a_ld,
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1132,7 +1132,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctbsv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1141,7 +1141,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztbsv(layout, triangle, a_transpose, diagonal,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1152,7 +1152,7 @@ void cblasXtpsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float>& ap_buffer, const size_t ap_offset,
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stpsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1161,7 +1161,7 @@ void cblasXtpsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double>& ap_buffer, const size_t ap_offset,
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtpsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               &ap_buffer[ap_offset],
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
@@ -1170,7 +1170,7 @@ void cblasXtpsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<float2>& ap_buffer, const size_t ap_offset,
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctpsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const float*>(&ap_buffer[ap_offset]),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1179,7 +1179,7 @@ void cblasXtpsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const std::vector<double2>& ap_buffer, const size_t ap_offset,
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztpsv(layout, triangle, a_transpose, diagonal,
-              n,
+              static_cast<int>(n),
               reinterpret_cast<const double*>(&ap_buffer[ap_offset]),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
@@ -1192,7 +1192,7 @@ void cblasXger(const CBLAS_ORDER layout,
                const std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc,
                std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_sger(layout,
-             m, n,
+             static_cast<int>(m), static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1205,7 +1205,7 @@ void cblasXger(const CBLAS_ORDER layout,
                const std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc,
                std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_dger(layout,
-             m, n,
+             static_cast<int>(m), static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1238,7 +1238,7 @@ void cblasXgeru(const CBLAS_ORDER layout,
                 std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_cgeru(layout,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1252,7 +1252,7 @@ void cblasXgeru(const CBLAS_ORDER layout,
                 std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_zgeru(layout,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1268,7 +1268,7 @@ void cblasXgerc(const CBLAS_ORDER layout,
                 std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_cgerc(layout,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1282,7 +1282,7 @@ void cblasXgerc(const CBLAS_ORDER layout,
                 std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_zgerc(layout,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1296,7 +1296,7 @@ void cblasXher(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_cher(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
              reinterpret_cast<float*>(&a_buffer[a_offset]), a_ld);
@@ -1307,7 +1307,7 @@ void cblasXher(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_zher(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
              reinterpret_cast<double*>(&a_buffer[a_offset]), a_ld);
@@ -1320,7 +1320,7 @@ void cblasXhpr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<float2>& ap_buffer, const size_t ap_offset) {
   cblas_chpr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
              reinterpret_cast<float*>(&ap_buffer[ap_offset]));
@@ -1331,7 +1331,7 @@ void cblasXhpr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<double2>& ap_buffer, const size_t ap_offset) {
   cblas_zhpr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
              reinterpret_cast<double*>(&ap_buffer[ap_offset]));
@@ -1346,7 +1346,7 @@ void cblasXher2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 std::vector<float2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_cher2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1360,7 +1360,7 @@ void cblasXher2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 std::vector<double2>& a_buffer, const size_t a_offset, const size_t a_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_zher2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1376,7 +1376,7 @@ void cblasXhpr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 std::vector<float2>& ap_buffer, const size_t ap_offset) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_chpr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1390,7 +1390,7 @@ void cblasXhpr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 std::vector<double2>& ap_buffer, const size_t ap_offset) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_zhpr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
@@ -1404,7 +1404,7 @@ void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_ssyr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &a_buffer[a_offset], a_ld);
@@ -1415,7 +1415,7 @@ void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_dsyr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &a_buffer[a_offset], a_ld);
@@ -1442,7 +1442,7 @@ void cblasXspr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<float>& ap_buffer, const size_t ap_offset) {
   cblas_sspr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &ap_buffer[ap_offset]);
@@ -1453,7 +1453,7 @@ void cblasXspr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                std::vector<double>& ap_buffer, const size_t ap_offset) {
   cblas_dspr(layout, triangle,
-             n,
+             static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &ap_buffer[ap_offset]);
@@ -1481,7 +1481,7 @@ void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_ssyr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1494,7 +1494,7 @@ void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld) {
   cblas_dsyr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1526,7 +1526,7 @@ void cblasXspr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const std::vector<float>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<float>& ap_buffer, const size_t ap_offset) {
   cblas_sspr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1539,7 +1539,7 @@ void cblasXspr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const std::vector<double>& y_buffer, const size_t y_offset, const size_t y_inc,
                 std::vector<double>& ap_buffer, const size_t ap_offset) {
   cblas_dspr2(layout, triangle,
-              n,
+              static_cast<int>(n),
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
@@ -1576,7 +1576,7 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
                 const float beta,
                 std::vector<float>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_sgemm(layout, a_transpose, b_transpose,
-              m, n, k,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld,
@@ -1591,7 +1591,7 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
                 const double beta,
                 std::vector<double>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_dgemm(layout, a_transpose, b_transpose,
-              m, n, k,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld,
@@ -1608,7 +1608,7 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_cgemm(layout, a_transpose, b_transpose,
-              m, n, k,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
@@ -1625,7 +1625,7 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zgemm(layout, a_transpose, b_transpose,
-              m, n, k,
+              static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
@@ -1661,7 +1661,7 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const float beta,
                 std::vector<float>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_ssymm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld,
@@ -1676,7 +1676,7 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const double beta,
                 std::vector<double>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_dsymm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld,
@@ -1693,7 +1693,7 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_csymm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
@@ -1710,7 +1710,7 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zsymm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
@@ -1748,7 +1748,7 @@ void cblasXhemm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_chemm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
@@ -1765,7 +1765,7 @@ void cblasXhemm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zhemm(layout, side, triangle,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
@@ -1781,7 +1781,7 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const float beta,
                 std::vector<float>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_ssyrk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               beta,
@@ -1794,7 +1794,7 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const double beta,
                 std::vector<double>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_dsyrk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               &a_buffer[a_offset], a_ld,
               beta,
@@ -1809,7 +1809,7 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_csyrk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               beta_array.data(),
@@ -1824,7 +1824,7 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zsyrk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               beta_array.data(),
@@ -1855,7 +1855,7 @@ void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const float beta,
                 std::vector<float2>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_cherk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               beta,
@@ -1868,7 +1868,7 @@ void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 const double beta,
                 std::vector<double2>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_zherk(layout, triangle, a_transpose,
-              n, k,
+              static_cast<int>(n), static_cast<int>(k),
               alpha,
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               beta,
@@ -1884,7 +1884,7 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
                  const float beta,
                  std::vector<float>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_ssyr2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha,
                &a_buffer[a_offset], a_ld,
                &b_buffer[b_offset], b_ld,
@@ -1899,7 +1899,7 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
                  const double beta,
                  std::vector<double>& c_buffer, const size_t c_offset, const size_t c_ld) {
   cblas_dsyr2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha,
                &a_buffer[a_offset], a_ld,
                &b_buffer[b_offset], b_ld,
@@ -1916,7 +1916,7 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<float>{beta.real(), beta.imag()};
   cblas_csyr2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
                reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
                reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
@@ -1933,7 +1933,7 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   const auto beta_array = std::vector<double>{beta.real(), beta.imag()};
   cblas_zsyr2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
                reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
                reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
@@ -1970,7 +1970,7 @@ void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
                  std::vector<float2>& c_buffer, const size_t c_offset, const size_t c_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_cher2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
                reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
                reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
@@ -1986,7 +1986,7 @@ void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
                  std::vector<double2>& c_buffer, const size_t c_offset, const size_t c_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_zher2k(layout, triangle, ab_transpose,
-               n, k,
+               static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
                reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
                reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
@@ -2001,7 +2001,7 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& b_buffer, const size_t b_offset, const size_t b_ld) {
   cblas_strmm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld);
@@ -2012,7 +2012,7 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& b_buffer, const size_t b_offset, const size_t b_ld) {
   cblas_dtrmm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld);
@@ -2024,7 +2024,7 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 std::vector<float2>& b_buffer, const size_t b_offset, const size_t b_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_ctrmm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&b_buffer[b_offset]), b_ld);
@@ -2036,7 +2036,7 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 std::vector<double2>& b_buffer, const size_t b_offset, const size_t b_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_ztrmm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
@@ -2063,7 +2063,7 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const std::vector<float>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<float>& b_buffer, const size_t b_offset, const size_t b_ld) {
   cblas_strsm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld);
@@ -2074,7 +2074,7 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 const std::vector<double>& a_buffer, const size_t a_offset, const size_t a_ld,
                 std::vector<double>& b_buffer, const size_t b_offset, const size_t b_ld) {
   cblas_dtrsm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha,
               &a_buffer[a_offset], a_ld,
               &b_buffer[b_offset], b_ld);
@@ -2086,7 +2086,7 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 std::vector<float2>& b_buffer, const size_t b_offset, const size_t b_ld) {
   const auto alpha_array = std::vector<float>{alpha.real(), alpha.imag()};
   cblas_ctrsm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<float*>(&b_buffer[b_offset]), b_ld);
@@ -2098,24 +2098,10 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
                 std::vector<double2>& b_buffer, const size_t b_offset, const size_t b_ld) {
   const auto alpha_array = std::vector<double>{alpha.real(), alpha.imag()};
   cblas_ztrsm(layout, side, triangle, a_transpose, diagonal,
-              m, n,
+              static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
               reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
-}
-void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
-                const size_t m, const size_t n,
-                const half alpha,
-                const std::vector<half>& a_buffer, const size_t a_offset, const size_t a_ld,
-                std::vector<half>& b_buffer, const size_t b_offset, const size_t b_ld) {
-  auto a_buffer_bis = HalfToFloatBuffer(a_buffer);
-  auto b_buffer_bis = HalfToFloatBuffer(b_buffer);
-  cblasXtrsm(layout, side, triangle, a_transpose, diagonal,
-             m, n,
-             HalfToFloat(alpha),
-             a_buffer_bis, a_offset, a_ld,
-             b_buffer_bis, b_offset, b_ld);
-  FloatToHalfBuffer(b_buffer, b_buffer_bis);
 }
 
 // =================================================================================================

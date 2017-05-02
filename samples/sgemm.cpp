@@ -20,6 +20,9 @@
 #include <chrono>
 #include <vector>
 
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://www.khronos.org/registry/cl/api/1.1/cl.hpp
 #include "cl.hpp"
@@ -103,7 +106,7 @@ int main() {
   auto time_ms = std::chrono::duration<double,std::milli>(elapsed_time).count();
 
   // Example completed. See "clblast.h" for status codes (0 -> success).
-  printf("Completed SGEMM in %.3lf ms with status %d\n", time_ms, status);
+  printf("Completed SGEMM in %.3lf ms with status %d\n", time_ms, static_cast<int>(status));
   return 0;
 }
 
