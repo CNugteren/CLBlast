@@ -17,4 +17,4 @@ Pull requests are welcome as long as they:
 
 * Contain unit additions or modifications
 * Follow the CLBlast coding style, which is loosely based on the [Google C++ style guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html) and the Effective C++ books by Scott Meyers. We use a tab-size of 2 spaces and a max-width of 100 characters.
-* Are made against the `development` branch.
+* Are made against the `master` branch.
