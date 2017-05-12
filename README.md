@@ -2,8 +2,8 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | master |
-|-----|-----|-----|
+| | master branch |
+|-----|-----|
 | Linux/OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
 | Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
 
