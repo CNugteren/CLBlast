@@ -1,4 +1,7 @@
 
+Development (next version)
+- Various minor fixes and enhancements
+
 Version 0.11.0
 - Improved the internal program source and binary caches for scalability and speed (thanks to 'intelfx')
 - Fixed a bug having to re-create the binary even if it was in the cache
