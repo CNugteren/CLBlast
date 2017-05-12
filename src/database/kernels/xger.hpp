@@ -47,6 +47,7 @@ const Database::DatabaseEntry XgerSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
         { "ATI Radeon HD 6750M",                             { {"WGS1",16}, {"WGS2",16}, {"WPT",4} } },
         { "Ellesmere",                                       { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
+        { "Fiji",                                            { {"WGS1",256}, {"WGS2",1}, {"WPT",1} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
         { "Oland",                                           { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
@@ -115,13 +116,14 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
         { "ATI Radeon HD 6750M",                             { {"WGS1",16}, {"WGS2",16}, {"WPT",1} } },
         { "Ellesmere",                                       { {"WGS1",16}, {"WGS2",8}, {"WPT",2} } },
+        { "Fiji",                                            { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } },
         { "Oland",                                           { {"WGS1",4}, {"WGS2",8}, {"WPT",1} } },
         { "Pitcairn",                                        { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
         { "Tahiti",                                          { {"WGS1",64}, {"WGS2",2}, {"WPT",1} } },
         { "Tonga",                                           { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Turks",                                           { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",2}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -182,6 +184,7 @@ const Database::DatabaseEntry XgerDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",32}, {"WGS2",4}, {"WPT",1} } },
         { "Ellesmere",                                       { {"WGS1",64}, {"WGS2",1}, {"WPT",4} } },
+        { "Fiji",                                            { {"WGS1",256}, {"WGS2",1}, {"WPT",2} } },
         { "Hawaii",                                          { {"WGS1",32}, {"WGS2",4}, {"WPT",2} } },
         { "Oland",                                           { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
@@ -237,6 +240,7 @@ const Database::DatabaseEntry XgerComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WGS2",1}, {"WPT",1} } },
         { "Ellesmere",                                       { {"WGS1",8}, {"WGS2",16}, {"WPT",1} } },
+        { "Fiji",                                            { {"WGS1",64}, {"WGS2",4}, {"WPT",2} } },
         { "Hawaii",                                          { {"WGS1",128}, {"WGS2",1}, {"WPT",1} } },
         { "Oland",                                           { {"WGS1",16}, {"WGS2",16}, {"WPT",2} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WGS2",4}, {"WPT",1} } },

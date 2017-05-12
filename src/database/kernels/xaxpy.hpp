@@ -47,6 +47,7 @@ const Database::DatabaseEntry XaxpySingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "ATI Radeon HD 6750M",                             { {"VW",1}, {"WGS",256}, {"WPT",2} } },
         { "Ellesmere",                                       { {"VW",1}, {"WGS",64}, {"WPT",4} } },
+        { "Fiji",                                            { {"VW",4}, {"WGS",64}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",2}, {"WGS",128}, {"WPT",1} } },
@@ -127,6 +128,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",2}, {"WGS",64}, {"WPT",8} } },
         { "ATI Radeon HD 6750M",                             { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Ellesmere",                                       { {"VW",2}, {"WGS",256}, {"WPT",1} } },
+        { "Fiji",                                            { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",64}, {"WPT",1} } },
@@ -206,12 +208,13 @@ const Database::DatabaseEntry XaxpyDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Ellesmere",                                       { {"VW",2}, {"WGS",64}, {"WPT",4} } },
+        { "Fiji",                                            { {"VW",2}, {"WGS",64}, {"WPT",4} } },
         { "Hawaii",                                          { {"VW",1}, {"WGS",64}, {"WPT",2} } },
         { "Oland",                                           { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Tahiti",                                          { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Tonga",                                           { {"VW",1}, {"WGS",128}, {"WPT",4} } },
-        { "default",                                         { {"VW",1}, {"WGS",64}, {"WPT",1} } },
+        { "default",                                         { {"VW",2}, {"WGS",64}, {"WPT",1} } },
       }
     },
     { // ARM GPUs
@@ -272,6 +275,7 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW",1}, {"WGS",128}, {"WPT",1} } },
         { "Ellesmere",                                       { {"VW",1}, {"WGS",128}, {"WPT",1} } },
+        { "Fiji",                                            { {"VW",1}, {"WGS",64}, {"WPT",1} } },
         { "Hawaii",                                          { {"VW",2}, {"WGS",64}, {"WPT",1} } },
         { "Oland",                                           { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "Pitcairn",                                        { {"VW",1}, {"WGS",128}, {"WPT",1} } },

@@ -47,6 +47,7 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "ATI Radeon HD 6750M",                             { {"VW2",2}, {"WGS2",64}, {"WPT2",2} } },
         { "Ellesmere",                                       { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Fiji",                                            { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -120,6 +121,7 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",2}, {"WGS2",256}, {"WPT2",2} } },
         { "ATI Radeon HD 6750M",                             { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
         { "Ellesmere",                                       { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
+        { "Fiji",                                            { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -182,6 +184,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Ellesmere",                                       { {"VW2",1}, {"WGS2",128}, {"WPT2",1} } },
+        { "Fiji",                                            { {"VW2",1}, {"WGS2",32}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
@@ -241,6 +244,7 @@ const Database::DatabaseEntry XgemvFastComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Ellesmere",                                       { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
+        { "Fiji",                                            { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
         { "Hawaii",                                          { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
         { "Oland",                                           { {"VW2",1}, {"WGS2",256}, {"WPT2",1} } },
         { "Pitcairn",                                        { {"VW2",1}, {"WGS2",64}, {"WPT2",1} } },
