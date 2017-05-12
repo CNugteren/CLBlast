@@ -2,10 +2,10 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | master | development |
+| | master |
 |-----|-----|-----|
-| Linux/OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=development)](https://travis-ci.org/CNugteren/CLBlast/branches) |
-| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=development&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
+| Linux/OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
+| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
 

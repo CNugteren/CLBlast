@@ -31,7 +31,7 @@ before_install:
 before_script:
   - mkdir -p ${CLBLAST_ROOT}
   - pushd ${CLBLAST_ROOT}
-  - cmake -DTESTS=ON -DCLIENTS=ON ${TRAVIS_BUILD_DIR}
+  - cmake -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DNETLIB=ON ${TRAVIS_BUILD_DIR}
 
 script:
   - make
@@ -39,7 +39,6 @@ script:
 branches:
   only:
     - master
-    - development
 
 notifications:
   email: false

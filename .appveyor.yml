@@ -47,7 +47,7 @@ before_build:
   - ps: mkdir $env:CLBLAST_BUILD
   - ps: pushd $env:CLBLAST_BUILD
   - ps: mkdir install_dir
-  - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=install_dir -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON %APPVEYOR_BUILD_FOLDER%
+  - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=install_dir -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DNETLIB=ON %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - nmake
