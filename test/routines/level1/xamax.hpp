@@ -43,7 +43,7 @@ class TestXamax {
     return args.n * args.x_inc + args.x_offset;
   }
   static size_t GetSizeImax(const Arguments<T> &args) {
-    return 1 + args.imax_offset;
+    return (1 + args.imax_offset) * 2; // always a 4-byte integer, this is a hack for FP16
   }
 
   // Describes how to set the sizes of all the buffers
