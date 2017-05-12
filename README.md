@@ -7,7 +7,7 @@ CLBlast: The tuned OpenCL BLAS library
 | Linux/OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
 | Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
 
-CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices.
+CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
 This preview-version is not yet tuned for all OpenCL devices: __out-of-the-box performance on some devices might be poor__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
 
@@ -206,7 +206,7 @@ To test the performance of CLBlast and compare optionally against [clBLAS](http:
 
 The performance tests come in the form of client executables named `clblast_client_xxxxx`, in which `xxxxx` is the name of a routine (e.g. `xgemm`). These clients take a bunch of configuration options and directly run CLBlast in a head-to-head performance test against optionally clBLAS and/or a CPU BLAS library. You can use the command-line options `-clblas 1` or `-cblas 1` to select a library to test against.
 
-The folder `doc/performance` contains some PDF files with performance results on tested devices. Performance is compared in this case against a tuned version of the clBLAS library. These graphs can be generated automatically on your own device. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable (shipped with clBLAS). Finally, run the Python/Matplotlib graph-script found in `scripts/benchmark/benchmark.py`. For example, to generate the SGEMM PDF on device 1 of platform 0 from the `build` subdirectory:
+On [the CLBlast website](https://cnugteren.github.io/clblast) you will find performance results for various devices. Performance is compared in this case against a tuned version of the clBLAS library and optionally also against cuBLAS. Such graphs can be generated automatically on your own device as well. First, compile CLBlast with the clients enabled. Then, make sure your installation of the reference clBLAS is performance-tuned by running the `tune` executable (shipped with clBLAS). Finally, run the Python/Matplotlib graph-script found in `scripts/benchmark/benchmark.py`. For example, to generate the SGEMM PDF on device 1 of platform 0 from the `build` subdirectory:
 
     python ../scripts/benchmark/benchmark.py --platform 0 --device 1 --benchmark gemm
 
