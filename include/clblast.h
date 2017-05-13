@@ -240,6 +240,13 @@ StatusCode Amax(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+template <typename T>
+StatusCode Amin(const size_t n,
+                cl_mem imin_buffer, const size_t imin_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
+
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
 StatusCode Max(const size_t n,

@@ -4,6 +4,8 @@ Development (next version)
 - Performance reports are now external at https://cnugteren.github.io/clblast
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added non-BLAS level-1 routines:
+  * iSAMIN/iDAMIN/iCAMIN/iZAMIN (absolute minimum version of the ixAMAX BLAS routines)
 
 Version 0.11.0
 - Improved the internal program source and binary caches for scalability and speed (thanks to 'intelfx')

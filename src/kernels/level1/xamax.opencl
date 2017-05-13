@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the Xamax kernel. It implements an index of absolute max computation using
+// This file contains the Xamax kernel. It implements index of (absolute) min/max computation using
 // reduction kernels. Reduction is split in two parts. In the first (main) kernel the X vector is
 // loaded, followed by a per-thread and a per-workgroup reduction. The second (epilogue) kernel
 // is executed with a single workgroup only, computing the final result.
@@ -59,6 +59,8 @@ void Xamax(const int n,
       // nothing special here
     #elif defined(ROUTINE_MIN) // non-absolute minimum version
       x = -x;
+    #elif defined(ROUTINE_AMIN) // absolute minimum version
+      x = -fabs(x);
     #else
       x = fabs(x);
     #endif

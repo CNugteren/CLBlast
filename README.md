@@ -289,6 +289,7 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | Level-X    | S | D | C | Z | H |
 | -----------|---|---|---|---|---|
 | xSUM       | ✔ | ✔ | ✔ | ✔ | ✔ |
+| IxAMIN     | ✔ | ✔ | ✔ | ✔ | ✔ |
 | IxMAX      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |

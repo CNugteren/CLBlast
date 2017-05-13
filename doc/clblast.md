@@ -573,6 +573,59 @@ Arguments to AMAX:
 
 
 
+xAMIN: Index of absolute minimum value in a vector (non-BLAS function)
+-------------
+
+Finds the index of the minimum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer.
+
+C++ API:
+```
+template <typename T>
+StatusCode Amin(const size_t n,
+                cl_mem imin_buffer, const size_t imin_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastiSamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastiDamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastiCamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastiZamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastiHamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to AMIN:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
+* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
+* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
+* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xMAX: Index of maximum value in a vector (non-BLAS function)
 -------------
 

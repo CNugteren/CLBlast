@@ -30,6 +30,7 @@
 #include "routines/level1/xasum.hpp"
 #include "routines/level1/xsum.hpp" // non-BLAS routine
 #include "routines/level1/xamax.hpp"
+#include "routines/level1/xamin.hpp" // non-BLAS routine
 #include "routines/level1/xmax.hpp" // non-BLAS routine
 #include "routines/level1/xmin.hpp" // non-BLAS routine
 
@@ -546,6 +547,42 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Amax<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+template <typename T>
+StatusCode Amin(const size_t n,
+                cl_mem imin_buffer, const size_t imin_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xamin<T>(queue_cpp, event);
+    routine.DoAmin(n,
+                   Buffer<unsigned int>(imin_buffer), imin_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Amin<float>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<double>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<double2>(const size_t,
+                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<half>(const size_t,
                                           cl_mem, const size_t,
                                           const cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);

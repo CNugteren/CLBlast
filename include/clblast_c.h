@@ -403,6 +403,28 @@ CLBlastStatusCode PUBLIC_API CLBlastiHamax(const size_t n,
                                           const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                           cl_command_queue* queue, cl_event* event);
 
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+CLBlastStatusCode PUBLIC_API CLBlastiSamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiDamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiCamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiZamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiHamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 CLBlastStatusCode PUBLIC_API CLBlastiSmax(const size_t n,
                                          cl_mem imax_buffer, const size_t imax_offset,

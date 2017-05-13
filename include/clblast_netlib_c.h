@@ -240,6 +240,16 @@ int PUBLIC_API cblas_icamax(const int n,
 int PUBLIC_API cblas_izamax(const int n,
                            const void* x, const int x_inc);
 
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+int PUBLIC_API cblas_isamin(const int n,
+                           const float* x, const int x_inc);
+int PUBLIC_API cblas_idamin(const int n,
+                           const double* x, const int x_inc);
+int PUBLIC_API cblas_icamin(const int n,
+                           const void* x, const int x_inc);
+int PUBLIC_API cblas_izamin(const int n,
+                           const void* x, const int x_inc);
+
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 int PUBLIC_API cblas_ismax(const int n,
                           const float* x, const int x_inc);

@@ -42,7 +42,7 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [122, 77, 126, 24, 29, 41, 29, 65, 32]
+HEADER_LINES = [122, 78, 126, 24, 29, 41, 29, 65, 32]
 FOOTER_LINES = [25, 139, 27, 38, 6, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
@@ -117,6 +117,7 @@ ROUTINES = [
   Routine(True,  True,  False, "1", "asum",  T, [S,D,Sc,Dz,H],    ["n"],               [],                                                     ["x"],      ["asum"],                     [xn,"1"],      [],           "n",   "Absolute sum of values in a vector", "Accumulates the absolute value of _n_ elements in the _x_ vector. The results are stored in the _asum_ buffer.", []),
   Routine(True,  False, False, "1", "sum",   T, [S,D,Sc,Dz,H],    ["n"],               [],                                                     ["x"],      ["sum"],                      [xn,"1"],      [],           "n",   "Sum of values in a vector (non-BLAS function)", "Accumulates the values of _n_ elements in the _x_ vector. The results are stored in the _sum_ buffer. This routine is the non-absolute version of the xASUM BLAS routine.", []),
   Routine(True,  True,  False, "1", "amax",  T, [iS,iD,iC,iZ,iH], ["n"],               [],                                                     ["x"],      ["imax"],                     [xn,"1"],      [],           "2*n", "Index of absolute maximum value in a vector", "Finds the index of the maximum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer.", []),
+  Routine(True,  False, False, "1", "amin",  T, [iS,iD,iC,iZ,iH], ["n"],               [],                                                     ["x"],      ["imin"],                     [xn,"1"],      [],           "2*n", "Index of absolute minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer.", []),
   Routine(True,  False, False, "1", "max",   T, [iS,iD,iC,iZ,iH], ["n"],               [],                                                     ["x"],      ["imax"],                     [xn,"1"],      [],           "2*n", "Index of maximum value in a vector (non-BLAS function)", "Finds the index of the maximum of the values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.", []),
   Routine(True,  False, False, "1", "min",   T, [iS,iD,iC,iZ,iH], ["n"],               [],                                                     ["x"],      ["imin"],                     [xn,"1"],      [],           "2*n", "Index of minimum value in a vector (non-BLAS function)", "Finds the index of the minimum of the values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.", []),
 ],

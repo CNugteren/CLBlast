@@ -820,6 +820,73 @@ CLBlastStatusCode CLBlastiHamax(const size_t n,
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
+// AMIN
+CLBlastStatusCode CLBlastiSamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amin<float>(n,
+                           imin_buffer, imin_offset,
+                           x_buffer, x_offset, x_inc,
+                           queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastiDamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amin<double>(n,
+                            imin_buffer, imin_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastiCamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amin<float2>(n,
+                            imin_buffer, imin_offset,
+                            x_buffer, x_offset, x_inc,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastiZamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amin<double2>(n,
+                             imin_buffer, imin_offset,
+                             x_buffer, x_offset, x_inc,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastiHamin(const size_t n,
+                               cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Amin<half>(n,
+                          imin_buffer, imin_offset,
+                          x_buffer, x_offset, x_inc,
+                          queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
 // MAX
 CLBlastStatusCode CLBlastiSmax(const size_t n,
                               cl_mem imax_buffer, const size_t imax_offset,
