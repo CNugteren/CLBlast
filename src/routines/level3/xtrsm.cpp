@@ -138,7 +138,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                m - i - block_size, n, block_size, ConstantNegOne<T>(),
                a_buffer, this_a_offset, a_ld,
-               x_buffer, x_offset + i, x_ld, ConstantOne<T>(),
+               x_buffer, x_offset + i, x_ld, gemm_alpha,
                b_buffer, b_offset + i + block_size, b_ld);
       }
     }
@@ -159,7 +159,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo,
                i, n, block_size, ConstantNegOne<T>(),
                a_buffer, this_a_offset, a_ld,
-               x_buffer, x_offset + i, x_ld, ConstantOne<T>(),
+               x_buffer, x_offset + i, x_ld, gemm_alpha,
                b_buffer, b_offset, b_ld);
       }
     }
@@ -182,9 +182,9 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         if (i - static_cast<int>(block_size) < 0) { break; }
         const auto this_a_offset = (a_transpose == Transpose::kNo) ? i : i * a_ld;
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
-               m, i, current_block_size, ConstantNegOne<T>(),
+               m, i, block_size, ConstantNegOne<T>(),
                x_buffer, x_offset + i * x_ld, x_ld,
-               a_buffer, this_a_offset, a_ld, ConstantOne<T>(),
+               a_buffer, this_a_offset, a_ld, gemm_alpha,
                b_buffer, b_offset, b_ld);
       }
     }
@@ -204,7 +204,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
         DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose,
                m, n - i - block_size, block_size, ConstantNegOne<T>(),
                x_buffer, x_offset + i * x_ld, x_ld,
-               a_buffer, this_a_offset, a_ld, ConstantOne<T>(),
+               a_buffer, this_a_offset, a_ld, gemm_alpha,
                b_buffer, b_offset + (i + block_size) * b_ld, b_ld);
       }
     }
