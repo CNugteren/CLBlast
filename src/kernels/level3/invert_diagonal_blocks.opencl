@@ -113,13 +113,16 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
 
     // Computes the elements 0:j-1 of the j-th column
     for (int j = 1; j < INTERNAL_BLOCK_SIZE; ++j) {
+      real sum;
       if (thread_index < j) {
-        real sum;
         SetToZero(sum);
         #pragma unroll
         for (int k = 0; k < j; ++k) {
           MultiplyAdd(sum, lm[thread_index][k], lm[k][j]);
         }
+      }
+      barrier(CLK_LOCAL_MEM_FENCE);
+      if (thread_index < j) {
         real diagonal_value = lm[j][j];
         Negate(diagonal_value);
         Multiply(lm[thread_index][j], diagonal_value, sum);
@@ -133,13 +136,16 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
 
     // Computes the elements j+1:INTERNAL_BLOCK_SIZE-1 of the j-th column
     for (int j = INTERNAL_BLOCK_SIZE - 2; j >= 0; --j) {
+      real sum;
       if (thread_index > j) {
-        real sum;
         SetToZero(sum);
         #pragma unroll
         for (int k = j + 1; k < INTERNAL_BLOCK_SIZE; ++k) {
           MultiplyAdd(sum, lm[thread_index][k], lm[k][j]);
         }
+      }
+      barrier(CLK_LOCAL_MEM_FENCE);
+      if (thread_index > j) {
         real diagonal_value = lm[j][j];
         Negate(diagonal_value);
         Multiply(lm[thread_index][j], diagonal_value, sum);
