@@ -62,7 +62,8 @@ int main() {
   auto device = devices[device_id];
 
   // Creates the OpenCL context, queue, and an event
-  auto context = cl::Context({device});
+  auto device_as_vector = std::vector<cl::Device>{device};
+  auto context = cl::Context(device_as_vector);
   auto queue = cl::CommandQueue(context, device);
   auto event = cl_event{nullptr};
 
