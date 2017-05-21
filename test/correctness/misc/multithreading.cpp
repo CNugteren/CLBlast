@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <future>
+#include <random>
 
 namespace clblast {
 // =================================================================================================
@@ -41,12 +42,14 @@ std::vector<StatusCode> RunExampleRoutine(const Arguments<T> args, const bool ve
   auto queue = Queue(context, device);
 
   // Populate host matrices with some example data
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
   auto host_a = std::vector<T>(args.m * args.k);
   auto host_b = std::vector<T>(args.n * args.k);
   auto host_c = std::vector<T>(args.m * args.n);
-  PopulateVector(host_a, kSeed);
-  PopulateVector(host_b, kSeed);
-  PopulateVector(host_c, kSeed);
+  PopulateVector(host_a, mt, dist);
+  PopulateVector(host_b, mt, dist);
+  PopulateVector(host_c, mt, dist);
 
   // Copy the matrices to the device
   auto device_a = Buffer<T>(context, host_a.size());
