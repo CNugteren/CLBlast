@@ -13,21 +13,22 @@
 // =================================================================================================
 
 #include "utilities/utilities.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "test/routines/level3/xgemm.hpp"
 
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 #include <future>
 
 namespace clblast {
 // =================================================================================================
 
 template <typename T>
-size_t RunExampleRoutine(const Arguments<T> args, const bool verbose,
-                         const size_t platform_id, const size_t device_id,
-                         const int num_runs) {
-  auto errors = size_t{0};
+std::vector<StatusCode> RunExampleRoutine(const Arguments<T> args, const bool verbose,
+                                          const size_t platform_id, const size_t device_id,
+                                          const int num_runs) {
   auto example_routine = TestXgemm<T>();
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
@@ -58,12 +59,12 @@ size_t RunExampleRoutine(const Arguments<T> args, const bool verbose,
   auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, dummy, dummy};
 
   // Runs a number of times
+  auto statuses = std::vector<StatusCode>();
   for (auto t = 0; t < num_runs; ++t) {
-    const auto status_before = example_routine.RunRoutine(args, buffers, queue);
-    if (status_before != StatusCode::kSuccess) { errors++; continue; }
+    statuses.push_back(example_routine.RunRoutine(args, buffers, queue));
   }
 
-  return errors;
+  return statuses;
 }
 
 // =================================================================================================
@@ -71,8 +72,9 @@ size_t RunExampleRoutine(const Arguments<T> args, const bool verbose,
 template <typename T>
 size_t RunMultithreadingTests(int argc, char *argv[], const bool silent, const std::string &routine_name) {
   auto arguments = RetrieveCommandLineArguments(argc, argv);
-  auto errors = size_t{0};
   auto passed = size_t{0};
+  auto skipped = size_t{0};
+  auto errors = size_t{0};
   constexpr auto kNumRunsOuterLoop = 3;
   constexpr auto kNumRunsInnerLoop = 5;
 
@@ -104,11 +106,11 @@ size_t RunMultithreadingTests(int argc, char *argv[], const bool silent, const s
   for (const auto &platform : platforms) {
     num_devices += platform.NumDevices();
   }
-  fprintf(stdout, "* Testing multithreading on %zu platforms with a total of %zu devices for '%s'\n",
+  fprintf(stdout, "* Testing multithreading on %zu platform(s) with a total of %zu device(s) for '%s'\n",
           platforms.size(), num_devices, routine_name.c_str());
 
   // Runs an example routine asynchronously multiple times on each platform and device in the system
-  auto futures = std::vector<std::future<size_t>>();
+  auto futures = std::vector<std::future<std::vector<StatusCode>>>();
   for (auto platform_id = size_t{0}; platform_id < platforms.size(); ++platform_id) {
     for (auto device_id = size_t{0}; device_id < platforms[platform_id].NumDevices(); ++device_id) {
       for (auto run_id = 0; run_id < kNumRunsOuterLoop; ++run_id) {
@@ -120,13 +122,17 @@ size_t RunMultithreadingTests(int argc, char *argv[], const bool silent, const s
 
   // Waits for everything to complete
   for (auto &future : futures) {
-    const auto errors_run = future.get();
-    errors += errors_run;
-    passed += (kNumRunsInnerLoop - errors_run);
+    const auto statuses = future.get();
+    const auto num_passed = std::count(statuses.begin(), statuses.end(), StatusCode::kSuccess);
+    const auto num_skipped = std::count(statuses.begin(), statuses.end(), StatusCode::kInvalidLocalThreadsDim); // CPU with Apple OpenCL
+    passed += num_passed;
+    skipped += num_skipped;
+    errors += (kNumRunsInnerLoop - num_skipped - num_passed);
   }
 
   // Prints and returns the statistics
   fprintf(stdout, "    %zu test(s) passed\n", passed);
+  fprintf(stdout, "    %zu test(s) skipped\n", skipped);
   fprintf(stdout, "    %zu test(s) failed\n", errors);
   fprintf(stdout, "\n");
   return errors;
