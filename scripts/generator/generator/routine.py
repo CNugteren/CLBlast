@@ -12,11 +12,12 @@ import generator.convert as convert
 
 class Routine:
     """Class holding routine-specific information (e.g. name, which arguments, which precisions)"""
-    def __init__(self, implemented, has_tests, level, name, template, flavours, sizes, options,
+    def __init__(self, implemented, has_tests, batched, level, name, template, flavours, sizes, options,
                  inputs, outputs, buffer_sizes, scalars, scratch,
                  description, details, requirements):
         self.implemented = implemented
         self.has_tests = has_tests
+        self.batched = batched
         self.level = level
         self.name = name
         self.template = template
@@ -31,6 +32,69 @@ class Routine:
         self.description = description
         self.details = details
         self.requirements = requirements
+
+    def lowercase_name(self):
+        postfix = "batched" if self.batched else ""
+        return self.name + postfix
+
+    def plain_name(self):
+        postfix = "Batched" if self.batched else ""
+        return self.name + postfix
+
+    def capitalized_name(self):
+        postfix = "Batched" if self.batched else ""
+        return self.name.capitalize() + postfix
+
+    def upper_name(self):
+        postfix = "BATCHED" if self.batched else ""
+        return self.name.upper() + postfix
+
+    def b_star(self):
+        return "*" if self.batched else ""
+
+    def b_s(self):
+        return "s" if self.batched else ""
+
+    def batch_count_def(self):
+        return ["const size_t batch_count"] if self.batched else []
+
+    def batch_count_list(self):
+        return ["batch_count"] if self.batched else []
+
+    def batch_count_type(self):
+        return ["const size_t"] if self.batched else []
+
+    def batch_count_doc(self):
+        return ["`const size_t batch_count`: Number of batches. This value must be positive."] if self.batched else []
+
+    def batched_transform_to_cpp(self):
+        result = []
+        for scalar in self.scalars:
+            result.append("auto " + scalar + "s_cpp = std::vector<T>();")
+        for buffer_name in self.inputs + self.outputs:
+            result.append("auto " + buffer_name + "_offsets_cpp = std::vector<size_t>();")
+        result.append("for (auto batch = size_t{0}; batch < batch_count; ++batch) {")
+        for scalar in self.scalars:
+            result.append("  " + scalar + "s_cpp.push_back(" + scalar + "s[batch]);")
+        for buffer_name in self.inputs + self.outputs:
+            result.append("  " + buffer_name + "_offsets_cpp.push_back(" + buffer_name + "_offsets[batch]);")
+        result.append("}")
+        return result
+
+    def batched_transform_to_complex(self, flavour):
+        result = []
+        for scalar in self.scalars:
+            result.append("auto " + scalar + "s_cpp = std::vector<" + flavour.buffer_type + ">();")
+        result.append("for (auto batch = size_t{0}; batch < batch_count; ++batch) {")
+        for scalar in self.scalars:
+            content = scalar
+            if scalar == "alpha":
+                content = flavour.use_alpha(postfix="s[batch]")
+            elif scalar == "beta":
+                content = flavour.use_beta(postfix="s[batch]")
+            result.append("  " + scalar + "s_cpp.push_back(" + content + ");")
+        result.append("}")
+        return result
 
     @staticmethod
     def scalar_buffers_first():
@@ -127,21 +191,25 @@ class Routine:
 
     def length(self):
         """Retrieves the number of characters in the routine's name"""
-        return len(self.name)
+        return len(self.capitalized_name())
 
     def no_scalars(self):
         """Determines whether or not this routine has scalar arguments (alpha/beta)"""
         return self.scalars == []
 
+    def has_layout(self):
+        """Determines whether the layout is an argument"""
+        return "layout" in self.options
+
     def short_names(self):
         """Returns the upper-case names of these routines (all flavours)"""
-        return "/".join([f.name + self.name.upper() for f in self.flavours])
+        return "/".join([f.name + self.upper_name() for f in self.flavours])
 
     def short_names_tested(self):
         """As above, but excludes some"""
-        names = [f.name + self.name.upper() for f in self.flavours]
-        if "H" + self.name.upper() in names:
-            names.remove("H" + self.name.upper())
+        names = [f.name + self.upper_name() for f in self.flavours]
+        if "H" + self.upper_name() in names:
+            names.remove("H" + self.upper_name())
         return "/".join(names)
 
     def buffers_first(self):
@@ -159,7 +227,7 @@ class Routine:
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
         if name in self.inputs or name in self.outputs:
             a = [name + "_buffer"]
-            b = [name + "_offset"]
+            b = [name + "_offset" + self.b_s()]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -187,16 +255,26 @@ class Routine:
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
             a = [prefix + "cl_mem " + name + "_buffer"]
-            b = ["const size_t " + name + "_offset"]
+            b = ["const size_t " + self.b_star() + name + "_offset" + self.b_s()]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
         return []
 
     def buffer_def_wrapper_cl(self, name, flavour):
-        """As above but with data-types"""
+        """As above but for OpenCL"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
             a = [prefix + "Buffer<" + flavour.buffer_type + ">& " + name + "_buffer"]
+            b = ["const size_t " + name + "_offset"]
+            c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
+            return [", ".join(a + b + c)]
+        return []
+
+    def buffer_def_wrapper_cuda(self, name, flavour):
+        """As above but for CUDA"""
+        prefix = "const " if name in self.inputs else ""
+        if name in self.inputs or name in self.outputs:
+            a = [prefix + flavour.buffer_type + "* " + name + "_buffer"]
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
@@ -228,7 +306,7 @@ class Routine:
         if name in self.inputs or name in self.outputs:
             buffer_type = "unsigned int" if (name in self.index_buffers()) else self.template.buffer_type
             a = ["Buffer<" + buffer_type + ">(" + name + "_buffer)"]
-            b = [name + "_offset"]
+            b = [name + "_offsets_cpp"] if self.batched else [name + "_offset"]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -265,12 +343,38 @@ class Routine:
             return [", ".join(a + c)]
         return []
 
+    def buffer_wrapper_cublas(self, name, flavour):
+        """As above but for cuBLAS the wrapper"""
+        prefix = "const " if name in self.inputs else ""
+        if name in self.inputs or name in self.outputs:
+            if name in self.index_buffers():
+                a = ["reinterpret_cast<int*>(&" + name + "_buffer[" + name + "_offset])"]
+            elif name in self.outputs and flavour.name in ["Sc", "Dz"]:
+                dtype = "float" if flavour.name == "Sc" else "double"
+                a = ["reinterpret_cast<" + dtype + "*>(&" + name + "_buffer[" + name + "_offset])"]
+            elif flavour.precision_name in ["C", "Z"]:
+                cuda_complex = "cuDoubleComplex" if flavour.precision_name == "Z" else "cuComplex"
+                a = ["reinterpret_cast<" + prefix + cuda_complex + "*>" +
+                     "(&" + name + "_buffer[" + name + "_offset])"]
+            else:
+                a = ["&" + name + "_buffer[" + name + "_offset]"]
+            c = []
+            if name in ["x", "y"]:
+                c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
+            elif name in ["a", "b", "c"]:
+                c = [name + "_" + self.postfix(name)]
+            result = [", ".join(a + c)]
+            if self.name == "trmm" and name == "a":
+                result *= 2
+            return result
+        return []
+
     def buffer_type(self, name):
         """As above, but only data-types"""
         prefix = "const " if (name in self.inputs) else ""
         if (name in self.inputs) or (name in self.outputs):
             a = [prefix + "cl_mem"]
-            b = ["const size_t"]
+            b = ["const size_t" + self.b_star()]
             c = ["const size_t"] if (name not in self.buffers_without_ld_inc()) else []
             return [", ".join(a + b + c)]
         return []
@@ -283,18 +387,19 @@ class Routine:
             math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " vector"
             inc_ld_description = "Leading dimension " if (name in self.buffers_matrix()) else "Stride/increment "
             a = ["`" + prefix + "cl_mem " + name + "_buffer`: OpenCL buffer to store the " + inout + " " + math_name + "."]
-            b = ["`const size_t " + name + "_offset`: The offset in elements from the start of the " + inout + " " + math_name + "."]
+            b = ["`const size_t " + self.b_star() + name + "_offset" + self.b_s() + "`: The offset" + self.b_s() + " in elements from the start of the " + inout + " " + math_name + "."]
+            c = []
             if name not in self.buffers_without_ld_inc():
                 c = ["`const size_t " + name + "_" + self.postfix(name) + "`: " +
                      inc_ld_description + "of the " + inout + " " + math_name + ". This value must be greater than 0."]
-            else:
-                c = []
             return a + b + c
         return []
 
     def scalar(self, name):
         """Retrieves the name of a scalar (alpha/beta)"""
         if name in self.scalars:
+            if self.batched:
+                return [name + "s_cpp"]
             return [name]
         return []
 
@@ -314,8 +419,12 @@ class Routine:
         """Retrieves the use of a scalar (alpha/beta)"""
         if name in self.scalars:
             if name == "alpha":
+                if self.batched:
+                    return ["alphas_cpp.data()"]
                 return [flavour.use_alpha()]
             elif name == "beta":
+                if self.batched:
+                    return ["betas_cpp.data()"]
                 return [flavour.use_beta()]
             return [name]
         return []
@@ -338,20 +447,28 @@ class Routine:
             return [name]
         return []
 
+    def scalar_use_wrapper_cublas(self, name, flavour):
+        """As above, but for the cuBLAS wrapper"""
+        if name in self.scalars:
+            if flavour.is_complex(name):
+                return ["&" + name + "_cuda"]
+            return ["&" + name]
+        return []
+
     def scalar_def(self, name, flavour):
         """Retrieves the definition of a scalar (alpha/beta)"""
         if name in self.scalars:
             if name == "alpha":
-                return ["const " + flavour.alpha_cl + " " + name]
-            return ["const " + flavour.beta_cl + " " + name]
+                return ["const " + flavour.alpha_cl + " " + self.b_star() + name + self.b_s()]
+            return ["const " + flavour.beta_cl + " " + self.b_star() + name + self.b_s()]
         return []
 
     def scalar_def_plain(self, name, flavour):
         """As above, but without 'cl_' prefix"""
         if name in self.scalars:
             if name == "alpha":
-                return ["const " + flavour.alpha_cpp + " " + name]
-            return ["const " + flavour.beta_cpp + " " + name]
+                return ["const " + flavour.alpha_cpp + " " + self.b_star() + name + self.b_s()]
+            return ["const " + flavour.beta_cpp + " " + self.b_star() + name + self.b_s()]
         return []
 
     def scalar_def_void(self, name, flavour):
@@ -368,16 +485,16 @@ class Routine:
         """Retrieves the type of a scalar (alpha/beta)"""
         if name in self.scalars:
             if name == "alpha":
-                return ["const " + flavour.alpha_cpp]
-            return ["const " + flavour.beta_cpp]
+                return ["const " + flavour.alpha_cpp + self.b_star()]
+            return ["const " + flavour.beta_cpp + self.b_star()]
         return []
 
     def scalar_doc(self, name):
         """Retrieves the documentation of a scalar"""
         if name in self.scalars:
             if name == "alpha":
-                return ["`const " + self.template.alpha_cpp + " " + name + "`: Input scalar constant."]
-            return ["`const " + self.template.beta_cpp + " " + name + "`: Input scalar constant."]
+                return ["`const " + self.template.alpha_cpp + " " + self.b_star() + name + self.b_s() + "`: Input scalar constant" + self.b_s() + "."]
+            return ["`const " + self.template.beta_cpp + " " + self.b_star() + name + self.b_s() + "`: Input scalar constant" + self.b_s() + "."]
         return []
 
     def scalar_create_cpp(self, flavour):
@@ -394,6 +511,12 @@ class Routine:
         """Retrieves a list of comma-separated sizes (m, n, k)"""
         if self.sizes:
             return [", ".join([s for s in self.sizes])]
+        return []
+
+    def sizes_list_as_int(self):
+        """Retrieves a list of comma-separated sizes (m, n, k) cast to integers"""
+        if self.sizes:
+            return [", ".join(["static_cast<int>(" + s + ")" for s in self.sizes])]
         return []
 
     def sizes_def(self):
@@ -425,6 +548,15 @@ class Routine:
         """Retrieves a list of options"""
         if self.options:
             return [", ".join(self.options)]
+        return []
+
+    def options_list_no_layout(self):
+        """Retrieves a list of options"""
+        options = self.options[:]
+        if "layout" in options:
+            options.remove("layout")
+        if options:
+            return [", ".join(options)]
         return []
 
     def options_cast(self, indent):
@@ -459,6 +591,13 @@ class Routine:
         """As above, but now using CBLAS data-types"""
         if self.options:
             definitions = ["const " + convert.option_to_cblas(o) + " " + o for o in self.options]
+            return [", ".join(definitions)]
+        return []
+
+    def options_def_wrapper_cublas(self):
+        """As above, but now using cuBLAS data-types"""
+        if self.options:
+            definitions = ["const " + convert.option_to_cublas(o) + " " + o for o in self.options]
             return [", ".join(definitions)]
         return []
 
@@ -507,7 +646,8 @@ class Routine:
                 self.scalar("beta") +
                 list(chain(*[self.buffer_clcudaapi(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_clcudaapi(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar(s) for s in self.other_scalars()])))
+                list(chain(*[self.scalar(s) for s in self.other_scalars()])) +
+                self.batch_count_list())
 
     def arguments_cast(self, flavour, indent):
         """As above, but with CLBlast casts"""
@@ -518,7 +658,8 @@ class Routine:
                 self.scalar_use("beta", flavour) +
                 list(chain(*[self.buffer(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_use(s, flavour) for s in self.other_scalars()])))
+                list(chain(*[self.scalar_use(s, flavour) for s in self.other_scalars()])) +
+                self.batch_count_list())
 
     def arguments_netlib(self, flavour, indent):
         """As above, but for the Netlib CBLAS API"""
@@ -544,13 +685,24 @@ class Routine:
 
     def arguments_wrapper_cblas(self, flavour):
         """As above, but for the CBLAS wrapper"""
-        return (self.options_list() + self.sizes_list() +
+        return (self.options_list() + self.sizes_list_as_int() +
                 self.scalar_use_wrapper_cblas("alpha", flavour) +
                 list(chain(*[self.buffer_wrapper_cblas(b, flavour) for b in self.buffers_first()])) +
                 self.scalar_use_wrapper_cblas("beta", flavour) +
                 list(chain(*[self.buffer_wrapper_cblas(b, flavour) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_wrapper_cblas(b, flavour) for b in self.scalar_buffers_second()])) +
                 list(chain(*[self.scalar_use_wrapper_cblas(s, flavour) for s in self.other_scalars()])))
+
+    def arguments_wrapper_cublas(self, flavour):
+        """As above, but for the cuBLAS wrapper"""
+        return (self.options_list_no_layout() + self.sizes_list_as_int() +
+                self.scalar_use_wrapper_cublas("alpha", flavour) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.buffers_first()])) +
+                self.scalar_use_wrapper_cublas("beta", flavour) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.scalar_buffers_first()])) +
+                list(chain(*[self.buffer_wrapper_cublas(b, flavour) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar_use_wrapper_cublas(s, flavour) for s in self.other_scalars()])))
 
     def arguments_def(self, flavour):
         """Retrieves a combination of all the argument definitions"""
@@ -561,7 +713,8 @@ class Routine:
                 self.scalar_def("beta", flavour) +
                 list(chain(*[self.buffer_def(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_def(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])))
+                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])) +
+                self.batch_count_def())
 
     def arguments_def_netlib(self, flavour):
         """As above, but for the Netlib CBLAS API"""
@@ -574,6 +727,7 @@ class Routine:
                 list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])))
         if self.name in self.routines_scalar_no_return():
             result += list(chain(*[self.buffer_def_pointer(b, flavour) for b in self.scalar_buffers_first()]))
+        result += self.batch_count_def()
         return result
 
     def arguments_def_c(self, flavour):
@@ -585,7 +739,8 @@ class Routine:
                 self.scalar_def("beta", flavour) +
                 list(chain(*[self.buffer_def(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_def(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])))
+                list(chain(*[self.scalar_def(s, flavour) for s in self.other_scalars()])) +
+                self.batch_count_def())
 
     def arguments_def_wrapper_clblas(self, flavour):
         """As above, but clBLAS wrapper plain data-types"""
@@ -609,6 +764,17 @@ class Routine:
                 list(chain(*[self.buffer_def_vector(b, flavour) for b in self.scalar_buffers_second()])) +
                 list(chain(*[self.scalar_def_plain(s, flavour) for s in self.other_scalars()])))
 
+    def arguments_def_wrapper_cublas(self, flavour):
+        """As above, but cuBLAS wrapper plain data-types"""
+        return (self.options_def_wrapper_cublas() + self.sizes_def() +
+                list(chain(*[self.buffer_def_wrapper_cuda(b, flavour) for b in self.scalar_buffers_first()])) +
+                self.scalar_def_plain("alpha", flavour) +
+                list(chain(*[self.buffer_def_wrapper_cuda(b, flavour) for b in self.buffers_first()])) +
+                self.scalar_def_plain("beta", flavour) +
+                list(chain(*[self.buffer_def_wrapper_cuda(b, flavour) for b in self.buffers_second()])) +
+                list(chain(*[self.buffer_def_wrapper_cuda(b, flavour) for b in self.scalar_buffers_second()])) +
+                list(chain(*[self.scalar_def_plain(s, flavour) for s in self.other_scalars()])))
+
     def arguments_type(self, flavour):
         """Retrieves a combination of all the argument types"""
         return (self.options_type() + self.sizes_type() +
@@ -618,7 +784,8 @@ class Routine:
                 self.scalar_type("beta", flavour) +
                 list(chain(*[self.buffer_type(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_type(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_type(s, flavour) for s in self.other_scalars()])))
+                list(chain(*[self.scalar_type(s, flavour) for s in self.other_scalars()])) +
+                self.batch_count_type())
 
     def arguments_doc(self):
         """Retrieves a combination of all the argument types"""
@@ -630,7 +797,8 @@ class Routine:
                 self.scalar_doc("beta") +
                 list(chain(*[self.buffer_doc(b) for b in self.buffers_second()])) +
                 list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_second()])) +
-                list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])))
+                list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])) +
+                self.batch_count_doc())
 
     def requirements_doc(self):
         """Retrieves a list of routine requirements for documentation"""
@@ -640,7 +808,7 @@ class Routine:
         """Retrieves the C++ templated definition for a routine"""
         indent = " " * (spaces + self.length())
         result = "template <" + self.template.name + ">\n"
-        result += "StatusCode " + self.name.capitalize() + "("
+        result += "StatusCode " + self.capitalized_name() + "("
         result += (",\n" + indent).join([a for a in self.arguments_def(self.template)])
         result += ",\n" + indent + "cl_command_queue* queue, cl_event* event" + default_event + ")"
         return result
@@ -649,7 +817,7 @@ class Routine:
         """As above, but now without variable names"""
         indent = " " * (spaces + self.length())
         result = "template <" + self.template.name + ">\n"
-        result += "StatusCode " + self.name.capitalize() + "("
+        result += "StatusCode " + self.capitalized_name() + "("
         result += (",\n" + indent).join([a for a in self.arguments_type(self.template)])
         result += ",\n" + indent + "cl_command_queue*, cl_event*)"
         return result
@@ -657,7 +825,7 @@ class Routine:
     def routine_header_c(self, flavour, spaces, extra_qualifier):
         """As above, but now for C"""
         indent = " " * (spaces + self.length())
-        result = "CLBlastStatusCode" + extra_qualifier + " CLBlast" + flavour.name + self.name + "("
+        result = "CLBlastStatusCode" + extra_qualifier + " CLBlast" + flavour.name + self.plain_name() + "("
         result += (",\n" + indent).join([a for a in self.arguments_def_c(flavour)])
         result += ",\n" + indent + "cl_command_queue* queue, cl_event* event)"
         return result
@@ -677,6 +845,8 @@ class Routine:
         if self.name in self.routines_scalar_no_return():
             routine_name += "_sub"
             indent += "    "
+        if self.batched:
+            routine_name += "batched"
         result = return_type + extra_qualifier + " cblas_" + flavour.name.lower() + routine_name + "("
         result += (",\n" + indent).join([a for a in self.arguments_def_netlib(flavour)]) + ")"
         return result
@@ -702,4 +872,18 @@ class Routine:
         indent = " " * (spaces + self.length())
         result = "void cblasX" + self.name + "("
         result += (",\n" + indent).join([a for a in self.arguments_def_wrapper_cblas(flavour)]) + ")"
+        return result
+
+    def routine_header_wrapper_cublas(self, flavour, def_only, spaces):
+        """As above, but now for the cuBLAS wrapper"""
+        template = "<" + flavour.template + ">" if self.no_scalars() and not def_only else ""
+        indent = " " * (spaces + self.length() + len(template))
+        result = ""
+        if self.no_scalars():
+            result += "template <"
+            if def_only:
+                result += flavour.name
+            result += ">\n"
+        result += "cublasStatus_t cublasX" + self.name + template + "(cublasHandle_t handle, "
+        result += (",\n" + indent).join([a for a in self.arguments_def_wrapper_cublas(flavour)]) + ")"
         return result

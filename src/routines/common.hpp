@@ -33,6 +33,47 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
 
 // =================================================================================================
 
+// Sets all elements of a matrix to a constant value
+template <typename T>
+void FillMatrix(Queue &queue, const Device &device,
+                const Program &program, const Databases &,
+                EventPointer event, const std::vector<Event> &waitForEvents,
+                const size_t m, const size_t n, const size_t ld, const size_t offset,
+                const Buffer<T> &dest,
+                const T constant_value) {
+  auto kernel = Kernel(program, "FillMatrix");
+  kernel.SetArgument(0, static_cast<int>(m));
+  kernel.SetArgument(1, static_cast<int>(n));
+  kernel.SetArgument(2, static_cast<int>(ld));
+  kernel.SetArgument(3, static_cast<int>(offset));
+  kernel.SetArgument(4, dest());
+  kernel.SetArgument(5, GetRealArg(constant_value));
+  auto local = std::vector<size_t>{8, 8};
+  auto global = std::vector<size_t>{Ceil(m, 8), Ceil(n, 8)};
+  RunKernel(kernel, queue, device, global, local, event, waitForEvents);
+}
+
+// Sets all elements of a vector to a constant value
+template <typename T>
+void FillVector(Queue &queue, const Device &device,
+                const Program &program, const Databases &,
+                EventPointer event, const std::vector<Event> &waitForEvents,
+                const size_t n, const size_t inc, const size_t offset,
+                const Buffer<T> &dest,
+                const T constant_value) {
+  auto kernel = Kernel(program, "FillVector");
+  kernel.SetArgument(0, static_cast<int>(n));
+  kernel.SetArgument(1, static_cast<int>(inc));
+  kernel.SetArgument(2, static_cast<int>(offset));
+  kernel.SetArgument(3, dest());
+  kernel.SetArgument(4, GetRealArg(constant_value));
+  auto local = std::vector<size_t>{64};
+  auto global = std::vector<size_t>{Ceil(n, 64)};
+  RunKernel(kernel, queue, device, global, local, event, waitForEvents);
+}
+
+// =================================================================================================
+
 // Copies or transposes a matrix and optionally pads/unpads it with zeros. This method is also able
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
@@ -152,6 +193,70 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
       const auto local = std::vector<size_t>{db["PAD_DIMX"], db["PAD_DIMY"]};
       RunKernel(kernel, queue, device, global, local, event, waitForEvents);
     }
+  }
+}
+
+// Batched version of the above
+template <typename T>
+void PadCopyTransposeMatrixBatched(Queue &queue, const Device &device,
+                                   const Databases &db,
+                                   EventPointer event, const std::vector<Event> &waitForEvents,
+                                   const size_t src_one, const size_t src_two,
+                                   const size_t src_ld, const Buffer<int> &src_offsets,
+                                   const Buffer<T> &src,
+                                   const size_t dest_one, const size_t dest_two,
+                                   const size_t dest_ld, const Buffer<int> &dest_offsets,
+                                   const Buffer<T> &dest,
+                                   const Program &program, const bool do_pad,
+                                   const bool do_transpose, const bool do_conjugate,
+                                   const size_t batch_count) {
+
+  // Determines the right kernel
+  auto kernel_name = std::string{};
+  if (do_transpose) {
+    kernel_name = (do_pad) ? "TransposePadMatrixBatched" : "TransposeMatrixBatched";
+  }
+  else {
+    kernel_name = (do_pad) ? "CopyPadMatrixBatched" : "CopyMatrixBatched";
+  }
+
+  // Retrieves the kernel from the compiled binary
+  auto kernel = Kernel(program, kernel_name);
+
+  // Sets the kernel arguments
+  kernel.SetArgument(0, static_cast<int>(src_one));
+  kernel.SetArgument(1, static_cast<int>(src_two));
+  kernel.SetArgument(2, static_cast<int>(src_ld));
+  kernel.SetArgument(3, src_offsets());
+  kernel.SetArgument(4, src());
+  kernel.SetArgument(5, static_cast<int>(dest_one));
+  kernel.SetArgument(6, static_cast<int>(dest_two));
+  kernel.SetArgument(7, static_cast<int>(dest_ld));
+  kernel.SetArgument(8, dest_offsets());
+  kernel.SetArgument(9, dest());
+  if (do_pad) {
+    kernel.SetArgument(10, static_cast<int>(do_conjugate));
+  }
+
+  // Launches the kernel and returns the error code. Uses global and local thread sizes based on
+  // parameters in the database.
+  if (do_transpose) {
+    const auto global = std::vector<size_t>{
+      Ceil(CeilDiv(dest_one, db["PADTRA_WPT"]), db["PADTRA_TILE"]),
+      Ceil(CeilDiv(dest_two, db["PADTRA_WPT"]), db["PADTRA_TILE"]),
+      batch_count
+    };
+    const auto local = std::vector<size_t>{db["PADTRA_TILE"], db["PADTRA_TILE"], 1};
+    RunKernel(kernel, queue, device, global, local, event, waitForEvents);
+  }
+  else {
+    const auto global = std::vector<size_t>{
+      Ceil(CeilDiv(dest_one, db["PAD_WPTX"]), db["PAD_DIMX"]),
+      Ceil(CeilDiv(dest_two, db["PAD_WPTY"]), db["PAD_DIMY"]),
+      batch_count
+    };
+    const auto local = std::vector<size_t>{db["PAD_DIMX"], db["PAD_DIMY"], 1};
+    RunKernel(kernel, queue, device, global, local, event, waitForEvents);
   }
 }
 

@@ -97,6 +97,7 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInvalidBatchCount         = -2049, // The batch count needs to be positive
   kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   kInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
@@ -118,7 +119,7 @@ enum class Side { kLeft = 141, kRight = 142 };
 
 // Precision scoped enum (values in bits)
 enum class Precision { kHalf = 16, kSingle = 32, kDouble = 64,
-                       kComplexSingle = 3232, kComplexDouble = 6464 };
+                       kComplexSingle = 3232, kComplexDouble = 6464, kAny = -1 };
 
 // =================================================================================================
 // BLAS level-1 (vector-vector) routines
@@ -236,6 +237,13 @@ StatusCode Sum(const size_t n,
 template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
+
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+template <typename T>
+StatusCode Amin(const size_t n,
+                cl_mem imin_buffer, const size_t imin_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
@@ -587,7 +595,7 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event = nullptr);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
 StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
                 const size_t m, const size_t n,
@@ -608,6 +616,27 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                     cl_command_queue* queue, cl_event* event = nullptr);
+
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
+
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
 

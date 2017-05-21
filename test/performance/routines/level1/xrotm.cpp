@@ -12,10 +12,6 @@
 #include "test/performance/client.hpp"
 #include "test/routines/level1/xrotm.hpp"
 
-// Shortcuts to the clblast namespace
-using float2 = clblast::float2;
-using double2 = clblast::double2;
-
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);

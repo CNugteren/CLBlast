@@ -24,19 +24,15 @@ R"(
 
 // Transposes a matrix from source to destination. The output is padded with zero values in case the
 // destination matrix dimensions are larger than the transposed source matrix dimensions.
-__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-void TransposePadMatrix(const int src_one, const int src_two,
-                        const int src_ld, const int src_offset,
-                        __global const real* restrict src,
-                        const int dest_one, const int dest_two,
-                        const int dest_ld, const int dest_offset,
-                        __global real* dest,
-                        const real_arg arg_alpha,
-                        const int do_conjugate) {
-  const real alpha = GetRealArg(arg_alpha);
-
-  // Local memory to store a tile of the matrix (for coalescing)
-  __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
+inline void _TransposePadMatrix(__local real* tile,
+                                const int src_one, const int src_two,
+                                const int src_ld, const int src_offset,
+                                __global const real* restrict src,
+                                const int dest_one, const int dest_two,
+                                const int dest_ld, const int dest_offset,
+                                __global real* dest,
+                                const real alpha,
+                                const int do_conjugate) {
 
   // Loop over the work per thread
   #pragma unroll
@@ -56,7 +52,9 @@ void TransposePadMatrix(const int src_one, const int src_two,
       if (id_src_two < src_two && id_src_one < src_one) {
         value = src[id_src_two*src_ld + id_src_one + src_offset];
       }
-      tile[get_local_id(1)*PADTRA_WPT + w_two][get_local_id(0)*PADTRA_WPT + w_one] = value;
+      const int tile_id0 = get_local_id(0)*PADTRA_WPT + w_one;
+      const int tile_id1 = get_local_id(1)*PADTRA_WPT + w_two;
+      tile[tile_id1 * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD) + tile_id0] = value;
     }
   }
 
@@ -75,7 +73,9 @@ void TransposePadMatrix(const int src_one, const int src_two,
 
       // Stores the transposed value in the destination matrix
       if ((id_dest_one < dest_one) && (id_dest_two < dest_two)) {
-        real value = tile[get_local_id(0)*PADTRA_WPT + w_two][get_local_id(1)*PADTRA_WPT + w_one];
+        const int tile_id0 = get_local_id(1)*PADTRA_WPT + w_one;
+        const int tile_id1 = get_local_id(0)*PADTRA_WPT + w_two;
+        real value = tile[tile_id1 * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD) + tile_id0];
         if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
         Multiply(dest[id_dest_two*dest_ld + id_dest_one + dest_offset], alpha, value);
       }
@@ -83,25 +83,38 @@ void TransposePadMatrix(const int src_one, const int src_two,
   }
 }
 
+// Interface to the above function
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposePadMatrix(const int src_one, const int src_two,
+                        const int src_ld, const int src_offset,
+                        __global const real* restrict src,
+                        const int dest_one, const int dest_two,
+                        const int dest_ld, const int dest_offset,
+                        __global real* dest,
+                        const real_arg arg_alpha,
+                        const int do_conjugate) {
+  const real alpha = GetRealArg(arg_alpha);
+  __local real tile[(PADTRA_WPT*PADTRA_TILE) * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD)];
+  _TransposePadMatrix(tile, src_one, src_two, src_ld, src_offset, src,
+                      dest_one, dest_two, dest_ld, dest_offset, dest,
+                      alpha, do_conjugate);
+}
+
 // =================================================================================================
 
 // Transposes a matrix, while considering possible padding in the source matrix. Data is read from a
 // padded source matrix, but only the actual data is written back to the transposed destination
 // matrix. This kernel optionally checks for upper/lower triangular matrices.
-__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
-void TransposeMatrix(const int src_one, const int src_two,
-                     const int src_ld, const int src_offset,
-                     __global const real* restrict src,
-                     const int dest_one, const int dest_two,
-                     const int dest_ld, const int dest_offset,
-                     __global real* dest,
-                     const real_arg arg_alpha,
-                     const int upper, const int lower,
-                     const int diagonal_imag_zero) {
-  const real alpha = GetRealArg(arg_alpha);
-
-  // Local memory to store a tile of the matrix (for coalescing)
-  __local real tile[PADTRA_WPT*PADTRA_TILE][PADTRA_WPT*PADTRA_TILE + PADTRA_PAD];
+inline void _TransposeMatrix(__local real* tile,
+                             const int src_one, const int src_two,
+                             const int src_ld, const int src_offset,
+                             __global const real* restrict src,
+                             const int dest_one, const int dest_two,
+                             const int dest_ld, const int dest_offset,
+                             __global real* dest,
+                             const real alpha,
+                             const int upper, const int lower,
+                             const int diagonal_imag_zero) {
 
   // Loop over the work per thread
   #pragma unroll
@@ -117,7 +130,9 @@ void TransposeMatrix(const int src_one, const int src_two,
       // Loads data into the local memory if the thread IDs are within bounds of the source matrix.
       if ((id_src_one < src_one) && (id_src_two < src_two)) {
         real value = src[id_src_two*src_ld + id_src_one + src_offset];
-        tile[get_local_id(1)*PADTRA_WPT + w_two][get_local_id(0)*PADTRA_WPT + w_one] = value;
+        const int tile_id0 = get_local_id(0)*PADTRA_WPT + w_one;
+        const int tile_id1 = get_local_id(1)*PADTRA_WPT + w_two;
+        tile[tile_id1 * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD) + tile_id0] = value;
       }
     }
   }
@@ -145,7 +160,9 @@ void TransposeMatrix(const int src_one, const int src_two,
 
         // Stores the transposed value in the destination matrix
         if ((id_dest_one < dest_one) && (id_dest_two < dest_two)) {
-          real value = tile[get_local_id(0)*PADTRA_WPT + w_two][get_local_id(1)*PADTRA_WPT + w_one];
+          const int tile_id0 = get_local_id(1)*PADTRA_WPT + w_one;
+          const int tile_id1 = get_local_id(0)*PADTRA_WPT + w_two;
+          real value = tile[tile_id1 * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD) + tile_id0];
           if (diagonal_imag_zero == 1 && id_dest_one == id_dest_two) { ImagToZero(value); }
           Multiply(dest[id_dest_two*dest_ld + id_dest_one + dest_offset], alpha, value);
         }
@@ -154,6 +171,65 @@ void TransposeMatrix(const int src_one, const int src_two,
   }
 }
 
+// Interface to the above function
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposeMatrix(const int src_one, const int src_two,
+                     const int src_ld, const int src_offset,
+                     __global const real* restrict src,
+                     const int dest_one, const int dest_two,
+                     const int dest_ld, const int dest_offset,
+                     __global real* dest,
+                     const real_arg arg_alpha,
+                     const int upper, const int lower,
+                     const int diagonal_imag_zero) {
+  const real alpha = GetRealArg(arg_alpha);
+  __local real tile[(PADTRA_WPT*PADTRA_TILE) * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD)];
+  _TransposeMatrix(tile, src_one, src_two, src_ld, src_offset, src,
+                   dest_one, dest_two, dest_ld, dest_offset, dest,
+                   alpha, upper, lower, diagonal_imag_zero);
+}
+
+// =================================================================================================
+#if defined(ROUTINE_GEMMBATCHED)
+
+// Batched version of the above
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposePadMatrixBatched(const int src_one, const int src_two,
+                               const int src_ld, const __constant int* src_offsets,
+                               __global const real* restrict src,
+                               const int dest_one, const int dest_two,
+                               const int dest_ld, const __constant int* dest_offsets,
+                               __global real* dest,
+                               const int do_conjugate) {
+  const int batch = get_group_id(2);
+  const int src_offset = src_offsets[batch];
+  const int dest_offset = dest_offsets[batch];
+  real alpha; SetToOne(alpha);
+  __local real tile[(PADTRA_WPT*PADTRA_TILE) * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD)];
+  _TransposePadMatrix(tile, src_one, src_two, src_ld, src_offset, src,
+                      dest_one, dest_two, dest_ld, dest_offset, dest,
+                      alpha, do_conjugate);
+}
+
+// Batched version of the above
+__kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
+void TransposeMatrixBatched(const int src_one, const int src_two,
+                            const int src_ld, const __constant int* src_offsets,
+                            __global const real* restrict src,
+                            const int dest_one, const int dest_two,
+                            const int dest_ld, const __constant int* dest_offsets,
+                            __global real* dest) {
+  const int batch = get_group_id(2);
+  const int src_offset = src_offsets[batch];
+  const int dest_offset = dest_offsets[batch];
+  real alpha; SetToOne(alpha);
+  __local real tile[(PADTRA_WPT*PADTRA_TILE) * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD)];
+  _TransposeMatrix(tile, src_one, src_two, src_ld, src_offset, src,
+                   dest_one, dest_two, dest_ld, dest_offset, dest,
+                   alpha, 0, 0, 0);
+}
+
+#endif
 // =================================================================================================
 
 // End of the C++11 raw string literal

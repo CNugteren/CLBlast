@@ -1,13 +1,32 @@
 
-Development version (next release)
+Development (next version)
+- Fixed a bug in the TRSM routine for alpha != 1
+- Performance reports are now external at https://cnugteren.github.io/clblast
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+- Added non-BLAS level-1 routines:
+  * iSAMIN/iDAMIN/iCAMIN/iZAMIN (absolute minimum version of the ixAMAX BLAS routines)
+
+Version 0.11.0
 - Improved the internal program source and binary caches for scalability and speed (thanks to 'intelfx')
 - Fixed a bug having to re-create the binary even if it was in the cache
 - Fixed a bug when using offsets in the direct version of the GEMM kernels
 - Fixed a missing cl_khr_fp64 when running double-precision on Intel CPUs
+- Fixed tests on Apple's CPU OpenCL implementation; still not fast but correct at least
+- Fixed bugs in the half-precision routines HTBMV/HTPMV/HTRMV/HSYR2K/HTRMM
 - Tests now also exit with an error code when OpenCL errors or compilation errors occur
-- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Tests now also check for the L2 error in case of half-precision
+- Clients can now test against cuBLAS on NVIDIA systems for performance comparisons (-DCUBLAS=ON)
+- Replaced the R graph scripts with Python/Matplotlib scripts
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Added triangular solver (level-2 & level-3) routines:
+  * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
+  * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)
+- Added batched (not part of the BLAS standard) routines:
+  * SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED (batched version of AXPY)
+  * SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED (batched version of GEMM)
 
 Version 0.10.0
 - Updated to version 8.0 of the CLCudaAPI C++11 OpenCL header

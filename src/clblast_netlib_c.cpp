@@ -1191,6 +1191,96 @@ int cblas_izamax(const int n,
   return imax[0];
 }
 
+// AMIN
+int cblas_isamin(const int n,
+                const float* x, const int x_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto x_size = n * x_inc;
+  const auto imin_size = 1;
+  auto x_buffer = clblast::Buffer<float>(context, x_size);
+  auto imin_buffer = clblast::Buffer<int>(context, imin_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
+  auto queue_cl = queue();
+  auto s = clblast::Amin<float>(n,
+                                imin_buffer(), 0,
+                                x_buffer(), 0, x_inc,
+                                &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  int imin[imin_size];
+  imin_buffer.Read(queue, imin_size, reinterpret_cast<int*>(imin));
+  return imin[0];
+}
+int cblas_idamin(const int n,
+                const double* x, const int x_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto x_size = n * x_inc;
+  const auto imin_size = 1;
+  auto x_buffer = clblast::Buffer<double>(context, x_size);
+  auto imin_buffer = clblast::Buffer<int>(context, imin_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
+  auto queue_cl = queue();
+  auto s = clblast::Amin<double>(n,
+                                 imin_buffer(), 0,
+                                 x_buffer(), 0, x_inc,
+                                 &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  int imin[imin_size];
+  imin_buffer.Read(queue, imin_size, reinterpret_cast<int*>(imin));
+  return imin[0];
+}
+int cblas_icamin(const int n,
+                const void* x, const int x_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto x_size = n * x_inc;
+  const auto imin_size = 1;
+  auto x_buffer = clblast::Buffer<float2>(context, x_size);
+  auto imin_buffer = clblast::Buffer<int>(context, imin_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
+  auto queue_cl = queue();
+  auto s = clblast::Amin<float2>(n,
+                                 imin_buffer(), 0,
+                                 x_buffer(), 0, x_inc,
+                                 &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  int imin[imin_size];
+  imin_buffer.Read(queue, imin_size, reinterpret_cast<int*>(imin));
+  return imin[0];
+}
+int cblas_izamin(const int n,
+                const void* x, const int x_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto x_size = n * x_inc;
+  const auto imin_size = 1;
+  auto x_buffer = clblast::Buffer<double2>(context, x_size);
+  auto imin_buffer = clblast::Buffer<int>(context, imin_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
+  auto queue_cl = queue();
+  auto s = clblast::Amin<double2>(n,
+                                  imin_buffer(), 0,
+                                  x_buffer(), 0, x_inc,
+                                  &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  int imin[imin_size];
+  imin_buffer.Read(queue, imin_size, reinterpret_cast<int*>(imin));
+  return imin[0];
+}
+
 // MAX
 int cblas_ismax(const int n,
                const float* x, const int x_inc) {

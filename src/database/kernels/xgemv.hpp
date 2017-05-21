@@ -45,7 +45,9 @@ const Database::DatabaseEntry XgemvSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",128}, {"WPT1",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",32}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",256}, {"WPT1",1} } },
+        { "Fiji",                                            { {"WGS1",128}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",128}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
@@ -72,7 +74,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "Intel(R) HD Graphics IvyBridge M GT2",            { {"WGS1",256}, {"WPT1",1} } },
         { "Intel(R) HD Graphics Skylake ULT GT2",            { {"WGS1",32}, {"WPT1",1} } },
         { "Iris",                                            { {"WGS1",64}, {"WPT1",2} } },
-        { "Iris Pro",                                        { {"WGS1",256}, {"WPT1",2} } },
+        { "Iris Pro",                                        { {"WGS1",128}, {"WPT1",1} } },
         { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
@@ -99,7 +101,7 @@ const Database::DatabaseEntry XgemvSingle = {
         { "TITAN X (Pascal)",                                { {"WGS1",32}, {"WPT1",1} } },
         { "Tesla K20m",                                      { {"WGS1",128}, {"WPT1",1} } },
         { "Tesla K40m",                                      { {"WGS1",256}, {"WPT1",1} } },
-        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",256}, {"WPT1",1} } },
       }
     },
     { // Default
@@ -117,7 +119,9 @@ const Database::DatabaseEntry XgemvComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1} } },
+        { "ATI Radeon HD 6750M",                             { {"WGS1",64}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",32}, {"WPT1",1} } },
+        { "Fiji",                                            { {"WGS1",32}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",64}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",64}, {"WPT1",1} } },
@@ -186,6 +190,7 @@ const Database::DatabaseEntry XgemvDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",32}, {"WPT1",1} } },
+        { "Fiji",                                            { {"WGS1",32}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",128}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",256}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },
@@ -231,7 +236,7 @@ const Database::DatabaseEntry XgemvDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",64}, {"WPT1",1} } },
+        { "default",                                         { {"WGS1",128}, {"WPT1",1} } },
       }
     },
   }
@@ -245,6 +250,7 @@ const Database::DatabaseEntry XgemvComplexDouble = {
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { {"WGS1",64}, {"WPT1",1} } },
         { "Ellesmere",                                       { {"WGS1",32}, {"WPT1",1} } },
+        { "Fiji",                                            { {"WGS1",64}, {"WPT1",1} } },
         { "Hawaii",                                          { {"WGS1",64}, {"WPT1",1} } },
         { "Oland",                                           { {"WGS1",256}, {"WPT1",1} } },
         { "Pitcairn",                                        { {"WGS1",256}, {"WPT1",1} } },

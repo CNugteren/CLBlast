@@ -164,6 +164,10 @@ class Platform {
     platform_ = platforms[platform_id];
   }
 
+  // Methods to retrieve platform information
+  std::string Name() const { return GetInfoString(CL_PLATFORM_NAME); }
+  std::string Vendor() const { return GetInfoString(CL_PLATFORM_VENDOR); }
+
   // Returns the number of devices on this platform
   size_t NumDevices() const {
     auto result = cl_uint{0};
@@ -175,6 +179,17 @@ class Platform {
   const cl_platform_id& operator()() const { return platform_; }
  private:
   cl_platform_id platform_;
+
+  // Private helper functions
+  std::string GetInfoString(const cl_device_info info) const {
+    auto bytes = size_t{0};
+    CheckError(clGetPlatformInfo(platform_, info, 0, nullptr, &bytes));
+    auto result = std::string{};
+    result.resize(bytes);
+    CheckError(clGetPlatformInfo(platform_, info, bytes, &result[0], nullptr));
+    result.resize(strlen(result.c_str())); // Removes any trailing '\0'-characters
+    return result;
+  }
 };
 
 // Retrieves a vector with all platforms
@@ -600,9 +615,6 @@ class Buffer {
 
   // Copies from host to device: writing the device buffer a-synchronously
   void WriteAsync(const Queue &queue, const size_t size, const T* host, const size_t offset = 0) {
-    if (access_ == BufferAccess::kReadOnly) {
-      throw LogicError("Buffer: writing to a read-only buffer");
-    }
     if (GetSize() < (offset+size)*sizeof(T)) {
       throw LogicError("Buffer: target device buffer is too small");
     }

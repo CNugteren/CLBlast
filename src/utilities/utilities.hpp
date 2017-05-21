@@ -20,6 +20,7 @@
 #include <string>
 #include <functional>
 #include <complex>
+#include <random>
 
 #include "clpp11.hpp"
 #include "clblast.h"
@@ -29,6 +30,9 @@
 
 namespace clblast {
 // =================================================================================================
+
+// Shorthands for half-precision
+using half = cl_half; // based on the OpenCL type, which is actually an 'unsigned short'
 
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
@@ -72,6 +76,7 @@ constexpr auto kArgAsumOffset = "offasum";
 constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
+constexpr auto kArgBatchCount = "batch_num";
 
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
@@ -79,6 +84,7 @@ constexpr auto kArgFraction = "fraction";
 // The client-specific arguments in string form
 constexpr auto kArgCompareclblas = "clblas";
 constexpr auto kArgComparecblas = "cblas";
+constexpr auto kArgComparecublas = "cublas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgNumRuns = "runs";
@@ -96,15 +102,39 @@ constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
 
+// The buffer names
+constexpr auto kBufVecX = "X";
+constexpr auto kBufVecY = "Y";
+constexpr auto kBufMatA = "A";
+constexpr auto kBufMatB = "B";
+constexpr auto kBufMatC = "C";
+constexpr auto kBufMatAP = "AP";
+constexpr auto kBufScalar = "Scalar";
+
+// =================================================================================================
+
+// Converts a regular or complex type to it's base type (e.g. float2 to float)
+template <typename T> struct BaseType { using Type = T; };
+template <> struct BaseType<float2> { using Type = float; };
+template <> struct BaseType<double2> { using Type = double; };
+
 // =================================================================================================
 
 // Returns a scalar with a default value
-template <typename T>
-T GetScalar();
+template <typename T> T GetScalar();
 
-// Returns a scalar of value 1
-template <typename T>
-T ConstantOne();
+// Fixed value scalars
+template <typename T> T ConstantZero();
+template <typename T> T ConstantOne();
+template <typename T> T ConstantNegOne();
+template <typename T> T Constant(const double val);
+template <typename T> T SmallConstant();
+
+// Returns the absolute value of a scalar (modulus in case of complex numbers)
+template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value);
+
+// Returns whether a scalar is close to zero
+template <typename T> bool IsCloseToZero(const T value);
 
 // =================================================================================================
 
@@ -140,6 +170,16 @@ struct Arguments {
   size_t imax_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
+  // Batch-specific arguments
+  size_t batch_count = 1;
+  std::vector<size_t> x_offsets = {0};
+  std::vector<size_t> y_offsets = {0};
+  std::vector<size_t> a_offsets = {0};
+  std::vector<size_t> b_offsets = {0};
+  std::vector<size_t> c_offsets = {0};
+  std::vector<T> alphas = {ConstantOne<T>()};
+  std::vector<T> betas = {ConstantOne<T>()};
+  // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
   size_t a_size = 1;
@@ -152,9 +192,13 @@ struct Arguments {
   // Client-specific arguments
   int compare_clblas = 1;
   int compare_cblas = 1;
+  int compare_cublas = 1;
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  #ifdef CLBLAST_REF_CUBLAS
+    void* cublas_handle; // cublasHandle_t
+  #endif
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
@@ -174,6 +218,16 @@ struct Buffers {
   Buffer<T> c_mat;
   Buffer<T> ap_mat;
   Buffer<T> scalar;
+};
+template <typename T>
+struct BuffersHost {
+  std::vector<T> x_vec;
+  std::vector<T> y_vec;
+  std::vector<T> a_mat;
+  std::vector<T> b_mat;
+  std::vector<T> c_mat;
+  std::vector<T> ap_mat;
+  std::vector<T> scalar;
 };
 
 // =================================================================================================
@@ -219,7 +273,19 @@ constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>
-void PopulateVector(std::vector<T> &vector, const unsigned int seed);
+void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
+
+// =================================================================================================
+
+// Copies buffers from the OpenCL device to the host
+template <typename T, typename U>
+void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names);
+
+// Copies buffers from the host to the OpenCL device
+template <typename T, typename U>
+void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
+                  Queue &queue, const std::vector<std::string> &names);
 
 // =================================================================================================
 

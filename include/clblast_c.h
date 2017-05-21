@@ -96,6 +96,7 @@ typedef enum CLBlastStatusCode_ {
   CLBlastInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  CLBlastInvalidBatchCount         = -2049, // The batch count needs to be positive
   CLBlastInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   CLBlastMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
   CLBlastInvalidLocalMemUsage      = -2046, // Not enough local memory available on this device
@@ -399,6 +400,28 @@ CLBlastStatusCode PUBLIC_API CLBlastiZamax(const size_t n,
                                           cl_command_queue* queue, cl_event* event);
 CLBlastStatusCode PUBLIC_API CLBlastiHamax(const size_t n,
                                           cl_mem imax_buffer, const size_t imax_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+CLBlastStatusCode PUBLIC_API CLBlastiSamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiDamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiCamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiZamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
+                                          const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                          cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastiHamin(const size_t n,
+                                          cl_mem imin_buffer, const size_t imin_offset,
                                           const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                           cl_command_queue* queue, cl_event* event);
 
@@ -1265,7 +1288,7 @@ CLBlastStatusCode PUBLIC_API CLBlastHtrmm(const CLBlastLayout layout, const CLBl
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 CLBlastStatusCode PUBLIC_API CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const float alpha,
@@ -1287,12 +1310,6 @@ CLBlastStatusCode PUBLIC_API CLBlastCtrsm(const CLBlastLayout layout, const CLBl
 CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
                                           const size_t m, const size_t n,
                                           const cl_double2 alpha,
-                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                                          cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                                          cl_command_queue* queue, cl_event* event);
-CLBlastStatusCode PUBLIC_API CLBlastHtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal,
-                                          const size_t m, const size_t n,
-                                          const cl_half alpha,
                                           const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                           cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
@@ -1332,6 +1349,85 @@ CLBlastStatusCode PUBLIC_API CLBlastHomatcopy(const CLBlastLayout layout, const 
                                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                               cl_command_queue* queue, cl_event* event);
+
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSaxpyBatched(const size_t n,
+                                                 const float *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDaxpyBatched(const size_t n,
+                                                 const double *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCaxpyBatched(const size_t n,
+                                                 const cl_float2 *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZaxpyBatched(const size_t n,
+                                                 const cl_double2 *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHaxpyBatched(const size_t n,
+                                                 const cl_half *alphas,
+                                                 const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                                                 cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const float *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const float *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const double *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const double *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_float2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_float2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_double2 *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_double2 *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                 const size_t m, const size_t n, const size_t k,
+                                                 const cl_half *alphas,
+                                                 const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                                                 const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                                                 const cl_half *betas,
+                                                 cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                                                 const size_t batch_count,
+                                                 cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 

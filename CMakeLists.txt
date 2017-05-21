@@ -18,7 +18,7 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 10)
+set(clblast_VERSION_MINOR 11)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -28,6 +28,7 @@ option(TUNERS "Enable compilation of the tuners" OFF)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
+option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
 
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
@@ -129,11 +130,14 @@ if(TUNERS)
   endif()
 endif()
 
-# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake"
-# and "FindCBLAS.cmake" are included.
+# Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake",
+# "FindCBLAS.cmake" and "FindcuBLAS.cmake" are included.
 if(CLIENTS OR TESTS)
   find_package(clBLAS)
   find_package(CBLAS)
+  if(CUBLAS)
+    find_package(cuBLAS)
+  endif()
   if(NOT CLBLAS_FOUND AND NOT CBLAS_FOUND)
     if(TESTS)
       message(STATUS "Could NOT find clBLAS nor a CPU BLAS, disabling the compilation of the tests")
@@ -156,10 +160,10 @@ if(NETLIB)
   set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
 endif()
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
-set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv
+set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
-set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm)
-set(LEVELX_ROUTINES xomatcopy)
+set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm xtrsm)
+set(LEVELX_ROUTINES xomatcopy xaxpybatched xgemmbatched)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
 set(PRECISIONS 32 64 3232 6464 16)
 
@@ -175,6 +179,7 @@ set(SOURCES
   src/clblast.cpp
   src/clblast_c.cpp
   src/routine.cpp
+  src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
 )
 if(NETLIB)
   set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
@@ -319,13 +324,22 @@ if(CLIENTS OR TESTS)
       add_definitions(" -DCLBLAST_REF_CBLAS")
     endif()
   endif()
+  if(CUBLAS_FOUND)
+    set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS})
+    set(REF_LIBRARIES ${REF_LIBRARIES} ${CUDA_LIBRARIES} ${CUBLAS_LIBRARIES})
+    if(MSVC)
+      add_definitions(" /DCLBLAST_REF_CUBLAS")
+    else()
+      add_definitions(" -DCLBLAST_REF_CUBLAS")
+    endif()
+  endif()
 
 endif()
 
 # ==================================================================================================
 
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
-# library, either clBLAS or a CPU BLAS.
+# library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
 
   # Visual Studio requires the sources of non-exported objects/libraries
@@ -371,7 +385,7 @@ endif()
 # ==================================================================================================
 
 # Section for the correctness tests. Note that these tests require the presence of clBLAS and/or a
-# CPU BLAS library to act as a reference.
+# CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
 

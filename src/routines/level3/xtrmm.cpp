@@ -101,7 +101,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
            alpha,
            temp_triangular, 0, k,
            b_buffer_copy, b_offset, b_ld,
-           static_cast<T>(0.0),
+           ConstantZero<T>(),
            b_buffer, b_offset, b_ld);
   }
 
@@ -113,7 +113,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
              alpha,
              b_buffer_copy, b_offset, b_ld,
              temp_triangular, 0, k,
-             static_cast<T>(0.0),
+             ConstantZero<T>(),
              b_buffer, b_offset, b_ld);
     } catch (BLASError &e) {
       // A and B are now reversed, so also reverse the error codes returned from the Xgemm routine

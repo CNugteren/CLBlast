@@ -16,15 +16,7 @@
 #ifndef CLBLAST_TEST_ROUTINES_XAMAX_H_
 #define CLBLAST_TEST_ROUTINES_XAMAX_H_
 
-#include <vector>
-#include <string>
-
-#ifdef CLBLAST_REF_CLBLAS
-  #include "test/wrapper_clblas.hpp"
-#endif
-#ifdef CLBLAST_REF_CBLAS
-  #include "test/wrapper_cblas.hpp"
-#endif
+#include "test/routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -43,13 +35,15 @@ class TestXamax {
             kArgXInc,
             kArgXOffset, kArgImaxOffset};
   }
+  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufScalar}; }
+  static std::vector<std::string> BuffersOut() { return {kBufScalar}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
     return args.n * args.x_inc + args.x_offset;
   }
   static size_t GetSizeImax(const Arguments<T> &args) {
-    return 1 + args.imax_offset;
+    return (1 + args.imax_offset) * 2; // always a 4-byte integer, this is a hack for FP16
   }
 
   // Describes how to set the sizes of all the buffers
@@ -67,6 +61,11 @@ class TestXamax {
   using Transposes = std::vector<Transpose>;
   static Transposes GetATransposes(const Transposes &) { return {}; } // N/A for this routine
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
+
+  // Describes how to prepare the input data
+  static void PrepareData(const Arguments<T>&, Queue&, const int, std::vector<T>&,
+                          std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&,
+                          std::vector<T>&, std::vector<T>&) {} // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
@@ -96,16 +95,21 @@ class TestXamax {
 
   // Describes how to run the CPU BLAS routine (for correctness/performance comparison)
   #ifdef CLBLAST_REF_CBLAS
-    static StatusCode RunReference2(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-      std::vector<T> scalar_cpu(args.scalar_size, static_cast<T>(0));
-      std::vector<T> x_vec_cpu(args.x_size, static_cast<T>(0));
-      buffers.scalar.Read(queue, args.scalar_size, scalar_cpu);
-      buffers.x_vec.Read(queue, args.x_size, x_vec_cpu);
+    static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXamax(args.n,
-                 scalar_cpu, args.imax_offset,
-                 x_vec_cpu, args.x_offset, args.x_inc);
-      buffers.scalar.Write(queue, args.scalar_size, scalar_cpu);
+                 buffers_host.scalar, args.imax_offset,
+                 buffers_host.x_vec, args.x_offset, args.x_inc);
       return StatusCode::kSuccess;
+    }
+  #endif
+
+  // Describes how to run the cuBLAS routine (for correctness/performance comparison)
+  #ifdef CLBLAST_REF_CUBLAS
+    static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
+      auto status = cublasXamax(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n,
+                                buffers.scalar, args.imax_offset,
+                                buffers.x_vec, args.x_offset, args.x_inc);
+      if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
   #endif
 

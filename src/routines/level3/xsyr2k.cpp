@@ -149,7 +149,7 @@ void Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, const Tran
   eventWaitList.push_back(eventKernel1);
 
   // Swaps the arguments for matrices A and B, and sets 'beta' to 1
-  auto one = static_cast<T>(1);
+  auto one = ConstantOne<T>();
   kernel.SetArgument(3, GetRealArg(one));
   kernel.SetArgument(4, b_temp());
   kernel.SetArgument(5, a_temp());

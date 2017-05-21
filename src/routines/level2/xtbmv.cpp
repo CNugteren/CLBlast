@@ -52,9 +52,9 @@ void Xtbmv<T>::DoTbmv(const Layout layout, const Triangle triangle,
   auto fast_kernels = false;
   try {
     MatVec(layout, a_transpose,
-           n, n, static_cast<T>(1),
+           n, n, ConstantOne<T>(),
            a_buffer, a_offset, a_ld,
-           scratch_buffer, x_offset, x_inc, static_cast<T>(0),
+           scratch_buffer, x_offset, x_inc, ConstantZero<T>(),
            x_buffer, x_offset, x_inc,
            fast_kernels, fast_kernels,
            parameter, false, k, 0);

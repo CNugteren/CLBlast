@@ -30,6 +30,7 @@
 #include "routines/level1/xasum.hpp"
 #include "routines/level1/xsum.hpp" // non-BLAS routine
 #include "routines/level1/xamax.hpp"
+#include "routines/level1/xamin.hpp" // non-BLAS routine
 #include "routines/level1/xmax.hpp" // non-BLAS routine
 #include "routines/level1/xmin.hpp" // non-BLAS routine
 
@@ -45,6 +46,7 @@
 #include "routines/level2/xtrmv.hpp"
 #include "routines/level2/xtbmv.hpp"
 #include "routines/level2/xtpmv.hpp"
+#include "routines/level2/xtrsv.hpp"
 #include "routines/level2/xger.hpp"
 #include "routines/level2/xgeru.hpp"
 #include "routines/level2/xgerc.hpp"
@@ -66,9 +68,12 @@
 #include "routines/level3/xsyr2k.hpp"
 #include "routines/level3/xher2k.hpp"
 #include "routines/level3/xtrmm.hpp"
+#include "routines/level3/xtrsm.hpp"
 
 // Level-x includes (non-BLAS)
 #include "routines/levelx/xomatcopy.hpp"
+#include "routines/levelx/xaxpybatched.hpp"
+#include "routines/levelx/xgemmbatched.hpp"
 
 namespace clblast {
 
@@ -542,6 +547,42 @@ template StatusCode PUBLIC_API Amax<double2>(const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Amax<half>(const size_t,
+                                          cl_mem, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+
+// Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+template <typename T>
+StatusCode Amin(const size_t n,
+                cl_mem imin_buffer, const size_t imin_offset,
+                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xamin<T>(queue_cpp, event);
+    routine.DoAmin(n,
+                   Buffer<unsigned int>(imin_buffer), imin_offset,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Amin<float>(const size_t,
+                                           cl_mem, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<double>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<float2>(const size_t,
+                                            cl_mem, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<double2>(const size_t,
+                                             cl_mem, const size_t,
+                                             const cl_mem, const size_t, const size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<half>(const size_t,
                                           cl_mem, const size_t,
                                           const cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
@@ -1145,12 +1186,20 @@ template StatusCode PUBLIC_API Tpmv<half>(const Layout, const Triangle, const Tr
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
-StatusCode Trsv(const Layout, const Triangle, const Transpose, const Diagonal,
-                const size_t,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t n,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrsv<T>(queue_cpp, event);
+    routine.DoTrsv(layout, triangle, a_transpose, diagonal,
+                   n,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trsv<float>(const Layout, const Triangle, const Transpose, const Diagonal,
                                            const size_t,
@@ -2065,15 +2114,24 @@ template StatusCode PUBLIC_API Trmm<half>(const Layout, const Side, const Triang
                                           cl_mem, const size_t, const size_t,
                                           cl_command_queue*, cl_event*);
 
-// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM/HTRSM
+// Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
-StatusCode Trsm(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
-                const size_t, const size_t,
-                const T,
-                const cl_mem, const size_t, const size_t,
-                cl_mem, const size_t, const size_t,
-                cl_command_queue*, cl_event*) {
-  return StatusCode::kNotImplemented;
+StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
+                const size_t m, const size_t n,
+                const T alpha,
+                const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xtrsm<T>(queue_cpp, event);
+    routine.DoTrsm(layout, side, triangle, a_transpose, diagonal,
+                   m, n,
+                   alpha,
+                   Buffer<T>(a_buffer), a_offset, a_ld,
+                   Buffer<T>(b_buffer), b_offset, b_ld);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
 }
 template StatusCode PUBLIC_API Trsm<float>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
                                            const size_t, const size_t,
@@ -2099,12 +2157,6 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
                                              cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsm<half>(const Layout, const Side, const Triangle, const Transpose, const Diagonal,
-                                          const size_t, const size_t,
-                                          const half,
-                                          const cl_mem, const size_t, const size_t,
-                                          cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
@@ -2160,6 +2212,146 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
                                               cl_mem, const size_t, const size_t,
                                               cl_command_queue*, cl_event*);
 
+// Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
+template <typename T>
+StatusCode AxpyBatched(const size_t n,
+                       const T *alphas,
+                       const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
+                       cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = XaxpyBatched<T>(queue_cpp, event);
+    auto alphas_cpp = std::vector<T>();
+    auto x_offsets_cpp = std::vector<size_t>();
+    auto y_offsets_cpp = std::vector<size_t>();
+    for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+      alphas_cpp.push_back(alphas[batch]);
+      x_offsets_cpp.push_back(x_offsets[batch]);
+      y_offsets_cpp.push_back(y_offsets[batch]);
+    }
+    routine.DoAxpyBatched(n,
+                          alphas_cpp,
+                          Buffer<T>(x_buffer), x_offsets_cpp, x_inc,
+                          Buffer<T>(y_buffer), y_offsets_cpp, y_inc,
+                          batch_count);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API AxpyBatched<float>(const size_t,
+                                                  const float*,
+                                                  const cl_mem, const size_t*, const size_t,
+                                                  cl_mem, const size_t*, const size_t,
+                                                  const size_t,
+                                                  cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double>(const size_t,
+                                                   const double*,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   cl_mem, const size_t*, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<float2>(const size_t,
+                                                   const float2*,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   cl_mem, const size_t*, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double2>(const size_t,
+                                                    const double2*,
+                                                    const cl_mem, const size_t*, const size_t,
+                                                    cl_mem, const size_t*, const size_t,
+                                                    const size_t,
+                                                    cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<half>(const size_t,
+                                                 const half*,
+                                                 const cl_mem, const size_t*, const size_t,
+                                                 cl_mem, const size_t*, const size_t,
+                                                 const size_t,
+                                                 cl_command_queue*, cl_event*);
+
+// Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
+template <typename T>
+StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                       const size_t m, const size_t n, const size_t k,
+                       const T *alphas,
+                       const cl_mem a_buffer, const size_t *a_offsets, const size_t a_ld,
+                       const cl_mem b_buffer, const size_t *b_offsets, const size_t b_ld,
+                       const T *betas,
+                       cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
+                       const size_t batch_count,
+                       cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = XgemmBatched<T>(queue_cpp, event);
+    auto alphas_cpp = std::vector<T>();
+    auto betas_cpp = std::vector<T>();
+    auto a_offsets_cpp = std::vector<size_t>();
+    auto b_offsets_cpp = std::vector<size_t>();
+    auto c_offsets_cpp = std::vector<size_t>();
+    for (auto batch = size_t{0}; batch < batch_count; ++batch) {
+      alphas_cpp.push_back(alphas[batch]);
+      betas_cpp.push_back(betas[batch]);
+      a_offsets_cpp.push_back(a_offsets[batch]);
+      b_offsets_cpp.push_back(b_offsets[batch]);
+      c_offsets_cpp.push_back(c_offsets[batch]);
+    }
+    routine.DoGemmBatched(layout, a_transpose, b_transpose,
+                          m, n, k,
+                          alphas_cpp,
+                          Buffer<T>(a_buffer), a_offsets_cpp, a_ld,
+                          Buffer<T>(b_buffer), b_offsets_cpp, b_ld,
+                          betas_cpp,
+                          Buffer<T>(c_buffer), c_offsets_cpp, c_ld,
+                          batch_count);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API GemmBatched<float>(const Layout, const Transpose, const Transpose,
+                                                  const size_t, const size_t, const size_t,
+                                                  const float*,
+                                                  const cl_mem, const size_t*, const size_t,
+                                                  const cl_mem, const size_t*, const size_t,
+                                                  const float*,
+                                                  cl_mem, const size_t*, const size_t,
+                                                  const size_t,
+                                                  cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmBatched<double>(const Layout, const Transpose, const Transpose,
+                                                   const size_t, const size_t, const size_t,
+                                                   const double*,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   const double*,
+                                                   cl_mem, const size_t*, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmBatched<float2>(const Layout, const Transpose, const Transpose,
+                                                   const size_t, const size_t, const size_t,
+                                                   const float2*,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   const cl_mem, const size_t*, const size_t,
+                                                   const float2*,
+                                                   cl_mem, const size_t*, const size_t,
+                                                   const size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmBatched<double2>(const Layout, const Transpose, const Transpose,
+                                                    const size_t, const size_t, const size_t,
+                                                    const double2*,
+                                                    const cl_mem, const size_t*, const size_t,
+                                                    const cl_mem, const size_t*, const size_t,
+                                                    const double2*,
+                                                    cl_mem, const size_t*, const size_t,
+                                                    const size_t,
+                                                    cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmBatched<half>(const Layout, const Transpose, const Transpose,
+                                                 const size_t, const size_t, const size_t,
+                                                 const half*,
+                                                 const cl_mem, const size_t*, const size_t,
+                                                 const cl_mem, const size_t*, const size_t,
+                                                 const half*,
+                                                 cl_mem, const size_t*, const size_t,
+                                                 const size_t,
+                                                 cl_command_queue*, cl_event*);
 // =================================================================================================
 
 // Clears the cache of stored binaries
@@ -2286,7 +2478,8 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
     const auto database_device = Database::DatabaseDevice{"default", parameters};
     const auto database_vendor = Database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_device}};
     const auto database_entry = Database::DatabaseEntry{kernel_name, precision, {database_vendor}};
-    const auto database = Database(device_cpp, kernel_name, precision, {&database_entry});
+    const auto database_entries = std::vector<Database::DatabaseEntry>{database_entry};
+    const auto database = Database(device_cpp, kernel_name, precision, database_entries);
 
     // Removes the old database entry and stores the new one in the cache
     DatabaseCache::Instance().Remove(DatabaseKey{ precision, device_name, kernel_name });

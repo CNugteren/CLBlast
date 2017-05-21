@@ -13,18 +13,23 @@
 
 #include <algorithm>
 #include <iostream>
+#include <random>
 
+#include "utilities/utilities.hpp"
 #include "test/correctness/testblas.hpp"
 
 namespace clblast {
 // =================================================================================================
 
+template <typename T, typename U> const int TestBlas<T,U>::kSeed = 42; // fixed seed for reproducibility
+
 // Test settings for the regular test. Append to these lists in case more tests are required.
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 4096 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 144, 4096 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 512 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBatchCounts = { 1, 3 };
 
 // Test settings for the invalid tests
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
@@ -51,6 +56,7 @@ template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes =
 template <typename T, typename U>
 TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool silent,
                         const std::string &name, const std::vector<std::string> &options,
+                        const DataPrepare prepare_data,
                         const Routine run_routine,
                         const Routine run_reference1, const Routine run_reference2,
                         const ResultGet get_result, const ResultIndex get_index,
@@ -59,16 +65,19 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
     kOffsets(GetOffsets()),
     kAlphaValues(GetExampleScalars<U>(full_test_)),
     kBetaValues(GetExampleScalars<U>(full_test_)),
+    prepare_data_(prepare_data),
     run_routine_(run_routine),
+    run_reference1_(run_reference1),
+    run_reference2_(run_reference2),
     get_result_(get_result),
     get_index_(get_index),
     get_id1_(get_id1),
     get_id2_(get_id2) {
 
-  // Sets the reference to test against
-  if (compare_clblas_) { run_reference_ = run_reference1; }
-  else if (compare_cblas_) { run_reference_ = run_reference2; }
-  else { throw std::runtime_error("Invalid configuration: no reference to test against"); }
+  // Sanity check
+  if (!compare_clblas_ && !compare_cblas_) {
+    throw std::runtime_error("Invalid configuration: no reference to test against");
+  }
 
   // Computes the maximum sizes. This allows for a single set of input/output buffers.
   const auto max_vec = *std::max_element(kVectorDims.begin(), kVectorDims.end());
@@ -77,22 +86,25 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
   const auto max_ld = *std::max_element(kMatrixDims.begin(), kMatrixDims.end());
   const auto max_matvec = *std::max_element(kMatrixVectorDims.begin(), kMatrixVectorDims.end());
   const auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
+  const auto max_batch_count = *std::max_element(kBatchCounts.begin(), kBatchCounts.end());
 
   // Creates test input data
-  x_source_.resize(std::max(max_vec, max_matvec)*max_inc + max_offset);
-  y_source_.resize(std::max(max_vec, max_matvec)*max_inc + max_offset);
-  a_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  b_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  c_source_.resize(std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  ap_source_.resize(std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
-  scalar_source_.resize(std::max(max_mat, max_matvec) + max_offset);
-  PopulateVector(x_source_, kSeed);
-  PopulateVector(y_source_, kSeed);
-  PopulateVector(a_source_, kSeed);
-  PopulateVector(b_source_, kSeed);
-  PopulateVector(c_source_, kSeed);
-  PopulateVector(ap_source_, kSeed);
-  PopulateVector(scalar_source_, kSeed);
+  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
+  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
+  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
+  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
+  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset);
+  std::mt19937 mt(kSeed);
+  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
+  PopulateVector(x_source_, mt, dist);
+  PopulateVector(y_source_, mt, dist);
+  PopulateVector(a_source_, mt, dist);
+  PopulateVector(b_source_, mt, dist);
+  PopulateVector(c_source_, mt, dist);
+  PopulateVector(ap_source_, mt, dist);
+  PopulateVector(scalar_source_, mt, dist);
 }
 
 // ===============================================================================================
@@ -111,6 +123,11 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
       fprintf(stdout, "   Testing: %s", GetOptionsString(args).c_str());
       std::cout << std::flush;
     }
+
+    // Optionally prepares the input data
+    prepare_data_(args, queue_, kSeed,
+                  x_source_, y_source_, a_source_, b_source_, c_source_,
+                  ap_source_, scalar_source_);
 
     // Set-up for the CLBlast run
     auto x_vec2 = Buffer<T>(context_, args.x_size);
@@ -138,7 +155,10 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
 
     // Don't continue with CBLAS if there are incorrect parameters
     if (compare_cblas_ && status2 != StatusCode::kSuccess) {
-      if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
+      if (verbose_) {
+        fprintf(stdout, " -> %d -> ", static_cast<int>(status2));
+        std::cout << std::flush;
+      }
       TestErrorCodes(status2, status2, args);
       continue;
     }
@@ -166,7 +186,9 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
       else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
       std::cout << std::flush;
     }
-    const auto status1 = run_reference_(args, buffers1, queue_);
+    auto status1 = StatusCode::kSuccess;
+    if (compare_clblas_) { status1 = run_reference1_(args, buffers1, queue_); }
+    else if (compare_cblas_) { status1 = run_reference2_(args, buffers1, queue_); }
 
     // Tests for equality of the two status codes
     if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
@@ -179,23 +201,41 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto result1 = get_result_(args, buffers1, queue_);
     auto result2 = get_result_(args, buffers2, queue_);
 
+    // Computes the L2 error
+    auto l2error = 0.0;
+    const auto kErrorMarginL2 = getL2ErrorMargin<T>();
+    for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
+      for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
+        auto index = get_index_(args, id1, id2);
+        l2error += SquaredDifference(result1[index], result2[index]);
+      }
+    }
+    l2error /= static_cast<double>(get_id1_(args) * get_id2_(args));
+
     // Checks for differences in the output
     auto errors = size_t{0};
     for (auto id1=size_t{0}; id1<get_id1_(args); ++id1) {
       for (auto id2=size_t{0}; id2<get_id2_(args); ++id2) {
         auto index = get_index_(args, id1, id2);
         if (!TestSimilarity(result1[index], result2[index])) {
-          errors++;
+          if (l2error >= kErrorMarginL2) { errors++; }
           if (verbose_) {
             if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
             else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
             fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
             fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
+            if (l2error < kErrorMarginL2) {
+              fprintf(stdout, " - error suppressed by a low total L2 error\n");
+            }
           }
         }
       }
     }
-    if (verbose_ && errors > 0) { fprintf(stdout, "\n   "); }
+
+    // Report the results
+    if (verbose_ && errors > 0) {
+      fprintf(stdout, "\n   Combined average L2 error: %.2e\n   ", l2error);
+    }
 
     // Tests the error count (should be zero)
     TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);
@@ -269,7 +309,9 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
       else if (compare_cblas_) { fprintf(stdout, " [CPU BLAS]"); }
       std::cout << std::flush;
     }
-    const auto status1 = run_reference_(args, buffers1, queue_);
+    auto status1 = StatusCode::kSuccess;
+    if (compare_clblas_) { status1 = run_reference1_(args, buffers1, queue_); }
+    else if (compare_cblas_) { status1 = run_reference2_(args, buffers1, queue_); }
 
     // Tests for equality of the two status codes
     if (verbose_) { fprintf(stdout, " -> "); std::cout << std::flush; }
