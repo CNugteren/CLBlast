@@ -120,7 +120,7 @@ def benchmark_single(benchmark, platform, device, num_runs, precision, load_from
 
         # Stores the results to disk
         print("[benchmark] Saving benchmark results to '" + json_file_name + "'")
-        with open(json_file_name, "wb") as f:
+        with open(json_file_name, "w") as f:
             json.dump(results, f, sort_keys=True, indent=4)
 
     # Retrieves the data from the benchmark settings

@@ -32,7 +32,7 @@ def load_database(filename):
 def save_database(database, filename):
     """Saves a database to disk"""
     print("[database] Saving database to '" + filename + "'")
-    with open(filename, "wb") as f:
+    with open(filename, "w") as f:
         json.dump(database, f, sort_keys=True, indent=4)
 
 
