@@ -87,7 +87,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Queries the cache to see whether or not the program (context-specific) is already there
   bool has_program;
-  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), precision_, routine_name_ },
+  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), device_(), precision_, routine_name_ },
                                           &has_program);
   if (has_program) { return; }
 
@@ -106,7 +106,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   if (has_binary) {
     program_ = Program(device_, context_, binary);
     program_.Build(device_, options);
-    ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+    ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
                                    Program{ program_ });
     return;
   }
@@ -185,7 +185,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name_ },
                                 program_.GetIR());
 
-  ProgramCache::Instance().Store(ProgramKey{ context_(), precision_, routine_name_ },
+  ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
                                  Program{ program_ });
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
