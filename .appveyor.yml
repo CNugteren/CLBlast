@@ -27,6 +27,7 @@ install:
   - ps: mkdir inc/CL
   - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
   - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
+  - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile CL/cl.hpp
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
   - ps: mkdir lib
