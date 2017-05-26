@@ -172,13 +172,13 @@ struct Arguments {
   T beta = ConstantOne<T>();
   // Batch-specific arguments
   size_t batch_count = 1;
-  std::vector<size_t> x_offsets = {0};
-  std::vector<size_t> y_offsets = {0};
-  std::vector<size_t> a_offsets = {0};
-  std::vector<size_t> b_offsets = {0};
-  std::vector<size_t> c_offsets = {0};
-  std::vector<T> alphas = {ConstantOne<T>()};
-  std::vector<T> betas = {ConstantOne<T>()};
+  std::vector<size_t> x_offsets; // = {0};
+  std::vector<size_t> y_offsets; // = {0};
+  std::vector<size_t> a_offsets; // = {0};
+  std::vector<size_t> b_offsets; // = {0};
+  std::vector<size_t> c_offsets; // = {0};
+  std::vector<T> alphas; // = {ConstantOne<T>()};
+  std::vector<T> betas; // = {ConstantOne<T>()};
   // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
