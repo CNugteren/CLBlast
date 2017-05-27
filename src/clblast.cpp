@@ -2470,7 +2470,7 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
     // Clears the existing program & binary cache for routines with the target kernel
     const auto routine_names = Routine::routines_by_kernel.at(kernel_name);
     for (const auto &routine_name : routine_names) {
-      ProgramCache::Instance().RemoveBySubset<1, 2>(ProgramKey{nullptr, precision, routine_name});
+      ProgramCache::Instance().RemoveBySubset<1, 2>(ProgramKey{nullptr, device, precision, routine_name});
       BinaryCache::Instance().Remove(BinaryKey{precision, routine_name, device_name});
     }
 
