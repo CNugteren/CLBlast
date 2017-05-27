@@ -27,24 +27,17 @@ install:
   - ps: mkdir inc/CL
   - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
   - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
-  # Custom fix for missing CL/cl.h
-  - ps: mkdir CL
-  - ps: pushd CL
-  - ps: mv ../inc/CL/opencl11/CL/* .
-  - ps: ls
+  # Switch to OpenCL 1.2 headers
+  - ps: pushd inc/CL
+  - git fetch origin opencl12:opencl12
+  - git checkout opencl12
   - ps: popd
-  - ps: ls
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
   - ps: mkdir lib
   - ps: pushd lib
   - cmake -G "NMake Makefiles" ..
   - nmake
-  - ps: popd
-  # Switch to OpenCL 1.2 headers
-  - ps: pushd inc/CL
-  - git fetch origin opencl12:opencl12
-  - git checkout opencl12
   - ps: popd
   # Rename the inc directory to include, so FindOpencl() will find it
   - ps: ren inc include
