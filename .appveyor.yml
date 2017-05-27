@@ -20,9 +20,9 @@ install:
   - ps: pushd $env:OPENCL_ROOT
   - ps: $opencl_registry = $env:OPENCL_REGISTRY
   # This downloads the source to the Khronos ICD library
-  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+  - git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
   - ps: pushd OpenCL-ICD-Loader
-  - git checkout cb4acb99df3441e147bd859c20d9c3533ec95ce8
+  - git checkout cb4acb9  # older version (pre 2.2 support)
   - ps: popd
   - ps: mv ./OpenCL-ICD-Loader/* .
   # This downloads all the opencl header files
@@ -30,7 +30,7 @@ install:
   - ps: mkdir inc/CL
   - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
   - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
-  # Switch to OpenCL 1.2 headers
+  # Switch to OpenCL 2.1 headers
   - ps: pushd inc/CL
   - git fetch origin opencl21:opencl21
   - git checkout opencl21
