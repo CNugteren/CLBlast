@@ -30,7 +30,7 @@ install:
   # Custom fix for missing CL/cl.h
   - ps: mkdir CL
   - ps: pushd CL
-  - ps: mv ./inc/CL/opencl11/CL/* .
+  - ps: mv ../inc/CL/opencl11/CL/* .
   - ps: popd
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
