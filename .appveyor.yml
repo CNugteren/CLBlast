@@ -31,7 +31,9 @@ install:
   - ps: mkdir CL
   - ps: pushd CL
   - ps: mv ../inc/CL/opencl11/CL/* .
+  - ps: ls
   - ps: popd
+  - ps: ls
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
   - ps: mkdir lib
