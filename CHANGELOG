@@ -1,6 +1,7 @@
 
 Development (next version)
 - Fixed a bug in the TRSM routine for alpha != 1
+- Fixed a bug in the cache related to multi-device contexts (thanks to 'kpot')
 - Performance reports are now external at https://cnugteren.github.io/clblast
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)

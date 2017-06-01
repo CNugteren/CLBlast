@@ -94,6 +94,7 @@ const Database::DatabaseEntry CopySingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },
+        { "GeForce GT 650M",                                 { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",2} } },
         { "GeForce GTX 1070",                                { {"COPY_DIMX",8}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "GeForce GTX 1080",                                { {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "GeForce GTX 480",                                 { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",1} } },

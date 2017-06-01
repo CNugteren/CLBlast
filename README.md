@@ -111,6 +111,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 
 * NVIDIA GPUs:
   - GRID K520
+  - GeForce GT 650M
   - GeForce GTX 480
   - GeForce GTX 670
   - GeForce GTX 680

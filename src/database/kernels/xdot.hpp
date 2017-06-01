@@ -78,6 +78,7 @@ const Database::DatabaseEntry XdotSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WGS2",32} } },
+        { "GeForce GT 650M",                                 { {"WGS1",128}, {"WGS2",64} } },
         { "GeForce GTX 1070",                                { {"WGS1",128}, {"WGS2",1024} } },
         { "GeForce GTX 1080",                                { {"WGS1",512}, {"WGS2",64} } },
         { "GeForce GTX 480",                                 { {"WGS1",512}, {"WGS2",32} } },

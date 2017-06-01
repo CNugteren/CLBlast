@@ -87,6 +87,7 @@ const Database::DatabaseEntry XgemvSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",256}, {"WPT1",1} } },
+        { "GeForce GT 650M",                                 { {"WGS1",256}, {"WPT1",1} } },
         { "GeForce GTX 1070",                                { {"WGS1",128}, {"WPT1",1} } },
         { "GeForce GTX 1080",                                { {"WGS1",32}, {"WPT1",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",64}, {"WPT1",1} } },

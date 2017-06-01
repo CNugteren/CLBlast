@@ -94,6 +94,7 @@ const Database::DatabaseEntry XaxpySingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"VW",2}, {"WGS",64}, {"WPT",1} } },
+        { "GeForce GT 650M",                                 { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
         { "GeForce GTX 1070",                                { {"VW",1}, {"WGS",64}, {"WPT",4} } },
         { "GeForce GTX 1080",                                { {"VW",1}, {"WGS",256}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"VW",2}, {"WGS",128}, {"WPT",1} } },
@@ -108,7 +109,7 @@ const Database::DatabaseEntry XaxpySingle = {
         { "TITAN X (Pascal)",                                { {"VW",4}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K20m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
         { "Tesla K40m",                                      { {"VW",4}, {"WGS",128}, {"WPT",1} } },
-        { "default",                                         { {"VW",4}, {"WGS",256}, {"WPT",1} } },
+        { "default",                                         { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
       }
     },
     { // Default

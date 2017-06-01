@@ -72,6 +72,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "GeForce GT 650M",                                 { {"VW3",8}, {"WGS3",32}, {"WPT3",16} } },
         { "GeForce GTX 1080",                                { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX 750 Ti",                              { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
         { "GeForce GTX TITAN",                               { {"VW3",1}, {"WGS3",16}, {"WPT3",16} } },

@@ -86,6 +86,7 @@ const Database::DatabaseEntry XgerSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "GRID K520",                                       { {"WGS1",128}, {"WGS2",1}, {"WPT",2} } },
+        { "GeForce GT 650M",                                 { {"WGS1",32}, {"WGS2",16}, {"WPT",4} } },
         { "GeForce GTX 1070",                                { {"WGS1",512}, {"WGS2",1}, {"WPT",1} } },
         { "GeForce GTX 1080",                                { {"WGS1",16}, {"WGS2",4}, {"WPT",1} } },
         { "GeForce GTX 480",                                 { {"WGS1",256}, {"WGS2",1}, {"WPT",4} } },
