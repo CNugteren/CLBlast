@@ -61,9 +61,10 @@ const Database::DatabaseEntry XgemvFastSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",1}, {"WGS2",32}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW2",4}, {"WGS2",32}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",2}, {"WGS2",16}, {"WPT2",4} } },
-        { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
+        { "default",                                         { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
       }
     },
     { // Intel GPUs
@@ -136,6 +137,7 @@ const Database::DatabaseEntry XgemvFastComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",2}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",1}, {"WGS2",128}, {"WPT2",2} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW2",2}, {"WGS2",128}, {"WPT2",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",4}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",2} } },
@@ -198,6 +200,7 @@ const Database::DatabaseEntry XgemvFastDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",4}, {"WGS2",128}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW2",1}, {"WGS2",16}, {"WPT2",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",1}, {"WGS2",16}, {"WPT2",4} } },
         { "default",                                         { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
@@ -258,6 +261,7 @@ const Database::DatabaseEntry XgemvFastComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW2",4}, {"WGS2",32}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW2",2}, {"WGS2",64}, {"WPT2",4} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW2",1}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW2",1}, {"WGS2",16}, {"WPT2",2} } },
         { "default",                                         { {"VW2",4}, {"WGS2",64}, {"WPT2",4} } },

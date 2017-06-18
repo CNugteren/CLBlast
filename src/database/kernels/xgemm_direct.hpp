@@ -55,8 +55,9 @@ const Database::DatabaseEntry XgemmDirectSingle = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",1}, {"VWND",8}, {"WGD",64} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"KWID",16}, {"MDIMAD",16}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",2}, {"VWND",2}, {"WGD",64} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",4}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
       }
     },
     { // Intel GPUs
@@ -101,6 +102,7 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"KWID",2}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",4}, {"WGD",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",16}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",1}, {"WGD",32} } },
         { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
       }
@@ -123,7 +125,7 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",2}, {"WGD",16} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",32}, {"MDIMCD",32}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",1}, {"VWND",1}, {"WGD",32} } },
       }
     },
   }
@@ -145,8 +147,9 @@ const Database::DatabaseEntry XgemmDirectDouble = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"KWID",8}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",1}, {"VWND",4}, {"WGD",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
-        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",4}, {"WGD",32} } },
+        { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",4}, {"VWND",2}, {"WGD",32} } },
       }
     },
     { // NVIDIA GPUs
@@ -182,6 +185,7 @@ const Database::DatabaseEntry XgemmDirectComplexDouble = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",32}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",1}, {"VWND",1}, {"WGD",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"KWID",8}, {"MDIMAD",16}, {"MDIMCD",16}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",2}, {"VWND",1}, {"WGD",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"KWID",8}, {"MDIMAD",16}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",0}, {"PADB",0}, {"VWMD",2}, {"VWND",2}, {"WGD",32} } },
         { "default",                                         { {"KWID",2}, {"MDIMAD",8}, {"MDIMCD",8}, {"NDIMBD",8}, {"NDIMCD",8}, {"PADA",1}, {"PADB",1}, {"VWMD",2}, {"VWND",2}, {"WGD",16} } },
       }

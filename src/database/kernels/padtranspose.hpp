@@ -67,6 +67,7 @@ const Database::DatabaseEntry PadtransposeSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",16}, {"PADTRA_WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PADTRA_PAD",0}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
@@ -148,6 +149,7 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
@@ -227,6 +229,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PADTRA_PAD",0}, {"PADTRA_TILE",64}, {"PADTRA_WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",8} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",32}, {"PADTRA_WPT",1} } },
@@ -294,6 +297,7 @@ const Database::DatabaseEntry PadtransposeComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",2} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PADTRA_PAD",1}, {"PADTRA_TILE",16}, {"PADTRA_WPT",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PADTRA_PAD",0}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PADTRA_PAD",1}, {"PADTRA_TILE",8}, {"PADTRA_WPT",4} } },

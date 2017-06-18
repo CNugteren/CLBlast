@@ -67,6 +67,7 @@ const Database::DatabaseEntry XaxpySingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW",8}, {"WGS",512}, {"WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",1}, {"WGS",512}, {"WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW",1}, {"WGS",128}, {"WPT",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW",4}, {"WGS",256}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW",1}, {"WGS",128}, {"WPT",1} } },
@@ -149,6 +150,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",4}, {"WGS",256}, {"WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW",1}, {"WGS",1024}, {"WPT",2} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
@@ -228,6 +230,7 @@ const Database::DatabaseEntry XaxpyDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW",4}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",1}, {"WGS",1024}, {"WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW",2}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW",8}, {"WGS",64}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW",8}, {"WGS",256}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW",8}, {"WGS",2048}, {"WPT",1} } },
@@ -295,10 +298,11 @@ const Database::DatabaseEntry XaxpyComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"VW",8}, {"WGS",128}, {"WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW",8}, {"WGS",128}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"VW",8}, {"WGS",512}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW",8}, {"WGS",1024}, {"WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW",1}, {"WGS",256}, {"WPT",1} } },
-        { "default",                                         { {"VW",4}, {"WGS",1024}, {"WPT",1} } },
+        { "default",                                         { {"VW",8}, {"WGS",256}, {"WPT",1} } },
       }
     },
     { // Intel accelerators

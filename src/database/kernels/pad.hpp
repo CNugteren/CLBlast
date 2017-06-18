@@ -67,6 +67,7 @@ const Database::DatabaseEntry PadSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
@@ -149,6 +150,7 @@ const Database::DatabaseEntry PadComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",1}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
@@ -228,6 +230,7 @@ const Database::DatabaseEntry PadDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PAD_DIMX",32}, {"PAD_DIMY",16}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
@@ -295,10 +298,11 @@ const Database::DatabaseEntry PadComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"PAD_DIMX",16}, {"PAD_DIMY",16}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"PAD_DIMX",16}, {"PAD_DIMY",32}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",32}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",1} } },
-        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",4}, {"PAD_WPTY",1} } },
+        { "default",                                         { {"PAD_DIMX",32}, {"PAD_DIMY",8}, {"PAD_WPTX",2}, {"PAD_WPTY",2} } },
       }
     },
     { // Intel accelerators

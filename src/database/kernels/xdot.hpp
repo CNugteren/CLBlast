@@ -60,8 +60,9 @@ const Database::DatabaseEntry XdotSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WGS2",32} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",64}, {"WGS2",128} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",64}, {"WGS2",32} } },
-        { "default",                                         { {"WGS1",64}, {"WGS2",32} } },
+        { "default",                                         { {"WGS1",64}, {"WGS2",64} } },
       }
     },
     { // Intel GPUs
@@ -124,6 +125,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",128}, {"WGS2",64} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",64}, {"WGS2",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",256}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",256}, {"WGS2",32} } },
       }
@@ -185,6 +187,7 @@ const Database::DatabaseEntry XdotDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",64}, {"WGS2",128} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",512}, {"WGS2",64} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",64}, {"WGS2",64} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",256}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
       }
@@ -209,7 +212,7 @@ const Database::DatabaseEntry XdotDouble = {
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"WGS1",256}, {"WGS2",64} } },
+        { "default",                                         { {"WGS1",128}, {"WGS2",64} } },
       }
     },
   }
@@ -235,6 +238,7 @@ const Database::DatabaseEntry XdotComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WGS2",128} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",1024}, {"WGS2",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",1024}, {"WGS2",32} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",32}, {"WGS2",32} } },
         { "default",                                         { {"WGS1",128}, {"WGS2",32} } },
       }

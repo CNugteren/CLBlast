@@ -147,6 +147,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris Pro
 * Intel CPUs:
   - Core i5-6200U
+  - Core i7-920
   - Core i7-2670QM
   - Core i7-3770K
   - Core i7-4790K

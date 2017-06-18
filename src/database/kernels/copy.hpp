@@ -67,6 +67,7 @@ const Database::DatabaseEntry CopySingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",2} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",2} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
@@ -143,6 +144,7 @@ const Database::DatabaseEntry CopyComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",4}, {"COPY_WPT",2} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",4}, {"COPY_WPT",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",2}, {"COPY_WPT",2} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
@@ -220,6 +222,7 @@ const Database::DatabaseEntry CopyDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",32}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",16}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",1} } },
@@ -287,6 +290,7 @@ const Database::DatabaseEntry CopyComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",2}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"COPY_DIMX",32}, {"COPY_DIMY",32}, {"COPY_VW",8}, {"COPY_WPT",1} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"COPY_DIMX",32}, {"COPY_DIMY",16}, {"COPY_VW",8}, {"COPY_WPT",4} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"COPY_DIMX",8}, {"COPY_DIMY",8}, {"COPY_VW",8}, {"COPY_WPT",1} } },

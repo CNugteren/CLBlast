@@ -61,6 +61,7 @@ const Database::DatabaseEntry XgemvSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",128}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",32}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",64}, {"WPT1",4} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
@@ -136,6 +137,7 @@ const Database::DatabaseEntry XgemvComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",32}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",128}, {"WPT1",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",128}, {"WPT1",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",64}, {"WPT1",4} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",2} } },
@@ -204,6 +206,7 @@ const Database::DatabaseEntry XgemvDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",2} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",128}, {"WPT1",1} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",64}, {"WPT1",4} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",4} } },
@@ -264,6 +267,7 @@ const Database::DatabaseEntry XgemvComplexDouble = {
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { {"WGS1",64}, {"WPT1",1} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"WGS1",128}, {"WPT1",2} } },
         { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { {"WGS1",64}, {"WPT1",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"WGS1",32}, {"WPT1",4} } },
         { "default",                                         { {"WGS1",64}, {"WPT1",4} } },

@@ -55,9 +55,10 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW3",8}, {"WGS3",128}, {"WPT3",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
-        { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
       }
     },
     { // Intel GPUs
@@ -107,6 +108,7 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW3",8}, {"WGS3",32}, {"WPT3",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",4}, {"WGS3",16}, {"WPT3",16} } },
         { "default",                                         { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
@@ -146,6 +148,7 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",4}, {"WGS3",32}, {"WPT3",32} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",8} } },
         { "default",                                         { {"VW3",8}, {"WGS3",32}, {"WPT3",32} } },
@@ -185,9 +188,10 @@ const Database::DatabaseEntry XgemvFastRotComplexDouble = {
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
+        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { {"VW3",4}, {"WGS3",64}, {"WPT3",4} } },
         { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
         { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
-        { "default",                                         { {"VW3",2}, {"WGS3",16}, {"WPT3",16} } },
+        { "default",                                         { {"VW3",8}, {"WGS3",16}, {"WPT3",16} } },
       }
     },
     { // Default
