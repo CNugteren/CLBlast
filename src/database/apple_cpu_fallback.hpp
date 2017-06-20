@@ -23,46 +23,46 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpyApple = {
-  "Xaxpy", Precision::kAny, { { kDeviceTypeAll, "default", { { "default", { {"VW",8}, {"WGS",1}, {"WPT",4} } } } } }
+  "Xaxpy", Precision::kAny, {"VW", "WGS", "WPT"}, { { kDeviceTypeAll, "default", { { "default", { 8, 1, 4 } } } } }
 };
 const Database::DatabaseEntry XdotApple = {
-  "Xdot", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"WGS1",1}, {"WGS2",1} } } } } }
+  "Xdot", Precision::kAny, {"WGS1", "WGS2"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1 } } } } }
 };
 const Database::DatabaseEntry XgemvApple = {
-  "Xgemv", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"WGS1",1}, {"WPT1",4}, {"UNROLL1", 1} } } } } }
+  "Xgemv", Precision::kAny, {"WGS1", "WPT1", "UNROLL1"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 4, 1 } } } } }
 };
 const Database::DatabaseEntry XgemvFastApple = {
-  "XgemvFast", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"VW2",1}, {"WGS2",1}, {"WPT2",1} } } } } }
+  "XgemvFast", Precision::kAny, {"VW2", "WGS2", "WPT2"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1 } } } } }
 };
 const Database::DatabaseEntry XgemvFastRotApple = {
-  "XgemvFastRot", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"VW3",1}, {"WGS3",1}, {"WPT3",1} } } } } }
+  "XgemvFastRot", Precision::kAny, {"VW3", "WGS3", "WPT3"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1 } } } } }
 };
 const Database::DatabaseEntry XgerApple = {
-  "Xger", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"WGS1",64}, {"WGS2",1}, {"WPT",2} } } } } }
+  "Xger", Precision::kAny, {"WGS1", "WGS2", "WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 64, 1, 2 } } } } }
 };
 const Database::DatabaseEntry XtrsvApple = {
-  "Xtrsv", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"TRSV_BLOCK_SIZE",32} } } } } }
+  "Xtrsv", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { 32 } } } } }
 };
 const Database::DatabaseEntry XgemmApple = {
-  "Xgemm", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"KWG",1}, {"KWI",1}, {"MDIMA",1}, {"MDIMC",1}, {"MWG",1}, {"NDIMB",1}, {"NDIMC",1}, {"NWG",1}, {"SA",1}, {"SB",1}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} } } } } }
+  "Xgemm", Precision::kAny, {"KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1 } } } } }
 };
 const Database::DatabaseEntry XgemmDirectApple = {
-  "XgemmDirect", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"KWID",1}, {"MDIMAD",1}, {"MDIMCD",1}, {"NDIMBD",1}, {"NDIMCD",1}, {"PADA",0}, {"PADB",0}, {"VWMD",1}, {"VWND",1}, {"WGD",1} } } } } }
+  "XgemmDirect", Precision::kAny, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1 } } } } }
 };
 const Database::DatabaseEntry CopyApple = {
-  "Copy", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"COPY_DIMX",1}, {"COPY_DIMY",1}, {"COPY_VW",1}, {"COPY_WPT",1} } } } } }
+  "Copy", Precision::kAny, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1 } } } } }
 };
 const Database::DatabaseEntry PadApple = {
-  "Pad", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"PAD_DIMX",1}, {"PAD_DIMY",1}, {"PAD_WPTX",1}, {"PAD_WPTY",1} } } } } }
+  "Pad", Precision::kAny, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1 } } } } }
 };
 const Database::DatabaseEntry TransposeApple = {
-  "Transpose", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"TRA_DIM",1}, {"TRA_PAD",0}, {"TRA_SHUFFLE",0}, {"TRA_WPT",1} } } } } }
+  "Transpose", Precision::kAny, {"TRA_DIM", "TRA_PAD", "TRA_SHUFFLE", "TRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 0, 0, 1 } } } } }
 };
 const Database::DatabaseEntry PadtransposeApple = {
-  "Padtranspose", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"PADTRA_PAD",0}, {"PADTRA_TILE",1}, {"PADTRA_WPT",1} } } } } }
+  "Padtranspose", Precision::kAny, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 0, 1, 1 } } } } }
 };
 const Database::DatabaseEntry InvertApple = {
-  "Invert", Precision::kAny, { {  kDeviceTypeAll, "default", { { "default", { {"INTERNAL_BLOCK_SIZE",16} } } } } }
+  "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { 16 } } } } }
 };
 
 // =================================================================================================

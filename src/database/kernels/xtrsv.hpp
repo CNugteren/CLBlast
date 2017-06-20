@@ -16,10 +16,10 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XtrsvHalf = {
-  "Xtrsv", Precision::kHalf, {
+  "Xtrsv", Precision::kHalf, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRSV_BLOCK_SIZE",32} } },
+        { "default",                                         { { 32 } } },
       }
     },
   }
@@ -28,10 +28,10 @@ const Database::DatabaseEntry XtrsvHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XtrsvSingle = {
-  "Xtrsv", Precision::kSingle, {
+  "Xtrsv", Precision::kSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRSV_BLOCK_SIZE",32} } },
+        { "default",                                         { { 32 } } },
       }
     },
   }
@@ -40,10 +40,10 @@ const Database::DatabaseEntry XtrsvSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XtrsvComplexSingle = {
-  "Xtrsv", Precision::kComplexSingle, {
+  "Xtrsv", Precision::kComplexSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRSV_BLOCK_SIZE",32} } },
+        { "default",                                         { { 32 } } },
       }
     },
   }
@@ -52,10 +52,10 @@ const Database::DatabaseEntry XtrsvComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XtrsvDouble = {
-  "Xtrsv", Precision::kDouble, {
+  "Xtrsv", Precision::kDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRSV_BLOCK_SIZE",32} } },
+        { "default",                                         { { 32 } } },
       }
     },
   }
@@ -64,10 +64,10 @@ const Database::DatabaseEntry XtrsvDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XtrsvComplexDouble = {
-  "Xtrsv", Precision::kComplexDouble, {
+  "Xtrsv", Precision::kComplexDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"TRSV_BLOCK_SIZE",32} } },
+        { "default",                                         { { 32 } } },
       }
     },
   }
