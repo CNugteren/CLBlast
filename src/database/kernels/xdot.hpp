@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XdotHalf = {
-  "Xdot", Precision::kHalf, {"WGS1" "WGS2"}, {
+  "Xdot", Precision::kHalf, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 256, 64 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry XdotHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XdotSingle = {
-  "Xdot", Precision::kSingle, {"WGS1" "WGS2"}, {
+  "Xdot", Precision::kSingle, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 128, 32 } },
@@ -106,7 +106,7 @@ const Database::DatabaseEntry XdotSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XdotComplexSingle = {
-  "Xdot", Precision::kComplexSingle, {"WGS1" "WGS2"}, {
+  "Xdot", Precision::kComplexSingle, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 32 } },
@@ -170,7 +170,7 @@ const Database::DatabaseEntry XdotComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XdotDouble = {
-  "Xdot", Precision::kDouble, {"WGS1" "WGS2"}, {
+  "Xdot", Precision::kDouble, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 128 } },
@@ -221,7 +221,7 @@ const Database::DatabaseEntry XdotDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XdotComplexDouble = {
-  "Xdot", Precision::kComplexDouble, {"WGS1" "WGS2"}, {
+  "Xdot", Precision::kComplexDouble, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 32 } },

@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XgerHalf = {
-  "Xger", Precision::kHalf, {"WGS1" "WGS2" "WPT"}, {
+  "Xger", Precision::kHalf, {"WGS1", "WGS2", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 64, 1, 2 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry XgerHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgerSingle = {
-  "Xger", Precision::kSingle, {"WGS1" "WGS2" "WPT"}, {
+  "Xger", Precision::kSingle, {"WGS1", "WGS2", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 256, 1, 1 } },
@@ -112,7 +112,7 @@ const Database::DatabaseEntry XgerSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgerComplexSingle = {
-  "Xger", Precision::kComplexSingle, {"WGS1" "WGS2" "WPT"}, {
+  "Xger", Precision::kComplexSingle, {"WGS1", "WGS2", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 4, 1 } },
@@ -182,7 +182,7 @@ const Database::DatabaseEntry XgerComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgerDouble = {
-  "Xger", Precision::kDouble, {"WGS1" "WGS2" "WPT"}, {
+  "Xger", Precision::kDouble, {"WGS1", "WGS2", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 4, 1 } },
@@ -239,7 +239,7 @@ const Database::DatabaseEntry XgerDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgerComplexDouble = {
-  "Xger", Precision::kComplexDouble, {"WGS1" "WGS2" "WPT"}, {
+  "Xger", Precision::kComplexDouble, {"WGS1", "WGS2", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 1, 1 } },

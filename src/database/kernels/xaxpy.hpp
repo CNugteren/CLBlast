@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpyHalf = {
-  "Xaxpy", Precision::kHalf, {"VW" "WGS" "WPT"}, {
+  "Xaxpy", Precision::kHalf, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 4, 128, 4 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry XaxpyHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpySingle = {
-  "Xaxpy", Precision::kSingle, {"VW" "WGS" "WPT"}, {
+  "Xaxpy", Precision::kSingle, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 1, 128, 1 } },
@@ -124,7 +124,7 @@ const Database::DatabaseEntry XaxpySingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpyComplexSingle = {
-  "Xaxpy", Precision::kComplexSingle, {"VW" "WGS" "WPT"}, {
+  "Xaxpy", Precision::kComplexSingle, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 2, 64, 8 } },
@@ -206,7 +206,7 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpyDouble = {
-  "Xaxpy", Precision::kDouble, {"VW" "WGS" "WPT"}, {
+  "Xaxpy", Precision::kDouble, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 1, 256, 1 } },
@@ -274,7 +274,7 @@ const Database::DatabaseEntry XaxpyDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XaxpyComplexDouble = {
-  "Xaxpy", Precision::kComplexDouble, {"VW" "WGS" "WPT"}, {
+  "Xaxpy", Precision::kComplexDouble, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 1, 128, 1 } },

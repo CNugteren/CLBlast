@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvHalf = {
-  "Xgemv", Precision::kHalf, {"WGS1" "WPT1"}, {
+  "Xgemv", Precision::kHalf, {"WGS1", "WPT1"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 256, 1 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry XgemvHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvSingle = {
-  "Xgemv", Precision::kSingle, {"WGS1" "WPT1"}, {
+  "Xgemv", Precision::kSingle, {"WGS1", "WPT1"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 128, 1 } },
@@ -117,7 +117,7 @@ const Database::DatabaseEntry XgemvSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvComplexSingle = {
-  "Xgemv", Precision::kComplexSingle, {"WGS1" "WPT1"}, {
+  "Xgemv", Precision::kComplexSingle, {"WGS1", "WPT1"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 1 } },
@@ -188,7 +188,7 @@ const Database::DatabaseEntry XgemvComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvDouble = {
-  "Xgemv", Precision::kDouble, {"WGS1" "WPT1"}, {
+  "Xgemv", Precision::kDouble, {"WGS1", "WPT1"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 1 } },
@@ -249,7 +249,7 @@ const Database::DatabaseEntry XgemvDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvComplexDouble = {
-  "Xgemv", Precision::kComplexDouble, {"WGS1" "WPT1"}, {
+  "Xgemv", Precision::kComplexDouble, {"WGS1", "WPT1"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 64, 1 } },

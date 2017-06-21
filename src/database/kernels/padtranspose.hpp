@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry PadtransposeHalf = {
-  "Padtranspose", Precision::kHalf, {"PADTRA_PAD" "PADTRA_TILE" "PADTRA_WPT"}, {
+  "Padtranspose", Precision::kHalf, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 0, 16, 4 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry PadtransposeHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadtransposeSingle = {
-  "Padtranspose", Precision::kSingle, {"PADTRA_PAD" "PADTRA_TILE" "PADTRA_WPT"}, {
+  "Padtranspose", Precision::kSingle, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 0, 16, 4 } },
@@ -123,7 +123,7 @@ const Database::DatabaseEntry PadtransposeSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadtransposeComplexSingle = {
-  "Padtranspose", Precision::kComplexSingle, {"PADTRA_PAD" "PADTRA_TILE" "PADTRA_WPT"}, {
+  "Padtranspose", Precision::kComplexSingle, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 0, 16, 4 } },
@@ -205,7 +205,7 @@ const Database::DatabaseEntry PadtransposeComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadtransposeDouble = {
-  "Padtranspose", Precision::kDouble, {"PADTRA_PAD" "PADTRA_TILE" "PADTRA_WPT"}, {
+  "Padtranspose", Precision::kDouble, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 0, 16, 4 } },
@@ -273,7 +273,7 @@ const Database::DatabaseEntry PadtransposeDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadtransposeComplexDouble = {
-  "Padtranspose", Precision::kComplexDouble, {"PADTRA_PAD" "PADTRA_TILE" "PADTRA_WPT"}, {
+  "Padtranspose", Precision::kComplexDouble, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 0, 8, 4 } },

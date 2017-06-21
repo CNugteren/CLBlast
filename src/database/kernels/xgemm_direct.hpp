@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemmDirectHalf = {
-  "XgemmDirect", Precision::kHalf, {"KWID" "MDIMAD" "MDIMCD" "NDIMBD" "NDIMCD" "PADA" "PADB" "VWMD" "VWND" "WGD"}, {
+  "XgemmDirect", Precision::kHalf, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
@@ -40,7 +40,7 @@ const Database::DatabaseEntry XgemmDirectHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemmDirectSingle = {
-  "XgemmDirect", Precision::kSingle, {"KWID" "MDIMAD" "MDIMCD" "NDIMBD" "NDIMCD" "PADA" "PADB" "VWMD" "VWND" "WGD"}, {
+  "XgemmDirect", Precision::kSingle, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 2, 8, 8, 8, 8, 1, 1, 2, 2, 32 } },
@@ -88,7 +88,7 @@ const Database::DatabaseEntry XgemmDirectSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemmDirectComplexSingle = {
-  "XgemmDirect", Precision::kComplexSingle, {"KWID" "MDIMAD" "MDIMCD" "NDIMBD" "NDIMCD" "PADA" "PADB" "VWMD" "VWND" "WGD"}, {
+  "XgemmDirect", Precision::kComplexSingle, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
@@ -134,7 +134,7 @@ const Database::DatabaseEntry XgemmDirectComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemmDirectDouble = {
-  "XgemmDirect", Precision::kDouble, {"KWID" "MDIMAD" "MDIMCD" "NDIMBD" "NDIMCD" "PADA" "PADB" "VWMD" "VWND" "WGD"}, {
+  "XgemmDirect", Precision::kDouble, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
@@ -172,7 +172,7 @@ const Database::DatabaseEntry XgemmDirectDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemmDirectComplexDouble = {
-  "XgemmDirect", Precision::kComplexDouble, {"KWID" "MDIMAD" "MDIMCD" "NDIMBD" "NDIMCD" "PADA" "PADB" "VWMD" "VWND" "WGD"}, {
+  "XgemmDirect", Precision::kComplexDouble, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },

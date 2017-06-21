@@ -114,7 +114,7 @@ def print_cpp_database(database, output_dir):
                     for example_result in example_data["results"]:
                         parameter_names.extend([str(k) for k in example_result["parameters"].keys()])
                 parameter_names = sorted(set(parameter_names))
-                parameter_names_as_string = " ".join(['"%s"' % p for p in parameter_names])
+                parameter_names_as_string = ", ".join(['"%s"' % p for p in parameter_names])
                 f.write(", {" + parameter_names_as_string + "}, {\n")
 
                 # Loops over device vendors (e.g. AMD)

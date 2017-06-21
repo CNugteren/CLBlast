@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvFastRotHalf = {
-  "XgemvFastRot", Precision::kHalf, {"VW3" "WGS3" "WPT3"}, {
+  "XgemvFastRot", Precision::kHalf, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 8, 32, 32 } },
@@ -40,7 +40,7 @@ const Database::DatabaseEntry XgemvFastRotHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvFastRotSingle = {
-  "XgemvFastRot", Precision::kSingle, {"VW3" "WGS3" "WPT3"}, {
+  "XgemvFastRot", Precision::kSingle, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 8, 64, 32 } },
@@ -93,7 +93,7 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvFastRotComplexSingle = {
-  "XgemvFastRot", Precision::kComplexSingle, {"VW3" "WGS3" "WPT3"}, {
+  "XgemvFastRot", Precision::kComplexSingle, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 8, 16, 16 } },
@@ -135,7 +135,7 @@ const Database::DatabaseEntry XgemvFastRotComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvFastRotDouble = {
-  "XgemvFastRot", Precision::kDouble, {"VW3" "WGS3" "WPT3"}, {
+  "XgemvFastRot", Precision::kDouble, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 4, 16, 16 } },
@@ -175,7 +175,7 @@ const Database::DatabaseEntry XgemvFastRotDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry XgemvFastRotComplexDouble = {
-  "XgemvFastRot", Precision::kComplexDouble, {"VW3" "WGS3" "WPT3"}, {
+  "XgemvFastRot", Precision::kComplexDouble, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 4, 32, 16 } },

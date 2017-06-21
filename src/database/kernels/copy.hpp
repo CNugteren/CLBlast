@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry CopyHalf = {
-  "Copy", Precision::kHalf, {"COPY_DIMX" "COPY_DIMY" "COPY_VW" "COPY_WPT"}, {
+  "Copy", Precision::kHalf, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 16, 8, 4, 4 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry CopyHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry CopySingle = {
-  "Copy", Precision::kSingle, {"COPY_DIMX" "COPY_DIMY" "COPY_VW" "COPY_WPT"}, {
+  "Copy", Precision::kSingle, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 4, 1 } },
@@ -124,7 +124,7 @@ const Database::DatabaseEntry CopySingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry CopyComplexSingle = {
-  "Copy", Precision::kComplexSingle, {"COPY_DIMX" "COPY_DIMY" "COPY_VW" "COPY_WPT"}, {
+  "Copy", Precision::kComplexSingle, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 1, 1 } },
@@ -198,7 +198,7 @@ const Database::DatabaseEntry CopyComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry CopyDouble = {
-  "Copy", Precision::kDouble, {"COPY_DIMX" "COPY_DIMY" "COPY_VW" "COPY_WPT"}, {
+  "Copy", Precision::kDouble, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 1, 1 } },
@@ -266,7 +266,7 @@ const Database::DatabaseEntry CopyDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry CopyComplexDouble = {
-  "Copy", Precision::kComplexDouble, {"COPY_DIMX" "COPY_DIMY" "COPY_VW" "COPY_WPT"}, {
+  "Copy", Precision::kComplexDouble, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 8, 16, 1, 1 } },

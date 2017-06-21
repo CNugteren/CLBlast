@@ -16,7 +16,7 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry PadHalf = {
-  "Pad", Precision::kHalf, {"PAD_DIMX" "PAD_DIMY" "PAD_WPTX" "PAD_WPTY"}, {
+  "Pad", Precision::kHalf, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere",                                       { 16, 8, 1, 2 } },
@@ -41,7 +41,7 @@ const Database::DatabaseEntry PadHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadSingle = {
-  "Pad", Precision::kSingle, {"PAD_DIMX" "PAD_DIMY" "PAD_WPTX" "PAD_WPTY"}, {
+  "Pad", Precision::kSingle, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 1, 1 } },
@@ -124,7 +124,7 @@ const Database::DatabaseEntry PadSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadComplexSingle = {
-  "Pad", Precision::kComplexSingle, {"PAD_DIMX" "PAD_DIMY" "PAD_WPTX" "PAD_WPTY"}, {
+  "Pad", Precision::kComplexSingle, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 1, 1 } },
@@ -206,7 +206,7 @@ const Database::DatabaseEntry PadComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadDouble = {
-  "Pad", Precision::kDouble, {"PAD_DIMX" "PAD_DIMY" "PAD_WPTX" "PAD_WPTY"}, {
+  "Pad", Precision::kDouble, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 32, 8, 1, 1 } },
@@ -274,7 +274,7 @@ const Database::DatabaseEntry PadDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry PadComplexDouble = {
-  "Pad", Precision::kComplexDouble, {"PAD_DIMX" "PAD_DIMY" "PAD_WPTX" "PAD_WPTY"}, {
+  "Pad", Precision::kComplexDouble, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "AMD Radeon R9 M370X Compute Engine",              { 16, 8, 1, 1 } },
