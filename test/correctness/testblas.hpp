@@ -121,6 +121,35 @@ class TestBlas: public Tester<T,U> {
 
 // =================================================================================================
 
+template <typename T, typename U> const int TestBlas<T,U>::kSeed = 42; // fixed seed for reproducibility
+
+// Test settings for the regular test. Append to these lists in case more tests are required.
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 144, 4096 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBatchCounts = { 1, 3 };
+
+// Test settings for the invalid tests
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
+template <typename T, typename U> const size_t TestBlas<T,U>::kBufferSize = 64;
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVecSizes = {0, kBufferSize - 1, kBufferSize};
+
+// The layout/transpose/triangle options to test with
+template <typename T, typename U> const std::vector<Layout> TestBlas<T,U>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
+template <typename T, typename U> const std::vector<Triangle> TestBlas<T,U>::kTriangles = {Triangle::kUpper, Triangle::kLower};
+template <typename T, typename U> const std::vector<Side> TestBlas<T,U>::kSides = {Side::kLeft, Side::kRight};
+template <typename T, typename U> const std::vector<Diagonal> TestBlas<T,U>::kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
+template <typename T, typename U> const std::vector<Transpose> TestBlas<T,U>::kTransposes = {Transpose::kNo, Transpose::kYes};
+template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes; // see testblas.cpp
+template <> const std::vector<Transpose> TestBlas<double2,double2>::kTransposes; // see testblas.cpp
+template <> const std::vector<Transpose> TestBlas<float2,float>::kTransposes; // see testblas.cpp
+template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes; // see testblas.cpp
+
+// =================================================================================================
+
 // Bogus reference function, in case a comparison library is not available
 template <typename T, typename U, typename BufferType>
 static StatusCode ReferenceNotAvailable(const Arguments<U> &, BufferType &, Queue &) {
