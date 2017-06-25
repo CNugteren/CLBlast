@@ -9,7 +9,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
-This preview-version is not yet tuned for all OpenCL devices: __out-of-the-box performance on some devices might be poor__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
+This preview-version is not yet tuned for all OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -309,7 +309,7 @@ Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_
 * `half FloatToHalf(const float value)`: Converts a 32-bits floating-point value to a 16-bits floating-point value.
 * `float HalfToFloat(const half value)`: Converts a 16-bits floating-point value to a 32-bits floating-point value.
 
-The `samples/haxpy.c` example shows how to use these convencience functions when calling the half-precision BLAS routine HAXPY.
+The `samples/haxpy.c` example shows how to use these convenience functions when calling the half-precision BLAS routine HAXPY.
 
 
 Contributing
@@ -336,6 +336,15 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
 * [ArrayFire](http://arrayfire.org)
+
+
+More information
+-------------
+
+Further information on CLBlast is available through the following links:
+
+* A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slideset is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf).
+* More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (May 2017). For CLTune, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
 
 
 Support us
