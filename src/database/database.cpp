@@ -108,16 +108,16 @@ Database::Database(const Device &device, const std::string &kernel_name,
   #endif
 
   // Searches potentially multiple databases
-  auto search_result = ParametersPtr{};
+  auto search_result = Parameters();
   for (auto &db: databases) {
     search_result = Search(kernel_name, device_type, device_vendor, device_name, precision, db);
-    if (search_result) {
-      parameters_->insert(search_result->begin(), search_result->end());
+    if (search_result.size() != 0) {
+      parameters_->insert(search_result.begin(), search_result.end());
       break;
     }
   }
 
-  if (!search_result) { throw RuntimeErrorCode(StatusCode::kDatabaseError); }
+  if (search_result.size() == 0) { throw RuntimeErrorCode(StatusCode::kDatabaseError); }
 }
 
 // =================================================================================================
@@ -143,17 +143,18 @@ std::vector<std::string> Database::GetParameterNames() const {
 // =================================================================================================
 
 // Searches a particular database for the right kernel and precision
-Database::ParametersPtr Database::Search(const std::string &this_kernel,
-                                         const std::string &this_type,
-                                         const std::string &this_vendor,
-                                         const std::string &this_device,
-                                         const Precision this_precision,
-                                         const std::vector<DatabaseEntry> &this_database) const {
+Database::Parameters Database::Search(const std::string &this_kernel,
+                                      const std::string &this_type,
+                                      const std::string &this_vendor,
+                                      const std::string &this_device,
+                                      const Precision this_precision,
+                                      const std::vector<DatabaseEntry> &this_database) const {
 
   // Selects the right kernel
   for (auto &db: this_database) {
     if ((db.kernel == this_kernel) &&
         (db.precision == this_precision || db.precision == Precision::kAny)) {
+      const auto parameter_names = db.parameter_names;
 
       // Searches for the right vendor and device type, or selects the default if unavailable. This
       // assumes that the default vendor / device type is last in the database.
@@ -168,7 +169,12 @@ Database::ParametersPtr Database::Search(const std::string &this_kernel,
             if (device.name == this_device || device.name == "default") {
 
               // Sets the parameters accordingly
-              return &device.parameters;
+              auto parameters = Parameters();
+              if (parameter_names.size() != device.parameters.size()) { return Parameters(); } // ERROR
+              for (auto i = size_t{0}; i < parameter_names.size(); ++i) {
+                parameters[parameter_names[i]] = device.parameters[i];
+              }
+              return parameters;
             }
           }
         }
@@ -177,7 +183,7 @@ Database::ParametersPtr Database::Search(const std::string &this_kernel,
   }
 
   // If we reached this point, the entry was not found in this database
-  return nullptr;
+  return Parameters();
 }
 
 // =================================================================================================

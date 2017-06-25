@@ -16,10 +16,10 @@ namespace database {
 // =================================================================================================
 
 const Database::DatabaseEntry InvertHalf = {
-  "Invert", Precision::kHalf, {
+  "Invert", Precision::kHalf, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"INTERNAL_BLOCK_SIZE",16} } },
+        { "default",                                         { 16 } },
       }
     },
   }
@@ -28,10 +28,10 @@ const Database::DatabaseEntry InvertHalf = {
 // =================================================================================================
 
 const Database::DatabaseEntry InvertSingle = {
-  "Invert", Precision::kSingle, {
+  "Invert", Precision::kSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"INTERNAL_BLOCK_SIZE",16} } },
+        { "default",                                         { 16 } },
       }
     },
   }
@@ -40,10 +40,10 @@ const Database::DatabaseEntry InvertSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry InvertComplexSingle = {
-  "Invert", Precision::kComplexSingle, {
+  "Invert", Precision::kComplexSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"INTERNAL_BLOCK_SIZE",16} } },
+        { "default",                                         { 16 } },
       }
     },
   }
@@ -52,10 +52,10 @@ const Database::DatabaseEntry InvertComplexSingle = {
 // =================================================================================================
 
 const Database::DatabaseEntry InvertDouble = {
-  "Invert", Precision::kDouble, {
+  "Invert", Precision::kDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"INTERNAL_BLOCK_SIZE",16} } },
+        { "default",                                         { 16 } },
       }
     },
   }
@@ -64,10 +64,10 @@ const Database::DatabaseEntry InvertDouble = {
 // =================================================================================================
 
 const Database::DatabaseEntry InvertComplexDouble = {
-  "Invert", Precision::kComplexDouble, {
+  "Invert", Precision::kComplexDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { {"INTERNAL_BLOCK_SIZE",16} } },
+        { "default",                                         { 16 } },
       }
     },
   }

@@ -44,13 +44,12 @@ class Database {
  public:
 
   // Type alias for the database parameters
-  using Parameters = std::unordered_map<std::string,size_t>;
-  using ParametersPtr = const Parameters*;
+  using Parameters = std::unordered_map<std::string, size_t>;
 
   // Structures for content inside the database
   struct DatabaseDevice {
     std::string name;
-    Parameters parameters;
+    std::vector<size_t> parameters; // parameter values
   };
   struct DatabaseVendor {
     std::string type;
@@ -60,6 +59,7 @@ class Database {
   struct DatabaseEntry {
     std::string kernel;
     Precision precision;
+    std::vector<std::string> parameter_names;
     std::vector<DatabaseVendor> vendors;
   };
 
@@ -93,10 +93,10 @@ class Database {
 
  private:
   // Search method for a specified database, returning pointer (possibly a nullptr)
-  ParametersPtr Search(const std::string &this_kernel, const std::string &this_type,
-                       const std::string &this_vendor, const std::string &this_device,
-                       const Precision this_precision,
-                       const std::vector<DatabaseEntry> &db) const;
+  Parameters Search(const std::string &this_kernel, const std::string &this_type,
+                    const std::string &this_vendor, const std::string &this_device,
+                    const Precision this_precision,
+                    const std::vector<DatabaseEntry> &db) const;
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<Parameters> parameters_;
