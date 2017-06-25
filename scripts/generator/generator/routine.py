@@ -336,10 +336,8 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "a", "b", "c"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
-            elif name in ["a", "b", "c"]:
-                c = [name + "_" + self.postfix(name)]
             return [", ".join(a + c)]
         return []
 

@@ -241,7 +241,7 @@ def wrapper_cblas(routine):
 
                 # Special case for scalar outputs
                 assignment = ""
-                postfix = ""
+                postfix, postpostfix = "", ""
                 end_of_line = ""
                 extra_argument = ""
                 for output_buffer in routine.outputs:
@@ -253,8 +253,9 @@ def wrapper_cblas(routine):
                             extra_argument += "reinterpret_cast<return_pointer_" + flavour.buffer_type[:-1] + ">"
                             extra_argument += "(&" + output_buffer + "_buffer[" + output_buffer + "_offset])"
                         elif output_buffer in routine.index_buffers():
-                            assignment = "((int*)&" + output_buffer + "_buffer[0])[" + output_buffer + "_offset] = "
-                            indent += " " * len(assignment)
+                            assignment = "reinterpret_cast<int*>(&" + output_buffer + "_buffer[0])[" + output_buffer + "_offset] = static_cast<int>("
+                            postpostfix = ")"
+                            indent += " " * (len(assignment) + 1)
                         else:
                             assignment = output_buffer + "_buffer[" + output_buffer + "_offset]"
                             if flavour.name in ["Sc", "Dz"]:
@@ -266,7 +267,7 @@ def wrapper_cblas(routine):
 
                 result += "  " + assignment + "cblas_" + flavour.name.lower() + routine.name + postfix + "("
                 result += ("," + NL + indent).join([a for a in arguments])
-                result += extra_argument + end_of_line + ");" + NL
+                result += extra_argument + end_of_line + ")" + postpostfix + ";" + NL
 
             # There is no CBLAS available, forward the call to one of the available functions
             else:  # Half-precision
