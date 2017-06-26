@@ -77,7 +77,7 @@ endif(MSVC)
 # C++ compiler settings
 if(MSVC)
   set(FLAGS "/Ot")
-  set(FLAGS "${FLAGS} /wd4715")
+  set(FLAGS "${FLAGS} /wd4715 /D_CRT_SECURE_NO_WARNINGS")
 else()
   set(FLAGS "-std=c++11")
   if(VERBOSE)

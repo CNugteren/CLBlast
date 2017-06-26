@@ -62,7 +62,7 @@ class TestXaxpyBatched {
     for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
       args.x_offsets[batch] = batch * PerBatchSizeX(args) + args.x_offset;
       args.y_offsets[batch] = batch * PerBatchSizeY(args) + args.y_offset;
-      args.alphas[batch] = args.alpha + Constant<T>(batch);
+      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch));
     }
   }
 
