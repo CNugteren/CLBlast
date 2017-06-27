@@ -72,7 +72,7 @@ class TestBlas: public Tester<T,U> {
   static const std::vector<Triangle> kTriangles;
   static const std::vector<Side> kSides;
   static const std::vector<Diagonal> kDiagonals;
-  static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cc-file
+  static const std::vector<Transpose> kTransposes; // Data-type dependent, see .cpp-file
 
   // Shorthand for the routine-specific functions passed to the tester
   using DataPrepare = std::function<void(const Arguments<U>&, Queue&, const int,
@@ -137,16 +137,11 @@ template <typename T, typename U> const size_t TestBlas<T,U>::kBufferSize = 64;
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVecSizes = {0, kBufferSize - 1, kBufferSize};
 
-// The layout/transpose/triangle options to test with
+// The layout/triangle options to test with
 template <typename T, typename U> const std::vector<Layout> TestBlas<T,U>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
 template <typename T, typename U> const std::vector<Triangle> TestBlas<T,U>::kTriangles = {Triangle::kUpper, Triangle::kLower};
 template <typename T, typename U> const std::vector<Side> TestBlas<T,U>::kSides = {Side::kLeft, Side::kRight};
 template <typename T, typename U> const std::vector<Diagonal> TestBlas<T,U>::kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
-template <typename T, typename U> const std::vector<Transpose> TestBlas<T,U>::kTransposes = {Transpose::kNo, Transpose::kYes};
-template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes; // see testblas.cpp
-template <> const std::vector<Transpose> TestBlas<double2,double2>::kTransposes; // see testblas.cpp
-template <> const std::vector<Transpose> TestBlas<float2,float>::kTransposes; // see testblas.cpp
-template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes; // see testblas.cpp
 
 // =================================================================================================
 
