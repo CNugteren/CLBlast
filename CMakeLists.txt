@@ -155,7 +155,7 @@ endif()
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
-set(SAMPLE_PROGRAMS_CPP sgemm)
+set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
 if(NETLIB)
   set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
