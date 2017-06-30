@@ -255,7 +255,8 @@ inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local re
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      int condition = (a_transpose) ? idm < kSizeK : idm < kSizeM;
+      int condition = (a_transpose) ? (idm < kSizeK) && (idk < kSizeM) :
+                                      (idm < kSizeM) && (idk < kSizeK);
       if (condition) {
         real result = agms[idk*a_ld + idm + a_offset];
         if (a_conjugate) { COMPLEX_CONJUGATE(result); }
@@ -293,7 +294,8 @@ inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local re
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      int condition = (b_transpose) ? idn < kSizeK : idn < kSizeN;
+      int condition = (b_transpose) ? (idn < kSizeK) && (idk < kSizeN) :
+                                      (idn < kSizeN) && (idk < kSizeK);
       if (condition) {
         real result = bgms[idk*b_ld + idn + b_offset];
         if (b_conjugate) { COMPLEX_CONJUGATE(result); }
