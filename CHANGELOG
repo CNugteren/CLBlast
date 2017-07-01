@@ -2,6 +2,7 @@
 Development (next version)
 - Fixed a bug in the TRSM routine for alpha != 1
 - Fixed a bug in the cache related to multi-device contexts (thanks to 'kpot')
+- Fixed a bug in the direct version of the GEMM kernel
 - Fixed several warnings for MSVC and Clang
 - Performance reports are now external at https://cnugteren.github.io/clblast
 - Greatly improved compilation time of database.cpp
