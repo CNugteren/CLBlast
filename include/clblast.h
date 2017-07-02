@@ -617,6 +617,13 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                     cl_command_queue* queue, cl_event* event = nullptr);
 
+// Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
+template <typename T>
+StatusCode Im2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem im_buffer, const size_t im_offset,
+                  cl_mem col_buffer, const size_t col_offset,
+                  cl_command_queue* queue, cl_event* event = nullptr);
+
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 template <typename T>
 StatusCode AxpyBatched(const size_t n,

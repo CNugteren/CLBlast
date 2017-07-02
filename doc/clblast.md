@@ -2956,6 +2956,66 @@ Requirements for OMATCOPY:
 
 
 
+xIM2COL: Im2col function (non-BLAS function)
+-------------
+
+Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.
+
+C++ API:
+```
+template <typename T>
+StatusCode Im2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem im_buffer, const size_t im_offset,
+                  cl_mem col_buffer, const size_t col_offset,
+                  cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to IM2COL:
+
+* `const size_t channels`: Integer size argument. This value must be positive.
+* `const size_t height`: Integer size argument. This value must be positive.
+* `const size_t width`: Integer size argument. This value must be positive.
+* `const size_t kernel_h`: Integer size argument. This value must be positive.
+* `const size_t kernel_w`: Integer size argument. This value must be positive.
+* `const size_t pad_h`: Integer size argument. This value must be positive.
+* `const size_t pad_w`: Integer size argument. This value must be positive.
+* `const size_t stride_h`: Integer size argument. This value must be positive.
+* `const size_t stride_w`: Integer size argument. This value must be positive.
+* `const size_t dilation_h`: Integer size argument. This value must be positive.
+* `const size_t dilation_w`: Integer size argument. This value must be positive.
+* `const cl_mem im_buffer`: OpenCL buffer to store the input im vector.
+* `const size_t im_offset`: The offset in elements from the start of the input im vector.
+* `cl_mem col_buffer`: OpenCL buffer to store the output col vector.
+* `const size_t col_offset`: The offset in elements from the start of the output col vector.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xAXPYBATCHED: Batched version of AXPY
 -------------
 

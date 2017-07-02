@@ -182,7 +182,7 @@ class Routine:
 
     def buffers_without_ld_inc(self):
         """List of buffers without 'inc' or 'ld'"""
-        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap"]
+        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap", "im", "col"]
 
     def get_buffer_type(self, name, flavour):
         if name in self.index_buffers():
@@ -195,7 +195,7 @@ class Routine:
 
     def no_scalars(self):
         """Determines whether or not this routine has scalar arguments (alpha/beta)"""
-        return self.scalars == []
+        return self.scalars == [] or self.name == "im2col"
 
     def has_layout(self):
         """Determines whether the layout is an argument"""
@@ -216,12 +216,12 @@ class Routine:
         """Determines which buffers go first (between alpha and beta) and which ones go after"""
         if self.level == "2b":
             return ["x", "y"]
-        return ["ap", "a", "b", "x"]
+        return ["ap", "a", "b", "x", "im"]
 
     def buffers_second(self):
         if self.level == "2b":
             return ["ap", "a", "b", "c"]
-        return ["y", "c"]
+        return ["y", "c", "col"]
 
     def buffer(self, name):
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
