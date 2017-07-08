@@ -47,7 +47,7 @@ R"(
 // =================================================================================================
 
 // The vectorized multiply function
-inline realV MultiplyVector(realV cvec, const real aval, const realV bvec) {
+INLINE_FUNC realV MultiplyVector(realV cvec, const real aval, const realV bvec) {
   #if VW == 1
     Multiply(cvec, aval, bvec);
   #elif VW == 2
@@ -89,7 +89,7 @@ inline realV MultiplyVector(realV cvec, const real aval, const realV bvec) {
 }
 
 // The vectorized multiply-add function
-inline realV MultiplyAddVector(realV cvec, const real aval, const realV bvec) {
+INLINE_FUNC realV MultiplyAddVector(realV cvec, const real aval, const realV bvec) {
   #if VW == 1
     MultiplyAdd(cvec, aval, bvec);
   #elif VW == 2
