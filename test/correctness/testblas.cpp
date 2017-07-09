@@ -198,12 +198,12 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         if (!TestSimilarity(result1[index], result2[index])) {
           if (l2error >= kErrorMarginL2) { errors++; }
           if (verbose_) {
-            if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
-            else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
-            fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
-            fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
+            if (get_id2_(args) == 1) { std::cout << std::endl << "   Error at index " << id1 << ": "; }
+            else { std::cout << std::endl << "   Error at " << id1 << "," << id2 << ": "; }
+            std::cout << " " << ToString(result1[index]) << " (reference) versus ";
+            std::cout << " " << ToString(result2[index]) << " (CLBlast)";
             if (l2error < kErrorMarginL2) {
-              fprintf(stdout, " - error suppressed by a low total L2 error\n");
+              std::cout << " - error suppressed by a low total L2 error" << std::endl;
             }
           }
         }
