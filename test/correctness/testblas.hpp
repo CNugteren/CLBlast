@@ -343,6 +343,12 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
                 auto i_args = args;
                 i_args.m = i_args.n = i_args.k = i_args.kl = i_args.ku = tester.kBufferSize;
                 i_args.a_ld = i_args.b_ld = i_args.c_ld = tester.kBufferSize;
+                i_args.batch_count = 3;
+                i_args.alphas = std::vector<U>(i_args.batch_count);
+                i_args.betas = std::vector<U>(i_args.batch_count);
+                i_args.a_offsets = std::vector<size_t>(i_args.batch_count);
+                i_args.b_offsets = std::vector<size_t>(i_args.batch_count);
+                i_args.c_offsets = std::vector<size_t>(i_args.batch_count);
                 for (auto &x_size: x_sizes) { i_args.x_size = x_size;
                   for (auto &y_size: y_sizes) { i_args.y_size = y_size;
                     for (auto &a_size: a_sizes) { i_args.a_size = a_size;
