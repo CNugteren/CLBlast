@@ -152,6 +152,23 @@ if(CLIENTS OR TESTS)
   endif()
 endif()
 
+# Check plugin support
+find_path(DLFCN_H "dlfcn.h")
+if(DLFCN_H)
+  message(STATUS "Found <dlfcn.h>, enabling plugins using POSIX dynamic linker interface")
+  set(PLUGINS TRUE)
+  set(SOURCES_PLUGINS
+    src/utilities/plugin_posix.cpp
+  )
+endif()
+
+if(NOT PLUGINS)
+  message(STATUS "Disabling plugin support")
+  set(SOURCES_PLUGINS
+    src/utilities/plugin_none.cpp
+  )
+endif()
+
 # ==================================================================================================
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
@@ -178,11 +195,14 @@ set(SOURCES
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
   src/utilities/utilities.cpp
+  src/utilities/plugin.cpp
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
+  src/clblast_plugin.cpp
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
+  ${SOURCES_PLUGINS}
 )
 if(NETLIB)
   set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
@@ -228,6 +248,7 @@ install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
 install(FILES include/clblast.h DESTINATION include)
 install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
+install(FILES include/clblast_plugin.h DESTINATION include)
 if(NETLIB)
   install(FILES include/clblast_netlib_c.h DESTINATION include)
 endif()

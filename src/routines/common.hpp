@@ -27,8 +27,8 @@ namespace clblast {
 // =================================================================================================
 
 // Enqueues a kernel, waits for completion, and checks for errors
-void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
-               std::vector<size_t> global, const std::vector<size_t> &local,
+void RunKernel(const Kernel &kernel, const Queue &queue, const Device &device,
+               const std::vector<size_t> &global, const std::vector<size_t> &local,
                EventPointer event, const std::vector<Event> &waitForEvents = {});
 
 // =================================================================================================
@@ -90,111 +90,7 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
                             const Program &program, const bool do_pad,
                             const bool do_transpose, const bool do_conjugate,
                             const bool upper = false, const bool lower = false,
-                            const bool diagonal_imag_zero = false) {
-
-  // Determines whether or not the fast-version could potentially be used
-  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
-                         (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld) &&
-                         (upper == false) && (lower == false) && (diagonal_imag_zero == false);
-
-  // Determines the right kernel
-  auto kernel_name = std::string{};
-  if (do_transpose) {
-    if (use_fast_kernel &&
-        IsMultiple(src_ld, db["TRA_WPT"]) &&
-        IsMultiple(src_one, db["TRA_WPT"]*db["TRA_DIM"]) &&
-        IsMultiple(src_two, db["TRA_WPT"]*db["TRA_DIM"])) {
-      kernel_name = "TransposeMatrixFast";
-    }
-    else {
-      use_fast_kernel = false;
-      kernel_name = (do_pad) ? "TransposePadMatrix" : "TransposeMatrix";
-    }
-  }
-  else {
-    if (use_fast_kernel &&
-        IsMultiple(src_ld, db["COPY_VW"]) &&
-        IsMultiple(src_one, db["COPY_VW"]*db["COPY_DIMX"]) &&
-        IsMultiple(src_two, db["COPY_WPT"]*db["COPY_DIMY"])) {
-      kernel_name = "CopyMatrixFast";
-    }
-    else {
-      use_fast_kernel = false;
-      kernel_name = (do_pad) ? "CopyPadMatrix" : "CopyMatrix";
-    }
-  }
-
-  // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program, kernel_name);
-
-  // Sets the kernel arguments
-  if (use_fast_kernel) {
-    kernel.SetArgument(0, static_cast<int>(src_ld));
-    kernel.SetArgument(1, src());
-    kernel.SetArgument(2, dest());
-    kernel.SetArgument(3, GetRealArg(alpha));
-  }
-  else {
-    kernel.SetArgument(0, static_cast<int>(src_one));
-    kernel.SetArgument(1, static_cast<int>(src_two));
-    kernel.SetArgument(2, static_cast<int>(src_ld));
-    kernel.SetArgument(3, static_cast<int>(src_offset));
-    kernel.SetArgument(4, src());
-    kernel.SetArgument(5, static_cast<int>(dest_one));
-    kernel.SetArgument(6, static_cast<int>(dest_two));
-    kernel.SetArgument(7, static_cast<int>(dest_ld));
-    kernel.SetArgument(8, static_cast<int>(dest_offset));
-    kernel.SetArgument(9, dest());
-    kernel.SetArgument(10, GetRealArg(alpha));
-    if (do_pad) {
-      kernel.SetArgument(11, static_cast<int>(do_conjugate));
-    }
-    else {
-      kernel.SetArgument(11, static_cast<int>(upper));
-      kernel.SetArgument(12, static_cast<int>(lower));
-      kernel.SetArgument(13, static_cast<int>(diagonal_imag_zero));
-    }
-  }
-
-  // Launches the kernel and returns the error code. Uses global and local thread sizes based on
-  // parameters in the database.
-  if (do_transpose) {
-    if (use_fast_kernel) {
-      const auto global = std::vector<size_t>{
-        dest_one / db["TRA_WPT"],
-        dest_two / db["TRA_WPT"]
-      };
-      const auto local = std::vector<size_t>{db["TRA_DIM"], db["TRA_DIM"]};
-      RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-    }
-    else {
-      const auto global = std::vector<size_t>{
-        Ceil(CeilDiv(dest_one, db["PADTRA_WPT"]), db["PADTRA_TILE"]),
-        Ceil(CeilDiv(dest_two, db["PADTRA_WPT"]), db["PADTRA_TILE"])
-      };
-      const auto local = std::vector<size_t>{db["PADTRA_TILE"], db["PADTRA_TILE"]};
-      RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-    }
-  }
-  else {
-    if (use_fast_kernel) {
-      const auto global = std::vector<size_t>{
-        dest_one / db["COPY_VW"],
-        dest_two / db["COPY_WPT"]
-      };
-      const auto local = std::vector<size_t>{db["COPY_DIMX"], db["COPY_DIMY"]};
-      RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-    }
-    else {
-      const auto global = std::vector<size_t>{
-        Ceil(CeilDiv(dest_one, db["PAD_WPTX"]), db["PAD_DIMX"]),
-        Ceil(CeilDiv(dest_two, db["PAD_WPTY"]), db["PAD_DIMY"])
-      };
-      const auto local = std::vector<size_t>{db["PAD_DIMX"], db["PAD_DIMY"]};
-      RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-    }
-  }
-}
+                            const bool diagonal_imag_zero = false);
 
 // Batched version of the above
 template <typename T>
@@ -209,56 +105,7 @@ void PadCopyTransposeMatrixBatched(Queue &queue, const Device &device,
                                    const Buffer<T> &dest,
                                    const Program &program, const bool do_pad,
                                    const bool do_transpose, const bool do_conjugate,
-                                   const size_t batch_count) {
-
-  // Determines the right kernel
-  auto kernel_name = std::string{};
-  if (do_transpose) {
-    kernel_name = (do_pad) ? "TransposePadMatrixBatched" : "TransposeMatrixBatched";
-  }
-  else {
-    kernel_name = (do_pad) ? "CopyPadMatrixBatched" : "CopyMatrixBatched";
-  }
-
-  // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program, kernel_name);
-
-  // Sets the kernel arguments
-  kernel.SetArgument(0, static_cast<int>(src_one));
-  kernel.SetArgument(1, static_cast<int>(src_two));
-  kernel.SetArgument(2, static_cast<int>(src_ld));
-  kernel.SetArgument(3, src_offsets());
-  kernel.SetArgument(4, src());
-  kernel.SetArgument(5, static_cast<int>(dest_one));
-  kernel.SetArgument(6, static_cast<int>(dest_two));
-  kernel.SetArgument(7, static_cast<int>(dest_ld));
-  kernel.SetArgument(8, dest_offsets());
-  kernel.SetArgument(9, dest());
-  if (do_pad) {
-    kernel.SetArgument(10, static_cast<int>(do_conjugate));
-  }
-
-  // Launches the kernel and returns the error code. Uses global and local thread sizes based on
-  // parameters in the database.
-  if (do_transpose) {
-    const auto global = std::vector<size_t>{
-      Ceil(CeilDiv(dest_one, db["PADTRA_WPT"]), db["PADTRA_TILE"]),
-      Ceil(CeilDiv(dest_two, db["PADTRA_WPT"]), db["PADTRA_TILE"]),
-      batch_count
-    };
-    const auto local = std::vector<size_t>{db["PADTRA_TILE"], db["PADTRA_TILE"], 1};
-    RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-  }
-  else {
-    const auto global = std::vector<size_t>{
-      Ceil(CeilDiv(dest_one, db["PAD_WPTX"]), db["PAD_DIMX"]),
-      Ceil(CeilDiv(dest_two, db["PAD_WPTY"]), db["PAD_DIMY"]),
-      batch_count
-    };
-    const auto local = std::vector<size_t>{db["PAD_DIMX"], db["PAD_DIMY"], 1};
-    RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-  }
-}
+                                   const size_t batch_count);
 
 // =================================================================================================
 } // namespace clblast

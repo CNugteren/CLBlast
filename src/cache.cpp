@@ -16,6 +16,7 @@
 #include <mutex>
 
 #include "database/database.hpp"
+#include "utilities/plugin.hpp"
 #include "cache.hpp"
 
 namespace clblast {
@@ -125,6 +126,16 @@ template void ProgramCache::RemoveBySubset<1, 2>(const ProgramKey &); // precisi
 
 template class Cache<DatabaseKey, Database>;
 template Database DatabaseCache::Get(const DatabaseKeyRef &, bool *) const;
+
+// =================================================================================================
+
+template class Cache<std::string, plugin::Library>;
+template plugin::Library PluginLibraryCache::Get(const std::string &, bool *) const;
+
+// =================================================================================================
+
+template class Cache<PluginKey, plugin::Plugin>;
+template plugin::Plugin PluginCache::Get(const PluginKeyRef &, bool *) const;
 
 // =================================================================================================
 } // namespace clblast

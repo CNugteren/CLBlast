@@ -22,6 +22,7 @@
 #include <unordered_map>
 
 #include "utilities/utilities.hpp"
+#include "clblast_plugin.h"
 
 namespace clblast {
 // =================================================================================================
@@ -37,10 +38,19 @@ namespace database {
 
 } // namespace database
 
+
+// =================================================================================================
+
+namespace plugin {
+
+class Plugin;
+
+} // namespace plugin
+
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-class Database {
+class Database : public plugin::Database {
  public:
 
   // Type alias for the database parameters
@@ -79,7 +89,7 @@ class Database {
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
   explicit Database(const Device &device, const std::string &kernel_name,
-                    const Precision precision, const std::vector<DatabaseEntry> &overlay);
+                    const Precision precision, const plugin::Plugin &plugin);
 
   // Accessor of values by key
   size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
