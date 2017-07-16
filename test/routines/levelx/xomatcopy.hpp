@@ -114,7 +114,7 @@ class TestXomatcopy {
   static size_t DefaultLDB(const Arguments<T> &args) { return args.m; }
   static size_t DefaultLDC(const Arguments<T> &) { return 1; } // N/A for this routine
 
-  // Describes which omatcopyose options are relevant for this routine
+  // Describes which transpose options are relevant for this routine
   using Transposes = std::vector<Transpose>;
   static Transposes GetATransposes(const Transposes &all) { return all; }
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine

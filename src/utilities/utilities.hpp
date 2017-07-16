@@ -78,6 +78,19 @@ constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 constexpr auto kArgBatchCount = "batch_num";
 
+// Constants for im2col
+constexpr auto kArgChannels = "channels";
+constexpr auto kArgHeight = "height";
+constexpr auto kArgWidth = "width";
+constexpr auto kArgKernelH = "kernelh";
+constexpr auto kArgKernelW = "kernelw";
+constexpr auto kArgPadH = "padh";
+constexpr auto kArgPadW = "padw";
+constexpr auto kArgStrideH = "strideh";
+constexpr auto kArgStrideW = "stridew";
+constexpr auto kArgDilationH = "dilationh";
+constexpr auto kArgDilationW = "dilationw";
+
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 
@@ -170,6 +183,18 @@ struct Arguments {
   size_t imax_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
+  // Arguments for im2col
+  size_t channels = 1;
+  size_t height = 1;
+  size_t width = 1;
+  size_t kernel_h = 1;
+  size_t kernel_w = 1;
+  size_t pad_h = 1;
+  size_t pad_w = 1;
+  size_t stride_h = 1;
+  size_t stride_w = 1;
+  size_t dilation_h = 1;
+  size_t dilation_w = 1;
   // Batch-specific arguments
   size_t batch_count = 1;
   std::vector<size_t> x_offsets; // = {0};
