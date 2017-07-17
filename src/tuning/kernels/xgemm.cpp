@@ -18,6 +18,9 @@
 
 #include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
+#define XGEMM_EXEC
+bool tStrategyFlag=true;
+#define DEFAULT_NUM_OF_STRATEGY 1
 
 namespace clblast {
 // =================================================================================================
@@ -28,7 +31,8 @@ class TuneXgemm {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return (V==1) ? "xgemm_1" : "xgemm_2"; }
+  // static std::string KernelFamily() { return (V==1) ? "xgemm_1" : "xgemm_2"; }
+  static std::string KernelFamily() { switch(V){ case 1: return "xgemm_1"; case 2: case 3:return "xgemm_2";  }}
   static std::string KernelName() { return "Xgemm"; }
   static std::string GetSources() {
     return
@@ -41,7 +45,7 @@ class TuneXgemm {
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
-    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction};
+    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,tStrategy, psoSwarmSize, psoInfG, psoInfL, psoInfR};
   }
 
   // Tests for valid arguments
@@ -82,6 +86,7 @@ class TuneXgemm {
       tuner.AddParameter(id, "SB", {0, 1});
     } // a lot more tuning parameters - has to be sampled randomly, too much to test all
     else {
+      //RANDOM_SEARCH & PSO
       tuner.AddParameter(id, "MWG", {16, 32, 64, 128});
       tuner.AddParameter(id, "NWG", {16, 32, 64, 128});
       tuner.AddParameter(id, "KWG", {16, 32});
@@ -97,6 +102,7 @@ class TuneXgemm {
       tuner.AddParameter(id, "SA", {0, 1});
       tuner.AddParameter(id, "SB", {0, 1});
     }
+
   }
 
   // Sets the constraints
@@ -190,10 +196,49 @@ void StartVariation(int argc, char *argv[]) {
   }
 }
 
+
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
+
+int num_of_strategies = DEFAULT_NUM_OF_STRATEGY;
+
+if(const char* env_p = std::getenv("CK_TUNER_NUM_OF_STRATEGIES"))
+{ 
+  num_of_strategies = atoi(env_p);
+  printf("CK_TUNER_NUM_OF_STRATEGIES is: %s\n", env_p );
+}
+else
+{
+  printf("CK_TUNER_NUM_OF_STRATEGIES is not defined\n");     
+}
+
+printf("num_of_strategies : %d\n",num_of_strategies );
+
+if( DEFAULT_NUM_OF_STRATEGY != num_of_strategies )
+{
+  //FACCIO PRIMA LA FULL SEARCH
   StartVariation<1>(argc, argv);
-  StartVariation<2>(argc, argv);
+}
+
+  auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  auto help = std::string{"* Options given/available:\n"};
+  auto localtStrategy = clblast::GetArgument(command_line_args, help, clblast::tStrategy, DEFAULT_STRATEGY); 
+  switch(localtStrategy)
+  {
+    case FULL_SEARCH_STRATEGY: 
+      StartVariation<1>(argc, argv);
+      break;
+    case RANDOM_SEARCH_STRATEGY: 
+      StartVariation<2>(argc, argv);
+      break;
+    case PSO_STRATEGY:
+      StartVariation<3>(argc, argv);
+      break;
+    case DVDT_STRATEGY:
+      StartVariation<2>(argc, argv);
+      break;
+  }
+
   return 0;
 }
 

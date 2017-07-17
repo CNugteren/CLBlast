@@ -28,6 +28,21 @@
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/msvc.hpp"
 
+#define FULL_SEARCH_STRATEGY 0
+#define RANDOM_SEARCH_STRATEGY 1
+#define PSO_STRATEGY 2
+#define DVDT_STRATEGY 3
+
+#define DEFAULT_STRATEGY 0
+
+#define DEFAULT_PSO_SWARM 8 
+#define DEFAULT_PSO_G 0.3
+#define DEFAULT_PSO_L 0.6
+#define DEFAULT_PSO_R 0.1
+
+#ifdef XGEMM_EXEC
+extern bool tStrategyFlag;
+#endif
 namespace clblast {
 // =================================================================================================
 
@@ -46,6 +61,12 @@ const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 constexpr auto kUnknownError = -999;
 
 // =================================================================================================
+
+constexpr auto tStrategy = "strategy";
+constexpr auto psoSwarmSize = "psoSwarmSize";
+constexpr auto  psoInfG = "psoInfG";
+constexpr auto  psoInfL = "psoInfL";
+constexpr auto  psoInfR = "psoInfR";
 
 // The routine-specific arguments in string form
 constexpr auto kArgM = "m";
@@ -172,13 +193,13 @@ struct Arguments {
   T beta = ConstantOne<T>();
   // Batch-specific arguments
   size_t batch_count = 1;
-  std::vector<size_t> x_offsets; // = {0};
-  std::vector<size_t> y_offsets; // = {0};
-  std::vector<size_t> a_offsets; // = {0};
-  std::vector<size_t> b_offsets; // = {0};
-  std::vector<size_t> c_offsets; // = {0};
-  std::vector<T> alphas; // = {ConstantOne<T>()};
-  std::vector<T> betas; // = {ConstantOne<T>()};
+  std::vector<size_t> x_offsets = {0};
+  std::vector<size_t> y_offsets = {0};
+  std::vector<size_t> a_offsets = {0};
+  std::vector<size_t> b_offsets = {0};
+  std::vector<size_t> c_offsets = {0};
+  std::vector<T> alphas = {ConstantOne<T>()};
+  std::vector<T> betas = {ConstantOne<T>()};
   // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
@@ -206,7 +227,15 @@ struct Arguments {
   bool print_help = false;
   bool silent = false;
   bool no_abbrv = false;
+
+  int tStrategy = DEFAULT_STRATEGY;
+  size_t psoSwarmSize = DEFAULT_PSO_SWARM;
+  double psoInfG = DEFAULT_PSO_G;
+  double psoInfL = DEFAULT_PSO_L;
+  double psoInfR = DEFAULT_PSO_R;
 };
+
+
 
 // Structure containing all possible buffers for test clients
 template <typename T>
