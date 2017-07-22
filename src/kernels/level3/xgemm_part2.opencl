@@ -18,7 +18,7 @@ R"(
 // =================================================================================================
 
 // The vectorised multiply-add function
-inline realM MultiplyAddVector(realM cvec, const realM avec, const real bval) {
+INLINE_FUNC realM MultiplyAddVector(realM cvec, const realM avec, const real bval) {
   #if USE_VECTOR_MAD == 1
     cvec += avec * bval;
   #else
@@ -64,7 +64,7 @@ inline realM MultiplyAddVector(realM cvec, const realM avec, const real bval) {
 }
 
 // Performs the actual computation: Cpm += Apm * Bpm
-inline void MultiplyAccumulate(realM cpm[NWI][MWI/VWM], realM apm[MWI/VWM], realN bpm[NWI/VWN]) {
+INLINE_FUNC void MultiplyAccumulate(realM cpm[NWI][MWI/VWM], realM apm[MWI/VWM], realN bpm[NWI/VWN]) {
   #pragma unroll
   for (int ni=0; ni<NWI/VWN; ++ni) {
     #pragma unroll
@@ -115,8 +115,8 @@ inline void MultiplyAccumulate(realM cpm[NWI][MWI/VWM], realM apm[MWI/VWM], real
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-inline void StoreResults(__global realM* cgm, realM cpm[NWI][MWI/VWM], const int kSizeM,
-                         const real alpha, const real beta) {
+INLINE_FUNC void StoreResults(__global realM* cgm, realM cpm[NWI][MWI/VWM], const int kSizeM,
+                              const real alpha, const real beta) {
   #pragma unroll
   for (int ni=0; ni<NWI; ++ni) {
     #pragma unroll

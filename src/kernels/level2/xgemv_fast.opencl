@@ -75,8 +75,8 @@ R"(
 // =================================================================================================
 
 // Loads a vector input value
-inline realVF LoadMatrixAVF(const __global realVF* restrict agm, const int x, const int y,
-                            const int a_ld) {
+INLINE_FUNC realVF LoadMatrixAVF(const __global realVF* restrict agm, const int x, const int y,
+                                 const int a_ld) {
   return agm[a_ld*y + x];
 }
 
