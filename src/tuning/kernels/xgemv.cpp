@@ -52,7 +52,14 @@ class TuneXgemv {
   static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return 1.0; } // N/A for this kernel
   static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
-
+  static size_t DefaultNumSearchStragegy() { return 1; } // N/A for this kernel
+  static size_t DefaultSwarmSizePSO() { return 8; } // N/A for this kernel
+  static double DefaultInfluenceGlobalPSO(){ return 0.1; }// N/A for this kernel
+  static double DefaultInfluenceLocalPSO(){ return 0.3; }// N/A for this kernel
+  static double DefaultInfluenceRandomPSO(){ return 0.6; }// N/A for this kernel
+  static size_t DefaultHeuristic(){ return size_t{0};} // Full search
+  static double DefaultMaxTempAnn(){ return 1.0;}// N/A for this kernel
+  
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) { return args.n; }
   static size_t GetSizeY(const Arguments<T> &args) { return args.m; }
@@ -148,6 +155,11 @@ class TuneXgemv {
     return (args.m*args.n + 2*args.m + args.n) * GetBytes(args.precision);
   }
   static std::string PerformanceUnit() { return "GB/s"; }
+
+  // Returns which Heuristic to run 
+  static size_t GetCurrentHeuristic(const Arguments<T> &args){
+    return size_t{0}; //Full search
+  }
 };
 
 // =================================================================================================

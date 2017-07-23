@@ -41,7 +41,9 @@ class TuneXgemmDirect {
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
-    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction};
+    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
+     kArgHeuristicSelection, kArgMultiSearchStrategy, kArgPsoSwarmSize, 
+     kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
   }
 
   // Tests for valid arguments
@@ -54,7 +56,14 @@ class TuneXgemmDirect {
   static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return (V==1) ? 1.0 : 32.0; } // test all or sample randomly
   static size_t DefaultNumRuns() { return 4; } // run every kernel this many times for averaging
-
+  static size_t DefaultNumSearchStragegy() { return 2; } // Full search and Random/PSO
+  static size_t DefaultSwarmSizePSO() { return 8; } 
+  static double DefaultInfluenceGlobalPSO(){ return 0.1; }
+  static double DefaultInfluenceLocalPSO(){ return 0.3; }
+  static double DefaultInfluenceRandomPSO(){ return 0.6; }
+  static size_t DefaultHeuristic(){ return size_t{3};} // PSO
+  static double DefaultMaxTempAnn(){ return 1.0;}
+  
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
   static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -166,6 +175,29 @@ class TuneXgemmDirect {
     return 2 * args.m * args.n * args.k;
   }
   static std::string PerformanceUnit() { return "GFLOPS"; }
+
+  // Returns which Heuristic to run 
+  static size_t GetCurrentHeuristic(const Arguments<T> &args){
+
+     //  Multi Search Strategy is enable
+    if( args.multi_search_strategy){
+      if( V == 1){ 
+        return size_t{0};
+      }
+      else{
+        return args.heuristic_selection;
+      }
+    }
+
+    // Use full-search to explore all parameter combinations or random-search to search only a part of
+    // the parameter values. The fraction is set as a command-line argument.
+    if (args.fraction == 1.0 || args.fraction == 0.0) {
+      return size_t{0}; // Full search
+    }
+    else {
+      return args.heuristic_selection;
+    }
+  }
 };
 
 // =================================================================================================
@@ -186,6 +218,34 @@ void StartVariation(int argc, char *argv[]) {
     case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneXgemmDirect<double,V>, double>(argc, argv); break;
     case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneXgemmDirect<float2,V>, float2>(argc, argv); break;
     case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneXgemmDirect<double2,V>, double2>(argc, argv); break;
+  }
+}
+// Test multiple heuristics if kArgMultiSearchStrategy is enabled
+// Otherwise, run the heuristic specified in kArgMultiSearchStrategy
+void TestHeuristic(int argc, char *argv[]){
+
+  auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+  auto help = std::string{""};
+  auto heuristic_selected = clblast::GetArgument(command_line_args, help, clblast::kArgMultiSearchStrategy, 0); 
+  auto multi_search_strategy = clblast::GetArgument(command_line_args, help, clblast::kArgMultiSearchStrategy, 0);
+
+  if(multi_search_strategy){
+    StartVariation<1>(argc, argv);
+    StartVariation<2>(argc, argv);
+  }
+  else
+  { 
+    switch(heuristic_selected){
+      case 1:
+      case 2:
+      case 3:
+        StartVariation<2>(argc, argv);
+        break;
+      case 0:
+      default:
+        StartVariation<1>(argc, argv);
+        break;
+    }
   }
 }
 
