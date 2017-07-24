@@ -2,14 +2,15 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | master branch |
-|-----|-----|
-| Linux/OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
-| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
+| | Build status | Tests on Intel GPU | Tests on NVIDIA GPU | Tests on AMD GPU |
+|-----|-----|-----|-----|-----|
+| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-Intel/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-Intel/) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-NVIDIA/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-NVIDIA/) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-AMD/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Windows-AMD/) |
+| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-Intel/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-Intel/) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-NVIDIA/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-NVIDIA/) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-AMD/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-Linux-AMD/) |
+| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-OSX-Intel/badge/icon)](http://ci.arrayfire.org/view/Other/job/other/job/CLBlast-OSX-Intel/) | N/A | N/A |
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
-This preview-version is not yet tuned for all OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
+The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -56,6 +57,7 @@ The pre-requisites for compilation of CLBlast are:
   - AMD APP SDK
   - Intel OpenCL
   - Beignet
+  - Mesa Clover
 
 An example of an out-of-source build using a command-line compiler and make (starting from the root of the CLBlast folder):
 
@@ -97,7 +99,7 @@ To get started quickly, a couple of stand-alone example programs are included in
 
     cmake -DSAMPLES=ON ..
 
-There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severly. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
+There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severely. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
 
     #include <clblast_netlib_c.h>
 
@@ -279,7 +281,7 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 | xTRMM    | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xTRSM    | ✔ | ✔ | ✔ | ✔ |   | (experimental, un-optimized)
 
-Futhermore, there are also batched versions of BLAS routines available, processing multiple smaller computations in one go for better performance:
+Furthermore, there are also batched versions of BLAS routines available, processing multiple smaller computations in one go for better performance:
 
 | Batched      | S | D | C | Z | H |
 | -------------|---|---|---|---|---|
@@ -302,7 +304,7 @@ Some less commonly used BLAS routines are not yet supported yet by CLBlast. They
 Half precision (fp16)
 -------------
 
-The half-precison fp16 format is a 16-bits floating-point data-type. Some OpenCL devices support the `cl_khr_fp16` extension, reducing storage and bandwidth requirements by a factor 2 compared to single-precision floating-point. In case the hardware also accelerates arithmetic on half-precision data-types, this can also greatly improve compute performance of e.g. level-3 routines such as GEMM. Devices which can benefit from this are among others Intel GPUs, ARM Mali GPUs, and NVIDIA's latest Pascal GPUs. Half-precision is in particular interest for the deep-learning community, in which convolutional neural networks can be processed much faster at a minor accuracy loss.
+The half-precision fp16 format is a 16-bits floating-point data-type. Some OpenCL devices support the `cl_khr_fp16` extension, reducing storage and bandwidth requirements by a factor 2 compared to single-precision floating-point. In case the hardware also accelerates arithmetic on half-precision data-types, this can also greatly improve compute performance of e.g. level-3 routines such as GEMM. Devices which can benefit from this are among others Intel GPUs, ARM Mali GPUs, and NVIDIA's latest Pascal GPUs. Half-precision is in particular interest for the deep-learning community, in which convolutional neural networks can be processed much faster at a minor accuracy loss.
 
 Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_half` type for the host device. Unfortunately, internally this translates to a 16-bits integer, so computations on the host using this data-type should be avoided. For convenience, CLBlast provides the `clblast_half.h` header (C99 and C++ compatible), defining the `half` type as a short-hand to `cl_half` and the following basic functions:
 
@@ -317,7 +319,7 @@ Contributing
 
 Contributions are welcome in the form of tuning results for OpenCL devices previously untested or pull requests. See [the contributing guidelines](CONTRIBUTING.md) for more details.
 
-The contributing authors (code, pull requests, testing) so far are:
+The main contributing authors (code, pull requests, testing) are:
 
 * [Cedric Nugteren](http://cnugteren.github.io) - main author
 * [Anton Lokhmotov](https://github.com/psyhtest)
@@ -328,6 +330,8 @@ The contributing authors (code, pull requests, testing) so far are:
 * [Ivan Shapovalov](https://github.com/intelfx)
 * [Dimitri Van Assche](https://github.com/dvasschemacq)
 * [Shehzan Mohammed](https://shehzan10.github.io)
+* [Marco Cianfriglia](https://github.com/mcian)
+* Everyone else listed as a [GitHub contributor](https://github.com/CNugteren/CLBlast/graphs/contributors)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -336,6 +340,13 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
 * [ArrayFire](http://arrayfire.org)
+* Everyone reporting [tuning results](https://github.com/CNugteren/CLBlast/issues/1)
+
+Hardware/software for this project was contributed by:
+
+* [ArrayFire](http://arrayfire.org) for settings up and supporting Jenkins CI correctness tests on 7 platforms
+* [JetBrains](https://www.jetbrains.com/clion/) for supply a free CLion IDE license for CLBlast developers
+* [Travis CI](https://travis-ci.org/CNugteren/CLBlast/branches) and [AppVeyor](https://ci.appveyor.com/project/CNugteren/clblast) for free automated build tests for open-source projects
 
 
 More information
@@ -343,7 +354,7 @@ More information
 
 Further information on CLBlast is available through the following links:
 
-* A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slideset is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf).
+* A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slide-set is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf).
 * More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (May 2017). For CLTune, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
 
 

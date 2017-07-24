@@ -4,6 +4,7 @@ Development (next version)
 - Fixed a bug in the cache related to multi-device contexts (thanks to 'kpot')
 - Fixed a bug in the direct version of the GEMM kernel
 - Fixed several warnings for MSVC and Clang
+- Added support for Mesa Clover and AMD's ROCm by making the inline keyword optional in kernels
 - Performance reports are now external at https://cnugteren.github.io/clblast
 - Greatly improved compilation time of database.cpp
 - Various minor fixes and enhancements
