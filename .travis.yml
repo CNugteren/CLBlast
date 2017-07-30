@@ -21,7 +21,10 @@ matrix:
 
 env:
   global:
+    - CLBLAST_VERSION=1.0.0
     - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/clblast
+    - CLBLAST_INSTALL=${TRAVIS_BUILD_DIR}/bin/CLBlast-${CLBLAST_VERSION}
+    - CLBLAST_TAR=CLBlast-${CLBLAST_VERSION}-${TRAVIS_OS_NAME}-x64.tar.gz
 
 before_install:
   - cmake --version;
@@ -29,12 +32,20 @@ before_install:
   - ${CXX} --version;
 
 before_script:
+  - mkdir -p ${CLBLAST_INSTALL}
   - mkdir -p ${CLBLAST_ROOT}
   - pushd ${CLBLAST_ROOT}
-  - cmake -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DNETLIB=ON ${TRAVIS_BUILD_DIR}
+  - cmake -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${CLBLAST_INSTALL} ${TRAVIS_BUILD_DIR}
 
 script:
   - make
+  - make install
+
+after_success:
+  - pushd ${TRAVIS_BUILD_DIR}/bin
+  - rm ${CLBLAST_INSTALL}/clblast_client_*
+  - rm ${CLBLAST_INSTALL}/clblast_test_*
+  - tar -cvf ${CLBLAST_TAR} ${CLBLAST_INSTALL}
 
 branches:
   only:
@@ -42,3 +53,11 @@ branches:
 
 notifications:
   email: false
+
+deploy:
+  provider: releases
+  api_key:
+    secure: oBnP56zfFTiON0v6nm6qiRevtTsojqaxV2E/+ahUP4iyZxZgn1zf9reGNEbB/s6wfHCwXpXKlCk3A0cEQzbfoZeQy3oMzyWHV/xgu+etOENe3z18oVEiVBe/WAd1/hMVmQvX65kHR+q12rce6K6rDm1mEIJC/udf5Dbdl2alVWgiL20Hrj/PSQAYZZuTmZLuMm7OBc1G2xhRmRo5FYgI2u1ZALUHDRov/yLQkoKwxAlzBhURoNTHW2wTAr3Pq01Fk2kfQFRmg7YFieu3cit/JGNzaDdgmT0U5pLRzhuPiD3qziNnC3rG7tnYV0jHQOLKH+AJ0csbNncG47JrUQrKDJGUs0fLBxHG4ErEdVc/s+l/ZTGBT6kOEjk5GLQviNuAzP51em+TATR6YJ4JdgnZEU3iwbyeY/lLPPWhOVDfUgLNVKHX7Sijf83Wp+cqspAdIcnT5lWMXUe7jciKQLC0B+jD6IQ/hCqF0/yX/H8Sa8jA+qSIrXWt/qSy1viKaQ3Sf8+rXyxG6dqYc0jUweQ248FOgUCtzmaZP48SoMBATN7JPCLzhGnY8IiMErGzc6jsevmoqB0MRqZhc2qsLEfTclxsMmfx2yVKt93G+zRMtQuYmf36MvDNbPaH+/tzE8pWxufSY0672qhL0sfvNO+FuCJ8Bsk4UwKV3lTeGjCwN5o=
+  file: ${CLBLAST_TAR}
+  on:
+    repo: CNugteren/CLBlast
