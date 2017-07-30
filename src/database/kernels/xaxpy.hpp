@@ -30,9 +30,15 @@ const Database::DatabaseEntry XaxpyHalf = {
         { "default",                                         { 8, 64, 1 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 8, 64, 1 } },
+        { "default",                                         { 8, 64, 1 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 8, 256, 4 } },
+        { "default",                                         { 8, 64, 1 } },
       }
     },
   }
@@ -113,9 +119,15 @@ const Database::DatabaseEntry XaxpySingle = {
         { "default",                                         { 4, 1024, 1 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 4, 128, 2 } },
+        { "default",                                         { 4, 128, 2 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 4, 256, 1 } },
+        { "default",                                         { 4, 64, 1 } },
       }
     },
   }
@@ -193,6 +205,12 @@ const Database::DatabaseEntry XaxpyComplexSingle = {
         { "Tesla K20m",                                      { 1, 128, 1 } },
         { "Tesla K40m",                                      { 1, 128, 1 } },
         { "default",                                         { 1, 256, 1 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 1, 64, 1 } },
+        { "default",                                         { 1, 64, 1 } },
       }
     },
     { // Default

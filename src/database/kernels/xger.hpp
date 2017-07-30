@@ -30,6 +30,12 @@ const Database::DatabaseEntry XgerHalf = {
         { "default",                                         { 4, 8, 2 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 64, 4, 2 } },
+        { "default",                                         { 64, 4, 2 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 64, 1, 2 } },
@@ -101,6 +107,12 @@ const Database::DatabaseEntry XgerSingle = {
         { "default",                                         { 128, 1, 2 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 128, 1, 2 } },
+        { "default",                                         { 128, 1, 2 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 32, 4, 2 } },
@@ -169,6 +181,12 @@ const Database::DatabaseEntry XgerComplexSingle = {
         { "GeForce GTX TITAN Black",                         { 16, 16, 2 } },
         { "TITAN X (Pascal)",                                { 32, 2, 1 } },
         { "default",                                         { 128, 2, 2 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 64, 1, 4 } },
+        { "default",                                         { 64, 1, 4 } },
       }
     },
     { // Default

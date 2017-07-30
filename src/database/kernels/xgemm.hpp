@@ -112,9 +112,15 @@ const Database::DatabaseEntry XgemmSingle = {
         { "default",                                         { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
+        { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+        { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
       }
     },
   }

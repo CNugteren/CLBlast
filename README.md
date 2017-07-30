@@ -156,6 +156,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-5930K
 * Other devices:
   - ARM Mali-T628 GPU
+  - Qualcomm Adreno 330 GPU
   - Intel MIC
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should compile the library with the optional tuners by specifing `-DTUNERS=ON`, for example as follows:
