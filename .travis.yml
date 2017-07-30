@@ -43,9 +43,10 @@ script:
 
 after_success:
   - pushd ${TRAVIS_BUILD_DIR}/bin
-  - rm ${CLBLAST_INSTALL}/clblast_client_*
-  - rm ${CLBLAST_INSTALL}/clblast_test_*
-  - tar -cvf ${CLBLAST_TAR} ${CLBLAST_INSTALL}
+  - rm ${CLBLAST_INSTALL}/bin/clblast_client_*
+  - rm ${CLBLAST_INSTALL}/bin/clblast_test_*
+  - tar -cvf ${CLBLAST_TAR} CLBlast-${CLBLAST_VERSION}
+  - cp ${CLBLAST_TAR} ${TRAVIS_BUILD_DIR}
 
 branches:
   only:
