@@ -1,5 +1,5 @@
 
-Development (next version)
+Version 1.0.0
 - Fixed a bug in the TRSM routine for alpha != 1
 - Fixed a bug in the cache related to multi-device contexts (thanks to 'kpot')
 - Fixed a bug in the direct version of the GEMM kernel
