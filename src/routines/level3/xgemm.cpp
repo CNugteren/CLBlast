@@ -280,11 +280,13 @@ void Xgemm<T>::GemmDirect(const size_t m, const size_t n, const size_t k,
   kernel.SetArgument(16, static_cast<int>(b_conjugate));
 
   // Computes the global and local thread sizes
-  //const auto m_ceiled = Ceil(m, db_["WGD"]);
-  //const auto n_ceiled = Ceil(n, db_["WGD"]);
+  const auto m_ceiled = Ceil(m, db_["WGD"]);
+  const auto n_ceiled = Ceil(n, db_["WGD"]);
   const auto global = std::vector<size_t>{
-    CeilDiv(m * db_["MDIMCD"], db_["WGD"]),
-    CeilDiv(n * db_["NDIMCD"], db_["WGD"])
+  //  CeilDiv(m * db_["MDIMCD"], db_["WGD"]),
+  //  CeilDiv(n * db_["NDIMCD"], db_["WGD"])
+      (m_ceiled * db_["MDIMCD"]) / db_["WGD"],
+      (n_ceiled * db_["NDIMCD"]) / db_["WGD"]
   };
   const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"]};
 
