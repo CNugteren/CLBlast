@@ -36,9 +36,9 @@ R"(
 // =================================================================================================
 
 // Defines how to load the input matrix in the non-vectorized case
-inline real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
-                        const int a_ld, const int a_offset, const int parameter,
-                        const int kl, const int ku) {
+INLINE_FUNC real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
+                             const int a_ld, const int a_offset, const int parameter,
+                             const int kl, const int ku) {
   real result;
 
   // For banded matrices

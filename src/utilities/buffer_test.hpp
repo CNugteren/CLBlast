@@ -23,8 +23,8 @@ namespace clblast {
 // Tests matrix 'A' for validity
 template <typename T>
 void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
-                 const size_t offset, const size_t ld) {
-  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
+                 const size_t offset, const size_t ld, const bool test_lead_dim = true) {
+  if (test_lead_dim && ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryA); }
@@ -34,8 +34,8 @@ void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
 // Tests matrix 'B' for validity
 template <typename T>
 void TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
-                 const size_t offset, const size_t ld) {
-  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
+                 const size_t offset, const size_t ld, const bool test_lead_dim = true) {
+  if (test_lead_dim && ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryB); }

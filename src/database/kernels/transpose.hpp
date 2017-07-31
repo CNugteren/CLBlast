@@ -30,9 +30,15 @@ const Database::DatabaseEntry TransposeHalf = {
         { "default",                                         { 8, 1, 0, 8 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 8, 0, 0, 4 } },
+        { "default",                                         { 8, 0, 0, 4 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 16, 0, 1, 4 } },
+        { "default",                                         { 8, 0, 1, 8 } },
       }
     },
   }
@@ -113,6 +119,12 @@ const Database::DatabaseEntry TransposeSingle = {
         { "default",                                         { 8, 1, 0, 4 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 8, 1, 1, 4 } },
+        { "default",                                         { 8, 1, 1, 4 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 8, 0, 1, 4 } },
@@ -186,6 +198,12 @@ const Database::DatabaseEntry TransposeComplexSingle = {
         { "TITAN X (Pascal)",                                { 8, 1, 0, 2 } },
         { "Tesla K20m",                                      { 16, 0, 0, 1 } },
         { "Tesla K40m",                                      { 16, 1, 0, 1 } },
+        { "default",                                         { 16, 1, 0, 1 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 16, 1, 0, 1 } },
         { "default",                                         { 16, 1, 0, 1 } },
       }
     },

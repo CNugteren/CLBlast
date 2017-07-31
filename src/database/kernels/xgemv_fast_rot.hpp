@@ -82,6 +82,12 @@ const Database::DatabaseEntry XgemvFastRotSingle = {
         { "default",                                         { 8, 32, 32 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 4, 64, 16 } },
+        { "default",                                         { 4, 64, 16 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 8, 32, 32 } },

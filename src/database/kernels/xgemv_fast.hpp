@@ -106,6 +106,12 @@ const Database::DatabaseEntry XgemvFastSingle = {
         { "default",                                         { 1, 256, 1 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 1, 64, 4 } },
+        { "default",                                         { 1, 64, 4 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 1, 64, 1 } },

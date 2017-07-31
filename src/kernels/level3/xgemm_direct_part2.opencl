@@ -19,9 +19,9 @@ R"(
 
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
-inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local real* alm,
-                                 const int a_ld, const int a_offset, const int kwg,
-                                 const int a_transpose, const int a_conjugate) {
+INLINE_FUNC void GlobalToLocalDirectA(const __global realMD* restrict agm, __local real* alm,
+                                      const int a_ld, const int a_offset, const int kwg,
+                                      const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -90,9 +90,9 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local real* blm,
-                                 const int b_ld, const int b_offset, const int kwg,
-                                 const int b_transpose, const int b_conjugate) {
+INLINE_FUNC void GlobalToLocalDirectB(const __global realND* restrict bgm, __local real* blm,
+                                      const int b_ld, const int b_offset, const int kwg,
+                                      const int b_transpose, const int b_conjugate) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);
@@ -165,9 +165,9 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs doesn't
 // use the vector data-types.
-inline void GlobalToLocalScalarA(const __global real* restrict agms, __local real* alm,
-                                 const int a_ld, const int a_offset, const int kwg,
-                                 const int a_transpose, const int a_conjugate) {
+INLINE_FUNC void GlobalToLocalScalarA(const __global real* restrict agms, __local real* alm,
+                                      const int a_ld, const int a_offset, const int kwg,
+                                      const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -196,9 +196,9 @@ inline void GlobalToLocalScalarA(const __global real* restrict agms, __local rea
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local real* blm,
-                                 const int b_ld, const int b_offset, const int kwg,
-                                 const int b_transpose, const int b_conjugate) {
+INLINE_FUNC void GlobalToLocalScalarB(const __global real* restrict bgms, __local real* blm,
+                                      const int b_ld, const int b_offset, const int kwg,
+                                      const int b_transpose, const int b_conjugate) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);
@@ -231,10 +231,10 @@ inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local rea
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs bounds
 // checks and doesn't use the vector data-types.
-inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local real* alm,
-                                  const int a_ld, const int a_offset, const int kwg,
-                                  const int a_transpose, const int a_conjugate,
-                                  const int kSizeM, const int kSizeK) {
+INLINE_FUNC void GlobalToLocalCheckedA(const __global real* restrict agms, __local real* alm,
+                                       const int a_ld, const int a_offset, const int kwg,
+                                       const int a_transpose, const int a_conjugate,
+                                       const int kSizeM, const int kSizeK) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -270,10 +270,10 @@ inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local re
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local real* blm,
-                                  const int b_ld, const int b_offset, const int kwg,
-                                  const int b_transpose, const int b_conjugate,
-                                  const int kSizeN, const int kSizeK) {
+INLINE_FUNC void GlobalToLocalCheckedB(const __global real* restrict bgms, __local real* blm,
+                                       const int b_ld, const int b_offset, const int kwg,
+                                       const int b_transpose, const int b_conjugate,
+                                       const int kSizeN, const int kSizeK) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);

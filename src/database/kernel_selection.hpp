@@ -52,6 +52,11 @@ const Database::DatabaseEntry KernelSelectionSingle = {
         { "default",                                         { 1280*1280*1280 } },
       }
     },
+    { 
+      kDeviceTypeGPU, "ARM", {
+        { "default",                                         { 128*128*128} },
+      }
+    }, 
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 512*512*512 } },

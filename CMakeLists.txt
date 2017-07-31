@@ -17,8 +17,8 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 
 # CMake project details
 project("clblast" C CXX)
-set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 11)
+set(clblast_VERSION_MAJOR 1)
+set(clblast_VERSION_MINOR 0)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
@@ -101,8 +101,10 @@ else()
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
     set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
     set(FLAGS "${FLAGS} -Wno-deprecated-declarations")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.0)
-      set(FLAGS "${FLAGS} -Wno-undefined-var-template")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.0)  # clang 4.0 or higher
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)  # but not for AppleClang
+          set(FLAGS "${FLAGS} -Wno-undefined-var-template")
+        endif()
     endif()
   endif()
 endif()

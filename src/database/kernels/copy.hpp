@@ -30,6 +30,12 @@ const Database::DatabaseEntry CopyHalf = {
         { "default",                                         { 8, 32, 4, 8 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 8, 8, 1 } },
+        { "default",                                         { 32, 8, 8, 1 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 16, 8, 4, 4 } },
@@ -113,6 +119,12 @@ const Database::DatabaseEntry CopySingle = {
         { "default",                                         { 8, 32, 4, 1 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 8, 8, 1 } },
+        { "default",                                         { 32, 8, 8, 1 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default",                                         { 32, 8, 4, 4 } },
@@ -184,6 +196,12 @@ const Database::DatabaseEntry CopyComplexSingle = {
         { "TITAN X (Pascal)",                                { 8, 16, 2, 1 } },
         { "Tesla K20m",                                      { 8, 8, 1, 4 } },
         { "Tesla K40m",                                      { 16, 8, 1, 1 } },
+        { "default",                                         { 32, 8, 1, 1 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 8, 1, 1 } },
         { "default",                                         { 32, 8, 1, 1 } },
       }
     },

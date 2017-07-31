@@ -93,7 +93,7 @@ R"(
 // =================================================================================================
 
 // Initializes the accumulation registers to zero
-inline void InitAccRegistersDirect(real cpm[NWID][MWID]) {
+INLINE_FUNC void InitAccRegistersDirect(real cpm[NWID][MWID]) {
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
     #pragma unroll
@@ -106,7 +106,7 @@ inline void InitAccRegistersDirect(real cpm[NWID][MWID]) {
 // =================================================================================================
 
 // Performs the actual computation: Cpm += Apm * Bpm
-inline void MultiplyAccumulateDirect(real cpm[NWID][MWID], real apm[MWID], real bpm[NWID]) {
+INLINE_FUNC void MultiplyAccumulateDirect(real cpm[NWID][MWID], real apm[MWID], real bpm[NWID]) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     #pragma unroll
@@ -120,9 +120,9 @@ inline void MultiplyAccumulateDirect(real cpm[NWID][MWID], real apm[MWID], real 
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix.
-inline void GlobalToPrivateDirectA(const __global real* restrict agms, real apm[MWID],
-                                   const int a_ld, const int a_offset, const int idm, const int idk,
-                                   const int a_transpose, const int a_conjugate) {
+INLINE_FUNC void GlobalToPrivateDirectA(const __global real* restrict agms, real apm[MWID],
+                                        const int a_ld, const int a_offset, const int idm, const int idk,
+                                        const int a_transpose, const int a_conjugate) {
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
     const int a_index = (a_transpose) ? (idm + mi)*a_ld + idk : idk*a_ld + (idm + mi);
@@ -132,9 +132,9 @@ inline void GlobalToPrivateDirectA(const __global real* restrict agms, real apm[
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToPrivateDirectB(const __global real* restrict bgms, real bpm[NWID],
-                                   const int b_ld, const int b_offset, const int idn, const int idk,
-                                   const int b_transpose, const int b_conjugate) {
+INLINE_FUNC void GlobalToPrivateDirectB(const __global real* restrict bgms, real bpm[NWID],
+                                        const int b_ld, const int b_offset, const int idn, const int idk,
+                                        const int b_transpose, const int b_conjugate) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     const int b_index = (b_transpose) ? (idn + ni)*b_ld + idk : idk*b_ld + (idn + ni);
@@ -145,10 +145,10 @@ inline void GlobalToPrivateDirectB(const __global real* restrict bgms, real bpm[
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix. This is the same as above but now includes a bounds check.
-inline void GlobalToPrivateCheckedA(const __global real* restrict agms, real apm[MWID],
-                                    const int a_ld, const int a_offset, const int idm, const int idk,
-                                    const int a_transpose, const int a_conjugate,
-                                    const int kSizeM) {
+INLINE_FUNC void GlobalToPrivateCheckedA(const __global real* restrict agms, real apm[MWID],
+                                         const int a_ld, const int a_offset, const int idm, const int idk,
+                                         const int a_transpose, const int a_conjugate,
+                                         const int kSizeM) {
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
     if (idm + mi < kSizeM) {
@@ -163,10 +163,10 @@ inline void GlobalToPrivateCheckedA(const __global real* restrict agms, real apm
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpm[NWID],
-                                    const int b_ld, const int b_offset, const int idn, const int idk,
-                                    const int b_transpose, const int b_conjugate,
-                                    const int kSizeN) {
+INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpm[NWID],
+                                         const int b_ld, const int b_offset, const int idn, const int idk,
+                                         const int b_transpose, const int b_conjugate,
+                                         const int kSizeN) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     if (idn + ni < kSizeN) {
@@ -184,8 +184,8 @@ inline void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpm
 
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific
 // for caching the A input matrix.
-inline void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int kg,
-                                  const int a_transpose) {
+INLINE_FUNC void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int kg,
+                                       const int a_transpose) {
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
     const int mg = mi + get_local_id(0)*MWID;
@@ -195,8 +195,8 @@ inline void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int k
 }
 
 // Same as above, but now for the B input matrix
-inline void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int kg,
-                                  const int b_transpose) {
+INLINE_FUNC void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int kg,
+                                       const int b_transpose) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     const int ng = ni + get_local_id(1)*NWID;
@@ -209,10 +209,10 @@ inline void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int k
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-inline void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
-                               const int idm, const int idn,
-                               const real alpha, const real beta,
-                               const int c_ld, const int c_offset, const int c_transpose) {
+INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
+                                    const int idm, const int idn,
+                                    const real alpha, const real beta,
+                                    const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     #pragma unroll
@@ -237,10 +237,10 @@ inline void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-inline void StoreResultsChecked(__global real* cgm, real cpm[NWID][MWID],
-                                const int idm, const int idn, const int kSizeM, const int kSizeN,
-                                const real alpha, const real beta,
-                                const int c_ld, const int c_offset, const int c_transpose) {
+INLINE_FUNC void StoreResultsChecked(__global real* cgm, real cpm[NWID][MWID],
+                                     const int idm, const int idn, const int kSizeM, const int kSizeN,
+                                     const real alpha, const real beta,
+                                     const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {
     #pragma unroll

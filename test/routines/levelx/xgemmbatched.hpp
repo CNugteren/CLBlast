@@ -110,6 +110,15 @@ class TestXgemmBatched {
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     auto queue_plain = queue();
     auto event = cl_event{};
+    // Relaxed requirement on ld_a and ld_b within the library, this is here to match clBLAS
+    auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
+                     (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
+    auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose != Transpose::kNo) ||
+                     (args.layout == Layout::kRowMajor && args.b_transpose == Transpose::kNo);
+    auto a_one = (!a_rotated) ? args.m : args.k;
+    auto b_one = (!b_rotated) ? args.k : args.n;
+    if (args.a_ld < a_one) { return StatusCode::kInvalidLeadDimA; }
+    if (args.b_ld < b_one) { return StatusCode::kInvalidLeadDimB; }
     auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
                               args.m, args.n, args.k, args.alphas.data(),
                               buffers.a_mat(), args.a_offsets.data(), args.a_ld,
