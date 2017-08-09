@@ -63,7 +63,7 @@ class TuneXgemm {
   static double DefaultInfluenceGlobalPSO(){ return 0.1; }
   static double DefaultInfluenceLocalPSO(){ return 0.3; }
   static double DefaultInfluenceRandomPSO(){ return 0.6; }
-  static size_t DefaultHeuristic(){ return size_t{3};} // PSO
+  static size_t DefaultHeuristic(){ return (size_t)cltune::SearchMethod::PSO;} // PSO
   static double DefaultMaxTempAnn(){ return 1.0;}
   
   // Describes how to obtain the sizes of the buffers
@@ -187,7 +187,7 @@ class TuneXgemm {
      //  Multi Search Strategy is enable
     if( args.multi_search_strategy){
       if( V == 1){ 
-        return size_t{0};
+        return (size_t) cltune::SearchMethod::FullSearch;
       }
       else{
         return args.heuristic_selection;
@@ -197,7 +197,7 @@ class TuneXgemm {
     // Use full-search to explore all parameter combinations or random-search to search only a part of
     // the parameter values. The fraction is set as a command-line argument.
     if (args.fraction == 1.0 || args.fraction == 0.0) {
-      return size_t{0}; // Full search
+      return (size_t) cltune::SearchMethod::FullSearch; 
     }
     else {
       return args.heuristic_selection;
