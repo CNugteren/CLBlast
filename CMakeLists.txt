@@ -380,15 +380,16 @@ endif()
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
 # library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
-  set(CLIENTS_COMMON ${WRAPPERS} test/test_utilities.cpp test/test_utilities.hpp
+  set(CLIENTS_COMMON ${WRAPPERS} test/test_utilities.hpp
                      test/performance/client.hpp test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
   if(MSVC)
-    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/performance/client.cpp)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/test_utilities.cpp
+                       test/performance/client.cpp)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
-    add_library(test_performance_common OBJECT test/performance/client.cpp)
+    add_library(test_performance_common OBJECT test/test_utilities.cpp test/performance/client.cpp)
 
     # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
@@ -432,18 +433,17 @@ endif()
 # CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
-  set(TESTS_COMMON ${WRAPPERS} test/test_utilities.cpp test/test_utilities.hpp
-                   test/correctness/testblas.hpp test/correctness/tester.hpp
-                   test/routines/common.hpp)
+  set(TESTS_COMMON ${WRAPPERS} test/test_utilities.hpp test/correctness/testblas.hpp
+                   test/correctness/tester.hpp test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp
+    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp test/test_utilities.cpp
         test/correctness/tester.cpp test/correctness/testblas.cpp)
   else()
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
     add_library(test_correctness_common OBJECT
-                test/correctness/tester.cpp test/correctness/testblas.cpp)
+                test/test_utilities.cpp test/correctness/tester.cpp test/correctness/testblas.cpp)
     target_include_directories(test_correctness_common PUBLIC
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
                                ${clblast_SOURCE_DIR} ${REF_INCLUDES})
