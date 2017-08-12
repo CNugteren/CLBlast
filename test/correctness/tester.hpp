@@ -22,7 +22,7 @@
 #include <vector>
 #include <memory>
 
-#include "utilities/utilities.hpp"
+#include "test/test_utilities.hpp"
 
 // The libraries
 #ifdef CLBLAST_REF_CLBLAS

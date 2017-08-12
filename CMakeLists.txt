@@ -380,7 +380,8 @@ endif()
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
 # library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
-  set(CLIENTS_COMMON ${WRAPPERS} test/performance/client.hpp test/routines/common.hpp)
+  set(CLIENTS_COMMON ${WRAPPERS} test/test_utilities.cpp test/test_utilities.hpp
+                     test/performance/client.hpp test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
   if(MSVC)
@@ -431,7 +432,8 @@ endif()
 # CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
-  set(TESTS_COMMON ${WRAPPERS} test/correctness/testblas.hpp test/correctness/tester.hpp
+  set(TESTS_COMMON ${WRAPPERS} test/test_utilities.cpp test/test_utilities.hpp
+                   test/correctness/testblas.hpp test/correctness/tester.hpp
                    test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
