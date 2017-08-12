@@ -30,9 +30,15 @@ const Database::DatabaseEntry XdotHalf = {
         { "default",                                         { 128, 32 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 64, 64 } },
+        { "default",                                         { 64, 64 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 128, 32 } },
+        { "default",                                         { 128, 64 } },
       }
     },
   }
@@ -93,6 +99,12 @@ const Database::DatabaseEntry XdotSingle = {
         { "TITAN X (Pascal)",                                { 1024, 32 } },
         { "Tesla K20m",                                      { 1024, 32 } },
         { "default",                                         { 256, 64 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 128, 64 } },
+        { "default",                                         { 128, 64 } },
       }
     },
     { // Default
@@ -157,6 +169,12 @@ const Database::DatabaseEntry XdotComplexSingle = {
         { "TITAN X (Pascal)",                                { 256, 32 } },
         { "Tesla K20m",                                      { 512, 32 } },
         { "default",                                         { 512, 64 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 64, 256 } },
+        { "default",                                         { 64, 256 } },
       }
     },
     { // Default

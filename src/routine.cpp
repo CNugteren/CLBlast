@@ -135,7 +135,13 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // Adds the name of the routine as a define
   source_string += "#define ROUTINE_"+routine_name_+"\n";
 
-  // For specific devices, use the non-IEE754 compilant OpenCL mad() instruction. This can improve
+  // Not all OpenCL compilers support the 'inline' keyword. The keyword is only used for devices on
+  // which it is known to work with all OpenCL platforms.
+  if (device_.IsNVIDIA() || device_.IsARM()) {
+    source_string += "#define USE_INLINE_KEYWORD 1\n";
+  }
+
+  // For specific devices, use the non-IEE754 compliant OpenCL mad() instruction. This can improve
   // performance, but might result in a reduced accuracy.
   if (device_.IsAMD() && device_.IsGPU()) {
     source_string += "#define USE_CL_MAD 1\n";

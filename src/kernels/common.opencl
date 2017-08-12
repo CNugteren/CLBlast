@@ -235,6 +235,15 @@ R"(
 
 // =================================================================================================
 
+// Force inlining functions or not: some compilers don't support the inline keyword
+#ifdef USE_INLINE_KEYWORD
+  #define INLINE_FUNC inline
+#else
+  #define INLINE_FUNC
+#endif
+
+// =================================================================================================
+
 // Shuffled workgroup indices to avoid partition camping, see below. For specific devices, this is
 // enabled (see src/routine.cc).
 #ifndef USE_STAGGERED_INDICES
@@ -245,18 +254,18 @@ R"(
 // http://docs.nvidia.com/cuda/samples/6_Advanced/transpose/doc/MatrixTranspose.pdf
 // More details: https://github.com/CNugteren/CLBlast/issues/53
 #if USE_STAGGERED_INDICES == 1
-  inline size_t GetGroupIDFlat() {
+  INLINE_FUNC size_t GetGroupIDFlat() {
     return get_group_id(0) + get_num_groups(0) * get_group_id(1);
   }
-  inline size_t GetGroupID1() {
+  INLINE_FUNC size_t GetGroupID1() {
     return (GetGroupIDFlat()) % get_num_groups(1);
   }
-  inline size_t GetGroupID0() {
+  INLINE_FUNC size_t GetGroupID0() {
     return ((GetGroupIDFlat() / get_num_groups(1)) + GetGroupID1()) % get_num_groups(0);
   }
 #else
-  inline size_t GetGroupID1() { return get_group_id(1); }
-  inline size_t GetGroupID0() { return get_group_id(0); }
+  INLINE_FUNC size_t GetGroupID1() { return get_group_id(1); }
+  INLINE_FUNC size_t GetGroupID0() { return get_group_id(0); }
 #endif
 
 // =================================================================================================

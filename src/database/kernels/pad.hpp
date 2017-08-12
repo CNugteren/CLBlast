@@ -30,9 +30,15 @@ const Database::DatabaseEntry PadHalf = {
         { "default",                                         { 8, 8, 2, 1 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 16, 8, 4, 2 } },
+        { "default",                                         { 16, 8, 4, 2 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 8, 8, 2, 1 } },
+        { "default",                                         { 8, 8, 4, 1 } },
       }
     },
   }
@@ -111,6 +117,12 @@ const Database::DatabaseEntry PadSingle = {
         { "Tesla K20m",                                      { 32, 8, 2, 1 } },
         { "Tesla K40m",                                      { 32, 8, 1, 1 } },
         { "default",                                         { 32, 8, 4, 1 } },
+      }
+    },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 8, 2, 1 } },
+        { "default",                                         { 32, 8, 2, 1 } },
       }
     },
     { // Default
@@ -195,9 +207,15 @@ const Database::DatabaseEntry PadComplexSingle = {
         { "default",                                         { 32, 8, 1, 2 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 32, 8, 4, 1 } },
+        { "default",                                         { 32, 8, 4, 1 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 32, 8, 1, 2 } },
+        { "default",                                         { 32, 8, 1, 1 } },
       }
     },
   }

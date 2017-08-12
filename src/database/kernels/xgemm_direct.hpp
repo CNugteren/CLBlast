@@ -77,9 +77,15 @@ const Database::DatabaseEntry XgemmDirectSingle = {
         { "default",                                         { 2, 8, 8, 16, 16, 1, 1, 4, 2, 32 } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "QUALCOMM Adreno(TM)",                             { 2, 8, 8, 8, 8, 1, 1, 2, 1, 16 } },
+        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 2, 1, 16 } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 4, 2, 32 } },
+        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 2, 16 } },
       }
     },
   }

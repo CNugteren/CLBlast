@@ -15,6 +15,7 @@
 #include <vector>
 #include <unordered_map>
 #include <random>
+#include <iostream>
 
 #include "utilities/utilities.hpp"
 #include "test/routines/level3/xgemm.hpp"
@@ -120,9 +121,9 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   }
 
   // Prints and returns the statistics
-  fprintf(stdout, "    %zu test(s) passed\n", passed);
-  fprintf(stdout, "    %zu test(s) failed\n", errors);
-  fprintf(stdout, "\n");
+  std::cout << "    " << passed << " test(s) passed" << std::endl;
+  std::cout << "    " << errors << " test(s) failed" << std::endl;
+  std::cout << std::endl;
   return errors;
 }
 

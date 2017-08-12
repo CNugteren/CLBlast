@@ -17,9 +17,9 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 
 # CMake project details
 project("clblast" C CXX)
-set(clblast_VERSION_MAJOR 0)
-set(clblast_VERSION_MINOR 11)
-set(clblast_VERSION_PATCH 0)
+set(clblast_VERSION_MAJOR 1)
+set(clblast_VERSION_MINOR 0)
+set(clblast_VERSION_PATCH 1)
 
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
@@ -101,7 +101,11 @@ else()
     set(FLAGS "${FLAGS} -Wno-missing-prototypes -Wno-float-equal -Wno-switch-enum -Wno-switch")
     set(FLAGS "${FLAGS} -Wno-exit-time-destructors -Wno-global-constructors -Wno-missing-noreturn")
     set(FLAGS "${FLAGS} -Wno-deprecated-declarations")
-    set(FLAGS "${FLAGS} -Wno-undefined-var-template")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.0)  # clang 4.0 or higher
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)  # but not for AppleClang
+          set(FLAGS "${FLAGS} -Wno-undefined-var-template")
+        endif()
+    endif()
   endif()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS}")
@@ -155,6 +159,8 @@ endif()
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
+set(DATABASES copy invert pad padtranspose transpose xaxpy xdot
+              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger xtrsv)
 set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
 if(NETLIB)
@@ -170,7 +176,7 @@ set(PRECISIONS 32 64 3232 6464 16)
 
 # ==================================================================================================
 
-# Gathers all source-files
+# Gathers all source-files (required for the compiler) and header-files (for IDEs only)
 set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
@@ -182,27 +188,56 @@ set(SOURCES
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
 )
+set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
+  include/clblast.h
+  include/clblast_c.h
+  include/clblast_half.h
+  src/database/apple_cpu_fallback.hpp
+  src/database/database.hpp
+  src/database/kernel_selection.hpp
+  src/routines/level1/xamin.hpp
+  src/routines/level1/xmax.hpp
+  src/routines/level1/xmin.hpp
+  src/routines/level1/xsum.hpp
+  src/routines/common.hpp
+  src/utilities/buffer_test.hpp
+  src/utilities/clblast_exceptions.hpp
+  src/utilities/msvc.hpp
+  src/utilities/utilities.hpp
+  src/cache.hpp
+  src/clpp11.hpp
+  src/cxpp11_common.hpp
+  src/routine.hpp
+)
 if(NETLIB)
   set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
+  set(HEADERS ${HEADERS} include/clblast_netlib_c.h)
 endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
+  set(HEADERS ${HEADERS} src/routines/level1/${ROUTINE}.hpp)
 endforeach()
 foreach(ROUTINE ${LEVEL2_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level2/${ROUTINE}.cpp)
+  set(HEADERS ${HEADERS} src/routines/level2/${ROUTINE}.hpp)
 endforeach()
 foreach(ROUTINE ${LEVEL3_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level3/${ROUTINE}.cpp)
+  set(HEADERS ${HEADERS} src/routines/level3/${ROUTINE}.hpp)
 endforeach()
 foreach(ROUTINE ${LEVELX_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/levelx/${ROUTINE}.cpp)
+  set(HEADERS ${HEADERS} src/routines/levelx/${ROUTINE}.hpp)
+endforeach()
+foreach(DATABASE ${DATABASES})
+    set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}.hpp)
 endforeach()
 
 # Creates and links the library
 if(BUILD_SHARED_LIBS)
-  add_library(clblast SHARED ${SOURCES})
+  add_library(clblast SHARED ${SOURCES} ${HEADERS})
 else(BUILD_SHARED_LIBS)
-  add_library(clblast STATIC ${SOURCES})
+  add_library(clblast STATIC ${SOURCES} ${HEADERS})
 endif()
 
 target_link_libraries(clblast ${OPENCL_LIBRARIES})
@@ -272,7 +307,7 @@ endif()
 if(TUNERS)
 
   # Visual Studio requires the sources of non-exported objects/libraries
-  set(TUNERS_COMMON )
+  set(TUNERS_COMMON src/tuning/tuning.hpp)
   if(MSVC)
     set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities/utilities.cpp)
   endif()
@@ -310,6 +345,7 @@ if(CLIENTS OR TESTS)
     find_package(Threads)
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CLBLAS_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(REF_INCLUDES ${REF_INCLUDES} ${CLBLAS_INCLUDE_DIRS})
+    set(WRAPPERS ${WRAPPERS} test/wrapper_clblas.hpp)
     if(MSVC)
       add_definitions(" /DCLBLAST_REF_CLBLAS")
     else()
@@ -319,6 +355,7 @@ if(CLIENTS OR TESTS)
   if(CBLAS_FOUND)
     set(REF_INCLUDES ${REF_INCLUDES} ${CBLAS_INCLUDE_DIRS})
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CBLAS_LIBRARIES})
+    set(WRAPPERS ${WRAPPERS} test/wrapper_cblas.hpp)
     if(MSVC)
       add_definitions(" /DCLBLAST_REF_CBLAS")
     else()
@@ -328,6 +365,7 @@ if(CLIENTS OR TESTS)
   if(CUBLAS_FOUND)
     set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS})
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CUDA_LIBRARIES} ${CUBLAS_LIBRARIES})
+    set(WRAPPERS ${WRAPPERS} test/wrapper_cuda.hpp test/wrapper_cublas.hpp)
     if(MSVC)
       add_definitions(" /DCLBLAST_REF_CUBLAS")
     else()
@@ -342,14 +380,16 @@ endif()
 # Section for the performance tests (i.e. the client). These compare against optionally a reference
 # library, either clBLAS, a CPU BLAS, or CUDA's cuBLAS.
 if(CLIENTS)
+  set(CLIENTS_COMMON ${WRAPPERS} test/test_utilities.hpp
+                     test/performance/client.hpp test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
-  set(CLIENTS_COMMON )
   if(MSVC)
-    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/performance/client.cpp)
+    set(CLIENTS_COMMON ${CLIENTS_COMMON} src/utilities/utilities.cpp test/test_utilities.cpp
+                       test/performance/client.cpp)
   else()
     # Creates the common performance-tests objects (requires CMake 2.8.8)
-    add_library(test_performance_common OBJECT test/performance/client.cpp)
+    add_library(test_performance_common OBJECT test/test_utilities.cpp test/performance/client.cpp)
 
     # Adds CLBlast's interface include paths because we can't link to CLBlast here
     target_include_directories(test_performance_common PRIVATE
@@ -361,19 +401,23 @@ if(CLIENTS)
   # Compiles the performance-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
     add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
-                   test/performance/routines/level1/${ROUTINE}.cpp)
+                   test/performance/routines/level1/${ROUTINE}.cpp
+                   test/routines/level1/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
     add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
-                   test/performance/routines/level2/${ROUTINE}.cpp)
+                   test/performance/routines/level2/${ROUTINE}.cpp
+                   test/routines/level2/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
     add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
-                   test/performance/routines/level3/${ROUTINE}.cpp)
+                   test/performance/routines/level3/${ROUTINE}.cpp
+                   test/routines/level3/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
     add_executable(clblast_client_${ROUTINE} ${CLIENTS_COMMON}
-                   test/performance/routines/levelx/${ROUTINE}.cpp)
+                   test/performance/routines/levelx/${ROUTINE}.cpp
+                   test/routines/levelx/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
@@ -389,16 +433,17 @@ endif()
 # CPU BLAS library, and/or cuBLAS to act as a reference.
 if(TESTS)
   enable_testing()
+  set(TESTS_COMMON ${WRAPPERS} test/test_utilities.hpp test/correctness/testblas.hpp
+                   test/correctness/tester.hpp test/routines/common.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
-  set(TESTS_COMMON )
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp
+    set(TESTS_COMMON ${TESTS_COMMON} src/utilities/utilities.cpp test/test_utilities.cpp
         test/correctness/tester.cpp test/correctness/testblas.cpp)
   else()
     # Creates the common correctness-tests objects (requires CMake 2.8.8)
     add_library(test_correctness_common OBJECT
-                test/correctness/tester.cpp test/correctness/testblas.cpp)
+                test/test_utilities.cpp test/correctness/tester.cpp test/correctness/testblas.cpp)
     target_include_directories(test_correctness_common PUBLIC
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
                                ${clblast_SOURCE_DIR} ${REF_INCLUDES})
@@ -408,19 +453,23 @@ if(TESTS)
   # Compiles the correctness-tests
   foreach(ROUTINE ${LEVEL1_ROUTINES})
     add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
-                   test/correctness/routines/level1/${ROUTINE}.cpp)
+                   test/correctness/routines/level1/${ROUTINE}.cpp
+                   test/routines/level1/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVEL2_ROUTINES})
     add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
-                   test/correctness/routines/level2/${ROUTINE}.cpp)
+                   test/correctness/routines/level2/${ROUTINE}.cpp
+                   test/routines/level2/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVEL3_ROUTINES})
     add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
-                   test/correctness/routines/level3/${ROUTINE}.cpp)
+                   test/correctness/routines/level3/${ROUTINE}.cpp
+                   test/routines/level3/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${LEVELX_ROUTINES})
     add_executable(clblast_test_${ROUTINE} ${TESTS_COMMON}
-                   test/correctness/routines/levelx/${ROUTINE}.cpp)
+                   test/correctness/routines/levelx/${ROUTINE}.cpp
+                   test/routines/levelx/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
     target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})

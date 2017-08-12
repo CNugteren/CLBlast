@@ -40,18 +40,7 @@ void FillMatrix(Queue &queue, const Device &device,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t m, const size_t n, const size_t ld, const size_t offset,
                 const Buffer<T> &dest,
-                const T constant_value) {
-  auto kernel = Kernel(program, "FillMatrix");
-  kernel.SetArgument(0, static_cast<int>(m));
-  kernel.SetArgument(1, static_cast<int>(n));
-  kernel.SetArgument(2, static_cast<int>(ld));
-  kernel.SetArgument(3, static_cast<int>(offset));
-  kernel.SetArgument(4, dest());
-  kernel.SetArgument(5, GetRealArg(constant_value));
-  auto local = std::vector<size_t>{8, 8};
-  auto global = std::vector<size_t>{Ceil(m, 8), Ceil(n, 8)};
-  RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-}
+                const T constant_value);
 
 // Sets all elements of a vector to a constant value
 template <typename T>
@@ -60,17 +49,7 @@ void FillVector(Queue &queue, const Device &device,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t n, const size_t inc, const size_t offset,
                 const Buffer<T> &dest,
-                const T constant_value) {
-  auto kernel = Kernel(program, "FillVector");
-  kernel.SetArgument(0, static_cast<int>(n));
-  kernel.SetArgument(1, static_cast<int>(inc));
-  kernel.SetArgument(2, static_cast<int>(offset));
-  kernel.SetArgument(3, dest());
-  kernel.SetArgument(4, GetRealArg(constant_value));
-  auto local = std::vector<size_t>{64};
-  auto global = std::vector<size_t>{Ceil(n, 64)};
-  RunKernel(kernel, queue, device, global, local, event, waitForEvents);
-}
+                const T constant_value);
 
 // =================================================================================================
 

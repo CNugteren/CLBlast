@@ -22,7 +22,7 @@
 #include <vector>
 #include <memory>
 
-#include "utilities/utilities.hpp"
+#include "test/test_utilities.hpp"
 
 // The libraries
 #ifdef CLBLAST_REF_CLBLAS
@@ -153,20 +153,38 @@ template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = si
 template <typename T, typename U> const float Tester<T,U>::kStatusError = -1.0f;
 
 // Constants holding start and end strings for terminal-output in colour
-template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "\x1b[31m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "\x1b[32m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "\x1b[35m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "\x1b[1m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "\x1b[0m";
+#if defined(_WIN32)
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "";
+#else
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "\x1b[31m";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "\x1b[32m";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "\x1b[35m";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "\x1b[1m";
+  template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "\x1b[0m";
+#endif
 
 // Sets the output error coding
-template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = "\x1b[32m:\x1b[0m"; // success
-template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = "\x1b[32m.\x1b[0m"; // success
-template <typename T, typename U> const std::string Tester<T,U>::kErrorData = "\x1b[31mX\x1b[0m"; // error
-template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = "\x1b[31m/\x1b[0m"; // error
-template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = "\x1b[35m\\\x1b[0m"; // warning
-template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = "\x1b[35mo\x1b[0m"; // warning
-template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = "\x1b[35m-\x1b[0m"; // warning
+#if defined(_WIN32)
+  template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = ":"; // success
+  template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = "."; // success
+  template <typename T, typename U> const std::string Tester<T,U>::kErrorData = "X"; // error
+  template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = "/"; // error
+  template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = "\\"; // warning
+  template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = "o"; // warning
+  template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = "-"; // warning
+#else
+  template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = "\x1b[32m:\x1b[0m"; // success
+  template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = "\x1b[32m.\x1b[0m"; // success
+  template <typename T, typename U> const std::string Tester<T,U>::kErrorData = "\x1b[31mX\x1b[0m"; // error
+  template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = "\x1b[31m/\x1b[0m"; // error
+  template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = "\x1b[35m\\\x1b[0m"; // warning
+  template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = "\x1b[35mo\x1b[0m"; // warning
+  template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = "\x1b[35m-\x1b[0m"; // warning
+#endif
 
 // =================================================================================================
 // Below are the non-member functions (separated because of otherwise required partial class

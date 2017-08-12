@@ -185,14 +185,14 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
 template <typename T, typename U>
 Tester<T,U>::~Tester() {
   if (PrecisionSupported<T>(device_)) {
-    fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
-    fprintf(stdout, "   %zu test(s) passed\n", tests_passed_);
-    if (tests_skipped_ > 0) { fprintf(stdout, "%s", kPrintWarning.c_str()); }
-    fprintf(stdout, "   %zu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
-    if (tests_failed_ > 0) { fprintf(stdout, "%s", kPrintError.c_str()); }
-    fprintf(stdout, "   %zu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
+    std::cout << "* Completed all test-cases for this routine. Results:" << std::endl;
+    std::cout << "   " << tests_passed_ << " test(s) passed" << std::endl;
+    if (tests_skipped_ > 0) { std::cout << kPrintWarning; }
+    std::cout << "   " << tests_skipped_ << " test(s) skipped" << kPrintEnd << std::endl;
+    if (tests_failed_ > 0) { std::cout << kPrintError; }
+    std::cout << "   " << tests_failed_ << " test(s) failed" << kPrintEnd << std::endl;
   }
-  fprintf(stdout, "\n");
+  std::cout << std::endl;
 
   // Cleans-up clBLAS
   #ifdef CLBLAST_REF_CLBLAS
@@ -238,18 +238,18 @@ void Tester<T,U>::TestEnd() {
   // Prints a test summary
   auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
   fprintf(stdout, "   Pass rate %s%5.1lf%%%s:", kPrintMessage.c_str(), pass_rate, kPrintEnd.c_str());
-  fprintf(stdout, " %zu passed /", num_passed_);
+  std::cout << " " << num_passed_ << " passed /";
   if (num_skipped_ != 0) {
-    fprintf(stdout, " %s%zu skipped%s /", kPrintWarning.c_str(), num_skipped_, kPrintEnd.c_str());
+    std::cout << " " << kPrintWarning << num_skipped_ << " skipped" << kPrintEnd << " /";
   }
   else {
-    fprintf(stdout, " %zu skipped /", num_skipped_);
+    std::cout << " " << num_skipped_ << " skipped /";
   }
   if (num_failed_ != 0) {
-    fprintf(stdout, " %s%zu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
+    std::cout << " " << kPrintError << num_failed_ << " failed" << kPrintEnd << std::endl;
   }
   else {
-    fprintf(stdout, " %zu failed\n", num_failed_);
+    std::cout << " " << num_failed_ << " failed" << std::endl;
   }
 }
 

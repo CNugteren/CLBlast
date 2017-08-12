@@ -25,7 +25,7 @@
 #include <vector>
 #include <utility>
 
-#include "utilities/utilities.hpp"
+#include "test/test_utilities.hpp"
 
 // The libraries to test
 #ifdef CLBLAST_REF_CLBLAS
