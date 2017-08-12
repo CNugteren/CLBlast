@@ -211,7 +211,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
 )
 if(NETLIB)
   set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
-  set(HEADERS ${HEADERS} include/clblast_netlib_c.hpp)
+  set(HEADERS ${HEADERS} include/clblast_netlib_c.h)
 endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
