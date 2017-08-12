@@ -7,10 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file provides declarations for the common (test) utility functions such as a command-line
+// This file provides declarations for the common utility functions such as a command-line
 // argument parser. On top of this, it serves as the 'common' header, including the C++ OpenCL
-// wrapper. These utilities are not only used for CLBlast, but also included as part of the tuners,
-// the performance client and the correctness testers.
+// wrapper.
 //
 // =================================================================================================
 
@@ -81,19 +80,6 @@ constexpr auto kArgBatchCount = "batch_num";
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 
-// The client-specific arguments in string form
-constexpr auto kArgCompareclblas = "clblas";
-constexpr auto kArgComparecblas = "cblas";
-constexpr auto kArgComparecublas = "cublas";
-constexpr auto kArgStepSize = "step";
-constexpr auto kArgNumSteps = "num_steps";
-constexpr auto kArgNumRuns = "runs";
-constexpr auto kArgWarmUp = "warm_up";
-
-// The test-specific arguments in string form
-constexpr auto kArgFullTest = "full_test";
-constexpr auto kArgVerbose = "verbose";
-
 // The common arguments in string form
 constexpr auto kArgPlatform = "platform";
 constexpr auto kArgDevice = "device";
@@ -101,6 +87,7 @@ constexpr auto kArgPrecision = "precision";
 constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
+constexpr auto kArgNumRuns = "runs";
 
 // The buffer names
 constexpr auto kBufVecX = "X";
@@ -132,9 +119,6 @@ template <typename T> T SmallConstant();
 
 // Returns the absolute value of a scalar (modulus in case of complex numbers)
 template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value);
-
-// Returns whether a scalar is close to zero
-template <typename T> bool IsCloseToZero(const T value);
 
 // =================================================================================================
 
@@ -208,28 +192,6 @@ struct Arguments {
   bool no_abbrv = false;
 };
 
-// Structure containing all possible buffers for test clients
-template <typename T>
-struct Buffers {
-  Buffer<T> x_vec;
-  Buffer<T> y_vec;
-  Buffer<T> a_mat;
-  Buffer<T> b_mat;
-  Buffer<T> c_mat;
-  Buffer<T> ap_mat;
-  Buffer<T> scalar;
-};
-template <typename T>
-struct BuffersHost {
-  std::vector<T> x_vec;
-  std::vector<T> y_vec;
-  std::vector<T> a_mat;
-  std::vector<T> b_mat;
-  std::vector<T> c_mat;
-  std::vector<T> ap_mat;
-  std::vector<T> scalar;
-};
-
 // =================================================================================================
 
 // Converts a value (e.g. an integer) to a string. This also covers special cases for CLBlast
@@ -264,9 +226,6 @@ bool CheckArgument(const std::vector<std::string> &arguments, std::string &help,
 
 // =================================================================================================
 
-// Returns a random number to be used as a seed
-unsigned int GetRandomSeed();
-
 // Test/example data lower and upper limit
 constexpr auto kTestDataLowerLimit = -2.0;
 constexpr auto kTestDataUpperLimit = 2.0;
@@ -276,26 +235,6 @@ template <typename T>
 void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
 
 // =================================================================================================
-
-// Copies buffers from the OpenCL device to the host
-template <typename T, typename U>
-void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
-
-// Copies buffers from the host to the OpenCL device
-template <typename T, typename U>
-void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
-
-// =================================================================================================
-
-// Conversion between half and single-precision
-std::vector<float> HalfToFloatBuffer(const std::vector<half>& source);
-void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source);
-
-// As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
 
 // Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
 // no conversion, but half-precision is not supported as kernel argument so it is converted to float.
