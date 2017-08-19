@@ -21,38 +21,6 @@
 namespace clblast {
 // =================================================================================================
 
-template <typename T>
-StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
-  for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) { // input channels
-    for (auto kh_id = size_t{0}; kh_id < args.kernel_h; ++kh_id) { // kernel height
-      for (auto kw_id = size_t{0}; kw_id < args.kernel_w; ++kw_id) { // kernel width
-        for (auto h_id = size_t{0}; h_id < args.height; h_id += args.stride_h) { // image height
-          for (auto w_id = size_t{0}; w_id < args.width; w_id += args.stride_w) { // image width
-
-            // Retrieves the input value
-            const auto h_index = -args.pad_h + kh_id * args.dilation_h + h_id;
-            const auto w_index = -args.pad_w + kw_id * args.dilation_w + w_id;
-            auto val = ConstantZero<T>();
-            if (h_index < args.height && w_index < args.width) {
-              const auto input_index = w_index + args.width * (h_index + args.height * c_id);
-              val = buffers_host.a_mat[input_index + args.a_offset];
-            }
-
-            // Sets the output value
-            const auto kernel_index = kw_id + args.kernel_w * kh_id;
-            const auto patch_index = w_id + ((args.width / args.stride_w) * h_id + (args.height / args.stride_h) * c_id);
-            const auto output_index = kernel_index + args.kernel_h * args.kernel_w * patch_index;
-            buffers_host.b_mat[output_index + args.b_offset] = val;
-          }
-        }
-      }
-    }
-  }
-  return StatusCode::kSuccess;
-}
-
-// =================================================================================================
-
 // See comment at top of file for a description of the class
 template <typename T>
 class TestXim2col {
@@ -71,8 +39,20 @@ public:
   static std::vector<std::string> BuffersOut() { return {kBufMatB}; }
 
   // Describes how to obtain the sizes of the buffers
+  static size_t OutputHeight(const Arguments<T> &args) {
+    const auto size = args.height + 2 * args.pad_h;
+    const auto padding = args.dilation_h * (args.kernel_h - 1) + 1;
+    if (size >= padding) { return (size - padding) / args.stride_h + 1; }
+    return 1;
+  }
+  static size_t OutputWidth(const Arguments<T> &args) {
+    const auto size = args.width + 2 * args.pad_w;
+    const auto padding = args.dilation_w * (args.kernel_w - 1) + 1;
+    if (size >= padding) { return (size - padding) / args.stride_w + 1; }
+    return 1;
+  }
   static size_t NumPatches(const Arguments<T> &args) {
-    return (args.width / args.stride_w) * (args.height / args.stride_h) * args.channels;
+    return OutputHeight(args) * OutputWidth(args) * args.channels;
   }
   static size_t GetSizeA(const Arguments<T> &args) {
     return args.height * args.width * args.channels + args.a_offset;
@@ -157,6 +137,42 @@ public:
     return (1) * sizeof(T);
   }
 };
+
+// =================================================================================================
+
+template <typename T>
+StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
+  const auto output_h = TestXim2col<T>::OutputHeight(args);
+  const auto output_w = TestXim2col<T>::OutputWidth(args);
+  for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) { // input channels
+    for (auto kh_id = size_t{0}; kh_id < args.kernel_h; ++kh_id) { // kernel height
+      for (auto kw_id = size_t{0}; kw_id < args.kernel_w; ++kw_id) { // kernel width
+        for (auto h_id = size_t{0}; h_id < output_h; ++h_id) { // image height
+          for (auto w_id = size_t{0}; w_id < output_w; ++w_id) { // image width
+
+            // Retrieves the input value
+            const auto h_index = -args.pad_h + kh_id * args.dilation_h + args.stride_h * h_id;
+            const auto w_index = -args.pad_w + kw_id * args.dilation_w + args.stride_w * w_id;
+            auto val = ConstantZero<T>();
+            if (h_index >= 0 && h_index < args.height &&
+                w_index >= 0 && w_index < args.width) {
+              const auto input_index = w_index + args.width * (h_index + args.height * c_id);
+              val = buffers_host.a_mat[input_index + args.a_offset];
+            }
+
+            // Sets the output value
+            const auto kernel_index = kw_id + args.kernel_w * kh_id;
+            const auto patch_index = w_id + output_w * h_id;
+            const auto output_index = patch_index + kernel_index * output_w * output_h +
+                                      c_id * output_w * output_h * args.kernel_h * args.kernel_w;
+            buffers_host.b_mat[output_index + args.b_offset] = val;
+          }
+        }
+      }
+    }
+  }
+  return StatusCode ::kSuccess;
+}
 
 // =================================================================================================
 } // namespace clblast
