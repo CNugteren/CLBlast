@@ -23,7 +23,7 @@ namespace clblast {
 template <typename T>
 Xim2col<T>::Xim2col(Queue &queue, EventPointer event, const std::string &name):
         Routine(queue, event, name, {}, PrecisionValue<T>(), {}, {
-#include "../../kernels/level3/level3.opencl"
+#include "../../kernels/levelx/im2col.opencl"
         }) {
 }
 
@@ -40,6 +40,42 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
 
   // Makes sure all dimensions are larger than zero
   if ((channels == 0) || (height == 0) || (width == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
+
+  // Sets the output height and width
+  const auto size_h = height + 2 * pad_h;
+  const auto padding_h = dilation_h * (kernel_h - 1) + 1;
+  const auto output_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
+  const auto size_w = width + 2 * pad_w;
+  const auto padding_w = dilation_w * (kernel_w - 1) + 1;
+  const auto output_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
+
+  // Retrieves the Xcopy kernel from the compiled binary
+  auto kernel = Kernel(program_, "im2col");
+
+  // Sets the kernel arguments
+  kernel.SetArgument(0, static_cast<int>(height));
+  kernel.SetArgument(1, static_cast<int>(width));
+  kernel.SetArgument(2, static_cast<int>(output_h));
+  kernel.SetArgument(3, static_cast<int>(output_w));
+  kernel.SetArgument(4, static_cast<int>(kernel_h));
+  kernel.SetArgument(5, static_cast<int>(kernel_w));
+  kernel.SetArgument(6, static_cast<int>(pad_h));
+  kernel.SetArgument(7, static_cast<int>(pad_w));
+  kernel.SetArgument(8, static_cast<int>(stride_h));
+  kernel.SetArgument(9, static_cast<int>(stride_w));
+  kernel.SetArgument(10, static_cast<int>(dilation_h));
+  kernel.SetArgument(11, static_cast<int>(dilation_w));
+  kernel.SetArgument(12, im_buffer());
+  kernel.SetArgument(13, static_cast<int>(im_offset));
+  kernel.SetArgument(14, col_buffer());
+  kernel.SetArgument(15, static_cast<int>(col_offset));
+
+  // Launches the kernel
+  const auto h_ceiled = Ceil(output_h, 16);
+  const auto w_ceiled = Ceil(output_w, 16);
+  auto global = std::vector<size_t>{h_ceiled, w_ceiled, channels};
+  auto local = std::vector<size_t>{16, 16, 1};
+  RunKernel(kernel, queue_, device_, global, local, event_);
 }
 
 // =================================================================================================
