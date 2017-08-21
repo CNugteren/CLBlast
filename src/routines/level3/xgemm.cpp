@@ -102,9 +102,9 @@ void Xgemm<T>::DoGemm(const Layout layout,
   TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
 
   // Selects which version of GEMM to run
-  const auto m_n_k = static_cast<unsigned long>(m) * static_cast<unsigned long>(n) *
-                     static_cast<unsigned long>(k);
-  const auto do_gemm_direct = (m_n_k < static_cast<unsigned long>(db_["XGEMM_MIN_INDIRECT_SIZE"]));
+  const auto m_n_k = static_cast<unsigned long long>(m) * static_cast<unsigned long long>(n) *
+                     static_cast<unsigned long long>(k);
+  const auto do_gemm_direct = (m_n_k < static_cast<unsigned long long>(db_["XGEMM_MIN_INDIRECT_SIZE"]));
   if (do_gemm_direct) { // for small sizes (single kernel)
     GemmDirect(m, n, k, alpha,
                a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,

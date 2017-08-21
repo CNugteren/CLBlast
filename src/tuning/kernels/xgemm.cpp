@@ -19,6 +19,7 @@
 #include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
 
+
 namespace clblast {
 // =================================================================================================
 
@@ -28,7 +29,8 @@ class TuneXgemm {
  public:
 
   // The representative kernel and the source code
-  static std::string KernelFamily() { return (V==1) ? "xgemm_1" : "xgemm_2"; }
+  // static std::string KernelFamily() { return (V==1) ? "xgemm_1" : "xgemm_2"; }
+  static std::string KernelFamily() { switch(V){ case 1: return "xgemm_1"; case 2: return "xgemm_2";  }}
   static std::string KernelName() { return "Xgemm"; }
   static std::string GetSources() {
     return
@@ -41,7 +43,9 @@ class TuneXgemm {
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
-    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction};
+    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
+     kArgHeuristicSelection, kArgPsoSwarmSize, 
+     kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
   }
 
   // Tests for valid arguments
@@ -54,7 +58,13 @@ class TuneXgemm {
   static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
   static double DefaultFraction() { return (V==1) ? 1.0 : 512.0; } // test all or sample randomly
   static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
-
+  static size_t DefaultSwarmSizePSO() { return 8; } 
+  static double DefaultInfluenceGlobalPSO(){ return 0.1; }
+  static double DefaultInfluenceLocalPSO(){ return 0.3; }
+  static double DefaultInfluenceRandomPSO(){ return 0.6; }
+  static size_t DefaultHeuristic(){ return static_cast<size_t> (cltune::SearchMethod::PSO);}
+  static double DefaultMaxTempAnn(){ return 1.0;}
+  
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
   static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
@@ -82,6 +92,7 @@ class TuneXgemm {
       tuner.AddParameter(id, "SB", {0, 1});
     } // a lot more tuning parameters - has to be sampled randomly, too much to test all
     else {
+      //RANDOM_SEARCH & PSO
       tuner.AddParameter(id, "MWG", {16, 32, 64, 128});
       tuner.AddParameter(id, "NWG", {16, 32, 64, 128});
       tuner.AddParameter(id, "KWG", {16, 32});
@@ -97,6 +108,7 @@ class TuneXgemm {
       tuner.AddParameter(id, "SA", {0, 1});
       tuner.AddParameter(id, "SB", {0, 1});
     }
+
   }
 
   // Sets the constraints
@@ -167,6 +179,18 @@ class TuneXgemm {
     return 2 * args.m * args.n * args.k;
   }
   static std::string PerformanceUnit() { return "GFLOPS"; }
+ 
+  // Returns which Heuristic to run 
+  static size_t GetHeuristic(const Arguments<T> &args){
+    // Use full-search to explore all parameter combinations or random-search to search only a part of
+    // the parameter values. The fraction is set as a command-line argument.
+    if (args.fraction == 1.0 || args.fraction == 0.0) {
+      return static_cast<size_t> (cltune::SearchMethod::FullSearch);
+    }
+    else {
+      return args.heuristic_selection;
+    }
+  } 
 };
 
 // =================================================================================================
