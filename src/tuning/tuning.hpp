@@ -49,7 +49,6 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, C::DefaultFraction()); }
     if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, C::DefaultBatchCount()); }
     if (o == kArgHeuristicSelection)   {args.heuristic_selection   = GetArgument(command_line_args, help, kArgHeuristicSelection, C::DefaultHeuristic());  }
-    if (o == kArgMultiSearchStrategy) {args.multi_search_strategy = GetArgument(command_line_args, help, kArgMultiSearchStrategy, 0);}
     if (o == kArgPsoSwarmSize)   {args.pso_swarm_size   = GetArgument(command_line_args, help, kArgPsoSwarmSize , C::DefaultSwarmSizePSO());  }
     if (o == kArgPsoInfGlobal)   {args.pso_inf_global   = GetArgument(command_line_args, help, kArgPsoInfGlobal, C::DefaultInfluenceGlobalPSO());  }
     if (o == kArgPsoInfLocal)   {args.pso_inf_local   = GetArgument(command_line_args, help, kArgPsoInfLocal, C::DefaultInfluenceLocalPSO());  }
@@ -100,7 +99,7 @@ void Tuner(int argc, char* argv[]) {
 
   // Select the search method based on the cmd_line arguments
   // If the tuner does not support the selected choice, Full Search will be returned.
-  auto method = C::GetCurrentHeuristic(args);
+  auto method = C::GetHeuristic(args);
   
   if      (method == 1) { tuner.UseRandomSearch(1.0/args.fraction); }
   else if (method == 2) { tuner.UseAnnealing(args.fraction, args.ann_max_temperature); }

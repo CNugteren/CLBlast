@@ -81,7 +81,6 @@ constexpr auto kArgBatchCount = "batch_num";
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 constexpr auto kArgHeuristicSelection = "heuristic";
-constexpr auto kArgMultiSearchStrategy = "multi_strategy";
 // PSO tuner-specific arguments in string form
 constexpr auto kArgPsoSwarmSize = "pso_swarm_size";
 constexpr auto kArgPsoInfGlobal = "pso_inf_global";
@@ -198,7 +197,6 @@ struct Arguments {
   size_t scalar_size = 1;
   // Tuner-specific arguments
   size_t heuristic_selection = 0;
-  size_t multi_search_strategy = 0;
   double fraction = 1.0;
   size_t pso_swarm_size = 8; 
   double pso_inf_global = 0.3;
