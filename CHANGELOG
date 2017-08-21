@@ -1,4 +1,7 @@
 
+Development (next version)
+- The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
+
 Version 1.0.1
 - Fixed a bug in the direct version of the GEMM kernel
 

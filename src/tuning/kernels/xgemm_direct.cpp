@@ -177,8 +177,8 @@ class TuneXgemmDirect {
 
   // Returns which Heuristic to run 
   static size_t GetHeuristic(const Arguments<T> &args){
-    // Use full-search to explore all parameter combinations or random-search to search only a part of
-    // the parameter values. The fraction is set as a command-line argument.
+    // Use full-search to explore all parameter combinations or another strategy to search only a
+    // part of the parameter values. The fraction is set as a command-line argument.
     if (args.fraction == 1.0 || args.fraction == 0.0) {
       return static_cast<size_t> (cltune::SearchMethod::FullSearch);
     }
