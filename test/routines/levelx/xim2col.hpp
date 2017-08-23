@@ -134,7 +134,9 @@ public:
     return 1;
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    return (1) * sizeof(T);
+    const auto input = args.channels * args.width * args.height; // possibly less with striding
+    const auto output = args.kernel_h * args.kernel_w * NumPatches(args);
+    return (input + output) * sizeof(T);
   }
 };
 

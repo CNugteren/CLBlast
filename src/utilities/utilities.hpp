@@ -171,10 +171,10 @@ struct Arguments {
   size_t channels = 1;
   size_t height = 1;
   size_t width = 1;
-  size_t kernel_h = 1;
-  size_t kernel_w = 1;
-  size_t pad_h = 1;
-  size_t pad_w = 1;
+  size_t kernel_h = 3;
+  size_t kernel_w = 3;
+  size_t pad_h = 0;
+  size_t pad_w = 0;
   size_t stride_h = 1;
   size_t stride_w = 1;
   size_t dilation_h = 1;
