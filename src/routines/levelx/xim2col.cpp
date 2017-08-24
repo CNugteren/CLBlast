@@ -22,7 +22,7 @@ namespace clblast {
 // Constructor: forwards to base class constructor
 template <typename T>
 Xim2col<T>::Xim2col(Queue &queue, EventPointer event, const std::string &name):
-        Routine(queue, event, name, {}, PrecisionValue<T>(), {}, {
+        Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {}, {
 #include "../../kernels/levelx/im2col.opencl"
         }) {
 }
@@ -71,10 +71,10 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
   kernel.SetArgument(15, static_cast<int>(col_offset));
 
   // Launches the kernel
-  const auto h_ceiled = Ceil(output_h, 16);
-  const auto w_ceiled = Ceil(output_w, 16);
-  auto global = std::vector<size_t>{h_ceiled, w_ceiled, channels};
-  auto local = std::vector<size_t>{16, 16, 1};
+  const auto w_ceiled = Ceil(output_w, db_["COPY_DIMY"]);
+  const auto h_ceiled = Ceil(output_h, db_["COPY_DIMX"]);
+  const auto global = std::vector<size_t>{w_ceiled, h_ceiled, channels};
+  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"], 1};
   RunKernel(kernel, queue_, device_, global, local, event_);
 }
 

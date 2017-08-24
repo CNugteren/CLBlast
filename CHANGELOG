@@ -1,6 +1,10 @@
 
+Development (next version)
+- Added non-BLAS routines:
+  * SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL (im2col transform as used to express convolution as GEMM)
+
 Version 1.0.1
-- Fixed a bug in the direct version of the GEMM kernel
+- Fixed a bug in the direct version of the GEMM kernel)
 
 Version 1.0.0
 - Fixed a bug in the TRSM routine for alpha != 1

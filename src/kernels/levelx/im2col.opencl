@@ -15,12 +15,17 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
+// Work-group size parameters re-used from the 'copy' kernel
+#ifndef COPY_DIMX
+  #define COPY_DIMX 8      // Local workgroup size in the first dimension (x)
+#endif
+#ifndef COPY_DIMY
+  #define COPY_DIMY 8      // Local workgroup size in the second dimension (y)
+#endif
+
 // =================================================================================================
 
-#define WGS1 16
-#define WGS2 16
-
-__kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+__kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 void im2col(const int input_h, const int input_w,
             const int output_h, const int output_w,
             const int kernel_h, const int kernel_w,
@@ -31,8 +36,8 @@ void im2col(const int input_h, const int input_w,
             __global real* col_buffer, const int col_offset) {
 
   // Thread IDs
-  const int h_id = get_global_id(0); // image height, max 'output_h'
-  const int w_id = get_global_id(1); // image width, max 'output_w'
+  const int w_id = get_global_id(0); // image width, max 'output_w'
+  const int h_id = get_global_id(1); // image height, max 'output_h'
   const int c_id = get_global_id(2); // input channels
   if (h_id < output_h && w_id < output_w) {
 
