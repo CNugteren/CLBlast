@@ -42,7 +42,7 @@ FILES = [
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
 ]
-HEADER_LINES = [122, 78, 126, 24, 29, 41, 29, 65, 32]
+HEADER_LINES = [122, 79, 126, 24, 29, 41, 29, 65, 32]
 FOOTER_LINES = [25, 147, 27, 38, 6, 6, 6, 9, 2]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
@@ -96,10 +96,13 @@ bnma = size_helper(layout_transpose_condition("a"), "n", "m", "b_ld")
 cmn = size_helper("layout == CLBlastLayoutRowMajor", "m", "n", "c_ld")
 ammn = size_helper("layout == CLBlastLayoutRowMajor", "m", "((side == CLBlastSideLeft) ? m : n)", "a_ld")
 bmnn = size_helper("layout == CLBlastLayoutRowMajor", "((side == CLBlastSideLeft) ? m : n)", "n", "b_ld")
+im = "height * width * channels"
+col = "height * width * channels"
 
 # ==================================================================================================
 
 # Populates a list of routines
+im2col_constants = ["channels", "height", "width", "kernel_h", "kernel_w", "pad_h", "pad_w", "stride_h", "stride_w", "dilation_h", "dilation_w"]
 ROUTINES = [
 [  # Level 1: vector-vector
   Routine(False, True,  False, "1", "rotg",  T, [S,D],            [],                  [],                                                     [],         ["sa","sb","sc","ss"],        ["1","1","1","1"], [],       "",    "Generate givens plane rotation", "", []),
@@ -163,6 +166,7 @@ ROUTINES = [
 [  # Level X: extra routines (not part of BLAS)
   # Special routines:
   Routine(True,  True,  False, "x", "omatcopy", T, [S,D,C,Z,H],   ["m","n"],            ["layout","a_transpose"],                              ["a"],      ["b"],                        [amn,bnma],      ["alpha"],        "",    "Scaling and out-place transpose/copy (non-BLAS function)", "Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.", [ald_m, bld_n]),
+  Routine(True,  True,  False, "x", "im2col",   T, [S,D,C,Z,H],   im2col_constants,     [],                                                    ["im"],     ["col"],                      [im,col],        [""],             "",    "Im2col function (non-BLAS function)", "Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.", []),
   # Batched routines:
   Routine(True,  True,  True,  "x", "axpy",     T, [S,D,C,Z,H],   ["n"],                [],                                                    ["x"],      ["y"],                        [xn,yn],         ["alpha"],        "",    "Batched version of AXPY", "As AXPY, but multiple operations are batched together for better performance.", []),
   Routine(True,  True,  True,  "x", "gemm",     T, [S,D,C,Z,H],   ["m","n","k"],        ["layout","a_transpose","b_transpose"],                ["a","b"],  ["c"],                        [amk,bkn,cmn],   ["alpha","beta"], "",    "Batched version of GEMM", "As GEMM, but multiple operations are batched together for better performance.", [ald_transa_m_k, bld_transb_k_n, cld_m]),

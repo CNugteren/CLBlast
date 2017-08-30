@@ -3515,6 +3515,73 @@ CLBlastStatusCode CLBlastHomatcopy(const CLBlastLayout layout, const CLBlastTran
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
+// IM2COL
+CLBlastStatusCode CLBlastSim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Im2col<float>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                             im_buffer, im_offset,
+                             col_buffer, col_offset,
+                             queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastDim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Im2col<double>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                              im_buffer, im_offset,
+                              col_buffer, col_offset,
+                              queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastCim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Im2col<float2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                              im_buffer, im_offset,
+                              col_buffer, col_offset,
+                              queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastZim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Im2col<double2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                               im_buffer, im_offset,
+                               col_buffer, col_offset,
+                               queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastHim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem im_buffer, const size_t im_offset,
+                                 cl_mem col_buffer, const size_t col_offset,
+                                 cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Im2col<half>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                            im_buffer, im_offset,
+                            col_buffer, col_offset,
+                            queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
 // AXPY
 CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
                                       const float *alphas,

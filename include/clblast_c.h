@@ -1350,6 +1350,28 @@ CLBlastStatusCode PUBLIC_API CLBlastHomatcopy(const CLBlastLayout layout, const 
                                               cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                               cl_command_queue* queue, cl_event* event);
 
+// Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
+CLBlastStatusCode PUBLIC_API CLBlastSim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                            const cl_mem im_buffer, const size_t im_offset,
+                                            cl_mem col_buffer, const size_t col_offset,
+                                            cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                            const cl_mem im_buffer, const size_t im_offset,
+                                            cl_mem col_buffer, const size_t col_offset,
+                                            cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                            const cl_mem im_buffer, const size_t im_offset,
+                                            cl_mem col_buffer, const size_t col_offset,
+                                            cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                            const cl_mem im_buffer, const size_t im_offset,
+                                            cl_mem col_buffer, const size_t col_offset,
+                                            cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHim2col(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                            const cl_mem im_buffer, const size_t im_offset,
+                                            cl_mem col_buffer, const size_t col_offset,
+                                            cl_command_queue* queue, cl_event* event);
+
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 CLBlastStatusCode PUBLIC_API CLBlastSaxpyBatched(const size_t n,
                                                  const float *alphas,

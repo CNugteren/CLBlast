@@ -298,6 +298,7 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | IxMAX      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ |
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xIM2COL    | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 Some less commonly used BLAS routines are not yet supported yet by CLBlast. They are xROTG, xROTMG, xROT, xROTM, xTBSV, and xTPSV.
 

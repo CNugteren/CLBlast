@@ -366,6 +366,17 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
     if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
     if (o == kArgBatchCount){result += kArgBatchCount + equals + ToString(args.batch_count) + " "; }
+    if (o == kArgChannels) { result += kArgChannels + equals + ToString(args.channels) + " "; }
+    if (o == kArgHeight)   { result += kArgHeight + equals + ToString(args.height) + " "; }
+    if (o == kArgWidth)    { result += kArgWidth + equals + ToString(args.width) + " "; }
+    if (o == kArgKernelH)  { result += kArgKernelH + equals + ToString(args.kernel_h) + " "; }
+    if (o == kArgKernelW)  { result += kArgKernelW + equals + ToString(args.kernel_w) + " "; }
+    if (o == kArgPadH)     { result += kArgPadH + equals + ToString(args.pad_h) + " "; }
+    if (o == kArgPadW)     { result += kArgPadW + equals + ToString(args.pad_w) + " "; }
+    if (o == kArgStrideH)  { result += kArgStrideH + equals + ToString(args.stride_h) + " "; }
+    if (o == kArgStrideW)  { result += kArgStrideW + equals + ToString(args.stride_w) + " "; }
+    if (o == kArgDilationH){ result += kArgDilationH + equals + ToString(args.dilation_h) + " "; }
+    if (o == kArgDilationW){ result += kArgDilationW + equals + ToString(args.dilation_w) + " "; }
   }
   return result;
 }

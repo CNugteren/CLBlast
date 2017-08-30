@@ -920,6 +920,20 @@ void PUBLIC_API cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspo
                                 const void* a, const int a_ld,
                                 void* b, const int b_ld);
 
+// Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
+void PUBLIC_API cblas_sim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const float* im,
+                              float* col);
+void PUBLIC_API cblas_dim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const double* im,
+                              double* col);
+void PUBLIC_API cblas_cim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const void* im,
+                              void* col);
+void PUBLIC_API cblas_zim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const void* im,
+                              void* col);
+
 // =================================================================================================
 
 #ifdef __cplusplus
