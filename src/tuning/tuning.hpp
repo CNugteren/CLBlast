@@ -48,12 +48,12 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, C::DefaultFraction()); }
     if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, C::DefaultBatchCount()); }
-    if (o == kArgHeuristicSelection)   {args.heuristic_selection   = GetArgument(command_line_args, help, kArgHeuristicSelection, C::DefaultHeuristic());  }
-    if (o == kArgPsoSwarmSize)   {args.pso_swarm_size   = GetArgument(command_line_args, help, kArgPsoSwarmSize , C::DefaultSwarmSizePSO());  }
-    if (o == kArgPsoInfGlobal)   {args.pso_inf_global   = GetArgument(command_line_args, help, kArgPsoInfGlobal, C::DefaultInfluenceGlobalPSO());  }
-    if (o == kArgPsoInfLocal)   {args.pso_inf_local   = GetArgument(command_line_args, help, kArgPsoInfLocal, C::DefaultInfluenceLocalPSO());  }
-    if (o == kArgPsoInfRandom)   {args.pso_inf_random   = GetArgument(command_line_args, help, kArgPsoInfRandom, C::DefaultInfluenceRandomPSO());  }
-    if (o == kArgAnnMaxTemp)   {args.ann_max_temperature = GetArgument(command_line_args, help, kArgAnnMaxTemp, C::DefaultMaxTempAnn());}
+    if (o == kArgHeuristicSelection) {args.heuristic_selection = GetArgument(command_line_args, help, kArgHeuristicSelection, C::DefaultHeuristic());  }
+    if (o == kArgPsoSwarmSize)   {args.pso_swarm_size      = GetArgument(command_line_args, help, kArgPsoSwarmSize , C::DefaultSwarmSizePSO());  }
+    if (o == kArgPsoInfGlobal)   {args.pso_inf_global      = GetArgument(command_line_args, help, kArgPsoInfGlobal, C::DefaultInfluenceGlobalPSO());  }
+    if (o == kArgPsoInfLocal)    {args.pso_inf_local       = GetArgument(command_line_args, help, kArgPsoInfLocal, C::DefaultInfluenceLocalPSO());  }
+    if (o == kArgPsoInfRandom)   {args.pso_inf_random      = GetArgument(command_line_args, help, kArgPsoInfRandom, C::DefaultInfluenceRandomPSO());  }
+    if (o == kArgAnnMaxTemp)     {args.ann_max_temperature = GetArgument(command_line_args, help, kArgAnnMaxTemp, C::DefaultMaxTempAnn());}
   }
   const auto num_runs = GetArgument(command_line_args, help, kArgNumRuns, C::DefaultNumRuns());
 
@@ -102,9 +102,9 @@ void Tuner(int argc, char* argv[]) {
   auto method = C::GetHeuristic(args);
   
   if      (method == 1) { tuner.UseRandomSearch(1.0/args.fraction); }
-  else if (method == 2) { tuner.UseAnnealing(args.fraction, args.ann_max_temperature); }
+  else if (method == 2) { tuner.UseAnnealing(1.0/args.fraction, args.ann_max_temperature); }
   else if (method == 3) { 
-    tuner.UsePSO(args.fraction, args.pso_swarm_size, args.pso_inf_global, args.pso_inf_local, args.pso_inf_random); 
+    tuner.UsePSO(1.0/args.fraction, args.pso_swarm_size, args.pso_inf_global, args.pso_inf_local, args.pso_inf_random);
   }
   else                  { tuner.UseFullSearch(); }
 

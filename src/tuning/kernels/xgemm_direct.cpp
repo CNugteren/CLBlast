@@ -42,8 +42,8 @@ class TuneXgemmDirect {
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
     return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
-     kArgHeuristicSelection, kArgPsoSwarmSize, 
-     kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
+            kArgHeuristicSelection, kArgPsoSwarmSize,
+            kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
   }
 
   // Tests for valid arguments
@@ -60,7 +60,7 @@ class TuneXgemmDirect {
   static double DefaultInfluenceGlobalPSO(){ return 0.1; }
   static double DefaultInfluenceLocalPSO(){ return 0.3; }
   static double DefaultInfluenceRandomPSO(){ return 0.6; }
-  static size_t DefaultHeuristic(){ return static_cast<size_t>(cltune::SearchMethod::PSO);}
+  static size_t DefaultHeuristic(){ return static_cast<size_t>(cltune::SearchMethod::RandomSearch);}
   static double DefaultMaxTempAnn(){ return 1.0;}
   
   // Describes how to obtain the sizes of the buffers
@@ -177,13 +177,15 @@ class TuneXgemmDirect {
 
   // Returns which Heuristic to run 
   static size_t GetHeuristic(const Arguments<T> &args){
-    // Use full-search to explore all parameter combinations or another strategy to search only a
-    // part of the parameter values. The fraction is set as a command-line argument.
-    if (args.fraction == 1.0 || args.fraction == 0.0) {
-      return static_cast<size_t> (cltune::SearchMethod::FullSearch);
-    }
+    if (V==1) { return static_cast<size_t>(cltune::SearchMethod::FullSearch); }
     else {
-      return args.heuristic_selection;
+      // Use full-search to explore all parameter combinations or another strategy to search only a
+      // part of the parameter values. The fraction is set as a command-line argument.
+      if (args.fraction == 1.0 || args.fraction == 0.0) {
+        return static_cast<size_t>(cltune::SearchMethod::FullSearch);
+      } else {
+        return args.heuristic_selection;
+      }
     }
   }
 };
