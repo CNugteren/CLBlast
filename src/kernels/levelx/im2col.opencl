@@ -26,7 +26,7 @@ R"(
 // =================================================================================================
 
 __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
-void im2col(const int input_h, const int input_w,
+void im2col(const int input_h, const int input_w, const int channels,
             const int output_h, const int output_w,
             const int kernel_h, const int kernel_w,
             const int pad_h, const int pad_w,
@@ -39,7 +39,7 @@ void im2col(const int input_h, const int input_w,
   const int w_id = get_global_id(0); // image width, max 'output_w'
   const int h_id = get_global_id(1) % output_h; // image height, max 'output_h'
   const int c_id = get_global_id(1) / output_h; // input channels
-  if (h_id < output_h && w_id < output_w) {
+  if (h_id < output_h && w_id < output_w && c_id < channels) {
 
     #pragma unroll
     for (int kh_id = 0; kh_id < kernel_h; ++kh_id) { // kernel height
