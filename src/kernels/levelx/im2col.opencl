@@ -17,10 +17,10 @@ R"(
 
 // Work-group size parameters re-used from the 'copy' kernel
 #ifndef COPY_DIMX
-  #define COPY_DIMX 8      // Local workgroup size in the first dimension (x)
+  #define COPY_DIMX 8      // Local workgroup size in the first dimension (w)
 #endif
 #ifndef COPY_DIMY
-  #define COPY_DIMY 8      // Local workgroup size in the second dimension (y)
+  #define COPY_DIMY 8      // Local workgroup size in the second dimension (h)
 #endif
 
 // =================================================================================================
@@ -37,8 +37,8 @@ void im2col(const int input_h, const int input_w,
 
   // Thread IDs
   const int w_id = get_global_id(0); // image width, max 'output_w'
-  const int h_id = get_global_id(1); // image height, max 'output_h'
-  const int c_id = get_global_id(2); // input channels
+  const int h_id = get_global_id(1) % output_h; // image height, max 'output_h'
+  const int c_id = get_global_id(1) / output_h; // input channels
   if (h_id < output_h && w_id < output_w) {
 
     #pragma unroll

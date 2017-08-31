@@ -71,10 +71,10 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
   kernel.SetArgument(15, static_cast<int>(col_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil(output_w, db_["COPY_DIMY"]);
-  const auto h_ceiled = Ceil(output_h, db_["COPY_DIMX"]);
-  const auto global = std::vector<size_t>{w_ceiled, h_ceiled, channels};
-  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"], 1};
+  const auto w_ceiled = Ceil(output_w, db_["COPY_DIMX"]);
+  const auto h_ceiled = Ceil(output_h, db_["COPY_DIMY"]);
+  const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
+  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
   RunKernel(kernel, queue_, device_, global, local, event_);
 }
 

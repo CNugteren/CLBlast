@@ -173,7 +173,7 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
       }
     }
   }
-  return StatusCode ::kSuccess;
+  return StatusCode::kSuccess;
 }
 
 // =================================================================================================
