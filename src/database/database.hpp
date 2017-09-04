@@ -92,11 +92,19 @@ class Database {
   std::vector<std::string> GetParameterNames() const;
 
  private:
-  // Search method for a specified database, returning pointer (possibly a nullptr)
+  // Search method functions, returning a set of parameters (possibly empty)
   Parameters Search(const std::string &this_kernel, const std::string &this_type,
                     const std::string &this_vendor, const std::string &this_device,
                     const Precision this_precision,
                     const std::vector<DatabaseEntry> &db) const;
+  Parameters SearchDevice(const std::string &target_device,
+                          const std::vector<DatabaseDevice> &devices,
+                          const std::vector<std::string> &parameter_names) const;
+  Parameters SearchVendorAndType(const std::string &target_vendor,
+                                 const std::string &target_type,
+                                 const std::string &this_device,
+                                 const std::vector<DatabaseVendor> &vendors,
+                                 const std::vector<std::string> &parameter_names) const;
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<Parameters> parameters_;

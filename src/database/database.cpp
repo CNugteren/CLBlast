@@ -154,35 +154,52 @@ Database::Parameters Database::Search(const std::string &this_kernel,
   for (auto &db: this_database) {
     if ((db.kernel == this_kernel) &&
         (db.precision == this_precision || db.precision == Precision::kAny)) {
-      const auto parameter_names = db.parameter_names;
 
-      // Searches for the right vendor and device type, or selects the default if unavailable. This
-      // assumes that the default vendor / device type is last in the database.
-      for (auto &vendor: db.vendors) {
-        if ((vendor.name == this_vendor || vendor.name == kDeviceVendorAll) &&
-            (vendor.type == this_type || vendor.type == database::kDeviceTypeAll)) {
-
-          // Searches for the right device. If the current device is unavailable, selects the vendor
-          // default parameters. This assumes the default is last in the database.
-          for (auto &device: vendor.devices) {
-
-            if (device.name == this_device || device.name == "default") {
-
-              // Sets the parameters accordingly
-              auto parameters = Parameters();
-              if (parameter_names.size() != device.parameters.size()) { return Parameters(); } // ERROR
-              for (auto i = size_t{0}; i < parameter_names.size(); ++i) {
-                parameters[parameter_names[i]] = device.parameters[i];
-              }
-              return parameters;
-            }
-          }
-        }
-      }
+      // Searches for the right vendor and device type, or selects the default if unavailable
+      const auto parameters = SearchVendorAndType(this_vendor, this_type, this_device,
+                                                  db.vendors, db.parameter_names);
+      if (parameters.size() != 0) { return parameters; }
+      return SearchVendorAndType(kDeviceVendorAll, database::kDeviceTypeAll, this_device,
+                                 db.vendors, db.parameter_names);
     }
   }
 
   // If we reached this point, the entry was not found in this database
+  return Parameters();
+}
+
+Database::Parameters Database::SearchVendorAndType(const std::string &target_vendor,
+                                                   const std::string &target_type,
+                                                   const std::string &this_device,
+                                                   const std::vector<DatabaseVendor> &vendors,
+                                                   const std::vector<std::string> &parameter_names) const {
+  for (auto &vendor: vendors) {
+    if ((vendor.name == target_vendor) && (vendor.type == target_type)) {
+
+      // Searches the device; if unavailable, returns the vendor's default parameters
+      const auto parameters = SearchDevice(this_device, vendor.devices, parameter_names);
+      if (parameters.size() != 0) { return parameters; }
+      return SearchDevice("default", vendor.devices, parameter_names);
+    }
+  }
+  return Parameters();
+}
+
+Database::Parameters Database::SearchDevice(const std::string &target_device,
+                                            const std::vector<DatabaseDevice> &devices,
+                                            const std::vector<std::string> &parameter_names) const {
+  for (auto &device: devices) {
+    if (device.name == target_device) {
+
+      // Sets the parameters accordingly
+      auto parameters = Parameters();
+      if (parameter_names.size() != device.parameters.size()) { return Parameters(); } // ERROR
+      for (auto i = size_t{0}; i < parameter_names.size(); ++i) {
+        parameters[parameter_names[i]] = device.parameters[i];
+      }
+      return parameters;
+    }
+  }
   return Parameters();
 }
 

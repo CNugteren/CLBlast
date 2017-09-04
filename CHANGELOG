@@ -1,6 +1,7 @@
 
 Development (next version)
 - The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
+- Various minor fixes and enhancements
 - Added non-BLAS routines:
   * SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL (im2col transform as used to express convolution as GEMM)
 
