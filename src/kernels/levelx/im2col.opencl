@@ -37,8 +37,8 @@ void im2col(const int input_h, const int input_w, const int channels,
 
   // Thread IDs
   const int w_id = get_global_id(0); // image width, max 'output_w'
-  const int h_id = get_global_id(1) % output_h; // image height, max 'output_h'
-  const int c_id = get_global_id(1) / output_h; // input channels
+  const int h_id = ((int)get_global_id(1)) % output_h; // image height, max 'output_h'
+  const int c_id = ((int)get_global_id(1)) / output_h; // input channels
   if (h_id < output_h && w_id < output_w && c_id < channels) {
 
     #pragma unroll
