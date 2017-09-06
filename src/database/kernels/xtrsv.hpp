@@ -15,7 +15,7 @@ namespace clblast {
 namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry XtrsvHalf = {
+const DatabaseEntry XtrsvHalf = {
   "Xtrsv", Precision::kHalf, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -27,7 +27,7 @@ const Database::DatabaseEntry XtrsvHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry XtrsvSingle = {
+const DatabaseEntry XtrsvSingle = {
   "Xtrsv", Precision::kSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -39,7 +39,7 @@ const Database::DatabaseEntry XtrsvSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry XtrsvComplexSingle = {
+const DatabaseEntry XtrsvComplexSingle = {
   "Xtrsv", Precision::kComplexSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -51,7 +51,7 @@ const Database::DatabaseEntry XtrsvComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry XtrsvDouble = {
+const DatabaseEntry XtrsvDouble = {
   "Xtrsv", Precision::kDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -63,7 +63,7 @@ const Database::DatabaseEntry XtrsvDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry XtrsvComplexDouble = {
+const DatabaseEntry XtrsvComplexDouble = {
   "Xtrsv", Precision::kComplexDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {

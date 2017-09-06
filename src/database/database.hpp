@@ -22,46 +22,14 @@
 #include <unordered_map>
 
 #include "utilities/utilities.hpp"
+#include "database/database_structure.hpp"
 
 namespace clblast {
-// =================================================================================================
-
-// A special namespace to hold all the global constant variables (including the database entries)
-namespace database {
-
-  // The OpenCL device types
-  const std::string kDeviceTypeCPU = "CPU";
-  const std::string kDeviceTypeGPU = "GPU";
-  const std::string kDeviceTypeAccelerator = "accelerator";
-  const std::string kDeviceTypeAll = "default";
-
-} // namespace database
-
 // =================================================================================================
 
 // See comment at top of file for a description of the class
 class Database {
  public:
-
-  // Type alias for the database parameters
-  using Parameters = std::unordered_map<std::string, size_t>;
-
-  // Structures for content inside the database
-  struct DatabaseDevice {
-    std::string name;
-    std::vector<size_t> parameters; // parameter values
-  };
-  struct DatabaseVendor {
-    std::string type;
-    std::string name;
-    std::vector<DatabaseDevice> devices;
-  };
-  struct DatabaseEntry {
-    std::string kernel;
-    Precision precision;
-    std::vector<std::string> parameter_names;
-    std::vector<DatabaseVendor> vendors;
-  };
 
   // The OpenCL device vendors
   static const std::string kDeviceVendorAll;
@@ -70,16 +38,16 @@ class Database {
   static const std::unordered_map<std::string, std::string> kVendorNames;
 
   // The database consists of separate database entries, stored together in a vector
-  static const std::vector<DatabaseEntry> database;
+  static const std::vector<database::DatabaseEntry> database;
 
   // Database for a special case: Apple CPUs support limited number of threads
-  static const std::vector<DatabaseEntry> apple_cpu_fallback;
+  static const std::vector<database::DatabaseEntry> apple_cpu_fallback;
 
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
   explicit Database(const Device &device, const std::string &kernel_name,
-                    const Precision precision, const std::vector<DatabaseEntry> &overlay);
+                    const Precision precision, const std::vector<database::DatabaseEntry> &overlay);
 
   // Accessor of values by key
   size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
@@ -93,21 +61,21 @@ class Database {
 
  private:
   // Search method functions, returning a set of parameters (possibly empty)
-  Parameters Search(const std::string &this_kernel, const std::string &this_type,
+  database::Parameters Search(const std::string &this_kernel, const std::string &this_type,
                     const std::string &this_vendor, const std::string &this_device,
                     const Precision this_precision,
-                    const std::vector<DatabaseEntry> &db) const;
-  Parameters SearchDevice(const std::string &target_device,
-                          const std::vector<DatabaseDevice> &devices,
+                    const std::vector<database::DatabaseEntry> &db) const;
+  database::Parameters SearchDevice(const std::string &target_device,
+                          const std::vector<database::DatabaseDevice> &devices,
                           const std::vector<std::string> &parameter_names) const;
-  Parameters SearchVendorAndType(const std::string &target_vendor,
+  database::Parameters SearchVendorAndType(const std::string &target_vendor,
                                  const std::string &target_type,
                                  const std::string &this_device,
-                                 const std::vector<DatabaseVendor> &vendors,
+                                 const std::vector<database::DatabaseVendor> &vendors,
                                  const std::vector<std::string> &parameter_names) const;
 
   // Found parameters suitable for this device/kernel
-  std::shared_ptr<Parameters> parameters_;
+  std::shared_ptr<database::Parameters> parameters_;
 };
 
 // =================================================================================================

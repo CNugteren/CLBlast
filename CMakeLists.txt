@@ -159,8 +159,8 @@ endif()
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
-set(DATABASES copy invert pad padtranspose transpose xaxpy xdot
-              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger xtrsv)
+set(DATABASES copy pad padtranspose transpose xaxpy xdot
+              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger)
 set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
 set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
 if(NETLIB)
@@ -230,7 +230,12 @@ foreach(ROUTINE ${LEVELX_ROUTINES})
   set(HEADERS ${HEADERS} src/routines/levelx/${ROUTINE}.hpp)
 endforeach()
 foreach(DATABASE ${DATABASES})
-    set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_16.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_32.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_64.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_3232.hpp)
+  set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_6464.hpp)
 endforeach()
 
 # Creates and links the library

@@ -18,7 +18,7 @@ namespace clblast {
 namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry KernelSelectionHalf = {
+const DatabaseEntry KernelSelectionHalf = {
   "KernelSelection", Precision::kHalf, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -40,7 +40,7 @@ const Database::DatabaseEntry KernelSelectionHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry KernelSelectionSingle = {
+const DatabaseEntry KernelSelectionSingle = {
   "KernelSelection", Precision::kSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -67,7 +67,7 @@ const Database::DatabaseEntry KernelSelectionSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry KernelSelectionComplexSingle = {
+const DatabaseEntry KernelSelectionComplexSingle = {
   "KernelSelection", Precision::kComplexSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -89,7 +89,7 @@ const Database::DatabaseEntry KernelSelectionComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry KernelSelectionDouble = {
+const DatabaseEntry KernelSelectionDouble = {
   "KernelSelection", Precision::kDouble, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
@@ -111,7 +111,7 @@ const Database::DatabaseEntry KernelSelectionDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry KernelSelectionComplexDouble = {
+const DatabaseEntry KernelSelectionComplexDouble = {
   "KernelSelection", Precision::kComplexDouble, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {

@@ -15,7 +15,7 @@ namespace clblast {
 namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry InvertHalf = {
+const DatabaseEntry InvertHalf = {
   "Invert", Precision::kHalf, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -27,7 +27,7 @@ const Database::DatabaseEntry InvertHalf = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry InvertSingle = {
+const DatabaseEntry InvertSingle = {
   "Invert", Precision::kSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -39,7 +39,7 @@ const Database::DatabaseEntry InvertSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry InvertComplexSingle = {
+const DatabaseEntry InvertComplexSingle = {
   "Invert", Precision::kComplexSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -51,7 +51,7 @@ const Database::DatabaseEntry InvertComplexSingle = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry InvertDouble = {
+const DatabaseEntry InvertDouble = {
   "Invert", Precision::kDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
@@ -63,7 +63,7 @@ const Database::DatabaseEntry InvertDouble = {
 
 // =================================================================================================
 
-const Database::DatabaseEntry InvertComplexDouble = {
+const DatabaseEntry InvertComplexDouble = {
   "Invert", Precision::kComplexDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
