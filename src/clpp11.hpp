@@ -261,6 +261,11 @@ class Device {
     return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
   }
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
+  bool HasExtension(const std::string &extension) const {
+    const auto extensions = Capabilities();
+    return extensions.find(extension) != std::string::npos;
+  }
+
   size_t CoreClock() const {
     return static_cast<size_t>(GetInfo<cl_uint>(CL_DEVICE_MAX_CLOCK_FREQUENCY));
   }
@@ -294,12 +299,26 @@ class Device {
   // Query for a specific type of device or brand
   bool IsCPU() const { return Type() == "CPU"; }
   bool IsGPU() const { return Type() == "GPU"; }
-  bool IsAMD() const { return Vendor() == "AMD" || Vendor() == "Advanced Micro Devices, Inc." ||
-                              Vendor() == "AuthenticAMD";; }
-  bool IsNVIDIA() const { return Vendor() == "NVIDIA" || Vendor() == "NVIDIA Corporation"; }
-  bool IsIntel() const { return Vendor() == "INTEL" || Vendor() == "Intel" ||
-                                Vendor() == "GenuineIntel"; }
+  bool IsAMD() const { return Vendor() == "AMD" ||
+                              Vendor() == "Advanced Micro Devices, Inc." ||
+                              Vendor() == "AuthenticAMD"; }
+  bool IsNVIDIA() const { return Vendor() == "NVIDIA" ||
+                                 Vendor() == "NVIDIA Corporation"; }
+  bool IsIntel() const { return Vendor() == "INTEL" ||
+                                Vendor() == "Intel" ||
+                                Vendor() == "GenuineIntel" ||
+                                Vendor() == "Intel(R) Corporation"; }
   bool IsARM() const { return Vendor() == "ARM"; }
+
+  // Platform specific extensions
+  std::string AMDBoardName() const { // check for 'cl_amd_device_attribute_query' first
+    return GetInfoString(CL_DEVICE_BOARD_NAME_AMD);
+  }
+  std::string NVIDIAComputeCapability() const { // check for 'cl_nv_device_attribute_query' first
+    return std::string{"SM"} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) +
+           std::string{"."} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV);
+  }
+
 
   // Accessor to the private data-member
   const cl_device_id& operator()() const { return device_; }

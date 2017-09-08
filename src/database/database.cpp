@@ -69,14 +69,6 @@ const std::vector<database::DatabaseEntry> Database::apple_cpu_fallback = std::v
 // The default values
 const std::string Database::kDeviceVendorAll = "default";
 
-// Alternative names for some OpenCL vendors
-const std::unordered_map<std::string, std::string> Database::kVendorNames{
-  { "Intel(R) Corporation", "Intel" },
-  { "GenuineIntel", "Intel" },
-  { "Advanced Micro Devices, Inc.", "AMD" },
-  { "NVIDIA Corporation", "NVIDIA" },
-};
-
 // =================================================================================================
 
 // Constructor, computing device properties and populating the parameter-vector from the database.
@@ -85,25 +77,45 @@ Database::Database(const Device &device, const std::string &kernel_name,
                    const Precision precision, const std::vector<database::DatabaseEntry> &overlay):
   parameters_(std::make_shared<database::Parameters>()) {
 
-  // Finds information of the current device
+  // Finds top-level information (vendor and type)
   auto device_type = device.Type();
   auto device_vendor = device.Vendor();
-  auto device_name = device.Name();
+  for (auto &find_and_replace : database::kVendorNames) { // replacing to common names
+    if (device_vendor == find_and_replace.first) { device_vendor = find_and_replace.second; }
+  }
 
-  // Set the short vendor name
-  for (auto &combination : kVendorNames) {
-    if (device_vendor == combination.first) {
-      device_vendor = combination.second;
-    }
+  // Finds mid-level information (architecture)
+  auto device_architecture = std::string{""};
+  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+    device_architecture = device.NVIDIAComputeCapability();
+  }
+  else if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+  }
+  // Note: no else - 'device_architecture' might be the empty string
+  for (auto &find_and_replace : database::kArchitectureNames) { // replacing to common names
+    if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
+  }
+
+  // Finds low-level information (device name)
+  auto device_name = std::string{""};
+  if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_name = device.AMDBoardName();
+  }
+  else {
+    device_name = device.Name();
+  }
+  for (auto &find_and_replace : database::kDeviceNames) { // replacing to common names
+    if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
   }
 
   // Sets the databases to search through
-  auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};
+  const auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};
 
   // Special case: modifies the database if the device is a CPU with Apple OpenCL
   #if defined(__APPLE__) || defined(__MACOSX)
     if (device.Type() == "CPU") {
-      auto extensions = device.Capabilities();
+      const auto extensions = device.Capabilities();
       const auto is_apple = (extensions.find("cl_APPLE_SetMemObjectDestructor") == std::string::npos) ? false : true;
       if (is_apple) {
         databases.push_front(apple_cpu_fallback);
@@ -114,7 +126,8 @@ Database::Database(const Device &device, const std::string &kernel_name,
   // Searches potentially multiple databases
   auto search_result = database::Parameters();
   for (auto &db: databases) {
-    search_result = Search(kernel_name, device_type, device_vendor, device_name, precision, db);
+    search_result = Search(kernel_name, device_vendor, device_type,
+                           device_name, device_architecture, precision, db);
     if (search_result.size() != 0) {
       parameters_->insert(search_result.begin(), search_result.end());
       break;
@@ -148,9 +161,8 @@ std::vector<std::string> Database::GetParameterNames() const {
 
 // Searches a particular database for the right kernel and precision
 database::Parameters Database::Search(const std::string &this_kernel,
-                                      const std::string &this_type,
-                                      const std::string &this_vendor,
-                                      const std::string &this_device,
+                                      const std::string &this_vendor, const std::string &this_type,
+                                      const std::string &this_device, const std::string &this_architecture,
                                       const Precision this_precision,
                                       const std::vector<database::DatabaseEntry> &this_database) const {
 
@@ -160,10 +172,10 @@ database::Parameters Database::Search(const std::string &this_kernel,
         (db.precision == this_precision || db.precision == Precision::kAny)) {
 
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters = SearchVendorAndType(this_vendor, this_type, this_device,
+      const auto parameters = SearchVendorAndType(this_vendor, this_type, this_device, this_architecture,
                                                   db.vendors, db.parameter_names);
       if (parameters.size() != 0) { return parameters; }
-      return SearchVendorAndType(kDeviceVendorAll, database::kDeviceTypeAll, this_device,
+      return SearchVendorAndType(kDeviceVendorAll, database::kDeviceTypeAll, this_device, this_architecture,
                                  db.vendors, db.parameter_names);
     }
   }
@@ -172,16 +184,18 @@ database::Parameters Database::Search(const std::string &this_kernel,
   return database::Parameters();
 }
 
-database::Parameters Database::SearchVendorAndType(const std::string &target_vendor,
-                                                   const std::string &target_type,
-                                                   const std::string &this_device,
+database::Parameters Database::SearchVendorAndType(const std::string &target_vendor, const std::string &target_type,
+                                                   const std::string &this_device, const std::string &this_architecture,
                                                    const std::vector<database::DatabaseVendor> &vendors,
                                                    const std::vector<std::string> &parameter_names) const {
   for (auto &vendor: vendors) {
     if ((vendor.name == target_vendor) && (vendor.type == target_type)) {
 
-      // Searches the device; if unavailable, returns the vendor's default parameters
-      const auto parameters = SearchDevice(this_device, vendor.devices, parameter_names);
+      // Searches the device; if unavailable, searches the architecture; if unavailable returns the
+      // vendor's default parameters
+      auto parameters = SearchDevice(this_device, vendor.devices, parameter_names);
+      if (parameters.size() != 0) { return parameters; }
+      parameters = SearchDevice(this_architecture, vendor.devices, parameter_names);
       if (parameters.size() != 0) { return parameters; }
       return SearchDevice("default", vendor.devices, parameter_names);
     }

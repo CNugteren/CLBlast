@@ -23,6 +23,7 @@
 
 #include "utilities/utilities.hpp"
 #include "database/database_structure.hpp"
+#include "database/device_mapping.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -33,9 +34,6 @@ class Database {
 
   // The OpenCL device vendors
   static const std::string kDeviceVendorAll;
-
-  // Alternative names for some OpenCL vendors
-  static const std::unordered_map<std::string, std::string> kVendorNames;
 
   // The database consists of separate database entries, stored together in a vector
   static const std::vector<database::DatabaseEntry> database;
@@ -61,18 +59,19 @@ class Database {
 
  private:
   // Search method functions, returning a set of parameters (possibly empty)
-  database::Parameters Search(const std::string &this_kernel, const std::string &this_type,
-                    const std::string &this_vendor, const std::string &this_device,
-                    const Precision this_precision,
-                    const std::vector<database::DatabaseEntry> &db) const;
+  database::Parameters Search(const std::string &this_kernel,
+                              const std::string &this_vendor, const std::string &this_type,
+                              const std::string &this_device, const std::string &this_architecture,
+                              const Precision this_precision,
+                              const std::vector<database::DatabaseEntry> &db) const;
   database::Parameters SearchDevice(const std::string &target_device,
                           const std::vector<database::DatabaseDevice> &devices,
                           const std::vector<std::string> &parameter_names) const;
   database::Parameters SearchVendorAndType(const std::string &target_vendor,
-                                 const std::string &target_type,
-                                 const std::string &this_device,
-                                 const std::vector<database::DatabaseVendor> &vendors,
-                                 const std::vector<std::string> &parameter_names) const;
+                                           const std::string &target_type,
+                                           const std::string &this_device, const std::string &this_architecture,
+                                           const std::vector<database::DatabaseVendor> &vendors,
+                                           const std::vector<std::string> &parameter_names) const;
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<database::Parameters> parameters_;

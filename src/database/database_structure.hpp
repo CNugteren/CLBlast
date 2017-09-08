@@ -11,8 +11,8 @@
 //
 // =================================================================================================
 
-#ifndef CLBLAST_DATABASE_STRUCTURE_H_
-#define CLBLAST_DATABASE_STRUCTURE_H_
+#ifndef CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
+#define CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 
 #include <string>
 #include <vector>
@@ -54,5 +54,5 @@ struct DatabaseEntry {
 } // namespace database
 } // namespace clblast
 
-// CLBLAST_DATABASE_STRUCTURE_H_
+// CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 #endif

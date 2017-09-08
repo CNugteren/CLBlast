@@ -194,6 +194,8 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   include/clblast_half.h
   src/database/apple_cpu_fallback.hpp
   src/database/database.hpp
+  src/database/database_structure.hpp
+  src/database/device_mapping.hpp
   src/database/kernel_selection.hpp
   src/routines/level1/xamin.hpp
   src/routines/level1/xmax.hpp

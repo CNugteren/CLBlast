@@ -40,6 +40,8 @@ using double2 = std::complex<double>;
 // Khronos OpenCL extensions
 const std::string kKhronosHalfPrecision = "cl_khr_fp16";
 const std::string kKhronosDoublePrecision = "cl_khr_fp64";
+const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
+const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
 
 // Catched an unknown error
 constexpr auto kUnknownError = -999;
