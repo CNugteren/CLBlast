@@ -12,15 +12,15 @@
 //
 // =================================================================================================
 
-#ifndef CLBLAST_DATABASE_DEVICE_MAPPING_H_
-#define CLBLAST_DATABASE_DEVICE_MAPPING_H_
+#ifndef CLBLAST_UTILITIES_DEVICE_MAPPING_H_
+#define CLBLAST_UTILITIES_DEVICE_MAPPING_H_
 
 #include <string>
 #include <unordered_map>
 
 namespace clblast {
-// A special namespace to hold all the global constant variables (including the device mapping)
-namespace database {
+// A special namespace to hold all the global constant variables
+namespace device_mapping {
 
 // =================================================================================================
 
@@ -44,8 +44,8 @@ const std::unordered_map<std::string, std::string> kDeviceNames {
 };
 
 // =================================================================================================
-} // namespace database
+} // namespace device_mapping
 } // namespace clblast
 
-// CLBLAST_DATABASE_DEVICE_MAPPING_H_
+// CLBLAST_UTILITIES_DEVICE_MAPPING_H_
 #endif

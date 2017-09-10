@@ -16,6 +16,7 @@
 #include "utilities/utilities.hpp"
 
 #include "database/database.hpp"
+
 #include "database/kernels/xaxpy/xaxpy.hpp"
 #include "database/kernels/xdot/xdot.hpp"
 #include "database/kernels/xgemv/xgemv.hpp"
@@ -28,6 +29,7 @@
 #include "database/kernels/pad/pad.hpp"
 #include "database/kernels/transpose/transpose.hpp"
 #include "database/kernels/padtranspose/padtranspose.hpp"
+
 #include "database/kernels/xtrsv.hpp"
 #include "database/kernels/invert.hpp"
 #include "database/apple_cpu_fallback.hpp"
@@ -77,37 +79,17 @@ Database::Database(const Device &device, const std::string &kernel_name,
                    const Precision precision, const std::vector<database::DatabaseEntry> &overlay):
   parameters_(std::make_shared<database::Parameters>()) {
 
-  // Finds top-level information (vendor and type)
-  auto device_type = device.Type();
-  auto device_vendor = device.Vendor();
-  for (auto &find_and_replace : database::kVendorNames) { // replacing to common names
-    if (device_vendor == find_and_replace.first) { device_vendor = find_and_replace.second; }
-  }
+  // Finds device information
+  const auto device_type = GetDeviceType(device);
+  const auto device_vendor = GetDeviceVendor(device);
+  const auto device_architecture = GetDeviceArchitecture(device);
+  const auto device_name = GetDeviceName(device);
 
-  // Finds mid-level information (architecture)
-  auto device_architecture = std::string{""};
-  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
-    device_architecture = device.NVIDIAComputeCapability();
-  }
-  else if (device.HasExtension(kKhronosAttributesAMD)) {
-    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
-  }
-  // Note: no else - 'device_architecture' might be the empty string
-  for (auto &find_and_replace : database::kArchitectureNames) { // replacing to common names
-    if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
-  }
-
-  // Finds low-level information (device name)
-  auto device_name = std::string{""};
-  if (device.HasExtension(kKhronosAttributesAMD)) {
-    device_name = device.AMDBoardName();
-  }
-  else {
-    device_name = device.Name();
-  }
-  for (auto &find_and_replace : database::kDeviceNames) { // replacing to common names
-    if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
-  }
+  // Prints the obtained information in verbose mode
+  #ifdef VERBOSE
+    printf("[DEBUG] Device type '%s'; vendor '%s'\n", device_type.c_str(), device_vendor.c_str());
+    printf("[DEBUG] Device name '%s'; architecture '%s'\n", device_name.c_str(), device_architecture.c_str());
+  #endif
 
   // Sets the databases to search through
   const auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};

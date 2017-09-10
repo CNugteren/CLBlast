@@ -308,6 +308,14 @@ template <typename T>
 bool PrecisionSupported(const Device &device);
 
 // =================================================================================================
+
+// Device information in a specific CLBlast form
+std::string GetDeviceType(const Device& device);
+std::string GetDeviceVendor(const Device& device);
+std::string GetDeviceArchitecture(const Device& device);
+std::string GetDeviceName(const Device& device);
+
+// =================================================================================================
 } // namespace clblast
 
 // CLBLAST_UTILITIES_H_

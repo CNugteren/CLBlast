@@ -11,14 +11,16 @@
 //
 // =================================================================================================
 
-#include "utilities/utilities.hpp"
-
 #include <string>
 #include <vector>
 #include <chrono>
 #include <random>
 #include <iomanip>
 #include <cmath>
+
+#include "utilities/utilities.hpp"
+
+#include "utilities/device_mapping.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -398,6 +400,54 @@ template <> bool PrecisionSupported<double2>(const Device &device) {
 template <> bool PrecisionSupported<half>(const Device &device) {
   if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
   return device.HasExtension(kKhronosHalfPrecision);
+}
+
+// =================================================================================================
+
+// High-level info
+std::string GetDeviceType(const Device& device) {
+  return device.Type();
+}
+std::string GetDeviceVendor(const Device& device) {
+  auto device_vendor = device.Vendor();
+
+  for (auto &find_and_replace : device_mapping::kVendorNames) { // replacing to common names
+    if (device_vendor == find_and_replace.first) { device_vendor = find_and_replace.second; }
+  }
+  return device_vendor;
+}
+
+// Mid-level info
+std::string GetDeviceArchitecture(const Device& device) {
+  auto device_architecture = std::string{""};
+  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+    device_architecture = device.NVIDIAComputeCapability();
+  }
+  else if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+  }
+  // Note: no else - 'device_architecture' might be the empty string
+
+  for (auto &find_and_replace : device_mapping::kArchitectureNames) { // replacing to common names
+    if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
+  }
+  return device_architecture;
+}
+
+// Lowest-level
+std::string GetDeviceName(const Device& device) {
+  auto device_name = std::string{""};
+  if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_name = device.AMDBoardName();
+  }
+  else {
+    device_name = device.Name();
+  }
+
+  for (auto &find_and_replace : device_mapping::kDeviceNames) { // replacing to common names
+    if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
+  }
+  return device_name;
 }
 
 // =================================================================================================

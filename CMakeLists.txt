@@ -195,7 +195,6 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/database/apple_cpu_fallback.hpp
   src/database/database.hpp
   src/database/database_structure.hpp
-  src/database/device_mapping.hpp
   src/database/kernel_selection.hpp
   src/routines/level1/xamin.hpp
   src/routines/level1/xmax.hpp
@@ -204,6 +203,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/routines/common.hpp
   src/utilities/buffer_test.hpp
   src/utilities/clblast_exceptions.hpp
+  src/utilities/device_mapping.hpp
   src/utilities/msvc.hpp
   src/utilities/utilities.hpp
   src/cache.hpp

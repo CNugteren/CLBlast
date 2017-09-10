@@ -35,19 +35,19 @@ using Parameters = std::unordered_map<std::string, size_t>;
 
 // Structures for content inside the database
 struct DatabaseDevice {
-  std::string name;
-  std::vector<size_t> parameters; // parameter values
+  const std::string name;
+  const std::vector<size_t> parameters; // parameter values
 };
 struct DatabaseVendor {
-  std::string type;
-  std::string name;
-  std::vector<DatabaseDevice> devices;
+  const std::string type;
+  const std::string name;
+  const std::vector<DatabaseDevice> devices;
 };
 struct DatabaseEntry {
-  std::string kernel;
-  Precision precision;
-  std::vector<std::string> parameter_names;
-  std::vector<DatabaseVendor> vendors;
+  const std::string kernel;
+  const Precision precision;
+  const std::vector<std::string> parameter_names;
+  const std::vector<DatabaseVendor> vendors;
 };
 
 // =================================================================================================

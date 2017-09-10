@@ -167,6 +167,7 @@ class Platform {
   // Methods to retrieve platform information
   std::string Name() const { return GetInfoString(CL_PLATFORM_NAME); }
   std::string Vendor() const { return GetInfoString(CL_PLATFORM_VENDOR); }
+  std::string Version() const { return GetInfoString(CL_PLATFORM_VERSION); }
 
   // Returns the number of devices on this platform
   size_t NumDevices() const {

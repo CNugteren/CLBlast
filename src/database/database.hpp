@@ -23,7 +23,6 @@
 
 #include "utilities/utilities.hpp"
 #include "database/database_structure.hpp"
-#include "database/device_mapping.hpp"
 
 namespace clblast {
 // =================================================================================================
