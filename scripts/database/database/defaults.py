@@ -14,9 +14,9 @@ import bests
 
 def set_default_device(section):
     """Sets the device name and parameters to some default values"""
-    section["device"] = clblast.DEVICE_NAME_DEFAULT
-    section["device_compute_units"] = 0
-    section["device_core_clock"] = 0
+    section["clblast_device_name"] = clblast.DEVICE_NAME_DEFAULT
+    section["clblast_device_compute_units"] = 0
+    section["clblast_device_core_clock"] = 0
     return section
 
 
@@ -107,8 +107,8 @@ def calculate_defaults(database, verbose):
             if attribute != "results" and attribute != "group_identifier":
                 default_section[attribute] = group[0][attribute]
         default_section = set_default_device(default_section)
-        default_section["device_vendor"] = clblast.VENDOR_DEFAULT
-        default_section["device_type"] = clblast.DEVICE_TYPE_DEFAULT
+        default_section["clblast_device_vendor"] = clblast.VENDOR_DEFAULT
+        default_section["clblast_device_type"] = clblast.DEVICE_TYPE_DEFAULT
         default_section["results"] = [{"time": 0.0, "parameters": default_parameters}]
         default_sections["sections"].append(default_section)
 

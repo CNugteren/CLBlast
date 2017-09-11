@@ -13,8 +13,9 @@ DEVICE_TYPE_DEFAULT = "All"
 DEVICE_NAME_DEFAULT = "default"
 
 # List of attributes
-DEVICE_TYPE_ATTRIBUTES = ["device_vendor", "device_type"]
-DEVICE_ATTRIBUTES = ["device", "device_core_clock", "device_compute_units"]
+DEVICE_TYPE_ATTRIBUTES = ["clblast_device_vendor", "clblast_device_type"]
+DEVICE_ATTRIBUTES = ["clblast_device_name", "clblast_device_architecture",
+                     "device_core_clock", "device_compute_units"]
 KERNEL_ATTRIBUTES = ["precision", "kernel_family"]
 ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
 ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ARGUMENT_ATTRIBUTES
@@ -116,9 +117,9 @@ def print_cpp_database(database, output_dir):
                     print("[database] No results found for %s:%s, retrieving defaults from %s:32" %
                           (family_name, precision, family_name))
                     precision_database = [s for s in family_database if s["precision"] == "32"
-                                          and s["device_vendor"] == VENDOR_DEFAULT
-                                          and s["device_type"] == DEVICE_TYPE_DEFAULT
-                                          and s["device"] == DEVICE_NAME_DEFAULT]
+                                          and s["clblast_device_vendor"] == VENDOR_DEFAULT
+                                          and s["clblast_device_type"] == DEVICE_TYPE_DEFAULT
+                                          and s["clblast_device_name"] == DEVICE_NAME_DEFAULT]
 
                 # Discovers the parameters for this kernel
                 parameter_names = []
@@ -130,20 +131,20 @@ def print_cpp_database(database, output_dir):
                 f.write(", {" + parameter_names_as_string + "}, {\n")
 
                 # Loops over device vendors (e.g. AMD)
-                device_vendors = sorted(set([s["device_vendor"] for s in precision_database]))
+                device_vendors = sorted(set([s["clblast_device_vendor"] for s in precision_database]))
                 for vendor in device_vendors:
-                    vendor_database = [s for s in precision_database if s["device_vendor"] == vendor]
+                    vendor_database = [s for s in precision_database if s["clblast_device_vendor"] == vendor]
 
                     # Loops over device types (e.g. GPU)
-                    device_types = sorted(set([s["device_type"] for s in vendor_database]))
+                    device_types = sorted(set([s["clblast_device_type"] for s in vendor_database]))
                     for device_type in device_types:
-                        type_database = [s for s in vendor_database if s["device_type"] == device_type]
+                        type_database = [s for s in vendor_database if s["clblast_device_type"] == device_type]
                         f.write(get_cpp_device_vendor(vendor, device_type))
 
                         # Loops over every device of this vendor-type combination
-                        devices = sorted(set([s["device"] for s in type_database]))
+                        devices = sorted(set([s["clblast_device_name"] for s in type_database]))
                         for device_name in devices:
-                            device_database = [s for s in type_database if s["device"] == device_name]
+                            device_database = [s for s in type_database if s["clblast_device_name"] == device_name]
                             device_name_quoted = "\"%s\"," % device_name.strip()
                             device_name_cpp = "        { %-50s { " % device_name_quoted
                             f.write(device_name_cpp)
