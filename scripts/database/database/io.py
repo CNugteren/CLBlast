@@ -26,14 +26,53 @@ def load_database(filename):
     """Loads a database from disk"""
     print("[database] Loading database from '" + filename + "'")
     with open(filename) as f:
-        return json.load(f)
+        database = json.load(f)
+    return decompress_database(database)
 
 
 def save_database(database, filename):
     """Saves a database to disk"""
+    compressed_db = compress_database(database)
     print("[database] Saving database to '" + filename + "'")
     with open(filename, "w") as f:
-        json.dump(database, f, sort_keys=True, indent=4)
+        json.dump(compressed_db, f, sort_keys=True, indent=2, separators=(',', ': '))
+
+
+def compress_database(database):
+    """Moves certain common fields up in the hierarchy, transforms dicts into lists"""
+    new_sections = []
+    for section in database["sections"]:
+        new_section = {}
+        for field in section:
+            if field == "results":
+                parameter_names = [result["parameters"].keys() for result in section["results"]]
+                assert len(list(set([" ".join(p) for p in parameter_names]))) == 1
+                new_section["parameter_names"] = parameter_names[0]  # they are all be the same
+                new_results = [[",".join([str(v) for v in result["parameters"].values()]),
+                                result["time"]]
+                               for result in section["results"]]
+                new_section[field] = new_results
+            else:
+                new_section[field] = section[field]
+        new_sections.append(new_section)
+    return {"sections": new_sections}
+
+
+def decompress_database(database):
+    """Undo the above compression"""
+    for section in database["sections"]:
+        new_results = []
+        for result in section["results"]:
+            parameters = {}
+            for name, value in zip(section["parameter_names"], result[0].split(",")):
+                parameters[name] = value
+            new_result = {
+                "parameters": parameters,
+                "time": result[1]
+            }
+            new_results.append(new_result)
+        section["results"] = new_results
+    return database
 
 
 def load_tuning_results(filename):
