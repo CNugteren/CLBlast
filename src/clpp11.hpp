@@ -313,9 +313,18 @@ class Device {
 
   // Platform specific extensions
   std::string AMDBoardName() const { // check for 'cl_amd_device_attribute_query' first
+    #ifndef CL_DEVICE_BOARD_NAME_AMD
+      #define CL_DEVICE_BOARD_NAME_AMD 0x4038
+    #endif
     return GetInfoString(CL_DEVICE_BOARD_NAME_AMD);
   }
   std::string NVIDIAComputeCapability() const { // check for 'cl_nv_device_attribute_query' first
+    #ifndef CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV
+       #define CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV 0x4000
+    #endif
+    #ifndef CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV
+      #define CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV 0x4001
+    #endif
     return std::string{"SM"} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) +
            std::string{"."} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV);
   }
