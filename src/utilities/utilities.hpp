@@ -123,6 +123,14 @@ constexpr auto kBufScalar = "Scalar";
 
 // =================================================================================================
 
+inline void log_debug(const std::string &log_string) {
+  #ifdef VERBOSE
+    printf("[DEBUG] %s\n", log_string.c_str());
+  #endif
+}
+
+// =================================================================================================
+
 // Converts a regular or complex type to it's base type (e.g. float2 to float)
 template <typename T> struct BaseType { using Type = T; };
 template <> struct BaseType<float2> { using Type = float; };

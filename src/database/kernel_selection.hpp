@@ -22,17 +22,17 @@ const DatabaseEntry KernelSelectionHalf = {
   "KernelSelection", Precision::kHalf, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "default",                                         { 1*1*1 } },
+        { "default", { { "default",         { 1*1*1 } } } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { 1280*1280*1280 } },
+        { "default", { { "default",         { 1280*1280*1280 } } } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 512*512*512 } },
+        { "default", { { "default",         { 512*512*512 } } } },
       }
     },
   }
@@ -44,22 +44,22 @@ const DatabaseEntry KernelSelectionSingle = {
   "KernelSelection", Precision::kSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "default",                                         { 1*1*1 } },
+        { "default", { { "default",         { 1*1*1 } } } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { 1280*1280*1280 } },
+        { "default", { { "default",         { 1280*1280*1280 } } } },
       }
     },
     { 
       kDeviceTypeGPU, "ARM", {
-        { "default",                                         { 128*128*128} },
+        { "default", { { "default",         { 128*128*128} } } },
       }
     }, 
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 512*512*512 } },
+        { "default", { { "default",         { 512*512*512 } } } },
       }
     },
   }
@@ -71,17 +71,17 @@ const DatabaseEntry KernelSelectionComplexSingle = {
   "KernelSelection", Precision::kComplexSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "default",                                         { 1*1*1 } },
+        { "default", { { "default",         { 1*1*1 } } } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { 1280*1280*1280 } },
+        { "default", { { "default",         { 1280*1280*1280 } } } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 512*512*512 } },
+        { "default", { { "default",         { 512*512*512 } } } },
       }
     },
   }
@@ -93,17 +93,17 @@ const DatabaseEntry KernelSelectionDouble = {
   "KernelSelection", Precision::kDouble, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "default",                                         { 1*1*1 } },
+        { "default", { { "default",         { 1*1*1 } } } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { 1280*1280*1280 } },
+        { "default", { { "default",         { 1280*1280*1280 } } } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 512*512*512 } },
+        { "default", { { "default",         { 512*512*512 } } } },
       }
     },
   }
@@ -115,17 +115,17 @@ const DatabaseEntry KernelSelectionComplexDouble = {
   "KernelSelection", Precision::kComplexDouble, {"XGEMM_MIN_INDIRECT_SIZE"}, {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "default",                                         { 1*1*1 } },
+        { "default", { { "default",         { 1*1*1 } } } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "default",                                         { 1280*1280*1280 } },
+        { "default", { { "default",         { 1280*1280*1280 } } } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 512*512*512 } },
+        { "default", { { "default",         { 512*512*512 } } } },
       }
     },
   }

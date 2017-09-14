@@ -14,20 +14,29 @@ const DatabaseEntry XgemvFastHalf = {
   "XgemvFast", Precision::kHalf, {"VW2", "WGS2", "WPT2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "Ellesmere",                                       { 1, 32, 1 } },
-        { "default",                                         { 1, 32, 1 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 1, 32, 1 } },
+          { "default",                                         { 1, 32, 1 } },
+        } },
+        { "default", {
+          { "default",                                         { 1, 32, 1 } },
+        } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 1, 16, 1 } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { 4, 64, 4 } },
-        { "default",                                         { 1, 16, 1 } },
+        { "default", {
+          { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 1, 16, 1 } },
+          { "Intel(R) HD Graphics Skylake ULT GT2",            { 4, 64, 4 } },
+          { "default",                                         { 1, 16, 1 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 1, 16, 1 } },
+        { "default", {
+          { "default",                                         { 1, 16, 1 } },
+        } },
       }
     },
   }

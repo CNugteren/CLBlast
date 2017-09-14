@@ -2521,7 +2521,8 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
 
     // Creates a small custom database based on the provided parameters
     const auto database_device = database::DatabaseDevice{"default", parameter_values};
-    const auto database_vendor = database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_device}};
+    const auto database_architecture = database::DatabaseArchitecture{"default", {database_device}};
+    const auto database_vendor = database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_architecture}};
     const auto database_entry = database::DatabaseEntry{kernel_name, precision, parameter_names, {database_vendor}};
     const auto database_entries = std::vector<database::DatabaseEntry>{database_entry};
     const auto database = Database(device_cpp, kernel_name, precision, database_entries);

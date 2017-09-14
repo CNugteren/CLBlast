@@ -14,33 +14,59 @@ const DatabaseEntry XgemmDirectComplexDouble = {
   "XgemmDirect", Precision::kComplexDouble, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
-        { "Ellesmere",                                       { 16, 32, 32, 16, 8, 0, 0, 1, 1, 32 } },
-        { "Fiji",                                            { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
-        { "Tonga",                                           { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
-        { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 16, 32, 32, 16, 8, 0, 0, 1, 1, 32 } },
+          { "default",                                         { 16, 32, 32, 16, 8, 0, 0, 1, 1, 32 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+          { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+          { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        } },
+        { "default", {
+          { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 2, 8, 8, 32, 8, 0, 0, 1, 1, 32 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 8, 16, 16, 8, 8, 0, 0, 2, 1, 32 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 8, 16, 8, 8, 8, 0, 0, 2, 2, 32 } },
-        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 2, 2, 16 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 2, 8, 8, 32, 8, 0, 0, 1, 1, 32 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 8, 16, 16, 8, 8, 0, 0, 2, 1, 32 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 8, 16, 8, 8, 8, 0, 0, 2, 2, 32 } },
+          { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 2, 2, 16 } },
+        } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GeForce GTX 1080",                                { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
-        { "GeForce GTX 750 Ti",                              { 2, 32, 32, 8, 8, 1, 1, 1, 1, 32 } },
-        { "GeForce GTX TITAN Black",                         { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
-        { "TITAN X (Pascal)",                                { 2, 16, 16, 8, 8, 1, 1, 1, 2, 16 } },
-        { "default",                                         { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
+        { "SM3.5", {
+          { "GeForce GTX TITAN Black",                         { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
+          { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
+        } },
+        { "SM5.0", {
+          { "GeForce GTX 750 Ti",                              { 2, 32, 32, 8, 8, 1, 1, 1, 1, 32 } },
+          { "default",                                         { 2, 32, 32, 8, 8, 1, 1, 1, 1, 32 } },
+        } },
+        { "SM6.1", {
+          { "GeForce GTX 1080",                                { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
+          { "TITAN X (Pascal)",                                { 2, 16, 16, 8, 8, 1, 1, 1, 2, 16 } },
+          { "default",                                         { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
+        } },
+        { "default", {
+          { "default",                                         { 2, 16, 16, 8, 8, 1, 1, 1, 1, 16 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 2, 16 } },
+        { "default", {
+          { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 2, 16 } },
+        } },
       }
     },
   }

@@ -14,35 +14,61 @@ const DatabaseEntry XgemvFastRotDouble = {
   "XgemvFastRot", Precision::kDouble, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 4, 16, 16 } },
-        { "Ellesmere",                                       { 4, 16, 16 } },
-        { "Fiji",                                            { 4, 32, 32 } },
-        { "Tonga",                                           { 4, 16, 16 } },
-        { "default",                                         { 4, 16, 16 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 4, 16, 16 } },
+          { "default",                                         { 4, 16, 16 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 4, 32, 32 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 4, 16, 16 } },
+          { "default",                                         { 4, 16, 16 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 4, 16, 16 } },
+          { "default",                                         { 4, 16, 16 } },
+        } },
+        { "default", {
+          { "default",                                         { 4, 16, 16 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 32, 32 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 8, 16, 8 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 4, 32, 32 } },
-        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 16, 8 } },
-        { "default",                                         { 8, 32, 32 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 32, 32 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 8, 16, 8 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 4, 32, 32 } },
+          { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 16, 8 } },
+          { "default",                                         { 8, 32, 32 } },
+        } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GeForce GTX 1080",                                { 8, 32, 32 } },
-        { "GeForce GTX 750 Ti",                              { 4, 32, 16 } },
-        { "GeForce GTX TITAN",                               { 1, 16, 16 } },
-        { "GeForce GTX TITAN Black",                         { 1, 16, 16 } },
-        { "TITAN X (Pascal)",                                { 8, 32, 32 } },
-        { "default",                                         { 4, 32, 16 } },
+        { "SM3.5", {
+          { "GeForce GTX TITAN",                               { 1, 16, 16 } },
+          { "GeForce GTX TITAN Black",                         { 1, 16, 16 } },
+          { "default",                                         { 1, 16, 16 } },
+        } },
+        { "SM5.0", {
+          { "GeForce GTX 750 Ti",                              { 4, 32, 16 } },
+          { "default",                                         { 4, 32, 16 } },
+        } },
+        { "SM6.1", {
+          { "GeForce GTX 1080",                                { 8, 32, 32 } },
+          { "TITAN X (Pascal)",                                { 8, 32, 32 } },
+          { "default",                                         { 8, 32, 32 } },
+        } },
+        { "default", {
+          { "default",                                         { 4, 32, 16 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 4, 16, 16 } },
+        { "default", {
+          { "default",                                         { 4, 16, 16 } },
+        } },
       }
     },
   }

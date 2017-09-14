@@ -14,19 +14,28 @@ const DatabaseEntry XgemmDirectHalf = {
   "XgemmDirect", Precision::kHalf, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "Ellesmere",                                       { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
-        { "default",                                         { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
+          { "default",                                         { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
+        } },
+        { "default", {
+          { "default",                                         { 8, 32, 8, 8, 32, 1, 1, 1, 1, 32 } },
+        } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
-        { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
+        { "default", {
+          { "Intel(R) HD Graphics Skylake ULT GT2",            { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
+          { "default",                                         { 2, 8, 8, 8, 8, 1, 1, 1, 1, 8 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        { "default", {
+          { "default",                                         { 2, 16, 16, 16, 16, 1, 1, 1, 1, 16 } },
+        } },
       }
     },
   }

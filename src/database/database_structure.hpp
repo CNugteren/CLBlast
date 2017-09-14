@@ -38,10 +38,14 @@ struct DatabaseDevice {
   const std::string name;
   const std::vector<size_t> parameters; // parameter values
 };
+struct DatabaseArchitecture {
+  const std::string name;
+  const std::vector<DatabaseDevice> devices;
+};
 struct DatabaseVendor {
   const std::string type;
   const std::string name;
-  const std::vector<DatabaseDevice> devices;
+  const std::vector<DatabaseArchitecture> architectures;
 };
 struct DatabaseEntry {
   const std::string kernel;

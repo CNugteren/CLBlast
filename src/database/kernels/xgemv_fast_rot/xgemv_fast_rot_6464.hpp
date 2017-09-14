@@ -14,25 +14,40 @@ const DatabaseEntry XgemvFastRotComplexDouble = {
   "XgemvFastRot", Precision::kComplexDouble, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 4, 32, 16 } },
-        { "Ellesmere",                                       { 4, 16, 16 } },
-        { "Fiji",                                            { 4, 32, 8 } },
-        { "Tonga",                                           { 4, 16, 8 } },
-        { "default",                                         { 8, 32, 16 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 4, 16, 16 } },
+          { "default",                                         { 4, 16, 16 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 4, 32, 8 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 4, 32, 16 } },
+          { "default",                                         { 4, 32, 8 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 4, 16, 8 } },
+          { "default",                                         { 4, 16, 8 } },
+        } },
+        { "default", {
+          { "default",                                         { 8, 32, 16 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 2, 16, 16 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 4, 64, 4 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 2, 16, 16 } },
-        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 16, 16 } },
-        { "default",                                         { 8, 16, 16 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 2, 16, 16 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 4, 64, 4 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 2, 16, 16 } },
+          { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 16, 16 } },
+          { "default",                                         { 8, 16, 16 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 4, 16, 16 } },
+        { "default", {
+          { "default",                                         { 4, 16, 16 } },
+        } },
       }
     },
   }

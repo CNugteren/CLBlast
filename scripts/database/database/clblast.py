@@ -11,6 +11,7 @@ import os
 VENDOR_DEFAULT = "default"
 DEVICE_TYPE_DEFAULT = "All"
 DEVICE_NAME_DEFAULT = "default"
+DEVICE_ARCHITECTURE_DEFAULT = "default"
 
 # List of attributes
 DEVICE_TYPE_ATTRIBUTES = ["clblast_device_vendor", "clblast_device_type"]
@@ -141,35 +142,45 @@ def print_cpp_database(database, output_dir):
                         type_database = [s for s in vendor_database if s["clblast_device_type"] == device_type]
                         f.write(get_cpp_device_vendor(vendor, device_type))
 
-                        # Loops over every device of this vendor-type combination
-                        devices = sorted(set([s["clblast_device_name"] for s in type_database]))
-                        for device_name in devices:
-                            device_database = [s for s in type_database if s["clblast_device_name"] == device_name]
-                            device_name_quoted = "\"%s\"," % device_name.strip()
-                            device_name_cpp = "        { %-50s { " % device_name_quoted
-                            f.write(device_name_cpp)
+                        # Loops over every architecture of this vendor-type combination
+                        architectures = sorted(set([s["clblast_device_architecture"] for s in type_database]))
+                        for architecture in architectures:
+                            architecture_database = [s for s in type_database if s["clblast_device_architecture"] == architecture]
+                            architecture_string = DEVICE_ARCHITECTURE_DEFAULT if architecture == "" else architecture
+                            f.write("        { \"%s\", {\n" % architecture_string)
 
-                            # Collects the parameters for this entry
-                            parameters = []
-                            parameter_index = 0
-                            kernels = sorted(set([s["kernel"] for s in device_database]))
-                            for kernel in kernels:
-                                kernel_database = [s for s in device_database if s["kernel"] == kernel]
+                            # Loops over every device of this vendor-type combination
+                            devices = sorted(set([s["clblast_device_name"] for s in architecture_database]))
+                            for device_name in devices:
+                                device_database = [s for s in architecture_database if s["clblast_device_name"] == device_name]
+                                device_name_quoted = "\"%s\"," % device_name.strip()
+                                device_name_cpp = "          { %-50s { " % device_name_quoted
+                                f.write(device_name_cpp)
 
-                                assert len(kernel_database) == 1
-                                results = kernel_database[0]["results"]
+                                # Collects the parameters for this entry
+                                parameters = []
+                                parameter_index = 0
+                                kernels = sorted(set([s["kernel"] for s in device_database]))
+                                for kernel in kernels:
+                                    kernel_database = [s for s in device_database if s["kernel"] == kernel]
 
-                                assert len(results) == 1
-                                new_parameters = results[0]["parameters"]
-                                for parameter_name in sorted(new_parameters):
-                                    assert parameter_name == parameter_names[parameter_index]
-                                    parameter_value = new_parameters[parameter_name]
-                                    parameters.append(str(parameter_value))
-                                    parameter_index += 1
+                                    assert len(kernel_database) == 1
+                                    results = kernel_database[0]["results"]
 
-                            # Prints the entry
-                            f.write(", ".join(parameters))
-                            f.write(" } },\n")
+                                    assert len(results) == 1
+                                    new_parameters = results[0]["parameters"]
+                                    for parameter_name in sorted(new_parameters):
+                                        assert parameter_name == parameter_names[parameter_index]
+                                        parameter_value = new_parameters[parameter_name]
+                                        parameters.append(str(parameter_value))
+                                        parameter_index += 1
+
+                                # Prints the entry
+                                f.write(", ".join(parameters))
+                                f.write(" } },\n")
+
+                            # Prints the architecture footer
+                            f.write("        } },\n")
 
                         # Prints the vendor-type combination footer
                         f.write("      }\n    },\n")

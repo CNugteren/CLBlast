@@ -14,26 +14,37 @@ const DatabaseEntry TransposeHalf = {
   "Transpose", Precision::kHalf, {"TRA_DIM", "TRA_PAD", "TRA_SHUFFLE", "TRA_WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "Ellesmere",                                       { 4, 0, 1, 8 } },
-        { "default",                                         { 4, 0, 1, 8 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 4, 0, 1, 8 } },
+          { "default",                                         { 4, 0, 1, 8 } },
+        } },
+        { "default", {
+          { "default",                                         { 4, 0, 1, 8 } },
+        } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 8, 1, 1, 8 } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { 16, 0, 0, 4 } },
-        { "default",                                         { 8, 1, 0, 8 } },
+        { "default", {
+          { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 8, 1, 1, 8 } },
+          { "Intel(R) HD Graphics Skylake ULT GT2",            { 16, 0, 0, 4 } },
+          { "default",                                         { 8, 1, 0, 8 } },
+        } },
       }
     },
     { // QUALCOMM GPUs
       kDeviceTypeGPU, "QUALCOMM", {
-        { "QUALCOMM Adreno(TM)",                             { 8, 0, 0, 4 } },
-        { "default",                                         { 8, 0, 0, 4 } },
+        { "default", {
+          { "QUALCOMM Adreno(TM)",                             { 8, 0, 0, 4 } },
+          { "default",                                         { 8, 0, 0, 4 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 8, 0, 1, 8 } },
+        { "default", {
+          { "default",                                         { 8, 0, 1, 8 } },
+        } },
       }
     },
   }

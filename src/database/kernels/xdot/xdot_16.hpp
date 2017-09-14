@@ -14,26 +14,37 @@ const DatabaseEntry XdotHalf = {
   "Xdot", Precision::kHalf, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "Ellesmere",                                       { 256, 64 } },
-        { "default",                                         { 256, 64 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 256, 64 } },
+          { "default",                                         { 256, 64 } },
+        } },
+        { "default", {
+          { "default",                                         { 256, 64 } },
+        } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 256, 32 } },
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { 128, 32 } },
-        { "default",                                         { 128, 32 } },
+        { "default", {
+          { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 256, 32 } },
+          { "Intel(R) HD Graphics Skylake ULT GT2",            { 128, 32 } },
+          { "default",                                         { 128, 32 } },
+        } },
       }
     },
     { // QUALCOMM GPUs
       kDeviceTypeGPU, "QUALCOMM", {
-        { "QUALCOMM Adreno(TM)",                             { 64, 64 } },
-        { "default",                                         { 64, 64 } },
+        { "default", {
+          { "QUALCOMM Adreno(TM)",                             { 64, 64 } },
+          { "default",                                         { 64, 64 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 128, 64 } },
+        { "default", {
+          { "default",                                         { 128, 64 } },
+        } },
       }
     },
   }

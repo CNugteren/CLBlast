@@ -14,19 +14,28 @@ const DatabaseEntry XgemvFastRotHalf = {
   "XgemvFastRot", Precision::kHalf, {"VW3", "WGS3", "WPT3"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "Ellesmere",                                       { 8, 32, 32 } },
-        { "default",                                         { 8, 32, 32 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 8, 32, 32 } },
+          { "default",                                         { 8, 32, 32 } },
+        } },
+        { "default", {
+          { "default",                                         { 8, 32, 32 } },
+        } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
-        { "Intel(R) HD Graphics Skylake ULT GT2",            { 8, 128, 32 } },
-        { "default",                                         { 8, 128, 32 } },
+        { "default", {
+          { "Intel(R) HD Graphics Skylake ULT GT2",            { 8, 128, 32 } },
+          { "default",                                         { 8, 128, 32 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 8, 128, 32 } },
+        { "default", {
+          { "default",                                         { 8, 128, 32 } },
+        } },
       }
     },
   }

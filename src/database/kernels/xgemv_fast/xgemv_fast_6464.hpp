@@ -14,44 +14,81 @@ const DatabaseEntry XgemvFastComplexDouble = {
   "XgemvFast", Precision::kComplexDouble, {"VW2", "WGS2", "WPT2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 1, 256, 1 } },
-        { "Ellesmere",                                       { 1, 16, 1 } },
-        { "Fiji",                                            { 1, 16, 1 } },
-        { "Hawaii",                                          { 1, 64, 1 } },
-        { "Oland",                                           { 1, 256, 1 } },
-        { "Pitcairn",                                        { 1, 64, 1 } },
-        { "Tahiti",                                          { 1, 64, 1 } },
-        { "Tonga",                                           { 1, 32, 1 } },
-        { "default",                                         { 1, 64, 1 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 1, 16, 1 } },
+          { "default",                                         { 1, 16, 1 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 1, 16, 1 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 1, 256, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Hawaii", {
+          { "AMD Radeon R9 290X",                              { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Oland", {
+          { "Oland",                                           { 1, 256, 1 } },
+          { "default",                                         { 1, 256, 1 } },
+        } },
+        { "Pitcairn", {
+          { "AMD Radeon R9 270X",                              { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Tahiti", {
+          { "AMD Radeon HD 7970",                              { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 1, 32, 1 } },
+          { "default",                                         { 1, 32, 1 } },
+        } },
+        { "default", {
+          { "default",                                         { 1, 64, 1 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 32, 4 } },
-        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 2, 64, 4 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 1, 64, 4 } },
-        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { 4, 64, 4 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 1, 16, 2 } },
-        { "default",                                         { 4, 64, 4 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 32, 4 } },
+          { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 2, 64, 4 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 1, 64, 4 } },
+          { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { 4, 64, 4 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 1, 16, 2 } },
+          { "default",                                         { 4, 64, 4 } },
+        } },
       }
     },
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
-        { "Intel(R) Many Integrated Core Acceleration Card", { 1, 64, 1 } },
-        { "default",                                         { 1, 64, 1 } },
+        { "default", {
+          { "Intel(R) Many Integrated Core Acceleration Card", { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GRID K520",                                       { 1, 128, 1 } },
-        { "GeForce GTX 480",                                 { 1, 64, 1 } },
-        { "GeForce GTX 670",                                 { 1, 64, 1 } },
-        { "default",                                         { 1, 64, 1 } },
+        { "SM2.0", {
+          { "GeForce GTX 480",                                 { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "SM3.0", {
+          { "GRID K520",                                       { 1, 128, 1 } },
+          { "GeForce GTX 670",                                 { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "default", {
+          { "default",                                         { 1, 64, 1 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 1, 64, 1 } },
+        { "default", {
+          { "default",                                         { 1, 64, 1 } },
+        } },
       }
     },
   }

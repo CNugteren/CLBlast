@@ -64,8 +64,12 @@ class Database {
                               const Precision this_precision,
                               const std::vector<database::DatabaseEntry> &db) const;
   database::Parameters SearchDevice(const std::string &target_device,
-                          const std::vector<database::DatabaseDevice> &devices,
-                          const std::vector<std::string> &parameter_names) const;
+                        const std::vector<database::DatabaseDevice> &devices,
+                        const std::vector<std::string> &parameter_names) const;
+  database::Parameters SearchArchitecture(const std::string &target_architecture,
+                                          const std::string &this_device,
+                                          const std::vector<database::DatabaseArchitecture> &architectures,
+                                          const std::vector<std::string> &parameter_names) const;
   database::Parameters SearchVendorAndType(const std::string &target_vendor,
                                            const std::string &target_type,
                                            const std::string &this_device, const std::string &this_architecture,

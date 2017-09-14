@@ -86,10 +86,8 @@ Database::Database(const Device &device, const std::string &kernel_name,
   const auto device_name = GetDeviceName(device);
 
   // Prints the obtained information in verbose mode
-  #ifdef VERBOSE
-    printf("[DEBUG] Device type '%s'; vendor '%s'\n", device_type.c_str(), device_vendor.c_str());
-    printf("[DEBUG] Device name '%s'; architecture '%s'\n", device_name.c_str(), device_architecture.c_str());
-  #endif
+  log_debug("Device type '" + device_type + "'; vendor '" + device_vendor + "'");
+  log_debug("Device name '" + device_name + "'; architecture '" + device_architecture + "'");
 
   // Sets the databases to search through
   const auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};
@@ -172,14 +170,29 @@ database::Parameters Database::SearchVendorAndType(const std::string &target_ven
                                                    const std::vector<std::string> &parameter_names) const {
   for (auto &vendor: vendors) {
     if ((vendor.name == target_vendor) && (vendor.type == target_type)) {
+      log_debug("Found architectures of vendor '" + target_vendor + "' and type '" + target_type + "'");
 
-      // Searches the device; if unavailable, searches the architecture; if unavailable returns the
-      // vendor's default parameters
-      auto parameters = SearchDevice(this_device, vendor.devices, parameter_names);
+      // Searches the architecture; if unavailable returns the vendor's default parameters
+      auto parameters = SearchArchitecture(this_architecture, this_device, vendor.architectures, parameter_names);
       if (parameters.size() != 0) { return parameters; }
-      parameters = SearchDevice(this_architecture, vendor.devices, parameter_names);
+      return SearchArchitecture("default", this_device, vendor.architectures, parameter_names);
+    }
+  }
+  return database::Parameters();
+}
+
+database::Parameters Database::SearchArchitecture(const std::string &target_architecture,
+                                                  const std::string &this_device,
+                                                  const std::vector<database::DatabaseArchitecture> &architectures,
+                                                  const std::vector<std::string> &parameter_names) const {
+  for (auto &architecture: architectures) {
+    if (architecture.name == target_architecture) {
+      log_debug("Found devices of architecture type '" + target_architecture + "'");
+
+      // Searches the device; if unavailable returns the architecture's default parameters
+      auto parameters = SearchDevice(this_device, architecture.devices, parameter_names);
       if (parameters.size() != 0) { return parameters; }
-      return SearchDevice("default", vendor.devices, parameter_names);
+      return SearchDevice("default", architecture.devices, parameter_names);
     }
   }
   return database::Parameters();
@@ -190,6 +203,7 @@ database::Parameters Database::SearchDevice(const std::string &target_device,
                                             const std::vector<std::string> &parameter_names) const {
   for (auto &device: devices) {
     if (device.name == target_device) {
+      log_debug("Found parameters for device type '" + target_device + "'");
 
       // Sets the parameters accordingly
       auto parameters = database::Parameters();

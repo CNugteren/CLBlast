@@ -1,5 +1,8 @@
 
 Development (next version)
+- The tuning database now has defaults per architecture (e.g. NVIDIA Kepler SM3.5, AMD Fiji)
+- The tuning database now has a dictionary to translate vendor/device names to a common set
+- The tuners can now distinguish between different AMD GPU board names of the same architecture
 - The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
 - Various minor fixes and enhancements
 - Added non-BLAS routines:

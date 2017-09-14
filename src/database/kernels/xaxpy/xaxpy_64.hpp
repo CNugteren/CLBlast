@@ -14,63 +14,114 @@ const DatabaseEntry XaxpyDouble = {
   "Xaxpy", Precision::kDouble, {"VW", "WGS", "WPT"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 1, 256, 1 } },
-        { "Ellesmere",                                       { 2, 64, 4 } },
-        { "Fiji",                                            { 2, 64, 4 } },
-        { "Hawaii",                                          { 1, 64, 2 } },
-        { "Oland",                                           { 1, 64, 1 } },
-        { "Pitcairn",                                        { 1, 128, 1 } },
-        { "Tahiti",                                          { 1, 64, 1 } },
-        { "Tonga",                                           { 1, 128, 4 } },
-        { "default",                                         { 2, 64, 1 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 2, 64, 4 } },
+          { "default",                                         { 2, 64, 4 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 2, 64, 4 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 1, 256, 1 } },
+          { "default",                                         { 1, 128, 1 } },
+        } },
+        { "Hawaii", {
+          { "AMD Radeon R9 290X",                              { 1, 64, 2 } },
+          { "default",                                         { 1, 64, 2 } },
+        } },
+        { "Oland", {
+          { "Oland",                                           { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Pitcairn", {
+          { "AMD Radeon R9 270X",                              { 1, 128, 1 } },
+          { "default",                                         { 1, 128, 1 } },
+        } },
+        { "Tahiti", {
+          { "AMD Radeon HD 7970",                              { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 1, 128, 4 } },
+          { "default",                                         { 1, 128, 4 } },
+        } },
+        { "default", {
+          { "default",                                         { 2, 64, 1 } },
+        } },
       }
     },
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
-        { "Mali-T628",                                       { 2, 128, 2 } },
-        { "default",                                         { 2, 128, 2 } },
+        { "default", {
+          { "Mali-T628",                                       { 2, 128, 2 } },
+          { "default",                                         { 2, 128, 2 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 64, 1 } },
-        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 1, 1024, 1 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 2, 1024, 1 } },
-        { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { 8, 64, 1 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 8, 256, 1 } },
-        { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 2048, 1 } },
-        { "default",                                         { 8, 64, 1 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 4, 64, 1 } },
+          { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 1, 1024, 1 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 2, 1024, 1 } },
+          { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { 8, 64, 1 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 8, 256, 1 } },
+          { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 8, 2048, 1 } },
+          { "default",                                         { 8, 64, 1 } },
+        } },
       }
     },
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
-        { "Intel(R) Many Integrated Core Acceleration Card", { 2, 512, 1 } },
-        { "default",                                         { 2, 512, 1 } },
+        { "default", {
+          { "Intel(R) Many Integrated Core Acceleration Card", { 2, 512, 1 } },
+          { "default",                                         { 2, 512, 1 } },
+        } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GRID K520",                                       { 1, 64, 1 } },
-        { "GeForce GTX 1070",                                { 1, 64, 8 } },
-        { "GeForce GTX 1080",                                { 1, 128, 1 } },
-        { "GeForce GTX 480",                                 { 1, 128, 1 } },
-        { "GeForce GTX 670",                                 { 1, 64, 1 } },
-        { "GeForce GTX 680",                                 { 1, 64, 1 } },
-        { "GeForce GTX 750",                                 { 1, 128, 1 } },
-        { "GeForce GTX 750 Ti",                              { 1, 256, 2 } },
-        { "GeForce GTX 980",                                 { 1, 256, 1 } },
-        { "GeForce GTX TITAN",                               { 2, 1024, 1 } },
-        { "GeForce GTX TITAN Black",                         { 2, 128, 1 } },
-        { "GeForce GTX TITAN X",                             { 1, 512, 1 } },
-        { "TITAN X (Pascal)",                                { 2, 512, 1 } },
-        { "Tesla K20m",                                      { 2, 128, 1 } },
-        { "Tesla K40m",                                      { 2, 128, 1 } },
-        { "default",                                         { 1, 128, 1 } },
+        { "SM2.0", {
+          { "GeForce GTX 480",                                 { 1, 128, 1 } },
+          { "default",                                         { 1, 128, 1 } },
+        } },
+        { "SM3.0", {
+          { "GRID K520",                                       { 1, 64, 1 } },
+          { "GeForce GTX 670",                                 { 1, 64, 1 } },
+          { "GeForce GTX 680",                                 { 1, 64, 1 } },
+          { "default",                                         { 1, 64, 1 } },
+        } },
+        { "SM3.5", {
+          { "GeForce GTX TITAN",                               { 2, 1024, 1 } },
+          { "GeForce GTX TITAN Black",                         { 2, 128, 1 } },
+          { "Tesla K20m",                                      { 2, 128, 1 } },
+          { "Tesla K40m",                                      { 2, 128, 1 } },
+          { "default",                                         { 2, 128, 1 } },
+        } },
+        { "SM5.0", {
+          { "GeForce GTX 750",                                 { 1, 128, 1 } },
+          { "GeForce GTX 750 Ti",                              { 1, 256, 2 } },
+          { "default",                                         { 1, 128, 1 } },
+        } },
+        { "SM5.2", {
+          { "GeForce GTX 980",                                 { 1, 256, 1 } },
+          { "GeForce GTX TITAN X",                             { 1, 512, 1 } },
+          { "default",                                         { 1, 512, 1 } },
+        } },
+        { "SM6.1", {
+          { "GeForce GTX 1070",                                { 1, 64, 8 } },
+          { "GeForce GTX 1080",                                { 1, 128, 1 } },
+          { "TITAN X (Pascal)",                                { 2, 512, 1 } },
+          { "default",                                         { 2, 256, 1 } },
+        } },
+        { "default", {
+          { "default",                                         { 1, 128, 1 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 2, 256, 1 } },
+        { "default", {
+          { "default",                                         { 2, 256, 1 } },
+        } },
       }
     },
   }

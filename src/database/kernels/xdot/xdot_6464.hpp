@@ -14,46 +14,90 @@ const DatabaseEntry XdotComplexDouble = {
   "Xdot", Precision::kComplexDouble, {"WGS1", "WGS2"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
-        { "AMD Radeon R9 M370X Compute Engine",              { 64, 32 } },
-        { "Ellesmere",                                       { 256, 32 } },
-        { "Fiji",                                            { 256, 32 } },
-        { "Oland",                                           { 256, 32 } },
-        { "Pitcairn",                                        { 256, 32 } },
-        { "Tahiti",                                          { 256, 32 } },
-        { "Tonga",                                           { 128, 64 } },
-        { "default",                                         { 256, 32 } },
+        { "Ellesmere", {
+          { "AMD Radeon RX 480",                               { 256, 32 } },
+          { "default",                                         { 256, 32 } },
+        } },
+        { "Fiji", {
+          { "AMD Radeon R9 Fury X",                            { 256, 32 } },
+          { "AMD Radeon R9 M370X Compute Engine",              { 64, 32 } },
+          { "default",                                         { 256, 32 } },
+        } },
+        { "Oland", {
+          { "Oland",                                           { 256, 32 } },
+          { "default",                                         { 256, 32 } },
+        } },
+        { "Pitcairn", {
+          { "AMD Radeon R9 270X",                              { 256, 32 } },
+          { "default",                                         { 256, 32 } },
+        } },
+        { "Tahiti", {
+          { "AMD Radeon HD 7970",                              { 256, 32 } },
+          { "default",                                         { 256, 32 } },
+        } },
+        { "Tonga", {
+          { "AMD Radeon R9 380",                               { 128, 64 } },
+          { "default",                                         { 128, 64 } },
+        } },
+        { "default", {
+          { "default",                                         { 256, 32 } },
+        } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
-        { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 32, 128 } },
-        { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 1024, 32 } },
-        { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 1024, 32 } },
-        { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 32, 32 } },
-        { "default",                                         { 128, 32 } },
+        { "default", {
+          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 32, 128 } },
+          { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 1024, 32 } },
+          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 1024, 32 } },
+          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 32, 32 } },
+          { "default",                                         { 128, 32 } },
+        } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
-        { "GRID K520",                                       { 64, 32 } },
-        { "GeForce GTX 1070",                                { 128, 64 } },
-        { "GeForce GTX 1080",                                { 128, 32 } },
-        { "GeForce GTX 480",                                 { 512, 32 } },
-        { "GeForce GTX 670",                                 { 512, 128 } },
-        { "GeForce GTX 680",                                 { 256, 64 } },
-        { "GeForce GTX 750",                                 { 256, 32 } },
-        { "GeForce GTX 750 Ti",                              { 64, 32 } },
-        { "GeForce GTX 980",                                 { 64, 32 } },
-        { "GeForce GTX TITAN Black",                         { 128, 32 } },
-        { "GeForce GTX TITAN X",                             { 128, 32 } },
-        { "TITAN X (Pascal)",                                { 128, 64 } },
-        { "Tesla K20m",                                      { 128, 32 } },
-        { "default",                                         { 128, 64 } },
+        { "SM2.0", {
+          { "GeForce GTX 480",                                 { 512, 32 } },
+          { "default",                                         { 512, 32 } },
+        } },
+        { "SM3.0", {
+          { "GRID K520",                                       { 64, 32 } },
+          { "GeForce GTX 670",                                 { 512, 128 } },
+          { "GeForce GTX 680",                                 { 256, 64 } },
+          { "default",                                         { 128, 128 } },
+        } },
+        { "SM3.5", {
+          { "GeForce GTX TITAN Black",                         { 128, 32 } },
+          { "Tesla K20m",                                      { 128, 32 } },
+          { "default",                                         { 128, 32 } },
+        } },
+        { "SM5.0", {
+          { "GeForce GTX 750",                                 { 256, 32 } },
+          { "GeForce GTX 750 Ti",                              { 64, 32 } },
+          { "default",                                         { 64, 32 } },
+        } },
+        { "SM5.2", {
+          { "GeForce GTX 980",                                 { 64, 32 } },
+          { "GeForce GTX TITAN X",                             { 128, 32 } },
+          { "default",                                         { 128, 32 } },
+        } },
+        { "SM6.1", {
+          { "GeForce GTX 1070",                                { 128, 64 } },
+          { "GeForce GTX 1080",                                { 128, 32 } },
+          { "TITAN X (Pascal)",                                { 128, 64 } },
+          { "default",                                         { 128, 256 } },
+        } },
+        { "default", {
+          { "default",                                         { 128, 64 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
-        { "default",                                         { 256, 32 } },
+        { "default", {
+          { "default",                                         { 256, 32 } },
+        } },
       }
     },
   }
