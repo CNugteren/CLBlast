@@ -109,7 +109,7 @@ For all of CLBlast's APIs, it is possible to optionally set an OS environmental 
 Using the tuners (optional)
 -------------
 
-The CLBlast library is already tuned for the most commonly used OpenCL devices and it's gradually being extended to other devices as well. For unseen devices CLBlast will make use of common-best tuning values for similar devices (e.g. AMD GPUs), so performance might still be decent. The current release of CLBlast is tuned for devices with the following `CL_DEVICE_NAME` values:
+The CLBlast library is already tuned for the most commonly used OpenCL devices and it's gradually being extended to other devices as well. For unseen devices CLBlast will make use of common-best tuning values for similar architectures (e.g. AMD Fiji) or in general similar devices (e.g. AMD GPUs), so performance might still be decent. The current release of CLBlast is tuned for the following devices:
 
 * NVIDIA GPUs:
   - GRID K520
@@ -129,16 +129,15 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Tesla K20m
   - Tesla K40m
 * AMD GPUs:
-  - AMD Radeon R9 M370X Compute Engine
-  - ATI Radeon HD 6750M
-  - Ellesmere
-  - Fiji
-  - Hawaii
-  - Oland
-  - Pitcairn
-  - Tahiti
-  - Tonga
-  - Turks
+  - Radeon HD 6750M
+  - Radeon HD 6770M
+  - Radeon HD 7970
+  - Radeon R9 270X
+  - Radeon R9 290X
+  - Radeon R9 M370X
+  - Radeon R9 380
+  - Radeon RX 480
+  - Radeon R9 Fury X
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -154,6 +153,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-3770K
   - Core i7-4790K
   - Core i7-5930K
+  - Core i7-6770HQ
 * Other devices:
   - ARM Mali-T628 GPU
   - Qualcomm Adreno 330 GPU

@@ -199,8 +199,10 @@ database::Parameters Database::SearchDevice(const std::string &target_device,
                                             const std::vector<std::string> &parameter_names) const {
   for (auto &device: devices) {
     const auto device_name = CharArrayToString(device.name);
-    if (device_name == target_device) {
-      log_debug("Found parameters for device type '" + target_device + "'");
+    // Cuts off 'target_device' string at 50 since the database cuts off as well
+    const auto target_device_cut_off = (target_device.length() > 50) ? target_device.substr(0, 50) : target_device;
+    if (device_name == target_device_cut_off) {
+      log_debug("Found parameters for device type '" + target_device_cut_off + "'");
 
       // Sets the parameters accordingly
       auto parameters = database::Parameters();
