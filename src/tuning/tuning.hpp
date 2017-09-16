@@ -66,7 +66,11 @@ void Tuner(int argc, char* argv[]) {
   auto isAMD = false;
   auto isARM = false;
   auto isGPU = false;
-  {
+  auto device_type = std::string{};
+  auto device_vendor = std::string{};
+  auto device_architecture = std::string{};
+  auto device_name = std::string{};
+  { // In a block such that the platform and the device are destroyed before initializing the tuner
     const auto platform = Platform(args.platform_id);
     const auto device = Device(platform, args.device_id);
     if (!PrecisionSupported<T>(device)) {
@@ -76,6 +80,10 @@ void Tuner(int argc, char* argv[]) {
     isAMD = device.IsAMD();
     isARM = device.IsARM();
     isGPU = device.IsGPU();
+    device_type = GetDeviceType(device);
+    device_vendor = GetDeviceVendor(device);
+    device_architecture = GetDeviceArchitecture(device);
+    device_name = GetDeviceName(device);
   }
 
   // Creates input buffers with random data
@@ -159,7 +167,11 @@ void Tuner(int argc, char* argv[]) {
   auto precision_string = std::to_string(static_cast<size_t>(args.precision));
   auto metadata = std::vector<std::pair<std::string,std::string>>{
     {"kernel_family", C::KernelFamily()},
-    {"precision", precision_string}
+    {"precision", precision_string},
+    {"clblast_device_type", device_type},
+    {"clblast_device_vendor", device_vendor},
+    {"clblast_device_architecture", device_architecture},
+    {"clblast_device_name", device_name}
   };
   for (auto &o: C::GetOptions()) {
     if (o == kArgM)     { metadata.push_back({"arg_m", std::to_string(args.m)}); }

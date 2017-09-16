@@ -2512,18 +2512,21 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
     }
 
     // Retrieves the names and values separately
-    auto parameter_values = std::vector<size_t>();
+    auto parameter_values = database::Params{0};
     auto parameter_names = std::vector<std::string>();
+    auto i = size_t{0};
     for (const auto &parameter : parameters) {
-      parameter_values.push_back(parameter.second);
+      parameter_values[i] = parameter.second;
       parameter_names.push_back(parameter.first);
+      ++i;
     }
 
     // Creates a small custom database based on the provided parameters
-    const auto database_device = Database::DatabaseDevice{"default", parameter_values};
-    const auto database_vendor = Database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_device}};
-    const auto database_entry = Database::DatabaseEntry{kernel_name, precision, parameter_names, {database_vendor}};
-    const auto database_entries = std::vector<Database::DatabaseEntry>{database_entry};
+    const auto database_device = database::DatabaseDevice{database::kDeviceNameDefault, parameter_values};
+    const auto database_architecture = database::DatabaseArchitecture{"default", {database_device}};
+    const auto database_vendor = database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_architecture}};
+    const auto database_entry = database::DatabaseEntry{kernel_name, precision, parameter_names, {database_vendor}};
+    const auto database_entries = std::vector<database::DatabaseEntry>{database_entry};
     const auto database = Database(device_cpp, kernel_name, precision, database_entries);
 
     // Removes the old database entry and stores the new one in the cache

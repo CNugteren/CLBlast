@@ -22,47 +22,47 @@ namespace clblast {
 namespace database {
 // =================================================================================================
 
-const Database::DatabaseEntry XaxpyApple = {
-  "Xaxpy", Precision::kAny, {"VW", "WGS", "WPT"}, { { kDeviceTypeAll, "default", { { "default", { 8, 1, 4 } } } } }
+const DatabaseEntry XaxpyApple = {
+  "Xaxpy", Precision::kAny, {"VW", "WGS", "WPT"}, { { kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XdotApple = {
-  "Xdot", Precision::kAny, {"WGS1", "WGS2"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1 } } } } }
+const DatabaseEntry XdotApple = {
+  "Xdot", Precision::kAny, {"WGS1", "WGS2"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XgemvApple = {
-  "Xgemv", Precision::kAny, {"WGS1", "WPT1", "UNROLL1"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 4, 1 } } } } }
+const DatabaseEntry XgemvApple = {
+  "Xgemv", Precision::kAny, {"WGS1", "WPT1", "UNROLL1"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XgemvFastApple = {
-  "XgemvFast", Precision::kAny, {"VW2", "WGS2", "WPT2"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1 } } } } }
+const DatabaseEntry XgemvFastApple = {
+  "XgemvFast", Precision::kAny, {"VW2", "WGS2", "WPT2"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XgemvFastRotApple = {
-  "XgemvFastRot", Precision::kAny, {"VW3", "WGS3", "WPT3"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1 } } } } }
+const DatabaseEntry XgemvFastRotApple = {
+  "XgemvFastRot", Precision::kAny, {"VW3", "WGS3", "WPT3"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XgerApple = {
-  "Xger", Precision::kAny, {"WGS1", "WGS2", "WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 64, 1, 2 } } } } }
+const DatabaseEntry XgerApple = {
+  "Xger", Precision::kAny, {"WGS1", "WGS2", "WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 64, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XtrsvApple = {
-  "Xtrsv", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { 32 } } } } }
+const DatabaseEntry XtrsvApple = {
+  "Xtrsv", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry XgemmApple = {
-  "Xgemm", Precision::kAny, {"KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1 } } } } }
+const DatabaseEntry XgemmApple = {
+  "Xgemm", Precision::kAny, {"KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1 } } } } } } }
 };
-const Database::DatabaseEntry XgemmDirectApple = {
-  "XgemmDirect", Precision::kAny, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1 } } } } }
+const DatabaseEntry XgemmDirectApple = {
+  "XgemmDirect", Precision::kAny, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry CopyApple = {
-  "Copy", Precision::kAny, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1 } } } } }
+const DatabaseEntry CopyApple = {
+  "Copy", Precision::kAny, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry PadApple = {
-  "Pad", Precision::kAny, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 1, 1, 1 } } } } }
+const DatabaseEntry PadApple = {
+  "Pad", Precision::kAny, {"PAD_DIMX", "PAD_DIMY", "PAD_WPTX", "PAD_WPTY"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry TransposeApple = {
-  "Transpose", Precision::kAny, {"TRA_DIM", "TRA_PAD", "TRA_SHUFFLE", "TRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 1, 0, 0, 1 } } } } }
+const DatabaseEntry TransposeApple = {
+  "Transpose", Precision::kAny, {"TRA_DIM", "TRA_PAD", "TRA_SHUFFLE", "TRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry PadtransposeApple = {
-  "Padtranspose", Precision::kAny, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { 0, 1, 1 } } } } }
+const DatabaseEntry PadtransposeApple = {
+  "Padtranspose", Precision::kAny, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
-const Database::DatabaseEntry InvertApple = {
-  "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { 16 } } } } }
+const DatabaseEntry InvertApple = {
+  "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 
 // =================================================================================================

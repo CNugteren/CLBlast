@@ -40,7 +40,7 @@ class Routine {
   // and routine list, otherwise the caching logic will break.
   explicit Routine(Queue &queue, EventPointer event, const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
-                   const std::vector<Database::DatabaseEntry> &userDatabase,
+                   const std::vector<database::DatabaseEntry> &userDatabase,
                    std::initializer_list<const char *> source);
 
   // List of kernel-routine look-ups
@@ -59,7 +59,7 @@ class Routine {
   void InitProgram(std::initializer_list<const char *> source);
 
   // Initializes db_, fetching cached database or building one
-  void InitDatabase(const std::vector<Database::DatabaseEntry> &userDatabase);
+  void InitDatabase(const std::vector<database::DatabaseEntry> &userDatabase);
 
  protected:
 

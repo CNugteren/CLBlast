@@ -11,14 +11,16 @@
 //
 // =================================================================================================
 
-#include "utilities/utilities.hpp"
-
 #include <string>
 #include <vector>
 #include <chrono>
 #include <random>
 #include <iomanip>
 #include <cmath>
+
+#include "utilities/utilities.hpp"
+
+#include "utilities/device_mapping.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -390,17 +392,62 @@ template <> Precision PrecisionValue<double2>() { return Precision::kComplexDoub
 template <> bool PrecisionSupported<float>(const Device &) { return true; }
 template <> bool PrecisionSupported<float2>(const Device &) { return true; }
 template <> bool PrecisionSupported<double>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+  return device.HasExtension(kKhronosDoublePrecision);
 }
 template <> bool PrecisionSupported<double2>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+  return device.HasExtension(kKhronosDoublePrecision);
 }
 template <> bool PrecisionSupported<half>(const Device &device) {
-  auto extensions = device.Capabilities();
   if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
-  return (extensions.find(kKhronosHalfPrecision) == std::string::npos) ? false : true;
+  return device.HasExtension(kKhronosHalfPrecision);
+}
+
+// =================================================================================================
+
+// High-level info
+std::string GetDeviceType(const Device& device) {
+  return device.Type();
+}
+std::string GetDeviceVendor(const Device& device) {
+  auto device_vendor = device.Vendor();
+
+  for (auto &find_and_replace : device_mapping::kVendorNames) { // replacing to common names
+    if (device_vendor == find_and_replace.first) { device_vendor = find_and_replace.second; }
+  }
+  return device_vendor;
+}
+
+// Mid-level info
+std::string GetDeviceArchitecture(const Device& device) {
+  auto device_architecture = std::string{""};
+  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+    device_architecture = device.NVIDIAComputeCapability();
+  }
+  else if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+  }
+  // Note: no else - 'device_architecture' might be the empty string
+
+  for (auto &find_and_replace : device_mapping::kArchitectureNames) { // replacing to common names
+    if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
+  }
+  return device_architecture;
+}
+
+// Lowest-level
+std::string GetDeviceName(const Device& device) {
+  auto device_name = std::string{""};
+  if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_name = device.AMDBoardName();
+  }
+  else {
+    device_name = device.Name();
+  }
+
+  for (auto &find_and_replace : device_mapping::kDeviceNames) { // replacing to common names
+    if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
+  }
+  return device_name;
 }
 
 // =================================================================================================

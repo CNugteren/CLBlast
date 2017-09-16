@@ -40,6 +40,8 @@ using double2 = std::complex<double>;
 // Khronos OpenCL extensions
 const std::string kKhronosHalfPrecision = "cl_khr_fp16";
 const std::string kKhronosDoublePrecision = "cl_khr_fp64";
+const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
+const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
 
 // Catched an unknown error
 constexpr auto kUnknownError = -999;
@@ -118,6 +120,17 @@ constexpr auto kBufMatB = "B";
 constexpr auto kBufMatC = "C";
 constexpr auto kBufMatAP = "AP";
 constexpr auto kBufScalar = "Scalar";
+
+// =================================================================================================
+
+#ifdef VERBOSE
+inline void log_debug(const std::string &log_string) {
+  printf("[DEBUG] %s\n", log_string.c_str());
+}
+#else
+inline void log_debug(const std::string&) { }
+#endif
+
 
 // =================================================================================================
 
@@ -304,6 +317,14 @@ Precision PrecisionValue();
 // Returns false is this precision is not supported by the device
 template <typename T>
 bool PrecisionSupported(const Device &device);
+
+// =================================================================================================
+
+// Device information in a specific CLBlast form
+std::string GetDeviceType(const Device& device);
+std::string GetDeviceVendor(const Device& device);
+std::string GetDeviceArchitecture(const Device& device);
+std::string GetDeviceName(const Device& device);
 
 // =================================================================================================
 } // namespace clblast
