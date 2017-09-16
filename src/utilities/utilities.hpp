@@ -123,11 +123,14 @@ constexpr auto kBufScalar = "Scalar";
 
 // =================================================================================================
 
+#ifdef VERBOSE
 inline void log_debug(const std::string &log_string) {
-  #ifdef VERBOSE
-    printf("[DEBUG] %s\n", log_string.c_str());
-  #endif
+  printf("[DEBUG] %s\n", log_string.c_str());
 }
+#else
+inline void log_debug(const std::string&) { }
+#endif
+
 
 // =================================================================================================
 

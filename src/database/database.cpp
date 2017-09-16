@@ -86,7 +86,7 @@ Database::Database(const Device &device, const std::string &kernel_name,
   log_debug("Device name '" + device_name + "'; architecture '" + device_architecture + "'");
 
   // Sets the databases to search through
-  const auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};
+  auto databases = std::list<std::vector<database::DatabaseEntry>>{overlay, database};
 
   // Special case: modifies the database if the device is a CPU with Apple OpenCL
   #if defined(__APPLE__) || defined(__MACOSX)
