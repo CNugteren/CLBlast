@@ -15,6 +15,7 @@
 #define CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 
 #include <string>
+#include <array>
 #include <vector>
 #include <unordered_map>
 
@@ -24,19 +25,23 @@ namespace database {
 
 // =================================================================================================
 
+// Type alias for the database storage (arrays for fast compilation/efficiency)
+using Name = std::array<char, 51>; // name as stored in database (50 chars + string terminator)
+using Params = std::array<size_t, 14>; // parameters as stored in database
+
+// Type alias after extracting from the database (map for improved code readability)
+using Parameters = std::unordered_map<std::string, size_t>; // parameters after reading from DB
+
 // The OpenCL device types
 const std::string kDeviceTypeCPU = "CPU";
 const std::string kDeviceTypeGPU = "GPU";
 const std::string kDeviceTypeAccelerator = "accelerator";
 const std::string kDeviceTypeAll = "default";
+const Name kDeviceNameDefault = {"default                                           "};
 
-// Type alias for the database parameters
-using Parameters = std::unordered_map<std::string, size_t>;
-
-// Structures for content inside the database
 struct DatabaseDevice {
-  const std::string name;
-  const std::vector<size_t> parameters; // parameter values
+  const Name name;
+  const Params parameters; // parameter values
 };
 struct DatabaseArchitecture {
   const std::string name;

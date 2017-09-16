@@ -38,10 +38,6 @@
 namespace clblast {
 // =================================================================================================
 
-namespace database {
-extern const DatabaseEntry CopyHalf;
-}
-
 // Initializes the databases
 const std::vector<database::DatabaseEntry> Database::database = std::vector<database::DatabaseEntry>{
   database::XaxpyHalf, database::XaxpySingle, database::XaxpyDouble, database::XaxpyComplexSingle, database::XaxpyComplexDouble,
@@ -202,19 +198,27 @@ database::Parameters Database::SearchDevice(const std::string &target_device,
                                             const std::vector<database::DatabaseDevice> &devices,
                                             const std::vector<std::string> &parameter_names) const {
   for (auto &device: devices) {
-    if (device.name == target_device) {
+    const auto device_name = CharArrayToString(device.name);
+    if (device_name == target_device) {
       log_debug("Found parameters for device type '" + target_device + "'");
 
       // Sets the parameters accordingly
       auto parameters = database::Parameters();
-      if (parameter_names.size() != device.parameters.size()) { return database::Parameters(); } // ERROR
+      if (parameter_names.size() > device.parameters.size()) { return database::Parameters(); } // ERROR
       for (auto i = size_t{0}; i < parameter_names.size(); ++i) {
-        parameters[parameter_names[i]] = device.parameters[i];
+        parameters[parameter_names[i]] = static_cast<size_t>(device.parameters[i]);
       }
       return parameters;
     }
   }
   return database::Parameters();
+}
+
+// Helper to convert from database format to proper types
+std::string Database::CharArrayToString(const database::Name char_array) const {
+  auto result = std::string(char_array.data());
+  result.erase(result.find_last_not_of(" \t\n\r\f\v") + 1);
+  return result;
 }
 
 // =================================================================================================

@@ -19,7 +19,7 @@ const DatabaseEntry InvertHalf = {
   "Invert", Precision::kHalf, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 16 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -31,7 +31,7 @@ const DatabaseEntry InvertSingle = {
   "Invert", Precision::kSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 16 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -43,7 +43,7 @@ const DatabaseEntry InvertComplexSingle = {
   "Invert", Precision::kComplexSingle, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 16 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -55,7 +55,7 @@ const DatabaseEntry InvertDouble = {
   "Invert", Precision::kDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 16 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -67,7 +67,7 @@ const DatabaseEntry InvertComplexDouble = {
   "Invert", Precision::kComplexDouble, {"INTERNAL_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 16 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }

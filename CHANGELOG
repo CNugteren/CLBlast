@@ -4,6 +4,7 @@ Development (next version)
 - The tuning database now has a dictionary to translate vendor/device names to a common set
 - The tuners can now distinguish between different AMD GPU board names of the same architecture
 - The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
+- Further improved compilation time of database.cpp
 - Various minor fixes and enhancements
 - Added non-BLAS routines:
   * SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL (im2col transform as used to express convolution as GEMM)

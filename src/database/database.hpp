@@ -76,6 +76,9 @@ class Database {
                                            const std::vector<database::DatabaseVendor> &vendors,
                                            const std::vector<std::string> &parameter_names) const;
 
+  // Helper to convert from database format to proper types
+  std::string CharArrayToString(const database::Name char_array) const;
+
   // Found parameters suitable for this device/kernel
   std::shared_ptr<database::Parameters> parameters_;
 };

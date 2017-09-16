@@ -7,10 +7,15 @@
 
 import os
 
+# Type settings (also change in database_structure.hpp)
+STRING_LENGTH = 50
+PARAMETERS_LENGTH = 14
+
 # Constants from the C++ code
 VENDOR_DEFAULT = "default"
 DEVICE_TYPE_DEFAULT = "All"
 DEVICE_NAME_DEFAULT = "default"
+DEVICE_NAME_DEFAULT_CONSTANT = "kDeviceNameDefault                                        "
 DEVICE_ARCHITECTURE_DEFAULT = "default"
 
 # List of attributes
@@ -89,6 +94,10 @@ def get_cpp_family_includes(family, precisions):
     return result
 
 
+def print_as_name(name):
+    return "Name{\"%-50s\"}" % name.strip()[:STRING_LENGTH]
+
+
 def print_cpp_database(database, output_dir):
     """Outputs the database as C++ code"""
 
@@ -153,8 +162,8 @@ def print_cpp_database(database, output_dir):
                             devices = sorted(set([s["clblast_device_name"] for s in architecture_database]))
                             for device_name in devices:
                                 device_database = [s for s in architecture_database if s["clblast_device_name"] == device_name]
-                                device_name_quoted = "\"%s\"," % device_name.strip()
-                                device_name_cpp = "          { %-50s { " % device_name_quoted
+                                device_name_as_string = print_as_name(device_name) if device_name != DEVICE_NAME_DEFAULT else DEVICE_NAME_DEFAULT_CONSTANT
+                                device_name_cpp = "          { %s, Params{ " % device_name_as_string
                                 f.write(device_name_cpp)
 
                                 # Collects the parameters for this entry
@@ -174,6 +183,11 @@ def print_cpp_database(database, output_dir):
                                         parameter_value = new_parameters[parameter_name]
                                         parameters.append(str(parameter_value))
                                         parameter_index += 1
+
+                                # Appends zero's to complete the list
+                                assert parameter_index <= PARAMETERS_LENGTH
+                                for append_index in range(parameter_index, PARAMETERS_LENGTH):
+                                    parameters.append("0")
 
                                 # Prints the entry
                                 f.write(", ".join(parameters))

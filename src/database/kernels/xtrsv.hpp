@@ -19,7 +19,7 @@ const DatabaseEntry XtrsvHalf = {
   "Xtrsv", Precision::kHalf, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 32 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -31,7 +31,7 @@ const DatabaseEntry XtrsvSingle = {
   "Xtrsv", Precision::kSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 32 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -43,7 +43,7 @@ const DatabaseEntry XtrsvComplexSingle = {
   "Xtrsv", Precision::kComplexSingle, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 32 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -55,7 +55,7 @@ const DatabaseEntry XtrsvDouble = {
   "Xtrsv", Precision::kDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 32 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }
@@ -67,7 +67,7 @@ const DatabaseEntry XtrsvComplexDouble = {
   "Xtrsv", Precision::kComplexDouble, {"TRSV_BLOCK_SIZE"}, {
     { // Default
       kDeviceTypeAll, "default", {
-        { "default", { { "default",                                         { 32 } } } },
+        { "default", { { kDeviceNameDefault, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } },
       }
     },
   }

@@ -15,143 +15,143 @@ const DatabaseEntry XgemmSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere", {
-          { "AMD Radeon RX 480",                               { 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
-          { "default",                                         { 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
+          { Name{"AMD Radeon RX 480                                 "}, Params{ 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
         } },
         { "Fiji", {
-          { "AMD Radeon R9 Fury X",                            { 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
-          { "AMD Radeon R9 M370X Compute Engine",              { 32, 2, 16, 16, 64, 8, 16, 128, 0, 0, 0, 0, 2, 8 } },
-          { "default",                                         { 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
+          { Name{"AMD Radeon R9 Fury X                              "}, Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"AMD Radeon R9 M370X Compute Engine                "}, Params{ 32, 2, 16, 16, 64, 8, 16, 128, 0, 0, 0, 0, 2, 8 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
         } },
         { "Hawaii", {
-          { "AMD Radeon R9 290X",                              { 16, 2, 16, 32, 128, 32, 8, 64, 1, 1, 1, 1, 4, 2 } },
-          { "default",                                         { 16, 2, 16, 32, 128, 32, 8, 64, 1, 1, 1, 1, 4, 2 } },
+          { Name{"AMD Radeon R9 290X                                "}, Params{ 16, 2, 16, 32, 128, 32, 8, 64, 1, 1, 1, 1, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 32, 128, 32, 8, 64, 1, 1, 1, 1, 4, 2 } },
         } },
         { "Oland", {
-          { "Oland",                                           { 16, 2, 32, 16, 64, 32, 16, 128, 1, 1, 1, 0, 2, 4 } },
-          { "default",                                         { 16, 2, 32, 16, 64, 32, 16, 128, 1, 1, 1, 0, 2, 4 } },
+          { Name{"Oland                                             "}, Params{ 16, 2, 32, 16, 64, 32, 16, 128, 1, 1, 1, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 32, 16, 64, 32, 16, 128, 1, 1, 1, 0, 2, 4 } },
         } },
         { "Pitcairn", {
-          { "AMD Radeon R9 270X",                              { 16, 2, 16, 8, 32, 16, 16, 128, 0, 0, 1, 0, 1, 1 } },
-          { "default",                                         { 16, 2, 16, 8, 32, 16, 16, 128, 0, 0, 1, 0, 1, 1 } },
+          { Name{"AMD Radeon R9 270X                                "}, Params{ 16, 2, 16, 8, 32, 16, 16, 128, 0, 0, 1, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 8, 32, 16, 16, 128, 0, 0, 1, 0, 1, 1 } },
         } },
         { "Tahiti", {
-          { "AMD Radeon HD 7970",                              { 32, 2, 16, 32, 128, 16, 8, 64, 0, 0, 0, 0, 4, 1 } },
-          { "default",                                         { 32, 2, 16, 32, 128, 16, 8, 64, 0, 0, 0, 0, 4, 1 } },
+          { Name{"AMD Radeon HD 7970                                "}, Params{ 32, 2, 16, 32, 128, 16, 8, 64, 0, 0, 0, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 32, 128, 16, 8, 64, 0, 0, 0, 0, 4, 1 } },
         } },
         { "Tonga", {
-          { "AMD Radeon R9 380",                               { 16, 2, 16, 32, 64, 16, 8, 128, 1, 1, 0, 0, 2, 8 } },
-          { "default",                                         { 16, 2, 16, 32, 64, 16, 8, 128, 1, 1, 0, 0, 2, 8 } },
+          { Name{"AMD Radeon R9 380                                 "}, Params{ 16, 2, 16, 32, 64, 16, 8, 128, 1, 1, 0, 0, 2, 8 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 32, 64, 16, 8, 128, 1, 1, 0, 0, 2, 8 } },
         } },
         { "Turks", {
-          { "AMD Radeon HD 6770M",                             { 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
-          { "default",                                         { 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { Name{"AMD Radeon HD 6770M                               "}, Params{ 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
         { "Vancouver", {
-          { "ATI Radeon HD 6750M",                             { 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
-          { "default",                                         { 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
+          { Name{"ATI Radeon HD 6750M                               "}, Params{ 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
         } },
         { "default", {
-          { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
       }
     },
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { "Mali-T628",                                       { 16, 2, 8, 8, 64, 8, 16, 16, 0, 0, 1, 1, 8, 1 } },
-          { "default",                                         { 16, 2, 8, 8, 64, 8, 16, 16, 0, 0, 1, 1, 8, 1 } },
+          { Name{"Mali-T628                                         "}, Params{ 16, 2, 8, 8, 64, 8, 16, 16, 0, 0, 1, 1, 8, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 8, 8, 64, 8, 16, 16, 0, 0, 1, 1, 8, 1 } },
         } },
       }
     },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {
-          { "Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz",       { 16, 2, 8, 8, 128, 16, 8, 128, 0, 1, 1, 1, 1, 8 } },
-          { "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz",        { 32, 8, 32, 32, 64, 32, 16, 64, 1, 1, 1, 0, 2, 2 } },
-          { "Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz", { 32, 2, 16, 8, 128, 16, 8, 64, 0, 0, 1, 0, 1, 2 } },
-          { "Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz",         { 32, 2, 32, 8, 128, 8, 8, 128, 1, 1, 1, 1, 2, 8 } },
-          { "Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz",        { 16, 2, 8, 8, 128, 8, 8, 128, 1, 1, 1, 0, 1, 8 } },
-          { "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz",        { 32, 8, 16, 16, 64, 32, 32, 64, 0, 1, 1, 0, 1, 2 } },
-          { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 16, 2, 8, 8, 128, 16, 8, 128, 0, 1, 1, 1, 1, 8 } },
+          { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 32, 8, 32, 32, 64, 32, 16, 64, 1, 1, 1, 0, 2, 2 } },
+          { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 32, 2, 16, 8, 128, 16, 8, 64, 0, 0, 1, 0, 1, 2 } },
+          { Name{"Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz           "}, Params{ 32, 2, 32, 8, 128, 8, 8, 128, 1, 1, 1, 1, 2, 8 } },
+          { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 16, 2, 8, 8, 128, 8, 8, 128, 1, 1, 1, 0, 1, 8 } },
+          { Name{"Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz          "}, Params{ 32, 8, 16, 16, 64, 32, 32, 64, 0, 1, 1, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
-          { "Intel(R) HD Graphics 530",                        { 32, 2, 8, 8, 128, 32, 16, 64, 0, 0, 1, 0, 4, 2 } },
-          { "Intel(R) HD Graphics 5500 BroadWell U-Processor GT2", { 32, 8, 8, 8, 64, 32, 16, 64, 1, 1, 1, 1, 4, 2 } },
-          { "Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile", { 16, 2, 16, 8, 32, 8, 16, 128, 1, 1, 1, 1, 2, 4 } },
-          { "Intel(R) HD Graphics IvyBridge M GT2",            { 32, 2, 16, 16, 64, 16, 8, 64, 1, 1, 1, 0, 2, 4 } },
-          { "Intel(R) HD Graphics Skylake ULT GT2",            { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
-          { "Iris",                                            { 16, 8, 16, 8, 128, 32, 16, 64, 1, 1, 1, 1, 4, 1 } },
-          { "Iris Pro",                                        { 16, 2, 16, 8, 64, 32, 32, 128, 1, 1, 1, 0, 4, 4 } },
-          { "default",                                         { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Intel(R) HD Graphics 530                          "}, Params{ 32, 2, 8, 8, 128, 32, 16, 64, 0, 0, 1, 0, 4, 2 } },
+          { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 32, 8, 8, 8, 64, 32, 16, 64, 1, 1, 1, 1, 4, 2 } },
+          { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 16, 2, 16, 8, 32, 8, 16, 128, 1, 1, 1, 1, 2, 4 } },
+          { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 32, 2, 16, 16, 64, 16, 8, 64, 1, 1, 1, 0, 2, 4 } },
+          { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Iris                                              "}, Params{ 16, 8, 16, 8, 128, 32, 16, 64, 1, 1, 1, 1, 4, 1 } },
+          { Name{"Iris Pro                                          "}, Params{ 16, 2, 16, 8, 64, 32, 32, 128, 1, 1, 1, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
         { "default", {
-          { "Intel(R) Many Integrated Core Acceleration Card", { 32, 2, 32, 32, 32, 32, 8, 128, 0, 0, 1, 0, 1, 4 } },
-          { "default",                                         { 32, 2, 32, 32, 32, 32, 8, 128, 0, 0, 1, 0, 1, 4 } },
+          { Name{"Intel(R) Many Integrated Core Acceleration Card   "}, Params{ 32, 2, 32, 32, 32, 32, 8, 128, 0, 0, 1, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 32, 8, 128, 0, 0, 1, 0, 1, 4 } },
         } },
       }
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM2.0", {
-          { "GeForce GTX 480",                                 { 16, 2, 16, 8, 64, 32, 16, 64, 1, 1, 1, 1, 2, 2 } },
-          { "default",                                         { 16, 2, 16, 8, 64, 32, 16, 64, 1, 1, 1, 1, 2, 2 } },
+          { Name{"GeForce GTX 480                                   "}, Params{ 16, 2, 16, 8, 64, 32, 16, 64, 1, 1, 1, 1, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 8, 64, 32, 16, 64, 1, 1, 1, 1, 2, 2 } },
         } },
         { "SM3.0", {
-          { "GRID K520",                                       { 16, 2, 16, 8, 32, 8, 16, 64, 1, 1, 1, 1, 2, 4 } },
-          { "GeForce GT 650M",                                 { 32, 2, 8, 8, 32, 32, 32, 64, 1, 1, 0, 0, 4, 2 } },
-          { "GeForce GTX 670",                                 { 16, 2, 8, 8, 64, 16, 16, 64, 1, 1, 1, 0, 2, 4 } },
-          { "GeForce GTX 680",                                 { 32, 8, 8, 16, 64, 32, 16, 128, 1, 1, 0, 0, 4, 2 } },
-          { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { Name{"GRID K520                                         "}, Params{ 16, 2, 16, 8, 32, 8, 16, 64, 1, 1, 1, 1, 2, 4 } },
+          { Name{"GeForce GT 650M                                   "}, Params{ 32, 2, 8, 8, 32, 32, 32, 64, 1, 1, 0, 0, 4, 2 } },
+          { Name{"GeForce GTX 670                                   "}, Params{ 16, 2, 8, 8, 64, 16, 16, 64, 1, 1, 1, 0, 2, 4 } },
+          { Name{"GeForce GTX 680                                   "}, Params{ 32, 8, 8, 16, 64, 32, 16, 128, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
         } },
         { "SM3.5", {
-          { "GeForce GTX TITAN",                               { 16, 8, 32, 16, 64, 8, 8, 64, 1, 1, 1, 0, 2, 2 } },
-          { "GeForce GTX TITAN Black",                         { 16, 2, 16, 8, 64, 16, 16, 64, 1, 1, 1, 0, 4, 1 } },
-          { "Tesla K20m",                                      { 16, 2, 32, 16, 64, 16, 8, 64, 1, 1, 1, 0, 2, 4 } },
-          { "Tesla K40m",                                      { 16, 8, 16, 8, 64, 16, 16, 128, 1, 1, 1, 0, 2, 4 } },
-          { "default",                                         { 16, 8, 32, 16, 64, 32, 16, 64, 1, 0, 1, 0, 2, 2 } },
+          { Name{"GeForce GTX TITAN                                 "}, Params{ 16, 8, 32, 16, 64, 8, 8, 64, 1, 1, 1, 0, 2, 2 } },
+          { Name{"GeForce GTX TITAN Black                           "}, Params{ 16, 2, 16, 8, 64, 16, 16, 64, 1, 1, 1, 0, 4, 1 } },
+          { Name{"Tesla K20m                                        "}, Params{ 16, 2, 32, 16, 64, 16, 8, 64, 1, 1, 1, 0, 2, 4 } },
+          { Name{"Tesla K40m                                        "}, Params{ 16, 8, 16, 8, 64, 16, 16, 128, 1, 1, 1, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 16, 8, 32, 16, 64, 32, 16, 64, 1, 0, 1, 0, 2, 2 } },
         } },
         { "SM5.0", {
-          { "GeForce GTX 750",                                 { 16, 2, 16, 16, 64, 32, 8, 128, 1, 1, 1, 1, 1, 2 } },
-          { "GeForce GTX 750 Ti",                              { 16, 2, 16, 16, 128, 32, 8, 64, 1, 1, 0, 1, 8, 2 } },
-          { "default",                                         { 32, 2, 8, 8, 64, 32, 32, 64, 0, 0, 0, 0, 2, 1 } },
+          { Name{"GeForce GTX 750                                   "}, Params{ 16, 2, 16, 16, 64, 32, 8, 128, 1, 1, 1, 1, 1, 2 } },
+          { Name{"GeForce GTX 750 Ti                                "}, Params{ 16, 2, 16, 16, 128, 32, 8, 64, 1, 1, 0, 1, 8, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 32, 32, 64, 0, 0, 0, 0, 2, 1 } },
         } },
         { "SM5.2", {
-          { "GeForce GTX 980",                                 { 16, 2, 16, 16, 64, 16, 8, 128, 1, 1, 1, 0, 4, 8 } },
-          { "GeForce GTX TITAN X",                             { 16, 2, 8, 16, 128, 8, 8, 128, 1, 1, 1, 1, 4, 8 } },
-          { "default",                                         { 16, 2, 16, 16, 128, 16, 8, 128, 1, 1, 1, 0, 4, 8 } },
+          { Name{"GeForce GTX 980                                   "}, Params{ 16, 2, 16, 16, 64, 16, 8, 128, 1, 1, 1, 0, 4, 8 } },
+          { Name{"GeForce GTX TITAN X                               "}, Params{ 16, 2, 8, 16, 128, 8, 8, 128, 1, 1, 1, 1, 4, 8 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 16, 128, 16, 8, 128, 1, 1, 1, 0, 4, 8 } },
         } },
         { "SM6.1", {
-          { "GeForce GTX 1070",                                { 16, 2, 32, 16, 128, 32, 8, 128, 1, 1, 1, 0, 4, 1 } },
-          { "GeForce GTX 1080",                                { 32, 2, 16, 8, 64, 8, 8, 64, 1, 1, 1, 1, 4, 8 } },
-          { "TITAN X (Pascal)",                                { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
-          { "default",                                         { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
+          { Name{"GeForce GTX 1070                                  "}, Params{ 16, 2, 32, 16, 128, 32, 8, 128, 1, 1, 1, 0, 4, 1 } },
+          { Name{"GeForce GTX 1080                                  "}, Params{ 32, 2, 16, 8, 64, 8, 8, 64, 1, 1, 1, 1, 4, 8 } },
+          { Name{"TITAN X (Pascal)                                  "}, Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
         } },
         { "default", {
-          { "default",                                         { 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },
     { // QUALCOMM GPUs
       kDeviceTypeGPU, "QUALCOMM", {
         { "default", {
-          { "QUALCOMM Adreno(TM)",                             { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
-          { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 1 } },
         } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { "default",                                         { 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },
