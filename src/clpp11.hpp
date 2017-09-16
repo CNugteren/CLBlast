@@ -325,8 +325,8 @@ class Device {
     #ifndef CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV
       #define CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV 0x4001
     #endif
-    return std::string{"SM"} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) +
-           std::string{"."} + GetInfoString(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV);
+    return std::string{"SM"} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV)) +
+           std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
   }
 
 
