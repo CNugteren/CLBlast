@@ -65,6 +65,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz           "}, Params{ 32, 2, 8, 8, 128, 8, 16, 128, 0, 0, 0, 1, 1, 8 } },
           { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 32, 2, 8, 8, 128, 32, 8, 128, 0, 0, 0, 0, 1, 4 } },
           { Name{"Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz          "}, Params{ 32, 8, 8, 32, 32, 8, 8, 32, 0, 1, 0, 0, 1, 2 } },
+          { Name{"Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz         "}, Params{ 32, 2, 32, 8, 128, 16, 8, 128, 0, 0, 1, 1, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
         } },
       }
