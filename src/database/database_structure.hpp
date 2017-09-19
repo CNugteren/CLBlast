@@ -40,23 +40,24 @@ const std::string kDeviceTypeAll = "default";
 const Name kDeviceNameDefault = {"default                                           "};
 
 struct DatabaseDevice {
-  const Name name;
-  const Params parameters; // parameter values
+  Name name;
+  Params parameters; // parameter values
+
 };
 struct DatabaseArchitecture {
-  const std::string name;
-  const std::vector<DatabaseDevice> devices;
+  std::string name;
+  std::vector<DatabaseDevice> devices;
 };
 struct DatabaseVendor {
-  const std::string type;
-  const std::string name;
-  const std::vector<DatabaseArchitecture> architectures;
+  std::string type;
+  std::string name;
+  std::vector<DatabaseArchitecture> architectures;
 };
 struct DatabaseEntry {
-  const std::string kernel;
-  const Precision precision;
-  const std::vector<std::string> parameter_names;
-  const std::vector<DatabaseVendor> vendors;
+  std::string kernel;
+  Precision precision;
+  std::vector<std::string> parameter_names;
+  std::vector<DatabaseVendor> vendors;
 };
 
 // =================================================================================================
