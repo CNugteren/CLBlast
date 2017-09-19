@@ -106,9 +106,14 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   betas_device.Write(queue_, batch_count, betas);
 
   // Converts the offset to integers
-  std::vector<int> a_offsets_int(a_offsets.begin(), a_offsets.end());
-  std::vector<int> b_offsets_int(b_offsets.begin(), b_offsets.end());
-  std::vector<int> c_offsets_int(c_offsets.begin(), c_offsets.end());
+  auto a_offsets_int = std::vector<int>(batch_count);
+  auto b_offsets_int = std::vector<int>(batch_count);
+  auto c_offsets_int = std::vector<int>(batch_count);
+  for (auto batch = size_t{ 0 }; batch < batch_count; ++batch) {
+    a_offsets_int[batch] = static_cast<int>(a_offsets[batch]);
+    b_offsets_int[batch] = static_cast<int>(b_offsets[batch]);
+    c_offsets_int[batch] = static_cast<int>(c_offsets[batch]);
+  }
 
   // Selects which version of the batched GEMM to run
   const auto do_gemm_direct = true;
@@ -169,9 +174,9 @@ void XgemmBatched<T>::BatchedGemmIndirect(const size_t m, const size_t n, const 
   auto b_offsets_i = std::vector<int>(batch_count);
   auto c_offsets_i = std::vector<int>(batch_count);
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
-    a_offsets_i[batch] = batch * a_one_i * a_two_i;
-    b_offsets_i[batch] = batch * b_one_i * b_two_i;
-    c_offsets_i[batch] = batch * c_one_i * c_two_i;
+    a_offsets_i[batch] = static_cast<int>(batch * a_one_i * a_two_i);
+    b_offsets_i[batch] = static_cast<int>(batch * b_one_i * b_two_i);
+    c_offsets_i[batch] = static_cast<int>(batch * c_one_i * c_two_i);
   }
 
   // Determines whether or not temporary matrices are needed
