@@ -66,6 +66,17 @@ void OpenCLDiagnostics(int argc, char *argv[]) {
   printf("* Device vendor                 %s\n", device_vendor.c_str());
   printf("* Device architecture           %s\n", device_architecture.c_str());
 
+  // Selected OpenCL properties
+  printf("\n --- OpenCL device properties:\n");
+  printf("* Max work group size           %zu\n", device.MaxWorkGroupSize());
+  printf("* Max work item dimensions      %zu\n", device.MaxWorkItemDimensions());
+  const auto max_work_item_sizes = device.MaxWorkItemSizes();
+  for (auto i = size_t{0}; i < max_work_item_sizes.size(); ++i) {
+    printf("* - Max work item size #%zu       %zu\n", i, max_work_item_sizes[i]);
+  }
+  printf("* Local memory size             %zuKB\n", device.LocalMemSize());
+  printf("* Extensions:\n%s\n", device.Capabilities().c_str());
+
   // Simple OpenCL benchmarking
   constexpr auto kNumRuns = 20;
   printf("\n --- Some OpenCL library benchmarks (functions from clpp11.h):\n");

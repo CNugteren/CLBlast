@@ -5,6 +5,7 @@ Development (next version)
 - The tuners can now distinguish between different AMD GPU board names of the same architecture
 - The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
 - Further improved compilation time of database.cpp
+- Added a small diagnostics helper executable
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 - Added non-BLAS routines:
