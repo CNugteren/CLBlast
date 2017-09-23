@@ -141,7 +141,7 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
   }
 
   // Prints the header
-  fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
+  fprintf(stdout, "* Running on OpenCL device '%s'.\n", GetDeviceName(device_).c_str());
   fprintf(stdout, "* Starting tests for the %s'%s'%s routine.",
           kPrintMessage.c_str(), name.c_str(), kPrintEnd.c_str());
 

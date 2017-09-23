@@ -75,9 +75,7 @@ class Routine {
   EventPointer event_;
   const Context context_;
   const Device device_;
-
-  // OpenCL device properties
-  const std::string device_name_;
+  const cl_platform_id platform_;
 
   // Compiled program (either retrieved from cache or compiled in slow path)
   Program program_;

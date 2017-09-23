@@ -60,7 +60,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
-    device_name_(device_.Name()),
+    platform_(device_.Platform()),
     db_(kernel_names) {
 
   InitDatabase(userDatabase);
@@ -72,13 +72,13 @@ void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatab
 
     // Queries the cache to see whether or not the kernel parameter database is already there
     bool has_db;
-    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ precision_, device_name_, kernel_name },
+    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_, device_(), precision_, kernel_name },
                                                      &has_db);
     if (has_db) { continue; }
 
     // Builds the parameter database for this device and routine set and stores it in the cache
     db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
-    DatabaseCache::Instance().Store(DatabaseKey{ precision_, device_name_, kernel_name },
+    DatabaseCache::Instance().Store(DatabaseKey{ platform_, device_(), precision_, kernel_name },
                                     Database{ db_(kernel_name) });
   }
 }
@@ -100,8 +100,9 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
+  const auto device_name = GetDeviceName(device_);
   bool has_binary;
-  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name_ },
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name },
                                             &has_binary);
   if (has_binary) {
     program_ = Program(device_, context_, binary);
@@ -171,7 +172,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // Prints details of the routine to compile in case of debugging in verbose mode
   #ifdef VERBOSE
     printf("[DEBUG] Compiling routine '%s-%s' for device '%s'\n",
-           routine_name_.c_str(), ToString(precision_).c_str(), device_name_.c_str());
+           routine_name_.c_str(), ToString(precision_).c_str(), device_name.c_str());
     const auto start_time = std::chrono::steady_clock::now();
   #endif
 
@@ -188,7 +189,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   }
 
   // Store the compiled binary and program in the cache
-  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name_ },
+  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name },
                                 program_.GetIR());
 
   ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
