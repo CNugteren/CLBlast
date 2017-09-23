@@ -497,6 +497,13 @@ if(TESTS)
     add_test(clblast_test_${MISC_TEST} clblast_test_${MISC_TEST})
   endforeach()
 
+  # CLBlast diagnostics
+  add_executable(clblast_test_diagnostics ${TESTS_COMMON} test/diagnostics.cpp)
+  target_link_libraries(clblast_test_diagnostics clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+  target_include_directories(clblast_test_diagnostics PUBLIC
+                             $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                             ${clblast_SOURCE_DIR} ${REF_INCLUDES})
+
   # Adds 'alltests' target: runs all tests
   set(ALLTESTS )
   set(ALLTESTSDEPENDS )
