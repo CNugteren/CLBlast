@@ -2492,11 +2492,12 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
 
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto device_name = device_cpp.Name();
+    const auto platform_id = device_cpp.Platform();
+    const auto device_name = GetDeviceName(device_cpp);
 
     // Retrieves the current database values to verify whether the new ones are complete
     auto in_cache = false;
-    const auto current_database = DatabaseCache::Instance().Get(DatabaseKeyRef{ precision, device_name, kernel_name }, &in_cache);
+    const auto current_database = DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device, precision, kernel_name}, &in_cache);
     if (!in_cache) { return StatusCode::kInvalidOverrideKernel; }
     for (const auto &current_param : current_database.GetParameterNames()) {
       if (parameters.find(current_param) == parameters.end()) {
@@ -2530,8 +2531,8 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
     const auto database = Database(device_cpp, kernel_name, precision, database_entries);
 
     // Removes the old database entry and stores the new one in the cache
-    DatabaseCache::Instance().Remove(DatabaseKey{ precision, device_name, kernel_name });
-    DatabaseCache::Instance().Store(DatabaseKey{ precision, device_name, kernel_name }, Database(database));
+    DatabaseCache::Instance().Remove(DatabaseKey{platform_id, device, precision, kernel_name});
+    DatabaseCache::Instance().Store(DatabaseKey{platform_id, device, precision, kernel_name}, Database(database));
 
   } catch (...) { return DispatchException(); }
   return StatusCode::kSuccess;

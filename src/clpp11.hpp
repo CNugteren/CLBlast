@@ -230,6 +230,7 @@ class Device {
   }
 
   // Methods to retrieve device information
+  cl_platform_id Platform() const { return GetInfo<cl_platform_id>(CL_DEVICE_PLATFORM); }
   std::string Version() const { return GetInfoString(CL_DEVICE_VERSION); }
   size_t VersionNumber() const
   {
