@@ -124,6 +124,15 @@ std::string Database::GetDefines() const {
   return defines;
 }
 
+// ... or just the values as string
+std::string Database::GetValuesString() const {
+  std::string defines{};
+  for (auto &parameter: *parameters_) {
+    defines += "_"+ToString(parameter.second);
+  }
+  return defines;
+}
+
 // Retrieves the names of all the parameters
 std::vector<std::string> Database::GetParameterNames() const {
   auto parameter_names = std::vector<std::string>();
