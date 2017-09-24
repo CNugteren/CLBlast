@@ -77,6 +77,7 @@ void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatab
     if (has_db) { continue; }
 
     // Builds the parameter database for this device and routine set and stores it in the cache
+    log_debug("Searching database for kernel '" + kernel_name + "'");
     db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
     DatabaseCache::Instance().Store(DatabaseKey{ platform_, device_(), precision_, kernel_name },
                                     Database{ db_(kernel_name) });
