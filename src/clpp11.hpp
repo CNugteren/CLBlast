@@ -43,6 +43,7 @@
 #include <memory>    // std::shared_ptr
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
+#include <cstdio>    // fprintf, stderr
 
 // OpenCL
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
