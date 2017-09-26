@@ -316,6 +316,31 @@ Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_
 The `samples/haxpy.c` example shows how to use these convenience functions when calling the half-precision BLAS routine HAXPY.
 
 
+Notes for Android
+-------------
+
+For deployment on Android, there are three options to consider.
+
+First of all, you can use Google's recommended route of installing Android Studio with the NDK, and then use the JNI to interface to the CLBlast library. For this, we refer to the official Android Studio documentation and the online tutorials.
+
+Alternatively, you can cross-compile the library and the test/client/tuner executables directly. To do so, first install the NDK, then find your vendor's OpenCL library (e.g. in `/system/vendor/lib`), and invoke CMake as follows:
+
+    cmake .. \
+     -DCMAKE_SYSTEM_NAME=Android \
+     -DCMAKE_SYSTEM_VERSION=26 \             # Set the appropriate Android API level
+     -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a \    # Set the appropriate device architecture
+     -DCMAKE_ANDROID_NDK=$ANDROID_NDK_PATH \ # Assumes $ANDROID_NDK_PATH points to your NDK installation
+     -DCMAKE_ANDROID_STL_TYPE=c++_shared \
+     -DOPENCL_ROOT=/path/to/vendor/OpenCL/lib/folder/
+
+For any potential issues, first check [cmath 'has not been declared' errors](https://stackoverflow.com/questions/45183525/compilation-error-with-ndk-using-cstatic/46433625).
+
+Finally, a third option is to use the [Collective Knowledge framework](https://github.com/ctuning/ck) in combination with the NDK, e.g. as follows:
+
+    sudo pip install ck
+    ck pull repo:ck-math
+    ck install package:lib-clblast-master-universal --target_os=android21-arm64
+
 Contributing
 -------------
 
