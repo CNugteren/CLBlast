@@ -77,6 +77,7 @@ void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatab
     if (has_db) { continue; }
 
     // Builds the parameter database for this device and routine set and stores it in the cache
+    log_debug("Searching database for kernel '" + kernel_name + "'");
     db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
     DatabaseCache::Instance().Store(DatabaseKey{ platform_, device_(), precision_, kernel_name },
                                     Database{ db_(kernel_name) });
@@ -85,9 +86,16 @@ void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatab
 
 void Routine::InitProgram(std::initializer_list<const char *> source) {
 
+  // Determines the identifier for this particular routine call
+  auto routine_info = routine_name_;
+  for (const auto &kernel_name : kernel_names_) {
+    routine_info += "_" + kernel_name + db_(kernel_name).GetValuesString();
+  }
+  log_debug(routine_info);
+
   // Queries the cache to see whether or not the program (context-specific) is already there
   bool has_program;
-  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), device_(), precision_, routine_name_ },
+  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), device_(), precision_, routine_info },
                                           &has_program);
   if (has_program) { return; }
 
@@ -102,12 +110,12 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // is, a program is created and stored in the cache
   const auto device_name = GetDeviceName(device_);
   bool has_binary;
-  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name },
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_info, device_name },
                                             &has_binary);
   if (has_binary) {
     program_ = Program(device_, context_, binary);
     program_.Build(device_, options);
-    ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
+    ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_info },
                                    Program{ program_ });
     return;
   }
@@ -189,10 +197,10 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   }
 
   // Store the compiled binary and program in the cache
-  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name },
+  BinaryCache::Instance().Store(BinaryKey{precision_, routine_info, device_name},
                                 program_.GetIR());
 
-  ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
+  ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
                                  Program{ program_ });
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
