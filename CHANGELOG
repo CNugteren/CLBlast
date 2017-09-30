@@ -1,4 +1,7 @@
 
+Development (next version)
+- Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
+
 Version 1.1.0
 - The tuning database now has defaults per architecture (e.g. NVIDIA Kepler SM3.5, AMD Fiji)
 - The tuning database now has a dictionary to translate vendor/device names to a common set
