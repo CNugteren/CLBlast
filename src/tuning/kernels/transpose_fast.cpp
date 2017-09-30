@@ -25,52 +25,59 @@ template <typename T>
 class TuneTranspose {
  public:
 
-  // The representative kernel and the source code
-  static std::string KernelFamily() { return "transpose"; }
-  static std::string KernelName() { return "TransposeMatrixFast"; }
-  static std::string GetSources() {
-    return
-      #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/level3.opencl"
-      #include "../src/kernels/level3/transpose_fast.opencl"
-    ;
+  // Settings for this kernel (default command-line arguments)
+  static TunerDefaults GetTunerDefaults() {
+    auto settings = TunerDefaults();
+    settings.options = {kArgM, kArgN, kArgAlpha};
+    settings.default_m = 1024;
+    settings.default_n = 1024;
+    return settings;
   }
 
-  // The list of arguments relevant for this routine
-  static std::vector<std::string> GetOptions() { return {kArgM, kArgN, kArgAlpha}; }
+  // Settings for this kernel (general)
+  static TunerSettings GetTunerSettings(const Arguments<T> &args) {
+    auto settings = TunerSettings();
+
+    // Identification of the kernel
+    settings.kernel_family = "transpose";
+    settings.kernel_name = "TransposeMatrixFast";
+    settings.sources =
+#include "../src/kernels/common.opencl"
+#include "../src/kernels/level3/level3.opencl"
+#include "../src/kernels/level3/transpose_fast.opencl"
+    ;
+
+    // Buffer sizes
+    settings.size_a = args.m * args.n;
+    settings.size_b = args.m * args.n;
+
+    // Sets the base thread configuration
+    settings.global_size = {args.m, args.n};
+    settings.global_size_ref = settings.global_size;
+    settings.local_size = {1, 1};
+    settings.local_size_ref = {8, 8};
+
+    // Transforms the thread configuration based on the parameters
+    settings.mul_local = {{"TRA_DIM", "TRA_DIM"}};
+    settings.div_global = {{"TRA_WPT", "TRA_WPT"}};
+
+    // Sets the tuning parameters and their possible values
+    settings.parameters = {
+      {"TRA_DIM", {4, 8, 16, 32, 64}},
+      {"TRA_WPT", {1, 2, 4, 8, 16}},
+      {"TRA_PAD", {0, 1}},
+      {"TRA_SHUFFLE", {0, 1}},
+    };
+
+    // Describes how to compute the performance metrics
+    settings.metric_amount = 2 * args.m * args.n * GetBytes(args.precision);
+    settings.performance_unit = "GB/s";
+
+    return settings;
+  }
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the default values for the arguments
-  static size_t DefaultM() { return 1024; }
-  static size_t DefaultN() { return 1024; }
-  static size_t DefaultK() { return 1; } // N/A for this kernel
-  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
-  static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
-  static size_t DefaultSwarmSizePSO() { return 8; } // N/A for this kernel
-  static double DefaultInfluenceGlobalPSO(){ return 0.1; }// N/A for this kernel
-  static double DefaultInfluenceLocalPSO(){ return 0.3; }// N/A for this kernel
-  static double DefaultInfluenceRandomPSO(){ return 0.6; }// N/A for this kernel
-  static size_t DefaultHeuristic(){ return static_cast<size_t> (cltune::SearchMethod::FullSearch);} 
-  static double DefaultMaxTempAnn(){ return 1.0;}// N/A for this kernel
-   
-  // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeB(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeC(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeTemp(const Arguments<T> &) { return 1; } // N/A for this kernel
-
-  // Sets the tuning parameters and their possible values
-  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "TRA_DIM", {4, 8, 16, 32, 64});
-    tuner.AddParameter(id, "TRA_WPT", {1, 2, 4, 8, 16});
-    tuner.AddParameter(id, "TRA_PAD", {0, 1});
-    tuner.AddParameter(id, "TRA_SHUFFLE", {0, 1});
-  }
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &, const size_t) { }
@@ -81,19 +88,6 @@ class TuneTranspose {
     tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"TRA_DIM", "TRA_WPT", "TRA_PAD"});
   }
 
-  // Sets the base thread configuration
-  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
-  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &args) { return GlobalSize(args); }
-  static std::vector<size_t> LocalSize() { return {1, 1}; }
-  static std::vector<size_t> LocalSizeRef() { return {8, 8}; }
-
-  // Transforms the thread configuration based on the parameters
-  using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"TRA_DIM", "TRA_DIM"}}; }
-  static TransformVector DivLocal() { return {}; }
-  static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() { return {{"TRA_WPT", "TRA_WPT"}}; }
-
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
                            std::vector<T> &, std::vector<T> &,
@@ -103,17 +97,6 @@ class TuneTranspose {
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentOutput(b_mat);
     tuner.AddArgumentScalar(GetRealArg(args.alpha));
-  }
-
-  // Describes how to compute the performance metrics
-  static size_t GetMetric(const Arguments<T> &args) {
-    return 2 * args.m * args.n * GetBytes(args.precision);
-  }
-  static std::string PerformanceUnit() { return "GB/s"; }
-
-  // Returns which Heuristic to run 
-  static size_t GetHeuristic(const Arguments<T> &args){
-    return static_cast<size_t> (cltune::SearchMethod::FullSearch); 
   }
 };
 

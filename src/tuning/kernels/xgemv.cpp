@@ -28,62 +28,76 @@ template <typename T, int V>
 class TuneXgemv {
  public:
 
-  // The representative kernel and the source code
-  static std::string KernelFamily() { return (V==1) ? "xgemv" : ((V==2) ? "xgemv_fast" : "xgemv_fast_rot"); }
-  static std::string KernelName() { return (V==1) ? "Xgemv" : ((V==2) ? "XgemvFast" : "XgemvFastRot"); }
-  static std::string GetSources() {
-    return
-      #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level2/xgemv.opencl"
-      #include "../src/kernels/level2/xgemv_fast.opencl"
-    ;
+  // Settings for this kernel (default command-line arguments)
+  static TunerDefaults GetTunerDefaults() {
+    auto settings = TunerDefaults();
+    settings.options = {kArgM, kArgN, kArgAlpha, kArgBeta};
+    settings.default_m = 2048;
+    settings.default_n = 2048;
+    return settings;
   }
 
-  // The list of arguments relevant for this routine
-  static std::vector<std::string> GetOptions() { return {kArgM, kArgN, kArgAlpha, kArgBeta}; }
+  // Settings for this kernel (general)
+  static TunerSettings GetTunerSettings(const Arguments<T> &args) {
+    auto settings = TunerSettings();
+
+    // Identification of the kernel
+    settings.kernel_family = (V==1) ? "xgemv" : ((V==2) ? "xgemv_fast" : "xgemv_fast_rot");
+    settings.kernel_name = (V==1) ? "Xgemv" : ((V==2) ? "XgemvFast" : "XgemvFastRot");
+    settings.sources =
+#include "../src/kernels/common.opencl"
+#include "../src/kernels/level2/xgemv.opencl"
+#include "../src/kernels/level2/xgemv_fast.opencl"
+    ;
+
+    // Buffer sizes
+    settings.size_x = args.n;
+    settings.size_y = args.m;
+    settings.size_a = args.m * args.n;
+
+    // Sets the base thread configuration
+    settings.global_size = {args.m};
+    settings.global_size_ref = settings.global_size;
+    settings.local_size = {1};
+    settings.local_size_ref = {64};
+
+    // Transforms the thread configuration based on the parameters
+    settings.mul_local = {{"WGS"+std::to_string(V)}};
+    settings.div_global = (V==1 || V==2) ?
+                          TunerSettings::TransformVector{{"WPT"+std::to_string(V)}} :
+                          TunerSettings::TransformVector{};
+
+    // Sets the tuning parameters and their possible values
+    if (V==1) {
+      settings.parameters = {
+        {"WGS"+std::to_string(V), {32, 64, 128, 256}},
+        {"WPT"+std::to_string(V), {1, 2, 4}},
+      };
+    }
+    if (V==2) {
+      settings.parameters = {
+        {"WGS"+std::to_string(V), {16, 32, 64, 128, 256}},
+        {"WPT"+std::to_string(V), {1, 2, 4}},
+        {"VW"+std::to_string(V), {1, 2, 4, 8}},
+      };
+    }
+    if (V==3) {
+      settings.parameters = {
+        {"WGS"+std::to_string(V), {16, 32, 64, 128}},
+        {"WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32}},
+        {"VW"+std::to_string(V), {1, 2, 4, 8}},
+      };
+    }
+
+    // Describes how to compute the performance metrics
+    settings.metric_amount = (args.m*args.n + 2*args.m + args.n) * GetBytes(args.precision);
+    settings.performance_unit = "GB/s";
+
+    return settings;
+  }
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the default values for the arguments
-  static size_t DefaultM() { return 2048; }
-  static size_t DefaultN() { return 2048; }
-  static size_t DefaultK() { return 1; } // N/A for this kernel
-  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
-  static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
-  static size_t DefaultSwarmSizePSO() { return 8; } // N/A for this kernel
-  static double DefaultInfluenceGlobalPSO(){ return 0.1; }// N/A for this kernel
-  static double DefaultInfluenceLocalPSO(){ return 0.3; }// N/A for this kernel
-  static double DefaultInfluenceRandomPSO(){ return 0.6; }// N/A for this kernel
-  static size_t DefaultHeuristic(){ return static_cast<size_t> (cltune::SearchMethod::FullSearch);} 
-  static double DefaultMaxTempAnn(){ return 1.0;}// N/A for this kernel
-  
-  // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeX(const Arguments<T> &args) { return args.n; }
-  static size_t GetSizeY(const Arguments<T> &args) { return args.m; }
-  static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeB(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeC(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeTemp(const Arguments<T> &) { return 1; } // N/A for this kernel
-
-  // Sets the tuning parameters and their possible values
-  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    if (V==1) {
-      tuner.AddParameter(id, "WGS"+std::to_string(V), {32, 64, 128, 256});
-      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
-    }
-    if (V==2) {
-      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128, 256});
-      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4});
-      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
-    }
-    if (V==3) {
-      tuner.AddParameter(id, "WGS"+std::to_string(V), {16, 32, 64, 128});
-      tuner.AddParameter(id, "WPT"+std::to_string(V), {1, 2, 4, 8, 16, 32});
-      tuner.AddParameter(id, "VW"+std::to_string(V), {1, 2, 4, 8});
-    }
-  }
 
   // Sets the constraints and local memory size
   static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
@@ -105,22 +119,6 @@ class TuneXgemv {
       auto LocalMemorySize = [args] (std::vector<size_t> v) { return (v[0]*v[1] + v[1])*GetBytes(args.precision); };
       tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
     }
-  }
-
-  // Sets the base thread configuration
-  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m}; }
-  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &args) { return GlobalSize(args); }
-  static std::vector<size_t> LocalSize() { return {1}; }
-  static std::vector<size_t> LocalSizeRef() { return {64}; }
-
-  // Transforms the thread configuration based on the parameters
-  using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"WGS"+std::to_string(V)}}; }
-  static TransformVector DivLocal() { return {}; }
-  static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() {
-    if (V==1 || V==2) return {{"WPT"+std::to_string(V)}};
-    return {};
   }
 
   // Sets the kernel's arguments
@@ -147,17 +145,6 @@ class TuneXgemv {
     tuner.AddArgumentScalar(0); // Additional parameter
     tuner.AddArgumentScalar(0); // Banded 'kl'
     tuner.AddArgumentScalar(0); // Banded 'ku'
-  }
-
-  // Describes how to compute the performance metrics
-  static size_t GetMetric(const Arguments<T> &args) {
-    return (args.m*args.n + 2*args.m + args.n) * GetBytes(args.precision);
-  }
-  static std::string PerformanceUnit() { return "GB/s"; }
-
-  // Returns which Heuristic to run 
-  static size_t GetHeuristic(const Arguments<T> &args){
-    return static_cast<size_t> (cltune::SearchMethod::FullSearch);
   }
 };
 
