@@ -316,6 +316,16 @@ Since there is no half-precision data-type in C or C++, OpenCL provides the `cl_
 The `samples/haxpy.c` example shows how to use these convenience functions when calling the half-precision BLAS routine HAXPY.
 
 
+Known issues
+-------------
+
+Known performance related issues:
+
+* Severe performance issues with Beignet v1.3.0 due to missing support for local memory. Please downgrade to v1.2.1 or upgrade to v1.3.1 or newer.
+
+* Performance issues on ARM Mali GPUs due to missing compiler for support for loop unrolling and array-to-register promotion.
+
+
 Contributing
 -------------
 

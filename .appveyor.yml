@@ -1,5 +1,6 @@
 environment:
   global:
+    CLBLAST_VERSION: "1.1.0"
     CLBLAST_BUILD: "C:\\clblast\\build"
     OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "C:\\dependencies\\opencl"
@@ -58,8 +59,8 @@ build_script:
 
 after_build:
   - ps: pushd $env:CLBLAST_BUILD
-  - 7z a CLBlast-1.0.0-Windows-x64.zip .\install_dir\*
-  - ps: mv CLBlast-1.0.0-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
+  - 7z a CLBlast-$env:CLBLAST_VERSION-Windows-x64.zip .\install_dir\*
+  - ps: mv CLBlast-$env:CLBLAST_VERSION-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
 
 artifacts:
   - path: '*.zip'

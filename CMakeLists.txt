@@ -18,8 +18,8 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
-set(clblast_VERSION_MINOR 0)
-set(clblast_VERSION_PATCH 1)
+set(clblast_VERSION_MINOR 1)
+set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
