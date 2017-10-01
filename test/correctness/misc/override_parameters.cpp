@@ -28,7 +28,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto arguments = RetrieveCommandLineArguments(argc, argv);
   auto errors = size_t{0};
   auto passed = size_t{0};
-  auto example_routine = TestXgemm<T>();
+  auto example_routine = TestXgemm<0, T>();
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Determines the test settings
