@@ -17,7 +17,7 @@ R"(
 
 // =================================================================================================
 
-// Main body of the matrix-multiplication algorithm. It calls the (inlined) functions above.
+// Main body of the matrix-multiplication algorithm. It calls various (inlined) functions.
 INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            const __global realM* restrict agm, const __global realN* restrict bgm,
                            __global realM* cgm, realM cpm[NWI][MWI/VWM]
@@ -192,9 +192,14 @@ void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
            const real_arg arg_beta,
            const __global realM* restrict agm,
            const __global realN* restrict bgm,
-           __global realM* cgm) {
+           __global realM* cgm,
+           const int b_offset, const int c_offset) {
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
+
+  // Adds the offsets (in case of use of a single temporary buffer for A, B, and C)
+  bgm = &bgm[b_offset];
+  cgm = &cgm[c_offset];
 
   // Allocates workgroup-private memory (local memory)
   #if SA == 1
