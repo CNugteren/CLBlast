@@ -1,6 +1,8 @@
 
 Development (next version)
 - Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
+- Improved performance for small GEMM problems by going from 3 to 1 optional temporary buffers
+- Various minor fixes and enhancements
 
 Version 1.1.0
 - The tuning database now has defaults per architecture (e.g. NVIDIA Kepler SM3.5, AMD Fiji)

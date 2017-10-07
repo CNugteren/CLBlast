@@ -2497,8 +2497,13 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
 
     // Retrieves the current database values to verify whether the new ones are complete
     auto in_cache = false;
-    const auto current_database = DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device, precision, kernel_name}, &in_cache);
-    if (!in_cache) { return StatusCode::kInvalidOverrideKernel; }
+    auto current_database = DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device, precision, kernel_name}, &in_cache);
+    if (!in_cache) {
+      log_debug("Searching database for kernel '" + kernel_name + "'");
+      current_database = Database(device_cpp, kernel_name, precision, {});
+    }
+
+    // Verifies the parameters size
     const auto current_parameter_names = current_database.GetParameterNames();
     if (current_parameter_names.size() != parameters.size()) {
       return StatusCode::kMissingOverrideParameter;

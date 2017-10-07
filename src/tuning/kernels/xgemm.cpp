@@ -180,6 +180,8 @@ class TuneXgemm {
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentInput(b_mat);
     tuner.AddArgumentOutput(c_mat);
+    tuner.AddArgumentScalar(0);
+    tuner.AddArgumentScalar(0);
   }
 };
 
