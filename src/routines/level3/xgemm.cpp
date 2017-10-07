@@ -169,7 +169,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   if (!b_no_temp) { b_temp_offset = temp_size; temp_size += b_one_i*b_two_i; }
   if (!c_no_temp) { c_temp_offset = temp_size; temp_size += c_one_i*c_two_i; }
   if (!IsMultiple(b_temp_offset, db_["VWN"])) { throw BLASError(StatusCode::kUnexpectedError); }
-  if (!IsMultiple(b_temp_offset, db_["VWM"])) { throw BLASError(StatusCode::kUnexpectedError); }
+  if (!IsMultiple(c_temp_offset, db_["VWM"])) { throw BLASError(StatusCode::kUnexpectedError); }
 
   // Creates the buffer for the (optional) temporary matrices. Note that we use 'a_buffer' in case
   // when no temporary buffer is needed, but that's just to make it compile: it is never used.
