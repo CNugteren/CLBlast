@@ -60,7 +60,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
-    platform_(device_.Platform()),
+    platform_(device_.PlatformID()),
     db_(kernel_names) {
 
   InitDatabase(userDatabase);
@@ -188,7 +188,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   program_ = Program(context_, source_string);
   try {
     program_.Build(device_, options);
-  } catch (const CLError &e) {
+  } catch (const CLCudaAPIError &e) {
     if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
       fprintf(stdout, "OpenCL compiler error/warning: %s\n",
               program_.GetBuildInfo(device_).c_str());

@@ -59,23 +59,22 @@ namespace clblast {
 // =================================================================================================
 
 // Represents a runtime error returned by an OpenCL API function
-class CLError : public ErrorCode<DeviceError, cl_int> {
+class CLCudaAPIError : public ErrorCode<DeviceError, cl_int> {
  public:
-  explicit CLError(cl_int status, const std::string &where):
-      ErrorCode(status,
-                where,
-                "OpenCL error: " + where + ": " + std::to_string(static_cast<int>(status))) {
+  explicit CLCudaAPIError(cl_int status, const std::string &where):
+          ErrorCode(status, where, "OpenCL error: " + where + ": " +
+                                   std::to_string(static_cast<int>(status))) {
   }
 
   static void Check(const cl_int status, const std::string &where) {
     if (status != CL_SUCCESS) {
-      throw CLError(status, where);
+      throw CLCudaAPIError(status, where);
     }
   }
 
   static void CheckDtor(const cl_int status, const std::string &where) {
     if (status != CL_SUCCESS) {
-      fprintf(stderr, "CLBlast: %s (ignoring)\n", CLError(status, where).what());
+      fprintf(stderr, "CLBlast: %s (ignoring)\n", CLCudaAPIError(status, where).what());
     }
   }
 };
@@ -83,10 +82,10 @@ class CLError : public ErrorCode<DeviceError, cl_int> {
 // =================================================================================================
 
 // Error occurred in OpenCL
-#define CheckError(call) CLError::Check(call, CLError::TrimCallString(#call))
+#define CheckError(call) CLCudaAPIError::Check(call, CLCudaAPIError::TrimCallString(#call))
 
-// Error occured in OpenCL (no-exception version for destructors)
-#define CheckErrorDtor(call) CLError::CheckDtor(call, CLError::TrimCallString(#call))
+// Error occurred in OpenCL (no-exception version for destructors)
+#define CheckErrorDtor(call) CLCudaAPIError::CheckDtor(call, CLCudaAPIError::TrimCallString(#call))
 
 // =================================================================================================
 
@@ -141,6 +140,9 @@ class Event {
 using EventPointer = cl_event*;
 
 // =================================================================================================
+
+// Raw platform ID type
+using RawPlatformID = cl_platform_id;
 
 // C++11 version of 'cl_platform_id'
 class Platform {
@@ -230,7 +232,7 @@ class Device {
   }
 
   // Methods to retrieve device information
-  cl_platform_id Platform() const { return GetInfo<cl_platform_id>(CL_DEVICE_PLATFORM); }
+  RawPlatformID PlatformID() const { return GetInfo<cl_platform_id>(CL_DEVICE_PLATFORM); }
   std::string Version() const { return GetInfoString(CL_DEVICE_VERSION); }
   size_t VersionNumber() const
   {
@@ -262,6 +264,7 @@ class Device {
   unsigned long LocalMemSize() const {
     return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
   }
+
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
   bool HasExtension(const std::string &extension) const {
     const auto extensions = Capabilities();
@@ -330,7 +333,6 @@ class Device {
            std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
   }
 
-
   // Accessor to the private data-member
   const cl_device_id& operator()() const { return device_; }
  private:
@@ -385,7 +387,7 @@ class Context {
     auto status = CL_SUCCESS;
     const cl_device_id dev = device();
     *context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
-    CLError::Check(status, "clCreateContext");
+    CLCudaAPIError::Check(status, "clCreateContext");
   }
 
   // Accessor to the private data-member
@@ -400,9 +402,6 @@ using ContextPointer = cl_context*;
 
 // =================================================================================================
 
-// Enumeration of build statuses of the run-time compilation process
-enum class BuildStatus { kSuccess, kError, kInvalid };
-
 // C++11 version of 'cl_program'.
 class Program {
  public:
@@ -415,10 +414,10 @@ class Program {
         delete p;
       }) {
     const char *source_ptr = &source[0];
-    size_t length = source.length();
+    const auto length = source.length();
     auto status = CL_SUCCESS;
     *program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
-    CLError::Check(status, "clCreateProgramWithSource");
+    CLCudaAPIError::Check(status, "clCreateProgramWithSource");
   }
 
   // Binary-based constructor with memory management
@@ -428,18 +427,18 @@ class Program {
         delete p;
       }) {
     const char *binary_ptr = &binary[0];
-    size_t length = binary.length();
+    const auto length = binary.length();
     auto status1 = CL_SUCCESS;
     auto status2 = CL_SUCCESS;
-    const cl_device_id dev = device();
+    const auto dev = device();
     *program_ = clCreateProgramWithBinary(context(), 1, &dev, &length,
                                           reinterpret_cast<const unsigned char**>(&binary_ptr),
                                           &status1, &status2);
-    CLError::Check(status1, "clCreateProgramWithBinary (binary status)");
-    CLError::Check(status2, "clCreateProgramWithBinary");
+    CLCudaAPIError::Check(status1, "clCreateProgramWithBinary (binary status)");
+    CLCudaAPIError::Check(status2, "clCreateProgramWithBinary");
   }
 
-  // Compiles the device program and returns whether or not there where any warnings/errors
+  // Compiles the device program and checks whether or not there are any warnings/errors
   void Build(const Device &device, std::vector<std::string> &options) {
     options.push_back("-cl-std=CL1.1");
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
@@ -495,7 +494,7 @@ class Queue {
       }) {
     auto status = CL_SUCCESS;
     *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
-    CLError::Check(status, "clCreateCommandQueue");
+    CLCudaAPIError::Check(status, "clCreateCommandQueue");
   }
 
   // Synchronizes the queue
@@ -587,7 +586,7 @@ class Buffer {
     if (access_ == BufferAccess::kWriteOnly) { flags = CL_MEM_WRITE_ONLY; }
     auto status = CL_SUCCESS;
     *buffer_ = clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status);
-    CLError::Check(status, "clCreateBuffer");
+    CLCudaAPIError::Check(status, "clCreateBuffer");
   }
 
   // As above, but now with read/write access as a default
@@ -719,7 +718,7 @@ class Kernel {
       }) {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program(), name.c_str(), &status);
-    CLError::Check(status, "clCreateKernel");
+    CLCudaAPIError::Check(status, "clCreateKernel");
   }
 
   // Sets a kernel argument at the indicated position
