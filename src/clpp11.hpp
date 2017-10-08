@@ -79,6 +79,9 @@ class CLCudaAPIError : public ErrorCode<DeviceError, cl_int> {
   }
 };
 
+// Exception returned when building a program
+using CLCudaAPIBuildError = CLCudaAPIError;
+
 // =================================================================================================
 
 // Error occurred in OpenCL
@@ -179,7 +182,7 @@ class Platform {
   }
 
   // Accessor to the private data-member
-  const cl_platform_id& operator()() const { return platform_; }
+  const RawPlatformID& operator()() const { return platform_; }
  private:
   cl_platform_id platform_;
 
@@ -207,6 +210,9 @@ inline std::vector<Platform> GetAllPlatforms() {
 }
 
 // =================================================================================================
+
+// Raw device ID type
+using RawDeviceID = cl_device_id;
 
 // C++11 version of 'cl_device_id'
 class Device {
@@ -269,6 +275,13 @@ class Device {
   bool HasExtension(const std::string &extension) const {
     const auto extensions = Capabilities();
     return extensions.find(extension) != std::string::npos;
+  }
+  bool SupportsFP64() const {
+    return HasExtension("cl_khr_fp64");
+  }
+  bool SupportsFP16() const {
+    if (Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
+    return HasExtension("cl_khr_fp16");
   }
 
   size_t CoreClock() const {
@@ -334,7 +347,7 @@ class Device {
   }
 
   // Accessor to the private data-member
-  const cl_device_id& operator()() const { return device_; }
+  const RawDeviceID& operator()() const { return device_; }
  private:
   cl_device_id device_;
 
@@ -368,6 +381,9 @@ class Device {
 
 // =================================================================================================
 
+// Raw context type
+using RawContext = cl_context;
+
 // C++11 version of 'cl_context'
 class Context {
  public:
@@ -391,8 +407,8 @@ class Context {
   }
 
   // Accessor to the private data-member
-  const cl_context& operator()() const { return *context_; }
-  cl_context* pointer() const { return &(*context_); }
+  const RawContext& operator()() const { return *context_; }
+  RawContext* pointer() const { return &(*context_); }
  private:
   std::shared_ptr<cl_context> context_;
 };
@@ -446,6 +462,11 @@ class Program {
     CheckError(clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
   }
 
+  // Confirms whether a certain status code is an actual compilation error or warning
+  bool StatusIsCompilationWarningOrError(const cl_int status) const {
+    return (status == CL_BUILD_PROGRAM_FAILURE);
+  }
+
   // Retrieves the warning/error message from the compiler (if any)
   std::string GetBuildInfo(const Device &device) const {
     auto bytes = size_t{0};
@@ -475,6 +496,9 @@ class Program {
 };
 
 // =================================================================================================
+
+// Raw command-queue type
+using RawCommandQueue = cl_command_queue;
 
 // C++11 version of 'cl_command_queue'
 class Queue {
@@ -522,7 +546,7 @@ class Queue {
   }
 
   // Accessor to the private data-member
-  const cl_command_queue& operator()() const { return *queue_; }
+  const RawCommandQueue& operator()() const { return *queue_; }
  private:
   std::shared_ptr<cl_command_queue> queue_;
 };

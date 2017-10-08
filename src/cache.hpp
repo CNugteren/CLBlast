@@ -80,8 +80,8 @@ extern template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const
 
 // The key struct for the cache of compiled OpenCL programs (context-dependent)
 // Order of fields: context, device_id, precision, routine_name (smaller fields first)
-typedef std::tuple<cl_context, cl_device_id, Precision, std::string> ProgramKey;
-typedef std::tuple<const cl_context &, const cl_device_id &, const Precision &, const std::string &> ProgramKeyRef;
+typedef std::tuple<RawContext, RawDeviceID, Precision, std::string> ProgramKey;
+typedef std::tuple<const RawContext &, const RawDeviceID &, const Precision &, const std::string &> ProgramKeyRef;
 
 typedef Cache<ProgramKey, Program> ProgramCache;
 
@@ -94,8 +94,8 @@ class Database;
 
 // The key struct for the cache of database maps.
 // Order of fields: platform_id, device_id, precision, kernel_name (smaller fields first)
-typedef std::tuple<cl_platform_id, cl_device_id, Precision, std::string> DatabaseKey;
-typedef std::tuple<const cl_platform_id &, const cl_device_id &, const Precision &, const std::string &> DatabaseKeyRef;
+typedef std::tuple<RawPlatformID, RawDeviceID, Precision, std::string> DatabaseKey;
+typedef std::tuple<const RawPlatformID &, const RawDeviceID &, const Precision &, const std::string &> DatabaseKeyRef;
 
 typedef Cache<DatabaseKey, Database> DatabaseCache;
 

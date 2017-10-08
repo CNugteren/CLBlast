@@ -60,7 +60,6 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
-    platform_(device_.PlatformID()),
     db_(kernel_names) {
 
   InitDatabase(userDatabase);
@@ -68,18 +67,19 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 }
 
 void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatabase) {
+  const auto platform_id = device_.PlatformID();
   for (const auto &kernel_name : kernel_names_) {
 
     // Queries the cache to see whether or not the kernel parameter database is already there
     bool has_db;
-    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_, device_(), precision_, kernel_name },
+    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_id, device_(), precision_, kernel_name },
                                                      &has_db);
     if (has_db) { continue; }
 
     // Builds the parameter database for this device and routine set and stores it in the cache
     log_debug("Searching database for kernel '" + kernel_name + "'");
     db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
-    DatabaseCache::Instance().Store(DatabaseKey{ platform_, device_(), precision_, kernel_name },
+    DatabaseCache::Instance().Store(DatabaseKey{ platform_id, device_(), precision_, kernel_name },
                                     Database{ db_(kernel_name) });
   }
 }
@@ -123,13 +123,13 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
   // program will be added to the cache.
 
-  // Inspects whether or not cl_khr_fp64 is supported in case of double precision
+  // Inspects whether or not FP64 is supported in case of double precision
   if ((precision_ == Precision::kDouble && !PrecisionSupported<double>(device_)) ||
       (precision_ == Precision::kComplexDouble && !PrecisionSupported<double2>(device_))) {
     throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
   }
 
-  // As above, but for cl_khr_fp16 (half precision)
+  // As above, but for FP16 (half precision)
   if (precision_ == Precision::kHalf && !PrecisionSupported<half>(device_)) {
     throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
   }
@@ -188,8 +188,8 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   program_ = Program(context_, source_string);
   try {
     program_.Build(device_, options);
-  } catch (const CLCudaAPIError &e) {
-    if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
+  } catch (const CLCudaAPIBuildError &e) {
+    if (program_.StatusIsCompilationWarningOrError(e.status())) {
       fprintf(stdout, "OpenCL compiler error/warning: %s\n",
               program_.GetBuildInfo(device_).c_str());
     }
