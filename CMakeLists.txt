@@ -182,6 +182,7 @@ set(SOURCES
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
   src/utilities/utilities.cpp
+  src/api_common.cpp
   src/cache.cpp
   src/clblast.cpp
   src/clblast_c.cpp
@@ -201,6 +202,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/routines/level1/xmin.hpp
   src/routines/level1/xsum.hpp
   src/routines/common.hpp
+  src/routines/routines.hpp
   src/utilities/buffer_test.hpp
   src/utilities/clblast_exceptions.hpp
   src/utilities/device_mapping.hpp
