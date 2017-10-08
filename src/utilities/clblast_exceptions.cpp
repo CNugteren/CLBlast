@@ -55,7 +55,7 @@ StatusCode DispatchException()
   } catch (BLASError &e) {
     // no message is printed for invalid argument errors
     status = e.status();
-  } catch (CLError &e) {
+  } catch (CLCudaAPIError &e) {
     message = e.what();
     status = static_cast<StatusCode>(e.status());
   } catch (RuntimeErrorCode &e) {

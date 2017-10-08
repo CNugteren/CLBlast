@@ -89,8 +89,8 @@ std::vector<float> HalfToFloatBuffer(const std::vector<half>& source);
 void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source);
 
 // As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw);
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw);
 
 // =================================================================================================
 } // namespace clblast

@@ -391,16 +391,9 @@ template <> Precision PrecisionValue<double2>() { return Precision::kComplexDoub
 // Returns false is this precision is not supported by the device
 template <> bool PrecisionSupported<float>(const Device &) { return true; }
 template <> bool PrecisionSupported<float2>(const Device &) { return true; }
-template <> bool PrecisionSupported<double>(const Device &device) {
-  return device.HasExtension(kKhronosDoublePrecision);
-}
-template <> bool PrecisionSupported<double2>(const Device &device) {
-  return device.HasExtension(kKhronosDoublePrecision);
-}
-template <> bool PrecisionSupported<half>(const Device &device) {
-  if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
-  return device.HasExtension(kKhronosHalfPrecision);
-}
+template <> bool PrecisionSupported<double>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<double2>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<half>(const Device &device) { return device.SupportsFP16(); }
 
 // =================================================================================================
 

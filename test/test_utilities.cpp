@@ -88,7 +88,7 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 }
 
 // As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw) {
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw) {
   const auto size = source.GetSize() / sizeof(half);
   auto queue = Queue(queue_raw);
   auto context = queue.GetContext();
@@ -99,7 +99,7 @@ Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue que
   result.Write(queue, size, result_cpu);
   return result;
 }
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw) {
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw) {
   const auto size = source.GetSize() / sizeof(float);
   auto queue = Queue(queue_raw);
   auto context = queue.GetContext();

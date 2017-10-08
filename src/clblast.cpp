@@ -2492,7 +2492,7 @@ StatusCode OverrideParameters(const cl_device_id device, const std::string &kern
 
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto platform_id = device_cpp.Platform();
+    const auto platform_id = device_cpp.PlatformID();
     const auto device_name = GetDeviceName(device_cpp);
 
     // Retrieves the current database values to verify whether the new ones are complete
