@@ -364,7 +364,9 @@ def performance_test(routine, level_string):
         found = False
         for flavour in routine.flavours:
             if flavour.precision_name == precision:
-                result += NL + "      clblast::RunClient<clblast::TestX" + routine.plain_name() + flavour.test_template()
+                extra_template_argument = "0, " if routine.name == "gemm" and not routine.batched else ""
+                result += NL + "      clblast::RunClient<clblast::TestX" + routine.plain_name()
+                result += flavour.test_template(extra_template_argument)
                 result += ">(argc, argv); break;" + NL
                 found = True
         if not found:
@@ -384,10 +386,13 @@ def correctness_test(routine, level_string):
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  auto errors = size_t{0};" + NL
     not_first = "false"
-    for flavour in routine.flavours:
-        result += "  errors += clblast::RunTests<clblast::TestX" + routine.plain_name() + flavour.test_template()
-        result += ">(argc, argv, " + not_first + ", \"" + flavour.name + routine.upper_name() + "\");" + NL
-        not_first = "true"
+    extra_template_arguments = ["1, ", "2, "] if routine.name == "gemm" and not routine.batched else [""]
+    for extra_template_argument in extra_template_arguments:
+        for flavour in routine.flavours:
+            result += "  errors += clblast::RunTests<clblast::TestX" + routine.plain_name()
+            result += flavour.test_template(extra_template_argument)
+            result += ">(argc, argv, " + not_first + ", \"" + flavour.name + routine.upper_name() + "\");" + NL
+            not_first = "true"
     result += "  if (errors > 0) { return 1; } else { return 0; }" + NL
     result += "}" + NL
     return result
