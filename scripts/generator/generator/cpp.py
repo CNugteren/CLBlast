@@ -36,19 +36,19 @@ HEADER = NL + SEPARATOR + """
 """ + SEPARATOR + NL
 
 
-def clblast_h(routine):
+def clblast_h(routine, cuda=False):
     """The C++ API header (.h)"""
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
-    result += routine.routine_header_cpp(12, " = nullptr") + ";" + NL
+    result += routine.routine_header_cpp(12, " = nullptr", cuda) + ";" + NL
     return result
 
 
-def clblast_cc(routine):
+def clblast_cc(routine, cuda=False):
     """The C++ API implementation (.cpp)"""
     indent1 = " " * (15 + routine.length())
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     if routine.implemented:
-        result += routine.routine_header_cpp(12, "") + " {" + NL
+        result += routine.routine_header_cpp(12, "", cuda) + " {" + NL
         result += "  try {" + NL
         result += "    auto queue_cpp = Queue(*queue);" + NL
         result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, event);" + NL
@@ -60,14 +60,22 @@ def clblast_cc(routine):
         result += "    return StatusCode::kSuccess;" + NL
         result += "  } catch (...) { return DispatchException(); }" + NL
     else:
-        result += routine.routine_header_type_cpp(12) + " {" + NL
+        result += routine.routine_header_type_cpp(12, cuda) + " {" + NL
         result += "  return StatusCode::kNotImplemented;" + NL
     result += "}" + NL
     for flavour in routine.flavours:
         indent2 = " " * (34 + routine.length() + len(flavour.template))
         result += "template StatusCode PUBLIC_API " + routine.capitalized_name() + "<" + flavour.template + ">("
-        result += ("," + NL + indent2).join([a for a in routine.arguments_type(flavour)])
-        result += "," + NL + indent2 + "cl_command_queue*, cl_event*);" + NL
+        arguments = routine.arguments_type(flavour)
+        if cuda:
+            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
+        result += ("," + NL + indent2).join([a for a in arguments])
+        result += "," + NL + indent2
+        if cuda:
+            result += "CUstream*"
+        else:
+            result += "cl_command_queue*, cl_event*"
+        result += ");" + NL
     return result
 
 

@@ -12,9 +12,9 @@
 
 #include <string>
 
+#include "utilities/utilities.hpp"
 #include "cache.hpp"
 #include "routines/routines.hpp"
-#include "clblast.h"
 
 namespace clblast {
 // =================================================================================================

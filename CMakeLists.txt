@@ -30,6 +30,23 @@ option(TESTS "Enable compilation of the correctness tests" OFF)
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
 
+# Select between an OpenCL API (default) or a CUDA API (beta)
+option(OPENCL "Build CLBlast with an OpenCL API (default)" ON)
+option(CUDA "Build CLBlast with a CUDA API (beta)" OFF)
+if(NOT OPENCL AND NOT CUDA)
+  message(FATAL_ERROR "No API selected, choose from OpenCL (-DOPENCL=ON) or CUDA (-DCUDA=ON)")
+endif()
+if(OPENCL AND  CUDA)
+  message(FATAL_ERROR "Multiple APIs selected, choose either OpenCL (-DOPENCL=ON -DCUDA=OFF) or CUDA (-DCUDA=ON -DOPENCL=OFF)")
+endif()
+if(OPENCL)
+  message("-- Building CLBlast with OpenCL API (default)")
+  add_definitions(-DOPENCL_API)
+elseif(CUDA)
+  message("-- Building CLBlast with CUDA API (beta)")
+  add_definitions(-DCUDA_API)
+endif()
+
 # Compile in verbose mode with additional diagnostic messages
 option(VERBOSE "Compile in verbose mode for additional diagnostic messages" OFF)
 if(VERBOSE)
@@ -123,8 +140,18 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 # Package scripts location
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${clblast_SOURCE_DIR}/cmake/Modules/")
 
-# Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
-find_package(OpenCL REQUIRED)
+if(OPENCL)
+  # Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
+  find_package(OpenCL REQUIRED)
+  set(API_LIBRARIES ${OPENCL_LIBRARIES})
+  set(API_INCLUDE_DIRS ${OPENCL_INCLUDE_DIRS})
+elseif(CUDA)
+  # For CUDA, the "FindCUDA.cmake" is part of CMake
+  find_package(CUDA REQUIRED)
+  set(API_LIBRARIES cuda nvrtc)
+  set(API_INCLUDE_DIRS ${CUDA_INCLUDE_DIRS})
+  link_directories(${CUDA_TOOLKIT_ROOT_DIR}/lib64)
+endif()
 
 # Locates the CLTune library in case the tuners need to be compiled. "FindCLTune.cmake" is included.
 if(TUNERS)
@@ -161,11 +188,6 @@ set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
 set(DATABASES copy pad padtranspose transpose xaxpy xdot
               xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger)
-set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
-set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
-if(NETLIB)
-  set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
-endif()
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
@@ -173,6 +195,16 @@ set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm xtrsm)
 set(LEVELX_ROUTINES xomatcopy xim2col xaxpybatched xgemmbatched)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
 set(PRECISIONS 32 64 3232 6464 16)
+if(OPENCL)
+  set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
+  set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
+  if(NETLIB)
+    set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
+  endif()
+elseif(CUDA)
+  set(SAMPLE_PROGRAMS_CPP )
+  set(SAMPLE_PROGRAMS_C )
+endif()
 
 # ==================================================================================================
 
@@ -184,14 +216,10 @@ set(SOURCES
   src/utilities/utilities.cpp
   src/api_common.cpp
   src/cache.cpp
-  src/clblast.cpp
-  src/clblast_c.cpp
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
 )
 set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
-  include/clblast.h
-  include/clblast_c.h
   include/clblast_half.h
   src/database/apple_cpu_fallback.hpp
   src/database/database.hpp
@@ -209,13 +237,19 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/utilities/msvc.hpp
   src/utilities/utilities.hpp
   src/cache.hpp
-  src/clpp11.hpp
   src/cxpp11_common.hpp
   src/routine.hpp
 )
-if(NETLIB)
-  set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
-  set(HEADERS ${HEADERS} include/clblast_netlib_c.h)
+if(OPENCL)
+  set(SOURCES ${SOURCES} src/clblast.cpp src/clblast_c.cpp)
+  set(HEADERS ${HEADERS} include/clblast.h include/clblast_c.h src/clpp11.hpp)
+  if(NETLIB)
+    set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
+    set(HEADERS ${HEADERS} include/clblast_netlib_c.h)
+  endif()
+elseif(CUDA)
+  set(SOURCES ${SOURCES} src/clblast_cuda.cpp)
+  set(HEADERS ${HEADERS} include/clblast_cuda.h src/cupp11.hpp)
 endif()
 foreach(ROUTINE ${LEVEL1_ROUTINES})
   set(SOURCES ${SOURCES} src/routines/level1/${ROUTINE}.cpp)
@@ -249,14 +283,14 @@ else(BUILD_SHARED_LIBS)
   add_library(clblast STATIC ${SOURCES} ${HEADERS})
 endif()
 
-target_link_libraries(clblast ${OPENCL_LIBRARIES})
+target_link_libraries(clblast ${API_LIBRARIES})
 
 # Includes directories: CLBlast and OpenCL
 target_include_directories(clblast PUBLIC
                            $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
                            $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
                            $<INSTALL_INTERFACE:include>
-                           ${OPENCL_INCLUDE_DIRS})
+                           ${API_INCLUDE_DIRS})
 
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
@@ -267,11 +301,15 @@ endif()
 
 # Installs the library
 install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
-install(FILES include/clblast.h DESTINATION include)
-install(FILES include/clblast_c.h DESTINATION include)
 install(FILES include/clblast_half.h DESTINATION include)
-if(NETLIB)
-  install(FILES include/clblast_netlib_c.h DESTINATION include)
+if(OPENCL)
+  install(FILES include/clblast.h DESTINATION include)
+  install(FILES include/clblast_c.h DESTINATION include)
+  if(NETLIB)
+    install(FILES include/clblast_netlib_c.h DESTINATION include)
+  endif()
+elseif(CUDA)
+  install(FILES include/clblast_cuda.h DESTINATION include)
 endif()
 
 # Installs the config for find_package in dependent projects
@@ -291,19 +329,21 @@ endif()
 if(SAMPLES)
 
   # Downloads the cl.hpp file from Khronos
-  file(DOWNLOAD https://www.khronos.org/registry/OpenCL/api/2.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+  if(OPENCL)
+    file(DOWNLOAD https://www.khronos.org/registry/OpenCL/api/2.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+  endif()
 
   # Adds sample programs (C++)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_CPP})
     add_executable(clblast_sample_${SAMPLE} samples/${SAMPLE}.cpp)
-    target_link_libraries(clblast_sample_${SAMPLE} clblast ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_sample_${SAMPLE} clblast ${API_LIBRARIES})
     install(TARGETS clblast_sample_${SAMPLE} DESTINATION bin)
   endforeach()
 
   # Adds sample programs (C)
   foreach(SAMPLE ${SAMPLE_PROGRAMS_C})
     add_executable(clblast_sample_${SAMPLE}_c samples/${SAMPLE}.c)
-    target_link_libraries(clblast_sample_${SAMPLE}_c clblast ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_sample_${SAMPLE}_c clblast ${API_LIBRARIES})
     install(TARGETS clblast_sample_${SAMPLE}_c DESTINATION bin)
   endforeach()
 
@@ -324,7 +364,7 @@ if(TUNERS)
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
     add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
-    target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
     target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
@@ -429,7 +469,7 @@ if(CLIENTS)
                    test/routines/levelx/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_client_${ROUTINE} clblast ${REF_LIBRARIES} ${API_LIBRARIES})
     target_include_directories(clblast_client_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     install(TARGETS clblast_client_${ROUTINE} DESTINATION bin)
   endforeach()
@@ -481,7 +521,7 @@ if(TESTS)
                    test/routines/levelx/${ROUTINE}.hpp)
   endforeach()
   foreach(ROUTINE ${ROUTINES})
-    target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_test_${ROUTINE} clblast ${REF_LIBRARIES} ${API_LIBRARIES})
     install(TARGETS clblast_test_${ROUTINE} DESTINATION bin)
     target_include_directories(clblast_test_${ROUTINE} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     add_test(clblast_test_${ROUTINE} clblast_test_${ROUTINE})
@@ -492,7 +532,7 @@ if(TESTS)
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
                    test/correctness/misc/${MISC_TEST}.cpp)
-    target_link_libraries(clblast_test_${MISC_TEST} clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+    target_link_libraries(clblast_test_${MISC_TEST} clblast ${REF_LIBRARIES} ${API_LIBRARIES})
     target_include_directories(clblast_test_${MISC_TEST} PUBLIC
                                $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
                                ${clblast_SOURCE_DIR} ${REF_INCLUDES})
@@ -501,7 +541,7 @@ if(TESTS)
 
   # CLBlast diagnostics
   add_executable(clblast_test_diagnostics ${TESTS_COMMON} test/diagnostics.cpp)
-  target_link_libraries(clblast_test_diagnostics clblast ${REF_LIBRARIES} ${OPENCL_LIBRARIES})
+  target_link_libraries(clblast_test_diagnostics clblast ${REF_LIBRARIES} ${API_LIBRARIES})
   target_include_directories(clblast_test_diagnostics PUBLIC
                              $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
                              ${clblast_SOURCE_DIR} ${REF_INCLUDES})
