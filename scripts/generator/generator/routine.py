@@ -813,7 +813,7 @@ class Routine:
         result += (",\n" + indent).join([a for a in arguments])
         result += ",\n" + indent
         if cuda:
-            result += "CUstream* stream"
+            result += "const CUcontext context, const CUdevice device"
         else:
             result += "cl_command_queue* queue, cl_event* event" + default_event
         result += ")"
@@ -830,7 +830,7 @@ class Routine:
         result += (",\n" + indent).join([a for a in arguments])
         result += ",\n" + indent
         if cuda:
-            result += "CUstream* stream"
+            result += "const CUcontext, const CUdevice"
         else:
             result += "cl_command_queue*, cl_event*"
         result += ")"

@@ -50,7 +50,12 @@ def clblast_cc(routine, cuda=False):
     if routine.implemented:
         result += routine.routine_header_cpp(12, "", cuda) + " {" + NL
         result += "  try {" + NL
-        result += "    auto queue_cpp = Queue(*queue);" + NL
+        if cuda:
+            result += "    const auto context_cpp = Context(context);" + NL
+            result += "    const auto device_cpp = Device(device);" + NL
+            result += "    auto queue_cpp = Queue(context_cpp, device_cpp);" + NL
+        else:
+            result += "    auto queue_cpp = Queue(*queue);" + NL
         result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, event);" + NL
         if routine.batched:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
@@ -72,7 +77,7 @@ def clblast_cc(routine, cuda=False):
         result += ("," + NL + indent2).join([a for a in arguments])
         result += "," + NL + indent2
         if cuda:
-            result += "CUstream*"
+            result += "const CUcontext, const CUdevice"
         else:
             result += "cl_command_queue*, cl_event*"
         result += ");" + NL
