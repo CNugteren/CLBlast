@@ -22,11 +22,11 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            const __global realM* restrict agm, const __global realN* restrict bgm,
                            __global realM* cgm, realM cpm[NWI][MWI/VWM]
                            #if SA == 1 && SB == 1
-                             , __local realM* alm, __local realN* blm
+                             , LOCAL_PTR realM* alm, LOCAL_PTR realN* blm
                            #elif SA == 1
-                             , __local realM* alm
+                             , LOCAL_PTR realM* alm
                            #elif SB == 1
-                             , __local realN* blm
+                             , LOCAL_PTR realN* blm
                            #endif
                            ) {
 

@@ -186,7 +186,7 @@ INLINE_FUNC void InitAccRegisters(realM cpm[NWI][MWI/VWM]) {
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
 #if SA == 1
-INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, __local realM* alm,
+INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, LOCAL_PTR realM* alm,
                                 const int kSizeM, const int tid, const int kwg) {
   const int la0 = tid % MDIMA;
   const int la1 = tid / MDIMA;
@@ -216,7 +216,7 @@ INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, __local real
 
 // Same as above, but now for the B input matrix
 #if SB == 1
-INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, __local realN* blm,
+INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, LOCAL_PTR realN* blm,
                                 const int kSizeN, const int tid, const int kwg) {
   const int lb0 = tid % NDIMB;
   const int lb1 = tid / NDIMB;
@@ -298,7 +298,7 @@ INLINE_FUNC void GlobalToPrivateB(const __global realN* restrict bgm, realN bpm[
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific
 // for caching the A input matrix.
 #if SA == 1
-INLINE_FUNC void LocalToPrivateA(__local realM* alm, realM apm[MWI/VWM], const int kg) {
+INLINE_FUNC void LocalToPrivateA(LOCAL_PTR realM* alm, realM apm[MWI/VWM], const int kg) {
   #pragma unroll
   for (int mi=0; mi<MWI/VWM; ++mi) {
     #if STRM == 0
@@ -313,7 +313,7 @@ INLINE_FUNC void LocalToPrivateA(__local realM* alm, realM apm[MWI/VWM], const i
 
 // Same as above, but now for the B input matrix
 #if SB == 1
-INLINE_FUNC void LocalToPrivateB(__local realN* blm, realN bpm[NWI/VWN], const int kg) {
+INLINE_FUNC void LocalToPrivateB(LOCAL_PTR realN* blm, realN bpm[NWI/VWN], const int kg) {
   #pragma unroll
   for (int ni=0; ni<NWI/VWN; ++ni) {
     #if STRN == 0

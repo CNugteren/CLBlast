@@ -18,6 +18,7 @@ R"(
 
 // CLBlast specific additions
 #define CUDA 1
+#define LOCAL_PTR  // pointers to local memory don't have to be annotated in CUDA
 
 // Replaces the OpenCL get_xxx_ID with CUDA equivalents
 __device__ int get_local_id(const int x) {

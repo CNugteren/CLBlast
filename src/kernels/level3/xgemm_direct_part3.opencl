@@ -24,7 +24,7 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
                              const __global realMD* restrict agm, const int a_offset, const int a_ld,
                              const __global realND* restrict bgm, const int b_offset, const int b_ld,
                              __global real* cgm, const int c_offset, const int c_ld,
-                             __local real* alm, __local real* blm,
+                             LOCAL_PTR real* alm, LOCAL_PTR real* blm,
                              const int a_transpose, const int b_transpose, const int c_transpose,
                              const int a_conjugate, const int b_conjugate) {
   const real alpha = GetRealArg(arg_alpha);
