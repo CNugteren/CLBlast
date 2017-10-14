@@ -202,7 +202,7 @@ if(OPENCL)
     set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
   endif()
 elseif(CUDA)
-  set(SAMPLE_PROGRAMS_CPP sgemm_cuda)
+  set(SAMPLE_PROGRAMS_CPP daxpy_cuda sgemm_cuda)
   set(SAMPLE_PROGRAMS_C )
 endif()
 
