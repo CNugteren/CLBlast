@@ -370,6 +370,8 @@ using ContextPointer = CUcontext*;
 // C++11 version of 'nvrtcProgram'. Additionally holds the program's source code.
 class Program {
 public:
+  Program() = default;
+
   // Note that there is no constructor based on the regular CUDA data-type because of extra state
 
   // Source-based constructor with memory management
@@ -404,7 +406,7 @@ public:
 
   // Confirms whether a certain status code is an actual compilation error or warning
   bool StatusIsCompilationWarningOrError(const nvrtcResult status) const {
-    return (status == NVRTC_ERROR_INVALID_INPUT);
+    return (status == NVRTC_ERROR_COMPILATION);
   }
 
   // Retrieves the warning/error message from the compiler (if any)
@@ -433,8 +435,8 @@ public:
   const nvrtcProgram& operator()() const { return *program_; }
 private:
   std::shared_ptr<nvrtcProgram> program_;
-  const std::string source_;
-  const bool from_binary_;
+  std::string source_;
+  bool from_binary_;
 };
 
 // =================================================================================================
@@ -730,7 +732,7 @@ public:
   // TODO: Implement this function
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
-              std::vector<Event>& waitForEvents) {
+              const std::vector<Event>& waitForEvents) {
     if (local.size() == 0) {
       throw LogicError("Kernel: launching with a default workgroup size is not implemented for the CUDA back-end");
     }

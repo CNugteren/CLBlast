@@ -56,7 +56,8 @@ def clblast_cc(routine, cuda=False):
             result += "    auto queue_cpp = Queue(context_cpp, device_cpp);" + NL
         else:
             result += "    auto queue_cpp = Queue(*queue);" + NL
-        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, event);" + NL
+        event = "nullptr" if cuda else "event"
+        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, " + event + ");" + NL
         if routine.batched:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
         result += "    routine.Do" + routine.capitalized_name() + "("

@@ -19,7 +19,7 @@
 #include <vector>
 
 // Includes the CUDA driver API
-#include <cuda>
+#include <cuda.h>
 
 // Includes the CLBlast library
 #include <clblast_cuda.h>
@@ -43,14 +43,15 @@ int main() {
   const auto c_ld = n;
 
   // Initializes the OpenCL device
+  cuInit(0);
   CUdevice device;
   cuDeviceGet(&device, device_id);
 
   // Creates the OpenCL context and stream
   CUcontext context;
-  cuCtxCreate(context, 0, device);
+  cuCtxCreate(&context, 0, device);
   CUstream stream;
-  cuStreamCreate(queue, CU_STREAM_NON_BLOCKING);
+  cuStreamCreate(&stream, CU_STREAM_NON_BLOCKING);
 
   // Populate host matrices with some example data
   auto host_a = std::vector<float>(m*k);
@@ -64,12 +65,12 @@ int main() {
   CUdeviceptr device_a;
   CUdeviceptr device_b;
   CUdeviceptr device_c;
-  cuMemAlloc(device_a, host_a.size()*sizeof(float));
-  cuMemAlloc(device_b, host_b.size()*sizeof(float));
-  cuMemAlloc(device_c, host_c.size()*sizeof(float));
-  cuMemcpyHtoDAsync(device_a, host_a.data()), host_a.size()*sizeof(T), queue);
-  cuMemcpyHtoDAsync(device_b, host_c.data()), host_b.size()*sizeof(T), queue);
-  cuMemcpyHtoDAsync(device_c, host_b.data()), host_c.size()*sizeof(T), queue);
+  cuMemAlloc(&device_a, host_a.size()*sizeof(float));
+  cuMemAlloc(&device_b, host_b.size()*sizeof(float));
+  cuMemAlloc(&device_c, host_c.size()*sizeof(float));
+  cuMemcpyHtoDAsync(device_a, host_a.data(), host_a.size()*sizeof(float), stream);
+  cuMemcpyHtoDAsync(device_b, host_c.data(), host_b.size()*sizeof(float), stream);
+  cuMemcpyHtoDAsync(device_c, host_b.data(), host_c.size()*sizeof(float), stream);
 
   // Start the timer
   auto start_time = std::chrono::steady_clock::now();
@@ -79,11 +80,12 @@ int main() {
                               clblast::Transpose::kNo, clblast::Transpose::kNo,
                               m, n, k,
                               alpha,
-                              device_a(), 0, a_ld,
-                              device_b(), 0, b_ld,
+                              device_a, 0, a_ld,
+                              device_b, 0, b_ld,
                               beta,
-                              device_c(), 0, c_ld,
+                              device_c, 0, c_ld,
                               context, device);
+  cuStreamSynchronize(stream);
 
   // Record the execution time
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;

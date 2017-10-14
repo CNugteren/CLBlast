@@ -11,6 +11,11 @@
 //
 // =================================================================================================
 
+// Enables loading of this file using the C++ pre-processor's #include (C++11 standard raw string
+// literal). Comment-out this line for syntax-highlighting when developing.
+R"(
+// =================================================================================================
+
 // Replaces the OpenCL keywords with CUDA equivalent
 #define __kernel __placeholder__
 #define __global
@@ -49,3 +54,9 @@ typedef struct { float s0; float s1; float s2; float s3;
                  float s12; float s13; float s14; float s15; } float16;
 
 // =================================================================================================
+
+// End of the C++11 raw string literal
+)"
+
+// =================================================================================================
+
