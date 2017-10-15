@@ -32,8 +32,8 @@ __device__ int get_group_id(const int x) {
   return blockIdx.z;
 }
 __device__ int get_global_size(const int x) {
-  if (x == 0) { return gridDim.x; }
-  if (x == 1) { return gridDim.y; }
+  if (x == 0) { return gridDim.x * blockDim.x; }
+  if (x == 1) { return gridDim.y * blockDim.y; }
   return gridDim.z;
 }
 __device__ int get_global_id(const int x) {

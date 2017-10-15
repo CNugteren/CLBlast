@@ -83,6 +83,7 @@ class TestXaxpy {
                          buffers.x_vec(), args.x_offset, args.x_inc,
                          buffers.y_vec(), args.y_offset, args.y_inc,
                          queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
     #endif
     return status;
   }
