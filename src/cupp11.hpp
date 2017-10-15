@@ -41,6 +41,7 @@
 #include <string>    // std::string
 #include <vector>    // std::vector
 #include <memory>    // std::shared_ptr
+#include <cstring>   // std::strlen
 
 // CUDA
 #include <cuda.h>    // CUDA driver API
@@ -251,6 +252,7 @@ public:
     auto result = std::string{};
     result.resize(kStringLength);
     CheckError(cuDeviceGetName(&result[0], result.size(), device_));
+    result.resize(strlen(result.c_str())); // Removes any trailing '\0'-characters
     return result;
   }
   std::string Type() const { return "GPU"; }
@@ -657,12 +659,13 @@ public:
 
   // Constructor based on the regular CUDA data-type: memory management is handled elsewhere
   explicit Kernel(const CUmodule module, const CUfunction kernel):
+      name_("unknown"),
       module_(module),
       kernel_(kernel) {
   }
 
   // Regular constructor with memory management
-  explicit Kernel(const Program &program, const std::string &name) {
+  explicit Kernel(const Program &program, const std::string &name): name_(name) {
     CheckError(cuModuleLoadDataEx(&module_, program.GetIR().data(), 0, nullptr, nullptr));
     CheckError(cuModuleGetFunction(&kernel_, module_, name.c_str()));
   }
@@ -701,7 +704,7 @@ public:
 
   // Retrieves the name of the kernel
   std::string GetFunctionName() const {
-    return std::string{"unknown"}; // Not implemented for the CUDA backend
+    return name_;
   }
 
   // Launches a kernel onto the specified queue
@@ -722,10 +725,10 @@ public:
     }
 
     // Launches the kernel, its execution time is recorded by events
-    CheckError(cuEventRecord(event->start(), queue()));
+    if (event) { CheckError(cuEventRecord(event->start(), queue())); }
     CheckError(cuLaunchKernel(kernel_, grid[0], grid[1], grid[2], block[0], block[1], block[2],
                               0, queue(), pointers.data(), nullptr));
-    CheckError(cuEventRecord(event->end(), queue()));
+    if (event) { CheckError(cuEventRecord(event->end(), queue())); }
   }
 
   // As above, but with an event waiting list
@@ -748,6 +751,7 @@ public:
   const CUfunction& operator()() const { return kernel_; }
   CUfunction operator()() { return kernel_; }
 private:
+  const std::string name_;
   CUmodule module_;
   CUfunction kernel_;
   std::vector<size_t> arguments_indices_; // Indices of the arguments

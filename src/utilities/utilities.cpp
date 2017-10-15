@@ -413,13 +413,17 @@ std::string GetDeviceVendor(const Device& device) {
 // Mid-level info
 std::string GetDeviceArchitecture(const Device& device) {
   auto device_architecture = std::string{""};
-  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+  #ifdef CUDA_API
     device_architecture = device.NVIDIAComputeCapability();
-  }
-  else if (device.HasExtension(kKhronosAttributesAMD)) {
-    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
-  }
-  // Note: no else - 'device_architecture' might be the empty string
+  #else
+    if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+      device_architecture = device.NVIDIAComputeCapability();
+    }
+    else if (device.HasExtension(kKhronosAttributesAMD)) {
+      device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+    }
+    // Note: no else - 'device_architecture' might be the empty string
+  #endif
 
   for (auto &find_and_replace : device_mapping::kArchitectureNames) { // replacing to common names
     if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
