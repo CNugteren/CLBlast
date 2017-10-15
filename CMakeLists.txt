@@ -165,8 +165,10 @@ endif()
 # Locates the reference BLAS libraries in case the tests need to be compiled. The "FindclBLAS.cmake",
 # "FindCBLAS.cmake" and "FindcuBLAS.cmake" are included.
 if(CLIENTS OR TESTS)
-  find_package(clBLAS)
   find_package(CBLAS)
+  if(OPENCL)
+    find_package(clBLAS)
+  endif()
   if(CUBLAS)
     find_package(cuBLAS)
   endif()
@@ -195,6 +197,8 @@ set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm xtrsm)
 set(LEVELX_ROUTINES xomatcopy xim2col xaxpybatched xgemmbatched)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
 set(PRECISIONS 32 64 3232 6464 16)
+
+# Sample programs
 if(OPENCL)
   set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched)
   set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)

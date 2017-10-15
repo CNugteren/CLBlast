@@ -241,36 +241,22 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
       std::cout << std::flush;
     }
 
-    // Creates the OpenCL buffers. Note: we are not using the C++ version since we explicitly
+    // Creates the buffers. Note: we are not using the cxpp11.h C++ version since we explicitly
     // want to be able to create invalid buffers (no error checking here).
-    auto x1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-    auto y1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-    auto a1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-    auto b1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-    auto c1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-    auto ap1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-    auto d1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-    auto x_vec1 = Buffer<T>(x1);
-    auto y_vec1 = Buffer<T>(y1);
-    auto a_mat1 = Buffer<T>(a1);
-    auto b_mat1 = Buffer<T>(b1);
-    auto c_mat1 = Buffer<T>(c1);
-    auto ap_mat1 = Buffer<T>(ap1);
-    auto scalar1 = Buffer<T>(d1);
-    auto x2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-    auto y2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-    auto a2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-    auto b2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-    auto c2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-    auto ap2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-    auto d2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-    auto x_vec2 = Buffer<T>(x2);
-    auto y_vec2 = Buffer<T>(y2);
-    auto a_mat2 = Buffer<T>(a2);
-    auto b_mat2 = Buffer<T>(b2);
-    auto c_mat2 = Buffer<T>(c2);
-    auto ap_mat2 = Buffer<T>(ap2);
-    auto scalar2 = Buffer<T>(d2);
+    auto x_vec1 = CreateInvalidBuffer<T>(context_, args.x_size);
+    auto y_vec1 = CreateInvalidBuffer<T>(context_, args.y_size);
+    auto a_mat1 = CreateInvalidBuffer<T>(context_, args.a_size);
+    auto b_mat1 = CreateInvalidBuffer<T>(context_, args.b_size);
+    auto c_mat1 = CreateInvalidBuffer<T>(context_, args.c_size);
+    auto ap_mat1 = CreateInvalidBuffer<T>(context_, args.ap_size);
+    auto scalar1 = CreateInvalidBuffer<T>(context_, args.scalar_size);
+    auto x_vec2 = CreateInvalidBuffer<T>(context_, args.x_size);
+    auto y_vec2 = CreateInvalidBuffer<T>(context_, args.y_size);
+    auto a_mat2 = CreateInvalidBuffer<T>(context_, args.a_size);
+    auto b_mat2 = CreateInvalidBuffer<T>(context_, args.b_size);
+    auto c_mat2 = CreateInvalidBuffer<T>(context_, args.c_size);
+    auto ap_mat2 = CreateInvalidBuffer<T>(context_, args.ap_size);
+    auto scalar2 = CreateInvalidBuffer<T>(context_, args.scalar_size);
     auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
     auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
 
