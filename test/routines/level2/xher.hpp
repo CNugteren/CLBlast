@@ -71,14 +71,23 @@ class TestXher {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Her(args.layout, args.triangle,
-                      args.n, args.alpha,
-                      buffers.x_vec(), args.x_offset, args.x_inc,
-                      buffers.a_mat(), args.a_offset, args.a_ld,
-                      &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Her(args.layout, args.triangle,
+                        args.n, args.alpha,
+                        buffers.x_vec(), args.x_offset, args.x_inc,
+                        buffers.a_mat(), args.a_offset, args.a_ld,
+                        &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Her(args.layout, args.triangle,
+                        args.n, args.alpha,
+                        buffers.x_vec(), args.x_offset, args.x_inc,
+                        buffers.a_mat(), args.a_offset, args.a_ld,
+                        queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 
