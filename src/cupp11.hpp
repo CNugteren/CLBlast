@@ -272,6 +272,11 @@ public:
     const auto minor = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR);
     return "SM"+std::to_string(major)+"."+std::to_string(minor);
   }
+  std::string ComputeArch() const {
+    const auto major = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR);
+    const auto minor = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR);
+    return "compute_"+std::to_string(major)+std::to_string(minor);
+  }
   bool HasExtension(const std::string &extension) const { return false; }
   bool SupportsFP64() const { return true; }
   bool SupportsFP16() const {
@@ -396,7 +401,8 @@ public:
   }
 
   // Compiles the device program and checks whether or not there are any warnings/errors
-  void Build(const Device &, std::vector<std::string> &options) {
+  void Build(const Device &device, std::vector<std::string> &options) {
+    options.push_back("-arch=" + device.ComputeArch());
     if (from_binary_) { return; }
     auto raw_options = std::vector<const char*>();
     for (const auto &option: options) {
