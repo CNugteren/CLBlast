@@ -84,7 +84,6 @@ class TestXtbmv {
                             args.n, args.kl,
                             buffers.a_mat(), args.a_offset, args.a_ld,
                             buffers.x_vec(), args.x_offset, args.x_inc,
-                            &queue_plain, &event);
                             queue.GetContext()(), queue.GetDevice()());
       cuStreamSynchronize(queue());
     #endif
