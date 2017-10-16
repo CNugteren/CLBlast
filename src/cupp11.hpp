@@ -146,7 +146,7 @@ public:
   }
 
   // Waits for completion of this event (not implemented for CUDA)
-  void WaitForCompletion() const { }
+  void WaitForCompletion() const { }   // not needed due to cuStreamSynchronize call after each kernel launch
 
   // Retrieves the elapsed time of the last recorded event
   float GetElapsedTime() const {
@@ -716,6 +716,10 @@ public:
   // Launches a kernel onto the specified queue
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event) {
+    // TODO: Currently this CUDA launch is always synchronous due to a cuStreamSynchronize call
+    if (local.size() == 0) {
+      throw LogicError("Kernel: launching with a default workgroup size is not implemented for the CUDA back-end");
+    }
 
     // Creates the grid (number of threadblocks) and sets the block sizes (threads per block)
     auto grid = std::vector<size_t>{1, 1, 1};
@@ -734,23 +738,18 @@ public:
     if (event) { CheckError(cuEventRecord(event->start(), queue())); }
     CheckError(cuLaunchKernel(kernel_, grid[0], grid[1], grid[2], block[0], block[1], block[2],
                               0, queue(), pointers.data(), nullptr));
+    cuStreamSynchronize(queue());
     if (event) { CheckError(cuEventRecord(event->end(), queue())); }
   }
 
   // As above, but with an event waiting list
-  // TODO: Implement this function
   void Launch(const Queue &queue, const std::vector<size_t> &global,
               const std::vector<size_t> &local, EventPointer event,
               const std::vector<Event>& waitForEvents) {
-    if (local.size() == 0) {
-      throw LogicError("Kernel: launching with a default workgroup size is not implemented for the CUDA back-end");
+    for (auto &waitEvent : waitForEvents) {
+      waitEvent.WaitForCompletion(); // note: doesn't do anything, every kernel call is synchronous
     }
-    else if (waitForEvents.size() != 0) {
-      throw LogicError("Kernel: launching with an event waiting list is not implemented for the CUDA back-end");
-    }
-    else {
-      return Launch(queue, global, local, event);
-    }
+    return Launch(queue, global, local, event);
   }
 
   // Accessors to the private data-members
