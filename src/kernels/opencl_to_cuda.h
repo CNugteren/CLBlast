@@ -31,6 +31,11 @@ __device__ int get_group_id(const int x) {
   if (x == 1) { return blockIdx.y; }
   return blockIdx.z;
 }
+__device__ int get_local_size(const int x) {
+  if (x == 0) { return blockDim.x; }
+  if (x == 1) { return blockDim.y; }
+  return blockDim.z;
+}
 __device__ int get_num_groups(const int x) {
   if (x == 0) { return gridDim.x; }
   if (x == 1) { return gridDim.y; }

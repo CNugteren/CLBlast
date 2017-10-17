@@ -34,7 +34,7 @@ R"(
 
 // Returns an element from a vector
 INLINE_FUNC real LoadVector(const int id, const int max,
-                            __global real* gm, const int offset, const int inc,
+                            const __global real* gm, const int offset, const int inc,
                             const int do_conjugate) {
   if (id < max) {
     real result = gm[id*inc + offset];
