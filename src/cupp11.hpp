@@ -44,6 +44,7 @@
 #include <cstring>   // std::strlen
 
 // CUDA
+#define CUDA_NO_HALF // Incompatible with CLBlast's definition; TODO: resolve this
 #include <cuda.h>    // CUDA driver API
 #include <nvrtc.h>   // NVIDIA runtime compilation API
 

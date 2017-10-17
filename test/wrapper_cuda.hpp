@@ -22,6 +22,7 @@
 #include "utilities/utilities.hpp"
 
 #ifdef CLBLAST_REF_CUBLAS
+  #define CUDA_NO_HALF
   #include <cuda_runtime.h>
   #include <cublas_v2.h>
 #endif
