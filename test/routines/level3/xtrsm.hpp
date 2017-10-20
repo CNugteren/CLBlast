@@ -85,14 +85,23 @@ class TestXtrsm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Trsm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
-                       args.m, args.n, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.b_mat(), args.b_offset, args.b_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Trsm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
+                         args.m, args.n, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld,
+                         &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Trsm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
+                         args.m, args.n, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld,
+                         queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

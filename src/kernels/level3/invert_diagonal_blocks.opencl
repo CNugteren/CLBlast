@@ -164,7 +164,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
 // =================================================================================================
 
 // Triple matrix-multiplication kernel: C = A * B
-INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, __local real* blm, int n,
+INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, LOCAL_PTR real* blm, int n,
                               __global const real* agm, __global const real* bgm, __global real* cgm,
                               const int lda, const int ldb, const int ldc,
                               int current_size, int num_pages, const int block_size) {
@@ -250,7 +250,7 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
 // =================================================================================================
 
 // Triple matrix-multiplication kernel part 1: B12 = A12 * B22 (upper) or B21 = A21 * B11 (lower)
-INLINE_FUNC void TripleMatMulPart1(const int size, const bool upper, __local real* blm, int n,
+INLINE_FUNC void TripleMatMulPart1(const int size, const bool upper, LOCAL_PTR real* blm, int n,
                                    __global const real* src, const int a_offset, const int lda,
                                    __global real* dest, int current_size, int num_pages, const int block_size) {
 
@@ -286,7 +286,7 @@ INLINE_FUNC void TripleMatMulPart1(const int size, const bool upper, __local rea
 }
 
 // Triple matrix-multiplication kernel part 1: B12 = -B11 * B12 (upper) or B21 = -B22 * B21 (lower)
-INLINE_FUNC void TripleMatMulPart2(const int size, const bool upper, __local real* blm, const int n,
+INLINE_FUNC void TripleMatMulPart2(const int size, const bool upper, LOCAL_PTR real* blm, const int n,
                                    __global real* dest, int current_size, int num_pages, const int block_size) {
 
   // Emulates a 3D grid: NX * (NY * num_pages)

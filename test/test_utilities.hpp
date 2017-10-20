@@ -89,8 +89,25 @@ std::vector<float> HalfToFloatBuffer(const std::vector<half>& source);
 void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source);
 
 // As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw);
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw);
+#ifdef OPENCL_API
+  Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw);
+  void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw);
+#endif
+
+// =================================================================================================
+
+// Creates a buffer but don't test for validity. That's the reason this is not using the clpp11.h or
+// cupp11.h interface.
+template <typename T>
+Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
+  #ifdef OPENCL_API
+    auto raw_buffer = clCreateBuffer(context(), CL_MEM_READ_WRITE, size * sizeof(T), nullptr, nullptr);
+  #elif CUDA_API
+    CUdeviceptr raw_buffer;
+    cuMemAlloc(&raw_buffer, size * sizeof(T));
+  #endif
+  return Buffer<T>(raw_buffer);
+}
 
 // =================================================================================================
 } // namespace clblast

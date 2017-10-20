@@ -167,6 +167,13 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
     source_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
+  // Optionally adds a translation header from OpenCL kernels to CUDA kernels
+  #ifdef CUDA_API
+    source_string +=
+      #include "kernels/opencl_to_cuda.h"
+    ;
+  #endif
+
   // Loads the common header (typedefs and defines and such)
   source_string +=
     #include "kernels/common.opencl"

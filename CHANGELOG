@@ -1,5 +1,9 @@
 
 Development (next version)
+- Added a CUDA API to CLBlast:
+  * The library and kernels can be compiled with the CUDA driver API and NVRTC (requires CUDA 7.5)
+  * Two CUDA API sample programs are added: SGEMM and DAXPY
+  * All correctness tests and performance clients work on CUDA like they did for OpenCL
 - Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
 - Improved performance for small GEMM problems by going from 3 to 1 optional temporary buffers
 - Various minor fixes and enhancements

@@ -74,14 +74,23 @@ class TestXherk {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<U> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Herk(args.layout, args.triangle, args.a_transpose,
-                       args.n, args.k, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld, args.beta,
-                       buffers.c_mat(), args.c_offset, args.c_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Herk(args.layout, args.triangle, args.a_transpose,
+                         args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Herk(args.layout, args.triangle, args.a_transpose,
+                         args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

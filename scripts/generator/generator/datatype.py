@@ -70,13 +70,13 @@ class DataType:
             return self.beta_cpp + "{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]}"
         return "beta"
 
-    def test_template(self):
+    def test_template(self, extra_template_argument):
         """Returns the template as used in the correctness/performance tests"""
         buffer_type = "clblast::" + self.buffer_type if self.is_non_standard() else self.buffer_type
         beta_cpp = "clblast::" + self.beta_cpp if self.beta_cpp in [D_HALF, D_FLOAT2, D_DOUBLE2] else self.beta_cpp
         if self.buffer_type != self.beta_cpp:
-            return "<" + buffer_type + "," + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
-        return "<" + buffer_type + ">, " + buffer_type + ", " + beta_cpp
+            return "<" + extra_template_argument + buffer_type + "," + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
+        return "<" + extra_template_argument + buffer_type + ">, " + buffer_type + ", " + beta_cpp
 
     def is_complex(self, scalar):
         """Current scalar is complex"""

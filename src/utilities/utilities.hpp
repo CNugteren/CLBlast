@@ -21,8 +21,13 @@
 #include <complex>
 #include <random>
 
-#include "clpp11.hpp"
-#include "clblast.h"
+#ifdef OPENCL_API
+  #include "clpp11.hpp"
+  #include "clblast.h"
+#elif CUDA_API
+  #include "cupp11.hpp"
+  #include "clblast_cuda.h"
+#endif
 #include "clblast_half.h"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/msvc.hpp"

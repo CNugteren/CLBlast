@@ -164,14 +164,23 @@ class TestXinvert {
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     try {
-      auto event = cl_event{};
-      auto inverter = Xinvert<T>(queue, &event);
-      inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
-                                          args.n, args.m,
-                                          buffers.a_mat, args.a_offset, args.a_ld,
-                                          buffers.b_mat);
-      clWaitForEvents(1, &event);
-      clReleaseEvent(event);
+      #ifdef OPENCL_API
+        auto event = cl_event{};
+        auto inverter = Xinvert<T>(queue, &event);
+        inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
+                                            args.n, args.m,
+                                            buffers.a_mat, args.a_offset, args.a_ld,
+                                            buffers.b_mat);
+        clWaitForEvents(1, &event);
+        clReleaseEvent(event);
+      #elif CUDA_API
+        auto inverter = Xinvert<T>(queue, nullptr);
+        inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
+                                            args.n, args.m,
+                                            buffers.a_mat, args.a_offset, args.a_ld,
+                                            buffers.b_mat);
+        cuStreamSynchronize(queue());
+      #endif
     } catch (...) { return DispatchException(); }
     return StatusCode::kSuccess;
   }
