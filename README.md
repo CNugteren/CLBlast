@@ -127,6 +127,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GRID K520
   - GeForce GT 650M
   - GeForce GTX 480
+  - GeForce GTX 580
   - GeForce GTX 670
   - GeForce GTX 680
   - GeForce GTX 750
@@ -134,6 +135,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 980
   - GeForce GTX 1070
   - GeForce GTX 1080
+  - GeForce GTX 1080 Ti
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
@@ -159,6 +161,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris
   - Iris Pro
 * Intel CPUs:
+  - Core i5-4570
   - Core i5-6200U
   - Core i7-920
   - Core i7-2670QM
