@@ -307,27 +307,28 @@ if(MSVC)
 endif()
 
 # Installs the library
-install(TARGETS clblast EXPORT CLBlast DESTINATION lib)
-install(FILES include/clblast_half.h DESTINATION include)
+include(GNUInstallDirs)
+
+install(TARGETS clblast EXPORT CLBlast DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES include/clblast_half.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 if(OPENCL)
-  install(FILES include/clblast.h DESTINATION include)
-  install(FILES include/clblast_c.h DESTINATION include)
+  install(FILES include/clblast.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(FILES include/clblast_c.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   if(NETLIB)
-    install(FILES include/clblast_netlib_c.h DESTINATION include)
+    install(FILES include/clblast_netlib_c.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   endif()
 elseif(CUDA)
-  install(FILES include/clblast_cuda.h DESTINATION include)
+  install(FILES include/clblast_cuda.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 # Installs the config for find_package in dependent projects
-install(EXPORT CLBlast DESTINATION lib/cmake/CLBLast FILE CLBlastConfig.cmake)
+install(EXPORT CLBlast DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CLBLast FILE CLBlastConfig.cmake)
 
 # Install pkg-config file on Linux
 if(UNIX)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/clblast.pc.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc
-            DESTINATION lib/pkgconfig)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
 # ==================================================================================================
