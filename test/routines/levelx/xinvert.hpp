@@ -17,6 +17,7 @@
 #define CLBLAST_TEST_ROUTINES_XINVERT_H_
 
 #include "test/routines/common.hpp"
+#include "src/routines/levelx/xinvert.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -38,6 +39,13 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
   }
   if ((block_size % 16 != 0) || (block_size > 128)) {
     return StatusCode::kUnknownError;
+  }
+
+  // Start at zero
+  for (size_t i =0; i < args.m; ++i) {
+    for (size_t j = 0; j < args.n; ++j) {
+      buffers_host.b_mat[j * args.m + i] = T{0.0};
+    }
   }
 
   // Loops over the amount of diagonal blocks of size args.m by args.m each
