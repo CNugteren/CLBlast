@@ -73,7 +73,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
                             const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld) {
 
   // Settings
-  constexpr auto block_size = size_t{32}; // tuneable
+  constexpr auto block_size = size_t{16}; // tuneable
 
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
