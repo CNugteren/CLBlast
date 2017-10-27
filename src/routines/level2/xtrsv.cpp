@@ -131,10 +131,13 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
     if (i > 0) {
       const auto gemv_m = (a_transpose == Transpose::kNo) ? block_size : i;
       const auto gemv_n = (a_transpose == Transpose::kNo) ? i : block_size;
-      DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
-             a_buffer, a_offset + extra_offset_a, a_ld,
-             x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
-             x_buffer, x_offset + extra_offset_b, x_inc );
+      auto gemv_event = Event();
+      auto gemv = Xgemv<T>(queue_, gemv_event.pointer());
+      gemv.DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
+                  a_buffer, a_offset + extra_offset_a, a_ld,
+                  x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
+                  x_buffer, x_offset + extra_offset_b, x_inc);
+      gemv_event.WaitForCompletion();
     }
 
     // Runs the triangular substitution for the block size
