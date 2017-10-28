@@ -242,6 +242,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/utilities/clblast_exceptions.hpp
   src/utilities/device_mapping.hpp
   src/utilities/msvc.hpp
+  src/utilities/timing.hpp
   src/utilities/utilities.hpp
   src/cache.hpp
   src/cxpp11_common.hpp
