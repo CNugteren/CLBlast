@@ -60,7 +60,6 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     event_(event),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
-    platform_(device_.Platform()),
     db_(kernel_names) {
 
   InitDatabase(userDatabase);
@@ -68,26 +67,35 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
 }
 
 void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatabase) {
+  const auto platform_id = device_.PlatformID();
   for (const auto &kernel_name : kernel_names_) {
 
     // Queries the cache to see whether or not the kernel parameter database is already there
     bool has_db;
-    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_, device_(), precision_, kernel_name },
+    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_id, device_(), precision_, kernel_name },
                                                      &has_db);
     if (has_db) { continue; }
 
     // Builds the parameter database for this device and routine set and stores it in the cache
+    log_debug("Searching database for kernel '" + kernel_name + "'");
     db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
-    DatabaseCache::Instance().Store(DatabaseKey{ platform_, device_(), precision_, kernel_name },
+    DatabaseCache::Instance().Store(DatabaseKey{ platform_id, device_(), precision_, kernel_name },
                                     Database{ db_(kernel_name) });
   }
 }
 
 void Routine::InitProgram(std::initializer_list<const char *> source) {
 
+  // Determines the identifier for this particular routine call
+  auto routine_info = routine_name_;
+  for (const auto &kernel_name : kernel_names_) {
+    routine_info += "_" + kernel_name + db_(kernel_name).GetValuesString();
+  }
+  log_debug(routine_info);
+
   // Queries the cache to see whether or not the program (context-specific) is already there
   bool has_program;
-  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), device_(), precision_, routine_name_ },
+  program_ = ProgramCache::Instance().Get(ProgramKeyRef{ context_(), device_(), precision_, routine_info },
                                           &has_program);
   if (has_program) { return; }
 
@@ -102,12 +110,12 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // is, a program is created and stored in the cache
   const auto device_name = GetDeviceName(device_);
   bool has_binary;
-  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_name_, device_name },
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_info, device_name },
                                             &has_binary);
   if (has_binary) {
     program_ = Program(device_, context_, binary);
     program_.Build(device_, options);
-    ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
+    ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_info },
                                    Program{ program_ });
     return;
   }
@@ -115,13 +123,13 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // Otherwise, the kernel will be compiled and program will be built. Both the binary and the
   // program will be added to the cache.
 
-  // Inspects whether or not cl_khr_fp64 is supported in case of double precision
+  // Inspects whether or not FP64 is supported in case of double precision
   if ((precision_ == Precision::kDouble && !PrecisionSupported<double>(device_)) ||
       (precision_ == Precision::kComplexDouble && !PrecisionSupported<double2>(device_))) {
     throw RuntimeErrorCode(StatusCode::kNoDoublePrecision);
   }
 
-  // As above, but for cl_khr_fp16 (half precision)
+  // As above, but for FP16 (half precision)
   if (precision_ == Precision::kHalf && !PrecisionSupported<half>(device_)) {
     throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
   }
@@ -159,6 +167,13 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
     source_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
+  // Optionally adds a translation header from OpenCL kernels to CUDA kernels
+  #ifdef CUDA_API
+    source_string +=
+      #include "kernels/opencl_to_cuda.h"
+    ;
+  #endif
+
   // Loads the common header (typedefs and defines and such)
   source_string +=
     #include "kernels/common.opencl"
@@ -180,8 +195,8 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   program_ = Program(context_, source_string);
   try {
     program_.Build(device_, options);
-  } catch (const CLError &e) {
-    if (e.status() == CL_BUILD_PROGRAM_FAILURE) {
+  } catch (const CLCudaAPIBuildError &e) {
+    if (program_.StatusIsCompilationWarningOrError(e.status())) {
       fprintf(stdout, "OpenCL compiler error/warning: %s\n",
               program_.GetBuildInfo(device_).c_str());
     }
@@ -189,10 +204,10 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   }
 
   // Store the compiled binary and program in the cache
-  BinaryCache::Instance().Store(BinaryKey{ precision_, routine_name_, device_name },
+  BinaryCache::Instance().Store(BinaryKey{precision_, routine_info, device_name},
                                 program_.GetIR());
 
-  ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_name_ },
+  ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
                                  Program{ program_ });
 
   // Prints the elapsed compilation time in case of debugging in verbose mode

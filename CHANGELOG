@@ -1,5 +1,17 @@
 
 Development (next version)
+- Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
+- Fixed a bug in TRSM when using the a-offset argument
+- Added a CUDA API to CLBlast:
+  * The library and kernels can be compiled with the CUDA driver API and NVRTC (requires CUDA 7.5)
+  * Two CUDA API sample programs are added: SGEMM and DAXPY
+  * All correctness tests and performance clients work on CUDA like they did for OpenCL
+- Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
+- Improved performance for small GEMM problems by going from 3 to 1 optional temporary buffers
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+
+Version 1.1.0
 - The tuning database now has defaults per architecture (e.g. NVIDIA Kepler SM3.5, AMD Fiji)
 - The tuning database now has a dictionary to translate vendor/device names to a common set
 - The tuners can now distinguish between different AMD GPU board names of the same architecture

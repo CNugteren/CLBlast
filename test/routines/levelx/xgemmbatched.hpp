@@ -108,8 +108,6 @@ class TestXgemmBatched {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
     // Relaxed requirement on ld_a and ld_b within the library, this is here to match clBLAS
     auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
                      (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
@@ -119,14 +117,27 @@ class TestXgemmBatched {
     auto b_one = (!b_rotated) ? args.k : args.n;
     if (args.a_ld < a_one) { return StatusCode::kInvalidLeadDimA; }
     if (args.b_ld < b_one) { return StatusCode::kInvalidLeadDimB; }
-    auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
-                              args.m, args.n, args.k, args.alphas.data(),
-                              buffers.a_mat(), args.a_offsets.data(), args.a_ld,
-                              buffers.b_mat(), args.b_offsets.data(), args.b_ld, args.betas.data(),
-                              buffers.c_mat(), args.c_offsets.data(), args.c_ld,
-                              args.batch_count,
-                              &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
+                                args.m, args.n, args.k, args.alphas.data(),
+                                buffers.a_mat(), args.a_offsets.data(), args.a_ld,
+                                buffers.b_mat(), args.b_offsets.data(), args.b_ld, args.betas.data(),
+                                buffers.c_mat(), args.c_offsets.data(), args.c_ld,
+                                args.batch_count,
+                                &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
+                                args.m, args.n, args.k, args.alphas.data(),
+                                buffers.a_mat(), args.a_offsets.data(), args.a_ld,
+                                buffers.b_mat(), args.b_offsets.data(), args.b_ld, args.betas.data(),
+                                buffers.c_mat(), args.c_offsets.data(), args.c_ld,
+                                args.batch_count,
+                                queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

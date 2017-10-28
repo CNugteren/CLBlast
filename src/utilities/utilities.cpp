@@ -391,16 +391,9 @@ template <> Precision PrecisionValue<double2>() { return Precision::kComplexDoub
 // Returns false is this precision is not supported by the device
 template <> bool PrecisionSupported<float>(const Device &) { return true; }
 template <> bool PrecisionSupported<float2>(const Device &) { return true; }
-template <> bool PrecisionSupported<double>(const Device &device) {
-  return device.HasExtension(kKhronosDoublePrecision);
-}
-template <> bool PrecisionSupported<double2>(const Device &device) {
-  return device.HasExtension(kKhronosDoublePrecision);
-}
-template <> bool PrecisionSupported<half>(const Device &device) {
-  if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
-  return device.HasExtension(kKhronosHalfPrecision);
-}
+template <> bool PrecisionSupported<double>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<double2>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<half>(const Device &device) { return device.SupportsFP16(); }
 
 // =================================================================================================
 
@@ -420,13 +413,17 @@ std::string GetDeviceVendor(const Device& device) {
 // Mid-level info
 std::string GetDeviceArchitecture(const Device& device) {
   auto device_architecture = std::string{""};
-  if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+  #ifdef CUDA_API
     device_architecture = device.NVIDIAComputeCapability();
-  }
-  else if (device.HasExtension(kKhronosAttributesAMD)) {
-    device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
-  }
-  // Note: no else - 'device_architecture' might be the empty string
+  #else
+    if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+      device_architecture = device.NVIDIAComputeCapability();
+    }
+    else if (device.HasExtension(kKhronosAttributesAMD)) {
+      device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+    }
+    // Note: no else - 'device_architecture' might be the empty string
+  #endif
 
   for (auto &find_and_replace : device_mapping::kArchitectureNames) { // replacing to common names
     if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }

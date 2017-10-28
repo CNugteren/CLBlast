@@ -184,7 +184,7 @@ INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, rea
 
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific
 // for caching the A input matrix.
-INLINE_FUNC void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const int kg,
+INLINE_FUNC void LocalToPrivateDirectA(LOCAL_PTR real* alm, real apm[MWID], const int kg,
                                        const int a_transpose) {
   #pragma unroll
   for (int mi=0; mi<MWID; ++mi) {
@@ -195,7 +195,7 @@ INLINE_FUNC void LocalToPrivateDirectA(__local real* alm, real apm[MWID], const 
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void LocalToPrivateDirectB(__local real* blm, real bpm[NWID], const int kg,
+INLINE_FUNC void LocalToPrivateDirectB(LOCAL_PTR real* blm, real bpm[NWID], const int kg,
                                        const int b_transpose) {
   #pragma unroll
   for (int ni=0; ni<NWID; ++ni) {

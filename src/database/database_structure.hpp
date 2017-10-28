@@ -17,7 +17,7 @@
 #include <string>
 #include <array>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 namespace clblast {
 // A special namespace to hold all the global constant variables (including the database entries)
@@ -29,8 +29,8 @@ namespace database {
 using Name = std::array<char, 51>; // name as stored in database (50 chars + string terminator)
 using Params = std::array<size_t, 14>; // parameters as stored in database
 
-// Type alias after extracting from the database (map for improved code readability)
-using Parameters = std::unordered_map<std::string, size_t>; // parameters after reading from DB
+// Type alias after extracting from the database (sorted map for improved code readability)
+using Parameters = std::map<std::string, size_t>; // parameters after reading from DB
 
 // The OpenCL device types
 const std::string kDeviceTypeCPU = "CPU";

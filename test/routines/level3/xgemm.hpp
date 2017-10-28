@@ -22,7 +22,7 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-template <typename T>
+template <int V, typename T> // 'V' is the version of the kernel (0 for default, 1 for 'in-direct', 2 for 'direct')
 class TestXgemm {
  public:
 
@@ -83,15 +83,32 @@ class TestXgemm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                       args.m, args.n, args.k, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
-                       buffers.c_mat(), args.c_offset, args.c_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    if (V != 0) {
+      const auto device = queue.GetDevice();
+      const auto switch_threshold = (V == 1) ? size_t{0} : size_t{1024 * 1024 * 1024}; // large enough for tests
+      const auto override_status = OverrideParameters(device(), "KernelSelection", PrecisionValue<T>(),
+                                                      {{"XGEMM_MIN_INDIRECT_SIZE", switch_threshold}});
+      if (override_status != StatusCode::kSuccess) { return override_status; }
+    }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
+                         args.m, args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
+                         args.m, args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

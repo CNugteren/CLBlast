@@ -21,8 +21,13 @@
 #include <complex>
 #include <random>
 
-#include "clpp11.hpp"
-#include "clblast.h"
+#ifdef OPENCL_API
+  #include "clpp11.hpp"
+  #include "clblast.h"
+#elif CUDA_API
+  #include "cupp11.hpp"
+  #include "clblast_cuda.h"
+#endif
 #include "clblast_half.h"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/msvc.hpp"
@@ -31,15 +36,13 @@ namespace clblast {
 // =================================================================================================
 
 // Shorthands for half-precision
-using half = cl_half; // based on the OpenCL type, which is actually an 'unsigned short'
+using half = unsigned short; // the 'cl_half' OpenCL type is actually an 'unsigned short'
 
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;
 
 // Khronos OpenCL extensions
-const std::string kKhronosHalfPrecision = "cl_khr_fp16";
-const std::string kKhronosDoublePrecision = "cl_khr_fp64";
 const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
 const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
 

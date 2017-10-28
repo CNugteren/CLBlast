@@ -75,7 +75,6 @@ class Routine {
   EventPointer event_;
   const Context context_;
   const Device device_;
-  const cl_platform_id platform_;
 
   // Compiled program (either retrieved from cache or compiled in slow path)
   Program program_;

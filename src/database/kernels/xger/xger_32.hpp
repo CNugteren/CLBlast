@@ -68,6 +68,7 @@ const DatabaseEntry XgerSingle = {
       kDeviceTypeCPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz           "}, Params{ 256, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 128, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 256, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 256, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -94,6 +95,7 @@ const DatabaseEntry XgerSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 256, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 580                                   "}, Params{ 128, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 256, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.0", {
@@ -116,11 +118,12 @@ const DatabaseEntry XgerSingle = {
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 512, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 16, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 1080 Ti                               "}, Params{ 64, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 512, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 512, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 128, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

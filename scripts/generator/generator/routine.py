@@ -802,22 +802,38 @@ class Routine:
         """Retrieves a list of routine requirements for documentation"""
         return self.requirements
 
-    def routine_header_cpp(self, spaces, default_event):
+    def routine_header_cpp(self, spaces, default_event, cuda=False):
         """Retrieves the C++ templated definition for a routine"""
         indent = " " * (spaces + self.length())
+        arguments = self.arguments_def(self.template)
+        if cuda:
+            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
         result = "template <" + self.template.name + ">\n"
         result += "StatusCode " + self.capitalized_name() + "("
-        result += (",\n" + indent).join([a for a in self.arguments_def(self.template)])
-        result += ",\n" + indent + "cl_command_queue* queue, cl_event* event" + default_event + ")"
+        result += (",\n" + indent).join([a for a in arguments])
+        result += ",\n" + indent
+        if cuda:
+            result += "const CUcontext context, const CUdevice device"
+        else:
+            result += "cl_command_queue* queue, cl_event* event" + default_event
+        result += ")"
         return result
 
-    def routine_header_type_cpp(self, spaces):
+    def routine_header_type_cpp(self, spaces, cuda=False):
         """As above, but now without variable names"""
         indent = " " * (spaces + self.length())
+        arguments = self.arguments_type(self.template)
+        if cuda:
+            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
         result = "template <" + self.template.name + ">\n"
         result += "StatusCode " + self.capitalized_name() + "("
-        result += (",\n" + indent).join([a for a in self.arguments_type(self.template)])
-        result += ",\n" + indent + "cl_command_queue*, cl_event*)"
+        result += (",\n" + indent).join([a for a in arguments])
+        result += ",\n" + indent
+        if cuda:
+            result += "const CUcontext, const CUdevice"
+        else:
+            result += "cl_command_queue*, cl_event*"
+        result += ")"
         return result
 
     def routine_header_c(self, flavour, spaces, extra_qualifier):

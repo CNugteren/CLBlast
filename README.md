@@ -10,7 +10,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
-The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
+The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library. See also the [CLBlast feature roadmap](ROADMAP.md) to get an indication of the future of CLBlast.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -99,11 +99,23 @@ To get started quickly, a couple of stand-alone example programs are included in
 
     cmake -DSAMPLES=ON ..
 
+For all of CLBlast's APIs, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
+
+Using the library (Netlib API)
+-------------
+
 There is also a Netlib CBLAS C API available. This is however not recommended for full control over performance, since at every call it will copy all buffers to and from the OpenCL device. Especially for level 1 and level 2 BLAS functions performance will be impacted severely. However, it can be useful if you don't want to touch OpenCL at all. You can set the default device and platform by setting the `CLBLAST_DEVICE` and `CLBLAST_PLATFORM` environmental variables. This API can be used as follows after providing the `-DNETLIB=ON` flag to CMake:
 
     #include <clblast_netlib_c.h>
 
-For all of CLBlast's APIs, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler.
+
+Using the library (CUDA API)
+-------------
+
+There is also a CUDA API of CLBlast available. Enabling this compiles the whole library for CUDA and thus replaces the OpenCL API. It is based upon the CUDA runtime and NVRTC APIs, requiring NVIDIA CUDA 7.5 or higher. The CUDA version of the library can be used as follows after providing the `-DCUDA=ON -DOPENCL=OFF` flags to CMake:
+
+    #include <clblast_cuda.h>
 
 
 Using the tuners (optional)
@@ -115,6 +127,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GRID K520
   - GeForce GT 650M
   - GeForce GTX 480
+  - GeForce GTX 580
   - GeForce GTX 670
   - GeForce GTX 680
   - GeForce GTX 750
@@ -122,6 +135,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 980
   - GeForce GTX 1070
   - GeForce GTX 1080
+  - GeForce GTX 1080 Ti
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
@@ -147,6 +161,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris
   - Iris Pro
 * Intel CPUs:
+  - Core i5-4570
   - Core i5-6200U
   - Core i7-920
   - Core i7-2670QM
@@ -340,6 +355,17 @@ Finally, a third option is to use the [Collective Knowledge framework](https://g
     sudo pip install ck
     ck pull repo:ck-math
     ck install package:lib-clblast-master-universal --target_os=android21-arm64
+
+
+Known issues
+-------------
+
+Known performance related issues:
+
+* Severe performance issues with Beignet v1.3.0 due to missing support for local memory. Please downgrade to v1.2.1 or upgrade to v1.3.1 or newer.
+
+* Performance issues on ARM Mali GPUs due to missing compiler for support for loop unrolling and array-to-register promotion.
+
 
 Contributing
 -------------

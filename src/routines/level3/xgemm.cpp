@@ -161,10 +161,24 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   auto c_no_temp = c_one == c_one_i && c_two == c_two_i && c_ld == c_one && c_offset == 0 &&
                    c_do_transpose == false;
 
-  // Creates the temporary matrices
-  const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i*a_two_i);
-  const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, b_one_i*b_two_i);
-  const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, c_one_i*c_two_i);
+  // Computes the sizes and offsets for (optional) temporary buffers for the 3 matrices
+  auto temp_size = size_t{0};
+  auto b_temp_offset = size_t{0};
+  auto c_temp_offset = size_t{0};
+  if (!a_no_temp) { temp_size += a_one_i*a_two_i; }
+  if (!b_no_temp) { b_temp_offset = temp_size; temp_size += b_one_i*b_two_i; }
+  if (!c_no_temp) { c_temp_offset = temp_size; temp_size += c_one_i*c_two_i; }
+  if (!IsMultiple(b_temp_offset, db_["VWN"])) { throw BLASError(StatusCode::kUnexpectedError); }
+  if (!IsMultiple(c_temp_offset, db_["VWM"])) { throw BLASError(StatusCode::kUnexpectedError); }
+
+  // Creates the buffer for the (optional) temporary matrices. Note that we use 'a_buffer' in case
+  // when no temporary buffer is needed, but that's just to make it compile: it is never used.
+  const auto temp_buffer = (temp_size > 0) ? Buffer<T>(context_, temp_size) : a_buffer;
+
+  // Sets the buffer pointers for (temp) matrices A, B, and C
+  const auto a_temp = (a_no_temp) ? a_buffer : temp_buffer;
+  const auto b_temp = (b_no_temp) ? b_buffer : temp_buffer;
+  const auto c_temp = (c_no_temp) ? c_buffer : temp_buffer;
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
@@ -188,7 +202,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     auto eventProcessB = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
                            b_one, b_two, b_ld, b_offset, b_buffer,
-                           b_one_i, b_two_i, b_one_i, 0, b_temp,
+                           b_one_i, b_two_i, b_one_i, b_temp_offset, b_temp,
                            ConstantOne<T>(), program_,
                            true, b_do_transpose, b_conjugate);
     eventWaitList.push_back(eventProcessB);
@@ -199,7 +213,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
     auto eventProcessC = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList,
                            c_one, c_two, c_ld, c_offset, c_buffer,
-                           c_one_i, c_two_i, c_one_i, 0, c_temp,
+                           c_one_i, c_two_i, c_one_i, c_temp_offset, c_temp,
                            ConstantOne<T>(), program_,
                            true, c_do_transpose, false);
     eventWaitList.push_back(eventProcessC);
@@ -217,6 +231,8 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   kernel.SetArgument(5, a_temp());
   kernel.SetArgument(6, b_temp());
   kernel.SetArgument(7, c_temp());
+  kernel.SetArgument(8, static_cast<int>(b_temp_offset / db_["VWN"]));
+  kernel.SetArgument(9, static_cast<int>(c_temp_offset / db_["VWM"]));
 
   // Computes the global and local thread sizes
   const auto global = std::vector<size_t>{
@@ -234,7 +250,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   if (!c_no_temp) {
     eventWaitList.push_back(eventKernel);
     PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
-                           c_one_i, c_two_i, c_one_i, 0, c_temp,
+                           c_one_i, c_two_i, c_one_i, c_temp_offset, c_temp,
                            c_one, c_two, c_ld, c_offset, c_buffer,
                            ConstantOne<T>(), program_,
                            false, c_do_transpose, false);

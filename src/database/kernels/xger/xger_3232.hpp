@@ -68,12 +68,13 @@ const DatabaseEntry XgerComplexSingle = {
       kDeviceTypeCPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 128, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz           "}, Params{ 512, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 256, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 256, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 256, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz          "}, Params{ 512, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz         "}, Params{ 256, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 256, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -94,7 +95,8 @@ const DatabaseEntry XgerComplexSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 580                                   "}, Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 8, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.0", {
           { Name{"GRID K520                                         "}, Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -115,8 +117,9 @@ const DatabaseEntry XgerComplexSingle = {
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 16, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 1080 Ti                               "}, Params{ 128, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 256, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

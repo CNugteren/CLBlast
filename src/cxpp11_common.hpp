@@ -15,6 +15,7 @@
 #ifndef CLBLAST_CXPP11_COMMON_H_
 #define CLBLAST_CXPP11_COMMON_H_
 
+#include <cstring>   // strchr
 #include <string>    // std::string
 #include <stdexcept> // std::runtime_error
 

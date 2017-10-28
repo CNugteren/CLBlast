@@ -12,6 +12,8 @@
 #    clblast.cpp
 #    clblast_c.h
 #    clblast_c.cpp
+#    clblast_cuda.h
+#    clblast_cuda.cpp
 #    clblast_netlib_c.h
 #    clblast_netlib_c.cpp
 #    wrapper_clblas.h
@@ -41,9 +43,11 @@ FILES = [
     "/test/wrapper_cublas.hpp",
     "/include/clblast_netlib_c.h",
     "/src/clblast_netlib_c.cpp",
+    "/include/clblast_cuda.h",
+    "/src/clblast_cuda.cpp",
 ]
-HEADER_LINES = [122, 79, 126, 24, 29, 41, 29, 65, 32]
-FOOTER_LINES = [25, 147, 27, 38, 6, 6, 6, 9, 2]
+HEADER_LINES = [122, 21, 126, 24, 29, 41, 29, 65, 32, 94, 21]
+FOOTER_LINES = [25, 3, 27, 38, 6, 6, 6, 9, 2, 25, 3]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
 
@@ -224,6 +228,10 @@ def main(argv):
                     if i == 8:
                         if not routine.batched:
                             body += cpp.clblast_netlib_c_cc(routine)
+                    if i == 9:
+                        body += cpp.clblast_h(routine, cuda=True)
+                    if i == 10:
+                        body += cpp.clblast_cc(routine, cuda=True)
             f.write("".join(file_header))
             f.write(body)
             f.write("".join(file_footer))

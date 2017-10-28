@@ -27,87 +27,110 @@ template <typename T, int V>
 class TuneXgemm {
  public:
 
-  // The representative kernel and the source code
-  static std::string KernelFamily() { return (V==1) ? "xgemm_1" : "xgemm_2"; }
-  static std::string KernelName() { return "Xgemm"; }
-  static std::string GetSources() {
-    return
-      #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/xgemm_part1.opencl"
-      #include "../src/kernels/level3/xgemm_part2.opencl"
-      #include "../src/kernels/level3/xgemm_part3.opencl"
-    ;
+  // Settings for this kernel (default command-line arguments)
+  static TunerDefaults GetTunerDefaults() {
+    auto settings = TunerDefaults();
+    settings.options = {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
+                        kArgHeuristicSelection, kArgPsoSwarmSize,
+                        kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
+    settings.default_m = 1024;
+    settings.default_n = 1024;
+    settings.default_k = 1024;
+    settings.default_fraction = (V==1) ? 1.0 : 512.0; // test all or sample randomly
+    settings.default_num_runs = 2;
+    settings.default_heuristic = static_cast<size_t>(cltune::SearchMethod::RandomSearch);
+    return settings;
   }
 
-  // The list of arguments relevant for this routine
-  static std::vector<std::string> GetOptions() {
-    return {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
-            kArgHeuristicSelection, kArgPsoSwarmSize,
-            kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
+  // Settings for this kernel (general)
+  static TunerSettings GetTunerSettings(const Arguments<T> &args) {
+    auto settings = TunerSettings();
+
+    // Identification of the kernel
+    settings.kernel_family = (V==1) ? "xgemm_1" : "xgemm_2";
+    settings.kernel_name = "Xgemm";
+    settings.sources =
+#include "../src/kernels/common.opencl"
+#include "../src/kernels/level3/xgemm_part1.opencl"
+#include "../src/kernels/level3/xgemm_part2.opencl"
+#include "../src/kernels/level3/xgemm_part3.opencl"
+    ;
+
+    // Buffer sizes
+    settings.size_a = args.m * args.k;
+    settings.size_b = args.n * args.k;
+    settings.size_c = args.m * args.n;
+
+    // Sets the base thread configuration
+    settings.global_size = {args.m, args.n};
+    settings.global_size_ref = settings.global_size;
+    settings.local_size = {1, 1};
+    settings.local_size_ref = {8, 8};
+
+    // Transforms the thread configuration based on the parameters
+    settings.mul_local = {{"MDIMC", "NDIMC"}};
+    settings.mul_global = {{"MDIMC", "NDIMC"}};
+    settings.div_global = {{"MWG", "NWG"}};
+
+    // Sets the tuning parameters and their possible values
+    if (V==1) { // limited subset of tuning parameters - but explorable exhaustively
+      settings.parameters = {
+        {"MWG", {16, 32, 64}},
+        {"NWG", {16, 32, 64}},
+        {"KWG", {32}},
+        {"MDIMC", {8, 16, 32}},
+        {"NDIMC", {8, 16, 32}},
+        {"MDIMA", {8, 16, 32}},
+        {"NDIMB", {8, 16, 32}},
+        {"KWI", {2}},
+        {"VWM", {1, 2, 4}},
+        {"VWN", {1, 2, 4}},
+        {"STRM", {0}},
+        {"STRN", {0}},
+        {"SA", {0, 1}},
+        {"SB", {0, 1}},
+      };
+    }
+    else { // a lot more tuning parameters - has to be sampled randomly, too much to test all
+      settings.parameters = {
+        {"MWG", {16, 32, 64, 128}},
+        {"NWG", {16, 32, 64, 128}},
+        {"KWG", {16, 32}},
+        {"MDIMC", {8, 16, 32}},
+        {"NDIMC", {8, 16, 32}},
+        {"MDIMA", {8, 16, 32}},
+        {"NDIMB", {8, 16, 32}},
+        {"KWI", {2}},
+        {"VWM", {1, 2, 4, 8}},
+        {"VWN", {1, 2, 4, 8}},
+        {"STRM", {0, 1}},
+        {"STRN", {0, 1}},
+        {"SA", {0, 1}},
+        {"SB", {0, 1}},
+      };
+    }
+
+    // Describes how to compute the performance metrics
+    settings.metric_amount = 2 * args.m * args.n * args.k;
+    settings.performance_unit = "GFLOPS";
+
+    // Returns which search heuristic to use
+    if (V==1) { settings.heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch); }
+    else {
+      // Use full-search to explore all parameter combinations or another strategy to search only a
+      // part of the parameter values. The fraction is set as a command-line argument.
+      if (args.fraction == 1.0 || args.fraction == 0.0) {
+        settings.heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch);
+      } else {
+        settings.heuristic = args.heuristic_selection;
+      }
+    }
+
+    return settings;
   }
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the default values for the arguments
-  static size_t DefaultM() { return 1024; }
-  static size_t DefaultN() { return 1024; }
-  static size_t DefaultK() { return 1024; }
-  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
-  static double DefaultFraction() { return (V==1) ? 1.0 : 512.0; } // test all or sample randomly
-  static size_t DefaultNumRuns() { return 2; } // run every kernel this many times for averaging
-  static size_t DefaultSwarmSizePSO() { return 8; } 
-  static double DefaultInfluenceGlobalPSO(){ return 0.1; }
-  static double DefaultInfluenceLocalPSO(){ return 0.3; }
-  static double DefaultInfluenceRandomPSO(){ return 0.6; }
-  static size_t DefaultHeuristic(){ return static_cast<size_t>(cltune::SearchMethod::RandomSearch); }
-  static double DefaultMaxTempAnn(){ return 1.0;}
-  
-  // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.k; }
-  static size_t GetSizeB(const Arguments<T> &args) { return args.n * args.k; }
-  static size_t GetSizeC(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeTemp(const Arguments<T> &) { return 1; } // N/A for this kernel
-
-  // Sets the tuning parameters and their possible values
-  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    if (V==1) { // limited subset of tuning parameters - but explorable exhaustively
-      tuner.AddParameter(id, "MWG", {16, 32, 64});
-      tuner.AddParameter(id, "NWG", {16, 32, 64});
-      tuner.AddParameter(id, "KWG", {32});
-      tuner.AddParameter(id, "MDIMC", {8, 16, 32});
-      tuner.AddParameter(id, "NDIMC", {8, 16, 32});
-      tuner.AddParameter(id, "MDIMA", {8, 16, 32});
-      tuner.AddParameter(id, "NDIMB", {8, 16, 32});
-      tuner.AddParameter(id, "KWI", {2});
-      tuner.AddParameter(id, "VWM", {1, 2, 4});
-      tuner.AddParameter(id, "VWN", {1, 2, 4});
-      tuner.AddParameter(id, "STRM", {0});
-      tuner.AddParameter(id, "STRN", {0});
-      tuner.AddParameter(id, "SA", {0, 1});
-      tuner.AddParameter(id, "SB", {0, 1});
-    } // a lot more tuning parameters - has to be sampled randomly, too much to test all
-    else {
-      //RANDOM_SEARCH & PSO
-      tuner.AddParameter(id, "MWG", {16, 32, 64, 128});
-      tuner.AddParameter(id, "NWG", {16, 32, 64, 128});
-      tuner.AddParameter(id, "KWG", {16, 32});
-      tuner.AddParameter(id, "MDIMC", {8, 16, 32});
-      tuner.AddParameter(id, "NDIMC", {8, 16, 32});
-      tuner.AddParameter(id, "MDIMA", {8, 16, 32});
-      tuner.AddParameter(id, "NDIMB", {8, 16, 32});
-      tuner.AddParameter(id, "KWI", {2});
-      tuner.AddParameter(id, "VWM", {1, 2, 4, 8});
-      tuner.AddParameter(id, "VWN", {1, 2, 4, 8});
-      tuner.AddParameter(id, "STRM", {0, 1});
-      tuner.AddParameter(id, "STRN", {0, 1});
-      tuner.AddParameter(id, "SA", {0, 1});
-      tuner.AddParameter(id, "SB", {0, 1});
-    }
-
-  }
 
   // Sets the constraints
   static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
@@ -144,19 +167,6 @@ class TuneXgemm {
                                                     "SB", "KWG", "NWG"});
   }
 
-  // Sets the base thread configuration
-  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
-  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &args) { return GlobalSize(args); }
-  static std::vector<size_t> LocalSize() { return {1, 1}; }
-  static std::vector<size_t> LocalSizeRef() { return {8, 8}; }
-
-  // Transforms the thread configuration based on the parameters
-  using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"MDIMC", "NDIMC"}}; }
-  static TransformVector DivLocal() { return {}; }
-  static TransformVector MulGlobal() { return {{"MDIMC", "NDIMC"}}; }
-  static TransformVector DivGlobal() { return {{"MWG", "NWG"}}; }
-
   // Sets the kernel's arguments
   static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
                            std::vector<T> &, std::vector<T> &,
@@ -170,27 +180,9 @@ class TuneXgemm {
     tuner.AddArgumentInput(a_mat);
     tuner.AddArgumentInput(b_mat);
     tuner.AddArgumentOutput(c_mat);
+    tuner.AddArgumentScalar(0);
+    tuner.AddArgumentScalar(0);
   }
-
-  // Describes how to compute the performance metrics
-  static size_t GetMetric(const Arguments<T> &args) {
-    return 2 * args.m * args.n * args.k;
-  }
-  static std::string PerformanceUnit() { return "GFLOPS"; }
- 
-  // Returns which Heuristic to run 
-  static size_t GetHeuristic(const Arguments<T> &args){
-    if (V==1) { return static_cast<size_t>(cltune::SearchMethod::FullSearch); }
-    else {
-      // Use full-search to explore all parameter combinations or another strategy to search only a
-      // part of the parameter values. The fraction is set as a command-line argument.
-      if (args.fraction == 1.0 || args.fraction == 0.0) {
-        return static_cast<size_t>(cltune::SearchMethod::FullSearch);
-      } else {
-        return args.heuristic_selection;
-      }
-    }
-  } 
 };
 
 // =================================================================================================

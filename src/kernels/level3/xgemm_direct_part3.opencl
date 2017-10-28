@@ -24,7 +24,7 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
                              const __global realMD* restrict agm, const int a_offset, const int a_ld,
                              const __global realND* restrict bgm, const int b_offset, const int b_ld,
                              __global real* cgm, const int c_offset, const int c_ld,
-                             __local real* alm, __local real* blm,
+                             LOCAL_PTR real* alm, LOCAL_PTR real* blm,
                              const int a_transpose, const int b_transpose, const int c_transpose,
                              const int a_conjugate, const int b_conjugate) {
   const real alpha = GetRealArg(arg_alpha);
@@ -147,8 +147,8 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
 // =================================================================================================
 
 // Direct version of the GEMM kernel with [A, B] = [non-transposed, non-transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
@@ -162,8 +162,8 @@ __kernel void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK
 }
 
 // Direct version of the GEMM kernel with [A, B] = [non-transposed, transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
@@ -177,8 +177,8 @@ __kernel void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK
 }
 
 // Direct version of the GEMM kernel with [A, B] = [transposed, non-transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
@@ -192,8 +192,8 @@ __kernel void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK
 }
 
 // Direct version of the GEMM kernel with [A, B] = [transposed, transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectTT(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectTT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,

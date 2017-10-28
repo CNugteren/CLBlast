@@ -15,7 +15,7 @@
 #ifndef CLBLAST_BUFFER_TEST_H_
 #define CLBLAST_BUFFER_TEST_H_
 
-#include "clblast.h"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

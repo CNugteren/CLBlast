@@ -53,7 +53,8 @@ class Database {
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;
 
-  // Retrieves the names of all the parameters
+  // Retrieves the values or names of all the parameters
+  std::string GetValuesString() const;
   std::vector<std::string> GetParameterNames() const;
 
  private:

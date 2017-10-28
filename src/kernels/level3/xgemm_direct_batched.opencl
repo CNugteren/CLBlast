@@ -19,8 +19,8 @@ R"(
 // =================================================================================================
 
 // Direct version of the batched GEMM kernel with [A, B] = [non-transposed, non-transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
                                    const __global realMD* restrict agm, const __constant int* a_offsets, const int a_ld,
                                    const __global realND* restrict bgm, const __constant int* b_offsets, const int b_ld,
@@ -40,8 +40,8 @@ __kernel void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int
 }
 
 // Direct version of the batched GEMM kernel with [A, B] = [non-transposed, transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
                                    const __global realMD* restrict agm, const __constant int* a_offsets, const int a_ld,
                                    const __global realND* restrict bgm, const __constant int* b_offsets, const int b_ld,
@@ -61,8 +61,8 @@ __kernel void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int
 }
 
 // Direct version of the batched GEMM kernel with [A, B] = [transposed, non-transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
                                    const __global realMD* restrict agm, const __constant int* a_offsets, const int a_ld,
                                    const __global realND* restrict bgm, const __constant int* b_offsets, const int b_ld,
@@ -82,8 +82,8 @@ __kernel void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int
 }
 
 // Direct version of the batched GEMM kernel with [A, B] = [transposed, transposed]
-__attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
-__kernel void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
+__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
                                    const __constant real_arg* arg_alphas, const __constant real_arg* arg_betas,
                                    const __global realMD* restrict agm, const __constant int* a_offsets, const int a_ld,
                                    const __global realND* restrict bgm, const __constant int* b_offsets, const int b_ld,

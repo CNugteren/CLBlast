@@ -28,7 +28,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto arguments = RetrieveCommandLineArguments(argc, argv);
   auto errors = size_t{0};
   auto passed = size_t{0};
-  auto example_routine = TestXgemm<T>();
+  auto example_routine = TestXgemm<0, T>();
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Determines the test settings
@@ -37,6 +37,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   const auto valid_settings = std::vector<std::unordered_map<std::string,size_t>>{
     { {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
     { {"KWG",32}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",32}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
+    { {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
   };
   const auto invalid_settings = std::vector<std::unordered_map<std::string,size_t>>{
     { {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0} },

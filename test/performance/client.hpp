@@ -32,7 +32,7 @@
   #include <clBLAS.h>
 #endif
 #include "test/wrapper_cuda.hpp"
-#include "clblast.h"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
