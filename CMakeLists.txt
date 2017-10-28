@@ -377,6 +377,13 @@ if(TUNERS)
     target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
+  set(ROUTINE_TUNERS xgemm)
+  foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
+    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp)
+    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
+    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC ${CLTUNE_INCLUDE_DIRS})
+    install(TARGETS clblast_tuner_routine_${ROUTINE_TUNER} DESTINATION bin)
+  endforeach()
 
   # Adds 'alltuners' target: runs all tuners for all precisions
   set(ALLTUNERS )
