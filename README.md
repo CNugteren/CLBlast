@@ -345,7 +345,7 @@ Alternatively, you can cross-compile the library and the test/client/tuner execu
      -DCMAKE_SYSTEM_VERSION=19 \             # Set the appropriate Android API level
      -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a \  # Set the appropriate device architecture (e.g. armeabi-v7a or arm64-v8a)
      -DCMAKE_ANDROID_NDK=$ANDROID_NDK_PATH \ # Assumes $ANDROID_NDK_PATH points to your NDK installation
-     -DCMAKE_ANDROID_STL_TYPE=gnustl_shared \
+     -DCMAKE_ANDROID_STL_TYPE=gnustl_static \
      -DOPENCL_ROOT=/path/to/vendor/OpenCL/lib/folder/   # Should contain libOpenCL.so and CL/cl.h
 
 For any potential issues, first check [cmath 'has not been declared' errors](https://stackoverflow.com/questions/45183525/compilation-error-with-ndk-using-cstatic/46433625). Also, if you are encountering errors such as `#error Bionic header ctype.h does not define either _U nor _CTYPE_U`, make sure CMake is not including system paths.
