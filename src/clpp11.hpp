@@ -53,6 +53,11 @@
   #include <CL/opencl.h>
 #endif
 
+// Android support (missing C++11 functions to_string, stod, and stoi)
+#ifdef __ANDROID__
+  #include "utilities/android.hpp"
+#endif
+
 // Exception classes
 #include "cxpp11_common.hpp"
 

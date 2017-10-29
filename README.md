@@ -338,17 +338,17 @@ For deployment on Android, there are three options to consider.
 
 First of all, you can use Google's recommended route of installing Android Studio with the NDK, and then use the JNI to interface to the CLBlast library. For this, we refer to the official Android Studio documentation and the online tutorials.
 
-Alternatively, you can cross-compile the library and the test/client/tuner executables directly. To do so, first install the NDK, then find your vendor's OpenCL library (e.g. in `/system/vendor/lib`), and invoke CMake as follows:
+Alternatively, you can cross-compile the library and the test/client/tuner executables directly. To do so, first install the NDK, then find your vendor's OpenCL library (e.g. in `/system/vendor/lib`), get OpenCL headers from the Khronos registry, and invoke CMake as follows:
 
     cmake .. \
      -DCMAKE_SYSTEM_NAME=Android \
-     -DCMAKE_SYSTEM_VERSION=26 \             # Set the appropriate Android API level
-     -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a \    # Set the appropriate device architecture
+     -DCMAKE_SYSTEM_VERSION=19 \             # Set the appropriate Android API level
+     -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a \  # Set the appropriate device architecture (e.g. armeabi-v7a or arm64-v8a)
      -DCMAKE_ANDROID_NDK=$ANDROID_NDK_PATH \ # Assumes $ANDROID_NDK_PATH points to your NDK installation
-     -DCMAKE_ANDROID_STL_TYPE=c++_shared \
-     -DOPENCL_ROOT=/path/to/vendor/OpenCL/lib/folder/
+     -DCMAKE_ANDROID_STL_TYPE=gnustl_shared \
+     -DOPENCL_ROOT=/path/to/vendor/OpenCL/lib/folder/   # Should contain libOpenCL.so and CL/cl.h
 
-For any potential issues, first check [cmath 'has not been declared' errors](https://stackoverflow.com/questions/45183525/compilation-error-with-ndk-using-cstatic/46433625).
+For any potential issues, first check [cmath 'has not been declared' errors](https://stackoverflow.com/questions/45183525/compilation-error-with-ndk-using-cstatic/46433625). Also, if you are encountering errors such as `#error Bionic header ctype.h does not define either _U nor _CTYPE_U`, make sure CMake is not including system paths.
 
 Finally, a third option is to use the [Collective Knowledge framework](https://github.com/ctuning/ck) in combination with the NDK, e.g. as follows:
 
