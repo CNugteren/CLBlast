@@ -43,6 +43,7 @@
 #include <memory>    // std::shared_ptr
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
+#include <cstdio>    // fprintf, stderr
 
 // OpenCL
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
@@ -50,6 +51,11 @@
   #include <OpenCL/opencl.h>
 #else
   #include <CL/opencl.h>
+#endif
+
+// Android support (missing C++11 functions to_string, stod, and stoi)
+#ifdef __ANDROID__
+  #include "utilities/android.hpp"
 #endif
 
 // Exception classes

@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 
 #include "test/correctness/tester.hpp"
