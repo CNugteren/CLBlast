@@ -66,10 +66,10 @@ private:
 
 // =================================================================================================
 
-// The key struct for the cache of compiled OpenCL binaries
+// The key struct for the cache of compiled OpenCL binaries (device name and platform-dependent)
 // Order of fields: precision, routine_name, device_name (smaller fields first)
-typedef std::tuple<Precision, std::string, std::string> BinaryKey;
-typedef std::tuple<const Precision &, const std::string &, const std::string &> BinaryKeyRef;
+typedef std::tuple<RawPlatformID, Precision, std::string, std::string> BinaryKey;
+typedef std::tuple<const RawPlatformID &, const Precision &, const std::string &, const std::string &> BinaryKeyRef;
 
 typedef Cache<BinaryKey, std::string> BinaryCache;
 

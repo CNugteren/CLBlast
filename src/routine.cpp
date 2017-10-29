@@ -109,8 +109,9 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
   const auto device_name = GetDeviceName(device_);
+  const auto platform_id = device_.PlatformID();
   bool has_binary;
-  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{ precision_, routine_info, device_name },
+  auto binary = BinaryCache::Instance().Get(BinaryKeyRef{platform_id,  precision_, routine_info, device_name },
                                             &has_binary);
   if (has_binary) {
     program_ = Program(device_, context_, binary);
@@ -204,7 +205,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   }
 
   // Store the compiled binary and program in the cache
-  BinaryCache::Instance().Store(BinaryKey{precision_, routine_info, device_name},
+  BinaryCache::Instance().Store(BinaryKey{platform_id, precision_, routine_info, device_name},
                                 program_.GetIR());
 
   ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
