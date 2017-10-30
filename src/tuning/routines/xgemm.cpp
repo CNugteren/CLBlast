@@ -90,15 +90,36 @@ void TuneXgemm(int argc, char* argv[]) {
   ForceSelectIndirectFrom<T>(to * to * to + 1, device);
   const auto direct = TimeRoutine(from, to, step, num_runs, queue, buffers, RunGemmRoutine<T>);
 
-  // Results
-  printf("[----------] Collecting results\n");
+  // Determining final score and best kernel selection point
   assert(indirect.size() == direct.size());
+  printf("[----------] Collecting results\n");
+  auto ratios = std::vector<double>(indirect.size());
+  for (auto i = size_t{0}; i < indirect.size(); ++i) {
+    ratios[i] = indirect[i].second / direct[i].second;
+  }
+  auto scores = std::vector<TuningResult>(ratios.size());
+  for (auto i = size_t{0}; i < scores.size(); ++i) {
+    auto score = 0;
+    for (auto j = size_t{0}; j < i; ++j) { score += (ratios[j] <= 1.0); }
+    for (auto j = i + 1; j < ratios.size(); ++j) { score += (ratios[j] > 1.0); }
+    const auto epsilon = (scores.size() - i) / 1e3; // favour later results over earlier ones
+    scores[i] = TuningResult{
+        "gemm_kernel_selection",
+        static_cast<double>(score) / static_cast<double>(scores.size() - 1) + epsilon,
+        TuningParameters{TuningParameter{"XGEMM_MIN_INDIRECT_SIZE", indirect[i].first}}
+    };
+  }
+
+  // Displaying results
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     assert(indirect[i].first == direct[i].first);
     const auto value = indirect[i].first;
-    const auto gflops_indirect = (2 * value * value * value) / (indirect[i].second * 1.0e6);
-    const auto gflops_direct = (2 * value * value * value) / (direct[i].second * 1.0e6);
-    printf("[ -------> ] %7zu %8.2lf %8.2lf\n", value, gflops_indirect, gflops_direct);
+    if (indirect[i].second != -1 && direct[i].second != -1) {
+      const auto gflops_indirect = (2 * value * value * value) / (indirect[i].second * 1.0e6);
+      const auto gflops_direct = (2 * value * value * value) / (direct[i].second * 1.0e6);
+      printf("[ -------> ] %7zu %8.2lf %8.2lf %8.2lf\n",
+             value, gflops_indirect, gflops_direct, scores[i].score);
+    }
   }
 
   // Outputs the results as JSON to disk, including some meta-data
@@ -108,7 +129,7 @@ void TuneXgemm(int argc, char* argv[]) {
       {"precision", precision_string},
   };
   PrintTimingsToFileAsJSON("clblast_routine_gemm_" + precision_string + ".json",
-                           device, platform, metadata);
+                           device, platform, metadata, scores);
 
 }
 
