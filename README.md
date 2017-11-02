@@ -196,6 +196,8 @@ In summary, tuning the entire library for your device can be done as follows (st
 
 Alternatively, you can also supply your tuning parameters programmatically through the CLBlast API. This is especially useful if you tune for specific non-standard arguments (e.g. a rectangular or a very small matrix). To do so, you can call the `OverrideParameters` function which will set new parameters for a specific kernel. At the first next call of the target routine, CLBlast will compile a new binary and use it together with the new parameters from then on. Until `OverrideParameters` is called again of course. See the [API documentation](doc/clblast.md#overrideparameters-override-tuning-parameters-auxiliary-function) for more details.
 
+After the kernels are tuned, you can run the `clblast_tuner_routine_xgemm` tuner to optimize the high-level GEMM routine, i.e. selecting which method to use: the direct kernel or the in-direct kernel.
+
 
 Compiling the correctness tests (optional)
 -------------

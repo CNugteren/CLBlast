@@ -42,7 +42,7 @@ void RunGemmRoutine(const size_t value, const Queue& queue, const std::vector<Bu
 
 template <typename T>
 void ForceSelectIndirectFrom(const size_t minimum_size, const Device &device) {
-  const auto override_status = OverrideParameters(device(), "KernelSelection", PrecisionValue<T>(),
+  const auto override_status = OverrideParameters(device(), "GemmRoutine", PrecisionValue<T>(),
                                                   {{"XGEMM_MIN_INDIRECT_SIZE", minimum_size}});
   if (override_status != StatusCode::kSuccess) {
     throw RuntimeError("OverrideParameters failed with status " + ToString(override_status));
@@ -61,7 +61,7 @@ void TuneXgemm(int argc, char* argv[]) {
 
   // Values for m, n, and k
   const auto from = size_t{64};
-  const auto to = size_t{1024};
+  const auto to = size_t{2048};
   const auto step = size_t{64};
 
   // OpenCL initialisation
@@ -106,7 +106,10 @@ void TuneXgemm(int argc, char* argv[]) {
     scores[i] = TuningResult{
         "gemm_kernel_selection",
         static_cast<double>(score) / static_cast<double>(scores.size() - 1) + epsilon,
-        TuningParameters{TuningParameter{"XGEMM_MIN_INDIRECT_SIZE", indirect[i].first}}
+        TuningParameters{
+            TuningParameter{"XGEMM_MIN_INDIRECT_SIZE", indirect[i].first},
+            TuningParameter{"PRECISION", static_cast<size_t>(precision)}
+        }
     };
   }
 
@@ -126,11 +129,15 @@ void TuneXgemm(int argc, char* argv[]) {
   const auto precision_string = std::to_string(static_cast<size_t>(precision));
   auto metadata = std::vector<std::pair<std::string,std::string>>{
       {"kernel_family", "gemm_routine"},
+      {"arg_from", ToString(from)},
+      {"arg_to", ToString(to)},
+      {"arg_step", ToString(step)},
       {"precision", precision_string},
   };
   PrintTimingsToFileAsJSON("clblast_routine_gemm_" + precision_string + ".json",
                            device, platform, metadata, scores);
 
+  printf("[  STATUS  ] All done\n");
 }
 
 // =================================================================================================

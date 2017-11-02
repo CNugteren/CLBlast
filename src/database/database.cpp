@@ -30,10 +30,11 @@
 #include "database/kernels/transpose/transpose.hpp"
 #include "database/kernels/padtranspose/padtranspose.hpp"
 
+#include "database/kernels/gemm_routine/gemm_routine.hpp"
+
 #include "database/kernels/xtrsv.hpp"
 #include "database/kernels/invert.hpp"
 #include "database/apple_cpu_fallback.hpp"
-#include "database/kernel_selection.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -54,7 +55,7 @@ const std::vector<database::DatabaseEntry> Database::database = std::vector<data
   database::TransposeHalf, database::TransposeSingle, database::TransposeDouble, database::TransposeComplexSingle, database::TransposeComplexDouble,
   database::PadtransposeHalf, database::PadtransposeSingle, database::PadtransposeDouble, database::PadtransposeComplexSingle, database::PadtransposeComplexDouble,
   database::InvertHalf, database::InvertSingle, database::InvertDouble, database::InvertComplexSingle, database::InvertComplexDouble,
-  database::KernelSelectionHalf, database::KernelSelectionSingle, database::KernelSelectionDouble, database::KernelSelectionComplexSingle, database::KernelSelectionComplexDouble
+  database::GemmRoutineHalf, database::GemmRoutineSingle, database::GemmRoutineDouble, database::GemmRoutineComplexSingle, database::GemmRoutineComplexDouble
 };
 const std::vector<database::DatabaseEntry> Database::apple_cpu_fallback = std::vector<database::DatabaseEntry>{
   database::XaxpyApple, database::XdotApple,

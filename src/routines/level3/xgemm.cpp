@@ -23,7 +23,7 @@ namespace clblast {
 template <typename T>
 Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name,
-            {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","KernelSelection"},
+            {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","GemmRoutine"},
             PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
@@ -104,7 +104,9 @@ void Xgemm<T>::DoGemm(const Layout layout,
   // Selects which version of GEMM to run
   const auto m_n_k = static_cast<unsigned long long>(m) * static_cast<unsigned long long>(n) *
                      static_cast<unsigned long long>(k);
-  const auto do_gemm_direct = (m_n_k < static_cast<unsigned long long>(db_["XGEMM_MIN_INDIRECT_SIZE"]));
+  const auto database_value = static_cast<unsigned long long>(db_["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto min_indirect_size = database_value * database_value * database_value;
+  const auto do_gemm_direct = (m_n_k < min_indirect_size);
   if (do_gemm_direct) { // for small sizes (single kernel)
     GemmDirect(m, n, k, alpha,
                a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,

@@ -23,7 +23,7 @@ namespace clblast {
 template <typename T>
 XgemmBatched<T>::XgemmBatched(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name,
-            {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","KernelSelection"},
+            {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","GemmRoutine"},
             PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
