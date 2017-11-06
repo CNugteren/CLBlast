@@ -103,9 +103,10 @@ void TuneXgemm(int argc, char* argv[]) {
     for (auto j = size_t{0}; j < i; ++j) { score += (ratios[j] <= 1.0); }
     for (auto j = i + 1; j < ratios.size(); ++j) { score += (ratios[j] > 1.0); }
     const auto epsilon = (scores.size() - i) / 1e3; // favour later results over earlier ones
+    const auto relative_score = static_cast<double>(score) / static_cast<double>(scores.size() - 1);
     scores[i] = TuningResult{
         "gemm_kernel_selection",
-        static_cast<double>(score) / static_cast<double>(scores.size() - 1) + epsilon,
+        (relative_score * relative_score) * 100 + epsilon,  // squared for proper default computation
         TuningParameters{
             TuningParameter{"XGEMM_MIN_INDIRECT_SIZE", indirect[i].first},
             TuningParameter{"PRECISION", static_cast<size_t>(precision)}
@@ -114,6 +115,7 @@ void TuneXgemm(int argc, char* argv[]) {
   }
 
   // Displaying results
+  printf("[ -------> ]   value indirect   direct    score (lowest means best switching point)\n");
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     assert(indirect[i].first == direct[i].first);
     const auto value = indirect[i].first;
