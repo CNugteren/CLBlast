@@ -21,7 +21,7 @@ const DatabaseEntry XgemmComplexSingle = {
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
           { Name{"AMD Radeon R9 M370X Compute Engine                "}, Params{ 32, 2, 32, 32, 64, 8, 8, 64, 0, 0, 1, 1, 2, 8 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 32, 32, 32, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 2, 4 } },
         } },
         { "Hawaii", {
           { Name{"AMD Radeon R9 290X                                "}, Params{ 32, 2, 32, 8, 32, 8, 16, 32, 1, 0, 1, 0, 1, 1 } },
@@ -136,7 +136,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"GeForce GTX 1080                                  "}, Params{ 16, 2, 32, 16, 64, 32, 8, 64, 1, 1, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 16, 2, 8, 16, 32, 16, 8, 64, 1, 1, 0, 0, 1, 1 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 32, 2, 32, 32, 64, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 32, 32, 64, 1, 1, 0, 0, 1, 1 } },
@@ -146,7 +146,7 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
         } },
       }
     },

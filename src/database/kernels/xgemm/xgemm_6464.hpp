@@ -116,14 +116,14 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 32, 32, 64, 0, 0, 0, 0, 1, 2 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
         } },
       }
     },

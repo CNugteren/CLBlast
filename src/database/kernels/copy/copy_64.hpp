@@ -97,7 +97,7 @@ const DatabaseEntry CopyDouble = {
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 16, 8, 2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla K20m                                        "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla K40m                                        "}, Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 32, 16, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 32, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM5.0", {
           { Name{"GeForce GTX 750                                   "}, Params{ 8, 16, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

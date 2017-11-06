@@ -21,7 +21,7 @@ const DatabaseEntry XgemmSingle = {
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"AMD Radeon R9 M370X Compute Engine                "}, Params{ 32, 2, 16, 16, 64, 8, 16, 128, 0, 0, 0, 0, 2, 8 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 2, 4 } },
         } },
         { "Hawaii", {
           { Name{"AMD Radeon R9 290X                                "}, Params{ 16, 2, 16, 32, 128, 32, 8, 64, 1, 1, 1, 1, 4, 2 } },
@@ -52,7 +52,7 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
@@ -140,7 +140,7 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 32, 32, 64, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },
@@ -155,7 +155,7 @@ const DatabaseEntry XgemmSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 16, 16, 32, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },

@@ -124,7 +124,7 @@ const DatabaseEntry CopyComplexDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 16, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 16, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

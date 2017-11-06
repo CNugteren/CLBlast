@@ -89,7 +89,7 @@ const DatabaseEntry PadtransposeComplexSingle = {
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 0, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Iris                                              "}, Params{ 0, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Iris Pro                                          "}, Params{ 1, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 1, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 0, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

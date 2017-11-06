@@ -154,7 +154,7 @@ const DatabaseEntry PadComplexSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
