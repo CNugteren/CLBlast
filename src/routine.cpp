@@ -43,7 +43,7 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
   {"Padtranspose", routines_gemm_syrk},
   {"Xgemm", routines_gemm_syrk},
   {"XgemmDirect", routines_gemm},
-  {"KernelSelection", routines_gemm},
+  {"GemmRoutine", routines_gemm},
   {"Invert", routines_trsm},
 };
 // =================================================================================================

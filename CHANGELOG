@@ -9,6 +9,7 @@ Development (next version)
 - Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
 - Cross-compiling for Android is now supported using CMake; instructions are added to the README
 - Improved performance for small GEMM problems by going from 3 to 1 optional temporary buffers
+- GEMM kernel selection (direct vs in-direct) is now done automatically using a new tuner
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 

@@ -204,7 +204,9 @@ endif()
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
             xgemm xgemm_direct xgemv)
 set(DATABASES copy pad padtranspose transpose xaxpy xdot
-              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger)
+              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger
+              gemm_routine)
+set(ROUTINE_TUNERS xgemm)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
@@ -243,7 +245,6 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/database/apple_cpu_fallback.hpp
   src/database/database.hpp
   src/database/database_structure.hpp
-  src/database/kernel_selection.hpp
   src/routines/level1/xamin.hpp
   src/routines/level1/xmax.hpp
   src/routines/level1/xmin.hpp
@@ -254,6 +255,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/utilities/clblast_exceptions.hpp
   src/utilities/device_mapping.hpp
   src/utilities/msvc.hpp
+  src/utilities/timing.hpp
   src/utilities/utilities.hpp
   src/cache.hpp
   src/cxpp11_common.hpp
@@ -387,6 +389,12 @@ if(TUNERS)
     target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
     target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
+  endforeach()
+  foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
+    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp)
+    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
+    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC ${CLTUNE_INCLUDE_DIRS})
+    install(TARGETS clblast_tuner_routine_${ROUTINE_TUNER} DESTINATION bin)
   endforeach()
 
   # Adds 'alltuners' target: runs all tuners for all precisions

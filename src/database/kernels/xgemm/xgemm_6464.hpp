@@ -84,13 +84,13 @@ const DatabaseEntry XgemmComplexDouble = {
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 16, 2, 32, 32, 32, 32, 8, 32, 0, 0, 1, 0, 1, 1 } },
           { Name{"GeForce GTX 580                                   "}, Params{ 32, 2, 32, 32, 32, 8, 8, 64, 0, 0, 0, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 16, 2, 32, 32, 32, 32, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 32, 32, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM3.0", {
           { Name{"GRID K520                                         "}, Params{ 32, 8, 16, 16, 16, 8, 16, 64, 1, 0, 1, 1, 1, 1 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 32, 8, 16, 8, 16, 16, 32, 64, 1, 0, 0, 1, 1, 2 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 16, 8, 16, 8, 64, 16, 32, 32, 0, 1, 1, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 16, 8, 16, 16, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 8, 16, 8, 16, 8, 16, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 16, 2, 16, 16, 32, 16, 8, 32, 0, 1, 1, 1, 1, 1 } },
@@ -101,12 +101,12 @@ const DatabaseEntry XgemmComplexDouble = {
         { "SM5.0", {
           { Name{"GeForce GTX 750                                   "}, Params{ 32, 2, 8, 32, 32, 8, 8, 64, 0, 0, 1, 0, 1, 4 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 32, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM5.2", {
           { Name{"GeForce GTX 980                                   "}, Params{ 16, 2, 16, 8, 32, 8, 16, 128, 0, 0, 1, 1, 2, 2 } },
           { Name{"GeForce GTX TITAN X                               "}, Params{ 32, 8, 16, 16, 128, 16, 16, 32, 0, 0, 1, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 16, 128, 16, 16, 128, 0, 0, 1, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 8, 8, 32, 8, 16, 32, 0, 0, 1, 0, 1, 1 } },
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 32, 8, 32, 16, 32, 8, 8, 32, 0, 0, 0, 1, 1, 4 } },
@@ -116,14 +116,14 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 32, 32, 64, 0, 0, 0, 0, 1, 2 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
         } },
       }
     },

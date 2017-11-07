@@ -21,7 +21,7 @@ const DatabaseEntry XaxpyComplexSingle = {
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 1, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon R9 M370X Compute Engine                "}, Params{ 2, 64, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 64, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Hawaii", {
           { Name{"AMD Radeon R9 290X                                "}, Params{ 1, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

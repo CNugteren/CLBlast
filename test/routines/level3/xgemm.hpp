@@ -86,7 +86,7 @@ class TestXgemm {
     if (V != 0) {
       const auto device = queue.GetDevice();
       const auto switch_threshold = (V == 1) ? size_t{0} : size_t{1024 * 1024 * 1024}; // large enough for tests
-      const auto override_status = OverrideParameters(device(), "KernelSelection", PrecisionValue<T>(),
+      const auto override_status = OverrideParameters(device(), "GemmRoutine", PrecisionValue<T>(),
                                                       {{"XGEMM_MIN_INDIRECT_SIZE", switch_threshold}});
       if (override_status != StatusCode::kSuccess) { return override_status; }
     }

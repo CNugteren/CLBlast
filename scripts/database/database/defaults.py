@@ -62,7 +62,7 @@ def add_default_sections(database, grouping, verbose, values_dict, condition, en
         assert len(group) > 0
         if condition(group[0]):
 
-        # Stores all the section's data
+            # Stores all the section's data
             default_section = {}
             for attribute in group[0].keys():
                 if attribute != "results" and attribute != "group_identifier":
@@ -180,7 +180,8 @@ def get_common_best_parameters(group, group_identifier, verbose, enable_warning)
         assert len(section["results"]) > 0
         minimum_time = min([result["time"] for result in section["results"]])
         for result in section["results"]:
-            result["relative_performance"] = minimum_time / result["time"]
+            base_line = minimum_time if section["kernel"] != "gemm_kernel_selection" else 1.0
+            result["relative_time"] = result["time"] / base_line
 
     # Determine which parameters are available for all devices
     common_parameters = get_parameter_names(group[0])  # Parameters of the first section

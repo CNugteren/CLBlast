@@ -124,7 +124,7 @@ const DatabaseEntry TransposeDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

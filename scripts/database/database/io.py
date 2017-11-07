@@ -65,7 +65,7 @@ def decompress_database(database):
         for result in section["results"]:
             parameters = {}
             for name, value in zip(section["parameter_names"], result[0].split(",")):
-                parameters[name] = value
+                parameters[name] = int(value)
             new_result = {
                 "parameters": parameters,
                 "time": result[1]

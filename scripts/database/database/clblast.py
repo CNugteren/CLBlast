@@ -23,7 +23,8 @@ DEVICE_TYPE_ATTRIBUTES = ["clblast_device_vendor", "clblast_device_type"]
 DEVICE_ATTRIBUTES = ["clblast_device_name", "clblast_device_architecture",
                      "device_core_clock", "device_compute_units"]
 KERNEL_ATTRIBUTES = ["precision", "kernel_family"]
-ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta"]
+ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta",
+                       "arg_from", "arg_to", "arg_step"]
 ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ARGUMENT_ATTRIBUTES
 GROUP_ATTRIBUTES = DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ["kernel"] + ARGUMENT_ATTRIBUTES
 

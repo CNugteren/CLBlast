@@ -15,23 +15,11 @@
 #include <chrono>
 #include <algorithm>
 
+#include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
-
-template<typename F>
-double TimeFunction(const size_t num_runs, F const &function) {
-  auto timings = std::vector<double>(num_runs);
-  for (auto &timing: timings) {
-    const auto start_time = std::chrono::steady_clock::now();
-    function();
-    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-    timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
-  }
-  return *std::min_element(timings.begin(), timings.end());
-
-}
 
 void OpenCLDiagnostics(int argc, char *argv[]) {
   auto arguments = RetrieveCommandLineArguments(argc, argv);
