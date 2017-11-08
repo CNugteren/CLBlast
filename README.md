@@ -368,6 +368,10 @@ Known performance related issues:
 
 * Performance issues on ARM Mali GPUs due to missing compiler for support for loop unrolling and array-to-register promotion.
 
+Other known issues:
+
+* Routines returning an integer are currently not properly tested for half-precision FP16: IHAMAX/IHAMIN/IHMAX/IHMIN
+
 
 Contributing
 -------------
