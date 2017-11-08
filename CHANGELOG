@@ -1,5 +1,5 @@
 
-Development (next version)
+Version 1.2.0
 - Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
 - Fixed a bug in TRSM when using the a-offset argument
 - Added a CUDA API to CLBlast:
@@ -27,7 +27,7 @@ Version 1.1.0
   * SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL (im2col transform as used to express convolution as GEMM)
 
 Version 1.0.1
-- Fixed a bug in the direct version of the GEMM kernel)
+- Fixed a bug in the direct version of the GEMM kernel
 
 Version 1.0.0
 - Fixed a bug in the TRSM routine for alpha != 1

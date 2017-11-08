@@ -24,7 +24,7 @@ Use CLBlast instead of clBLAS:
 * When you are still running on OpenCL 1.1 hardware.
 * When you prefer a C++ API over a C API (C API also available in CLBlast).
 * When you value an organized and modern C++ codebase.
-* When you target Intel CPUs and GPUs or embedded devices
+* When you target Intel CPUs and GPUs or embedded devices.
 * When you can benefit from the increased performance of half-precision fp16 data-types.
 
 Use CLBlast instead of cuBLAS:
@@ -58,6 +58,7 @@ The pre-requisites for compilation of CLBlast are:
   - Intel OpenCL
   - Beignet
   - Mesa Clover
+  - ARM Mali OpenCL
 
 An example of an out-of-source build using a command-line compiler and make (starting from the root of the CLBlast folder):
 

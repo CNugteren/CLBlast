@@ -21,7 +21,7 @@ endif()
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
-set(clblast_VERSION_MINOR 1)
+set(clblast_VERSION_MINOR 2)
 set(clblast_VERSION_PATCH 0)
 
 # Options and their default values
