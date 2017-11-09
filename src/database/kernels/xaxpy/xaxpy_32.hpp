@@ -113,6 +113,7 @@ const DatabaseEntry XaxpySingle = {
           { Name{"GeForce GT 650M                                   "}, Params{ 2, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 2, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 1, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 1, 256, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
@@ -140,7 +141,7 @@ const DatabaseEntry XaxpySingle = {
           { kDeviceNameDefault                                        , Params{ 1, 512, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 4, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

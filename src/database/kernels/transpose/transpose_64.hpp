@@ -90,6 +90,7 @@ const DatabaseEntry TransposeDouble = {
           { Name{"GRID K520                                         "}, Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
@@ -124,7 +125,7 @@ const DatabaseEntry TransposeDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 8, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

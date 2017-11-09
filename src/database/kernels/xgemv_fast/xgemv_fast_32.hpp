@@ -104,7 +104,8 @@ const DatabaseEntry XgemvFastSingle = {
           { Name{"GeForce GT 650M                                   "}, Params{ 2, 32, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 2, 256, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 1, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 1, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 1, 256, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

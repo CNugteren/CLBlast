@@ -133,6 +133,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 680
   - GeForce GTX 750
   - GeForce GTX 750 Ti
+  - GeForce GTX 760 Ti
   - GeForce GTX 980
   - GeForce GTX 1070
   - GeForce GTX 1080

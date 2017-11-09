@@ -68,6 +68,7 @@ const DatabaseEntry XdotDouble = {
           { Name{"GRID K520                                         "}, Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 256, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 256, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 256, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {

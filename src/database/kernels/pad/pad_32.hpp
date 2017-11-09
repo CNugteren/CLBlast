@@ -113,7 +113,8 @@ const DatabaseEntry PadSingle = {
           { Name{"GeForce GT 650M                                   "}, Params{ 32, 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 32, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 16, 8, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 32, 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 32, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 32, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

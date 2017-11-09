@@ -51,6 +51,10 @@ const DatabaseEntry XgemvFastRotDouble = {
           { Name{"GeForce GTX 580                                   "}, Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "SM3.0", {
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 1, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 1, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

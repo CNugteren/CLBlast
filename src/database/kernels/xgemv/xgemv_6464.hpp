@@ -80,7 +80,8 @@ const DatabaseEntry XgemvComplexDouble = {
         { "SM3.0", {
           { Name{"GRID K520                                         "}, Params{ 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

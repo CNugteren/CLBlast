@@ -90,6 +90,7 @@ const DatabaseEntry XaxpyDouble = {
           { Name{"GRID K520                                         "}, Params{ 1, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 1, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 1, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 2, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
@@ -117,7 +118,7 @@ const DatabaseEntry XaxpyDouble = {
           { kDeviceNameDefault                                        , Params{ 2, 256, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

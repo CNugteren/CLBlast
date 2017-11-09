@@ -73,7 +73,8 @@ const DatabaseEntry XgemvFastRotSingle = {
         } },
         { "SM3.0", {
           { Name{"GeForce GT 650M                                   "}, Params{ 8, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 8, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 1, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

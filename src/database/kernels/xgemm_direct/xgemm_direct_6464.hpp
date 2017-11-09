@@ -51,6 +51,10 @@ const DatabaseEntry XgemmDirectComplexDouble = {
           { Name{"GeForce GTX 580                                   "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0 } },
         } },
+        { "SM3.0", {
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 2, 8, 8, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0 } },
+        } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0 } },

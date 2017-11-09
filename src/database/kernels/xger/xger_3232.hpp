@@ -102,7 +102,8 @@ const DatabaseEntry XgerComplexSingle = {
           { Name{"GRID K520                                         "}, Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 16, 32, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 64, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 32, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 16, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

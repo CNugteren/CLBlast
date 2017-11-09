@@ -90,7 +90,8 @@ const DatabaseEntry CopyDouble = {
           { Name{"GRID K520                                         "}, Params{ 32, 16, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 16, 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 32, 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 16, 32, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 32, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 16, 32, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -117,7 +118,7 @@ const DatabaseEntry CopyDouble = {
           { kDeviceNameDefault                                        , Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

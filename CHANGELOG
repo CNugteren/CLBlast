@@ -1,4 +1,7 @@
 
+Development (next version)
+- Added tuned parameters for various devices (see README)
+
 Version 1.2.0
 - Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
 - Fixed a bug in TRSM when using the a-offset argument

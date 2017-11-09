@@ -112,7 +112,8 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"GRID K520                                         "}, Params{ 16, 8, 32, 32, 64, 32, 16, 128, 1, 0, 1, 0, 1, 4 } },
           { Name{"GeForce GTX 670                                   "}, Params{ 16, 2, 32, 32, 64, 32, 8, 32, 1, 1, 1, 1, 1, 1 } },
           { Name{"GeForce GTX 680                                   "}, Params{ 16, 2, 32, 16, 64, 32, 32, 128, 1, 0, 0, 0, 2, 2 } },
-          { kDeviceNameDefault                                        , Params{ 16, 2, 32, 16, 64, 32, 8, 32, 1, 0, 0, 0, 1, 1 } },
+          { Name{"GeForce GTX 760 Ti OEM                            "}, Params{ 16, 2, 32, 16, 64, 32, 8, 32, 0, 1, 1, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 16, 0, 0, 0, 0, 4, 1 } },
         } },
         { "SM3.5", {
           { Name{"GeForce GTX TITAN                                 "}, Params{ 16, 8, 16, 16, 64, 32, 16, 64, 1, 1, 1, 0, 1, 1 } },
