@@ -25,6 +25,12 @@
 namespace clblast {
 // =================================================================================================
 
+// Compiles a program from source code
+Program CompileFromSource(const std::string &source_string, const Precision precision,
+                          const std::string &routine_name,
+                          const Device& device, const Context& context,
+                          std::vector<std::string>& options);
+
 // Enqueues a kernel, waits for completion, and checks for errors
 void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
                std::vector<size_t> global, const std::vector<size_t> &local,
