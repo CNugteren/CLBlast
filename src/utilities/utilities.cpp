@@ -397,6 +397,37 @@ template <> bool PrecisionSupported<half>(const Device &device) { return device.
 
 // =================================================================================================
 
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2) {
+  const auto difference = (val1 - val2);
+  return static_cast<double>(difference * difference);
+}
+
+// Compiles the default case for standard data-types
+template double SquaredDifference<float>(const float, const float);
+template double SquaredDifference<double>(const double, const double);
+
+// Specialisations for non-standard data-types
+template <>
+double SquaredDifference(const float2 val1, const float2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
+}
+template <>
+double SquaredDifference(const double2 val1, const double2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
+}
+template <>
+double SquaredDifference(const half val1, const half val2) {
+  return SquaredDifference(HalfToFloat(val1), HalfToFloat(val2));
+}
+
+// =================================================================================================
+
 // High-level info
 std::string GetDeviceType(const Device& device) {
   return device.Type();

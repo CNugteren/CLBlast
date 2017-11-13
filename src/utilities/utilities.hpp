@@ -323,6 +323,12 @@ bool PrecisionSupported(const Device &device);
 
 // =================================================================================================
 
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2);
+
+// =================================================================================================
+
 // Device information in a specific CLBlast form
 std::string GetDeviceType(const Device& device);
 std::string GetDeviceVendor(const Device& device);
