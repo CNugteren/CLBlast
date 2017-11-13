@@ -45,7 +45,7 @@ RuntimeErrorCode::RuntimeErrorCode(StatusCode status, const std::string &subreas
 
 // =================================================================================================
 
-StatusCode DispatchException()
+StatusCode DispatchException(const bool silent)
 {
   const char *message = nullptr;
   StatusCode status;
@@ -66,7 +66,7 @@ StatusCode DispatchException()
     status = StatusCode::kUnknownError;
   }
 
-  if (message) {
+  if (message && !silent) {
     fprintf(stderr, "CLBlast: %s\n", message);
   }
   return status;

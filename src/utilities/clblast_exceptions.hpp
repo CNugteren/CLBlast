@@ -37,7 +37,7 @@ class RuntimeErrorCode : public ErrorCode<RuntimeError, StatusCode> {
 // =================================================================================================
 
 // Handles (most of the) runtime exceptions and converts them to StatusCode
-StatusCode DispatchException();
+StatusCode DispatchException(const bool silent = false);
 
 // Handles remaining exceptions and converts them to StatusCode::kUnhandledError
 StatusCode DispatchExceptionForC();
