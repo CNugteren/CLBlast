@@ -21,6 +21,7 @@
 #include <chrono>
 
 #include "utilities/utilities.hpp"
+#include "routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -37,6 +38,14 @@ double TimeFunction(const size_t num_runs, F const &function) {
   }
   return *std::min_element(timings.begin(), timings.end());
 }
+
+// =================================================================================================
+
+double RunKernelTimed(const size_t num_runs, Kernel &kernel, Queue &queue, const Device &device,
+                      std::vector<size_t> global, const std::vector<size_t> &local);
+
+double TimeKernel(const size_t num_runs, Kernel &kernel, Queue &queue, const Device &device,
+                  std::vector<size_t> global, const std::vector<size_t> &local);
 
 // =================================================================================================
 

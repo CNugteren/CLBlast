@@ -234,6 +234,7 @@ set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
   src/utilities/clblast_exceptions.cpp
+  src/utilities/timing.cpp
   src/utilities/utilities.cpp
   src/api_common.cpp
   src/cache.cpp
