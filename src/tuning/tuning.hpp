@@ -7,24 +7,41 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the interface to the CLTune auto-tuner. This is only used for the optional
-// and stand-alone tuner binaries and not part of the core of CLBlast.
+// This file implements the generic CLBlast auto-tuner (inspired by CLTune). This is only used for
+//  the optional and stand-alone tuner binaries and not part of the core of CLBlast.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TUNING_H_
-#define CLBLAST_TUNING_H_
+#ifndef CLBLAST_TUNING_TUNING_H_
+#define CLBLAST_TUNING_TUNING_H_
 
 #include <vector>
 #include <string>
 #include <random>
 #include <utility>
-
-#include <cltune.h>
+#include <algorithm>
+#include <iostream>
 
 #include "utilities/utilities.hpp"
+#include "utilities/timing.hpp"
+#include "tuning/configurations.hpp"
 
 namespace clblast {
+// =================================================================================================
+
+// Constants holding start and end strings for terminal-output in colour
+#if defined(_WIN32)
+  const std::string kPrintError = "";
+  const std::string kPrintSuccess = "";
+  const std::string kPrintMessage = "";
+  const std::string kPrintEnd = "";
+#else
+  const std::string kPrintError = "\x1b[31m";
+  const std::string kPrintSuccess = "\x1b[32m";
+  const std::string kPrintMessage = "\x1b[1m";
+  const std::string kPrintEnd = "\x1b[0m";
+#endif
+
 // =================================================================================================
 
 // Structures for the tuners with all the default settings
@@ -41,15 +58,7 @@ struct TunerDefaults {
   // Other defaults
   size_t default_batch_count = 1;
   size_t default_num_runs = 10; // run every kernel this many times for averaging
-
-  // Search heuristic defaults
   double default_fraction = 1.0;
-  size_t default_swarm_size_PSO = 8;
-  double default_influence_global_PSO = 0.1;
-  double default_influence_local_PSO = 0.3;
-  double default_influence_random_PSO = 0.6;
-  size_t default_heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch);
-  double default_max_temp_ann = 1.0;
 };
 
 // Structures for the tuners with the remaining settings
@@ -68,6 +77,10 @@ struct TunerSettings {
   size_t size_c = 1;
   size_t size_temp = 1;
 
+  // Inputs and outputs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+  std::vector<size_t> inputs = {};
+  std::vector<size_t> outputs = {};
+
   // Sets the base thread configuration
   std::vector<size_t> global_size = {};
   std::vector<size_t> global_size_ref = {};
@@ -75,22 +88,76 @@ struct TunerSettings {
   std::vector<size_t> local_size_ref = {};
 
   // Transforms the thread configuration based on the parameters
-  using TransformVector = std::vector<std::vector<std::string>>;
   TransformVector mul_local = {};
   TransformVector div_local = {};
   TransformVector mul_global = {};
   TransformVector div_global = {};
 
   // Sets the tuning parameters and their possible values
-  std::vector<std::pair<std::string, std::vector<size_t>>> parameters;
+  std::vector<Parameter> parameters;
 
   // Describes how to compute the performance metrics
   size_t metric_amount = 0;
   std::string performance_unit = "N/A";
-
-  // Returns which search heuristic to use
-  size_t heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch);
 };
+
+// =================================================================================================
+
+struct TuningResult { std::string name; double score; Configuration config; };
+
+void PrintTimingsToFileAsJSON(const std::string &filename,
+                              const Device& device, const Platform& platform,
+                              const std::vector<std::pair<std::string,std::string>> &metadata,
+                              const std::vector<TuningResult>& tuning_results) {
+  printf("* Writing results to '%s'\n", filename.c_str());
+  auto file = fopen(filename.c_str(), "w");
+  fprintf(file, "{\n");
+  for (auto &datum: metadata) {
+    fprintf(file, "  \"%s\": \"%s\",\n", datum.first.c_str(), datum.second.c_str());
+  }
+  fprintf(file, "  \"platform_version\": \"%s\",\n", platform.Version().c_str());
+  fprintf(file, "  \"clblast_device_name\": \"%s\",\n", GetDeviceName(device).c_str());
+  fprintf(file, "  \"clblast_device_vendor\": \"%s\",\n", platform.Vendor().c_str());
+  fprintf(file, "  \"clblast_device_type\": \"%s\",\n", device.Type().c_str());
+  fprintf(file, "  \"clblast_device_architecture\": \"%s\",\n", GetDeviceArchitecture(device).c_str());
+  fprintf(file, "  \"device_core_clock\": \"%zu\",\n", device.CoreClock());
+  fprintf(file, "  \"device_compute_units\": \"%zu\",\n", device.ComputeUnits());
+  fprintf(file, "  \"results\": [\n");
+
+  // Loops over all results
+  auto num_results = tuning_results.size();
+  for (auto r = size_t{0}; r < num_results; ++r) {
+    auto result = tuning_results[r];
+    fprintf(file, "    {\n");
+    fprintf(file, "      \"kernel\": \"%s\",\n", result.name.c_str());
+    fprintf(file, "      \"time\": %.3lf,\n", result.score);
+
+    // Loops over all the parameters for this result
+    fprintf(file, "      \"parameters\": {");
+    auto num_configs = result.config.size();
+    auto p = size_t{0};
+    for (const auto parameter : result.config) {
+      fprintf(file, "\"%s\": %zu", parameter.first.c_str(), parameter.second);
+      if (p < num_configs -1 ) { fprintf(file, ","); }
+      ++p;
+    }
+    fprintf(file, "}\n");
+
+    // The footer
+    fprintf(file, "    }");
+    if (r < num_results - 1) { fprintf(file, ","); }
+    fprintf(file, "\n");
+  }
+  fprintf(file, "  ]\n");
+  fprintf(file, "}\n");
+  fclose(file);
+}
+
+void print_separator(const size_t parameters_size) {
+  printf("x------x-------x");
+  for (auto i = size_t{0}; i < parameters_size; ++i) { printf("-----"); }
+  printf("-x----------x------------x--------x-------------------x\n");
+}
 
 // =================================================================================================
 
@@ -115,121 +182,221 @@ void Tuner(int argc, char* argv[]) {
     if (o == kArgK)        { args.k        = GetArgument(command_line_args, help, kArgK, defaults.default_k); }
     if (o == kArgAlpha)    { args.alpha    = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
     if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
-    if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, defaults.default_fraction); }
     if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, defaults.default_batch_count); }
-    if (o == kArgHeuristicSelection) {args.heuristic_selection = GetArgument(command_line_args, help, kArgHeuristicSelection, defaults.default_heuristic);  }
-    if (o == kArgPsoSwarmSize)   {args.pso_swarm_size      = GetArgument(command_line_args, help, kArgPsoSwarmSize , defaults.default_swarm_size_PSO);  }
-    if (o == kArgPsoInfGlobal)   {args.pso_inf_global      = GetArgument(command_line_args, help, kArgPsoInfGlobal, defaults.default_influence_global_PSO);  }
-    if (o == kArgPsoInfLocal)    {args.pso_inf_local       = GetArgument(command_line_args, help, kArgPsoInfLocal, defaults.default_influence_local_PSO);  }
-    if (o == kArgPsoInfRandom)   {args.pso_inf_random      = GetArgument(command_line_args, help, kArgPsoInfRandom, defaults.default_influence_random_PSO);  }
-    if (o == kArgAnnMaxTemp)     {args.ann_max_temperature = GetArgument(command_line_args, help, kArgAnnMaxTemp, defaults.default_max_temp_ann); }
   }
-  const auto num_runs = GetArgument(command_line_args, help, kArgNumRuns, defaults.default_num_runs);
-  fprintf(stdout, "%s\n", help.c_str());
+  args.fraction = GetArgument(command_line_args, help, kArgFraction, defaults.default_fraction);
+  args.num_runs = GetArgument(command_line_args, help, kArgNumRuns, defaults.default_num_runs);
+  const auto max_l2_norm = GetArgument(command_line_args, help, kArgMaxL2Norm, 1.0e-4);
+  printf("%s\n", help.c_str());
   const TunerSettings settings = C::GetTunerSettings(args);
 
   // Tests validity of the given arguments
   C::TestValidArguments(args);
 
+  // Initializes OpenCL
+  const auto platform = Platform(args.platform_id);
+  const auto device = Device(platform, args.device_id);
+  const auto context = Context(device);
+  auto queue = Queue(context, device);
+
   // Tests for validity of the precision and retrieves properties
-  auto isAMD = false;
-  auto isARM = false;
-  auto isGPU = false;
-  auto device_type = std::string{};
-  auto device_vendor = std::string{};
-  auto device_architecture = std::string{};
-  auto device_name = std::string{};
-  { // In a block such that the platform and the device are destroyed before initializing the tuner
-    const auto platform = Platform(args.platform_id);
-    const auto device = Device(platform, args.device_id);
-    if (!PrecisionSupported<T>(device)) {
-      printf("* Unsupported precision, skipping this tuning run\n\n");
-      return;
-    }
-    isAMD = device.IsAMD();
-    isARM = device.IsARM();
-    isGPU = device.IsGPU();
-    device_type = GetDeviceType(device);
-    device_vendor = GetDeviceVendor(device);
-    device_architecture = GetDeviceArchitecture(device);
-    device_name = GetDeviceName(device);
+  if (!PrecisionSupported<T>(device)) {
+    printf("* Unsupported precision, skipping this tuning run\n\n");
+    return;
   }
+  const auto device_type = GetDeviceType(device);
+  const auto device_vendor = GetDeviceVendor(device);
+  const auto device_architecture = GetDeviceArchitecture(device);
+  const auto device_name = GetDeviceName(device);
 
   // Creates input buffers with random data
-  auto x_vec = std::vector<T>(settings.size_x);
-  auto y_vec = std::vector<T>(settings.size_y);
-  auto a_mat = std::vector<T>(settings.size_a);
-  auto b_mat = std::vector<T>(settings.size_b);
-  auto c_mat = std::vector<T>(settings.size_c);
-  auto temp = std::vector<T>(settings.size_temp);
+  const auto buffer_sizes = std::vector<size_t>{
+      settings.size_x, settings.size_y,
+      settings.size_a, settings.size_b, settings.size_c,
+      settings.size_temp
+  };
   std::mt19937 mt(kSeed);
   std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
-  PopulateVector(x_vec, mt, dist);
-  PopulateVector(y_vec, mt, dist);
-  PopulateVector(a_mat, mt, dist);
-  PopulateVector(b_mat, mt, dist);
-  PopulateVector(c_mat, mt, dist);
-  PopulateVector(temp, mt, dist);
-
-  // Initializes the tuner for the chosen device
-  cltune::Tuner tuner(args.platform_id, args.device_id);
-
-  // Select the search method based on the command-line arguments
-  // If the tuner does not support the selected choice, full search will be returned.
-  auto method = settings.heuristic;
-  if      (method == 1) { tuner.UseRandomSearch(1.0/args.fraction); }
-  else if (method == 2) { tuner.UseAnnealing(1.0/args.fraction, args.ann_max_temperature); }
-  else if (method == 3) { tuner.UsePSO(1.0/args.fraction, args.pso_swarm_size, args.pso_inf_global,
-                                       args.pso_inf_local, args.pso_inf_random); }
-  else                  { tuner.UseFullSearch(); }
-
-  // Set extra settings for specific defines. This mimics src/routine.cc.
-  auto defines = std::string{""};
-  if (isAMD && isGPU) {
-    defines += "#define USE_CL_MAD 1\n";
-    defines += "#define USE_STAGGERED_INDICES 1\n";
+  auto source_buffers = std::vector<std::vector<T>>();
+  auto reference_buffers = std::vector<std::vector<T>>();
+  auto result_buffers = std::vector<std::vector<T>>();
+  auto device_buffers = std::vector<Buffer<T>>();
+  for (const auto size : buffer_sizes) {
+    auto host_buffer = std::vector<T>(size);
+    PopulateVector(host_buffer, mt, dist);
+    source_buffers.push_back(host_buffer);
+    auto reference_buffer = std::vector<T>(size);
+    reference_buffers.push_back(reference_buffer);
+    auto result_buffer = std::vector<T>(size);
+    result_buffers.push_back(result_buffer);
+    auto device_buffer = Buffer<T>(context, size);
+    device_buffers.push_back(device_buffer);
   }
-  if (isARM && isGPU) {
-    defines += "#define GLOBAL_MEM_FENCE 1\n";
-  }
-
-  // Loads the kernel sources and defines the kernel to tune
-  auto sources = defines + settings.sources;
-  auto id = tuner.AddKernelFromString(sources, settings.kernel_name, settings.global_size, settings.local_size);
-  tuner.SetReferenceFromString(sources, settings.kernel_name, settings.global_size_ref, settings.local_size_ref);
 
   // Sets the tunable parameters and their possible values
-  for (const auto &parameter: settings.parameters) {
-    tuner.AddParameter(id, parameter.first, parameter.second);
+  auto configurations = SetConfigurations(settings.parameters, C::SetConstraints());
+  printf("* Found %s%zu configuration(s)%s\n",
+         kPrintMessage.c_str(), configurations.size(), kPrintEnd.c_str());
+
+  // Select the search method (full search or a random fraction)
+  if (args.fraction != 0.0 && args.fraction != 1.0) {
+    const auto new_size = static_cast<size_t>(configurations.size() / args.fraction);
+    auto rng = std::default_random_engine{};
+    std::shuffle(std::begin(configurations), std::end(configurations), rng);
+    configurations.resize(new_size);
+    printf("* Exploring a random subset of %s%zu configuration(s)%s\n",
+           kPrintMessage.c_str(), configurations.size(), kPrintEnd.c_str());
   }
-  C::SetConstraints(tuner, id);
-  C::SetLocalMemorySize(tuner, id, args);
 
-  // Tests for a specific precision
-  tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
-  tuner.AddParameterReference("PRECISION", static_cast<size_t>(args.precision));
+  // Prints information about the parameters
+  printf("* Parameters explored: ");
+  for (const auto& parameter : settings.parameters) { printf("%s ", parameter.first.c_str()); }
+  printf("\n");
 
-  // Modifies the thread-sizes (both global and local) based on the parameters
-  for (auto &parameters: settings.mul_local) { tuner.MulLocalSize(id, parameters); }
-  for (auto &parameters: settings.div_local) { tuner.DivLocalSize(id, parameters); }
-  for (auto &parameters: settings.mul_global) { tuner.MulGlobalSize(id, parameters); }
-  for (auto &parameters: settings.div_global) { tuner.DivGlobalSize(id, parameters); }
+  // Prints the header of the table
+  printf("\n");
+  printf("|   ID | total |");
+  for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
+  printf("param | compiles |       time | %6s |            status |\n", settings.performance_unit.c_str());
+  print_separator(settings.parameters.size());
 
-  // Sets the function's arguments
-  C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat, temp);
+  // First runs a reference example to compare against
+  try {
+    printf("|  ref |     - |");
+    for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
+    printf("    - |");
+
+
+    // Sets the input
+    for (const auto id : settings.inputs) {
+      device_buffers[id].Write(queue, buffer_sizes[id], source_buffers[id]);
+    }
+
+    // Compiles the kernel
+    auto compiler_options = std::vector<std::string>();
+    const auto program = CompileFromSource(settings.sources, args.precision, settings.kernel_name,
+                                           device, context, compiler_options);
+    auto kernel = Kernel(program, settings.kernel_name);
+    C::SetArguments(kernel, args, device_buffers);
+    printf("       %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
+
+    // Runs the kernel
+    const auto time_ms = TimeKernel(args.num_runs, kernel, queue, device,
+                                    settings.global_size_ref, settings.local_size_ref);
+    printf("      - |");
+    if (time_ms == -1.0) { throw std::runtime_error("Error in reference implementation"); }
+
+    // Saves the result
+    for (const auto id : settings.outputs) {
+      device_buffers[id].Read(queue, buffer_sizes[id], reference_buffers[id]);
+    }
+    printf("      %sreference OK%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
+  }
+  catch (...) {
+    const auto status_code = DispatchExceptionCatchAll(true);
+    printf(" %d |\n", static_cast<int>(status_code));
+    printf("* Exception caught with status %d while running the reference, aborting\n",
+           static_cast<int>(status_code));
+    return;
+  }
+  print_separator(settings.parameters.size());
 
   // Starts the tuning process
-  tuner.SetNumRuns(num_runs);
-  tuner.Tune();
+  auto results = std::vector<TuningResult>();
+  for (auto config_id = size_t{0}; config_id < configurations.size(); ++config_id) {
+    try {
 
-  // Prints the results to screen
-  auto time_ms = tuner.PrintToScreen();
-  tuner.PrintFormatted();
+      const auto configuration = configurations[config_id];
+      printf("| %4zu | %5zu |", config_id + 1, configurations.size());
+      for (const auto& parameter : settings.parameters) {
+        printf("%5zu", configuration.at(parameter.first));
+      }
+      printf(" |");
+
+      // Sets the input
+      for (const auto id : settings.inputs) {
+        device_buffers[id].Write(queue, buffer_sizes[id], source_buffers[id]);
+      }
+
+      // Sets the thread configuration
+      const auto global = SetThreadConfiguration(configuration, settings.global_size,
+                                                 settings.mul_global, settings.div_global);
+      const auto local = SetThreadConfiguration(configuration, settings.local_size,
+                                                settings.mul_local, settings.div_local);
+
+      // Sets the parameters for this configuration
+      auto kernel_source = std::string{""};
+      for (const auto &parameter : configuration) {
+        kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
+      }
+      kernel_source += settings.sources;
+
+      // Compiles the kernel
+      auto compiler_options = std::vector<std::string>();
+      const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name,
+                                             device, context, compiler_options);
+      auto kernel = Kernel(program, settings.kernel_name);
+      printf("       %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
+
+      // Runs the kernel
+      C::SetArguments(kernel, args, device_buffers);
+      const auto time_ms = TimeKernel(args.num_runs, kernel, queue, device, global, local);
+
+      // Kernel run was not successful
+      if (time_ms == -1.0) {
+        printf("      - |");
+        printf("   %sinvalid config.%s |", kPrintError.c_str(), kPrintEnd.c_str());
+        printf(" <-- skipping\n");
+        continue;
+      }
+
+      // Compares the results
+      auto l2_error = 0.0;
+      for (const auto id : settings.outputs) {
+        device_buffers[id].Read(queue, buffer_sizes[id], result_buffers[id]);
+        for (auto index = size_t{0}; index<buffer_sizes[id]; ++index) {
+          const auto diff = SquaredDifference(result_buffers[id][index], reference_buffers[id][index]);
+          l2_error += diff;
+        }
+        l2_error /= static_cast<double>(buffer_sizes[id]);
+        if (std::isnan(l2_error) || l2_error > max_l2_norm) {
+          printf("      - |");
+          printf(" %sL2 error %8.2e%s |", kPrintError.c_str(), l2_error, kPrintEnd.c_str());
+          throw std::runtime_error("L2 error too large");
+        }
+      }
+
+      // All was OK
+      results.push_back(TuningResult{settings.kernel_name, time_ms, configuration});
+      printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
+      printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
+    }
+    catch (...) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      if (status_code != StatusCode::kUnknownError) {
+        printf("   %serror code %d%s |",
+               kPrintError.c_str(), static_cast<int>(status_code), kPrintEnd.c_str());
+      }
+      printf(" <-- skipping\n");
+    }
+  }
+
+  // Completed the tuning process
+  print_separator(settings.parameters.size());
+  printf("\n");
+
+  // Computes the best results
+  auto comparison = [](const TuningResult& lhs, const TuningResult& rhs) { return lhs.score < rhs.score; };
+  const auto best_configuration = std::min_element(results.begin(), results.end(), comparison);
+  const auto best_time_ms = best_configuration->score;
 
   // Also prints the performance of the best-case in terms of GB/s or GFLOPS
-  if (time_ms != 0.0) {
-    printf("[ -------> ] %.2lf ms", time_ms);
-    printf(" or %.1lf %s\n", settings.metric_amount/(time_ms*1.0e6), settings.performance_unit.c_str());
+  if (best_time_ms != 0.0) {
+    printf("\n");
+    printf("* Found best result %.2lf ms", best_time_ms);
+    printf(" or %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6),
+           settings.performance_unit.c_str());
+    printf("\n");
   }
 
   // Outputs the results as JSON to disk, including some meta-data
@@ -237,25 +404,25 @@ void Tuner(int argc, char* argv[]) {
   auto metadata = std::vector<std::pair<std::string,std::string>>{
     {"kernel_family", settings.kernel_family},
     {"precision", precision_string},
-    {"clblast_device_type", device_type},
-    {"clblast_device_vendor", device_vendor},
-    {"clblast_device_architecture", device_architecture},
-    {"clblast_device_name", device_name}
   };
   for (auto &o: defaults.options) {
-    if (o == kArgM)     { metadata.push_back({"arg_m", std::to_string(args.m)}); }
-    if (o == kArgN)     { metadata.push_back({"arg_n", std::to_string(args.n)}); }
-    if (o == kArgK)     { metadata.push_back({"arg_k", std::to_string(args.k)}); }
+    if (o == kArgM)     { metadata.push_back({"arg_m", ToString(args.m)}); }
+    if (o == kArgN)     { metadata.push_back({"arg_n", ToString(args.n)}); }
+    if (o == kArgK)     { metadata.push_back({"arg_k", ToString(args.k)}); }
     if (o == kArgAlpha) { metadata.push_back({"arg_alpha", ToString(args.alpha)}); }
     if (o == kArgBeta)  { metadata.push_back({"arg_beta", ToString(args.beta)}); }
     if (o == kArgBatchCount) { metadata.push_back({"arg_batch_count", ToString(args.batch_count)}); }
   }
-  tuner.PrintJSON("clblast_" + settings.kernel_family + "_" + precision_string + ".json", metadata);
+  PrintTimingsToFileAsJSON("clblast_" + settings.kernel_family + "_" + precision_string + ".json",
+                           device, platform, metadata, results);
+
+  printf("* Completed tuning process\n");
+  printf("\n");
  
 }
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TUNING_H_
+// CLBLAST_TUNING_TUNING_H_
 #endif

@@ -378,8 +378,12 @@ endif()
 # the CLTune library (not included as part of the source).
 if(TUNERS)
 
+  set(TUNERS_COMMON
+      src/tuning/configurations.cpp
+      src/tuning/configurations.hpp
+      src/tuning/tuning.hpp)
+
   # Visual Studio requires the sources of non-exported objects/libraries
-  set(TUNERS_COMMON src/tuning/tuning.hpp)
   if(MSVC)
     set(TUNERS_COMMON ${TUNERS_COMMON} src/utilities/utilities.cpp)
   endif()

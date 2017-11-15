@@ -98,6 +98,7 @@ constexpr auto kArgDilationW = "dilationw";
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 constexpr auto kArgHeuristicSelection = "heuristic";
+constexpr auto kArgMaxL2Norm = "max_l2_norm";
 // PSO tuner-specific arguments in string form
 constexpr auto kArgPsoSwarmSize = "pso_swarm_size";
 constexpr auto kArgPsoInfGlobal = "pso_inf_global";
