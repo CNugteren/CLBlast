@@ -72,6 +72,35 @@ StatusCode DispatchException(const bool silent)
   return status;
 }
 
+StatusCode DispatchExceptionCatchAll(const bool silent)
+{
+  const char *message = nullptr;
+  StatusCode status;
+
+  try {
+    throw;
+  } catch (BLASError &e) {
+    // no message is printed for invalid argument errors
+    status = e.status();
+  } catch (CLCudaAPIError &e) {
+    message = e.what();
+    status = static_cast<StatusCode>(e.status());
+  } catch (RuntimeErrorCode &e) {
+    message = e.what();
+    status = e.status();
+  } catch (Error<std::runtime_error> &e) {
+    message = e.what();
+    status = StatusCode::kUnknownError;
+  } catch (...) {
+    message = "unknown exception type";
+    status = StatusCode::kUnknownError;
+  }
+
+  if (message && !silent) {
+    fprintf(stderr, "CLBlast: %s\n", message);
+  }
+  return status;
+}
 // =================================================================================================
 
 StatusCode DispatchExceptionForC()
