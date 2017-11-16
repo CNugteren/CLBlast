@@ -156,15 +156,6 @@ elseif(CUDA)
   link_directories(${CUDA_TOOLKIT_ROOT_DIR}/lib64)
 endif()
 
-# Locates the CLTune library in case the tuners need to be compiled. "FindCLTune.cmake" is included.
-if(TUNERS)
-  find_package(CLTune)
-  if(NOT CLTUNE_FOUND)
-    message(STATUS "Could NOT find CLTune, disabling the compilation of the tuners")
-    set(TUNERS OFF)
-  endif()
-endif()
-
 # Don't search for system libraries when cross-compiling
 if(${CMAKE_SYSTEM_NAME} STREQUAL Android)
   if(TESTS)
@@ -374,13 +365,14 @@ endif()
 
 # ==================================================================================================
 
-# This section contains all the code related to the tuners. These tuners require the presence of
-# the CLTune library (not included as part of the source).
+# This section contains all the code related to the tuners
+# TODO: Remove dependency on CLBlast
 if(TUNERS)
 
   set(TUNERS_COMMON
       src/tuning/configurations.cpp
       src/tuning/configurations.hpp
+      src/tuning/tuning.cpp
       src/tuning/tuning.hpp)
 
   # Visual Studio requires the sources of non-exported objects/libraries
@@ -391,14 +383,12 @@ if(TUNERS)
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
     add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
-    target_link_libraries(clblast_tuner_${KERNEL} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
-    target_include_directories(clblast_tuner_${KERNEL} PUBLIC ${CLTUNE_INCLUDE_DIRS})
+    target_link_libraries(clblast_tuner_${KERNEL} clblast ${API_LIBRARIES})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
   foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
     add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp)
-    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast ${CLTUNE_LIBRARIES} ${API_LIBRARIES})
-    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC ${CLTUNE_INCLUDE_DIRS})
+    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast ${API_LIBRARIES})
     install(TARGETS clblast_tuner_routine_${ROUTINE_TUNER} DESTINATION bin)
   endforeach()
 
