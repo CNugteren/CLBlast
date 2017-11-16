@@ -109,7 +109,9 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
                               const Device& device, const Platform& platform,
                               const std::vector<std::pair<std::string,std::string>> &metadata,
                               const std::vector<TuningResult>& tuning_results) {
-  printf("* Writing results to '%s'\n", filename.c_str());
+  auto num_results = tuning_results.size();
+  printf("* Writing a total of %zu results to '%s'\n", num_results, filename.c_str());
+
   auto file = fopen(filename.c_str(), "w");
   fprintf(file, "{\n");
   for (auto &datum: metadata) {
@@ -125,7 +127,6 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
   fprintf(file, "  \"results\": [\n");
 
   // Loops over all results
-  auto num_results = tuning_results.size();
   for (auto r = size_t{0}; r < num_results; ++r) {
     auto result = tuning_results[r];
     fprintf(file, "    {\n");
@@ -384,26 +385,37 @@ void Tuner(int argc, char* argv[]) {
   // Completed the tuning process
   print_separator(settings.parameters.size());
   printf("\n");
+  if (results.size() == 0) { return; }
 
   // Computes the best results
   auto comparison = [](const TuningResult& lhs, const TuningResult& rhs) { return lhs.score < rhs.score; };
   const auto best_configuration = std::min_element(results.begin(), results.end(), comparison);
   const auto best_time_ms = best_configuration->score;
+  if (best_time_ms == 0.0) { return; }
 
   // Also prints the performance of the best-case in terms of GB/s or GFLOPS
-  if (best_time_ms != 0.0) {
-    printf("\n");
-    printf("* Found best result %.2lf ms", best_time_ms);
-    printf(" or %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6),
-           settings.performance_unit.c_str());
-    printf("\n");
+  printf("\n");
+  printf("* Found best result %.2lf ms", best_time_ms);
+  printf(": %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6),
+         settings.performance_unit.c_str());
+  printf("* Best parameters: ");
+  auto best_string = std::string{""};
+  auto i = size_t{0};
+  for (const auto config : best_configuration->config) {
+    best_string += "" + config.first + "=" + ToString(config.second);
+    if (i < best_configuration->config.size() - 1) { best_string += " "; }
+    ++i;
   }
+  printf("%s\n\n", best_string.c_str());
 
   // Outputs the results as JSON to disk, including some meta-data
   auto precision_string = std::to_string(static_cast<size_t>(args.precision));
   auto metadata = std::vector<std::pair<std::string,std::string>>{
     {"kernel_family", settings.kernel_family},
     {"precision", precision_string},
+    {"best_kernel", best_configuration->name},
+    {"best_time", ToString(best_configuration->score)},
+    {"best_parameters", best_string}
   };
   for (auto &o: defaults.options) {
     if (o == kArgM)     { metadata.push_back({"arg_m", ToString(args.m)}); }
