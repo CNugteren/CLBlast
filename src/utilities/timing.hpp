@@ -21,7 +21,6 @@
 #include <chrono>
 
 #include "utilities/utilities.hpp"
-#include "routines/common.hpp"
 
 namespace clblast {
 // =================================================================================================

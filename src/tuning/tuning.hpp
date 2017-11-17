@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "utilities/utilities.hpp"
+#include "utilities/compile.hpp"
 #include "utilities/timing.hpp"
 #include "tuning/configurations.hpp"
 
