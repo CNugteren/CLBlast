@@ -23,7 +23,7 @@ namespace clblast {
 Program CompileFromSource(const std::string &source_string, const Precision precision,
                           const std::string &routine_name,
                           const Device& device, const Context& context,
-                          std::vector<std::string>& options) {
+                          std::vector<std::string>& options, const bool silent) {
   auto header_string = std::string{""};
 
   header_string += "#define PRECISION " + ToString(static_cast<int>(precision)) + "\n";
@@ -78,8 +78,8 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
   try {
     program.Build(device, options);
   } catch (const CLCudaAPIBuildError &e) {
-    if (program.StatusIsCompilationWarningOrError(e.status())) {
-      fprintf(stdout, "OpenCL compiler error/warning: %s\n",
+    if (program.StatusIsCompilationWarningOrError(e.status()) && !silent) {
+      fprintf(stdout, "OpenCL compiler error/warning:\n%s\n",
               program.GetBuildInfo(device).c_str());
     }
     throw;

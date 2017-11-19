@@ -27,7 +27,7 @@ namespace clblast {
 Program CompileFromSource(const std::string &source_string, const Precision precision,
                           const std::string &routine_name,
                           const Device& device, const Context& context,
-                          std::vector<std::string>& options);
+                          std::vector<std::string>& options, const bool silent = false);
 
 // =================================================================================================
 } // namespace clblast

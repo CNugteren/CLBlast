@@ -21,6 +21,7 @@
 #include <utility>
 #include <algorithm>
 #include <iostream>
+#include <chrono>
 
 #include "utilities/utilities.hpp"
 #include "utilities/compile.hpp"
@@ -211,7 +212,7 @@ void Tuner(int argc, char* argv[]) {
   printf("\n");
   printf("|   ID | total |");
   for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
-  printf("param | compiles |         time | %6s |            status |\n", settings.performance_unit.c_str());
+  printf("param |       compiles |         time | %6s |            status |\n", settings.performance_unit.c_str());
   print_separator(settings.parameters.size());
 
   // First runs a reference example to compare against
@@ -232,7 +233,7 @@ void Tuner(int argc, char* argv[]) {
                                            device, context, compiler_options);
     auto kernel = Kernel(program, settings.kernel_name);
     C::SetArguments(kernel, args, device_buffers);
-    printf("       %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
+    printf("             %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
 
     // Runs the kernel
     const auto time_ms = TimeKernel(args.num_runs, kernel, queue, device,
@@ -248,7 +249,6 @@ void Tuner(int argc, char* argv[]) {
   }
   catch (...) {
     const auto status_code = DispatchExceptionCatchAll(true);
-    printf(" %d |\n", static_cast<int>(status_code));
     printf("* Exception caught with status %d while running the reference, aborting\n",
            static_cast<int>(status_code));
     return;
@@ -286,11 +286,14 @@ void Tuner(int argc, char* argv[]) {
       kernel_source += settings.sources;
 
       // Compiles the kernel
+      const auto start_time = std::chrono::steady_clock::now();
       auto compiler_options = std::vector<std::string>();
       const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name,
-                                             device, context, compiler_options);
+                                             device, context, compiler_options, true);
       auto kernel = Kernel(program, settings.kernel_name);
-      printf("       %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
+      const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+      const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
+      printf("   %sOK%s  %5.0lf ms |", kPrintSuccess.c_str(), kPrintEnd.c_str(), timing);
 
       // Runs the kernel
       C::SetArguments(kernel, args, device_buffers);
@@ -325,6 +328,12 @@ void Tuner(int argc, char* argv[]) {
       results.push_back(TuningResult{settings.kernel_name, time_ms, configuration});
       printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
       printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
+    }
+    catch (const CLCudaAPIBuildError &e) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      printf("  %scompilation error: %5d%s     |",
+             kPrintError.c_str(), static_cast<int>(status_code), kPrintEnd.c_str());
+      printf("      - |                 - | <-- skipping\n");
     }
     catch (...) {
       const auto status_code = DispatchExceptionCatchAll(true);
@@ -384,7 +393,6 @@ void Tuner(int argc, char* argv[]) {
 
   printf("* Completed tuning process\n");
   printf("\n");
- 
 }
 
 // =================================================================================================
