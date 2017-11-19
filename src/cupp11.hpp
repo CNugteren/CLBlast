@@ -326,6 +326,9 @@ public:
   std::string AMDBoardName() const { return ""; }
   std::string NVIDIAComputeCapability() const { return Capabilities(); }
 
+  // Retrieves the above extra information
+  std::string GetExtraInfo() const { return NVIDIAComputeCapability(); }
+
   // Accessor to the private data-member
   const RawDeviceID& operator()() const { return device_; }
 private:

@@ -260,7 +260,7 @@ void Tuner(int argc, char* argv[]) {
   for (auto config_id = size_t{0}; config_id < configurations.size(); ++config_id) {
     try {
 
-      const auto configuration = configurations[config_id];
+      auto configuration = configurations[config_id];
       printf("| %4zu | %5zu |", config_id + 1, configurations.size());
       for (const auto& parameter : settings.parameters) {
         printf("%5zu", configuration.at(parameter.first));
@@ -321,6 +321,7 @@ void Tuner(int argc, char* argv[]) {
       }
 
       // All was OK
+      configuration["PRECISION"] = static_cast<size_t>(args.precision);
       results.push_back(TuningResult{settings.kernel_name, time_ms, configuration});
       printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
       printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());

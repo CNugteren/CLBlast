@@ -37,13 +37,17 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
   for (auto &datum: metadata) {
     fprintf(file, "  \"%s\": \"%s\",\n", datum.first.c_str(), datum.second.c_str());
   }
-  fprintf(file, "  \"platform_version\": \"%s\",\n", platform.Version().c_str());
-  fprintf(file, "  \"clblast_device_name\": \"%s\",\n", GetDeviceName(device).c_str());
-  fprintf(file, "  \"clblast_device_vendor\": \"%s\",\n", platform.Vendor().c_str());
   fprintf(file, "  \"clblast_device_type\": \"%s\",\n", device.Type().c_str());
+  fprintf(file, "  \"clblast_device_vendor\": \"%s\",\n", platform.Vendor().c_str());
   fprintf(file, "  \"clblast_device_architecture\": \"%s\",\n", GetDeviceArchitecture(device).c_str());
+  fprintf(file, "  \"clblast_device_name\": \"%s\",\n", GetDeviceName(device).c_str());
+  fprintf(file, "  \"device\": \"%s\",\n", device.Name().c_str());
+  fprintf(file, "  \"platform_version\": \"%s\",\n", platform.Version().c_str());
+  fprintf(file, "  \"device_vendor\": \"%s\",\n", platform.Vendor().c_str());
+  fprintf(file, "  \"device_type\": \"%s\",\n", device.Type().c_str());
   fprintf(file, "  \"device_core_clock\": \"%zu\",\n", device.CoreClock());
   fprintf(file, "  \"device_compute_units\": \"%zu\",\n", device.ComputeUnits());
+  fprintf(file, "  \"device_extra_info\": \"%s\",\n", device.GetExtraInfo().c_str());
   fprintf(file, "  \"results\": [\n");
 
   // Loops over all results

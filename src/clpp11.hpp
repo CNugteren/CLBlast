@@ -352,6 +352,13 @@ class Device {
            std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
   }
 
+  // Retrieves the above extra information (if present)
+  std::string GetExtraInfo() const {
+    if (HasExtension("cl_amd_device_attribute_query")) { return AMDBoardName(); }
+    if (HasExtension("cl_nv_device_attribute_query")) { return NVIDIAComputeCapability(); }
+    else { return std::string{""}; }
+  }
+
   // Accessor to the private data-member
   const RawDeviceID& operator()() const { return device_; }
  private:

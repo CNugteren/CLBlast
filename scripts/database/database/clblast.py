@@ -173,7 +173,6 @@ def print_cpp_database(database, output_dir):
                                 kernels = sorted(set([s["kernel"] for s in device_database]))
                                 for kernel in kernels:
                                     kernel_database = [s for s in device_database if s["kernel"] == kernel]
-
                                     assert len(kernel_database) == 1
                                     results = kernel_database[0]["results"]
 
