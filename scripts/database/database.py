@@ -127,7 +127,7 @@ def main(argv):
     # Removes database entries before continuing
     if cl_args.remove_device is not None:
         print("[database] Removing all results for device '%s'" % cl_args.remove_device)
-        remove_database_entries(database, {"clblast_device": cl_args.remove_device})
+        remove_database_entries(database, {"clblast_device_name": cl_args.remove_device})
         io.save_database(database, database_filename)
 
     # Retrieves the best performing results
