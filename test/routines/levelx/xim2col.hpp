@@ -165,8 +165,8 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
           for (auto w_id = size_t{0}; w_id < output_w; ++w_id) { // image width
 
             // Retrieves the input value
-            const auto h_index = -args.pad_h + kh_id * args.dilation_h + args.stride_h * h_id;
-            const auto w_index = -args.pad_w + kw_id * args.dilation_w + args.stride_w * w_id;
+            const auto h_index = kh_id * args.dilation_h + args.stride_h * h_id - args.pad_h;
+            const auto w_index = kw_id * args.dilation_w + args.stride_w * w_id - args.pad_w;
             auto val = ConstantZero<T>();
             if (h_index >= 0 && h_index < args.height &&
                 w_index >= 0 && w_index < args.width) {

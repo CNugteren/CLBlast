@@ -75,10 +75,11 @@ void TuneXgemm(int argc, char* argv[]) {
   const auto queue = Queue(context, device);
 
   // Buffers
-  auto a_mat = Buffer<T>(context, to * to);
-  auto b_mat = Buffer<T>(context, to * to);
-  auto c_mat = Buffer<T>(context, to * to);
-  auto buffers = std::vector<Buffer<T>>{a_mat, b_mat, c_mat};
+  auto buffers = std::vector<Buffer<T>>{
+      Buffer<T>(context, to * to),
+      Buffer<T>(context, to * to),
+      Buffer<T>(context, to * to)
+  };
 
   // In-direct version
   printf("\n* Testing the in-direct GEMM routine for m=n=k\n");

@@ -74,7 +74,8 @@ class TestXtrsv {
     // TODO: Improve this, currently loosely based on clBLAS's implementation
     for (auto i = size_t{0}; i < args.n; ++i) {
       auto diagonal = a_source[i*args.a_ld + i + args.a_offset];
-      diagonal = static_cast<T>(AbsoluteValue(diagonal)) + static_cast<T>(args.n / size_t{4});
+      diagonal = static_cast<T>(AbsoluteValue(diagonal)) +
+                 Constant<T>(static_cast<double>(args.n / size_t{4}));
       for (auto j = size_t{0}; j < args.n; ++j) {
         a_source[j*args.a_ld + i + args.a_offset] /= Constant<T>(2.0);
       }

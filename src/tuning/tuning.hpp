@@ -180,12 +180,9 @@ void Tuner(int argc, char* argv[]) {
     auto host_buffer = std::vector<T>(size);
     PopulateVector(host_buffer, mt, dist);
     source_buffers.push_back(host_buffer);
-    auto reference_buffer = std::vector<T>(size);
-    reference_buffers.push_back(reference_buffer);
-    auto result_buffer = std::vector<T>(size);
-    result_buffers.push_back(result_buffer);
-    auto device_buffer = Buffer<T>(context, size);
-    device_buffers.push_back(device_buffer);
+    reference_buffers.push_back(std::vector<T>(size));
+    result_buffers.push_back(std::vector<T>(size));
+    device_buffers.push_back(Buffer<T>(context, size));
   }
 
   // Sets the tunable parameters and their possible values
@@ -329,7 +326,7 @@ void Tuner(int argc, char* argv[]) {
       printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
       printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
     }
-    catch (const CLCudaAPIBuildError &e) {
+    catch (CLCudaAPIBuildError) {
       const auto status_code = DispatchExceptionCatchAll(true);
       printf("  %scompilation error: %5d%s     |",
              kPrintError.c_str(), static_cast<int>(status_code), kPrintEnd.c_str());
