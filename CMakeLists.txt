@@ -27,7 +27,7 @@ set(clblast_VERSION_PATCH 0)
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)
-option(TUNERS "Enable compilation of the tuners" OFF)
+option(TUNERS "Enable compilation of the tuners" ON)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
