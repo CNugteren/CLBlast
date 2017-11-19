@@ -65,12 +65,12 @@ double TimeKernel(const size_t num_runs, Kernel &kernel, Queue &queue, const Dev
                   std::vector<size_t> global, const std::vector<size_t> &local) {
   try {
     const auto time_ms = RunKernelTimed(num_runs, kernel, queue, device, global, local);
-    printf(" %7.2lf ms |", time_ms);
+    printf(" %9.2lf ms |", time_ms);
     return time_ms;
   }
   catch (...) {
     const auto status_code = DispatchExceptionCatchAll(true);
-    printf("  error %3d |", static_cast<int>(status_code));
+    printf("  error %-5d |", static_cast<int>(status_code));
     return -1.0; // invalid
   }
 }

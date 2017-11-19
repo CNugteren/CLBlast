@@ -211,7 +211,7 @@ void Tuner(int argc, char* argv[]) {
   printf("\n");
   printf("|   ID | total |");
   for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
-  printf("param | compiles |       time | %6s |            status |\n", settings.performance_unit.c_str());
+  printf("param | compiles |         time | %6s |            status |\n", settings.performance_unit.c_str());
   print_separator(settings.parameters.size());
 
   // First runs a reference example to compare against

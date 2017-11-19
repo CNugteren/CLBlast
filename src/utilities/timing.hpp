@@ -55,19 +55,23 @@ std::vector<Timing> TimeRoutine(const size_t from, const size_t to, const size_t
                                 const size_t num_runs, const Queue& queue,
                                 const std::vector<Buffer<T>>& buffers, F const &routine) {
   auto timings = std::vector<Timing>();
+  printf("|  value |         time |\n");
+  printf("x--------x--------------x\n");
   for (auto value = from; value < to; value += step) {
-    printf("[ RUN      ] Running with value %zu\n", value);
+    printf("| %6zu |", value);
     try {
       const auto FunctionToTune = [&]() { routine(value, queue, buffers); };
       const auto time_ms = TimeFunction(num_runs, FunctionToTune);
-      printf("[       OK ] Took %.2lf ms\n", time_ms);
+      printf(" %9.2lf ms |\n", time_ms);
       timings.push_back({value, time_ms});
     }
     catch (...) {
-      printf("[    ERROR ] Exception caught\n");
+      const auto status_code = DispatchExceptionCatchAll(true);
+      printf("  error %-5d |\n", static_cast<int>(status_code));
       timings.push_back({value, -1.0}); // invalid
     }
   }
+  printf("x--------x--------------x\n");
   return timings;
 }
 

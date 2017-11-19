@@ -18,7 +18,7 @@
 #include <assert.h>
 
 #include "utilities/utilities.hpp"
-#include "utilities/timing.hpp"
+#include "tuning/tuning.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -68,7 +68,7 @@ void TuneXgemm(int argc, char* argv[]) {
   const auto platform = Platform(platform_id);
   const auto device = Device(platform, device_id);
   if (!PrecisionSupported<T>(device)) {
-    printf("* Unsupported precision, skipping this tuning run\n\n");
+    printf("* Unsupported precision, skipping this tuning run\n");
     return;
   }
   const auto context = Context(device);
@@ -81,18 +81,18 @@ void TuneXgemm(int argc, char* argv[]) {
   auto buffers = std::vector<Buffer<T>>{a_mat, b_mat, c_mat};
 
   // In-direct version
-  printf("[----------] Testing the in-direct GEMM routine for m=n=k\n");
+  printf("\n* Testing the in-direct GEMM routine for m=n=k\n");
   ForceSelectIndirectFrom<T>(0, device);
   const auto indirect = TimeRoutine(from, to, step, num_runs, queue, buffers, RunGemmRoutine<T>);
 
   // Direct version
-  printf("[----------] Testing the direct GEMM routine for m=n=k\n");
+  printf("\n* Testing the direct GEMM routine for m=n=k\n");
   ForceSelectIndirectFrom<T>(to * to * to + 1, device);
   const auto direct = TimeRoutine(from, to, step, num_runs, queue, buffers, RunGemmRoutine<T>);
 
   // Determining final score and best kernel selection point
   assert(indirect.size() == direct.size());
-  printf("[----------] Collecting results\n");
+  printf("\n* Collecting results\n");
   auto ratios = std::vector<double>(indirect.size());
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     ratios[i] = indirect[i].second / direct[i].second;
@@ -104,42 +104,55 @@ void TuneXgemm(int argc, char* argv[]) {
     for (auto j = i + 1; j < ratios.size(); ++j) { score += (ratios[j] > 1.0); }
     const auto epsilon = (scores.size() - i) / 1e3; // favour later results over earlier ones
     const auto relative_score = static_cast<double>(score) / static_cast<double>(scores.size() - 1);
+    auto tuning_results = Configuration();
+    tuning_results["XGEMM_MIN_INDIRECT_SIZE"] = indirect[i].first;
+    tuning_results["PRECISION"] = static_cast<size_t>(precision);
     scores[i] = TuningResult{
         "gemm_kernel_selection",
         (relative_score * relative_score) * 100 + epsilon,  // squared for proper default computation
-        TuningParameters{
-            TuningParameter{"XGEMM_MIN_INDIRECT_SIZE", indirect[i].first},
-            TuningParameter{"PRECISION", static_cast<size_t>(precision)}
-        }
+        tuning_results
     };
   }
 
   // Displaying results
-  printf("[ -------> ]   value indirect   direct    score (lowest means best switching point)\n");
+  printf("|   value |    indirect |      direct |  score   | (lowest score == best switching point)\n");
+  printf("x---------x-------------x-------------x----------x\n");
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     assert(indirect[i].first == direct[i].first);
     const auto value = indirect[i].first;
     if (indirect[i].second != -1 && direct[i].second != -1) {
       const auto gflops_indirect = (2 * value * value * value) / (indirect[i].second * 1.0e6);
       const auto gflops_direct = (2 * value * value * value) / (direct[i].second * 1.0e6);
-      printf("[ -------> ] %7zu %8.2lf %8.2lf %8.2lf\n",
+      printf("| %7zu | %8.2lf ms | %8.2lf ms | %8.3lf |\n",
              value, gflops_indirect, gflops_direct, scores[i].score);
     }
   }
+  printf("x---------x-------------x-------------x----------x\n");
+  printf("\n");
+
+  // Computes the best switching point
+  auto comparison = [](const TuningResult& lhs, const TuningResult& rhs) { return lhs.score < rhs.score; };
+  const auto best_configuration = std::min_element(scores.begin(), scores.end(), comparison);
+  const auto best_switching_point = best_configuration->config["XGEMM_MIN_INDIRECT_SIZE"];
+  const auto best_string = "XGEMM_MIN_INDIRECT_SIZE=" + ToString(best_switching_point);
 
   // Outputs the results as JSON to disk, including some meta-data
   const auto precision_string = std::to_string(static_cast<size_t>(precision));
   auto metadata = std::vector<std::pair<std::string,std::string>>{
       {"kernel_family", "gemm_routine"},
+      {"precision", precision_string},
       {"arg_from", ToString(from)},
       {"arg_to", ToString(to)},
       {"arg_step", ToString(step)},
-      {"precision", precision_string},
+      {"best_kernel", best_configuration->name},
+      {"best_time", ToString(best_configuration->score)},
+      {"best_parameters", best_string}
   };
   PrintTimingsToFileAsJSON("clblast_routine_gemm_" + precision_string + ".json",
                            device, platform, metadata, scores);
 
-  printf("[  STATUS  ] All done\n");
+  printf("* Completed tuning process\n");
+  printf("\n");
 }
 
 // =================================================================================================

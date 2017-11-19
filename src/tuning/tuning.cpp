@@ -77,7 +77,7 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
 void print_separator(const size_t parameters_size) {
   printf("x------x-------x");
   for (auto i = size_t{0}; i < parameters_size; ++i) { printf("-----"); }
-  printf("-x----------x------------x--------x-------------------x\n");
+  printf("-x----------x--------------x--------x-------------------x\n");
 }
 
 // =================================================================================================
