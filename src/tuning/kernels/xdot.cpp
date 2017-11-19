@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the xdot OpenCL kernels. Note that the results are
+// This file uses the auto-tuner to tune the xdot OpenCL kernels. Note that the results are
 // not verified, since the result is not final and depends on the WGS2 parameter.
 //
 // =================================================================================================
@@ -42,7 +42,6 @@ class TuneXdot {
     settings.kernel_family = "xdot_"+std::to_string(V);
     settings.kernel_name = (V==1) ? "Xdot" : "XdotEpilogue";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level1/xdot.opencl"
     ;
 
@@ -51,6 +50,10 @@ class TuneXdot {
     settings.size_y = args.n;
     settings.size_temp = args.n; // Worst case
 
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {0, 1, 5};
+    settings.outputs = {}; // no output checking
+
     // Sets the base thread configuration
     settings.global_size = (V==1) ? std::vector<size_t>{2*64} : std::vector<size_t>{1};
     settings.global_size_ref = (V==1) ? std::vector<size_t>{2*64*64} : std::vector<size_t>{64};
@@ -58,8 +61,8 @@ class TuneXdot {
     settings.local_size_ref = {64};
 
     // Transforms the thread configuration based on the parameters
-    settings.mul_local = (V==1) ? TunerSettings::TransformVector{{"WGS1"}} : TunerSettings::TransformVector{{"WGS2"}};
-    settings.mul_global = (V==1) ? TunerSettings::TransformVector{{"WGS1"}} : TunerSettings::TransformVector{{"WGS2"}};
+    settings.mul_local = (V==1) ? TransformVector{{"WGS1"}} : TransformVector{{"WGS2"}};
+    settings.mul_global = (V==1) ? TransformVector{{"WGS1"}} : TransformVector{{"WGS2"}};
 
     // Sets the tuning parameters and their possible values
     settings.parameters = {
@@ -75,31 +78,26 @@ class TuneXdot {
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static std::vector<Constraint> SetConstraints() { return {}; }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &x_vec, std::vector<T> &y_vec,
-                           std::vector<T> &, std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &temp) {
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
     if (V == 1) {
-      tuner.AddArgumentScalar(static_cast<int>(args.n));
-      tuner.AddArgumentInput(x_vec);
-      tuner.AddArgumentScalar(0);
-      tuner.AddArgumentScalar(1);
-      tuner.AddArgumentInput(y_vec);
-      tuner.AddArgumentScalar(0);
-      tuner.AddArgumentScalar(1);
-      tuner.AddArgumentInput(temp); // No output checking for the result - size varies
-      tuner.AddArgumentScalar(static_cast<int>(false));
+      kernel.SetArgument(0, static_cast<int>(args.n));
+      kernel.SetArgument(1, buffers[0]()); // 0 == X vector
+      kernel.SetArgument(2, 0);
+      kernel.SetArgument(3, 1);
+      kernel.SetArgument(4, buffers[1]()); // 1 == Y vector
+      kernel.SetArgument(5, 0);
+      kernel.SetArgument(6, 1);
+      kernel.SetArgument(7, buffers[5]()); // 5 == temp; no output checking - size varies
+      kernel.SetArgument(8, static_cast<int>(false));
     }
     else {
-      tuner.AddArgumentInput(temp);
-      tuner.AddArgumentInput(x_vec); // No output checking for the result - store somewhere
-      tuner.AddArgumentScalar(0);
+      kernel.SetArgument(0, buffers[5]()); // 5 == temp
+      kernel.SetArgument(1, buffers[0]()); // 0 == X vector; no output checking - size varies
+      kernel.SetArgument(2, 0);
     }
   }
 };

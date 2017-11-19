@@ -1,5 +1,6 @@
 
 Development (next version)
+- Re-designed and integrated the auto-tuner, no more dependency on CLTune
 - Added tuned parameters for various devices (see README)
 
 Version 1.2.0

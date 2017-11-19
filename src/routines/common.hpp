@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "utilities/utilities.hpp"
+#include "utilities/compile.hpp"
 #include "database/database.hpp"
 
 namespace clblast {

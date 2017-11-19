@@ -201,10 +201,6 @@ template <typename T> double getL2ErrorMargin();
 template <typename T>
 bool TestSimilarity(const T val1, const T val2);
 
-// Retrieves the squared difference, used for example for computing the L2 error
-template <typename T>
-double SquaredDifference(const T val1, const T val2);
-
 // Retrieves a list of example scalar values, used for the alpha and beta arguments for the various
 // routines. This function is specialised for the different data-types.
 template <typename T>

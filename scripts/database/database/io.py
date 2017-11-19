@@ -83,6 +83,14 @@ def load_tuning_results(filename):
     # Removes the numbering following the kernel family name
     json_data["kernel_family"] = re.sub(r'_\d+', '', json_data["kernel_family"])
 
+    # Removes unnecessary data
+    if json_data["best_kernel"]:
+        del json_data["best_kernel"]
+    if json_data["best_time"]:
+        del json_data["best_time"]
+    if json_data["best_parameters"]:
+        del json_data["best_parameters"]
+
     # Adds the kernel name to the section instead of to the individual results
     assert len(json_data["results"]) > 0
     json_data["kernel"] = json_data["results"][0]["kernel"]

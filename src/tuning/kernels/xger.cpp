@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the xger OpenCL kernels.
+// This file uses the auto-tuner to tune the xger OpenCL kernels.
 //
 // =================================================================================================
 
@@ -42,7 +42,6 @@ class TuneXger {
     settings.kernel_family = "xger";
     settings.kernel_name = "Xger";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level2/level2.opencl"
 #include "../src/kernels/level2/xger.opencl"
     ;
@@ -51,6 +50,10 @@ class TuneXger {
     settings.size_x = args.m;
     settings.size_y = args.n;
     settings.size_a = args.m * args.n;
+
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {0, 1, 2};
+    settings.outputs = {2};
 
     // Sets the base thread configuration
     settings.global_size = {args.m, args.n};
@@ -78,29 +81,24 @@ class TuneXger {
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static std::vector<Constraint> SetConstraints() { return {}; }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &x_vec, std::vector<T> &y_vec,
-                           std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-    tuner.AddArgumentInput(x_vec);
-    tuner.AddArgumentScalar(0); // x_offset
-    tuner.AddArgumentScalar(1); // x_increment
-    tuner.AddArgumentInput(y_vec);
-    tuner.AddArgumentScalar(0); // y_offset
-    tuner.AddArgumentScalar(1); // y_increment
-    tuner.AddArgumentOutput(a_mat);
-    tuner.AddArgumentScalar(0); // a_offset
-    tuner.AddArgumentScalar(static_cast<int>(args.m)); // a_ld
-    tuner.AddArgumentScalar(0); // a_is_rowmajor
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
+    kernel.SetArgument(0, static_cast<int>(args.m));
+    kernel.SetArgument(1, static_cast<int>(args.n));
+    kernel.SetArgument(2, GetRealArg(args.alpha));
+    kernel.SetArgument(3, buffers[0]()); // 0 == X vector
+    kernel.SetArgument(4, 0); // x_offset
+    kernel.SetArgument(5, 1); // x_increment
+    kernel.SetArgument(6, buffers[1]()); // 1 == Y vector
+    kernel.SetArgument(7, 0); // y_offset
+    kernel.SetArgument(8, 1); // y_increment
+    kernel.SetArgument(9, buffers[2]()); // 2 == A matrix
+    kernel.SetArgument(10, 0); // a_offset
+    kernel.SetArgument(11, static_cast<int>(args.m)); // a_ld
+    kernel.SetArgument(12, 0); // a_is_rowmajor
   }
 };
 

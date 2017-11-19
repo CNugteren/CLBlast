@@ -135,74 +135,21 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
     throw RuntimeErrorCode(StatusCode::kNoHalfPrecision);
   }
 
-  // Collects the parameters for this device in the form of defines, and adds the precision
+  // Collects the parameters for this device in the form of defines
   auto source_string = std::string{""};
   for (const auto &kernel_name : kernel_names_) {
     source_string += db_(kernel_name).GetDefines();
   }
-  source_string += "#define PRECISION "+ToString(static_cast<int>(precision_))+"\n";
-
-  // Adds the name of the routine as a define
-  source_string += "#define ROUTINE_"+routine_name_+"\n";
-
-  // Not all OpenCL compilers support the 'inline' keyword. The keyword is only used for devices on
-  // which it is known to work with all OpenCL platforms.
-  if (device_.IsNVIDIA() || device_.IsARM()) {
-    source_string += "#define USE_INLINE_KEYWORD 1\n";
-  }
-
-  // For specific devices, use the non-IEE754 compliant OpenCL mad() instruction. This can improve
-  // performance, but might result in a reduced accuracy.
-  if (device_.IsAMD() && device_.IsGPU()) {
-    source_string += "#define USE_CL_MAD 1\n";
-  }
-
-  // For specific devices, use staggered/shuffled workgroup indices.
-  if (device_.IsAMD() && device_.IsGPU()) {
-    source_string += "#define USE_STAGGERED_INDICES 1\n";
-  }
-
-  // For specific devices add a global synchronisation barrier to the GEMM kernel to optimize
-  // performance through better cache behaviour
-  if (device_.IsARM() && device_.IsGPU()) {
-    source_string += "#define GLOBAL_MEM_FENCE 1\n";
-  }
-
-  // Optionally adds a translation header from OpenCL kernels to CUDA kernels
-  #ifdef CUDA_API
-    source_string +=
-      #include "kernels/opencl_to_cuda.h"
-    ;
-  #endif
-
-  // Loads the common header (typedefs and defines and such)
-  source_string +=
-    #include "kernels/common.opencl"
-  ;
 
   // Adds routine-specific code to the constructed source string
   for (const char *s: source) {
     source_string += s;
   }
 
-  // Prints details of the routine to compile in case of debugging in verbose mode
-  #ifdef VERBOSE
-    printf("[DEBUG] Compiling routine '%s-%s' for device '%s'\n",
-           routine_name_.c_str(), ToString(precision_).c_str(), device_name.c_str());
-    const auto start_time = std::chrono::steady_clock::now();
-  #endif
+  // Completes the source and compiles the kernel
+  program_ = CompileFromSource(source_string, precision_, routine_name_,
+                               device_, context_, options);
 
-  // Compiles the kernel
-  program_ = Program(context_, source_string);
-  try {
-    program_.Build(device_, options);
-  } catch (const CLCudaAPIBuildError &e) {
-    if (program_.StatusIsCompilationWarningOrError(e.status())) {
-      fprintf(stdout, "OpenCL compiler error/warning: %s\n",
-              program_.GetBuildInfo(device_).c_str());
-    }
-    throw;
-  }
 
   // Store the compiled binary and program in the cache
   BinaryCache::Instance().Store(BinaryKey{platform_id, precision_, routine_info, device_name},
@@ -210,13 +157,6 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
                                  Program{ program_ });
-
-  // Prints the elapsed compilation time in case of debugging in verbose mode
-  #ifdef VERBOSE
-    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-    const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
-    printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
-  #endif
 }
 
 // =================================================================================================

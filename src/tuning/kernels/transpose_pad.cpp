@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the padtranspose OpenCL kernels.
+// This file uses the auto-tuner to tune the pad-transpose OpenCL kernels.
 //
 // =================================================================================================
 
@@ -42,7 +42,6 @@ class TunePadTranspose {
     settings.kernel_family = "padtranspose";
     settings.kernel_name = "TransposePadMatrix";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level3/level3.opencl"
 #include "../src/kernels/level3/transpose_pad.opencl"
     ;
@@ -50,6 +49,10 @@ class TunePadTranspose {
     // Buffer sizes
     settings.size_a = args.m * args.n;
     settings.size_b = args.m * args.n;
+
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {2, 3};
+    settings.outputs = {3};
 
     // Sets the base thread configuration
     settings.global_size = {args.m, args.n};
@@ -77,33 +80,23 @@ class TunePadTranspose {
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return ((v[0]*v[1]*(v[0]*v[1]+v[2]))*GetBytes(args.precision));
-    };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"PADTRA_TILE", "PADTRA_WPT", "PADTRA_PAD"});
-  }
+  static std::vector<Constraint> SetConstraints() { return {}; }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentOutput(b_mat);
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-    tuner.AddArgumentScalar(0);
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
+    kernel.SetArgument(0, static_cast<int>(args.m));
+    kernel.SetArgument(1, static_cast<int>(args.n));
+    kernel.SetArgument(2, static_cast<int>(args.m));
+    kernel.SetArgument(3, 0);
+    kernel.SetArgument(4, buffers[2]()); // 2 == A matrix
+    kernel.SetArgument(5, static_cast<int>(args.n));
+    kernel.SetArgument(6, static_cast<int>(args.m));
+    kernel.SetArgument(7, static_cast<int>(args.n));
+    kernel.SetArgument(8, 0);
+    kernel.SetArgument(9, buffers[3]()); // 3 == B matrix
+    kernel.SetArgument(10, GetRealArg(args.alpha));
+    kernel.SetArgument(11, 0);
   }
 };
 

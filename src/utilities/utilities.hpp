@@ -98,6 +98,7 @@ constexpr auto kArgDilationW = "dilationw";
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 constexpr auto kArgHeuristicSelection = "heuristic";
+constexpr auto kArgMaxL2Norm = "max_l2_norm";
 // PSO tuner-specific arguments in string form
 constexpr auto kArgPsoSwarmSize = "pso_swarm_size";
 constexpr auto kArgPsoInfGlobal = "pso_inf_global";
@@ -320,6 +321,12 @@ Precision PrecisionValue();
 // Returns false is this precision is not supported by the device
 template <typename T>
 bool PrecisionSupported(const Device &device);
+
+// =================================================================================================
+
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2);
 
 // =================================================================================================
 
