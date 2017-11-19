@@ -384,26 +384,33 @@ if(TUNERS)
       src/utilities/utilities.hpp
       src/tuning/configurations.hpp
       src/tuning/tuning.hpp)
+  set(TUNERS_COMMON ${TUNERS_COMMON} ${TUNERS_HEADERS})
+
+  # Creates a library with common sources for all tuners
+  if(MSVC)
+    # Visual Studio requires the sources of non-exported objects/libraries
+  else()
+    # Creates the common performance-tests objects (requires CMake 2.8.8)
+    add_library(tuners_common_library OBJECT ${TUNERS_COMMON})
+
+    # Adds CLBlast's interface include paths because we can't link to CLBlast here
+    target_include_directories(tuners_common_library PRIVATE
+                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
+                               ${clblast_SOURCE_DIR} ${API_INCLUDE_DIRS})
+    set(TUNERS_COMMON $<TARGET_OBJECTS:tuners_common_library>)
+  endif()
 
   # Adds tuning executables
   foreach(KERNEL ${KERNELS})
-    add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} ${TUNERS_HEADERS}
-                   src/tuning/kernels/${KERNEL}.cpp)
-    target_include_directories(clblast_tuner_${KERNEL} PUBLIC
-                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
-                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
-                           ${API_INCLUDE_DIRS})
+    add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} ${API_LIBRARIES})
+    target_include_directories(clblast_tuner_${KERNEL} PUBLIC $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES> ${API_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
   foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
-    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} ${TUNERS_HEADERS}
-                   src/tuning/routines/${ROUTINE_TUNER}.cpp)
-    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC
-                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/include>
-                           $<BUILD_INTERFACE:${clblast_SOURCE_DIR}/src>
-                           ${API_INCLUDE_DIRS})
-    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} ${API_LIBRARIES})
+    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp)
+    target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast)
+    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES> ${API_INCLUDE_DIRS})
     install(TARGETS clblast_tuner_routine_${ROUTINE_TUNER} DESTINATION bin)
   endforeach()
 
