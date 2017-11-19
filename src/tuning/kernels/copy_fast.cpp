@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the copy OpenCL kernels.
+// This file uses the auto-tuner to tune the copy OpenCL kernels.
 //
 // =================================================================================================
 
@@ -42,7 +42,6 @@ class TuneCopy {
     settings.kernel_family = "copy";
     settings.kernel_name = "CopyMatrixFast";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level3/level3.opencl"
 #include "../src/kernels/level3/copy_fast.opencl"
     ;
@@ -50,6 +49,10 @@ class TuneCopy {
     // Buffer sizes
     settings.size_a = args.m * args.n;
     settings.size_b = args.m * args.n;
+
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {2, 3};
+    settings.outputs = {3};
 
     // Sets the base thread configuration
     settings.global_size = {args.m, args.n};
@@ -78,20 +81,15 @@ class TuneCopy {
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static std::vector<Constraint> SetConstraints() { return {}; }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentOutput(b_mat);
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
+    kernel.SetArgument(0, static_cast<int>(args.m));
+    kernel.SetArgument(1, buffers[2]()); // 2 == A matrix
+    kernel.SetArgument(2, buffers[3]()); // 3 == B matrix
+    kernel.SetArgument(3, GetRealArg(args.alpha));
   }
 };
 

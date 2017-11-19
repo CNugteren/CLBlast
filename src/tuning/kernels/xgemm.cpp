@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the xgemm OpenCL kernels. There are two variations:
+// This file uses the auto-tuner to tune the xgemm OpenCL kernels. There are two variations:
 // - V==1: This tests some limited set of tuning parameters exhaustively.
 // - V==2: This tests a much larger set of tuning parameters by randomly sampling a subset.
 //
@@ -38,7 +38,6 @@ class TuneXgemm {
     settings.default_k = 1024;
     settings.default_fraction = (V==1) ? 1.0 : 512.0; // test all or sample randomly
     settings.default_num_runs = 2;
-    settings.default_heuristic = static_cast<size_t>(cltune::SearchMethod::RandomSearch);
     return settings;
   }
 
@@ -50,7 +49,6 @@ class TuneXgemm {
     settings.kernel_family = (V==1) ? "xgemm_1" : "xgemm_2";
     settings.kernel_name = "Xgemm";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level3/xgemm_part1.opencl"
 #include "../src/kernels/level3/xgemm_part2.opencl"
 #include "../src/kernels/level3/xgemm_part3.opencl"
@@ -60,6 +58,10 @@ class TuneXgemm {
     settings.size_a = args.m * args.k;
     settings.size_b = args.n * args.k;
     settings.size_c = args.m * args.n;
+
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {2, 3, 4};
+    settings.outputs = {4};
 
     // Sets the base thread configuration
     settings.global_size = {args.m, args.n};
@@ -114,74 +116,51 @@ class TuneXgemm {
     settings.metric_amount = 2 * args.m * args.n * args.k;
     settings.performance_unit = "GFLOPS";
 
-    // Returns which search heuristic to use
-    if (V==1) { settings.heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch); }
-    else {
-      // Use full-search to explore all parameter combinations or another strategy to search only a
-      // part of the parameter values. The fraction is set as a command-line argument.
-      if (args.fraction == 1.0 || args.fraction == 0.0) {
-        settings.heuristic = static_cast<size_t>(cltune::SearchMethod::FullSearch);
-      } else {
-        settings.heuristic = args.heuristic_selection;
-      }
-    }
-
     return settings;
   }
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints
-  static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
+  static std::vector<Constraint> SetConstraints() {
+    auto constraints = std::vector<Constraint>();
     auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
     auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
     auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
     // Requirement for unrolling the KWG loop
-    tuner.AddConstraint(id, MultipleOfX, {"KWG", "KWI"});
+    constraints.push_back({MultipleOfX, {"KWG", "KWI"}});
     // Required for integer MWI and NWI
-    tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMC", "VWM"});
-    tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMC", "VWN"});
+    constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMC", "VWM"}});
+    constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMC", "VWN"}});
     // Required for integer MWIA and NWIB
-    tuner.AddConstraint(id, MultipleOfXMulY, {"MWG", "MDIMA", "VWM"});
-    tuner.AddConstraint(id, MultipleOfXMulY, {"NWG", "NDIMB", "VWN"});
+    constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMA", "VWM"}});
+    constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMB", "VWN"}});
     // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
-    tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"});
-    tuner.AddConstraint(id, MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"});
+    constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"}});
+    constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"}});
 
     // Extra constraints for variation 1 to limit the set of options significantly
     if (V==1) {
       auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
-      tuner.AddConstraint(id, IsEqual, {"MDIMC", "MDIMA"});
-      tuner.AddConstraint(id, IsEqual, {"NDIMC", "NDIMB"});
-      tuner.AddConstraint(id, IsEqual, {"SA", "SB"});
+      constraints.push_back({IsEqual, {"MDIMC", "MDIMA"}});
+      constraints.push_back({IsEqual, {"NDIMC", "NDIMB"}});
+      constraints.push_back({IsEqual, {"SA", "SB"}});
     }
-  }
-
-  // Sets the local memory size
-  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return (((v[0]*v[1]*v[2]) + (v[3]*v[4]*v[5]))*GetBytes(args.precision));
-    };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"SA", "KWG", "MWG",
-                                                    "SB", "KWG", "NWG"});
+    return constraints;
   }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &c_mat,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(static_cast<int>(args.k));
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-    tuner.AddArgumentScalar(GetRealArg(args.beta));
-    tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentInput(b_mat);
-    tuner.AddArgumentOutput(c_mat);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(0);
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
+    kernel.SetArgument(0, static_cast<int>(args.m));
+    kernel.SetArgument(1, static_cast<int>(args.n));
+    kernel.SetArgument(2, static_cast<int>(args.k));
+    kernel.SetArgument(3, GetRealArg(args.alpha));
+    kernel.SetArgument(4, GetRealArg(args.beta));
+    kernel.SetArgument(5, buffers[2]()); // 2 == A matrix
+    kernel.SetArgument(6, buffers[3]()); // 3 == B matrix
+    kernel.SetArgument(7, buffers[4]()); // 4 == C matrix
+    kernel.SetArgument(8, 0);
+    kernel.SetArgument(9, 0);
   }
 };
 

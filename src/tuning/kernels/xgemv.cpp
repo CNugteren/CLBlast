@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the xgemv OpenCL kernels. Three variants are tuned:
+// This file uses the auto-tuner to tune the xgemv OpenCL kernels. Three variants are tuned:
 // 1: The full version of the kernel
 // 2: The fast version for non-transposed matrices
 // 3: The fast version for transposed matrices
@@ -45,7 +45,6 @@ class TuneXgemv {
     settings.kernel_family = (V==1) ? "xgemv" : ((V==2) ? "xgemv_fast" : "xgemv_fast_rot");
     settings.kernel_name = (V==1) ? "Xgemv" : ((V==2) ? "XgemvFast" : "XgemvFastRot");
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level2/xgemv.opencl"
 #include "../src/kernels/level2/xgemv_fast.opencl"
     ;
@@ -55,6 +54,10 @@ class TuneXgemv {
     settings.size_y = args.m;
     settings.size_a = args.m * args.n;
 
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {0, 1, 2};
+    settings.outputs = {1};
+
     // Sets the base thread configuration
     settings.global_size = {args.m};
     settings.global_size_ref = settings.global_size;
@@ -63,9 +66,7 @@ class TuneXgemv {
 
     // Transforms the thread configuration based on the parameters
     settings.mul_local = {{"WGS"+std::to_string(V)}};
-    settings.div_global = (V==1 || V==2) ?
-                          TunerSettings::TransformVector{{"WPT"+std::to_string(V)}} :
-                          TunerSettings::TransformVector{};
+    settings.div_global = (V==1 || V==2) ? TransformVector{{"WPT"+std::to_string(V)}} : TransformVector{};
 
     // Sets the tuning parameters and their possible values
     if (V==1) {
@@ -98,53 +99,41 @@ class TuneXgemv {
 
   // Tests for valid arguments
   static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &tuner, const size_t id) {
+  static std::vector<Constraint> SetConstraints() {
+    auto constraints = std::vector<Constraint>();
     if (V==2 || V==3) {
       auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-      tuner.AddConstraint(id, MultipleOfX, {"WPT"+std::to_string(V), "VW"+std::to_string(V)});
+      constraints.push_back({MultipleOfX, {"WPT"+std::to_string(V), "VW"+std::to_string(V)}});
     }
     if (V==3) {
       auto LargerOrEqual = [] (std::vector<size_t> v) { return v[0] >= v[1]; };
-      tuner.AddConstraint(id, LargerOrEqual, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
+      constraints.push_back({LargerOrEqual, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)}});
     }
-  }
-  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    if (V==1 || V==2) {
-      auto LocalMemorySize = [args] (std::vector<size_t> v) { return v[0]*GetBytes(args.precision); };
-      tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V)});
-    }
-    else {
-      auto LocalMemorySize = [args] (std::vector<size_t> v) { return (v[0]*v[1] + v[1])*GetBytes(args.precision); };
-      tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"WGS"+std::to_string(V), "WPT"+std::to_string(V)});
-    }
+    return constraints;
   }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &x_vec, std::vector<T> &y_vec,
-                           std::vector<T> &a_mat, std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &) {
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
     auto a_rotated = (V==3) ? 1 : 0;
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-    tuner.AddArgumentScalar(GetRealArg(args.beta));
-    tuner.AddArgumentScalar(static_cast<int>(a_rotated));
-    tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentInput(x_vec);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(1);
-    tuner.AddArgumentOutput(y_vec);
-    tuner.AddArgumentScalar(0);
-    tuner.AddArgumentScalar(1);
-    tuner.AddArgumentScalar(0); // Conjugate transpose
-    tuner.AddArgumentScalar(0); // Additional parameter
-    tuner.AddArgumentScalar(0); // Banded 'kl'
-    tuner.AddArgumentScalar(0); // Banded 'ku'
+    kernel.SetArgument(0, static_cast<int>(args.m));
+    kernel.SetArgument(1, static_cast<int>(args.n));
+    kernel.SetArgument(2, GetRealArg(args.alpha));
+    kernel.SetArgument(3, GetRealArg(args.beta));
+    kernel.SetArgument(4, a_rotated);
+    kernel.SetArgument(5, buffers[2]()); // 2 == A matrix
+    kernel.SetArgument(6, 0);
+    kernel.SetArgument(7, static_cast<int>(args.m));
+    kernel.SetArgument(8, buffers[0]()); // 0 == X vector
+    kernel.SetArgument(9, 0);
+    kernel.SetArgument(10, 1);
+    kernel.SetArgument(11, buffers[1]()); // 1 == Y vector
+    kernel.SetArgument(12, 0);
+    kernel.SetArgument(13, 1);
+    kernel.SetArgument(14, 0); // Conjugate transpose
+    kernel.SetArgument(15, 0); // Additional parameter
+    kernel.SetArgument(16, 0); // Banded 'kl'
+    kernel.SetArgument(17, 0); // Banded 'ku'
   }
 };
 

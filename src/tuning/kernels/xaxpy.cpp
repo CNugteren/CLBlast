@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the xaxpy OpenCL kernels.
+// This file uses the auto-tuner to tune the xaxpy OpenCL kernels.
 //
 // =================================================================================================
 
@@ -41,7 +41,6 @@ class TuneXaxpy {
     settings.kernel_family = "xaxpy";
     settings.kernel_name = "XaxpyFastest";
     settings.sources =
-#include "../src/kernels/common.opencl"
 #include "../src/kernels/level1/level1.opencl"
 #include "../src/kernels/level1/xaxpy.opencl"
     ;
@@ -49,6 +48,10 @@ class TuneXaxpy {
     // Buffer sizes
     settings.size_x = args.n;
     settings.size_y = args.n;
+
+    // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+    settings.inputs = {0, 1};
+    settings.outputs = {1};
 
     // Sets the base thread configuration
     settings.global_size = {args.n};
@@ -80,20 +83,15 @@ class TuneXaxpy {
       throw std::runtime_error("'XaxpyFastest' requires 'n' to be a multiple of WGS*WPT*VW");
     }
   }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &, const size_t, const Arguments<T> &) { }
+  static std::vector<Constraint> SetConstraints() { return {}; }
 
   // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &x_vec, std::vector<T> &y_vec,
-                           std::vector<T> &, std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.n));
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-    tuner.AddArgumentInput(x_vec);
-    tuner.AddArgumentOutput(y_vec);
+  static void SetArguments(Kernel &kernel, const Arguments<T> &args,
+                           std::vector<Buffer<T>>& buffers) {
+    kernel.SetArgument(0, static_cast<int>(args.n));
+    kernel.SetArgument(1, GetRealArg(args.alpha));
+    kernel.SetArgument(2, buffers[0]()); // 0 == X vector
+    kernel.SetArgument(3, buffers[1]()); // 1 == Y vector
   }
 };
 
