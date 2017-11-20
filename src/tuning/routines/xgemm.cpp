@@ -116,19 +116,20 @@ void TuneXgemm(int argc, char* argv[]) {
   }
 
   // Displaying results
-  printf("|   value |    indirect |      direct |  score   | (lowest score == best switching point)\n");
-  printf("x---------x-------------x-------------x----------x\n");
+  printf("|         ||   indirect GEMM   ||    direct GEMM    ||          |\n");
+  printf("|   m=n=k ||   ms   |  GFLOPS  ||   ms   |  GFLOPS  ||  score   | (lowest score == best switching point)\n");
+  printf("x---------xx--------x----------xx--------x----------xx----------x\n");
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     assert(indirect[i].first == direct[i].first);
     const auto value = indirect[i].first;
     if (indirect[i].second != -1 && direct[i].second != -1) {
       const auto gflops_indirect = (2 * value * value * value) / (indirect[i].second * 1.0e6);
       const auto gflops_direct = (2 * value * value * value) / (direct[i].second * 1.0e6);
-      printf("| %7zu | %8.2lf ms | %8.2lf ms | %8.3lf |\n",
-             value, gflops_indirect, gflops_direct, scores[i].score);
+      printf("| %7zu || %6.2lf | %8.1lf || %6.2lf | %8.1lf || %8.3lf |\n",
+             value, indirect[i].second, gflops_indirect, direct[i].second, gflops_direct, scores[i].score);
     }
   }
-  printf("x---------x-------------x-------------x----------x\n");
+  printf("x---------xx--------x----------xx--------x----------xx----------x\n");
   printf("\n");
 
   // Computes the best switching point
