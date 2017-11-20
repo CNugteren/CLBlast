@@ -735,7 +735,7 @@ class Buffer {
   const cl_mem& operator()() const { return *buffer_; }
  private:
   std::shared_ptr<cl_mem> buffer_;
-  const BufferAccess access_;
+  BufferAccess access_;
 };
 
 // =================================================================================================

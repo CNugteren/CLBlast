@@ -661,7 +661,7 @@ public:
   CUdeviceptr& operator()() { return *buffer_; }
 private:
   std::shared_ptr<CUdeviceptr> buffer_;
-  const BufferAccess access_;
+  BufferAccess access_;
 };
 
 // =================================================================================================
