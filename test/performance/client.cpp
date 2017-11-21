@@ -184,9 +184,6 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
 template <typename T, typename U>
 void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes) {
 
-  // Prints the header of the output table
-  PrintTableHeader(args);
-
   // Initializes OpenCL and the libraries
   auto platform = Platform(args.platform_id);
   auto device = Device(platform, args.device_id);
@@ -198,6 +195,12 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   #ifdef CLBLAST_REF_CUBLAS
     if (args.compare_cublas) { cublasSetup(args); }
   #endif
+
+  // Optionally overrides parameters if "CLBLAST_JSON_FILE_OVERRIDE" environmental variable is set
+  OverrideParametersFromJSONFiles(device(), args.precision);
+
+  // Prints the header of the output table
+  PrintTableHeader(args);
 
   // Iterates over all "num_step" values jumping by "step" each time
   auto s = size_t{0};

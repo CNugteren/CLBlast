@@ -15,7 +15,10 @@
 #ifndef CLBLAST_TEST_UTILITIES_H_
 #define CLBLAST_TEST_UTILITIES_H_
 
+#include <cstdlib>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 #include "utilities/utilities.hpp"
 
@@ -108,6 +111,29 @@ Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
   #endif
   return Buffer<T>(raw_buffer);
 }
+
+// =================================================================================================
+
+template<typename Out>
+void split(const std::string &s, char delimiter, Out result) {
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delimiter)) {
+    *(result++) = item;
+  }
+}
+
+inline std::vector<std::string> split(const std::string &s, char delimiter) {
+  std::vector<std::string> elements;
+  split(s, delimiter, std::back_inserter(elements));
+  return elements;
+}
+
+// =================================================================================================
+
+void OverrideParametersFromJSONFiles(const cl_device_id device, const Precision precision);
+void OverrideParametersFromJSONFile(const std::string& file_name,
+                                    const cl_device_id device, const Precision precision);
 
 // =================================================================================================
 } // namespace clblast
