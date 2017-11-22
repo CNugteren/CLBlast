@@ -32,6 +32,7 @@ constexpr auto kArgComparecublas = "cublas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgWarmUp = "warm_up";
+constexpr auto kArgTunerFiles = "tuner_files";
 
 // The test-specific arguments in string form
 constexpr auto kArgFullTest = "full_test";
@@ -131,9 +132,13 @@ inline std::vector<std::string> split(const std::string &s, char delimiter) {
 
 // =================================================================================================
 
-void OverrideParametersFromJSONFiles(const cl_device_id device, const Precision precision);
-void OverrideParametersFromJSONFile(const std::string& file_name,
-                                    const cl_device_id device, const Precision precision);
+using BestParameters = std::unordered_map<std::string,size_t>;
+using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
+
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
+                                     const cl_device_id device, const Precision precision);
+void GetBestParametersFromJSONFile(const std::string& file_name,
+                                   BestParametersCollection& all_parameters);
 
 // =================================================================================================
 } // namespace clblast

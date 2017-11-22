@@ -146,6 +146,13 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
   args.no_abbrv       = CheckArgument(command_line_args, help, kArgNoAbbreviations);
   warm_up_            = CheckArgument(command_line_args, help, kArgWarmUp);
 
+  // Parse the optional JSON file name arguments
+  const auto tuner_files_default = std::string{"<none>"};
+  const auto tuner_files_string = GetArgument(command_line_args, help, kArgTunerFiles, tuner_files_default);
+  if (tuner_files_string != tuner_files_default) {
+    args.tuner_files = split(tuner_files_string, ',');
+  }
+
   // Prints the chosen (or defaulted) arguments to screen. This also serves as the help message,
   // which is thus always displayed (unless silence is specified).
   if (!args.silent) { fprintf(stdout, "%s\n", help.c_str()); }
@@ -196,8 +203,8 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     if (args.compare_cublas) { cublasSetup(args); }
   #endif
 
-  // Optionally overrides parameters if "CLBLAST_JSON_FILE_OVERRIDE" environmental variable is set
-  OverrideParametersFromJSONFiles(device(), args.precision);
+  // Optionally overrides parameters if tuner files are given (semicolon separated)
+  OverrideParametersFromJSONFiles(args.tuner_files, device(), args.precision);
 
   // Prints the header of the output table
   PrintTableHeader(args);

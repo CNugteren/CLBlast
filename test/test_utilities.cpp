@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <algorithm>
 
 #include "test/test_utilities.hpp"
 
@@ -115,22 +116,46 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 
 // =================================================================================================
 
-void OverrideParametersFromJSONFiles(const cl_device_id device, const Precision precision) {
-  const auto json_file_name = std::getenv("CLBLAST_JSON_FILE_OVERRIDE");
-  if (json_file_name == nullptr) { return; }
-  const auto json_file_name_string = std::string{json_file_name};
-  OverrideParametersFromJSONFile(json_file_name_string, device, precision);
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
+                                     const cl_device_id device, const Precision precision) {
+
+  // Retrieves the best parameters for each file from disk
+  BestParametersCollection all_parameters = {};
+  for (const auto json_file_name : file_names) {
+    GetBestParametersFromJSONFile(json_file_name, all_parameters);
+  }
+
+  // Applies the parameter override
+  for (const auto &best_parameters : all_parameters) {
+    const auto kernel_family = best_parameters.first;
+    const auto parameters = best_parameters.second;
+    const auto status = OverrideParameters(device, kernel_family, precision, parameters);
+    if (status == StatusCode::kSuccess) {
+      fprintf(stdout, "* Applying parameter override successfully for '%s'\n",
+              kernel_family.c_str());
+    } else {
+      fprintf(stdout, "* Error while applying parameter override for '%s'\n",
+              kernel_family.c_str());
+    }
+  }
+
+  if (file_names.size() > 0) {
+    fprintf(stdout, "\n");
+  }
 }
 
-void OverrideParametersFromJSONFile(const std::string& file_name,
-                                    const cl_device_id device, const Precision precision) {
+void GetBestParametersFromJSONFile(const std::string& file_name,
+                                   BestParametersCollection& all_parameters) {
 
   std::ifstream json_file(file_name);
-  if (!json_file) { return; }
+  if (!json_file) {
+    fprintf(stdout, "* Could not open file '%s'\n", file_name.c_str());
+    return;
+  }
 
   fprintf(stdout, "* Reading override-parameters from '%s'\n", file_name.c_str());
   std::string line;
-  auto kernel_name = std::string{};
+  auto kernel_family = std::string{};
   while (std::getline(json_file, line)) {
     const auto line_split = split(line, ':');
     if (line_split.size() != 2) { continue; }
@@ -139,20 +164,29 @@ void OverrideParametersFromJSONFile(const std::string& file_name,
     if (line_split[0] == "  \"kernel_family\"") {
       const auto value_split = split(line_split[1], '\"');
       if (value_split.size() != 3) { break; }
-      kernel_name = value_split[1];
-      kernel_name[0] = toupper(kernel_name[0]);  // because of a tuner - database naming mismatch
+      kernel_family = value_split[1];
+      kernel_family[0] = toupper(kernel_family[0]);  // because of a tuner - database naming mismatch
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '_'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '1'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '2'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '3'), kernel_family.end());
     }
 
     // Retrieves the best-parameters and sets the override
-    if (line_split[0] == "  \"best_parameters\"" && kernel_name != "") {
+    if (line_split[0] == "  \"best_parameters\"" && kernel_family != std::string{""}) {
       const auto value_split = split(line_split[1], '\"');
       if (value_split.size() != 3) { break; }
       const auto config_split = split(value_split[1], ' ');
       if (config_split.size() == 0) { break; }
 
+      // Loads an existing list of parameters for this kernel family (if present)
+      BestParameters parameters;
+      if (all_parameters.count(kernel_family) == 1) {
+        parameters = all_parameters.at(kernel_family);
+      }
+
       // Creates the list of parameters
-      fprintf(stdout, "* Found parameters for kernel '%s': { ", kernel_name.c_str());
-      std::unordered_map<std::string,size_t> parameters;
+      fprintf(stdout, "* Found parameters for kernel '%s': { ", kernel_family.c_str());
       for (const auto config : config_split) {
         const auto params_split = split(config, '=');
         if (params_split.size() != 2) { break; }
@@ -165,21 +199,15 @@ void OverrideParametersFromJSONFile(const std::string& file_name,
       }
       fprintf(stdout, "}\n");
 
-      // Applies the parameter override
-      const auto status = OverrideParameters(device, kernel_name, precision, parameters);
-      if (status != StatusCode::kSuccess) { break; }
-
-      // Ends this function (success)
-      fprintf(stdout, "* Applying parameter override successfully\n");
-      fprintf(stdout, "\n");
+      // Sets the new (possibly extended) parameter map as the final result
+      all_parameters[kernel_family] = parameters;
       json_file.close();
       return;
     }
   }
 
   // Ends this function (failure)
-  fprintf(stdout, "* Failed to extract parameters from the file, continuing regularly\n");
-  fprintf(stdout, "\n");
+  fprintf(stdout, "* Failed to extract parameters from this file, continuing\n");
   json_file.close();
 }
 
