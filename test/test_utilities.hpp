@@ -19,6 +19,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 #include "utilities/utilities.hpp"
 
