@@ -56,6 +56,14 @@ const DatabaseEntry CopyComplexSingle = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {
@@ -145,7 +153,7 @@ const DatabaseEntry CopyComplexSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

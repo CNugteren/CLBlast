@@ -23,6 +23,14 @@ const DatabaseEntry CopyHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 32, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {

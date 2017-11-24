@@ -51,8 +51,8 @@ const DatabaseEntry XgemmComplexDouble = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { Name{"Mali-T628                                         "}, Params{ 16, 2, 8, 8, 64, 32, 8, 64, 0, 0, 1, 0, 8, 1 } },
-          { kDeviceNameDefault                                        , Params{ 16, 2, 8, 8, 64, 32, 8, 64, 0, 0, 1, 0, 8, 1 } },
+          { Name{"Mali-T760                                         "}, Params{ 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
         } },
       }
     },
@@ -124,7 +124,7 @@ const DatabaseEntry XgemmComplexDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 32, 32, 32, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
         } },
       }
     },

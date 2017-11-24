@@ -23,6 +23,14 @@ const DatabaseEntry XgemmDirectHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {

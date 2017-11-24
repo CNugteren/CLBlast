@@ -56,6 +56,14 @@ const DatabaseEntry XgemvComplexSingle = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 128, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {

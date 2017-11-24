@@ -32,6 +32,14 @@ const DatabaseEntry XgemvFastRotDouble = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {

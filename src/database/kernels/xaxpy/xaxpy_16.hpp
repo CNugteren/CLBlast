@@ -23,6 +23,14 @@ const DatabaseEntry XaxpyHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 8, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
@@ -43,7 +51,7 @@ const DatabaseEntry XaxpyHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 8, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

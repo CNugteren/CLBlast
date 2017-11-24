@@ -23,6 +23,14 @@ const DatabaseEntry XdotHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {

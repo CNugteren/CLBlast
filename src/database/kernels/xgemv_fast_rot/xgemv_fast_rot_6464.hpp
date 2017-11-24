@@ -32,6 +32,14 @@ const DatabaseEntry XgemvFastRotComplexDouble = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 1, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {
@@ -67,7 +75,7 @@ const DatabaseEntry XgemvFastRotComplexDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 4, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

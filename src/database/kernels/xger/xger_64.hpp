@@ -52,7 +52,8 @@ const DatabaseEntry XgerDouble = {
       kDeviceTypeGPU, "ARM", {
         { "default", {
           { Name{"Mali-T628                                         "}, Params{ 64, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 64, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -109,7 +110,7 @@ const DatabaseEntry XgerDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 256, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

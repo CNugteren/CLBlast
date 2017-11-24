@@ -60,7 +60,8 @@ const DatabaseEntry TransposeSingle = {
       kDeviceTypeGPU, "ARM", {
         { "default", {
           { Name{"Mali-T628                                         "}, Params{ 8, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 4, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

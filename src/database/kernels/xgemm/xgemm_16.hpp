@@ -23,6 +23,14 @@ const DatabaseEntry XgemmHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
@@ -34,7 +42,7 @@ const DatabaseEntry XgemmHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },

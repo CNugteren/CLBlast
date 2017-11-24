@@ -60,7 +60,8 @@ const DatabaseEntry PadComplexSingle = {
       kDeviceTypeGPU, "ARM", {
         { "default", {
           { Name{"Mali-T628                                         "}, Params{ 32, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 32, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 8, 32, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

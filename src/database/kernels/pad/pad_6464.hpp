@@ -52,6 +52,7 @@ const DatabaseEntry PadComplexDouble = {
       kDeviceTypeGPU, "ARM", {
         { "default", {
           { Name{"Mali-T628                                         "}, Params{ 16, 8, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 16, 16, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 8, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }

@@ -173,6 +173,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-6770HQ
 * Other devices:
   - ARM Mali-T628 GPU
+  - ARM Mali-T760 GPU
   - Qualcomm Adreno 330 GPU
   - Intel MIC
 

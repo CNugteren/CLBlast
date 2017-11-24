@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry GemmRoutineSingle = {
   "GemmRoutine", Precision::kSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-T760                                         "}, Params{ 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
@@ -47,7 +55,7 @@ const DatabaseEntry GemmRoutineSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 896, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
