@@ -120,7 +120,7 @@ void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
                                      const cl_device_id device, const Precision precision) {
 
   // Retrieves the best parameters for each file from disk
-  BestParametersCollection all_parameters = {};
+  BestParametersCollection all_parameters;
   for (const auto json_file_name : file_names) {
     GetBestParametersFromJSONFile(json_file_name, all_parameters, precision);
   }
