@@ -122,7 +122,7 @@ void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
   // Retrieves the best parameters for each file from disk
   BestParametersCollection all_parameters = {};
   for (const auto json_file_name : file_names) {
-    GetBestParametersFromJSONFile(json_file_name, all_parameters);
+    GetBestParametersFromJSONFile(json_file_name, all_parameters, precision);
   }
 
   // Applies the parameter override
@@ -145,7 +145,8 @@ void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
 }
 
 void GetBestParametersFromJSONFile(const std::string& file_name,
-                                   BestParametersCollection& all_parameters) {
+                                   BestParametersCollection& all_parameters,
+                                   const Precision precision) {
 
   std::ifstream json_file(file_name);
   if (!json_file) {
@@ -191,10 +192,18 @@ void GetBestParametersFromJSONFile(const std::string& file_name,
         const auto params_split = split(config, '=');
         if (params_split.size() != 2) { break; }
         const auto parameter_name = params_split[0];
+        const auto parameter_value = static_cast<size_t>(std::stoi(params_split[1].c_str()));
         if (parameter_name != "PRECISION") {
-          const auto parameter_value = static_cast<size_t>(std::stoi(params_split[1].c_str()));
           printf("%s=%zu ", parameter_name.c_str(), parameter_value);
           parameters[parameter_name] = parameter_value;
+        }
+        else {
+          if (static_cast<size_t>(precision) != parameter_value) {
+            fprintf(stdout, "ERROR! }\n");
+            fprintf(stdout, "* Precision is not matching, continuing\n");
+            json_file.close();
+            return;
+          }
         }
       }
       fprintf(stdout, "}\n");
