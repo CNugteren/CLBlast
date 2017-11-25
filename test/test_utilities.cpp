@@ -11,10 +11,12 @@
 //
 // =================================================================================================
 
-#include "test/test_utilities.hpp"
-
 #include <string>
 #include <vector>
+#include <cctype>
+#include <algorithm>
+
+#include "test/test_utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -111,6 +113,112 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
     result.Write(queue, size, result_cpu);
   }
 #endif
+
+// =================================================================================================
+
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
+                                     const cl_device_id device, const Precision precision) {
+
+  // Retrieves the best parameters for each file from disk
+  BestParametersCollection all_parameters;
+  for (const auto json_file_name : file_names) {
+    GetBestParametersFromJSONFile(json_file_name, all_parameters, precision);
+  }
+
+  // Applies the parameter override
+  for (const auto &best_parameters : all_parameters) {
+    const auto kernel_family = best_parameters.first;
+    const auto parameters = best_parameters.second;
+    const auto status = OverrideParameters(device, kernel_family, precision, parameters);
+    if (status == StatusCode::kSuccess) {
+      fprintf(stdout, "* Applying parameter override successfully for '%s'\n",
+              kernel_family.c_str());
+    } else {
+      fprintf(stdout, "* Error while applying parameter override for '%s'\n",
+              kernel_family.c_str());
+    }
+  }
+
+  if (file_names.size() > 0) {
+    fprintf(stdout, "\n");
+  }
+}
+
+void GetBestParametersFromJSONFile(const std::string& file_name,
+                                   BestParametersCollection& all_parameters,
+                                   const Precision precision) {
+
+  std::ifstream json_file(file_name);
+  if (!json_file) {
+    fprintf(stdout, "* Could not open file '%s'\n", file_name.c_str());
+    return;
+  }
+
+  fprintf(stdout, "* Reading override-parameters from '%s'\n", file_name.c_str());
+  std::string line;
+  auto kernel_family = std::string{};
+  while (std::getline(json_file, line)) {
+    const auto line_split = split(line, ':');
+    if (line_split.size() != 2) { continue; }
+
+    // Retrieves the kernel name
+    if (line_split[0] == "  \"kernel_family\"") {
+      const auto value_split = split(line_split[1], '\"');
+      if (value_split.size() != 3) { break; }
+      kernel_family = value_split[1];
+      kernel_family[0] = toupper(kernel_family[0]);  // because of a tuner - database naming mismatch
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '_'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '1'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '2'), kernel_family.end());
+      kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '3'), kernel_family.end());
+    }
+
+    // Retrieves the best-parameters and sets the override
+    if (line_split[0] == "  \"best_parameters\"" && kernel_family != std::string{""}) {
+      const auto value_split = split(line_split[1], '\"');
+      if (value_split.size() != 3) { break; }
+      const auto config_split = split(value_split[1], ' ');
+      if (config_split.size() == 0) { break; }
+
+      // Loads an existing list of parameters for this kernel family (if present)
+      BestParameters parameters;
+      if (all_parameters.count(kernel_family) == 1) {
+        parameters = all_parameters.at(kernel_family);
+      }
+
+      // Creates the list of parameters
+      fprintf(stdout, "* Found parameters for kernel '%s': { ", kernel_family.c_str());
+      for (const auto config : config_split) {
+        const auto params_split = split(config, '=');
+        if (params_split.size() != 2) { break; }
+        const auto parameter_name = params_split[0];
+        const auto parameter_value = static_cast<size_t>(std::stoi(params_split[1].c_str()));
+        if (parameter_name != "PRECISION") {
+          printf("%s=%zu ", parameter_name.c_str(), parameter_value);
+          parameters[parameter_name] = parameter_value;
+        }
+        else {
+          if (static_cast<size_t>(precision) != parameter_value) {
+            fprintf(stdout, "ERROR! }\n");
+            fprintf(stdout, "* Precision is not matching, continuing\n");
+            json_file.close();
+            return;
+          }
+        }
+      }
+      fprintf(stdout, "}\n");
+
+      // Sets the new (possibly extended) parameter map as the final result
+      all_parameters[kernel_family] = parameters;
+      json_file.close();
+      return;
+    }
+  }
+
+  // Ends this function (failure)
+  fprintf(stdout, "* Failed to extract parameters from this file, continuing\n");
+  json_file.close();
+}
 
 // =================================================================================================
 } // namespace clblast

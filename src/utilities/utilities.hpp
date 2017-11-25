@@ -236,6 +236,7 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  std::vector<std::string> tuner_files = {};
   #ifdef CLBLAST_REF_CUBLAS
     void* cublas_handle; // cublasHandle_t
   #endif

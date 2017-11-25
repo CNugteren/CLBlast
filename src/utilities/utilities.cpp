@@ -108,6 +108,7 @@ std::string ToString(double value) {
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
 }
+template <> std::string ToString<std::string>(std::string value) { return value; }
 
 // If not possible directly: special cases for complex data-types
 template <>
@@ -273,6 +274,7 @@ template float GetArgument<float>(const std::vector<std::string>&, std::string&,
 template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
 template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
 template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&, const std::string);
 template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
 template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&, const Transpose);
 template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);

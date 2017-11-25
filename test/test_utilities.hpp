@@ -15,7 +15,11 @@
 #ifndef CLBLAST_TEST_UTILITIES_H_
 #define CLBLAST_TEST_UTILITIES_H_
 
+#include <cstdlib>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iterator>
 
 #include "utilities/utilities.hpp"
 
@@ -29,6 +33,7 @@ constexpr auto kArgComparecublas = "cublas";
 constexpr auto kArgStepSize = "step";
 constexpr auto kArgNumSteps = "num_steps";
 constexpr auto kArgWarmUp = "warm_up";
+constexpr auto kArgTunerFiles = "tuner_files";
 
 // The test-specific arguments in string form
 constexpr auto kArgFullTest = "full_test";
@@ -108,6 +113,34 @@ Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
   #endif
   return Buffer<T>(raw_buffer);
 }
+
+// =================================================================================================
+
+template<typename Out>
+void split(const std::string &s, char delimiter, Out result) {
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delimiter)) {
+    *(result++) = item;
+  }
+}
+
+inline std::vector<std::string> split(const std::string &s, char delimiter) {
+  std::vector<std::string> elements;
+  split(s, delimiter, std::back_inserter(elements));
+  return elements;
+}
+
+// =================================================================================================
+
+using BestParameters = std::unordered_map<std::string,size_t>;
+using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
+
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
+                                     const cl_device_id device, const Precision precision);
+void GetBestParametersFromJSONFile(const std::string& file_name,
+                                   BestParametersCollection& all_parameters,
+                                   const Precision precision);
 
 // =================================================================================================
 } // namespace clblast
