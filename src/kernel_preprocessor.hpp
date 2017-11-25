@@ -17,7 +17,6 @@
 #define CLBLAST_KERNEL_PREPROCESSOR_H_
 
 #include <string>
-#include <vector>
 
 #include "utilities/utilities.hpp"
 
