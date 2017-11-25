@@ -20,6 +20,7 @@
 #include <functional>
 #include <complex>
 #include <random>
+#include <algorithm>
 
 #ifdef OPENCL_API
   #include "clpp11.hpp"
@@ -255,6 +256,30 @@ struct Arguments {
 // data-types such as the Layout and Transpose data-types.
 template <typename T>
 std::string ToString(T value);
+
+// =================================================================================================
+
+// String splitting by a delimiter
+template<typename Out>
+void split(const std::string &s, char delimiter, Out result) {
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delimiter)) {
+    *(result++) = item;
+  }
+}
+
+// See above
+inline std::vector<std::string> split(const std::string &s, char delimiter) {
+  std::vector<std::string> elements;
+  split(s, delimiter, std::back_inserter(elements));
+  return elements;
+}
+
+// String character removal
+inline void remove_character(std::string &str, char to_be_removed) {
+  str.erase(std::remove(str.begin(), str.end(), to_be_removed), str.end());
+}
 
 // =================================================================================================
 
