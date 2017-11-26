@@ -16,6 +16,8 @@
 // - ...with the operators: ==
 // - "#pragma unroll" requires next loop in the form "for (int w = 0; w < 4; w += 1) {"
 //   The above also requires the spaces in that exact form
+// - The loop variable should be a unique string within the code in the for-loop body (e.g. don't
+//   use 'i' or 'w' but rather '_w' or a longer name.
 //
 // =================================================================================================
 
@@ -75,6 +77,9 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         line.find("#elif") != std::string::npos) {
       disabled = false;
     }
+    if (line.find("#else") != std::string::npos) {
+      disabled = !disabled;
+    }
 
     // Not in a disabled-block
     if (!disabled) {
@@ -132,8 +137,8 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         continue;
       }
 
-      // Discard #endif statements
-      if (line.find("#endif") != std::string::npos) {
+      // Discard #else and #endif statements
+      if (line.find("#endif") != std::string::npos || line.find("#else") != std::string::npos) {
         continue;
       }
 
@@ -144,6 +149,13 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
 }
 
 // =================================================================================================
+
+inline void SubstituteDefines(const std::unordered_map<std::string, int>& defines,
+                              std::string& source_string) {
+  if (defines.count(source_string) == 1) {
+    source_string = ToString(defines.at(source_string));
+  }
+}
 
 // Second pass: unroll loops
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
@@ -184,15 +196,18 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       if (variable_name != line_split[7]) { throw Error<std::runtime_error>("Mis-formatted for-loop #3"); }
       auto loop_start_string = line_split[3];
       auto loop_end_string = line_split[6];
+      auto loop_increment_string = line_split[9];
       remove_character(loop_start_string, ';');
       remove_character(loop_end_string, ';');
+      remove_character(loop_increment_string, ')');
 
       // Parses loop information
+      SubstituteDefines(defines, loop_start_string);
+      SubstituteDefines(defines, loop_end_string);
+      SubstituteDefines(defines, loop_increment_string);
       const auto loop_start = std::stoi(loop_start_string);
-      if (defines.count(loop_end_string) == 1) {
-        loop_end_string = ToString(defines.at(loop_end_string));
-      }
       const auto loop_end = std::stoi(loop_end_string);
+      const auto loop_increment = std::stoi(loop_increment_string);
       auto indent = std::string{""};
       for (auto i = size_t{0}; i < for_pos; ++i) { indent += " "; }
 
@@ -200,17 +215,18 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       line_id++;
       const auto loop_num_brackets = brackets;
       const auto line_id_start = line_id;
-      for (auto loop_iter = loop_start; loop_iter < loop_end; ++loop_iter) {
+      for (auto loop_iter = loop_start; loop_iter < loop_end; loop_iter += loop_increment) {
         line_id = line_id_start;
         brackets = loop_num_brackets;
         lines.emplace_back(indent + "{");
 
         // Body of the loop
-        lines.emplace_back(indent + "  " + variable_type + " " + variable_name + " = " + ToString(loop_iter) + ";");
+        //lines.emplace_back(indent + "  " + variable_type + " " + variable_name + " = " + ToString(loop_iter) + ";");
         while (brackets >= loop_num_brackets) {
-          const auto loop_line = source_lines[line_id];
+          auto loop_line = source_lines[line_id];
           brackets += std::count(loop_line.begin(), loop_line.end(), '{');
           brackets -= std::count(loop_line.begin(), loop_line.end(), '}');
+          FindReplace(loop_line, variable_name, ToString(loop_iter));
           lines.emplace_back(loop_line);
           line_id++;
         }
