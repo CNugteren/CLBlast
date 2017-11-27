@@ -159,14 +159,25 @@ inline void SubstituteDefines(const std::unordered_map<std::string, int>& define
 
 // Second pass: unroll loops
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
-                                               const std::unordered_map<std::string, int>& defines) {
+                                               const std::unordered_map<std::string, int>& defines,
+                                               std::unordered_map<std::string, size_t>& arrays_to_registers,
+                                               const bool array_to_register_promotion) {
   auto lines = std::vector<std::string>();
 
-  auto brackets = 0;
+  auto brackets = size_t{0};
   auto unroll_next_loop = false;
+  auto promote_next_array_to_registers = false;
 
   for (auto line_id = size_t{0}; line_id < source_lines.size(); ++line_id) {
     const auto line = source_lines[line_id];
+
+    // Detect #pragma promote_to_registers directives (unofficial pragma)
+    if (array_to_register_promotion) {
+      if (line.find("#pragma promote_to_registers") != std::string::npos) {
+        promote_next_array_to_registers = true;
+        continue;
+      }
+    }
 
     // Detect #pragma unroll directives
     if (line.find("#pragma unroll") != std::string::npos) {
@@ -177,6 +188,29 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
     // Brackets
     brackets += std::count(line.begin(), line.end(), '{');
     brackets -= std::count(line.begin(), line.end(), '}');
+
+    // Promote array declarations to registers
+    if (promote_next_array_to_registers) {
+      promote_next_array_to_registers = false;
+      const auto line_split1 = split(line, '[');
+      if (line_split1.size() != 2) { throw Error<std::runtime_error>("Mis-formatted array declaration #0"); }
+      const auto line_split2 = split(line_split1[1], ']');
+      if (line_split2.size() != 2) { throw Error<std::runtime_error>("Mis-formatted array declaration #1"); }
+      auto array_size_string = line_split2[0];
+      SubstituteDefines(defines, array_size_string);
+      const auto array_size = std::stoi(array_size_string);
+      for (auto loop_iter = 0; loop_iter < array_size; ++loop_iter) {
+        lines.emplace_back(line_split1[0] + "_" + ToString(loop_iter) + line_split2[1]);
+      }
+
+      // Stores the array name
+      const auto array_name_split = split(line_split1[0], ' ');
+      if (array_name_split.size() < 2) { throw Error<std::runtime_error>("Mis-formatted array declaration #2"); }
+      const auto array_name = array_name_split[array_name_split.size() - 1];
+      arrays_to_registers[array_name] = brackets; // TODO: bracket count not used currently for scope checking
+      continue;
+    }
+
 
     // Loop unrolling assuming it to be in the form "for (int w = 0; w < 4; w += 1) {"
     if (unroll_next_loop) {
@@ -226,6 +260,17 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
           auto loop_line = source_lines[line_id];
           brackets += std::count(loop_line.begin(), loop_line.end(), '{');
           brackets -= std::count(loop_line.begin(), loop_line.end(), '}');
+
+          // Array to register promotion, e.g. arr[w] to {arr_0, arr_1}
+          if (array_to_register_promotion) {
+            for (const auto array_name_map : arrays_to_registers) {  // only if marked to be promoted
+              printf("%s: %s\n", loop_line.c_str(), array_name_map.first.c_str());
+              FindReplace(loop_line, array_name_map.first + "[" + variable_name + "]",
+                          array_name_map.first + "_" + ToString(loop_iter));
+            }
+          }
+
+          // Regular variable substitution
           FindReplace(loop_line, variable_name, ToString(loop_iter));
           lines.emplace_back(loop_line);
           line_id++;
@@ -249,8 +294,9 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
   auto lines = PreprocessDefinesAndComments(kernel_source, defines);
 
   // Unrolls loops (single level each call)
-  lines = PreprocessUnrollLoops(lines, defines);
-  lines = PreprocessUnrollLoops(lines, defines);
+  auto arrays_to_registers = std::unordered_map<std::string, size_t>();
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
 
   // Gather the results
   auto processed_kernel = std::string{""};
