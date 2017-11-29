@@ -33,14 +33,14 @@ namespace clblast {
 // =================================================================================================
 
 void RaiseError(const std::string& source_line, const std::string& exception_message) {
-  printf("Error in source line: %s\n", source_line.c_str());
+  printf("[OpenCL pre-processor] Error in source line: %s\n", source_line.c_str());
   throw Error<std::runtime_error>(exception_message);
 }
 
 // =================================================================================================
 
 bool HasOnlyDigits(const std::string& str) {
-  return str.find_first_not_of("0123456789") == std::string::npos;
+  return str.find_first_not_of(" 0123456789") == std::string::npos;
 }
 
 // Converts a string to an integer. The source line is printed in case an exception is raised.
@@ -161,8 +161,12 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         const auto value_pos = define.find(" ");
         const auto value = define.substr(value_pos + 1);
         const auto name = define.substr(0, value_pos);
-        defines.emplace(name, std::stoi(value));
-        //continue;
+        if (HasOnlyDigits(value)) {
+          defines.emplace(name, std::stoi(value));
+        }
+        else {
+          printf("'%s'\n", value.c_str());
+        }
       }
 
       // Detect #ifndef blocks

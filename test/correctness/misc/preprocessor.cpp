@@ -90,10 +90,30 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent,
     "#define WPT1 2\n"
     "#define WPT2 2\n"
     "#define WPT3 2\n"
+    "#define UNROLL1 4\n"
     #include "../src/kernels/level2/xgemv.opencl"
     #include "../src/kernels/level2/xgemv_fast.opencl"
   ;
   if (TestKernel(device, context, "XgemvFast", xgemv_sources, precision)) { passed++; } else { errors++; }
+
+  // CopyFast
+  const auto copy_fast_sources =
+    "#define COPY_WPT 2\n"
+    #include "../src/kernels/level3/level3.opencl"
+    #include "../src/kernels/level3/copy_fast.opencl"
+  ;
+  if (TestKernel(device, context, "CopyMatrixFast", copy_fast_sources, precision)) { passed++; } else { errors++; }
+
+  // CopyPad
+  const auto copy_pad_sources =
+      "#define PAD_WPTX 2\n"
+      "#define PAD_WPTY 2\n"
+#include "../src/kernels/level3/level3.opencl"
+#include "../src/kernels/level3/copy_pad.opencl"
+  ;
+  if (TestKernel(device, context, "CopyPadMatrix", copy_pad_sources, precision)) { passed++; } else { errors++; }
+
+
 
   // Prints and returns the statistics
   std::cout << std::endl;
