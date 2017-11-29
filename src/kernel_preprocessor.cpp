@@ -43,11 +43,28 @@ bool HasOnlyDigits(const std::string& str) {
   return str.find_first_not_of("0123456789") == std::string::npos;
 }
 
+// Converts a string to an integer. The source line is printed in case an exception is raised.
 size_t StringToDigit(const std::string& str, const std::string& source_line) {
-  const auto split_dividers = split(str, '/');
-  if (split_dividers.size() == 2) {
-    return StringToDigit(split_dividers[0], source_line) / StringToDigit(split_dividers[1], source_line);
+
+  // Handles division
+  const auto split_div = split(str, '/');
+  if (split_div.size() == 2) {
+    return StringToDigit(split_div[0], source_line) / StringToDigit(split_div[1], source_line);
   }
+
+  // Handles multiplication
+  const auto split_mul = split(str, '*');
+  if (split_mul.size() == 2) {
+    return StringToDigit(split_mul[0], source_line) * StringToDigit(split_mul[1], source_line);
+  }
+
+  // Handles addition
+  const auto split_add = split(str, '+');
+  if (split_add.size() == 2) {
+    return StringToDigit(split_add[0], source_line) + StringToDigit(split_add[1], source_line);
+  }
+
+  // Handles the digits
   if (not HasOnlyDigits(str)) { RaiseError(source_line, "Not a digit: " + str); }
   return static_cast<size_t>(std::stoi(str));
 }
@@ -300,8 +317,27 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
           // Array to register promotion, e.g. arr[w] to {arr_0, arr_1}
           if (array_to_register_promotion) {
             for (const auto array_name_map : arrays_to_registers) {  // only if marked to be promoted
-              FindReplace(loop_line, array_name_map.first + "[" + variable_name + "]",
-                          array_name_map.first + "_" + ToString(loop_iter));
+              const auto array_pos = loop_line.find(array_name_map.first + "[");
+              if (array_pos != std::string::npos) {
+
+                // Retrieves the array index
+                const auto loop_remainder = loop_line.substr(array_pos);
+                const auto loop_split = split(split(loop_remainder, '[')[1], ']');
+                if (loop_split.size() < 2) { RaiseError(line, "Mis-formatted array declaration"); }
+                auto array_index_string = loop_split[0];
+
+                // Verifies if the loop variable is within this array index
+                const auto variable_pos = array_index_string.find(variable_name);
+                if (variable_pos != std::string::npos) {
+
+                  // Replaces the array with a register value
+                  FindReplace(array_index_string, variable_name, ToString(loop_iter));
+                  SubstituteDefines(defines, array_index_string);
+                  const auto array_index = StringToDigit(array_index_string, loop_line);
+                  FindReplace(loop_line, array_name_map.first + "[" + loop_split[0] + "]",
+                              array_name_map.first + "_" + ToString(array_index));
+                }
+              }
             }
           }
 
