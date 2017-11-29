@@ -105,10 +105,11 @@ void XgemvFast(const int m, const int n,
   __local real xlm[WGS2];
 
   // Initializes the accumulation registers
+  #pragma promote_to_registers
   real acc[WPT2];
   #pragma unroll
-  for (int w=0; w<WPT2; ++w) {
-    SetToZero(acc[w]);
+  for (int _w = 0; _w < WPT2; _w += 1) {
+    SetToZero(acc[_w]);
   }
 
   // Loops over work-group sized portions of the work
@@ -123,48 +124,48 @@ void XgemvFast(const int m, const int n,
 
     // The multiply-add function (not rotated)
     #pragma unroll
-    for (int kl=0; kl<WGS2; ++kl) {
-      const int k = kwg + kl;
+    for (int _kl = 0; _kl < WGS2; _kl += 1) {
+      const int k = kwg + _kl;
       #pragma unroll
-      for (int w=0; w<WPT2/VW2; ++w) {
-        const int gid = (WPT2/VW2)*get_global_id(0) + w;
+      for (int _w = 0; _w < WPT2/VW2; _w += 1) {
+        const int gid = (WPT2/VW2)*get_global_id(0) + _w;
         realVF avec = agm[(a_ld/VW2)*k + gid];
         #if VW2 == 1
-          MultiplyAdd(acc[VW2*w+0], xlm[kl], avec);
+          MultiplyAdd(acc[VW2*_w+0], xlm[_kl], avec);
         #elif VW2 == 2
-          MultiplyAdd(acc[VW2*w+0], xlm[kl], avec.x);
-          MultiplyAdd(acc[VW2*w+1], xlm[kl], avec.y);
+          MultiplyAdd(acc[VW2*_w+0], xlm[_kl], avec.x);
+          MultiplyAdd(acc[VW2*_w+1], xlm[_kl], avec.y);
         #elif VW2 == 4
-          MultiplyAdd(acc[VW2*w+0], xlm[kl], avec.x);
-          MultiplyAdd(acc[VW2*w+1], xlm[kl], avec.y);
-          MultiplyAdd(acc[VW2*w+2], xlm[kl], avec.z);
-          MultiplyAdd(acc[VW2*w+3], xlm[kl], avec.w);
+          MultiplyAdd(acc[VW2*_w+0], xlm[_kl], avec.x);
+          MultiplyAdd(acc[VW2*_w+1], xlm[_kl], avec.y);
+          MultiplyAdd(acc[VW2*_w+2], xlm[_kl], avec.z);
+          MultiplyAdd(acc[VW2*_w+3], xlm[_kl], avec.w);
         #elif VW2 == 8
-          MultiplyAdd(acc[VW2*w+0], xlm[kl], avec.s0);
-          MultiplyAdd(acc[VW2*w+1], xlm[kl], avec.s1);
-          MultiplyAdd(acc[VW2*w+2], xlm[kl], avec.s2);
-          MultiplyAdd(acc[VW2*w+3], xlm[kl], avec.s3);
-          MultiplyAdd(acc[VW2*w+4], xlm[kl], avec.s4);
-          MultiplyAdd(acc[VW2*w+5], xlm[kl], avec.s5);
-          MultiplyAdd(acc[VW2*w+6], xlm[kl], avec.s6);
-          MultiplyAdd(acc[VW2*w+7], xlm[kl], avec.s7);
+          MultiplyAdd(acc[VW2*_w+0], xlm[_kl], avec.s0);
+          MultiplyAdd(acc[VW2*_w+1], xlm[_kl], avec.s1);
+          MultiplyAdd(acc[VW2*_w+2], xlm[_kl], avec.s2);
+          MultiplyAdd(acc[VW2*_w+3], xlm[_kl], avec.s3);
+          MultiplyAdd(acc[VW2*_w+4], xlm[_kl], avec.s4);
+          MultiplyAdd(acc[VW2*_w+5], xlm[_kl], avec.s5);
+          MultiplyAdd(acc[VW2*_w+6], xlm[_kl], avec.s6);
+          MultiplyAdd(acc[VW2*_w+7], xlm[_kl], avec.s7);
         #elif VW2 == 16
-          MultiplyAdd(acc[VW2*w+0], xlm[kl], avec.s0);
-          MultiplyAdd(acc[VW2*w+1], xlm[kl], avec.s1);
-          MultiplyAdd(acc[VW2*w+2], xlm[kl], avec.s2);
-          MultiplyAdd(acc[VW2*w+3], xlm[kl], avec.s3);
-          MultiplyAdd(acc[VW2*w+4], xlm[kl], avec.s4);
-          MultiplyAdd(acc[VW2*w+5], xlm[kl], avec.s5);
-          MultiplyAdd(acc[VW2*w+6], xlm[kl], avec.s6);
-          MultiplyAdd(acc[VW2*w+7], xlm[kl], avec.s7);
-          MultiplyAdd(acc[VW2*w+8], xlm[kl], avec.s8);
-          MultiplyAdd(acc[VW2*w+9], xlm[kl], avec.s9);
-          MultiplyAdd(acc[VW2*w+10], xlm[kl], avec.sA);
-          MultiplyAdd(acc[VW2*w+11], xlm[kl], avec.sB);
-          MultiplyAdd(acc[VW2*w+12], xlm[kl], avec.sC);
-          MultiplyAdd(acc[VW2*w+13], xlm[kl], avec.sD);
-          MultiplyAdd(acc[VW2*w+14], xlm[kl], avec.sE);
-          MultiplyAdd(acc[VW2*w+15], xlm[kl], avec.sF);
+          MultiplyAdd(acc[VW2*_w+0], xlm[_kl], avec.s0);
+          MultiplyAdd(acc[VW2*_w+1], xlm[_kl], avec.s1);
+          MultiplyAdd(acc[VW2*_w+2], xlm[_kl], avec.s2);
+          MultiplyAdd(acc[VW2*_w+3], xlm[_kl], avec.s3);
+          MultiplyAdd(acc[VW2*_w+4], xlm[_kl], avec.s4);
+          MultiplyAdd(acc[VW2*_w+5], xlm[_kl], avec.s5);
+          MultiplyAdd(acc[VW2*_w+6], xlm[_kl], avec.s6);
+          MultiplyAdd(acc[VW2*_w+7], xlm[_kl], avec.s7);
+          MultiplyAdd(acc[VW2*_w+8], xlm[_kl], avec.s8);
+          MultiplyAdd(acc[VW2*_w+9], xlm[_kl], avec.s9);
+          MultiplyAdd(acc[VW2*_w+10], xlm[_kl], avec.sA);
+          MultiplyAdd(acc[VW2*_w+11], xlm[_kl], avec.sB);
+          MultiplyAdd(acc[VW2*_w+12], xlm[_kl], avec.sC);
+          MultiplyAdd(acc[VW2*_w+13], xlm[_kl], avec.sD);
+          MultiplyAdd(acc[VW2*_w+14], xlm[_kl], avec.sE);
+          MultiplyAdd(acc[VW2*_w+15], xlm[_kl], avec.sF);
         #endif
       }
     }
@@ -175,10 +176,10 @@ void XgemvFast(const int m, const int n,
 
   // Stores the final result
   #pragma unroll
-  for (int w=0; w<WPT2; ++w) {
-    const int gid = WPT2*get_global_id(0) + w;
+  for (int _w = 0; _w < WPT2; _w += 1) {
+    const int gid = WPT2*get_global_id(0) + _w;
     real yval = ygm[gid*y_inc + y_offset];
-    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
+    AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[_w], beta, yval);
   }
 }
 
@@ -226,46 +227,46 @@ void XgemvFastRot(const int m, const int n,
 
     // Loads the matrix A into local memory
     #pragma unroll
-    for (int kl=0; kl<WPT3/VW3; ++kl) {
+    for (int _kl = 0; _kl < WPT3/VW3; _kl += 1) {
       const int x = (kwg/VW3) + lid_mod;
-      const int y = get_group_id(0) * WGS3 + lid_div * (WPT3/VW3) + kl;
+      const int y = get_group_id(0) * WGS3 + lid_div * (WPT3/VW3) + _kl;
       realVFR avec = agm[(a_ld/VW3) * y + x];
       #if VW3 == 1
-        tile[kl*VW3 + 0][lid] = avec;
+        tile[_kl*VW3 + 0][lid] = avec;
       #elif VW3 == 2
-        tile[kl*VW3 + 0][lid] = avec.x;
-        tile[kl*VW3 + 1][lid] = avec.y;
+        tile[_kl*VW3 + 0][lid] = avec.x;
+        tile[_kl*VW3 + 1][lid] = avec.y;
       #elif VW3 == 4
-        tile[kl*VW3 + 0][lid] = avec.x;
-        tile[kl*VW3 + 1][lid] = avec.y;
-        tile[kl*VW3 + 2][lid] = avec.z;
-        tile[kl*VW3 + 3][lid] = avec.w;
+        tile[_kl*VW3 + 0][lid] = avec.x;
+        tile[_kl*VW3 + 1][lid] = avec.y;
+        tile[_kl*VW3 + 2][lid] = avec.z;
+        tile[_kl*VW3 + 3][lid] = avec.w;
       #elif VW3 == 8
-        tile[kl*VW3 + 0][lid] = avec.s0;
-        tile[kl*VW3 + 1][lid] = avec.s1;
-        tile[kl*VW3 + 2][lid] = avec.s2;
-        tile[kl*VW3 + 3][lid] = avec.s3;
-        tile[kl*VW3 + 4][lid] = avec.s4;
-        tile[kl*VW3 + 5][lid] = avec.s5;
-        tile[kl*VW3 + 6][lid] = avec.s6;
-        tile[kl*VW3 + 7][lid] = avec.s7;
+        tile[_kl*VW3 + 0][lid] = avec.s0;
+        tile[_kl*VW3 + 1][lid] = avec.s1;
+        tile[_kl*VW3 + 2][lid] = avec.s2;
+        tile[_kl*VW3 + 3][lid] = avec.s3;
+        tile[_kl*VW3 + 4][lid] = avec.s4;
+        tile[_kl*VW3 + 5][lid] = avec.s5;
+        tile[_kl*VW3 + 6][lid] = avec.s6;
+        tile[_kl*VW3 + 7][lid] = avec.s7;
       #elif VW3 == 16
-        tile[kl*VW3 + 0][lid] = avec.s0;
-        tile[kl*VW3 + 1][lid] = avec.s1;
-        tile[kl*VW3 + 2][lid] = avec.s2;
-        tile[kl*VW3 + 3][lid] = avec.s3;
-        tile[kl*VW3 + 4][lid] = avec.s4;
-        tile[kl*VW3 + 5][lid] = avec.s5;
-        tile[kl*VW3 + 6][lid] = avec.s6;
-        tile[kl*VW3 + 7][lid] = avec.s7;
-        tile[kl*VW3 + 8][lid] = avec.s8;
-        tile[kl*VW3 + 9][lid] = avec.s9;
-        tile[kl*VW3 + 10][lid] = avec.sA;
-        tile[kl*VW3 + 11][lid] = avec.sB;
-        tile[kl*VW3 + 12][lid] = avec.sC;
-        tile[kl*VW3 + 13][lid] = avec.sD;
-        tile[kl*VW3 + 14][lid] = avec.sE;
-        tile[kl*VW3 + 15][lid] = avec.sF;
+        tile[_kl*VW3 + 0][lid] = avec.s0;
+        tile[_kl*VW3 + 1][lid] = avec.s1;
+        tile[_kl*VW3 + 2][lid] = avec.s2;
+        tile[_kl*VW3 + 3][lid] = avec.s3;
+        tile[_kl*VW3 + 4][lid] = avec.s4;
+        tile[_kl*VW3 + 5][lid] = avec.s5;
+        tile[_kl*VW3 + 6][lid] = avec.s6;
+        tile[_kl*VW3 + 7][lid] = avec.s7;
+        tile[_kl*VW3 + 8][lid] = avec.s8;
+        tile[_kl*VW3 + 9][lid] = avec.s9;
+        tile[_kl*VW3 + 10][lid] = avec.sA;
+        tile[_kl*VW3 + 11][lid] = avec.sB;
+        tile[_kl*VW3 + 12][lid] = avec.sC;
+        tile[_kl*VW3 + 13][lid] = avec.sD;
+        tile[_kl*VW3 + 14][lid] = avec.sE;
+        tile[_kl*VW3 + 15][lid] = avec.sF;
       #endif
     }
 
@@ -274,11 +275,11 @@ void XgemvFastRot(const int m, const int n,
 
     // The multiply-add function (rotated)
     #pragma unroll
-    for (int kl=0; kl<WPT3/VW3; ++kl) {
+    for (int _kl = 0; _kl < WPT3/VW3; _kl += 1) {
       #pragma unroll
-      for (int v=0; v<VW3; ++v) {
-        real aval = tile[lid_mod*VW3 + v][lid_div * (WPT3/VW3) + kl];
-        real xval = xlm[kl*VW3 + v];
+      for (int _v = 0; _v < VW3; _v += 1) {
+        real aval = tile[lid_mod*VW3 + _v][lid_div * (WPT3/VW3) + _kl];
+        real xval = xlm[_kl*VW3 + _v];
         MultiplyAdd(acc, xval, aval);
       }
     }

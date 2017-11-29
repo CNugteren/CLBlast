@@ -45,8 +45,8 @@ void XaxpyFaster(const int n, const real_arg arg_alpha,
 
   if (get_global_id(0) < n / (VW)) {
     #pragma unroll
-    for (int w = 0; w < WPT; w += 1) {
-      const int id = w*get_global_size(0) + get_global_id(0);
+    for (int _w = 0; _w < WPT; _w += 1) {
+      const int id = _w*get_global_size(0) + get_global_id(0);
       realV xvalue = xgm[id];
       realV yvalue = ygm[id];
       ygm[id] = MultiplyAddVector(yvalue, alpha, xvalue);
@@ -63,8 +63,8 @@ void XaxpyFastest(const int n, const real_arg arg_alpha,
   const real alpha = GetRealArg(arg_alpha);
 
   #pragma unroll
-  for (int w = 0; w < WPT; w += 1) {
-    const int id = w*get_global_size(0) + get_global_id(0);
+  for (int _w = 0; _w < WPT; _w += 1) {
+    const int id = _w*get_global_size(0) + get_global_id(0);
     realV xvalue = xgm[id];
     realV yvalue = ygm[id];
     ygm[id] = MultiplyAddVector(yvalue, alpha, xvalue);

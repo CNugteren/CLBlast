@@ -164,9 +164,6 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         if (HasOnlyDigits(value)) {
           defines.emplace(name, std::stoi(value));
         }
-        else {
-          printf("'%s'\n", value.c_str());
-        }
       }
 
       // Detect #ifndef blocks
