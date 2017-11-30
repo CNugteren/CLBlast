@@ -15,6 +15,7 @@
 #include <chrono>
 
 #include "routines/common.hpp"
+#include "kernel_preprocessor.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -23,7 +24,8 @@ namespace clblast {
 Program CompileFromSource(const std::string &source_string, const Precision precision,
                           const std::string &routine_name,
                           const Device& device, const Context& context,
-                          std::vector<std::string>& options, const bool silent) {
+                          std::vector<std::string>& options,
+                          const bool run_preprocessor, const bool silent) {
   auto header_string = std::string{""};
 
   header_string += "#define PRECISION " + ToString(static_cast<int>(precision)) + "\n";
@@ -73,8 +75,15 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
     const auto start_time = std::chrono::steady_clock::now();
   #endif
 
+  // Runs a pre-processor to unroll loops and perform array-to-register promotion
+  auto kernel_string = header_string + source_string;
+  if (run_preprocessor) {
+    log_debug("Running built-in pre-processor");
+    kernel_string = PreprocessKernelSource(kernel_string);
+  }
+
   // Compiles the kernel
-  auto program = Program(context, header_string + source_string);
+  auto program = Program(context, kernel_string);
   try {
     program.Build(device, options);
   } catch (const CLCudaAPIBuildError &e) {

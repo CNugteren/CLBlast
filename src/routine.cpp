@@ -148,7 +148,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Completes the source and compiles the kernel
   program_ = CompileFromSource(source_string, precision_, routine_name_,
-                               device_, context_, options);
+                               device_, context_, options, false);
 
 
   // Store the compiled binary and program in the cache

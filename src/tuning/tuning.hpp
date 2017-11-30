@@ -227,7 +227,7 @@ void Tuner(int argc, char* argv[]) {
     // Compiles the kernel
     auto compiler_options = std::vector<std::string>();
     const auto program = CompileFromSource(settings.sources, args.precision, settings.kernel_name,
-                                           device, context, compiler_options);
+                                           device, context, compiler_options, false);
     auto kernel = Kernel(program, settings.kernel_name);
     C::SetArguments(kernel, args, device_buffers);
     printf("             %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
@@ -286,7 +286,7 @@ void Tuner(int argc, char* argv[]) {
       const auto start_time = std::chrono::steady_clock::now();
       auto compiler_options = std::vector<std::string>();
       const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name,
-                                             device, context, compiler_options, true);
+                                             device, context, compiler_options, false, true);
       auto kernel = Kernel(program, settings.kernel_name);
       const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
       const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();

@@ -33,27 +33,27 @@ bool TestKernel(const Device& device, const Context& context,
   // Verifies that the current kernel compiles properly (assumes so, otherwise throws an error)
   auto compiler_options_ref = std::vector<std::string>();
   const auto program_ref = CompileFromSource(kernel_source, precision, kernel_name,
-                                             device, context, compiler_options_ref);
+                                             device, context, compiler_options_ref, false);
 
-  // Runs the pre-processor
-  const auto processed_source = PreprocessKernelSource(kernel_source);
-
-  // Verifies that the new kernel compiles properly
+  // Compiles the same kernel, but now with the pre-processor enabled
   try {
     auto compiler_options = std::vector<std::string>();
-    const auto program = CompileFromSource(processed_source, precision, kernel_name,
-                                           device, context, compiler_options);
+    const auto program = CompileFromSource(kernel_source, precision, kernel_name,
+                                           device, context, compiler_options, true);
     return true;
-  } catch (...) {
-    fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel\n");
+  } catch (const CLCudaAPIBuildError &e) {
+    fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel, status %zu\n",
+            static_cast<size_t>(e.status()));
+    return false;
+  } catch (const Error<std::runtime_error> &e) {
+    fprintf(stdout, "* ERROR: Pre-processor error, message:\n%s\n", e.what());
     return false;
   }
 }
 
 // =================================================================================================
 
-size_t RunPreprocessor(int argc, char *argv[], const bool silent,
-                       const Precision precision) {
+size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precision precision) {
   auto errors = size_t{0};
   auto passed = size_t{0};
 
