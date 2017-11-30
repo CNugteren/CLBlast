@@ -24,6 +24,45 @@
 namespace clblast {
 // =================================================================================================
 
+bool TestDefines() {
+  const auto source1 =
+  R"(
+  #define VAR1
+  #define VAR2 32
+  #if VAR2 == 32
+    #ifndef VAR1
+      #define ERROR
+      #ifdef VAR1
+        #define ERROR
+      #endif
+    #else
+      #if VAR2 == 32 || VAR3 == 4
+        #define SUCCESS
+      #else
+        #define ERROR
+      #endif
+      #define SUCCESS
+    #endif
+  #endif
+  #ifndef VAR3
+    #define SUCCESS
+  #else
+    #define ERROR
+  #endif
+  )";
+  const auto expected1 =
+  "  #define VAR1\n"
+  "  #define VAR2 32\n"
+  "        #define SUCCESS\n"
+  "      #define SUCCESS\n"
+  "    #define SUCCESS\n"
+  "  \n";
+  const auto result1 = PreprocessKernelSource(source1);
+  return result1 == expected1;
+}
+
+// =================================================================================================
+
 bool TestKernel(const Device& device, const Context& context,
                 const std::string &kernel_name, const std::string &kernel_source,
                 const Precision precision) {
@@ -42,8 +81,8 @@ bool TestKernel(const Device& device, const Context& context,
                                            device, context, compiler_options, true);
     return true;
   } catch (const CLCudaAPIBuildError &e) {
-    fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel, status %zu\n",
-            static_cast<size_t>(e.status()));
+    fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel, status %d\n",
+            e.status());
     return false;
   } catch (const Error<std::runtime_error> &e) {
     fprintf(stdout, "* ERROR: Pre-processor error, message:\n%s\n", e.what());
@@ -68,6 +107,9 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
   const auto platform = Platform(platform_id);
   const auto device = Device(platform, device_id);
   const auto context = Context(device);
+
+  // Basic tests
+  if (TestDefines()) { passed++; } else { errors++; }
 
   // XAXPY
   const auto xaxpy_sources =

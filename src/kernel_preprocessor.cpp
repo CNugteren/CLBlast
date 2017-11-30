@@ -40,6 +40,7 @@ void RaiseError(const std::string& source_line, const std::string& exception_mes
 // =================================================================================================
 
 bool HasOnlyDigits(const std::string& str) {
+  if (str == "") { return false; }
   return str.find_first_not_of(" 0123456789") == std::string::npos;
 }
 
@@ -89,10 +90,38 @@ void SubstituteDefines(const std::unordered_map<std::string, int>& defines,
 }
 
 bool EvaluateCondition(std::string condition,
-                       const std::unordered_map<std::string, int> &defines) {
+                       const std::unordered_map<std::string, int> &defines,
+                       const std::unordered_map<std::string, std::string> &defines_string) {
 
   // Replace macros in the string
   SubstituteDefines(defines, condition);
+
+  // Process the or sign
+  const auto or_pos = condition.find(" || ");
+  if (or_pos != std::string::npos) {
+    const auto left = condition.substr(0, or_pos);
+    const auto right = condition.substr(or_pos + 4);
+    return EvaluateCondition(left, defines, defines_string) ||
+        EvaluateCondition(right, defines, defines_string);
+  }
+
+  // Process the and sign
+  const auto and_pos = condition.find(" && ");
+  if (and_pos != std::string::npos) {
+    const auto left = condition.substr(0, and_pos);
+    const auto right = condition.substr(and_pos + 4);
+    return EvaluateCondition(left, defines, defines_string) &&
+        EvaluateCondition(right, defines, defines_string);
+  }
+
+  // Process the defined() construct
+  const auto defined_pos = condition.find("defined(");
+  if (defined_pos != std::string::npos) {
+    const auto contents = condition.substr(defined_pos + 8);
+    const auto defined_split = split(contents, ')');
+    const auto defined_val = defined_split[0];
+    return (defines_string.find(defined_val) != defines_string.end());
+  }
 
   // Process the equality sign
   const auto equal_pos = condition.find(" == ");
@@ -101,6 +130,7 @@ bool EvaluateCondition(std::string condition,
     const auto right = condition.substr(equal_pos + 4);
     return (left == right);
   }
+  printf("Warning unknown condition: %s\n", condition.c_str());
   return false; // unknown error
 }
 
@@ -108,30 +138,28 @@ bool EvaluateCondition(std::string condition,
 
 // First pass: detect defines and comments
 std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
-                                                      std::unordered_map<std::string, int>& defines) {
+                                                      std::unordered_map<std::string, int>& defines_int) {
   auto lines = std::vector<std::string>();
+  auto defines_string = std::unordered_map<std::string, std::string>();
 
   // Parse the input string into a vector of lines
-  auto disabled = false;
-  auto depth = 0;
+  const auto max_depth_defines = 30;
+  auto disabled = std::vector<unsigned int>(max_depth_defines, 0);
+  auto depth = size_t{0};
   auto source_stream = std::stringstream(source);
   auto line = std::string{""};
   while (std::getline(source_stream, line)) {
+    //printf("[@%d] disabled=%d '%s'\n", depth, disabled[depth], line.c_str());
 
     // Decide whether or not to remain in 'disabled' mode
     if (line.find("#endif") != std::string::npos) {
-      if (depth == 1) {
-        disabled = false;
-      }
-      depth--;
+      disabled[depth] = 0;
     }
-    if (depth == 1) {
-      if (line.find("#elif") != std::string::npos) {
-        disabled = false;
-      }
-      if (line.find("#else") != std::string::npos) {
-        disabled = !disabled;
-      }
+    if (line.find("#elif") != std::string::npos) {
+      disabled[depth] = 0;
+    }
+    if (line.find("#else") != std::string::npos) {
+      disabled[depth] = (disabled[depth] == 0) ? 1 : 0;
     }
 
     // Measures the depth of pre-processor defines
@@ -139,10 +167,21 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         (line.find("#ifdef ") != std::string::npos) ||
         (line.find("#if ") != std::string::npos)) {
       depth++;
+      if (depth >= max_depth_defines) { throw Error<std::runtime_error>("too deep define nest"); }
+    }
+    if (line.find("#endif") != std::string::npos) {
+      if (depth == 0) { throw Error<std::runtime_error>("incorrect define nest"); }
+      depth--;
+    }
+
+    // Verifies whether this level or any level below is disabled
+    auto is_disabled = false;
+    for (auto d = size_t{0}; d <= depth; ++d) {
+      if (disabled[d] == 1) { is_disabled = true; }
     }
 
     // Not in a disabled-block
-    if (!disabled) {
+    if (!is_disabled) {
 
       // Skip empty lines
       if (line == "") { continue; }
@@ -162,15 +201,16 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         const auto value = define.substr(value_pos + 1);
         const auto name = define.substr(0, value_pos);
         if (HasOnlyDigits(value)) {
-          defines.emplace(name, std::stoi(value));
+          defines_int.emplace(name, std::stoi(value));
         }
+        defines_string.emplace(name, value);
       }
 
       // Detect #ifndef blocks
       const auto ifndef_pos = line.find("#ifndef ");
       if (ifndef_pos != std::string::npos) {
         const auto define = line.substr(ifndef_pos + 8); // length of "#ifndef "
-        if (defines.find(define) != defines.end()) { disabled = true; }
+        if (defines_string.find(define) != defines_string.end()) { disabled[depth] = 1; }
         continue;
       }
 
@@ -178,7 +218,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
       const auto ifdef_pos = line.find("#ifdef ");
       if (ifdef_pos != std::string::npos) {
         const auto define = line.substr(ifdef_pos + 7); // length of "#ifdef "
-        if (defines.find(define) == defines.end()) { disabled = true; }
+        if (defines_string.find(define) == defines_string.end()) { disabled[depth] = 1; }
         continue;
       }
 
@@ -186,7 +226,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
       const auto if_pos = line.find("#if ");
       if (if_pos != std::string::npos) {
         const auto condition = line.substr(if_pos + 4); // length of "#if "
-        if (!EvaluateCondition(condition, defines)) { disabled = true; }
+        if (!EvaluateCondition(condition, defines_int, defines_string)) { disabled[depth] = 1; }
         continue;
       }
 
@@ -194,7 +234,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
       const auto elif_pos = line.find("#elif ");
       if (elif_pos != std::string::npos) {
         const auto condition = line.substr(elif_pos + 6); // length of "#elif "
-        if (!EvaluateCondition(condition, defines)) { disabled = true; }
+        if (!EvaluateCondition(condition, defines_int, defines_string)) { disabled[depth] = 1; }
         continue;
       }
 
