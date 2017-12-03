@@ -133,6 +133,7 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
     "#define WPT2 2\n"
     "#define WPT3 2\n"
     "#define UNROLL1 4\n"
+    "#define VW2 2\n"
     #include "../src/kernels/level2/xgemv.opencl"
     #include "../src/kernels/level2/xgemv_fast.opencl"
   ;
@@ -148,12 +149,28 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
 
   // CopyPad
   const auto copy_pad_sources =
-      "#define PAD_WPTX 2\n"
-      "#define PAD_WPTY 2\n"
-#include "../src/kernels/level3/level3.opencl"
-#include "../src/kernels/level3/copy_pad.opencl"
+    "#define PAD_WPTX 2\n"
+    "#define PAD_WPTY 2\n"
+    #include "../src/kernels/level3/level3.opencl"
+    #include "../src/kernels/level3/copy_pad.opencl"
   ;
   if (TestKernel(device, context, "CopyPadMatrix", copy_pad_sources, precision)) { passed++; } else { errors++; }
+
+  // TransposeFast
+  const auto transpose_fast_sources =
+    "#define TRA_WPT 2\n"
+    #include "../src/kernels/level3/level3.opencl"
+    #include "../src/kernels/level3/transpose_fast.opencl"
+  ;
+  if (TestKernel(device, context, "TransposeMatrixFast", transpose_fast_sources, precision)) { passed++; } else { errors++; }
+
+  // TransposePad
+  const auto transpose_pad_sources =
+    "#define PADTRA_WPT 2\n"
+    #include "../src/kernels/level3/level3.opencl"
+    #include "../src/kernels/level3/transpose_pad.opencl"
+  ;
+  if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
 
 
 
