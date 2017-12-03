@@ -44,30 +44,68 @@ bool HasOnlyDigits(const std::string& str) {
   return str.find_first_not_of(" 0123456789") == std::string::npos;
 }
 
-// Converts a string to an integer. The source line is printed in case an exception is raised.
-size_t StringToDigit(const std::string& str, const std::string& source_line) {
+// Simple unsigned integer math parser
+int ParseMath(const std::string& str) {
+
+  // Handles brackets
+  const auto split_close = split(str, ')');
+  if (split_close.size() >= 2) {
+    const auto split_end = split(split_close[0], '(');
+    if (split_end.size() < 2) { RaiseError(str, "Mismatching brackets #0"); }
+    const auto bracket_contents = ParseMath(split_end[split_end.size() - 1]);
+    auto before = std::string{};
+    for (auto i = size_t{0}; i < split_end.size() - 1; ++i) {
+      before += split_end[i];
+      if (i != split_end.size() - 2) { before += "("; }
+    }
+    auto after = std::string{};
+    for (auto i = size_t{1}; i < split_close.size(); ++i) {
+      after += split_close[i];
+      if (i != split_close.size() - 1) { after += ")"; }
+    }
+    return ParseMath(before + ToString(bracket_contents) + after);
+  }
 
   // Handles addition
   const auto split_add = split(str, '+');
   if (split_add.size() == 2) {
-    return StringToDigit(split_add[0], source_line) + StringToDigit(split_add[1], source_line);
+    const auto lhs = ParseMath(split_add[0]);
+    const auto rhs = ParseMath(split_add[1]);
+    if (lhs == -1 || rhs == -1) { return -1; }
+    return lhs + rhs;
   }
 
   // Handles multiplication
   const auto split_mul = split(str, '*');
   if (split_mul.size() == 2) {
-    return StringToDigit(split_mul[0], source_line) * StringToDigit(split_mul[1], source_line);
+    const auto lhs = ParseMath(split_mul[0]);
+    const auto rhs = ParseMath(split_mul[1]);
+    if (lhs == -1 || rhs == -1) { return -1; }
+    return lhs * rhs;
   }
 
   // Handles division
   const auto split_div = split(str, '/');
   if (split_div.size() == 2) {
-    return StringToDigit(split_div[0], source_line) / StringToDigit(split_div[1], source_line);
+    const auto lhs = ParseMath(split_div[0]);
+    const auto rhs = ParseMath(split_div[1]);
+    if (lhs == -1 || rhs == -1) { return -1; }
+    return lhs / rhs;
   }
 
   // Handles the digits
-  if (not HasOnlyDigits(str)) { RaiseError(source_line, "Not a digit: " + str); }
-  return static_cast<size_t>(std::stoi(str));
+  if (HasOnlyDigits(str)) {
+    return std::stoi(str);
+  }
+  return -1; // error value
+}
+
+
+// Converts a string to an integer. The source line is printed in case an exception is raised.
+size_t StringToDigit(const std::string& str, const std::string& source_line) {
+  const auto result = ParseMath(str);
+  if (result == -1) { RaiseError(source_line, "Not a digit: " + str); }
+  return static_cast<size_t>(result);
 }
 
 
@@ -226,10 +264,12 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
       if (define_pos != std::string::npos) {
         const auto define = line.substr(define_pos + 8); // length of "#define "
         const auto value_pos = define.find(" ");
-        const auto value = define.substr(value_pos + 1);
+        auto value = define.substr(value_pos + 1);
         const auto name = define.substr(0, value_pos);
-        if (HasOnlyDigits(value)) {
-          defines_int.emplace(name, std::stoi(value));
+        SubstituteDefines(defines_int, value);
+        const auto value_int = ParseMath(value);
+        if (value_int != -1) {
+          defines_int.emplace(name, static_cast<size_t>(value_int));
         }
         defines_string.emplace(name, value);
       }

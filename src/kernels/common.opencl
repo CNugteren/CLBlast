@@ -176,61 +176,61 @@ R"(
 
 // Adds two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
+  #define Add(c,a,b) c.x = a.x + b.x; c.y = a.y + b.y
 #else
-  #define Add(c, a, b) c = a + b
+  #define Add(c,a,b) c = a + b
 #endif
 
 // Subtracts two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Subtract(c, a, b) c.x = a.x - b.x; c.y = a.y - b.y
+  #define Subtract(c,a,b) c.x = a.x - b.x; c.y = a.y - b.y
 #else
-  #define Subtract(c, a, b) c = a - b
+  #define Subtract(c,a,b) c = a - b
 #endif
 
 // Multiply two complex variables (used in the defines below)
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MulReal(a, b) a.x*b.x - a.y*b.y
-  #define MulImag(a, b) a.x*b.y + a.y*b.x
+  #define MulReal(a,b) a.x*b.x - a.y*b.y
+  #define MulImag(a,b) a.x*b.y + a.y*b.x
 #endif
 
 // The scalar multiply function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Multiply(c, a, b) c.x = MulReal(a,b); c.y = MulImag(a,b)
+  #define Multiply(c,a,b) c.x = MulReal(a,b); c.y = MulImag(a,b)
 #else
-  #define Multiply(c, a, b) c = a * b
+  #define Multiply(c,a,b) c = a * b
 #endif
 
 // The scalar multiply-add function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MultiplyAdd(c, a, b) c.x += MulReal(a,b); c.y += MulImag(a,b)
+  #define MultiplyAdd(c,a,b) c.x += MulReal(a,b); c.y += MulImag(a,b)
 #else
   #if USE_CL_MAD == 1
-    #define MultiplyAdd(c, a, b) c = mad(a, b, c)
+    #define MultiplyAdd(c,a,b) c = mad(a, b, c)
   #else
-    #define MultiplyAdd(c, a, b) c += a * b
+    #define MultiplyAdd(c,a,b) c += a * b
   #endif
 #endif
 
 // The scalar multiply-subtract function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MultiplySubtract(c, a, b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
+  #define MultiplySubtract(c,a,b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
 #else
-  #define MultiplySubtract(c, a, b) c -= a * b
+  #define MultiplySubtract(c,a,b) c -= a * b
 #endif
 
 // The scalar division function: full division
 #if PRECISION == 3232 || PRECISION == 6464
-  #define DivideFull(c, a, b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom
+  #define DivideFull(c,a,b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom
 #else
-  #define DivideFull(c, a, b) c = a / b
+  #define DivideFull(c,a,b) c = a / b
 #endif
 
 // The scalar AXPBY function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define AXPBY(e, a, b, c, d) e.x = MulReal(a,b) + MulReal(c,d); e.y = MulImag(a,b) + MulImag(c,d)
+  #define AXPBY(e,a,b,c,d) e.x = MulReal(a,b) + MulReal(c,d); e.y = MulImag(a,b) + MulImag(c,d)
 #else
-  #define AXPBY(e, a, b, c, d) e = a*b + c*d
+  #define AXPBY(e,a,b,c,d) e = a*b + c*d
 #endif
 
 // The complex conjugate operation for complex transforms
