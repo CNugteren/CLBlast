@@ -47,10 +47,10 @@ bool HasOnlyDigits(const std::string& str) {
 // Converts a string to an integer. The source line is printed in case an exception is raised.
 size_t StringToDigit(const std::string& str, const std::string& source_line) {
 
-  // Handles division
-  const auto split_div = split(str, '/');
-  if (split_div.size() == 2) {
-    return StringToDigit(split_div[0], source_line) / StringToDigit(split_div[1], source_line);
+  // Handles addition
+  const auto split_add = split(str, '+');
+  if (split_add.size() == 2) {
+    return StringToDigit(split_add[0], source_line) + StringToDigit(split_add[1], source_line);
   }
 
   // Handles multiplication
@@ -59,10 +59,10 @@ size_t StringToDigit(const std::string& str, const std::string& source_line) {
     return StringToDigit(split_mul[0], source_line) * StringToDigit(split_mul[1], source_line);
   }
 
-  // Handles addition
-  const auto split_add = split(str, '+');
-  if (split_add.size() == 2) {
-    return StringToDigit(split_add[0], source_line) + StringToDigit(split_add[1], source_line);
+  // Handles division
+  const auto split_div = split(str, '/');
+  if (split_div.size() == 2) {
+    return StringToDigit(split_div[0], source_line) / StringToDigit(split_div[1], source_line);
   }
 
   // Handles the digits
@@ -132,6 +132,34 @@ bool EvaluateCondition(std::string condition,
   }
   printf("Warning unknown condition: %s\n", condition.c_str());
   return false; // unknown error
+}
+
+// =================================================================================================
+
+// Array to register promotion, e.g. arr[w] to {arr_0, arr_1}
+void ArrayToRegister(std::string &source_line, const std::unordered_map<std::string, int>& defines,
+                     const std::unordered_map<std::string, size_t>& arrays_to_registers) {
+
+  for (const auto array_name_map : arrays_to_registers) {  // only if marked to be promoted
+    auto array_pos = source_line.find(array_name_map.first + "[");
+    while (array_pos != std::string::npos) {
+
+      // Retrieves the array index
+      const auto loop_remainder = source_line.substr(array_pos);
+      const auto loop_split = split(split(loop_remainder, '[')[1], ']');
+      if (loop_split.size() < 2) { RaiseError(source_line, "Mis-formatted array declaration"); }
+      auto array_index_string = loop_split[0];
+
+      // Replaces the array with a register value
+      SubstituteDefines(defines, array_index_string);
+      const auto array_index = StringToDigit(array_index_string, source_line);
+      FindReplace(source_line, array_name_map.first + "[" + loop_split[0] + "]",
+                  array_name_map.first + "_" + ToString(array_index));
+
+      // Performs an extra substitution if this array occurs another time in this line
+      array_pos = source_line.find(array_name_map.first + "[");
+    }
+  }
 }
 
 // =================================================================================================
@@ -263,7 +291,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
   auto promote_next_array_to_registers = false;
 
   for (auto line_id = size_t{0}; line_id < source_lines.size(); ++line_id) {
-    const auto line = source_lines[line_id];
+    auto line = source_lines[line_id];
 
     // Detect #pragma promote_to_registers directives (unofficial pragma)
     if (array_to_register_promotion) {
@@ -304,7 +332,6 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       arrays_to_registers[array_name] = brackets; // TODO: bracket count not used currently for scope checking
       continue;
     }
-
 
     // Loop unrolling assuming it to be in the form "for (int w = 0; w < 4; w += 1) {"
     if (unroll_next_loop) {
@@ -355,35 +382,14 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
           brackets += std::count(loop_line.begin(), loop_line.end(), '{');
           brackets -= std::count(loop_line.begin(), loop_line.end(), '}');
 
-          // Array to register promotion, e.g. arr[w] to {arr_0, arr_1}
-          if (array_to_register_promotion) {
-            for (const auto array_name_map : arrays_to_registers) {  // only if marked to be promoted
-              const auto array_pos = loop_line.find(array_name_map.first + "[");
-              if (array_pos != std::string::npos) {
-
-                // Retrieves the array index
-                const auto loop_remainder = loop_line.substr(array_pos);
-                const auto loop_split = split(split(loop_remainder, '[')[1], ']');
-                if (loop_split.size() < 2) { RaiseError(line, "Mis-formatted array declaration"); }
-                auto array_index_string = loop_split[0];
-
-                // Verifies if the loop variable is within this array index
-                const auto variable_pos = array_index_string.find(variable_name);
-                if (variable_pos != std::string::npos) {
-
-                  // Replaces the array with a register value
-                  FindReplace(array_index_string, variable_name, ToString(loop_iter));
-                  SubstituteDefines(defines, array_index_string);
-                  const auto array_index = StringToDigit(array_index_string, loop_line);
-                  FindReplace(loop_line, array_name_map.first + "[" + loop_split[0] + "]",
-                              array_name_map.first + "_" + ToString(array_index));
-                }
-              }
-            }
-          }
-
           // Regular variable substitution
           FindReplace(loop_line, variable_name, ToString(loop_iter));
+
+          // Array to register promotion
+          if (array_to_register_promotion) {
+            ArrayToRegister(loop_line, defines, arrays_to_registers);
+          }
+
           lines.emplace_back(loop_line);
           line_id++;
         }
@@ -391,6 +397,12 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       }
     }
     else {
+
+      // Array to register promotion
+      if (array_to_register_promotion) {
+        ArrayToRegister(line, defines, arrays_to_registers);
+      }
+
       lines.emplace_back(line);
     }
   }
@@ -407,7 +419,7 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
 
   // Unrolls loops (single level each call)
   auto arrays_to_registers = std::unordered_map<std::string, size_t>();
-  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
 
   // Gather the results
