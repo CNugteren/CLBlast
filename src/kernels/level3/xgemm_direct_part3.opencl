@@ -50,7 +50,7 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
 
     // Loops over all complete workgroup tiles (K-dimension)
     int kwg = 0;
-    for (; kwg < (kSizeK/WGD) * WGD; kwg+=WGD) {
+    for (; kwg < (kSizeK/WGD) * WGD; kwg += WGD) {
 
       // Loads data: off-chip --> local (matrix A and B)
       if (a_ld % VWMD == 0 && a_offset % VWMD == 0) {
@@ -68,10 +68,10 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
       barrier(CLK_LOCAL_MEM_FENCE);
 
       // Loops over all workitem tiles, unrolled by a factor KWID
-      for (int pwi=0; pwi<WGD; pwi+=KWID) {
+      for (int pwi = 0; pwi < WGD; pwi += KWID) {
         #pragma unroll
-        for (int pit=0; pit<KWID; ++pit) {
-          int kg = pwi + pit;
+        for (int _pit = 0; _pit < KWID; _pit += 1) {
+          int kg = pwi + _pit;
 
           // Loads data: local --> private (matrix A and B)
           LocalToPrivateDirectA(alm, apm, kg, a_transpose);
@@ -112,10 +112,10 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
       barrier(CLK_LOCAL_MEM_FENCE);
 
       // Loops over all workitem tiles, unrolled by a factor KWID
-      for (int pwi=0; pwi<WGD; pwi+=KWID) {
+      for (int pwi = 0; pwi < WGD; pwi += KWID) {
         #pragma unroll
-        for (int pit=0; pit<KWID; ++pit) {
-          int kg = pwi + pit;
+        for (int _pit = 0; _pit < KWID; _pit += 1) {
+          int kg = pwi + _pit;
 
           // Loads data: local --> private (matrix A and B)
           LocalToPrivateDirectA(alm, apm, kg, a_transpose);

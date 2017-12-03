@@ -95,10 +95,10 @@ R"(
 // Initializes the accumulation registers to zero
 INLINE_FUNC void InitAccRegistersDirect(real cpm[NWID][MWID]) {
   #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
+  for (int _mi = 0; _mi < MWID; _mi += 1) {
     #pragma unroll
-    for (int ni=0; ni<NWID; ++ni) {
-      SetToZero(cpm[ni][mi]);
+    for (int _ni = 0; _ni < NWID; _ni += 1) {
+      SetToZero(cpm[_ni][_mi]);
     }
   }
 }
@@ -108,10 +108,10 @@ INLINE_FUNC void InitAccRegistersDirect(real cpm[NWID][MWID]) {
 // Performs the actual computation: Cpm += Apm * Bpm
 INLINE_FUNC void MultiplyAccumulateDirect(real cpm[NWID][MWID], real apm[MWID], real bpm[NWID]) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
-      MultiplyAdd(cpm[ni][mi], apm[mi], bpm[ni]);
+    for (int _mi = 0; _mi < MWID; _mi += 1) {
+      MultiplyAdd(cpm[_ni][_mi], apm[_mi], bpm[_ni]);
     }
   }
 }
@@ -124,10 +124,10 @@ INLINE_FUNC void GlobalToPrivateDirectA(const __global real* restrict agms, real
                                         const int a_ld, const int a_offset, const int idm, const int idk,
                                         const int a_transpose, const int a_conjugate) {
   #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    const int a_index = (a_transpose) ? (idm + mi)*a_ld + idk : idk*a_ld + (idm + mi);
-    apm[mi] = agms[a_index + a_offset];
-    if (a_conjugate) { COMPLEX_CONJUGATE(apm[mi]); }
+  for (int _mi = 0; _mi < MWID; _mi += 1) {
+    const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+    apm[_mi] = agms[a_index + a_offset];
+    if (a_conjugate) { COMPLEX_CONJUGATE(apm[_mi]); }
   }
 }
 
@@ -136,10 +136,10 @@ INLINE_FUNC void GlobalToPrivateDirectB(const __global real* restrict bgms, real
                                         const int b_ld, const int b_offset, const int idn, const int idk,
                                         const int b_transpose, const int b_conjugate) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    const int b_index = (b_transpose) ? (idn + ni)*b_ld + idk : idk*b_ld + (idn + ni);
-    bpm[ni] = bgms[b_index + b_offset];
-    if (b_conjugate) { COMPLEX_CONJUGATE(bpm[ni]); }
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
+    const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+    bpm[_ni] = bgms[b_index + b_offset];
+    if (b_conjugate) { COMPLEX_CONJUGATE(bpm[_ni]); }
   }
 }
 
@@ -150,14 +150,14 @@ INLINE_FUNC void GlobalToPrivateCheckedA(const __global real* restrict agms, rea
                                          const int a_transpose, const int a_conjugate,
                                          const int kSizeM) {
   #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    if (idm + mi < kSizeM) {
-      const int a_index = (a_transpose) ? (idm + mi)*a_ld + idk : idk*a_ld + (idm + mi);
-      apm[mi] = agms[a_index + a_offset];
-      if (a_conjugate) { COMPLEX_CONJUGATE(apm[mi]); }
+  for (int _mi = 0; _mi < MWID; _mi += 1) {
+    if (idm + _mi < kSizeM) {
+      const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+      apm[_mi] = agms[a_index + a_offset];
+      if (a_conjugate) { COMPLEX_CONJUGATE(apm[_mi]); }
     }
     else {
-      SetToZero(apm[mi]);
+      SetToZero(apm[_mi]);
     }
   }
 }
@@ -168,14 +168,14 @@ INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, rea
                                          const int b_transpose, const int b_conjugate,
                                          const int kSizeN) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    if (idn + ni < kSizeN) {
-      const int b_index = (b_transpose) ? (idn + ni)*b_ld + idk : idk*b_ld + (idn + ni);
-      bpm[ni] = bgms[b_index + b_offset];
-      if (b_conjugate) { COMPLEX_CONJUGATE(bpm[ni]); }
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
+    if (idn + _ni < kSizeN) {
+      const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+      bpm[_ni] = bgms[b_index + b_offset];
+      if (b_conjugate) { COMPLEX_CONJUGATE(bpm[_ni]); }
     }
     else {
-      SetToZero(bpm[ni]);
+      SetToZero(bpm[_ni]);
     }
   }
 }
@@ -187,10 +187,10 @@ INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, rea
 INLINE_FUNC void LocalToPrivateDirectA(LOCAL_PTR real* alm, real apm[MWID], const int kg,
                                        const int a_transpose) {
   #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    const int mg = mi + get_local_id(0)*MWID;
+  for (int _mi = 0; _mi < MWID; _mi += 1) {
+    const int mg = _mi + get_local_id(0)*MWID;
     const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
-    apm[mi] = alm[index];
+    apm[_mi] = alm[index];
   }
 }
 
@@ -198,10 +198,10 @@ INLINE_FUNC void LocalToPrivateDirectA(LOCAL_PTR real* alm, real apm[MWID], cons
 INLINE_FUNC void LocalToPrivateDirectB(LOCAL_PTR real* blm, real bpm[NWID], const int kg,
                                        const int b_transpose) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    const int ng = ni + get_local_id(1)*NWID;
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
+    const int ng = _ni + get_local_id(1)*NWID;
     const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
-    bpm[ni] = blm[index];
+    bpm[_ni] = blm[index];
   }
 }
 
@@ -214,21 +214,21 @@ INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
                                     const real alpha, const real beta,
                                     const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
+    for (int _mi = 0; _mi < MWID; _mi += 1) {
 
-      // Determines the destination index
-      int c_index = (c_transpose) ? (idm + mi)*c_ld + (idn + ni) : (idn + ni)*c_ld + (idm + mi);
+      // Deter_mines the destination index
+      int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
       // The final multiplication with alpha (in case beta == 0)
       real result;
       if (IsZero(beta)) {
-        Multiply(result, alpha, cpm[ni][mi]);
+        Multiply(result, alpha, cpm[_ni][_mi]);
       }
       // The final multiplication with alpha and the addition with beta*C
       else {
-        AXPBY(result, alpha, cpm[ni][mi], beta, cgm[c_index + c_offset]);
+        AXPBY(result, alpha, cpm[_ni][_mi], beta, cgm[c_index + c_offset]);
       }
       cgm[c_index + c_offset] = result;
     }
@@ -242,22 +242,22 @@ INLINE_FUNC void StoreResultsChecked(__global real* cgm, real cpm[NWID][MWID],
                                      const real alpha, const real beta,
                                      const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
-      if ((idm + mi) < kSizeM && (idn + ni) < kSizeN) {
+    for (int _mi = 0; _mi < MWID; _mi += 1) {
+      if ((idm + _mi) < kSizeM && (idn + _ni) < kSizeN) {
 
-        // Determines the destination index
-        int c_index = (c_transpose) ? (idm + mi)*c_ld + (idn + ni) : (idn + ni)*c_ld + (idm + mi);
+        // Deter_mines the destination index
+        int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
         // The final multiplication with alpha (in case beta == 0)
         real result;
         if (IsZero(beta)) {
-          Multiply(result, alpha, cpm[ni][mi]);
+          Multiply(result, alpha, cpm[_ni][_mi]);
         }
         // The final multiplication with alpha and the addition with beta*C
         else {
-          AXPBY(result, alpha, cpm[ni][mi], beta, cgm[c_index + c_offset]);
+          AXPBY(result, alpha, cpm[_ni][_mi], beta, cgm[c_index + c_offset]);
         }
         cgm[c_index + c_offset] = result;
       }

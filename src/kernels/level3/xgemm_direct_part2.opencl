@@ -31,13 +31,13 @@ INLINE_FUNC void GlobalToLocalDirectA(const __global realMD* restrict agm, LOCAL
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD/VWMD; ++mia) {
+  for (int _mia = 0; _mia < MWAD/VWMD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*(MWAD/VWMD);
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*(MWAD/VWMD);
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg/VWMD : mg + GetGroupID0()*(WGD/VWMD);
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
@@ -102,13 +102,13 @@ INLINE_FUNC void GlobalToLocalDirectB(const __global realND* restrict bgm, LOCAL
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD/VWND; ++nib) {
+    for (int _nib = 0; _nib < NWBD/VWND; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*(NWBD/VWND);
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*(NWBD/VWND);
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg/VWND : ng + GetGroupID1()*(WGD/VWND);
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
@@ -152,8 +152,9 @@ INLINE_FUNC void GlobalToLocalDirectB(const __global realND* restrict bgm, LOCAL
          blm[kg*(WGD + PADB) + ng*VWND + 15] = bvec.sF;
       #endif
       if (b_conjugate) {
-        for (int vn=0; vn<VWND; ++vn) {
-          COMPLEX_CONJUGATE(blm[kg*(WGD + PADB) + ng*VWND + vn]);
+        #pragma unroll
+        for (int _vn = 0; _vn < VWND; _vn += 1) {
+          COMPLEX_CONJUGATE(blm[kg*(WGD + PADB) + ng*VWND + _vn]);
         }
       }
     }
@@ -177,13 +178,13 @@ INLINE_FUNC void GlobalToLocalScalarA(const __global real* restrict agms, LOCAL_
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD; ++mia) {
+  for (int _mia = 0; _mia < MWAD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*MWAD;
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*MWAD;
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg : mg + GetGroupID0()*WGD;
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
@@ -208,13 +209,13 @@ INLINE_FUNC void GlobalToLocalScalarB(const __global real* restrict bgms, LOCAL_
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD; ++nib) {
+    for (int _nib = 0; _nib < NWBD; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*NWBD;
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*NWBD;
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg : ng + GetGroupID1()*WGD;
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
@@ -244,13 +245,13 @@ INLINE_FUNC void GlobalToLocalCheckedA(const __global real* restrict agms, LOCAL
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD; ++mia) {
+  for (int _mia = 0; _mia < MWAD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*MWAD;
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*MWAD;
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg : mg + GetGroupID0()*WGD;
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
@@ -283,13 +284,13 @@ INLINE_FUNC void GlobalToLocalCheckedB(const __global real* restrict bgms, LOCAL
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD; ++nib) {
+    for (int _nib = 0; _nib < NWBD; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*NWBD;
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*NWBD;
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg : ng + GetGroupID1()*WGD;
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 

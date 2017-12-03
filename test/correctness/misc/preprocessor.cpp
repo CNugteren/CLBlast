@@ -172,7 +172,26 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
   ;
   if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
 
+  // GEMM (in-direct)
+  const auto gemm_sources =
+    "#define KWI 2\n"
+    "#define MWG 16\n"
+    "#define NWG 16\n"
+    #include "../src/kernels/level3/xgemm_part1.opencl"
+    #include "../src/kernels/level3/xgemm_part2.opencl"
+    #include "../src/kernels/level3/xgemm_part3.opencl"
+  ;
+  if (TestKernel(device, context, "Xgemm", gemm_sources, precision)) { passed++; } else { errors++; }
 
+  // GEMM (direct)
+  const auto gemm_direct_sources =
+    "#define KWID 2\n"
+    "#define WGD 16\n"
+    #include "../src/kernels/level3/xgemm_direct_part1.opencl"
+    #include "../src/kernels/level3/xgemm_direct_part2.opencl"
+    #include "../src/kernels/level3/xgemm_direct_part3.opencl"
+  ;
+  if (TestKernel(device, context, "XgemmDirectTN", gemm_direct_sources, precision)) { passed++; } else { errors++; }
 
   // Prints and returns the statistics
   std::cout << std::endl;

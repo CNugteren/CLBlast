@@ -43,7 +43,7 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   InitAccRegisters(cpm);
 
   // Loops over all workgroup tiles
-  for (int kwg=0; kwg<kSizeK; kwg+=KWG) {
+  for (int kwg = 0; kwg < kSizeK; kwg += KWG) {
 
     // Loads data: off-chip --> local (matrix A)
     #if SA == 1
@@ -58,14 +58,14 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
     #endif
 
     // Loops over all workitem tiles, unrolled by a factor KWI
-    for (int pwi=0; pwi<KWG; pwi+=KWI) {
+    for (int pwi = 0; pwi < KWG; pwi += KWI) {
       #pragma unroll
-      for (int pit=0; pit<KWI; ++pit) {
+      for (int _pit = 0; _pit < KWI; _pit += 1) {
         #if SA == 0 || SB == 0
-          int idk = kwg + pwi + pit;
+          int idk = kwg + pwi + _pit;
         #endif
         #if SA == 1 || SB == 1
-          int kg = pwi+pit;
+          int kg = pwi + _pit;
         #endif
 
         // Loads data: local --> private (matrix A)

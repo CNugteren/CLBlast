@@ -137,45 +137,45 @@ R"(
 // Initializes the accumulation registers to zero
 INLINE_FUNC void InitAccRegisters(realM cpm[NWI][MWI/VWM]) {
   #pragma unroll
-  for (int mi=0; mi<MWI/VWM; ++mi) {
+  for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
     #pragma unroll
-    for (int ni=0; ni<NWI; ++ni) {
+    for (int _ni = 0; _ni < NWI; _ni += 1) {
       #if VWM == 1
-        SetToZero(cpm[ni][mi]);
+        SetToZero(cpm[_ni][_mi]);
       #elif VWM == 2
-        SetToZero(cpm[ni][mi].x);
-        SetToZero(cpm[ni][mi].y);
+        SetToZero(cpm[_ni][_mi].x);
+        SetToZero(cpm[_ni][_mi].y);
       #elif VWM == 4
-        SetToZero(cpm[ni][mi].x);
-        SetToZero(cpm[ni][mi].y);
-        SetToZero(cpm[ni][mi].z);
-        SetToZero(cpm[ni][mi].w);
+        SetToZero(cpm[_ni][_mi].x);
+        SetToZero(cpm[_ni][_mi].y);
+        SetToZero(cpm[_ni][_mi].z);
+        SetToZero(cpm[_ni][_mi].w);
       #elif VWM == 8
-        SetToZero(cpm[ni][mi].s0);
-        SetToZero(cpm[ni][mi].s1);
-        SetToZero(cpm[ni][mi].s2);
-        SetToZero(cpm[ni][mi].s3);
-        SetToZero(cpm[ni][mi].s4);
-        SetToZero(cpm[ni][mi].s5);
-        SetToZero(cpm[ni][mi].s6);
-        SetToZero(cpm[ni][mi].s7);
+        SetToZero(cpm[_ni][_mi].s0);
+        SetToZero(cpm[_ni][_mi].s1);
+        SetToZero(cpm[_ni][_mi].s2);
+        SetToZero(cpm[_ni][_mi].s3);
+        SetToZero(cpm[_ni][_mi].s4);
+        SetToZero(cpm[_ni][_mi].s5);
+        SetToZero(cpm[_ni][_mi].s6);
+        SetToZero(cpm[_ni][_mi].s7);
       #elif VWM == 16
-        SetToZero(cpm[ni][mi].s0);
-        SetToZero(cpm[ni][mi].s1);
-        SetToZero(cpm[ni][mi].s2);
-        SetToZero(cpm[ni][mi].s3);
-        SetToZero(cpm[ni][mi].s4);
-        SetToZero(cpm[ni][mi].s5);
-        SetToZero(cpm[ni][mi].s6);
-        SetToZero(cpm[ni][mi].s7);
-        SetToZero(cpm[ni][mi].s8);
-        SetToZero(cpm[ni][mi].s9);
-        SetToZero(cpm[ni][mi].sA);
-        SetToZero(cpm[ni][mi].sB);
-        SetToZero(cpm[ni][mi].sC);
-        SetToZero(cpm[ni][mi].sD);
-        SetToZero(cpm[ni][mi].sE);
-        SetToZero(cpm[ni][mi].sF);
+        SetToZero(cpm[_ni][_mi].s0);
+        SetToZero(cpm[_ni][_mi].s1);
+        SetToZero(cpm[_ni][_mi].s2);
+        SetToZero(cpm[_ni][_mi].s3);
+        SetToZero(cpm[_ni][_mi].s4);
+        SetToZero(cpm[_ni][_mi].s5);
+        SetToZero(cpm[_ni][_mi].s6);
+        SetToZero(cpm[_ni][_mi].s7);
+        SetToZero(cpm[_ni][_mi].s8);
+        SetToZero(cpm[_ni][_mi].s9);
+        SetToZero(cpm[_ni][_mi].sA);
+        SetToZero(cpm[_ni][_mi].sB);
+        SetToZero(cpm[_ni][_mi].sC);
+        SetToZero(cpm[_ni][_mi].sD);
+        SetToZero(cpm[_ni][_mi].sE);
+        SetToZero(cpm[_ni][_mi].sF);
       #endif
     }
   }
@@ -191,19 +191,19 @@ INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, LOCAL_PTR re
   const int la0 = tid % MDIMA;
   const int la1 = tid / MDIMA;
   #pragma unroll
-  for (int mia=0; mia<MWA/VWM; ++mia) {
+  for (int _mia = 0; _mia < MWA/VWM; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWA; ++kia) {
+    for (int _kia = 0; _kia < KWA; _kia += 1) {
 
       // Computes the indices based on strided/non-strided access
       #if STRM == 0
-        int mg = mia + la0*(MWA/VWM);
+        int mg = _mia + la0*(MWA/VWM);
       #elif STRM == 1
-        int mg = la0 + mia*MDIMA;
+        int mg = la0 + _mia*MDIMA;
       #endif
 
       // Computes the indices for the global memory
-      int kg = kia + la1*KWA;
+      int kg = _kia + la1*KWA;
       int idm = mg + GetGroupID0() * (MWG/VWM);
       int idk = kg + kwg;
 
@@ -221,19 +221,19 @@ INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, LOCAL_PTR re
   const int lb0 = tid % NDIMB;
   const int lb1 = tid / NDIMB;
   #pragma unroll
-  for (int kib=0; kib<KWB; ++kib) {
+  for (int _kib = 0; _kib < KWB; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWB/VWN; ++nib) {
+    for (int _nib = 0; _nib < NWB/VWN; _nib += 1) {
 
       // Computes the indices based on strided/non-strided access
       #if STRN == 0
-        int ng = nib + lb0*(NWB/VWN);
+        int ng = _nib + lb0*(NWB/VWN);
       #elif STRN == 1
-        int ng = lb0 + nib*NDIMB;
+        int ng = lb0 + _nib*NDIMB;
       #endif
 
       // Computes the indices for the global memory
-      int kg = kib + lb1*KWB;
+      int kg = _kib + lb1*KWB;
       int idn = ng + GetGroupID1() * (NWG/VWN);
       int idk = kg + kwg;
 
@@ -252,20 +252,20 @@ INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, LOCAL_PTR re
 INLINE_FUNC void GlobalToPrivateA(const __global realM* restrict agm, realM apm[MWI/VWM],
                                   const int kSizeM, const int idk, const int kwg) {
   #pragma unroll
-  for (int mi=0; mi<MWI/VWM; ++mi) {
+  for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
 
     // Computes the indices based on strided/non-strided access
     #if STRM == 0
-      int mg = mi + get_local_id(0)*(MWI/VWM);
+      int mg = _mi + get_local_id(0)*(MWI/VWM);
     #elif STRM == 1
-      int mg = get_local_id(0) + mi*MDIMC;
+      int mg = get_local_id(0) + _mi*MDIMC;
     #endif
 
     // Computes the indices for the global memory
     int idm = mg + GetGroupID0() * (MWG/VWM);
 
     // Loads the data from global memory (not transposed) and stores into registers
-    apm[mi] = agm[idk*(kSizeM/VWM) + idm];
+    apm[_mi] = agm[idk*(kSizeM/VWM) + idm];
   }
 }
 #endif
@@ -275,20 +275,20 @@ INLINE_FUNC void GlobalToPrivateA(const __global realM* restrict agm, realM apm[
 INLINE_FUNC void GlobalToPrivateB(const __global realN* restrict bgm, realN bpm[NWI/VWN],
                                   const int kSizeN, const int idk) {
   #pragma unroll
-  for (int ni=0; ni<NWI/VWN; ++ni) {
+  for (int _ni = 0; _ni < NWI/VWN; _ni += 1) {
 
     // Computes the indices based on strided/non-strided access
     #if STRN == 0
-      int ng = ni + get_local_id(1)*(NWI/VWN);
+      int ng = _ni + get_local_id(1)*(NWI/VWN);
     #elif STRN == 1
-      int ng = get_local_id(1) + ni*NDIMC;
+      int ng = get_local_id(1) + _ni*NDIMC;
     #endif
 
     // Computes the indices for the global memory
     int idn = ng + GetGroupID1() * (NWG/VWN);
 
     // Loads the data from global memory (transposed) and stores into registers
-    bpm[ni] = bgm[idk*(kSizeN/VWN) + idn];
+    bpm[_ni] = bgm[idk*(kSizeN/VWN) + idn];
   }
 }
 #endif
@@ -300,13 +300,13 @@ INLINE_FUNC void GlobalToPrivateB(const __global realN* restrict bgm, realN bpm[
 #if SA == 1
 INLINE_FUNC void LocalToPrivateA(LOCAL_PTR realM* alm, realM apm[MWI/VWM], const int kg) {
   #pragma unroll
-  for (int mi=0; mi<MWI/VWM; ++mi) {
+  for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
     #if STRM == 0
-      int mg = mi + get_local_id(0)*(MWI/VWM);
+      int mg = _mi + get_local_id(0)*(MWI/VWM);
     #elif STRM == 1
-      int mg = get_local_id(0) + mi*MDIMC;
+      int mg = get_local_id(0) + _mi*MDIMC;
     #endif
-    apm[mi] = alm[kg*(MWG/VWM) + mg];
+    apm[_mi] = alm[kg*(MWG/VWM) + mg];
   }
 }
 #endif
@@ -315,13 +315,13 @@ INLINE_FUNC void LocalToPrivateA(LOCAL_PTR realM* alm, realM apm[MWI/VWM], const
 #if SB == 1
 INLINE_FUNC void LocalToPrivateB(LOCAL_PTR realN* blm, realN bpm[NWI/VWN], const int kg) {
   #pragma unroll
-  for (int ni=0; ni<NWI/VWN; ++ni) {
+  for (int _ni = 0; _ni < NWI/VWN; _ni += 1) {
     #if STRN == 0
-      int ng = ni + get_local_id(1)*(NWI/VWN);
+      int ng = _ni + get_local_id(1)*(NWI/VWN);
     #elif STRN == 1
-      int ng = get_local_id(1) + ni*NDIMC;
+      int ng = get_local_id(1) + _ni*NDIMC;
     #endif
-    bpm[ni] = blm[kg*(NWG/VWN) + ng];
+    bpm[_ni] = blm[kg*(NWG/VWN) + ng];
   }
 }
 #endif
