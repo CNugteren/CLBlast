@@ -228,10 +228,10 @@ void Xgemv(const int m, const int n,
 
   // Initializes the accumulation register
   #pragma promote_to_registers
-  real acc[WPT1];
+  real acc1[WPT1];
   #pragma unroll
   for (int _w = 0; _w < WPT1; _w += 1) {
-    SetToZero(acc[_w]);
+    SetToZero(acc1[_w]);
   }
 
   // Divides the work in a main and tail section
@@ -262,7 +262,7 @@ void Xgemv(const int m, const int n,
               const int k = kwg + kloop + _kunroll;
               real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
               if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-              MultiplyAdd(acc[_w], xlm[kloop + _kunroll], value);
+              MultiplyAdd(acc1[_w], xlm[kloop + _kunroll], value);
             }
           }
         }
@@ -273,7 +273,7 @@ void Xgemv(const int m, const int n,
               const int k = kwg + kloop + _kunroll;
               real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
               if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-              MultiplyAdd(acc[_w], xlm[kloop + _kunroll], value);
+              MultiplyAdd(acc1[_w], xlm[kloop + _kunroll], value);
             }
           }
         }
@@ -295,20 +295,20 @@ void Xgemv(const int m, const int n,
         for (int k=n_floor; k<n; ++k) {
           real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-          MultiplyAdd(acc[_w], xgm[k*x_inc + x_offset], value);
+          MultiplyAdd(acc1[_w], xgm[k*x_inc + x_offset], value);
         }
       }
       else { // Transposed
         for (int k=n_floor; k<n; ++k) {
           real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-          MultiplyAdd(acc[_w], xgm[k*x_inc + x_offset], value);
+          MultiplyAdd(acc1[_w], xgm[k*x_inc + x_offset], value);
         }
       }
 
       // Stores the final result
       real yval = ygm[gid*y_inc + y_offset];
-      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[_w], beta, yval);
+      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc1[_w], beta, yval);
     }
   }
 }

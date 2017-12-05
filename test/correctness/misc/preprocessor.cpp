@@ -60,6 +60,54 @@ bool TestDefines() {
   const auto result1 = PreprocessKernelSource(source1);
   return result1 == expected1;
 }
+// =================================================================================================
+
+bool TestArrayToRegisterPromotion() {
+  const auto source1 =
+      R"(#define WPT 2
+inline void SetValues(int float, float values[WPT],
+                      const float k) {
+  #pragma unroll
+  for (int i = 0; i < WPT; i += 1) {
+    values[i] = k + j;
+  }
+}
+__kernel void ExampleKernel() {
+  #pragma promote_to_registers
+  float values[WPT];
+  #pragma unroll
+  for (int i = 0; i < WPT; i += 1) {
+    values[i] = 0.0f;
+  }
+  SetValues(12.3f, values, -3.9f);
+}
+)";
+  const auto expected1 =
+      R"(#define WPT 2
+inline void SetValues(int float, float values_0, float values_1,
+                      const float k) {
+  {
+    values_0 = k + j;
+  }
+  {
+    values_1 = k + j;
+  }
+}
+__kernel void ExampleKernel() {
+  float values_0;
+  float values_1;
+  {
+    values_0 = 0.0f;
+  }
+  {
+    values_1 = 0.0f;
+  }
+  SetValues(12.3f, values_0, values_1, -3.9f);
+}
+)";
+  const auto result1 = PreprocessKernelSource(source1);
+  return result1 == expected1;
+}
 
 // =================================================================================================
 
@@ -110,6 +158,7 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
 
   // Basic tests
   if (TestDefines()) { passed++; } else { errors++; }
+  if (TestArrayToRegisterPromotion()) { passed++; } else { errors++; }
 
   // XAXPY
   const auto xaxpy_sources =
