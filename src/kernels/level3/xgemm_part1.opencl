@@ -135,47 +135,47 @@ R"(
 // =================================================================================================
 
 // Initializes the accumulation registers to zero
-INLINE_FUNC void InitAccRegisters(realM cpm[NWI][MWI/VWM]) {
+INLINE_FUNC void InitAccRegisters(realM cpm[NWI*MWI/VWM]) {
   #pragma unroll
   for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
     #pragma unroll
     for (int _ni = 0; _ni < NWI; _ni += 1) {
       #if VWM == 1
-        SetToZero(cpm[_ni][_mi]);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi]);
       #elif VWM == 2
-        SetToZero(cpm[_ni][_mi].x);
-        SetToZero(cpm[_ni][_mi].y);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].x);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].y);
       #elif VWM == 4
-        SetToZero(cpm[_ni][_mi].x);
-        SetToZero(cpm[_ni][_mi].y);
-        SetToZero(cpm[_ni][_mi].z);
-        SetToZero(cpm[_ni][_mi].w);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].x);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].y);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].z);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].w);
       #elif VWM == 8
-        SetToZero(cpm[_ni][_mi].s0);
-        SetToZero(cpm[_ni][_mi].s1);
-        SetToZero(cpm[_ni][_mi].s2);
-        SetToZero(cpm[_ni][_mi].s3);
-        SetToZero(cpm[_ni][_mi].s4);
-        SetToZero(cpm[_ni][_mi].s5);
-        SetToZero(cpm[_ni][_mi].s6);
-        SetToZero(cpm[_ni][_mi].s7);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s0);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s1);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s2);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s3);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s4);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s5);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s6);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s7);
       #elif VWM == 16
-        SetToZero(cpm[_ni][_mi].s0);
-        SetToZero(cpm[_ni][_mi].s1);
-        SetToZero(cpm[_ni][_mi].s2);
-        SetToZero(cpm[_ni][_mi].s3);
-        SetToZero(cpm[_ni][_mi].s4);
-        SetToZero(cpm[_ni][_mi].s5);
-        SetToZero(cpm[_ni][_mi].s6);
-        SetToZero(cpm[_ni][_mi].s7);
-        SetToZero(cpm[_ni][_mi].s8);
-        SetToZero(cpm[_ni][_mi].s9);
-        SetToZero(cpm[_ni][_mi].sA);
-        SetToZero(cpm[_ni][_mi].sB);
-        SetToZero(cpm[_ni][_mi].sC);
-        SetToZero(cpm[_ni][_mi].sD);
-        SetToZero(cpm[_ni][_mi].sE);
-        SetToZero(cpm[_ni][_mi].sF);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s0);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s1);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s2);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s3);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s4);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s5);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s6);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s7);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s8);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].s9);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sA);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sB);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sC);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sD);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sE);
+        SetToZero(cpm[_ni * (MWI/VWM) + _mi].sF);
       #endif
     }
   }

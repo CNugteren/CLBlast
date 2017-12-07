@@ -50,8 +50,8 @@ bool HasOnlyDigits(const std::string& str) {
 int ParseMath(const std::string& str) {
 
   // Handles brackets
-  const auto split_close = split(str, ')');
-  if (split_close.size() >= 2) {
+  if (str.find(")") != std::string::npos) {
+    const auto split_close = split(str, ')');
     const auto split_end = split(split_close[0], '(');
     if (split_end.size() < 2) { RaiseError(str, "Mismatching brackets #0"); }
     const auto bracket_contents = ParseMath(split_end[split_end.size() - 1]);

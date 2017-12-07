@@ -20,7 +20,7 @@ R"(
 // Main body of the matrix-multiplication algorithm. It calls various (inlined) functions.
 INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            const __global realM* restrict agm, const __global realN* restrict bgm,
-                           __global realM* cgm, realM cpm[NWI][MWI/VWM]
+                           __global realM* cgm, realM cpm[NWI*MWI/VWM]
                            #if SA == 1 && SB == 1
                              , LOCAL_PTR realM* alm, LOCAL_PTR realN* blm
                            #elif SA == 1
@@ -31,7 +31,9 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            ) {
 
   // Allocates workitem-private memory (registers)
+  #pragma promote_to_registers
   realM apm[MWI/VWM];
+  #pragma promote_to_registers
   realN bpm[NWI/VWN];
 
   // Combined thread identifier (volatile to disable caching)
@@ -126,7 +128,8 @@ void XgemmUpper(const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  realM cpm[NWI][MWI/VWM];
+  #pragma promote_to_registers
+  realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeN, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
   #elif SA == 1
@@ -166,7 +169,8 @@ void XgemmLower(const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  realM cpm[NWI][MWI/VWM];
+  #pragma promote_to_registers
+  realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeN, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
   #elif SA == 1
@@ -210,7 +214,8 @@ void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  realM cpm[NWI][MWI/VWM];
+  #pragma promote_to_registers
+  realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
   #elif SA == 1
