@@ -27,12 +27,24 @@
 #include <sstream>
 #include <algorithm>
 #include <unordered_map>
+#include <map>
 #include <vector>
 
 #include "kernel_preprocessor.hpp"
 
 namespace clblast {
 // =================================================================================================
+
+struct compare_longer_string {
+  bool operator() (const std::string &lhs, const std::string &rhs) const {
+    if (lhs.size() > rhs.size()) { return true; }
+    if (lhs.size() < rhs.size()) { return false; }
+    return lhs < rhs;
+  }
+};
+
+using DefinesIntMap = std::map<std::string, int, compare_longer_string>;
+using DefinesStringMap = std::map<std::string, std::string, std::greater<std::string>>;
 
 void RaiseError(const std::string& source_line, const std::string& exception_message) {
   printf("[OpenCL pre-processor] Error in source line: %s\n", source_line.c_str());
@@ -122,7 +134,7 @@ void FindReplace(std::string &subject, const std::string &search, const std::str
   }
 }
 
-void SubstituteDefines(const std::unordered_map<std::string, int>& defines,
+void SubstituteDefines(const DefinesIntMap& defines,
                        std::string& source_string) {
   for (const auto &define : defines) {
     FindReplace(source_string, define.first, std::to_string(define.second));
@@ -130,8 +142,8 @@ void SubstituteDefines(const std::unordered_map<std::string, int>& defines,
 }
 
 bool EvaluateCondition(std::string condition,
-                       const std::unordered_map<std::string, int> &defines,
-                       const std::unordered_map<std::string, std::string> &defines_string) {
+                       const DefinesIntMap &defines,
+                       const DefinesStringMap &defines_string) {
 
   // Replace macros in the string
   SubstituteDefines(defines, condition);
@@ -177,7 +189,7 @@ bool EvaluateCondition(std::string condition,
 // =================================================================================================
 
 // Array to register promotion, e.g. arr[w] to {arr_0, arr_1}
-void ArrayToRegister(std::string &source_line, const std::unordered_map<std::string, int>& defines,
+void ArrayToRegister(std::string &source_line, const DefinesIntMap& defines,
                      const std::unordered_map<std::string, size_t>& arrays_to_registers,
                      const size_t num_brackets) {
 
@@ -265,9 +277,9 @@ void ArrayToRegister(std::string &source_line, const std::unordered_map<std::str
 
 // First pass: detect defines and comments
 std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
-                                                      std::unordered_map<std::string, int>& defines_int) {
+                                                      DefinesIntMap& defines_int) {
   auto lines = std::vector<std::string>();
-  auto defines_string = std::unordered_map<std::string, std::string>();
+  auto defines_string = DefinesStringMap();
 
   // Parse the input string into a vector of lines
   const auto max_depth_defines = 30;
@@ -276,17 +288,16 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
   auto source_stream = std::stringstream(source);
   auto line = std::string{""};
   while (std::getline(source_stream, line)) {
-    //printf("[@%d] disabled=%d '%s'\n", depth, disabled[depth], line.c_str());
+    //printf("[@%zu] disabled=%d '%s'\n", depth, disabled[depth], line.c_str());
 
     // Decide whether or not to remain in 'disabled' mode
+    // {0 => enabled, 1 => disabled, but could become enabled again later, 2 => disabled until #endif
     if (line.find("#endif") != std::string::npos) {
       disabled[depth] = 0;
     }
-    if (line.find("#elif") != std::string::npos) {
-      disabled[depth] = 0;
-    }
-    if (line.find("#else") != std::string::npos) {
-      disabled[depth] = (disabled[depth] == 0) ? 1 : 0;
+    if (line.find("#elif") != std::string::npos || line.find("#else") != std::string::npos) {
+      if (disabled[depth] == 0) { disabled[depth] = 2; } // was enabled, now disabled until #endif
+      if (disabled[depth] == 1) { disabled[depth] = 0; } // was disabled, now potentially enabled again
     }
 
     // Measures the depth of pre-processor defines
@@ -304,7 +315,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
     // Verifies whether this level or any level below is disabled
     auto is_disabled = false;
     for (auto d = size_t{0}; d <= depth; ++d) {
-      if (disabled[d] == 1) { is_disabled = true; }
+      if (disabled[d] >= 1) { is_disabled = true; }
     }
 
     // Not in a disabled-block
@@ -382,7 +393,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
 
 // Second pass: detect array-to-register promotion pragma's and replace declarations & function calls
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
-                                               const std::unordered_map<std::string, int>& defines,
+                                               const DefinesIntMap& defines,
                                                std::unordered_map<std::string, size_t>& arrays_to_registers) {
   auto lines = std::vector<std::string>();
 
@@ -435,7 +446,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
 
 // Third pass: unroll loops and perform actual array-to-register promotion
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
-                                               const std::unordered_map<std::string, int>& defines,
+                                               const DefinesIntMap& defines,
                                                std::unordered_map<std::string, size_t>& arrays_to_registers,
                                                const bool array_to_register_promotion) {
   auto lines = std::vector<std::string>();
@@ -538,7 +549,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
 std::string PreprocessKernelSource(const std::string& kernel_source) {
 
   // Retrieves the defines and removes comments from the source lines
-  auto defines = std::unordered_map<std::string, int>();
+  auto defines = DefinesIntMap();
   auto lines = PreprocessDefinesAndComments(kernel_source, defines);
 
   // Unrolls loops (single level each call)

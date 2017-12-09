@@ -219,13 +219,14 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
     #include "../src/kernels/level3/level3.opencl"
     #include "../src/kernels/level3/transpose_pad.opencl"
   ;
-  if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
+  //if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
 
   // GEMM (in-direct)
   const auto gemm_sources =
     "#define KWI 2\n"
     "#define MWG 16\n"
     "#define NWG 16\n"
+    "#define SA 1\n"
     #include "../src/kernels/level3/xgemm_part1.opencl"
     #include "../src/kernels/level3/xgemm_part2.opencl"
     #include "../src/kernels/level3/xgemm_part3.opencl"

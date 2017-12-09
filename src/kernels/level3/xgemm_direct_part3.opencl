@@ -35,12 +35,12 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
   const __global real* restrict bgms = (const __global real* restrict) bgm;
 
   // Allocates workitem-private memory (registers)
-  real apm[MWID];
-  real bpm[NWID];
-  real cpm[NWID][MWID];
+  real apd[MWID];
+  real bpd[NWID];
+  real cpd[NWID * MWID];
 
   // Initializes the accumulation registers
-  InitAccRegistersDirect(cpm);
+  InitAccRegistersDirect(cpd);
 
   // The faster version of GEMM is not allowed on the (incomplete) borders. Therefore, this section
   // processes only the main parts: output blocks of WGD by WGD.
@@ -74,11 +74,11 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
           int kg = pwi + _pit;
 
           // Loads data: local --> private (matrix A and B)
-          LocalToPrivateDirectA(alm, apm, kg, a_transpose);
-          LocalToPrivateDirectB(blm, bpm, kg, b_transpose);
+          LocalToPrivateDirectA(alm, apd, kg, a_transpose);
+          LocalToPrivateDirectB(blm, bpd, kg, b_transpose);
 
-          // Performs the accumulation (Cpm += Apm * Bpm)
-          MultiplyAccumulateDirect(cpm, apm, bpm);
+          // Performs the accumulation (Cpmd += Apmd * Bpmd)
+          MultiplyAccumulateDirect(cpd, apd, bpd);
         }
       }
       barrier(CLK_LOCAL_MEM_FENCE);
@@ -88,15 +88,15 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     for (; kwg < kSizeK; ++kwg) {
 
       // Loads data: off-chip --> private (matrix A and B)
-      GlobalToPrivateDirectA(agms, apm, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate);
-      GlobalToPrivateDirectB(bgms, bpm, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate);
+      GlobalToPrivateDirectA(agms, apd, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate);
+      GlobalToPrivateDirectB(bgms, bpd, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate);
 
-      // Performs the accumulation (Cpm += Apm * Bpm)
-      MultiplyAccumulateDirect(cpm, apm, bpm);
+      // Performs the accumulation (Cpmd += Apmd * Bpmd)
+      MultiplyAccumulateDirect(cpd, apd, bpd);
     }
 
     // Stores a tile of results and performs the multiplication with alpha and beta
-    StoreResultsDirect(cgm, cpm, idm, idn, alpha, beta, c_ld, c_offset, c_transpose);
+    StoreResultsDirect(cgm, cpd, idm, idn, alpha, beta, c_ld, c_offset, c_transpose);
   }
 
   // Simple but slower version for the parts on the edge (incomplete tiles in M and N-dimensions)
@@ -118,11 +118,11 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
           int kg = pwi + _pit;
 
           // Loads data: local --> private (matrix A and B)
-          LocalToPrivateDirectA(alm, apm, kg, a_transpose);
-          LocalToPrivateDirectB(blm, bpm, kg, b_transpose);
+          LocalToPrivateDirectA(alm, apd, kg, a_transpose);
+          LocalToPrivateDirectB(blm, bpd, kg, b_transpose);
 
-          // Performs the accumulation (Cpm += Apm * Bpm)
-          MultiplyAccumulateDirect(cpm, apm, bpm);
+          // Performs the accumulation (Cpmd += Apmd * Bpmd)
+          MultiplyAccumulateDirect(cpd, apd, bpd);
         }
       }
       barrier(CLK_LOCAL_MEM_FENCE);
@@ -132,15 +132,15 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     for (; kwg < kSizeK; ++kwg) {
 
       // Loads data: off-chip --> private (matrix A and B)
-      GlobalToPrivateCheckedA(agms, apm, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate, kSizeM);
-      GlobalToPrivateCheckedB(bgms, bpm, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate, kSizeN);
+      GlobalToPrivateCheckedA(agms, apd, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate, kSizeM);
+      GlobalToPrivateCheckedB(bgms, bpd, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate, kSizeN);
 
-      // Performs the accumulation (Cpm += Apm * Bpm)
-      MultiplyAccumulateDirect(cpm, apm, bpm);
+      // Performs the accumulation (Cpmd += Apmd * Bpmd)
+      MultiplyAccumulateDirect(cpd, apd, bpd);
     }
 
     // Stores a tile of results and performs the multiplication with alpha and beta
-    StoreResultsChecked(cgm, cpm, idm, idn, kSizeM, kSizeN, alpha, beta, c_ld, c_offset, c_transpose);
+    StoreResultsChecked(cgm, cpd, idm, idn, kSizeM, kSizeN, alpha, beta, c_ld, c_offset, c_transpose);
   }
 }
 

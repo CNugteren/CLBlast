@@ -31,9 +31,9 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            ) {
 
   // Allocates workitem-private memory (registers)
-  #pragma promote_to_registers
+  //#pragma promote_to_registers
   realM apm[MWI/VWM];
-  #pragma promote_to_registers
+  //#pragma promote_to_registers
   realN bpm[NWI/VWN];
 
   // Combined thread identifier (volatile to disable caching)
@@ -128,7 +128,7 @@ void XgemmUpper(const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  #pragma promote_to_registers
+  //#pragma promote_to_registers
   realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeN, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
@@ -169,7 +169,7 @@ void XgemmLower(const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  #pragma promote_to_registers
+  //#pragma promote_to_registers
   realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeN, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
@@ -214,7 +214,7 @@ void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
   #endif
 
   // Computes the matrix-multiplication and stores the result in register memory
-  #pragma promote_to_registers
+  //#pragma promote_to_registers
   realM cpm[NWI*(MWI/VWM)];
   #if SA == 1 && SB == 1
     XgemmBody(kSizeM, kSizeN, kSizeK, agm, bgm, cgm, cpm, alm, blm);
