@@ -92,117 +92,79 @@ R"(
 
 // =================================================================================================
 
-// Initializes the accumulation registers to zero
-INLINE_FUNC void InitAccRegistersDirect(real cpd[NWID * MWID]) {
-  #pragma unroll
-  for (int _mi = 0; _mi < MWID; _mi += 1) {
-    #pragma unroll
-    for (int _ni = 0; _ni < NWID; _ni += 1) {
-      SetToZero(cpd[_ni * MWID + _mi]);
-    }
-  }
-}
-
-// =================================================================================================
-
-// Performs the actual computation: Cpm += Apm * Bpm
-INLINE_FUNC void MultiplyAccumulateDirect(real cpd[NWID * MWID], real apd[MWID], real bpd[NWID]) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    #pragma unroll
-    for (int _mi = 0; _mi < MWID; _mi += 1) {
-      MultiplyAdd(cpd[_ni * MWID + _mi], apd[_mi], bpd[_ni]);
-    }
-  }
-}
-
-// =================================================================================================
-
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix.
-INLINE_FUNC void GlobalToPrivateDirectA(const __global real* restrict agms, real apd[MWID],
+INLINE_FUNC real GlobalToPrivateDirectA(const __global real* restrict agms, const int _mi,
                                         const int a_ld, const int a_offset, const int idm, const int idk,
                                         const int a_transpose, const int a_conjugate) {
-  #pragma unroll
-  for (int _mi = 0; _mi < MWID; _mi += 1) {
-    const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
-    apd[_mi] = agms[a_index + a_offset];
-    if (a_conjugate) { COMPLEX_CONJUGATE(apd[_mi]); }
-  }
+  const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+  real result = agms[a_index + a_offset];
+  if (a_conjugate) { COMPLEX_CONJUGATE(result); }
+  return result;
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void GlobalToPrivateDirectB(const __global real* restrict bgms, real bpd[NWID],
+INLINE_FUNC real GlobalToPrivateDirectB(const __global real* restrict bgms, const int _ni,
                                         const int b_ld, const int b_offset, const int idn, const int idk,
                                         const int b_transpose, const int b_conjugate) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
-    bpd[_ni] = bgms[b_index + b_offset];
-    if (b_conjugate) { COMPLEX_CONJUGATE(bpd[_ni]); }
-  }
+  const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+  real result = bgms[b_index + b_offset];
+  if (b_conjugate) { COMPLEX_CONJUGATE(result); }
+  return result;
 }
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix. This is the same as above but now includes a bounds check.
-INLINE_FUNC void GlobalToPrivateCheckedA(const __global real* restrict agms, real apd[MWID],
+INLINE_FUNC real GlobalToPrivateCheckedA(const __global real* restrict agms, const int _mi,
                                          const int a_ld, const int a_offset, const int idm, const int idk,
                                          const int a_transpose, const int a_conjugate,
                                          const int kSizeM) {
-  #pragma unroll
-  for (int _mi = 0; _mi < MWID; _mi += 1) {
-    if (idm + _mi < kSizeM) {
-      const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
-      apd[_mi] = agms[a_index + a_offset];
-      if (a_conjugate) { COMPLEX_CONJUGATE(apd[_mi]); }
-    }
-    else {
-      SetToZero(apd[_mi]);
-    }
+  real result;
+  if (idm + _mi < kSizeM) {
+    const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+    result = agms[a_index + a_offset];
+    if (a_conjugate) { COMPLEX_CONJUGATE(result); }
   }
+  else {
+    SetToZero(result);
+  }
+  return result;
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpd[NWID],
+INLINE_FUNC real GlobalToPrivateCheckedB(const __global real* restrict bgms, const int _ni,
                                          const int b_ld, const int b_offset, const int idn, const int idk,
                                          const int b_transpose, const int b_conjugate,
                                          const int kSizeN) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    if (idn + _ni < kSizeN) {
-      const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
-      bpd[_ni] = bgms[b_index + b_offset];
-      if (b_conjugate) { COMPLEX_CONJUGATE(bpd[_ni]); }
-    }
-    else {
-      SetToZero(bpd[_ni]);
-    }
+  real result;
+  if (idn + _ni < kSizeN) {
+    const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+    result = bgms[b_index + b_offset];
+    if (b_conjugate) { COMPLEX_CONJUGATE(result); }
   }
+  else {
+    SetToZero(result);
+  }
+  return result;
 }
 
 // =================================================================================================
 
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific
 // for caching the A input matrix.
-INLINE_FUNC void LocalToPrivateDirectA(LOCAL_PTR real* alm, real apd[MWID], const int kg,
+INLINE_FUNC real LocalToPrivateDirectA(LOCAL_PTR real* alm, const int _mi, const int kg,
                                        const int a_transpose) {
-  #pragma unroll
-  for (int _mi = 0; _mi < MWID; _mi += 1) {
-    const int mg = _mi + get_local_id(0)*MWID;
-    const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
-    apd[_mi] = alm[index];
-  }
+  const int mg = _mi + get_local_id(0)*MWID;
+  const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
+  return alm[index];
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void LocalToPrivateDirectB(LOCAL_PTR real* blm, real bpd[NWID], const int kg,
+INLINE_FUNC real LocalToPrivateDirectB(LOCAL_PTR real* blm, const int _ni, const int kg,
                                        const int b_transpose) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    const int ng = _ni + get_local_id(1)*NWID;
-    const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
-    bpd[_ni] = blm[index];
-  }
+  const int ng = _ni + get_local_id(1)*NWID;
+  const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
+  return blm[index];
 }
 
 // =================================================================================================
