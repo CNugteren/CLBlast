@@ -243,6 +243,14 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
   ;
   if (TestKernel(device, context, "XgemmDirectTN", gemm_direct_sources, precision)) { passed++; } else { errors++; }
 
+  // HEMM
+  const auto herm_sources =
+    "#define ROUTINE_HEMM\n"
+    #include "../src/kernels/level3/level3.opencl"
+    #include "../src/kernels/level3/convert_hermitian.opencl"
+  ;
+  if (TestKernel(device, context, "HermLowerToSquared", herm_sources, precision)) { passed++; } else { errors++; }
+
   // Prints and returns the statistics
   std::cout << std::endl;
   std::cout << "    " << passed << " test(s) passed" << std::endl;
@@ -258,6 +266,7 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
 int main(int argc, char *argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunPreprocessor(argc, argv, false, clblast::Precision::kSingle);
+  errors += clblast::RunPreprocessor(argc, argv, true, clblast::Precision::kComplexDouble);
   if (errors > 0) { return 1; } else { return 0; }
 }
 

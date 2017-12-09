@@ -41,9 +41,7 @@ void im2col(const int input_h, const int input_w, const int channels,
   const int c_id = ((int)get_global_id(1)) / output_h; // input channels
   if (h_id < output_h && w_id < output_w && c_id < channels) {
 
-    #pragma unroll
     for (int kh_id = 0; kh_id < kernel_h; ++kh_id) { // kernel height
-      #pragma unroll
       for (int kw_id = 0; kw_id < kernel_w; ++kw_id) { // kernel width
 
         // Retrieves the input value
