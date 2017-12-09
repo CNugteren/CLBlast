@@ -28,7 +28,7 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
                           const std::string &routine_name,
                           const Device& device, const Context& context,
                           std::vector<std::string>& options,
-                          const bool run_preprocessor,
+                          const size_t run_preprocessor, // 0: platform dependent, 1: always, 2: never
                           const bool silent = false);
 
 // =================================================================================================

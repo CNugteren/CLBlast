@@ -120,13 +120,13 @@ bool TestKernel(const Device& device, const Context& context,
   // Verifies that the current kernel compiles properly (assumes so, otherwise throws an error)
   auto compiler_options_ref = std::vector<std::string>();
   const auto program_ref = CompileFromSource(kernel_source, precision, kernel_name,
-                                             device, context, compiler_options_ref, false);
+                                             device, context, compiler_options_ref, 2);
 
   // Compiles the same kernel, but now with the pre-processor enabled
   try {
     auto compiler_options = std::vector<std::string>();
     const auto program = CompileFromSource(kernel_source, precision, kernel_name,
-                                           device, context, compiler_options, true);
+                                           device, context, compiler_options, 1);
     return true;
   } catch (const CLCudaAPIBuildError &e) {
     fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel, status %d\n",
@@ -219,7 +219,7 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
     #include "../src/kernels/level3/level3.opencl"
     #include "../src/kernels/level3/transpose_pad.opencl"
   ;
-  //if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
+  if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) { passed++; } else { errors++; }
 
   // GEMM (in-direct)
   const auto gemm_sources =

@@ -2,6 +2,8 @@
 Development (next version)
 - Re-designed and integrated the auto-tuner, no more dependency on CLTune
 - Made it possible to override the tuning parameters in the clients straight from JSON tuning files
+- Added OpenCL pre-processor to unroll loops and perform array-to-register promotions for compilers
+  which don't this themselves (ARM, Qualcomm) - greatly improves performance on these platforms
 - Added tuned parameters for various devices (see README)
 
 Version 1.2.0

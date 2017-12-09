@@ -321,6 +321,7 @@ public:
   bool IsNVIDIA() const { return true; }
   bool IsIntel() const { return false; }
   bool IsARM() const { return false; }
+  bool IsQualcomm() const { return false; }
 
   // Platform specific extensions
   std::string AMDBoardName() const { return ""; }
