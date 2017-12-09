@@ -556,6 +556,7 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
   auto arrays_to_registers = std::unordered_map<std::string, size_t>();
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
 
   // Gather the results
