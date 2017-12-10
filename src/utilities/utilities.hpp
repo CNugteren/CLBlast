@@ -21,6 +21,7 @@
 #include <complex>
 #include <random>
 #include <algorithm>
+#include <iterator>
 
 #ifdef OPENCL_API
   #include "clpp11.hpp"
