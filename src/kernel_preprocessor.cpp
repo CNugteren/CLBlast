@@ -285,7 +285,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
   const auto max_depth_defines = 30;
   auto disabled = std::vector<unsigned int>(max_depth_defines, 0);
   auto depth = size_t{0};
-  auto source_stream = std::stringstream(source);
+  std::stringstream source_stream(source);
   auto line = std::string{""};
   while (std::getline(source_stream, line)) {
     //printf("[@%zu] disabled=%d '%s'\n", depth, disabled[depth], line.c_str());
