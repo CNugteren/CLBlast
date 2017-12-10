@@ -31,7 +31,7 @@
 //    o-------o        o-----o  
 //                              
 //
-// This kernel is seperated into three files. This is part 1 out of 3.
+// This kernel is separated into three files. This is part 1 out of 4.
 //
 // =================================================================================================
 

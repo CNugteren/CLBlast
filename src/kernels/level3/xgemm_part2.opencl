@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This is part 2 of 3 of the GEMM kernel. See part 1 for more information.
+// This is part 2 of 4 of the GEMM kernel. See part 1 for more information.
 //
 // =================================================================================================
 
