@@ -367,11 +367,13 @@ Known performance related issues:
 
 * Severe performance issues with Beignet v1.3.0 due to missing support for local memory. Please downgrade to v1.2.1 or upgrade to v1.3.1 or newer.
 
-* Performance issues on ARM Mali GPUs due to missing compiler for support for loop unrolling and array-to-register promotion.
+* Performance issues on Qualcomm Adreno GPUs.
 
 Other known issues:
 
 * Routines returning an integer are currently not properly tested for half-precision FP16: IHAMAX/IHAMIN/IHMAX/IHMIN
+
+* Half-precision FP16 tests might sometimes fail based on order multiplication, i.e. (a * b) * c != (c * b) * a
 
 
 Contributing
