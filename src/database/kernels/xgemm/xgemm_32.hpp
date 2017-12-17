@@ -59,8 +59,9 @@ const DatabaseEntry XgemmSingle = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { Name{"Mali-T760                                         "}, Params{ 32, 2, 8, 8, 64, 8, 16, 16, 0, 1, 0, 0, 8, 1 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 8, 16, 16, 0, 1, 0, 0, 8, 1 } },
+          { Name{"Mali-T628                                         "}, Params{ 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Mali-T760                                         "}, Params{ 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },

@@ -79,8 +79,7 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
   // Runs a pre-processor to unroll loops and perform array-to-register promotion. Most OpenCL
   // compilers do this, but some don't.
   auto do_run_preprocessor = false;
-  if (run_preprocessor == 0) { do_run_preprocessor = (device.IsARM() && device.IsGPU()) ||
-                                                     (device.IsQualcomm() && device.IsGPU()); }
+  if (run_preprocessor == 0) { do_run_preprocessor = (device.IsARM() && device.IsGPU()); }
   if (run_preprocessor == 1) { do_run_preprocessor = true; }
   auto kernel_string = header_string + source_string;
   if (do_run_preprocessor) {
