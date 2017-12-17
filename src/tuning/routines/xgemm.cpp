@@ -88,7 +88,7 @@ void TuneXgemm(int argc, char* argv[]) {
 
   // Direct version
   printf("\n* Testing the direct GEMM routine for m=n=k\n");
-  ForceSelectIndirectFrom<T>(to * to * to + 1, device);
+  ForceSelectIndirectFrom<T>(to + 1, device);
   const auto direct = TimeRoutine(from, to, step, num_runs, queue, buffers, RunGemmRoutine<T>);
 
   // Determining final score and best kernel selection point
