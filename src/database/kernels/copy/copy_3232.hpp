@@ -59,8 +59,8 @@ const DatabaseEntry CopyComplexSingle = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { Name{"Mali-T760                                         "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 32, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

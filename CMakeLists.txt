@@ -230,6 +230,7 @@ set(SOURCES
   src/utilities/utilities.cpp
   src/api_common.cpp
   src/cache.cpp
+  src/kernel_preprocessor.cpp
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
 )
@@ -252,6 +253,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/utilities/timing.hpp
   src/utilities/utilities.hpp
   src/cache.hpp
+  src/kernel_preprocessor.hpp
   src/cxpp11_common.hpp
   src/routine.hpp
 )
@@ -376,14 +378,16 @@ if(TUNERS)
       src/utilities/timing.cpp
       src/utilities/utilities.cpp
       src/tuning/configurations.cpp
-      src/tuning/tuning.cpp)
+      src/tuning/tuning.cpp
+      src/kernel_preprocessor.cpp)
   set(TUNERS_HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
       src/utilities/compile.hpp
       src/utilities/clblast_exceptions.hpp
       src/utilities/timing.hpp
       src/utilities/utilities.hpp
       src/tuning/configurations.hpp
-      src/tuning/tuning.hpp)
+      src/tuning/tuning.hpp
+      src/kernel_preprocessor.hpp)
   set(TUNERS_COMMON ${TUNERS_COMMON} ${TUNERS_HEADERS})
 
   # Creates a library with common sources for all tuners
@@ -573,7 +577,7 @@ if(TESTS)
   endforeach()
 
   # Miscellaneous tests
-  set(MISC_TESTS override_parameters)
+  set(MISC_TESTS override_parameters preprocessor)
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
                    test/correctness/misc/${MISC_TEST}.cpp)

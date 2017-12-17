@@ -38,6 +38,7 @@ XgemmBatched<T>::XgemmBatched(Queue &queue, EventPointer event, const std::strin
     #include "../../kernels/level3/xgemm_part1.opencl"
     #include "../../kernels/level3/xgemm_part2.opencl"
     #include "../../kernels/level3/xgemm_part3.opencl"
+    #include "../../kernels/level3/xgemm_part4.opencl"
     , // separated in multiple parts to prevent C1091 in MSVC 2013
     #include "../../kernels/level3/xgemm_batched.opencl"
     #include "../../kernels/level3/xgemm_direct_batched.opencl"

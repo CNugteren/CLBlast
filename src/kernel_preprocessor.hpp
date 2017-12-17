@@ -7,32 +7,26 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains the CLBlast way to compile a kernel from source, used for the library and for
-// the auto-tuners.
+// This file contains the a simple pre-processor for the OpenCL kernels. This pre-processor is used
+// in cases where the vendor's OpenCL compiler falls short in loop unrolling and array-to-register
+// promotion. This pre-processor is specific for the CLBlast code making many assumptions.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_UTILITIES_COMPILE_H_
-#define CLBLAST_UTILITIES_COMPILE_H_
+#ifndef CLBLAST_KERNEL_PREPROCESSOR_H_
+#define CLBLAST_KERNEL_PREPROCESSOR_H_
 
 #include <string>
-#include <vector>
 
 #include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
 
-// Compiles a program from source code
-Program CompileFromSource(const std::string &source_string, const Precision precision,
-                          const std::string &routine_name,
-                          const Device& device, const Context& context,
-                          std::vector<std::string>& options,
-                          const size_t run_preprocessor, // 0: platform dependent, 1: always, 2: never
-                          const bool silent = false);
+std::string PreprocessKernelSource(const std::string& kernel_source);
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_UTILITIES_COMPILE_H_
+// CLBLAST_KERNEL_PREPROCESSOR_H_
 #endif

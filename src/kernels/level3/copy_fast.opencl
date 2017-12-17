@@ -42,9 +42,9 @@ void CopyMatrixFast(const int ld,
                     const real_arg arg_alpha) {
   const real alpha = GetRealArg(arg_alpha);
   #pragma unroll
-  for (int w_one=0; w_one<COPY_WPT; ++w_one) {
+  for (int _w_one = 0; _w_one < COPY_WPT; _w_one += 1) {
     const int id_one = get_global_id(0);
-    const int id_two = (get_group_id(1)*COPY_WPT + w_one) * COPY_DIMY + get_local_id(1);
+    const int id_two = (get_group_id(1)*COPY_WPT + _w_one) * COPY_DIMY + get_local_id(1);
     const int id = id_two*(ld/COPY_VW) + id_one;
     realC result;
     #if COPY_VW == 1

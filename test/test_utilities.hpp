@@ -116,23 +116,6 @@ Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
 
 // =================================================================================================
 
-template<typename Out>
-void split(const std::string &s, char delimiter, Out result) {
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delimiter)) {
-    *(result++) = item;
-  }
-}
-
-inline std::vector<std::string> split(const std::string &s, char delimiter) {
-  std::vector<std::string> elements;
-  split(s, delimiter, std::back_inserter(elements));
-  return elements;
-}
-
-// =================================================================================================
-
 using BestParameters = std::unordered_map<std::string,size_t>;
 using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
 

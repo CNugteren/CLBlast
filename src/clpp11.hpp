@@ -333,6 +333,7 @@ class Device {
                                 Vendor() == "GenuineIntel" ||
                                 Vendor() == "Intel(R) Corporation"; }
   bool IsARM() const { return Vendor() == "ARM"; }
+  bool IsQualcomm() const { return Vendor() == "QUALCOMM"; }
 
   // Platform specific extensions
   std::string AMDBoardName() const { // check for 'cl_amd_device_attribute_query' first

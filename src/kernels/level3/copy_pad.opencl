@@ -35,11 +35,11 @@ INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
-  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
-    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+  for (int _w_one = 0; _w_one < PAD_WPTX; _w_one += 1) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + _w_one) * PAD_DIMX + get_local_id(0);
     #pragma unroll
-    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
-      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+    for (int _w_two = 0; _w_two < PAD_WPTY; _w_two += 1) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + _w_two) * PAD_DIMY + get_local_id(1);
       if (id_two < dest_two && id_one < dest_one) {
 
         // Loads data if the thread IDs are within bounds of the source matrix. Otherwise, set the
@@ -91,11 +91,11 @@ INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
 
   // Loops over the work per thread in both dimensions
   #pragma unroll
-  for (int w_one=0; w_one<PAD_WPTX; ++w_one) {
-    const int id_one = (get_group_id(0)*PAD_WPTX + w_one) * PAD_DIMX + get_local_id(0);
+  for (int _w_one = 0; _w_one < PAD_WPTX; _w_one += 1) {
+    const int id_one = (get_group_id(0)*PAD_WPTX + _w_one) * PAD_DIMX + get_local_id(0);
     #pragma unroll
-    for (int w_two=0; w_two<PAD_WPTY; ++w_two) {
-      const int id_two = (get_group_id(1)*PAD_WPTY + w_two) * PAD_DIMY + get_local_id(1);
+    for (int _w_two = 0; _w_two < PAD_WPTY; _w_two += 1) {
+      const int id_two = (get_group_id(1)*PAD_WPTY + _w_two) * PAD_DIMY + get_local_id(1);
 
       // Masking in case of triangular matrices: updates only the upper or lower part
       bool condition = true;

@@ -82,14 +82,14 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   // Loads the source lower triangle into local memory. Any values in the upper triangle or
   // outside of the matrix are set to zero
   #pragma unroll
-  for (int j = 0; j < INTERNAL_BLOCK_SIZE; ++j) {
-    const bool condition = (is_upper) ? (thread_index <= j && block_index*INTERNAL_BLOCK_SIZE + j < n) :
-                                        (thread_index >= j && block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
+  for (int _j = 0; _j < INTERNAL_BLOCK_SIZE; _j += 1) {
+    const bool condition = (is_upper) ? (thread_index <= _j && block_index*INTERNAL_BLOCK_SIZE + _j < n) :
+                                        (thread_index >= _j && block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
     if (condition) {
-      lm[thread_index][j] = src[j*src_ld + thread_index + src_block_offset];
+      lm[thread_index][_j] = src[_j*src_ld + thread_index + src_block_offset];
     }
     else {
-      SetToZero(lm[thread_index][j]);
+      SetToZero(lm[thread_index][_j]);
     }
   }
   barrier(CLK_LOCAL_MEM_FENCE);
@@ -116,7 +116,6 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
       real sum;
       if (thread_index < j) {
         SetToZero(sum);
-        #pragma unroll
         for (int k = 0; k < j; ++k) {
           MultiplyAdd(sum, lm[thread_index][k], lm[k][j]);
         }
@@ -139,7 +138,6 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
       real sum;
       if (thread_index > j) {
         SetToZero(sum);
-        #pragma unroll
         for (int k = j + 1; k < INTERNAL_BLOCK_SIZE; ++k) {
           MultiplyAdd(sum, lm[thread_index][k], lm[k][j]);
         }
@@ -156,7 +154,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   
   // Writes the result to global memory
   #pragma unroll
-  for (int j = 0; j < INTERNAL_BLOCK_SIZE; ++j) {
+  for (int j = 0; j < INTERNAL_BLOCK_SIZE; j += 1) {
     dest[j*outer_block_size + thread_index + dest_block_offset] = lm[thread_index][j];
   }
 }
@@ -188,19 +186,17 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
   // Initializes the result registers
   real cpm[16];
   #pragma unroll
-  for (int j = 0; j < 16; ++j) {
-    SetToZero(cpm[j]);
+  for (int _j = 0; _j < 16; _j += 1) {
+    SetToZero(cpm[_j]);
   }
 
   // Computes NT x 16 block of C, each thread computes one 1 x 16 row
   for (int k = 0; k < current_size; k += 16) {
 
     // Loads a 16 x 16 block of B into local memory using NX x 4 threads
-    #pragma unroll
-    for( int i=0; i < 16; i += (size/4) ) {  // += get_local_size(0)
-      #pragma unroll
-      for( int j=0; j < 16; j += 4 ) {  // += get_local_size(1)
-        blm[(lidx + i) * LOCALX + (lidy + j)] = bgm[k + i + j*ldb];
+    for (int i = 0; i < 16; i += (size/4) ) {  // += get_local_size(0)
+      for (int _j = 0; _j < 16; _j += 4 ) {  // += get_local_size(1)
+        blm[(lidx + i) * LOCALX + (lidy + _j)] = bgm[k + i + _j*ldb];
       }
     }
     barrier(CLK_LOCAL_MEM_FENCE);
@@ -210,11 +206,11 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
 
       // Performs 16 x 16 multiply-add operations
       #pragma unroll
-      for (int i = 0; i < 16; ++i) {
+      for (int _i = 0; _i < 16; _i += 1) {
         if (part == 2 || col++ < n) {
           #pragma unroll
-          for (int j = 0; j < 16; ++j) {
-            MultiplyAdd(cpm[j], agm[(i + k) * lda], blm[i * LOCALX + j]);
+          for (int _j = 0; _j < 16; _j += 1) {
+            MultiplyAdd(cpm[_j], agm[(_i + k) * lda], blm[_i * LOCALX + _j]);
           }
         }
       }
@@ -226,10 +222,10 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
 
         // Performs 16 x 16 multiply-add operations
         #pragma unroll
-        for (int i = 0; i < 16; ++i) {
+        for (int _i = 0; _i < 16; _i += 1) {
           #pragma unroll
-          for (int j = 0; j < 16; ++j) {
-            MultiplyAdd(cpm[j], agm[(i + k) * lda], blm[i * LOCALX + j]);
+          for (int _j = 0; _j < 16; _j += 1) {
+            MultiplyAdd(cpm[_j], agm[(_i + k) * lda], blm[_i * LOCALX + _j]);
           }
         }
       }
@@ -240,9 +236,9 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
 
   // Stores NT x 16 results: each thread writes one 16 x 1 row
   #pragma unroll
-  for (int i = 0; i < 16; ++i) {
-    if (part == 2) { Negate(cpm[i]); }
-    cgm[0] = cpm[i];
+  for (int _i = 0; _i < 16; _i += 1) {
+    if (part == 2) { Negate(cpm[_i]); }
+    cgm[0] = cpm[_i];
     cgm += ldc;
   }
 }

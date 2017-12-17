@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This is part 2 of 3 of the GEMM kernel. See part 1 for more information.
+// This is part 2 of 4 of the GEMM kernel. See part 1 for more information.
 //
 // =================================================================================================
 
@@ -63,80 +63,32 @@ INLINE_FUNC realM MultiplyAddVector(realM cvec, const realM avec, const real bva
   return cvec;
 }
 
-// Performs the actual computation: Cpm += Apm * Bpm
-INLINE_FUNC void MultiplyAccumulate(realM cpm[NWI][MWI/VWM], realM apm[MWI/VWM], realN bpm[NWI/VWN]) {
-  #pragma unroll
-  for (int ni=0; ni<NWI/VWN; ++ni) {
-    #pragma unroll
-    for (int mi=0; mi<MWI/VWM; ++mi) {
-      const realM aval = apm[mi];
-      #if VWN == 1
-        cpm[ni*VWN + 0][mi] = MultiplyAddVector(cpm[ni*VWN + 0][mi], aval, bpm[ni]);
-      #elif VWN == 2
-        cpm[ni*VWN + 0][mi] = MultiplyAddVector(cpm[ni*VWN + 0][mi], aval, bpm[ni].x);
-        cpm[ni*VWN + 1][mi] = MultiplyAddVector(cpm[ni*VWN + 1][mi], aval, bpm[ni].y);
-      #elif VWN == 4
-        cpm[ni*VWN + 0][mi] = MultiplyAddVector(cpm[ni*VWN + 0][mi], aval, bpm[ni].x);
-        cpm[ni*VWN + 1][mi] = MultiplyAddVector(cpm[ni*VWN + 1][mi], aval, bpm[ni].y);
-        cpm[ni*VWN + 2][mi] = MultiplyAddVector(cpm[ni*VWN + 2][mi], aval, bpm[ni].z);
-        cpm[ni*VWN + 3][mi] = MultiplyAddVector(cpm[ni*VWN + 3][mi], aval, bpm[ni].w);
-      #elif VWN == 8
-        cpm[ni*VWN + 0][mi] = MultiplyAddVector(cpm[ni*VWN + 0][mi], aval, bpm[ni].s0);
-        cpm[ni*VWN + 1][mi] = MultiplyAddVector(cpm[ni*VWN + 1][mi], aval, bpm[ni].s1);
-        cpm[ni*VWN + 2][mi] = MultiplyAddVector(cpm[ni*VWN + 2][mi], aval, bpm[ni].s2);
-        cpm[ni*VWN + 3][mi] = MultiplyAddVector(cpm[ni*VWN + 3][mi], aval, bpm[ni].s3);
-        cpm[ni*VWN + 4][mi] = MultiplyAddVector(cpm[ni*VWN + 4][mi], aval, bpm[ni].s4);
-        cpm[ni*VWN + 5][mi] = MultiplyAddVector(cpm[ni*VWN + 5][mi], aval, bpm[ni].s5);
-        cpm[ni*VWN + 6][mi] = MultiplyAddVector(cpm[ni*VWN + 6][mi], aval, bpm[ni].s6);
-        cpm[ni*VWN + 7][mi] = MultiplyAddVector(cpm[ni*VWN + 7][mi], aval, bpm[ni].s7);
-      #elif VWN == 16
-        cpm[ni*VWN + 0 ][mi] = MultiplyAddVector(cpm[ni*VWN + 0 ][mi], aval, bpm[ni].s0);
-        cpm[ni*VWN + 1 ][mi] = MultiplyAddVector(cpm[ni*VWN + 1 ][mi], aval, bpm[ni].s1);
-        cpm[ni*VWN + 2 ][mi] = MultiplyAddVector(cpm[ni*VWN + 2 ][mi], aval, bpm[ni].s2);
-        cpm[ni*VWN + 3 ][mi] = MultiplyAddVector(cpm[ni*VWN + 3 ][mi], aval, bpm[ni].s3);
-        cpm[ni*VWN + 4 ][mi] = MultiplyAddVector(cpm[ni*VWN + 4 ][mi], aval, bpm[ni].s4);
-        cpm[ni*VWN + 5 ][mi] = MultiplyAddVector(cpm[ni*VWN + 5 ][mi], aval, bpm[ni].s5);
-        cpm[ni*VWN + 6 ][mi] = MultiplyAddVector(cpm[ni*VWN + 6 ][mi], aval, bpm[ni].s6);
-        cpm[ni*VWN + 7 ][mi] = MultiplyAddVector(cpm[ni*VWN + 7 ][mi], aval, bpm[ni].s7);
-        cpm[ni*VWN + 8 ][mi] = MultiplyAddVector(cpm[ni*VWN + 8 ][mi], aval, bpm[ni].s8);
-        cpm[ni*VWN + 9 ][mi] = MultiplyAddVector(cpm[ni*VWN + 9 ][mi], aval, bpm[ni].s9);
-        cpm[ni*VWN + 10][mi] = MultiplyAddVector(cpm[ni*VWN + 10][mi], aval, bpm[ni].sA);
-        cpm[ni*VWN + 11][mi] = MultiplyAddVector(cpm[ni*VWN + 11][mi], aval, bpm[ni].sB);
-        cpm[ni*VWN + 12][mi] = MultiplyAddVector(cpm[ni*VWN + 12][mi], aval, bpm[ni].sC);
-        cpm[ni*VWN + 13][mi] = MultiplyAddVector(cpm[ni*VWN + 13][mi], aval, bpm[ni].sD);
-        cpm[ni*VWN + 14][mi] = MultiplyAddVector(cpm[ni*VWN + 14][mi], aval, bpm[ni].sE);
-        cpm[ni*VWN + 15][mi] = MultiplyAddVector(cpm[ni*VWN + 15][mi], aval, bpm[ni].sF);
-      #endif
-    }
-  }
-}
-
 // =================================================================================================
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-INLINE_FUNC void StoreResults(__global realM* cgm, realM cpm[NWI][MWI/VWM], const int kSizeM,
+INLINE_FUNC void StoreResults(__global realM* cgm, realM cpm[NWI*MWI/VWM], const int kSizeM,
                               const real alpha, const real beta) {
   #pragma unroll
-  for (int ni=0; ni<NWI; ++ni) {
+  for (int _ni = 0; _ni < NWI; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWI/VWM; ++mi) {
+    for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
       #if STRM == 0
-        int mg = mi + get_local_id(0)*(MWI/VWM);
+        int mg = _mi + get_local_id(0)*(MWI/VWM);
       #elif STRM == 1
-        int mg = get_local_id(0) + mi*MDIMC;
+        int mg = get_local_id(0) + _mi*MDIMC;
       #endif
       #if STRN == 0
-        int ng = ni + get_local_id(1)*NWI;
+        int ng = _ni + get_local_id(1)*NWI;
       #elif STRN == 1
-        int ng = ni%VWN + get_local_id(1)*VWN + (ni/VWN)*VWN*NDIMC;
+        int ng = _ni%VWN + get_local_id(1)*VWN + (_ni/VWN)*VWN*NDIMC;
       #endif
       int idm = mg + GetGroupID0() * (MWG/VWM);
       int idn = ng + GetGroupID1() * NWG;
       int index = idn*(kSizeM/VWM) + idm;
 
       realM result;
-      realM xval = cpm[ni][mi];
+      realM xval = cpm[_ni * (MWI/VWM) + _mi];
 
       // The final multiplication with alpha (in case beta == 0)
       if (IsZero(beta)) {

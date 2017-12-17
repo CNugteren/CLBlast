@@ -51,9 +51,8 @@ const DatabaseEntry PadDouble = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { Name{"Mali-T628                                         "}, Params{ 32, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Mali-T760                                         "}, Params{ 16, 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 16, 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-T760                                         "}, Params{ 32, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -126,7 +125,7 @@ const DatabaseEntry PadDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 16, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 16, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

@@ -92,143 +92,105 @@ R"(
 
 // =================================================================================================
 
-// Initializes the accumulation registers to zero
-INLINE_FUNC void InitAccRegistersDirect(real cpm[NWID][MWID]) {
-  #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    #pragma unroll
-    for (int ni=0; ni<NWID; ++ni) {
-      SetToZero(cpm[ni][mi]);
-    }
-  }
-}
-
-// =================================================================================================
-
-// Performs the actual computation: Cpm += Apm * Bpm
-INLINE_FUNC void MultiplyAccumulateDirect(real cpm[NWID][MWID], real apm[MWID], real bpm[NWID]) {
-  #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
-      MultiplyAdd(cpm[ni][mi], apm[mi], bpm[ni]);
-    }
-  }
-}
-
-// =================================================================================================
-
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix.
-INLINE_FUNC void GlobalToPrivateDirectA(const __global real* restrict agms, real apm[MWID],
+INLINE_FUNC real GlobalToPrivateDirectA(const __global real* restrict agms, const int _mi,
                                         const int a_ld, const int a_offset, const int idm, const int idk,
                                         const int a_transpose, const int a_conjugate) {
-  #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    const int a_index = (a_transpose) ? (idm + mi)*a_ld + idk : idk*a_ld + (idm + mi);
-    apm[mi] = agms[a_index + a_offset];
-    if (a_conjugate) { COMPLEX_CONJUGATE(apm[mi]); }
-  }
+  const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+  real result = agms[a_index + a_offset];
+  if (a_conjugate) { COMPLEX_CONJUGATE(result); }
+  return result;
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void GlobalToPrivateDirectB(const __global real* restrict bgms, real bpm[NWID],
+INLINE_FUNC real GlobalToPrivateDirectB(const __global real* restrict bgms, const int _ni,
                                         const int b_ld, const int b_offset, const int idn, const int idk,
                                         const int b_transpose, const int b_conjugate) {
-  #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    const int b_index = (b_transpose) ? (idn + ni)*b_ld + idk : idk*b_ld + (idn + ni);
-    bpm[ni] = bgms[b_index + b_offset];
-    if (b_conjugate) { COMPLEX_CONJUGATE(bpm[ni]); }
-  }
+  const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+  real result = bgms[b_index + b_offset];
+  if (b_conjugate) { COMPLEX_CONJUGATE(result); }
+  return result;
 }
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix. This is the same as above but now includes a bounds check.
-INLINE_FUNC void GlobalToPrivateCheckedA(const __global real* restrict agms, real apm[MWID],
+INLINE_FUNC real GlobalToPrivateCheckedA(const __global real* restrict agms, const int _mi,
                                          const int a_ld, const int a_offset, const int idm, const int idk,
                                          const int a_transpose, const int a_conjugate,
                                          const int kSizeM) {
-  #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    if (idm + mi < kSizeM) {
-      const int a_index = (a_transpose) ? (idm + mi)*a_ld + idk : idk*a_ld + (idm + mi);
-      apm[mi] = agms[a_index + a_offset];
-      if (a_conjugate) { COMPLEX_CONJUGATE(apm[mi]); }
-    }
-    else {
-      SetToZero(apm[mi]);
-    }
+  real result;
+  if (idm + _mi < kSizeM) {
+    const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
+    result = agms[a_index + a_offset];
+    if (a_conjugate) { COMPLEX_CONJUGATE(result); }
   }
+  else {
+    SetToZero(result);
+  }
+  return result;
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void GlobalToPrivateCheckedB(const __global real* restrict bgms, real bpm[NWID],
+INLINE_FUNC real GlobalToPrivateCheckedB(const __global real* restrict bgms, const int _ni,
                                          const int b_ld, const int b_offset, const int idn, const int idk,
                                          const int b_transpose, const int b_conjugate,
                                          const int kSizeN) {
-  #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    if (idn + ni < kSizeN) {
-      const int b_index = (b_transpose) ? (idn + ni)*b_ld + idk : idk*b_ld + (idn + ni);
-      bpm[ni] = bgms[b_index + b_offset];
-      if (b_conjugate) { COMPLEX_CONJUGATE(bpm[ni]); }
-    }
-    else {
-      SetToZero(bpm[ni]);
-    }
+  real result;
+  if (idn + _ni < kSizeN) {
+    const int b_index = (b_transpose) ? (idn + _ni)*b_ld + idk : idk*b_ld + (idn + _ni);
+    result = bgms[b_index + b_offset];
+    if (b_conjugate) { COMPLEX_CONJUGATE(result); }
   }
+  else {
+    SetToZero(result);
+  }
+  return result;
 }
 
 // =================================================================================================
 
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific
 // for caching the A input matrix.
-INLINE_FUNC void LocalToPrivateDirectA(LOCAL_PTR real* alm, real apm[MWID], const int kg,
+INLINE_FUNC real LocalToPrivateDirectA(LOCAL_PTR real* alm, const int _mi, const int kg,
                                        const int a_transpose) {
-  #pragma unroll
-  for (int mi=0; mi<MWID; ++mi) {
-    const int mg = mi + get_local_id(0)*MWID;
-    const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
-    apm[mi] = alm[index];
-  }
+  const int mg = _mi + get_local_id(0)*MWID;
+  const int index = (a_transpose) ? mg*(WGD + PADA) + kg : kg*(WGD + PADA) + mg;
+  return alm[index];
 }
 
 // Same as above, but now for the B input matrix
-INLINE_FUNC void LocalToPrivateDirectB(LOCAL_PTR real* blm, real bpm[NWID], const int kg,
+INLINE_FUNC real LocalToPrivateDirectB(LOCAL_PTR real* blm, const int _ni, const int kg,
                                        const int b_transpose) {
-  #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
-    const int ng = ni + get_local_id(1)*NWID;
-    const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
-    bpm[ni] = blm[index];
-  }
+  const int ng = _ni + get_local_id(1)*NWID;
+  const int index = (b_transpose) ? ng*(WGD + PADB) + kg : kg*(WGD + PADB) + ng;
+  return blm[index];
 }
 
 // =================================================================================================
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
+INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpd[NWID * MWID],
                                     const int idm, const int idn,
                                     const real alpha, const real beta,
                                     const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
+    for (int _mi = 0; _mi < MWID; _mi += 1) {
 
-      // Determines the destination index
-      int c_index = (c_transpose) ? (idm + mi)*c_ld + (idn + ni) : (idn + ni)*c_ld + (idm + mi);
+      // Deter_mines the destination index
+      int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
       // The final multiplication with alpha (in case beta == 0)
       real result;
       if (IsZero(beta)) {
-        Multiply(result, alpha, cpm[ni][mi]);
+        Multiply(result, alpha, cpd[_ni * MWID + _mi]);
       }
       // The final multiplication with alpha and the addition with beta*C
       else {
-        AXPBY(result, alpha, cpm[ni][mi], beta, cgm[c_index + c_offset]);
+        AXPBY(result, alpha, cpd[_ni * MWID + _mi], beta, cgm[c_index + c_offset]);
       }
       cgm[c_index + c_offset] = result;
     }
@@ -237,27 +199,27 @@ INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpm[NWID][MWID],
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-INLINE_FUNC void StoreResultsChecked(__global real* cgm, real cpm[NWID][MWID],
+INLINE_FUNC void StoreResultsChecked(__global real* cgm, real cpd[NWID * MWID],
                                      const int idm, const int idn, const int kSizeM, const int kSizeN,
                                      const real alpha, const real beta,
                                      const int c_ld, const int c_offset, const int c_transpose) {
   #pragma unroll
-  for (int ni=0; ni<NWID; ++ni) {
+  for (int _ni = 0; _ni < NWID; _ni += 1) {
     #pragma unroll
-    for (int mi=0; mi<MWID; ++mi) {
-      if ((idm + mi) < kSizeM && (idn + ni) < kSizeN) {
+    for (int _mi = 0; _mi < MWID; _mi += 1) {
+      if ((idm + _mi) < kSizeM && (idn + _ni) < kSizeN) {
 
-        // Determines the destination index
-        int c_index = (c_transpose) ? (idm + mi)*c_ld + (idn + ni) : (idn + ni)*c_ld + (idm + mi);
+        // Deter_mines the destination index
+        int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
         // The final multiplication with alpha (in case beta == 0)
         real result;
         if (IsZero(beta)) {
-          Multiply(result, alpha, cpm[ni][mi]);
+          Multiply(result, alpha, cpd[_ni * MWID + _mi]);
         }
         // The final multiplication with alpha and the addition with beta*C
         else {
-          AXPBY(result, alpha, cpm[ni][mi], beta, cgm[c_index + c_offset]);
+          AXPBY(result, alpha, cpd[_ni * MWID + _mi], beta, cgm[c_index + c_offset]);
         }
         cgm[c_index + c_offset] = result;
       }

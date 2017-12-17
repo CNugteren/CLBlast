@@ -28,7 +28,6 @@ void Xcopy(const int n,
            __global real* ygm, const int y_offset, const int y_inc) {
 
   // Loops over the work that needs to be done (allows for an arbitrary number of threads)
-  #pragma unroll
   for (int id = get_global_id(0); id<n; id += get_global_size(0)) {
     ygm[id*y_inc + y_offset] = xgm[id*x_inc + x_offset];
   }
@@ -43,8 +42,8 @@ void XcopyFast(const int n,
                const __global realV* restrict xgm,
                __global realV* ygm) {
   #pragma unroll
-  for (int w=0; w<WPT; ++w) {
-    const int id = w*get_global_size(0) + get_global_id(0);
+  for (int _w = 0; _w < WPT; _w += 1) {
+    const int id = _w*get_global_size(0) + get_global_id(0);
     ygm[id] = xgm[id];
   }
 }

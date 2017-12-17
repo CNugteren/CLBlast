@@ -46,20 +46,16 @@ void XgemmBatched(const int kSizeM, const int kSizeN, const int kSizeK,
     __local realN blm[KWG * NWG/VWN];
   #endif
 
-  // Computes the matrix-multiplication and stores the result in register memory
-  realM cpm[NWI][MWI/VWM];
+  // Computes the matrix-multiplication and stores the result in global memory
   #if SA == 1 && SB == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, cpm, alm, blm);
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, alpha, beta, alm, blm);
   #elif SA == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, cpm, alm);
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, alpha, beta, alm);
   #elif SB == 1
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, cpm, blm);
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, alpha, beta, blm);
   #else
-    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, cpm);
+    XgemmBody(kSizeM, kSizeN, kSizeK, agm_, bgm_, cgm_, alpha, beta);
   #endif
-
-  // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
-  StoreResults(cgm_, cpm, kSizeM, alpha, beta);
 }
 
 // =================================================================================================

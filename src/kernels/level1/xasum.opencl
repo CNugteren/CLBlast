@@ -56,7 +56,6 @@ void Xasum(const int n,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS1/2; s>0; s=s>>1) {
     if (lid < s) {
       Add(lm[lid], lm[lid], lm[lid + s]);
@@ -85,7 +84,6 @@ void XasumEpilogue(const __global real* restrict input,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS2/2; s>0; s=s>>1) {
     if (lid < s) {
       Add(lm[lid], lm[lid], lm[lid + s]);
