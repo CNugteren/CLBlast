@@ -106,16 +106,20 @@ def main(argv):
 
     # Loops over all JSON files in the supplied folder
     for file_json in glob.glob(json_files):
-
-        # Loads the newly imported data
         sys.stdout.write("[database] Processing '" + file_json + "' ")  # No newline printed
-        imported_data = io.load_tuning_results(file_json)
 
-        # Adds the new data to the database
-        old_size = db.length(database)
-        database = db.add_section(database, imported_data)
-        new_size = db.length(database)
-        print("with " + str(new_size - old_size) + " new items")  # Newline printed here
+        try:
+            # Loads the newly imported data
+            imported_data = io.load_tuning_results(file_json)
+
+            # Adds the new data to the database
+            old_size = db.length(database)
+            database = db.add_section(database, imported_data)
+            new_size = db.length(database)
+            print("with " + str(new_size - old_size) + " new items")  # Newline printed here
+
+        except ValueError:
+            print("--- WARNING: invalid file, skipping")
 
     # Checks for tuning results with mis-matched entries
     remove_mismatched_arguments(database)
