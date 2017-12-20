@@ -44,6 +44,7 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
         { "default", {
+          { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 32, 2, 16, 16, 32, 16, 16, 64, 1, 1, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
       }
