@@ -28,6 +28,7 @@ const DatabaseEntry XgemvFastRotDouble = {
           { kDeviceNameDefault                                        , Params{ 4, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
+          { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 8, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }

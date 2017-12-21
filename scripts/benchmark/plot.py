@@ -85,7 +85,7 @@ def plot_graphs(results, file_name, num_rows, num_cols,
                 x_ticks = [v if not (i % 2) else "" for i, v in enumerate(x_ticks)]
 
             # Sets the y-data
-            y_list = [[r[y_key] for r in result] for y_key in y_keys[index]]
+            y_list = [[r[y_key] if y_key in r.keys() else 0 for r in result] for y_key in y_keys[index]]
             y_max = max([max(y) for y in y_list])
 
             # Sets the axes

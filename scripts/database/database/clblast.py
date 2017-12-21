@@ -28,6 +28,8 @@ ARGUMENT_ATTRIBUTES = ["arg_m", "arg_n", "arg_k", "arg_alpha", "arg_beta",
 ATTRIBUTES = DEVICE_ATTRIBUTES + DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ARGUMENT_ATTRIBUTES
 GROUP_ATTRIBUTES = DEVICE_TYPE_ATTRIBUTES + KERNEL_ATTRIBUTES + ["kernel"] + ARGUMENT_ATTRIBUTES
 
+# Other constants
+VENDORS_WITH_ARCHITECTURE = ["AMD", "NVIDIA"]
 
 def precision_to_string(precision):
     """Translates a precision number (represented as Python string) into a descriptive string"""
@@ -184,6 +186,8 @@ def print_cpp_database(database, output_dir):
 
                         # Loops over every architecture of this vendor-type combination
                         architectures = sorted(set([s["clblast_device_architecture"] for s in type_database]))
+                        if vendor in VENDORS_WITH_ARCHITECTURE:
+                            architectures = [a for a in architectures if a != ""]
                         for architecture in architectures:
                             architecture_database = [s for s in type_database if s["clblast_device_architecture"] == architecture]
                             architecture_string = DEVICE_ARCHITECTURE_DEFAULT if architecture == "" else architecture

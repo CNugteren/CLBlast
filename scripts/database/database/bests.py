@@ -7,6 +7,8 @@
 
 import sys
 
+import clblast
+
 
 def get_best_results(database):
     """Retrieves the results with the lowest execution times"""
@@ -18,6 +20,8 @@ def get_best_results(database):
         for attribute in section.keys():
             if attribute != "results":
                 section_best[attribute] = section[attribute]
+        if section_best["clblast_device_architecture"] == "" and section_best["clblast_device_vendor"] in clblast.VENDORS_WITH_ARCHITECTURE:
+            section_best["clblast_device_architecture"] = clblast.DEVICE_ARCHITECTURE_DEFAULT
 
         # Find the best result
         parameters_best = None

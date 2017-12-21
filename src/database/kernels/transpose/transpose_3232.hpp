@@ -52,6 +52,7 @@ const DatabaseEntry TransposeComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 16, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
+          { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 8, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
