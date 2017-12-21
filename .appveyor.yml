@@ -28,7 +28,7 @@ install:
   # This downloads all the opencl header files
   # The cmake build files expect a directory called inc
   - ps: mkdir inc/CL
-  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
+  - git clone https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
   - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
   # Switch to OpenCL 2.1 headers
   - ps: pushd inc/CL
