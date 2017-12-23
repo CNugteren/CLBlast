@@ -46,7 +46,9 @@
 #include <cstdio>    // fprintf, stderr
 
 // OpenCL
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS // to disable deprecation warnings
 #if defined(__APPLE__) || defined(__MACOSX)
   #include <OpenCL/opencl.h>
 #else
