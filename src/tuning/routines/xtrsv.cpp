@@ -18,7 +18,6 @@
 
 #include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
-#include "routines/routines.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -37,12 +36,16 @@ void SetBlockSize(const size_t value, const Device &device) {
 template <typename T>
 void RunTrsvRoutine(const size_t block_size, Queue& queue, const std::vector<Buffer<T>>& buffers) {
   SetBlockSize<T>(block_size, queue.GetDevice());
+  auto queue_plain = queue();
   auto event = cl_event{};
-  auto routine = Xtrsv<T>(queue, nullptr);
-  routine.DoTrsv(Layout::kRowMajor, Triangle::kLower, Transpose::kNo, Diagonal::kNonUnit,
-                 size,
-                 buffers[0], 0, size, // A matrix
-                 buffers[1], 0, 1); // X vector
+  auto status = Trsv<T>(Layout::kRowMajor, Triangle::kLower, Transpose::kNo, Diagonal::kNonUnit,
+                        size,
+                        buffers[0](), 0, size, // A matrix
+                        buffers[1](), 0, 1, // X vector
+                        &queue_plain, &event);
+  if (status != StatusCode::kSuccess) {
+    throw RuntimeError("Trsv failed with status " + ToString(status));
+  }
   clWaitForEvents(1, &event);
   clReleaseEvent(event);
 }
