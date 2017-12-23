@@ -118,7 +118,7 @@ TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int V, const Arguments<T> &) { }
+void TestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> SetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };

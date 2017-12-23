@@ -142,7 +142,7 @@ public:
   }
 
   // Describes how to compute performance metrics
-  static size_t GetFlops(const Arguments<T> &args) {
+  static size_t GetFlops(const Arguments<T> &) {
     return 1;
   }
   static size_t GetBytes(const Arguments<T> &args) {
