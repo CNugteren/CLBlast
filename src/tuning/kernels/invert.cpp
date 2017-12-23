@@ -40,7 +40,8 @@ TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
   settings.kernel_name = "TripleMatMul16Part1Lower";
   settings.sources =
 "#define ROUTINE_INVERT"
-#include "../src/kernels/level3/invert_diagonal_blocks.opencl"
+#include "../src/kernels/level3/invert_diagonal_blocks_part1.opencl"
+#include "../src/kernels/level3/invert_diagonal_blocks_part2.opencl"
   ;
 
   // Buffer sizes
