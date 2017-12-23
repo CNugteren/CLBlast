@@ -86,11 +86,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 16, 8, 8, 16, 64, 32, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 16, 8, 8, 8, 32, 16, 16, 64, 1, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 32, 8, 16, 16, 64, 16, 16, 64, 1, 1, 1, 1, 2, 1 } },
-          { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 32, 2, 16, 16, 64, 16, 16, 64, 0, 0, 0, 0, 4, 2 } },
           { Name{"Iris                                              "}, Params{ 32, 8, 32, 16, 64, 8, 16, 64, 1, 0, 1, 0, 1, 1 } },
           { Name{"Iris Pro                                          "}, Params{ 16, 2, 8, 8, 32, 32, 8, 32, 1, 1, 1, 1, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 32, 32, 128, 1, 1, 1, 0, 2, 2 } },
         } },
       }
     },
