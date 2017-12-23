@@ -341,7 +341,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         SubstituteDefines(defines_int, value);
         const auto value_int = ParseMath(value);
         if (value_int != -1) {
-          defines_int.emplace(name, static_cast<size_t>(value_int));
+          defines_int.emplace(name, value_int);
         }
         defines_string.emplace(name, value);
       }
