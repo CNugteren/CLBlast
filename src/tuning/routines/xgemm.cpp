@@ -72,7 +72,7 @@ void TuneXgemm(int argc, char* argv[]) {
     return;
   }
   const auto context = Context(device);
-  const auto queue = Queue(context, device);
+  auto queue = Queue(context, device);
 
   // Buffers
   auto buffers = std::vector<Buffer<T>>{

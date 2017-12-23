@@ -52,7 +52,7 @@ using Timing = std::pair<size_t, double>;
 
 template <typename T, typename F>
 std::vector<Timing> TimeRoutine(const size_t from, const size_t to, const size_t step,
-                                const size_t num_runs, const Queue& queue,
+                                const size_t num_runs, Queue& queue,
                                 const std::vector<Buffer<T>>& buffers, F const &routine) {
   auto timings = std::vector<Timing>();
   printf("|  value |         time |\n");
