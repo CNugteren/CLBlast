@@ -28,12 +28,11 @@ install:
   # This downloads all the opencl header files
   # The cmake build files expect a directory called inc
   - ps: mkdir inc/CL
-  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
+  - git clone https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
   - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
   # Switch to OpenCL 2.1 headers
   - ps: pushd inc/CL
-  - git fetch origin opencl21:opencl21
-  - git checkout opencl21
+  - git checkout bf0f43b  # OpenCL 2.1
   - ps: popd
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it

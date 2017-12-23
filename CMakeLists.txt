@@ -193,11 +193,11 @@ endif()
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
-            xgemm xgemm_direct xgemv)
+            xgemm xgemm_direct xgemv invert)
 set(DATABASES copy pad padtranspose transpose xaxpy xdot
-              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger
-              gemm_routine)
-set(ROUTINE_TUNERS xgemm)
+              xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger invert
+              gemm_routine trsv_routine)
+set(ROUTINE_TUNERS xgemm xtrsv)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)

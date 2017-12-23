@@ -7,7 +7,7 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the auto-tuner to tune the pad OpenCL kernels.
+// This file uses the auto-tuner to tune the invert OpenCL kernels.
 //
 // =================================================================================================
 
@@ -23,9 +23,10 @@ namespace clblast {
 // Settings for this kernel (default command-line arguments)
 TunerDefaults GetTunerDefaults(const int) {
   auto settings = TunerDefaults();
-  settings.options = {kArgM, kArgN, kArgAlpha};
-  settings.default_m = 1024;
-  settings.default_n = 1024;
+  settings.options = {kArgN, kArgM, kArgK};
+  settings.default_n = 128; // dimension of input matrix
+  settings.default_m = 64; // block size
+  settings.default_k = 16; // current size
   return settings;
 }
 
@@ -35,66 +36,70 @@ TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
-  settings.kernel_family = "pad";
-  settings.kernel_name = "CopyPadMatrix";
+  settings.kernel_family = "invert";
+  settings.kernel_name = "TripleMatMul16Part1Lower";
   settings.sources =
-#include "../src/kernels/level3/level3.opencl"
-#include "../src/kernels/level3/copy_pad.opencl"
+"#define ROUTINE_INVERT"
+#include "../src/kernels/level3/invert_diagonal_blocks_part1.opencl"
+#include "../src/kernels/level3/invert_diagonal_blocks_part2.opencl"
   ;
 
   // Buffer sizes
-  settings.size_a = args.m * args.n;
-  settings.size_b = args.m * args.n;
+  settings.size_a = args.n * args.a_ld + args.a_offset;
+  settings.size_b = CeilDiv(args.n, args.m) * args.m * args.m;
 
   // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
   settings.inputs = {2, 3};
   settings.outputs = {3};
 
   // Sets the base thread configuration
-  settings.global_size = {args.m, args.n};
+  const auto num_pages = CeilDiv(args.n, args.m*2);
+  settings.global_size = {args.k / 4, num_pages * (args.k / 16) * 4};
   settings.global_size_ref = settings.global_size;
   settings.local_size = {1, 1};
-  settings.local_size_ref = {8, 8};
+  settings.local_size_ref = {4, 4};
 
   // Transforms the thread configuration based on the parameters
-  settings.mul_local = {{"PAD_DIMX", "PAD_DIMY"}};
-  settings.div_global = {{"PAD_WPTX", "PAD_WPTY"}};
+  settings.mul_local = {{"TMMWGSX", "TMMWGSY"}};
+  settings.div_global = {{}};
 
   // Sets the tuning parameters and their possible values
+  // TODO: Make these actually tunable, apart from LOCALPAD
   settings.parameters = {
-    {"PAD_DIMX", {8, 16, 32}},
-    {"PAD_DIMY", {8, 16, 32}},
-    {"PAD_WPTX", {1, 2, 4}},
-    {"PAD_WPTY", {1, 2, 4}},
+    {"INTERNAL_BLOCK_SIZE", {16}},
+    {"LOCALPAD", {0, 1}},
+    {"TMMWGSX", {4}},
+    {"TMMWGSY", {4}},
   };
 
   // Describes how to compute the performance metrics
-  settings.metric_amount = 2 * args.m * args.n * GetBytes(args.precision);
-  settings.performance_unit = "GB/s";
+  settings.metric_amount = 1 * GetBytes(args.precision);
+  settings.performance_unit = "N/A";
 
   return settings;
 }
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &) { }
+void TestValidArguments(const int, const Arguments<T> &args) {
+  if (!(args.k == 16)) {
+    throw std::runtime_error("'TripleMatMul16Part1Lower' requires 'k' to be 16");
+  }
+}
 std::vector<Constraint> SetConstraints(const int) { return {}; }
 
 // Sets the kernel's arguments
 template <typename T>
 void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
-  kernel.SetArgument(0, static_cast<int>(args.m));
-  kernel.SetArgument(1, static_cast<int>(args.n));
-  kernel.SetArgument(2, static_cast<int>(args.m));
-  kernel.SetArgument(3, 0);
-  kernel.SetArgument(4, buffers[2]()); // 2 == A matrix
-  kernel.SetArgument(5, static_cast<int>(args.m));
-  kernel.SetArgument(6, static_cast<int>(args.n));
-  kernel.SetArgument(7, static_cast<int>(args.m));
-  kernel.SetArgument(8, 0);
-  kernel.SetArgument(9, buffers[3]()); // 3 == B matrix
-  kernel.SetArgument(10, GetRealArg(args.alpha));
-  kernel.SetArgument(11, 0);
+  const auto num_pages = CeilDiv(args.n, args.m*2);
+  kernel.SetArgument(0, static_cast<int>(args.n));
+  kernel.SetArgument(1, buffers[0]()); // 0 == A matrix
+  kernel.SetArgument(2, 0); // a_offset
+  kernel.SetArgument(3, static_cast<int>(args.n)); // a_ld
+  kernel.SetArgument(4, buffers[1]()); // 1 == B matrix
+  kernel.SetArgument(5, static_cast<int>(args.k)); // current_size
+  kernel.SetArgument(6, static_cast<int>(num_pages)); // num_pages
+  kernel.SetArgument(7, static_cast<int>(args.m)); // block_size
 }
 
 // =================================================================================================
