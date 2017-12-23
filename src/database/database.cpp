@@ -29,11 +29,11 @@
 #include "database/kernels/pad/pad.hpp"
 #include "database/kernels/transpose/transpose.hpp"
 #include "database/kernels/padtranspose/padtranspose.hpp"
+#include "database/kernels/invert/invert.hpp"
 
 #include "database/kernels/gemm_routine/gemm_routine.hpp"
+#include "database/kernels/trsv_routine/trsv_routine.hpp"
 
-#include "database/kernels/xtrsv.hpp"
-#include "database/kernels/invert.hpp"
 #include "database/apple_cpu_fallback.hpp"
 
 namespace clblast {
@@ -47,7 +47,6 @@ const std::vector<database::DatabaseEntry> Database::database = std::vector<data
   database::XgemvFastHalf, database::XgemvFastSingle, database::XgemvFastDouble, database::XgemvFastComplexSingle, database::XgemvFastComplexDouble,
   database::XgemvFastRotHalf, database::XgemvFastRotSingle, database::XgemvFastRotDouble, database::XgemvFastRotComplexSingle, database::XgemvFastRotComplexDouble,
   database::XgerHalf, database::XgerSingle, database::XgerDouble, database::XgerComplexSingle, database::XgerComplexDouble,
-  database::XtrsvHalf, database::XtrsvSingle, database::XtrsvDouble, database::XtrsvComplexSingle, database::XtrsvComplexDouble,
   database::XgemmHalf, database::XgemmSingle, database::XgemmDouble, database::XgemmComplexSingle, database::XgemmComplexDouble,
   database::XgemmDirectHalf, database::XgemmDirectSingle, database::XgemmDirectDouble, database::XgemmDirectComplexSingle, database::XgemmDirectComplexDouble,
   database::CopyHalf, database::CopySingle, database::CopyDouble, database::CopyComplexSingle, database::CopyComplexDouble,
@@ -55,7 +54,8 @@ const std::vector<database::DatabaseEntry> Database::database = std::vector<data
   database::TransposeHalf, database::TransposeSingle, database::TransposeDouble, database::TransposeComplexSingle, database::TransposeComplexDouble,
   database::PadtransposeHalf, database::PadtransposeSingle, database::PadtransposeDouble, database::PadtransposeComplexSingle, database::PadtransposeComplexDouble,
   database::InvertHalf, database::InvertSingle, database::InvertDouble, database::InvertComplexSingle, database::InvertComplexDouble,
-  database::GemmRoutineHalf, database::GemmRoutineSingle, database::GemmRoutineDouble, database::GemmRoutineComplexSingle, database::GemmRoutineComplexDouble
+  database::GemmRoutineHalf, database::GemmRoutineSingle, database::GemmRoutineDouble, database::GemmRoutineComplexSingle, database::GemmRoutineComplexDouble,
+  database::TrsvRoutineHalf, database::TrsvRoutineSingle, database::TrsvRoutineDouble, database::TrsvRoutineComplexSingle, database::TrsvRoutineComplexDouble
 };
 const std::vector<database::DatabaseEntry> Database::apple_cpu_fallback = std::vector<database::DatabaseEntry>{
   database::XaxpyApple, database::XdotApple,

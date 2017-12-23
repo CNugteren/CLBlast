@@ -59,7 +59,7 @@ void TuneXtrsv(int argc, char* argv[]) {
 
   // Values for the block size
   const auto from = size_t{8};
-  const auto to = size_t{64 + 1};
+  const auto to = size_t{32 + 1};
   const auto step = size_t{8};
 
   // OpenCL initialisation
