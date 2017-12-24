@@ -35,7 +35,7 @@ class TestXgemm {
             kArgLayout, kArgATransp, kArgBTransp,
             kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
             kArgAOffset, kArgBOffset, kArgCOffset,
-            kArgAlpha, kArgBeta};
+            }; //kArgAlpha, kArgBeta};
   }
   static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB, kBufMatC}; }
   static std::vector<std::string> BuffersOut() { return {kBufMatC}; }
@@ -94,17 +94,17 @@ class TestXgemm {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                         args.m, args.n, args.k, args.alpha,
+                         args.m, args.n, args.k, ConstantOne<T>(),
                          buffers.a_mat(), args.a_offset, args.a_ld,
-                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.b_mat(), args.b_offset, args.b_ld, ConstantZero<T>(),
                          buffers.c_mat(), args.c_offset, args.c_ld,
                          &queue_plain, &event);
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                         args.m, args.n, args.k, args.alpha,
+                         args.m, args.n, args.k, ConstantOne<T>(),
                          buffers.a_mat(), args.a_offset, args.a_ld,
-                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.b_mat(), args.b_offset, args.b_ld, ConstantZero<T>(),
                          buffers.c_mat(), args.c_offset, args.c_ld,
                          queue.GetContext()(), queue.GetDevice()());
       cuStreamSynchronize(queue());
@@ -120,9 +120,9 @@ class TestXgemm {
       auto status = clblasXgemm(convertToCLBLAS(args.layout),
                                 convertToCLBLAS(args.a_transpose),
                                 convertToCLBLAS(args.b_transpose),
-                                args.m, args.n, args.k, args.alpha,
+                                args.m, args.n, args.k, ConstantOne<T>(),
                                 buffers.a_mat, args.a_offset, args.a_ld,
-                                buffers.b_mat, args.b_offset, args.b_ld, args.beta,
+                                buffers.b_mat, args.b_offset, args.b_ld, ConstantZero<T>(),
                                 buffers.c_mat, args.c_offset, args.c_ld,
                                 1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
@@ -136,9 +136,9 @@ class TestXgemm {
       cblasXgemm(convertToCBLAS(args.layout),
                  convertToCBLAS(args.a_transpose),
                  convertToCBLAS(args.b_transpose),
-                 args.m, args.n, args.k, args.alpha,
+                 args.m, args.n, args.k, ConstantOne<T>(),
                  buffers_host.a_mat, args.a_offset, args.a_ld,
-                 buffers_host.b_mat, args.b_offset, args.b_ld, args.beta,
+                 buffers_host.b_mat, args.b_offset, args.b_ld, ConstantZero<T>(),
                  buffers_host.c_mat, args.c_offset, args.c_ld);
       return StatusCode::kSuccess;
     }
@@ -150,9 +150,9 @@ class TestXgemm {
       auto status = cublasXgemm(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                 convertToCUBLAS(args.a_transpose),
                                 convertToCUBLAS(args.b_transpose),
-                                args.m, args.n, args.k, args.alpha,
+                                args.m, args.n, args.k, ConstantOne<T>(),
                                 buffers.a_mat, args.a_offset, args.a_ld,
-                                buffers.b_mat, args.b_offset, args.b_ld, args.beta,
+                                buffers.b_mat, args.b_offset, args.b_ld, ConstantZero<T>(),
                                 buffers.c_mat, args.c_offset, args.c_ld);
       if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
