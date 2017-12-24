@@ -578,13 +578,14 @@ if(TESTS)
 
   # Miscellaneous tests
   set(MISC_TESTS override_parameters preprocessor)
+  if(MSVC)
+    set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp)
+  endif()
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
                    test/correctness/misc/${MISC_TEST}.cpp)
     target_link_libraries(clblast_test_${MISC_TEST} clblast ${REF_LIBRARIES} ${API_LIBRARIES})
-    target_include_directories(clblast_test_${MISC_TEST} PUBLIC
-                               $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES>
-                               ${clblast_SOURCE_DIR} ${REF_INCLUDES})
+    target_include_directories(clblast_test_${MISC_TEST} PUBLIC ${clblast_SOURCE_DIR} ${REF_INCLUDES})
     add_test(clblast_test_${MISC_TEST} clblast_test_${MISC_TEST})
   endforeach()
 
