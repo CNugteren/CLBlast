@@ -117,7 +117,7 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 // =================================================================================================
 
 void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
-                                     const cl_device_id device, const Precision precision) {
+                                     const RawDeviceID device, const Precision precision) {
 
   // Retrieves the best parameters for each file from disk
   BestParametersCollection all_parameters;

@@ -577,7 +577,10 @@ if(TESTS)
   endforeach()
 
   # Miscellaneous tests
-  set(MISC_TESTS override_parameters preprocessor)
+  set(MISC_TESTS override_parameters)
+  if(NOT CUDA)
+    set(MISC_TESTS ${MISC_TESTS} preprocessor)
+  endif()
   if(MSVC)
     set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp)
   endif()

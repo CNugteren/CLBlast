@@ -120,7 +120,7 @@ using BestParameters = std::unordered_map<std::string,size_t>;
 using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
 
 void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
-                                     const cl_device_id device, const Precision precision);
+                                     const RawDeviceID device, const Precision precision);
 void GetBestParametersFromJSONFile(const std::string& file_name,
                                    BestParametersCollection& all_parameters,
                                    const Precision precision);

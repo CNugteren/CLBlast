@@ -59,7 +59,7 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
 
   // Optionally adds a translation header from OpenCL kernels to CUDA kernels
   #ifdef CUDA_API
-    source_string +=
+    header_string +=
       #include "kernels/opencl_to_cuda.h"
     ;
   #endif
