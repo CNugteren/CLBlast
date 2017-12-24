@@ -72,42 +72,22 @@ TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
   settings.div_global = {{"MWG", "NWG"}};
 
   // Sets the tuning parameters and their possible values
-  if (V==1) { // limited subset of tuning parameters - but explorable exhaustively
-    settings.parameters = {
-      {"MWG", {16, 32, 64}},
-      {"NWG", {16, 32, 64}},
-      {"KWG", {32}},
-      {"MDIMC", {8, 16, 32}},
-      {"NDIMC", {8, 16, 32}},
-      {"MDIMA", {8, 16, 32}},
-      {"NDIMB", {8, 16, 32}},
-      {"KWI", {2}},
-      {"VWM", {1, 2, 4}},
-      {"VWN", {1, 2, 4}},
-      {"STRM", {0}},
-      {"STRN", {0}},
-      {"SA", {0, 1}},
-      {"SB", {0, 1}},
-    };
-  }
-  else { // a lot more tuning parameters - has to be sampled randomly, too much to test all
-    settings.parameters = {
-      {"MWG", {16, 32, 64, 128}},
-      {"NWG", {16, 32, 64, 128}},
-      {"KWG", {16, 32}},
-      {"MDIMC", {8, 16, 32}},
-      {"NDIMC", {8, 16, 32}},
-      {"MDIMA", {8, 16, 32}},
-      {"NDIMB", {8, 16, 32}},
-      {"KWI", {2}},
-      {"VWM", {1, 2, 4, 8}},
-      {"VWN", {1, 2, 4, 8}},
-      {"STRM", {0, 1}},
-      {"STRN", {0, 1}},
-      {"SA", {0, 1}},
-      {"SB", {0, 1}},
-    };
-  }
+  settings.parameters = {
+    {"MWG", {8, 16, 32, 64, 128, 256}},
+    {"NWG", {8, 16, 32, 64, 128, 256}},
+    {"KWG", {4}},
+    {"MDIMC", {2, 4, 8, 16, 32, 64, 128}},
+    {"NDIMC", {2, 4, 8, 16, 32, 64, 128}},
+    {"MDIMA", {2, 4, 8, 16, 32, 64, 128}},
+    {"NDIMB", {2, 4, 8, 16, 32, 64, 128}},
+    {"KWI", {1}},
+    {"VWM", {4}},
+    {"VWN", {4}},
+    {"STRM", {0}},
+    {"STRN", {0}},
+    {"SA", {0}},
+    {"SB", {0}},
+  };
 
   // Describes how to compute the performance metrics
   settings.metric_amount = 2 * args.m * args.n * args.k;
@@ -124,6 +104,11 @@ std::vector<Constraint> SetConstraints(const int V) {
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
   auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
+  // Requirement for Qualcomm specific code
+  auto IsFourTimesLarger = [] (std::vector<size_t> v) { return v[0] == 4 * v[1]; };
+  constraints.push_back({IsFourTimesLarger, {"MWG", "MDIMC"}});
+  auto IsEightTimesLarger = [] (std::vector<size_t> v) { return v[0] == 8 * v[1]; };
+  constraints.push_back({IsEightTimesLarger, {"NWG", "NDIMC"}});
   // Requirement for unrolling the KWG loop
   constraints.push_back({MultipleOfX, {"KWG", "KWI"}});
   // Required for integer MWI and NWI
@@ -132,9 +117,6 @@ std::vector<Constraint> SetConstraints(const int V) {
   // Required for integer MWIA and NWIB
   constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMA", "VWM"}});
   constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMB", "VWN"}});
-  // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
-  constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"}});
-  constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"}});
 
   // Extra constraints for variation 1 to limit the set of options significantly
   if (V==1) {
@@ -174,18 +156,18 @@ template <int V>
 void StartVariation(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<half>, clblast::TestValidArguments<half>, clblast::SetConstraints, clblast::SetArguments<half>); break;
+    //case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<half>, clblast::TestValidArguments<half>, clblast::SetConstraints, clblast::SetArguments<half>); break;
     case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<float>, clblast::TestValidArguments<float>, clblast::SetConstraints, clblast::SetArguments<float>); break;
-    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<double>, clblast::TestValidArguments<double>, clblast::SetConstraints, clblast::SetArguments<double>); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<float2>, clblast::TestValidArguments<float2>, clblast::SetConstraints, clblast::SetArguments<float2>); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<double2>, clblast::TestValidArguments<double2>, clblast::SetConstraints, clblast::SetArguments<double2>); break;
+    //case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<double>, clblast::TestValidArguments<double>, clblast::SetConstraints, clblast::SetArguments<double>); break;
+    //case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<float2>, clblast::TestValidArguments<float2>, clblast::SetConstraints, clblast::SetArguments<float2>); break;
+    //case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, V, clblast::GetTunerDefaults, clblast::GetTunerSettings<double2>, clblast::TestValidArguments<double2>, clblast::SetConstraints, clblast::SetArguments<double2>); break;
   }
 }
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
   StartVariation<1>(argc, argv);
-  StartVariation<2>(argc, argv);
+  //StartVariation<2>(argc, argv);
   return 0;
 }
 
