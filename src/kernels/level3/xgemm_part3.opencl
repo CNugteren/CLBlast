@@ -29,136 +29,58 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                              , LOCAL_PTR realN* blm
                            #endif
                            ) {
+  //
+  // Following is a Qualcomm specific kernel to test, it assumes alpha=1.0 and beta=0.0
+  // https://developer.qualcomm.com/blog/matrix-multiply-adreno-gpus-part-2-host-code-and-kernel
+  //
 
-  // Allocates workitem-private memory (registers)
-  #pragma promote_to_registers
-  realM apm[MWI/VWM];
-  #pragma promote_to_registers
-  realN bpm[NWI/VWN];
-  #pragma promote_to_registers
-  realM cpm[NWI*(MWI/VWM)];
+  const int gx = get_global_id(0);
+  const int gy = get_global_id(1);
 
-  // Combined thread identifier (volatile to disable caching)
-  #if SA == 1 || SB == 1
-    volatile int tid = get_local_id(0) + MDIMC*get_local_id(1);
-  #endif
+  const __global real* restrict A = (const __global real* restrict) &agm[0];
+  const __global real* restrict B = (const __global real* restrict) &bgm[0];
+  __global real* C = &cgm[0];
 
-  // Initializes the accumulation registers
-  #pragma unroll
-  for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
+  if (((gx << 2) < kSizeN) && ((gy << 3) < kSizeM)) {
+    real4 a[8];
+    real4 b[4];
+    real4 c[8];
+
     #pragma unroll
-    for (int _ni = 0; _ni < NWI; _ni += 1) {
-      cpm[_ni * (MWI/VWM) + _mi] = InitAccRegisters();
+    for (int i = 0; i < 8; i++) {
+      SetToZero(c[i]);
     }
-  }
 
+    const int A_y_off = (gy << 3) * kSizeK;
 
-  // Loops over all workgroup tiles
-  for (int kwg = 0; kwg < kSizeK; kwg += KWG) {
-
-    // Loads data: off-chip --> local (matrix A)
-    #if SA == 1
-      GlobalToLocalA(agm, alm, kSizeM, tid, kwg);
-    #endif
-    // Loads data: off-chip --> local (matrix B)
-    #if SB == 1
-      GlobalToLocalB(bgm, blm, kSizeN, tid, kwg);
-    #endif
-    #if SA == 1 || SB == 1
-      barrier(CLK_LOCAL_MEM_FENCE);
-    #endif
-
-    // Loops over all workitem tiles, unrolled by a factor KWI
-    for (int pwi = 0; pwi < KWG; pwi += KWI) {
+    for (int pos = 0; pos < kSizeK; pos += 4) {
       #pragma unroll
-      for (int _pit = 0; _pit < KWI; _pit += 1) {
-        #if SA == 0 || SB == 0
-          int idk = kwg + pwi + _pit;
-        #endif
-        #if SA == 1 || SB == 1
-          int kg = pwi + _pit;
-        #endif
+      for (int i = 0; i < 4; i++) {
+        // Original code: b[i] = read_imagef(Bi, (int2)(gx, pos + i));
+        int B_off = (pos + i) * kSizeN + (gx << 2);
+        b[i] = vload4(0, B + B_off);
+      }
 
-        #pragma unroll
-        for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
-          // Loads data: local --> private (matrix A)
-          #if SA == 1
-            apm[_mi] = LocalToPrivateA(alm, _mi, kg);
-          // Loads data: off-chip --> private (matrix A)
-          #else
-            apm[_mi] = GlobalToPrivateA(agm, _mi, kSizeM, idk, kwg);
-          #endif
-        }
+      int A_off = A_y_off + pos;
 
-        // Loads data: local --> private (matrix B)
-        #pragma unroll
-        for (int _ni = 0; _ni < NWI/VWN; _ni += 1) {
-          #if SB == 1
-            bpm[_ni] = LocalToPrivateB(blm, _ni, kg);
-          // Loads data: off-chip --> private (matrix B)
-          #else
-            bpm[_ni] = GlobalToPrivateB(bgm, _ni, kSizeN, idk);
-          #endif
-        }
+      #pragma unroll
+      for (int i = 0; i < 8; i++) {
+        a[i] = vload4(0, A + A_off);
+        A_off += kSizeK;
+      }
 
-        // Performs the accumulation (Cpm += Apm * Bpm)
-        #pragma unroll
-        for (int _ni = 0; _ni < NWI/VWN; _ni += 1) {
-          #pragma unroll
-          for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
-            const realM aval = apm[_mi];
-            #if VWN == 1
-              cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi], aval, bpm[_ni]);
-            #elif VWN == 2
-              cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi], aval, bpm[_ni].x);
-              cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi], aval, bpm[_ni].y);
-            #elif VWN == 4
-              cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi], aval, bpm[_ni].x);
-              cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi], aval, bpm[_ni].y);
-              cpm[(_ni*VWN + 2)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 2)*(MWI/VWM) + _mi], aval, bpm[_ni].z);
-              cpm[(_ni*VWN + 3)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 3)*(MWI/VWM) + _mi], aval, bpm[_ni].w);
-            #elif VWN == 8
-              cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 0)*(MWI/VWM) + _mi], aval, bpm[_ni].s0);
-              cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 1)*(MWI/VWM) + _mi], aval, bpm[_ni].s1);
-              cpm[(_ni*VWN + 2)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 2)*(MWI/VWM) + _mi], aval, bpm[_ni].s2);
-              cpm[(_ni*VWN + 3)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 3)*(MWI/VWM) + _mi], aval, bpm[_ni].s3);
-              cpm[(_ni*VWN + 4)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 4)*(MWI/VWM) + _mi], aval, bpm[_ni].s4);
-              cpm[(_ni*VWN + 5)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 5)*(MWI/VWM) + _mi], aval, bpm[_ni].s5);
-              cpm[(_ni*VWN + 6)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 6)*(MWI/VWM) + _mi], aval, bpm[_ni].s6);
-              cpm[(_ni*VWN + 7)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 7)*(MWI/VWM) + _mi], aval, bpm[_ni].s7);
-            #elif VWN == 16
-              cpm[(_ni*VWN + 0 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 0 )*(MWI/VWM) + _mi], aval, bpm[_ni].s0);
-              cpm[(_ni*VWN + 1 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 1 )*(MWI/VWM) + _mi], aval, bpm[_ni].s1);
-              cpm[(_ni*VWN + 2 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 2 )*(MWI/VWM) + _mi], aval, bpm[_ni].s2);
-              cpm[(_ni*VWN + 3 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 3 )*(MWI/VWM) + _mi], aval, bpm[_ni].s3);
-              cpm[(_ni*VWN + 4 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 4 )*(MWI/VWM) + _mi], aval, bpm[_ni].s4);
-              cpm[(_ni*VWN + 5 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 5 )*(MWI/VWM) + _mi], aval, bpm[_ni].s5);
-              cpm[(_ni*VWN + 6 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 6 )*(MWI/VWM) + _mi], aval, bpm[_ni].s6);
-              cpm[(_ni*VWN + 7 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 7 )*(MWI/VWM) + _mi], aval, bpm[_ni].s7);
-              cpm[(_ni*VWN + 8 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 8 )*(MWI/VWM) + _mi], aval, bpm[_ni].s8);
-              cpm[(_ni*VWN + 9 )*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 9 )*(MWI/VWM) + _mi], aval, bpm[_ni].s9);
-              cpm[(_ni*VWN + 10)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 10)*(MWI/VWM) + _mi], aval, bpm[_ni].sA);
-              cpm[(_ni*VWN + 11)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 11)*(MWI/VWM) + _mi], aval, bpm[_ni].sB);
-              cpm[(_ni*VWN + 12)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 12)*(MWI/VWM) + _mi], aval, bpm[_ni].sC);
-              cpm[(_ni*VWN + 13)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 13)*(MWI/VWM) + _mi], aval, bpm[_ni].sD);
-              cpm[(_ni*VWN + 14)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 14)*(MWI/VWM) + _mi], aval, bpm[_ni].sE);
-              cpm[(_ni*VWN + 15)*(MWI/VWM) + _mi] = MultiplyAddVector(cpm[(_ni*VWN + 15)*(MWI/VWM) + _mi], aval, bpm[_ni].sF);
-            #endif
-          }
-        }
-
+      #pragma unroll
+      for (int i = 0; i < 8; i++) {
+        c[i] += a[i].x * b[0] + a[i].y * b[1] + a[i].z * b[2] + a[i].w * b[3];
       }
     }
-    #if SA == 1 || SB == 1
-      barrier(CLK_LOCAL_MEM_FENCE);
-    #endif
-  }
-  #if GLOBAL_MEM_FENCE == 1
-    barrier(CLK_GLOBAL_MEM_FENCE);
-  #endif
 
-  // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
-  StoreResults(cgm, cpm, kSizeM, alpha, beta);
+    #pragma unroll
+    for (int i = 0; i < 8; i++) {
+      int C_offs = ((gy << 3) + i) * kSizeN + (gx << 2);
+      vstore4(c[i], 0, C + C_offs);
+    }
+  }
 }
 
 // =================================================================================================

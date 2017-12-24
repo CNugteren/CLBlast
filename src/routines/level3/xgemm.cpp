@@ -71,9 +71,9 @@ void Xgemm<T>::DoGemm(const Layout layout,
   const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
                          (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
   const auto c_rotated = (layout == Layout::kRowMajor);
-  static const auto a_want_rotated = false;
+  static const auto a_want_rotated = true;
   static const auto b_want_rotated = true;
-  static const auto c_want_rotated = false;
+  static const auto c_want_rotated = true;
   const auto a_do_transpose = a_rotated != a_want_rotated;
   const auto b_do_transpose = b_rotated != b_want_rotated;
   const auto c_do_transpose = c_rotated != c_want_rotated;
@@ -108,7 +108,7 @@ void Xgemm<T>::DoGemm(const Layout layout,
   const auto database_value = static_cast<unsigned long long>(db_["XGEMM_MIN_INDIRECT_SIZE"]);
   const auto min_indirect_size = database_value * database_value * database_value;
   const auto do_gemm_direct = (m_n_k < min_indirect_size);
-  if (do_gemm_direct) { // for small sizes (single kernel)
+  if (false) { // for small sizes (single kernel)
     GemmDirect(m, n, k, alpha,
                a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
                c_buffer, c_offset, c_ld,

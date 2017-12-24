@@ -105,6 +105,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   if (environment_variable != nullptr) {
     options.push_back(std::string(environment_variable));
   }
+  options.push_back(" -cl-fast-relaxed-math ");
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
