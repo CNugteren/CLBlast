@@ -35,7 +35,7 @@ class Database {
   static const std::string kDeviceVendorAll;
 
   // The database consists of separate database entries, stored together in a vector
-  static const std::vector<database::DatabaseEntry> database;
+  std::vector<database::DatabaseEntry> database;
 
   // Database for a special case: Apple CPUs support limited number of threads
   static const std::vector<database::DatabaseEntry> apple_cpu_fallback;
