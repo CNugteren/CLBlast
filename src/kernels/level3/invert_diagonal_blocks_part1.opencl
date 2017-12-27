@@ -93,8 +93,11 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   // Sets the offset for this particular block in the source and destination matrices
   const int src_block_offset = block_index * (INTERNAL_BLOCK_SIZE + src_ld * INTERNAL_BLOCK_SIZE) + src_offset;
   const int num_inner_blocks = outer_block_size / INTERNAL_BLOCK_SIZE;
-  const int dest_block_offset = (block_index / num_inner_blocks) * outer_block_size * outer_block_size + // go to the (block_index / num_inner_blocks) outer outer_block_size*outer_block_size block,
-                                (block_index % num_inner_blocks) * (outer_block_size*INTERNAL_BLOCK_SIZE + INTERNAL_BLOCK_SIZE); // then to the (block_index % num_inner_blocks) inner INTERNAL_BLOCK_SIZE*INTERNAL_BLOCK_SIZE block inside that
+  const int block_index_div = block_index / num_inner_blocks;
+  const int block_index_mod = block_index % num_inner_blocks;
+  const int offset_part1 = block_index_div * outer_block_size * outer_block_size; // go to the block_index_div outer outer_block_size*outer_block_size block
+  const int offset_part2 = block_index_mod * (outer_block_size*INTERNAL_BLOCK_SIZE + INTERNAL_BLOCK_SIZE); // then to the block_index_mod inner INTERNAL_BLOCK_SIZE*INTERNAL_BLOCK_SIZE block inside that
+  const int dest_block_offset = offset_part1 + offset_part2;
 
   // Local memory to store the inverted block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE
   __local real lm[INTERNAL_BLOCK_SIZE][INTERNAL_BLOCK_SIZE];
@@ -103,8 +106,13 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   // outside of the matrix are set to zero
   #pragma unroll
   for (int _j = 0; _j < INTERNAL_BLOCK_SIZE; _j += 1) {
-    const bool condition = (is_upper) ? (thread_index <= _j && block_index*INTERNAL_BLOCK_SIZE + _j < n) :
-                                        (thread_index >= _j && block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
+    bool condition;
+    if (is_upper) {
+      condition = (thread_index <= _j) && (block_index*INTERNAL_BLOCK_SIZE + _j < n);
+    }
+    else {
+      condition = (thread_index >= _j) && (block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
+    }
     if (condition) {
       lm[thread_index][_j] = src[_j*src_ld + thread_index + src_block_offset];
     }
