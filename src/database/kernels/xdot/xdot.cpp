@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry XdotHalf;
-extern const DatabaseEntry XdotSingle;
-extern const DatabaseEntry XdotComplexSingle;
-extern const DatabaseEntry XdotDouble;
-extern const DatabaseEntry XdotComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/xdot/xdot.hpp"
+#include "database/kernels/xdot/xdot_16.hpp"
+#include "database/kernels/xdot/xdot_32.hpp"
+#include "database/kernels/xdot/xdot_3232.hpp"
+#include "database/kernels/xdot/xdot_64.hpp"
+#include "database/kernels/xdot/xdot_6464.hpp"

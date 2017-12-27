@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry TrsvRoutineHalf;
-extern const DatabaseEntry TrsvRoutineSingle;
-extern const DatabaseEntry TrsvRoutineComplexSingle;
-extern const DatabaseEntry TrsvRoutineDouble;
-extern const DatabaseEntry TrsvRoutineComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/trsv_routine/trsv_routine.hpp"
+#include "database/kernels/trsv_routine/trsv_routine_16.hpp"
+#include "database/kernels/trsv_routine/trsv_routine_32.hpp"
+#include "database/kernels/trsv_routine/trsv_routine_3232.hpp"
+#include "database/kernels/trsv_routine/trsv_routine_64.hpp"
+#include "database/kernels/trsv_routine/trsv_routine_6464.hpp"

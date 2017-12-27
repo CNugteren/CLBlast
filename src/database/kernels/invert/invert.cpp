@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry InvertHalf;
-extern const DatabaseEntry InvertSingle;
-extern const DatabaseEntry InvertComplexSingle;
-extern const DatabaseEntry InvertDouble;
-extern const DatabaseEntry InvertComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/invert/invert.hpp"
+#include "database/kernels/invert/invert_16.hpp"
+#include "database/kernels/invert/invert_32.hpp"
+#include "database/kernels/invert/invert_3232.hpp"
+#include "database/kernels/invert/invert_64.hpp"
+#include "database/kernels/invert/invert_6464.hpp"

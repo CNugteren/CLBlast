@@ -19,6 +19,13 @@
 #include <vector>
 #include <map>
 
+// Just needed for 'Precision'
+#ifdef OPENCL_API
+  #include "clblast.h"
+#elif CUDA_API
+  #include "clblast_cuda.h"
+#endif
+
 namespace clblast {
 // A special namespace to hold all the global constant variables (including the database entries)
 namespace database {

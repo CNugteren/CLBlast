@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry XaxpyHalf;
-extern const DatabaseEntry XaxpySingle;
-extern const DatabaseEntry XaxpyComplexSingle;
-extern const DatabaseEntry XaxpyDouble;
-extern const DatabaseEntry XaxpyComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/xaxpy/xaxpy.hpp"
+#include "database/kernels/xaxpy/xaxpy_16.hpp"
+#include "database/kernels/xaxpy/xaxpy_32.hpp"
+#include "database/kernels/xaxpy/xaxpy_3232.hpp"
+#include "database/kernels/xaxpy/xaxpy_64.hpp"
+#include "database/kernels/xaxpy/xaxpy_6464.hpp"

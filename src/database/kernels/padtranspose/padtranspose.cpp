@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry PadtransposeHalf;
-extern const DatabaseEntry PadtransposeSingle;
-extern const DatabaseEntry PadtransposeComplexSingle;
-extern const DatabaseEntry PadtransposeDouble;
-extern const DatabaseEntry PadtransposeComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/padtranspose/padtranspose.hpp"
+#include "database/kernels/padtranspose/padtranspose_16.hpp"
+#include "database/kernels/padtranspose/padtranspose_32.hpp"
+#include "database/kernels/padtranspose/padtranspose_3232.hpp"
+#include "database/kernels/padtranspose/padtranspose_64.hpp"
+#include "database/kernels/padtranspose/padtranspose_6464.hpp"
