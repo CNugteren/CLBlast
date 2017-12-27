@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry CopyHalf;
-extern const DatabaseEntry CopySingle;
-extern const DatabaseEntry CopyComplexSingle;
-extern const DatabaseEntry CopyDouble;
-extern const DatabaseEntry CopyComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/copy/copy.hpp"
+#include "database/kernels/copy/copy_16.hpp"
+#include "database/kernels/copy/copy_32.hpp"
+#include "database/kernels/copy/copy_3232.hpp"
+#include "database/kernels/copy/copy_64.hpp"
+#include "database/kernels/copy/copy_6464.hpp"

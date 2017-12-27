@@ -7,16 +7,9 @@
 //
 // =================================================================================================
 
-#include "database/database_structure.hpp"
-
-namespace clblast {
-namespace database {
-
-extern const DatabaseEntry GemmRoutineHalf;
-extern const DatabaseEntry GemmRoutineSingle;
-extern const DatabaseEntry GemmRoutineComplexSingle;
-extern const DatabaseEntry GemmRoutineDouble;
-extern const DatabaseEntry GemmRoutineComplexDouble;
-
-} // namespace database
-} // namespace clblast
+#include "database/kernels/gemm_routine/gemm_routine.hpp"
+#include "database/kernels/gemm_routine/gemm_routine_16.hpp"
+#include "database/kernels/gemm_routine/gemm_routine_32.hpp"
+#include "database/kernels/gemm_routine/gemm_routine_3232.hpp"
+#include "database/kernels/gemm_routine/gemm_routine_64.hpp"
+#include "database/kernels/gemm_routine/gemm_routine_6464.hpp"
