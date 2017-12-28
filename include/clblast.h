@@ -647,6 +647,17 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
 
 // =================================================================================================
 
+// Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              cl_command_queue* queue, size_t& temp_buffer_size);
+
+// =================================================================================================
+
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.
 StatusCode PUBLIC_API ClearCache();
