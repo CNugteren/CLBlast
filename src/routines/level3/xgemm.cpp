@@ -63,35 +63,12 @@ void Xgemm<T>::DoGemm(const Layout layout,
                       const T beta,
                       const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
 
-  // Makes sure all dimensions are larger than zero
-  if ((m == 0) || (n == 0) || (k == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
-
-  // Computes whether or not the matrices are transposed in memory. This is based on their layout
-  // (row or column-major) and whether or not they are requested to be pre-transposed. Note
-  // that the Xgemm kernel expects either matrices A and C (in case of row-major) or B (in case of
-  // col-major) to be transformed, so transposing requirements are not the same as whether or not
-  // the matrix is actually transposed in memory.
-  const auto a_rotated = (layout == Layout::kColMajor && a_transpose != Transpose::kNo) ||
-                         (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
-  const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
-                         (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
-  const auto c_rotated = (layout == Layout::kRowMajor);
-  const auto a_do_transpose = a_rotated != a_want_rotated_;
-  const auto b_do_transpose = b_rotated != b_want_rotated_;
-  const auto c_do_transpose = c_rotated != c_want_rotated_;
-
-  // In case of complex data-types, the transpose can also become a conjugate transpose
-  const auto a_conjugate = (a_transpose == Transpose::kConjugate);
-  const auto b_conjugate = (b_transpose == Transpose::kConjugate);
-
-  // Computes the first and second dimensions of the 3 matrices taking into account whether the
-  // matrices are rotated or not
-  const auto a_one = (a_rotated) ? k : m;
-  const auto a_two = (a_rotated) ? m : k;
-  const auto b_one = (b_rotated) ? n : k;
-  const auto b_two = (b_rotated) ? k : n;
-  const auto c_one = (c_rotated) ? n : m;
-  const auto c_two = (c_rotated) ? m : n;
+  // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
+  bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
+  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  ProcessArguments(layout, a_transpose, b_transpose, m, n, k,
+                   a_one, a_two, b_one, b_two, c_one, c_two,
+                   a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
 
   // Tests three matrices (A, B, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. m, n, k). Tests whether the
