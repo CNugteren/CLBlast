@@ -18,7 +18,7 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_INVERT)
 
-#ifdef DISABLE_PART8
+#ifndef DISABLE_PART8
 // B21 = A21 * B11
 __kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
 void TripleMatMul16Part1Lower(int n, __global const real* restrict src, const int a_offset, const int lda,
@@ -72,7 +72,7 @@ void TripleMatMul64Part2Lower(int n, __global real* restrict dest, int current_s
 #endif
 // =================================================================================================
 
-#ifdef DISABLE_PART9
+#ifndef DISABLE_PART9
 // B12 =  A12 * B22
 __kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
 void TripleMatMul16Part1Upper(int n, __global const real* restrict src, const int a_offset, const int lda,
