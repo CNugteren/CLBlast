@@ -58,6 +58,16 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_INVERT)
 
+//#define DISABLE_PART1
+//#define DISABLE_PART2
+//#define DISABLE_PART3
+//#define DISABLE_PART4
+//#define DISABLE_PART5
+//#define DISABLE_PART6
+//#define DISABLE_PART7
+//#define DISABLE_PART8
+//#define DISABLE_PART9
+
 // Parameters set by the tuner
 // TODO: Make these actually tunable
 #ifndef INTERNAL_BLOCK_SIZE
@@ -102,6 +112,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   // Local memory to store the inverted block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE
   __local real lm[INTERNAL_BLOCK_SIZE][INTERNAL_BLOCK_SIZE];
 
+#ifdef DISABLE_PART1
   // Loads the source lower triangle into local memory. Any values in the upper triangle or
   // outside of the matrix are set to zero
   #pragma unroll
@@ -121,7 +132,8 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
     }
   }
   barrier(CLK_LOCAL_MEM_FENCE);
-  
+#endif
+#ifdef DISABLE_PART2
   // Inverts the diagonal
   real inverted_diagonal;
   SetToOne(inverted_diagonal);
@@ -135,7 +147,8 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   }
   lm[thread_index][thread_index] = inverted_diagonal;
   barrier(CLK_LOCAL_MEM_FENCE);
-
+#endif
+#ifdef DISABLE_PART3
   // Upper-triangular
   if (is_upper) {
 
@@ -185,6 +198,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   for (int j = 0; j < INTERNAL_BLOCK_SIZE; j += 1) {
     dest[j*outer_block_size + thread_index + dest_block_offset] = lm[thread_index][j];
   }
+#endif
 }
 
 // =================================================================================================
@@ -217,6 +231,7 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
   for (int _j = 0; _j < 16; _j += 1) {
     SetToZero(cpm[_j]);
   }
+#ifdef DISABLE_PART4
 
   // Computes NT x 16 block of C, each thread computes one 1 x 16 row
   for (int k = 0; k < current_size; k += 16) {
@@ -261,7 +276,8 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
 
     barrier(CLK_LOCAL_MEM_FENCE);
   }
-
+#endif
+#ifdef DISABLE_PART5
   // Stores NT x 16 results: each thread writes one 16 x 1 row
   #pragma unroll
   for (int _i = 0; _i < 16; _i += 1) {
@@ -269,6 +285,7 @@ INLINE_FUNC void TripleMatMul(const int size, const bool upper, const int part, 
     cgm[0] = cpm[_i];
     cgm += ldc;
   }
+#endif
 }
 
 // =================================================================================================
@@ -278,6 +295,7 @@ INLINE_FUNC void TripleMatMulPart1(const int size, const bool upper, LOCAL_PTR r
                                    __global const real* src, const int a_offset, const int lda,
                                    __global real* dest, int current_size, int num_pages, const int block_size) {
 
+#ifdef DISABLE_PART6
   // Emulates a 3D grid: NX * (NY * num_pages)
   const int page = get_group_id(1) % num_pages;
 
@@ -307,12 +325,14 @@ INLINE_FUNC void TripleMatMulPart1(const int size, const bool upper, LOCAL_PTR r
   const int ldb = block_size;
   const int ldc = block_size;
   TripleMatMul(size, upper, 1, blm, n, agm, bgm, cgm, lda, ldb, ldc, current_size, num_pages, block_size);
+#endif
 }
 
 // Triple matrix-multiplication kernel part 1: B12 = -B11 * B12 (upper) or B21 = -B22 * B21 (lower)
 INLINE_FUNC void TripleMatMulPart2(const int size, const bool upper, LOCAL_PTR real* blm, const int n,
                                    __global real* dest, int current_size, int num_pages, const int block_size) {
 
+#ifdef DISABLE_PART7
   // Emulates a 3D grid: NX * (NY * num_pages)
   const int page = get_group_id(1) % num_pages;
 
@@ -344,6 +364,7 @@ INLINE_FUNC void TripleMatMulPart2(const int size, const bool upper, LOCAL_PTR r
   const int ldb = block_size;
   const int ldc = block_size;
   TripleMatMul(size, upper, 2, blm, n, agm, bgm, cgm, lda, ldb, ldc, current_size, num_pages, block_size);
+#endif
 }
 
 #endif
