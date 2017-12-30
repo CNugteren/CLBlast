@@ -158,7 +158,8 @@ class Xgemm: public Routine {
               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
               const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
               const T beta,
-              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
+              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+              const Buffer<T> &temp_buffer = Buffer<T>(nullptr), const bool temp_buffer_provided = false);
 
   // Indirect version of GEMM (with pre and post-processing kernels)
   void GemmIndirect(const size_t m, const size_t n, const size_t k,
@@ -171,7 +172,8 @@ class Xgemm: public Routine {
                     const bool a_conjugate, const bool b_conjugate,
                     const size_t a_one, const size_t a_two,
                     const size_t b_one, const size_t b_two,
-                    const size_t c_one, const size_t c_two);
+                    const size_t c_one, const size_t c_two,
+                    const Buffer<T> &temp_buffer, const bool temp_buffer_provided);
 
   // Direct version of GEMM (no pre and post-processing kernels)
   void GemmDirect(const size_t m, const size_t n, const size_t k,

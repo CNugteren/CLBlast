@@ -61,7 +61,8 @@ void Xgemm<T>::DoGemm(const Layout layout,
                       const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                       const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
                       const T beta,
-                      const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
+                      const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                      const Buffer<T> &temp_buffer, const bool temp_buffer_provided) { // optional arguments
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
@@ -94,7 +95,8 @@ void Xgemm<T>::DoGemm(const Layout layout,
                  a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
                  c_buffer, c_offset, c_ld,
                  a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
-                 a_one, a_two, b_one, b_two, c_one, c_two);
+                 a_one, a_two, b_one, b_two, c_one, c_two,
+                 temp_buffer, temp_buffer_provided);
   }
 }
 
@@ -114,7 +116,8 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
                             const bool a_conjugate, const bool b_conjugate,
                             const size_t a_one, const size_t a_two,
                             const size_t b_one, const size_t b_two,
-                            const size_t c_one, const size_t c_two) {
+                            const size_t c_one, const size_t c_two,
+                            const Buffer<T> &temp_buffer, const bool temp_buffer_provided) {
 
   // Calculates the ceiled versions of m, n, and k
   const auto m_ceiled = Ceil(m, db_["MWG"]);
@@ -143,12 +146,19 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
 
   // Creates the buffer for the (optional) temporary matrices. Note that we use 'a_buffer' in case
   // when no temporary buffer is needed, but that's just to make it compile: it is never used.
-  const auto temp_buffer = (temp_size > 0) ? Buffer<T>(context_, temp_size) : a_buffer;
+  const auto temp_buffer_all = (temp_buffer_provided) ? temp_buffer :
+                               ((temp_size > 0) ? Buffer<T>(context_, temp_size) : a_buffer);
+
+  // Verifies if the provided temporary buffer is large enough
+  if (temp_buffer_provided) {
+    const auto required_size = temp_size * sizeof(T);
+    if (temp_buffer_all.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryTemp); }
+  }
 
   // Sets the buffer pointers for (temp) matrices A, B, and C
-  const auto a_temp = (a_no_temp) ? a_buffer : temp_buffer;
-  const auto b_temp = (b_no_temp) ? b_buffer : temp_buffer;
-  const auto c_temp = (c_no_temp) ? c_buffer : temp_buffer;
+  const auto a_temp = (a_no_temp) ? a_buffer : temp_buffer_all;
+  const auto b_temp = (b_no_temp) ? b_buffer : temp_buffer_all;
+  const auto c_temp = (c_no_temp) ? c_buffer : temp_buffer_all;
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
