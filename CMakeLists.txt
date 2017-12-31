@@ -578,7 +578,7 @@ if(TESTS)
   endforeach()
 
   # Miscellaneous tests
-  set(MISC_TESTS override_parameters compile_invert)
+  set(MISC_TESTS override_parameters)
   if(NOT CUDA)
     set(MISC_TESTS ${MISC_TESTS} preprocessor)
   endif()
