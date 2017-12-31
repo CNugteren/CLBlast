@@ -59,6 +59,8 @@ R"(
 #if defined(ROUTINE_INVERT)
 
 //#define DISABLE_PART1
+//#define DISABLE_PART1A
+//#define DISABLE_PART1B
 //#define DISABLE_PART2
 //#define DISABLE_PART3
 //#define DISABLE_PART4
@@ -93,7 +95,7 @@ R"(
 
 // Inverts a diagonal block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE elements in a larger matrix
 __kernel __attribute__((reqd_work_group_size(INTERNAL_BLOCK_SIZE, 1, 1)))
-void InvertDiagonalBlock(int n, __global const real* restrict src, const int src_offset, const int src_ld,
+void InvertDiagonalBlock(const int n, __global const real* restrict src, const int src_offset, const int src_ld,
                          __global real* restrict dest, const int outer_block_size,
                          const int unit_diagonal, const int is_upper)
 {
@@ -101,6 +103,7 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   const int block_index = get_group_id(0);
 
   // Sets the offset for this particular block in the source and destination matrices
+  const int block_index_per_block = block_index * INTERNAL_BLOCK_SIZE;
   const int src_block_offset = block_index * (INTERNAL_BLOCK_SIZE + src_ld * INTERNAL_BLOCK_SIZE) + src_offset;
   const int num_inner_blocks = outer_block_size / INTERNAL_BLOCK_SIZE;
   const int block_index_div = block_index / num_inner_blocks;
@@ -115,21 +118,25 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
 #ifndef DISABLE_PART1
   // Loads the source lower triangle into local memory. Any values in the upper triangle or
   // outside of the matrix are set to zero
-  #pragma unroll
   for (int _j = 0; _j < INTERNAL_BLOCK_SIZE; _j += 1) {
-    bool condition;
+    bool condition = false;
+#ifndef DISABLE_PART1A
     if (is_upper) {
-      condition = (thread_index <= _j) && (block_index*INTERNAL_BLOCK_SIZE + _j < n);
+      condition = (thread_index <= _j) && (block_index_per_block + _j < n);
     }
     else {
-      condition = (thread_index >= _j) && (block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
+      condition = (thread_index >= _j) && (block_index_per_block + thread_index < n);
     }
+#endif
+#ifndef DISABLE_PART1B
     if (condition) {
-      lm[thread_index][_j] = src[_j*src_ld + thread_index + src_block_offset];
+      const int src_index = _j*src_ld + thread_index + src_block_offset;
+      lm[thread_index][_j] = src[src_index];
     }
     else {
       SetToZero(lm[thread_index][_j]);
     }
+#endif
   }
   barrier(CLK_LOCAL_MEM_FENCE);
 #endif
