@@ -10,7 +10,7 @@ import argparse
 import os
 import sys
 
-from benchmark import benchmark_single
+from benchmark import benchmark_single, COMPARISONS
 
 
 BENCHMARKS = ["axpy", "gemv", "gemm", "summary", "axpybatched", "gemmbatched"]
@@ -18,6 +18,7 @@ BENCHMARKS = ["axpy", "gemv", "gemm", "summary", "axpybatched", "gemmbatched"]
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser(description="Runs all (main) benchmarks in one go for a given device")
+    parser.add_argument("-c", "--comparisons", default=[], nargs='+', help="The library(s) to compare against (choose from %s)" % COMPARISONS)
     parser.add_argument("-p", "--platform", required=True, type=int, help="The ID of the OpenCL platform to test on")
     parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
     parser.add_argument("-x", "--precision", type=int, default=32, help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
@@ -29,12 +30,12 @@ def parse_arguments(argv):
     return vars(cl_args)
 
 
-def benchmark_all(platform, device, precision, load_from_disk,
+def benchmark_all(comparisons, platform, device, precision, load_from_disk,
                   plot_title, output_folder, verbose):
     for bench in BENCHMARKS:
         from_disk = load_from_disk
         for tight_plot in [True, False]:  # two plots for a single benchmark
-            benchmark_single(bench, platform, device, None, precision, from_disk,
+            benchmark_single(bench, comparisons, platform, device, None, precision, from_disk,
                              plot_title, tight_plot, output_folder, verbose)
             from_disk = True  # for the next plot of the same data
 
