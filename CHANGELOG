@@ -5,6 +5,7 @@ Development (next version)
 - Added OpenCL pre-processor to unroll loops and perform array-to-register promotions for compilers
   which don't do this themselves (ARM Mali) - greatly improves performance on these platforms
 - Added first tuners for the TRSV (block size) and TRSM (invert kernel) routines
+- Fixed an issue with a crashing/hanging AMD APP compiler with the TRSM routine (invert kernel)
 - Improved compilation time by splitting the tuning database into multiple compilation units
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
