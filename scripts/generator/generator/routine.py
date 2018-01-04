@@ -819,7 +819,7 @@ class Routine:
             result += "const CUcontext context, const CUdevice device"
         else:
             result += "cl_command_queue* queue, cl_event* event" + default_event
-        if self.temp_buffer and not cuda:
+        if self.temp_buffer:
             result += ",\n" + indent + mem_type + " temp_buffer"
             if not implementation:
                 result += " = nullptr"

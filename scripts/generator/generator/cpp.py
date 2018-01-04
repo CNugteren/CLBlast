@@ -60,12 +60,12 @@ def clblast_cc(routine, cuda=False):
         result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, " + event + ");" + NL
         if routine.batched:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
-        if routine.temp_buffer and not cuda:
+        if routine.temp_buffer:
             result += "    const auto temp_buffer_provided = temp_buffer != nullptr;\n"
             result += "    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);\n"
         result += "    routine.Do" + routine.capitalized_name() + "("
         result += ("," + NL + indent1).join([a for a in routine.arguments_clcudaapi()])
-        if routine.temp_buffer and not cuda:
+        if routine.temp_buffer:
             result += ",\n" + indent1 + "temp_buffer_cpp, temp_buffer_provided"
         result += ");" + NL
         result += "    return StatusCode::kSuccess;" + NL
@@ -84,6 +84,8 @@ def clblast_cc(routine, cuda=False):
         result += "," + NL + indent2
         if cuda:
             result += "const CUcontext, const CUdevice"
+            if routine.temp_buffer:
+                result += ", CUdeviceptr"
         else:
             result += "cl_command_queue*, cl_event*"
             if routine.temp_buffer:
