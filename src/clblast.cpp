@@ -1652,11 +1652,11 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event,
-                cl_mem temp_buffer) { // optional argument
+                cl_mem temp_buffer) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xgemm<T>(queue_cpp, event);
-    auto temp_buffer_provided = temp_buffer != nullptr;
+    const auto temp_buffer_provided = temp_buffer != nullptr;
     auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);
     routine.DoGemm(layout, a_transpose, b_transpose,
                    m, n, k,
