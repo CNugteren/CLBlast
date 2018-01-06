@@ -69,6 +69,7 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInsufficientMemoryTemp    = -2050, // Temporary buffer provided to GEMM routine is too small
   kInvalidBatchCount         = -2049, // The batch count needs to be positive
   kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
@@ -492,7 +493,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const CUdeviceptr b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 CUdeviceptr c_buffer, const size_t c_offset, const size_t c_ld,
-                const CUcontext context, const CUdevice device);
+                const CUcontext context, const CUdevice device,
+                CUdeviceptr temp_buffer = 0);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -616,6 +618,17 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        CUdeviceptr c_buffer, const size_t *c_offsets, const size_t c_ld,
                        const size_t batch_count,
                        const CUcontext context, const CUdevice device);
+
+// =================================================================================================
+
+// Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              const CUdevice device, size_t& temp_buffer_size);
 
 // =================================================================================================
 

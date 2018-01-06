@@ -97,6 +97,7 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInsufficientMemoryTemp    = -2050, // Temporary buffer provided to GEMM routine is too small
   kInvalidBatchCount         = -2049, // The batch count needs to be positive
   kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
@@ -520,7 +521,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr,
+                cl_mem temp_buffer = nullptr);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -644,6 +646,17 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
                        const size_t batch_count,
                        cl_command_queue* queue, cl_event* event = nullptr);
+
+// =================================================================================================
+
+// Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              cl_command_queue* queue, size_t& temp_buffer_size);
 
 // =================================================================================================
 

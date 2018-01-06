@@ -2208,7 +2208,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                cl_mem temp_buffer = nullptr)
 ```
 
 C API:

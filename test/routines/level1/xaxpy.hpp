@@ -48,7 +48,7 @@ class TestXaxpy {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
   }

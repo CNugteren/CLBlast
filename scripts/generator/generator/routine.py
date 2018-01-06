@@ -12,12 +12,13 @@ import generator.convert as convert
 
 class Routine:
     """Class holding routine-specific information (e.g. name, which arguments, which precisions)"""
-    def __init__(self, implemented, has_tests, batched, level, name, template, flavours, sizes, options,
+    def __init__(self, implemented, has_tests, batched, temp_buffer, level, name, template, flavours, sizes, options,
                  inputs, outputs, buffer_sizes, scalars, scratch,
                  description, details, requirements):
         self.implemented = implemented
         self.has_tests = has_tests
         self.batched = batched
+        self.temp_buffer = temp_buffer
         self.level = level
         self.name = name
         self.template = template
@@ -802,12 +803,14 @@ class Routine:
         """Retrieves a list of routine requirements for documentation"""
         return self.requirements
 
-    def routine_header_cpp(self, spaces, default_event, cuda=False):
+    def routine_header_cpp(self, spaces, default_event, cuda=False, implementation=False):
         """Retrieves the C++ templated definition for a routine"""
         indent = " " * (spaces + self.length())
         arguments = self.arguments_def(self.template)
+        mem_type = "cl_mem"
         if cuda:
-            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
+            arguments = [a.replace(mem_type, "CUdeviceptr") for a in arguments]
+            mem_type = "CUdeviceptr"
         result = "template <" + self.template.name + ">\n"
         result += "StatusCode " + self.capitalized_name() + "("
         result += (",\n" + indent).join([a for a in arguments])
@@ -816,6 +819,10 @@ class Routine:
             result += "const CUcontext context, const CUdevice device"
         else:
             result += "cl_command_queue* queue, cl_event* event" + default_event
+        if self.temp_buffer:
+            result += ",\n" + indent + mem_type + " temp_buffer"
+            if not implementation:
+                result += " = nullptr"
         result += ")"
         return result
 

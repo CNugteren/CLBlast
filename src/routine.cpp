@@ -62,26 +62,8 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     device_(queue_.GetDevice()),
     db_(kernel_names) {
 
-  InitDatabase(userDatabase);
+  InitDatabase(device_, kernel_names, precision, userDatabase, db_);
   InitProgram(source);
-}
-
-void Routine::InitDatabase(const std::vector<database::DatabaseEntry> &userDatabase) {
-  const auto platform_id = device_.PlatformID();
-  for (const auto &kernel_name : kernel_names_) {
-
-    // Queries the cache to see whether or not the kernel parameter database is already there
-    bool has_db;
-    db_(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{ platform_id, device_(), precision_, kernel_name },
-                                                     &has_db);
-    if (has_db) { continue; }
-
-    // Builds the parameter database for this device and routine set and stores it in the cache
-    log_debug("Searching database for kernel '" + kernel_name + "'");
-    db_(kernel_name) = Database(device_, kernel_name, precision_, userDatabase);
-    DatabaseCache::Instance().Store(DatabaseKey{ platform_id, device_(), precision_, kernel_name },
-                                    Database{ db_(kernel_name) });
-  }
 }
 
 void Routine::InitProgram(std::initializer_list<const char *> source) {

@@ -350,7 +350,7 @@ size_t RunTests(int argc, char *argv[], const bool silent, const std::string &na
                                                                             for (auto &dilation_h: dilation_hs) { r_args.dilation_h = dilation_h;
                                                                               for (auto &dilation_w: dilation_ws) { r_args.dilation_w = dilation_w;
                                                                                 for (auto &batch_count: batch_counts) { r_args.batch_count = batch_count;
-                                                                                  C::SetSizes(r_args);
+                                                                                  C::SetSizes(r_args, tester.queue_);
                                                                                   regular_test_vector.push_back(r_args);
                                                                                 }
                                                                               }

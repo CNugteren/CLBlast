@@ -52,7 +52,7 @@ class TestXsyrk {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.c_size = GetSizeC(args);
   }

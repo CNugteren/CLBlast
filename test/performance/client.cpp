@@ -214,7 +214,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   while(true) {
 
     // Sets the buffer sizes (routine-specific)
-    set_sizes(args);
+    set_sizes(args, queue);
 
     // Populates input host matrices with random data
     std::vector<T> x_source(args.x_size);

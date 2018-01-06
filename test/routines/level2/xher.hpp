@@ -49,7 +49,7 @@ class TestXher {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<U> &args) {
+  static void SetSizes(Arguments<U> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.x_size = GetSizeX(args);
   }
