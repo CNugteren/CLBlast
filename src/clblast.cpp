@@ -2345,7 +2345,7 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
                               const size_t a_offset, const size_t a_ld,
                               const size_t b_offset, const size_t b_ld,
                               const size_t c_offset, const size_t c_ld,
-                              RawCommandQueue* queue, size_t& temp_buffer_size) {
+                              cl_command_queue* queue, size_t& temp_buffer_size) {
   try {
 
     // Retrieves the tuning database
@@ -2371,23 +2371,23 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
 template StatusCode PUBLIC_API GemmTempBufferSize<float>(const Layout, const Transpose, const Transpose,
                                                          const size_t, const size_t, const size_t,
                                                          const size_t, const size_t, const size_t, const size_t,
-                                                         const size_t, const size_t, RawCommandQueue*, size_t&);
+                                                         const size_t, const size_t, cl_command_queue*, size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<double>(const Layout, const Transpose, const Transpose,
                                                           const size_t, const size_t, const size_t,
                                                           const size_t, const size_t, const size_t, const size_t,
-                                                          const size_t, const size_t, RawCommandQueue*, size_t&);
+                                                          const size_t, const size_t, cl_command_queue*, size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<float2>(const Layout, const Transpose, const Transpose,
                                                           const size_t, const size_t, const size_t,
                                                           const size_t, const size_t, const size_t, const size_t,
-                                                          const size_t, const size_t, RawCommandQueue*, size_t&);
+                                                          const size_t, const size_t, cl_command_queue*, size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<double2>(const Layout, const Transpose, const Transpose,
                                                            const size_t, const size_t, const size_t,
                                                            const size_t, const size_t, const size_t, const size_t,
-                                                           const size_t, const size_t, RawCommandQueue*, size_t&);
+                                                           const size_t, const size_t, cl_command_queue*, size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<half>(const Layout, const Transpose, const Transpose,
                                                         const size_t, const size_t, const size_t,
                                                         const size_t, const size_t, const size_t, const size_t,
-                                                        const size_t, const size_t, RawCommandQueue*, size_t&);
+                                                        const size_t, const size_t, cl_command_queue*, size_t&);
 
 // =================================================================================================
 } // namespace clblast

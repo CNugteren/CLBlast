@@ -67,7 +67,6 @@ class TestXgemm {
     args.c_size = GetSizeC(args);
 
     // Optionally (V != 0) enforces indirect (V == 1) or direct (V == 2) kernels
-    auto queue_plain = queue();
     if (V != 0) {
       const auto device = queue.GetDevice();
       const auto switch_threshold = (V == 1) ? size_t{0} : size_t{4096}; // large enough for tests
@@ -78,9 +77,16 @@ class TestXgemm {
 
     // Sets the size of the temporary buffer (optional argument to GEMM)
     auto temp_buffer_size = size_t{0};
-    GemmTempBufferSize<T>(args.layout, args.a_transpose, args.b_transpose, args.m, args.n, args.k,
-                          args.a_offset, args.a_ld, args.b_offset, args.b_ld, args.c_offset, args.c_ld,
-                          &queue_plain, temp_buffer_size);
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      GemmTempBufferSize<T>(args.layout, args.a_transpose, args.b_transpose, args.m, args.n, args.k,
+                            args.a_offset, args.a_ld, args.b_offset, args.b_ld, args.c_offset, args.c_ld,
+                            &queue_plain, temp_buffer_size);
+    #elif CUDA_API
+      GemmTempBufferSize<T>(args.layout, args.a_transpose, args.b_transpose, args.m, args.n, args.k,
+                            args.a_offset, args.a_ld, args.b_offset, args.b_ld, args.c_offset, args.c_ld,
+                            queue.GetDevice()(), temp_buffer_size);
+    #endif
     args.ap_size = (temp_buffer_size + sizeof(T)) / sizeof(T);  // + sizeof(T) to prevent zero
   }
 
@@ -117,7 +123,7 @@ class TestXgemm {
                          buffers.a_mat(), args.a_offset, args.a_ld,
                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
                          buffers.c_mat(), args.c_offset, args.c_ld,
-                         queue.GetContext()(), queue.GetDevice()());
+                         queue.GetContext()(), queue.GetDevice()(), buffers.ap_mat()); // temp buffer
       cuStreamSynchronize(queue());
     #endif
     return status;
