@@ -159,7 +159,7 @@ class Xgemm: public Routine {
               const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
               const T beta,
               const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
-              const Buffer<T> &temp_buffer = Buffer<T>(nullptr), const bool temp_buffer_provided = false);
+              const Buffer<T> &temp_buffer = Buffer<T>(0), const bool temp_buffer_provided = false);
 
   // Indirect version of GEMM (with pre and post-processing kernels)
   void GemmIndirect(const size_t m, const size_t n, const size_t k,

@@ -494,7 +494,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const T beta,
                 CUdeviceptr c_buffer, const size_t c_offset, const size_t c_ld,
                 const CUcontext context, const CUdevice device,
-                CUdeviceptr temp_buffer = nullptr);
+                CUdeviceptr temp_buffer = 0);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>

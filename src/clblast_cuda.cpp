@@ -1732,8 +1732,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
     const auto device_cpp = Device(device);
     auto queue_cpp = Queue(context_cpp, device_cpp);
     auto routine = Xgemm<T>(queue_cpp, nullptr);
-    const auto temp_buffer_provided = temp_buffer != nullptr;
-    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);
+    const auto temp_buffer_provided = temp_buffer != 0;
+    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(0);
     routine.DoGemm(layout, a_transpose, b_transpose,
                    m, n, k,
                    alpha,
