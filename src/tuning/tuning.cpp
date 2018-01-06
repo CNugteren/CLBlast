@@ -37,8 +37,8 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
   for (auto &datum: metadata) {
     fprintf(file, "  \"%s\": \"%s\",\n", datum.first.c_str(), datum.second.c_str());
   }
-  fprintf(file, "  \"clblast_device_type\": \"%s\",\n", device.Type().c_str());
-  fprintf(file, "  \"clblast_device_vendor\": \"%s\",\n", device.Vendor().c_str());
+  fprintf(file, "  \"clblast_device_type\": \"%s\",\n", GetDeviceType(device).c_str());
+  fprintf(file, "  \"clblast_device_vendor\": \"%s\",\n", GetDeviceVendor(device).c_str());
   fprintf(file, "  \"clblast_device_architecture\": \"%s\",\n", GetDeviceArchitecture(device).c_str());
   fprintf(file, "  \"clblast_device_name\": \"%s\",\n", GetDeviceName(device).c_str());
   fprintf(file, "  \"device\": \"%s\",\n", device.Name().c_str());

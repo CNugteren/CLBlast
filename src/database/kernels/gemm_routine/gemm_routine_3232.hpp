@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry GemmRoutineComplexSingle = {
   "GemmRoutine", Precision::kComplexSingle, {"XGEMM_MIN_INDIRECT_SIZE"}, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
@@ -20,16 +28,8 @@ const DatabaseEntry GemmRoutineComplexSingle = {
         } },
       }
     },
-    { // Intel(R) Corporation CPUs
-      kDeviceTypeCPU, "Intel(R) Corporation", {
-        { "default", {
-          { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
         { "SM5.0", {
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
