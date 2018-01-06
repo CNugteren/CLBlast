@@ -86,8 +86,8 @@ class TestXgemmBatched {
       args.a_offsets[batch] = batch * PerBatchSizeA(args) + args.a_offset;
       args.b_offsets[batch] = batch * PerBatchSizeB(args) + args.b_offset;
       args.c_offsets[batch] = batch * PerBatchSizeC(args) + args.c_offset;
-      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch));
-      args.betas[batch] = args.beta + Constant<T>(static_cast<double>(batch));
+      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch + 1));
+      args.betas[batch] = args.beta + Constant<T>(static_cast<double>(batch + 1));
     }
   }
 
