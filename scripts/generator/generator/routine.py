@@ -822,7 +822,7 @@ class Routine:
         if self.temp_buffer:
             result += ",\n" + indent + mem_type + " temp_buffer"
             if not implementation:
-                result += " = nullptr"
+                result += " = 0" if cuda else " = nullptr"
         result += ")"
         return result
 

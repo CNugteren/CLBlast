@@ -61,8 +61,9 @@ def clblast_cc(routine, cuda=False):
         if routine.batched:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
         if routine.temp_buffer:
-            result += "    const auto temp_buffer_provided = temp_buffer != nullptr;\n"
-            result += "    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);\n"
+            null = "0" if cuda else "nullptr"
+            result += "    const auto temp_buffer_provided = temp_buffer != " + null + ";\n"
+            result += "    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(" + null + ");\n"
         result += "    routine.Do" + routine.capitalized_name() + "("
         result += ("," + NL + indent1).join([a for a in routine.arguments_clcudaapi()])
         if routine.temp_buffer:
