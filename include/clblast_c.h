@@ -1451,6 +1451,53 @@ CLBlastStatusCode PUBLIC_API CLBlastHgemmBatched(const CLBlastLayout layout, con
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
 
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const float alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const float beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const double alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const double beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_float2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_float2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_double2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_double2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_half alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_half beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on

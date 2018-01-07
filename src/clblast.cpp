@@ -2336,6 +2336,77 @@ template StatusCode PUBLIC_API GemmBatched<half>(const Layout, const Transpose, 
                                                  const size_t,
                                                  cl_command_queue*, cl_event*);
 
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = XgemmStridedBatched<T>(queue_cpp, event);
+    routine.DoGemmStridedBatched(layout, a_transpose, b_transpose,
+                                 m, n, k,
+                                 alpha,
+                                 Buffer<T>(a_buffer), a_offset, a_ld, a_stride,
+                                 Buffer<T>(b_buffer), b_offset, b_ld, b_stride,
+                                 beta,
+                                 Buffer<T>(c_buffer), c_offset, c_ld, c_stride,
+                                 batch_count);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API GemmStridedBatched<float>(const Layout, const Transpose, const Transpose,
+                                                         const size_t, const size_t, const size_t,
+                                                         const float,
+                                                         const cl_mem, const size_t, const size_t, const size_t,
+                                                         const cl_mem, const size_t, const size_t, const size_t,
+                                                         const float,
+                                                         cl_mem, const size_t, const size_t, const size_t,
+                                                         const size_t,
+                                                         cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<double>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const double,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const double,
+                                                          cl_mem, const size_t, const size_t, const size_t,
+                                                          const size_t,
+                                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<float2>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const float2,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const float2,
+                                                          cl_mem, const size_t, const size_t, const size_t,
+                                                          const size_t,
+                                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<double2>(const Layout, const Transpose, const Transpose,
+                                                           const size_t, const size_t, const size_t,
+                                                           const double2,
+                                                           const cl_mem, const size_t, const size_t, const size_t,
+                                                           const cl_mem, const size_t, const size_t, const size_t,
+                                                           const double2,
+                                                           cl_mem, const size_t, const size_t, const size_t,
+                                                           const size_t,
+                                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<half>(const Layout, const Transpose, const Transpose,
+                                                        const size_t, const size_t, const size_t,
+                                                        const half,
+                                                        const cl_mem, const size_t, const size_t, const size_t,
+                                                        const cl_mem, const size_t, const size_t, const size_t,
+                                                        const half,
+                                                        cl_mem, const size_t, const size_t, const size_t,
+                                                        const size_t,
+                                                        cl_command_queue*, cl_event*);
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)

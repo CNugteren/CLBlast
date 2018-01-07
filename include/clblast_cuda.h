@@ -619,6 +619,18 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        const size_t batch_count,
                        const CUcontext context, const CUdevice device);
 
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const CUdeviceptr a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const CUdeviceptr b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              CUdeviceptr c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              const CUcontext context, const CUdevice device);
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
