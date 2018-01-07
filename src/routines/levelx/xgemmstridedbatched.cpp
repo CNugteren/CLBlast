@@ -112,6 +112,7 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(const size_t m, const size_t n,
                                                  const size_t b_one, const size_t b_two,
                                                  const size_t c_one, const size_t c_two,
                                                  const size_t batch_count) {
+  /* TODO
   // Calculates the ceiled versions of m, n, and k
   const auto m_ceiled = Ceil(Ceil(m, db_["MWG"]), db_["VWM"]);
   const auto n_ceiled = Ceil(Ceil(n, db_["NWG"]), db_["VWN"]);
@@ -123,7 +124,6 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(const size_t m, const size_t n,
   Xgemm<T>::CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"],
                                         a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i);
 
-  /* TODO
   // Sets the "internal" offsets, i.e. the perfect offsets
   auto a_offsets_i = 0;//std::vector<int>(batch_count);
   auto b_offsets_i = 0;//std::vector<int>(batch_count);
@@ -244,30 +244,33 @@ void XgemmStridedBatched<T>::BatchedGemmDirect(const size_t m, const size_t n, c
                                                const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
                                                const bool a_conjugate, const bool b_conjugate,
                                                const size_t batch_count) {
-/* TODO
+
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectBatchedTT" : "XgemmDirectBatchedTN") :
-                    (b_do_transpose ? "XgemmDirectBatchedNT" : "XgemmDirectBatchedNN");
+  const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectStridedBatchedTT" : "XgemmDirectStridedBatchedTN") :
+                    (b_do_transpose ? "XgemmDirectStridedBatchedNT" : "XgemmDirectStridedBatchedNN");
   auto kernel = Kernel(program_, name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m));
   kernel.SetArgument(1, static_cast<int>(n));
   kernel.SetArgument(2, static_cast<int>(k));
-  kernel.SetArgument(3, alpha);
-  kernel.SetArgument(4, beta);
+  kernel.SetArgument(3, GetRealArg(alpha));
+  kernel.SetArgument(4, GetRealArg(beta));
   kernel.SetArgument(5, a_buffer());
-  kernel.SetArgument(6, a_offset);
+  kernel.SetArgument(6, static_cast<int>(a_offset));
   kernel.SetArgument(7, static_cast<int>(a_ld));
-  kernel.SetArgument(8, b_buffer());
-  kernel.SetArgument(9, b_offset);
-  kernel.SetArgument(10, static_cast<int>(b_ld));
-  kernel.SetArgument(11, c_buffer());
-  kernel.SetArgument(12, c_offset);
-  kernel.SetArgument(13, static_cast<int>(c_ld));
-  kernel.SetArgument(14, static_cast<int>(c_do_transpose));
-  kernel.SetArgument(15, static_cast<int>(a_conjugate));
-  kernel.SetArgument(16, static_cast<int>(b_conjugate));
+  kernel.SetArgument(8, static_cast<int>(a_stride));
+  kernel.SetArgument(9, b_buffer());
+  kernel.SetArgument(10, static_cast<int>(b_offset));
+  kernel.SetArgument(11, static_cast<int>(b_ld));
+  kernel.SetArgument(12, static_cast<int>(b_stride));
+  kernel.SetArgument(13, c_buffer());
+  kernel.SetArgument(14, static_cast<int>(c_offset));
+  kernel.SetArgument(15, static_cast<int>(c_ld));
+  kernel.SetArgument(16, static_cast<int>(c_stride));
+  kernel.SetArgument(17, static_cast<int>(c_do_transpose));
+  kernel.SetArgument(18, static_cast<int>(a_conjugate));
+  kernel.SetArgument(19, static_cast<int>(b_conjugate));
 
   // Computes the global and local thread sizes
   const auto m_ceiled = Ceil(m, db_["WGD"]);
@@ -281,7 +284,6 @@ void XgemmStridedBatched<T>::BatchedGemmDirect(const size_t m, const size_t n, c
 
   // Launches the kernel
   RunKernel(kernel, queue_, device_, global, local, event_);
-  */
 }
 
 // =================================================================================================
