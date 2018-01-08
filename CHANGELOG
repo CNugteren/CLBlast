@@ -10,6 +10,9 @@ Development (next version)
 - Improved compilation time by splitting the tuning database into multiple compilation units
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added a strided-batched (not part of the BLAS standard) routine, faster but less generic compared
+  to the existing xGEMMBATCHED routines:
+  * SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
 
 Version 1.2.0
 - Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
