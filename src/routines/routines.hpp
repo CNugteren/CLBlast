@@ -71,6 +71,7 @@
 #include "routines/levelx/xim2col.hpp"
 #include "routines/levelx/xaxpybatched.hpp"
 #include "routines/levelx/xgemmbatched.hpp"
+#include "routines/levelx/xgemmstridedbatched.hpp"
 
 // CLBLAST_ROUTINES_ROUTINES_H_
 #endif

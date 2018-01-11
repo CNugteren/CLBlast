@@ -3182,6 +3182,108 @@ Requirements for GEMMBATCHED:
 
 
 
+xGEMMSTRIDEDBATCHED: StridedBatched version of GEMM
+-------------
+
+As GEMM, but multiple strided operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const float alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const float beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const double alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const double beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_float2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_float2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_double2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_double2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_half alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_half beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to GEMMSTRIDEDBATCHED:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const size_t a_stride`: The (fixed) stride between two batches of the A matrix.
+* `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
+* `const size_t b_offset`: The offset in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const size_t b_stride`: The (fixed) stride between two batches of the B matrix.
+* `const T beta`: Input scalar constant.
+* `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
+* `const size_t c_offset`: The offset in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `const size_t c_stride`: The (fixed) stride between two batches of the C matrix.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMMSTRIDEDBATCHED:
+
+* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* The value of `c_ld` must be at least `m`.
+
+
+
 ClearCache: Resets the cache of compiled binaries (auxiliary function)
 -------------
 

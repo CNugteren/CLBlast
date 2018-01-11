@@ -7,14 +7,14 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a class with static methods to describe the XgemmBatched routine. Examples of
+// This file implements a class with static methods to describe the XgemmStridedBatched routine. Examples of
 // such 'descriptions' are how to calculate the size a of buffer or how to run the routine. These
 // static methods are used by the correctness tester and the performance tester.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_ROUTINES_XGEMMBATCHED_H_
-#define CLBLAST_TEST_ROUTINES_XGEMMBATCHED_H_
+#ifndef CLBLAST_TEST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
+#define CLBLAST_TEST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 
 #include "test/routines/common.hpp"
 
@@ -23,8 +23,8 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestXgemmBatched {
- public:
+class TestXgemmStridedBatched {
+public:
 
   // Although it is a non-BLAS routine, it can still be tested against level-3 routines in a loop
   static size_t BLASLevel() { return 3; }
@@ -75,20 +75,6 @@ class TestXgemmBatched {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
     args.c_size = GetSizeC(args);
-
-    // Also sets the batch-related variables
-    args.a_offsets = std::vector<size_t>(args.batch_count);
-    args.b_offsets = std::vector<size_t>(args.batch_count);
-    args.c_offsets = std::vector<size_t>(args.batch_count);
-    args.alphas = std::vector<T>(args.batch_count);
-    args.betas = std::vector<T>(args.batch_count);
-    for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
-      args.a_offsets[batch] = batch * PerBatchSizeA(args) + args.a_offset;
-      args.b_offsets[batch] = batch * PerBatchSizeB(args) + args.b_offset;
-      args.c_offsets[batch] = batch * PerBatchSizeC(args) + args.c_offset;
-      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch + 1));
-      args.betas[batch] = args.beta + Constant<T>(static_cast<double>(batch + 1));
-    }
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -108,34 +94,25 @@ class TestXgemmBatched {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    // Relaxed requirement on ld_a and ld_b within the library, this is here to match clBLAS
-    auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
-                     (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-    auto b_rotated = (args.layout == Layout::kColMajor && args.b_transpose != Transpose::kNo) ||
-                     (args.layout == Layout::kRowMajor && args.b_transpose == Transpose::kNo);
-    auto a_one = (!a_rotated) ? args.m : args.k;
-    auto b_one = (!b_rotated) ? args.k : args.n;
-    if (args.a_ld < a_one) { return StatusCode::kInvalidLeadDimA; }
-    if (args.b_ld < b_one) { return StatusCode::kInvalidLeadDimB; }
     #ifdef OPENCL_API
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
-                                args.m, args.n, args.k, args.alphas.data(),
-                                buffers.a_mat(), args.a_offsets.data(), args.a_ld,
-                                buffers.b_mat(), args.b_offsets.data(), args.b_ld, args.betas.data(),
-                                buffers.c_mat(), args.c_offsets.data(), args.c_ld,
-                                args.batch_count,
-                                &queue_plain, &event);
+      auto status = GemmStridedBatched(args.layout, args.a_transpose, args.b_transpose,
+                                       args.m, args.n, args.k, args.alpha,
+                                       buffers.a_mat(), args.a_offset, args.a_ld, PerBatchSizeA(args),
+                                       buffers.b_mat(), args.b_offset, args.b_ld, PerBatchSizeB(args), args.beta,
+                                       buffers.c_mat(), args.c_offset, args.c_ld, PerBatchSizeC(args),
+                                       args.batch_count,
+                                       &queue_plain, &event);
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
-      auto status = GemmBatched(args.layout, args.a_transpose, args.b_transpose,
-                                args.m, args.n, args.k, args.alphas.data(),
-                                buffers.a_mat(), args.a_offsets.data(), args.a_ld,
-                                buffers.b_mat(), args.b_offsets.data(), args.b_ld, args.betas.data(),
-                                buffers.c_mat(), args.c_offsets.data(), args.c_ld,
-                                args.batch_count,
-                                queue.GetContext()(), queue.GetDevice()());
+      auto status = GemmStridedBatched(args.layout, args.a_transpose, args.b_transpose,
+                                       args.m, args.n, args.k, args.alpha,
+                                       buffers.a_mat(), args.a_offset, args.a_ld, PerBatchSizeA(args),
+                                       buffers.b_mat(), args.b_offset, args.b_ld, PerBatchSizeB(args), args.beta,
+                                       buffers.c_mat(), args.c_offset, args.c_ld, PerBatchSizeC(args),
+                                       args.batch_count,
+                                       queue.GetContext()(), queue.GetDevice()());
       cuStreamSynchronize(queue());
     #endif
     return status;
@@ -146,14 +123,17 @@ class TestXgemmBatched {
     static StatusCode RunReference1(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
       auto queue_plain = queue();
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+        const auto a_batch_offset = args.a_offset + PerBatchSizeA(args) * batch;
+        const auto b_batch_offset = args.c_offset + PerBatchSizeB(args) * batch;
+        const auto c_batch_offset = args.b_offset + PerBatchSizeC(args) * batch;
         auto event = cl_event{};
         auto status = clblasXgemm(convertToCLBLAS(args.layout),
                                   convertToCLBLAS(args.a_transpose),
                                   convertToCLBLAS(args.b_transpose),
-                                  args.m, args.n, args.k, args.alphas[batch],
-                                  buffers.a_mat, args.a_offsets[batch], args.a_ld,
-                                  buffers.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
-                                  buffers.c_mat, args.c_offsets[batch], args.c_ld,
+                                  args.m, args.n, args.k, args.alpha,
+                                  buffers.a_mat, a_batch_offset, args.a_ld,
+                                  buffers.b_mat, b_batch_offset, args.b_ld, args.beta,
+                                  buffers.c_mat, c_batch_offset, args.c_ld,
                                   1, &queue_plain, 0, nullptr, &event);
         clWaitForEvents(1, &event);
         if (static_cast<StatusCode>(status) != StatusCode::kSuccess) {
@@ -168,13 +148,16 @@ class TestXgemmBatched {
   #ifdef CLBLAST_REF_CBLAS
     static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+        const auto a_batch_offset = args.a_offset + PerBatchSizeA(args) * batch;
+        const auto b_batch_offset = args.c_offset + PerBatchSizeB(args) * batch;
+        const auto c_batch_offset = args.b_offset + PerBatchSizeC(args) * batch;
         cblasXgemm(convertToCBLAS(args.layout),
                    convertToCBLAS(args.a_transpose),
                    convertToCBLAS(args.b_transpose),
-                   args.m, args.n, args.k, args.alphas[batch],
-                   buffers_host.a_mat, args.a_offsets[batch], args.a_ld,
-                   buffers_host.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
-                   buffers_host.c_mat, args.c_offsets[batch], args.c_ld);
+                   args.m, args.n, args.k, args.alpha,
+                   buffers_host.a_mat, a_batch_offset, args.a_ld,
+                   buffers_host.b_mat, b_batch_offset, args.b_ld, args.beta,
+                   buffers_host.c_mat, c_batch_offset, args.c_ld);
       }
       return StatusCode::kSuccess;
     }
@@ -184,13 +167,16 @@ class TestXgemmBatched {
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
       for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
+        const auto a_batch_offset = args.a_offset + PerBatchSizeA(args) * batch;
+        const auto b_batch_offset = args.c_offset + PerBatchSizeB(args) * batch;
+        const auto c_batch_offset = args.b_offset + PerBatchSizeC(args) * batch;
         auto status = cublasXgemm(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.layout,
                                   convertToCUBLAS(args.a_transpose),
                                   convertToCUBLAS(args.b_transpose),
-                                  args.m, args.n, args.k, args.alphas[batch],
-                                  buffers.a_mat, args.a_offsets[batch], args.a_ld,
-                                  buffers.b_mat, args.b_offsets[batch], args.b_ld, args.betas[batch],
-                                  buffers.c_mat, args.c_offsets[batch], args.c_ld);
+                                  args.m, args.n, args.k, args.alpha,
+                                  buffers.a_mat, a_batch_offset, args.a_ld,
+                                  buffers.b_mat, b_batch_offset, args.b_ld, args.beta,
+                                  buffers.c_mat, c_batch_offset, args.c_ld);
       if (status != CUBLAS_STATUS_SUCCESS) { return StatusCode::kUnknownError; }
       }
       return StatusCode::kSuccess;
@@ -210,9 +196,10 @@ class TestXgemmBatched {
   static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t id2_3) {
     const size_t id2 = id2_3 % args.n;
     const size_t id3 = id2_3 / args.n;
+    const auto c_batch_offset = args.c_offset + PerBatchSizeC(args) * id3;
     return (args.layout == Layout::kRowMajor) ?
-           id1*args.c_ld + id2 + args.c_offsets[id3]:
-           id2*args.c_ld + id1 + args.c_offsets[id3];
+           id1*args.c_ld + id2 + c_batch_offset:
+           id2*args.c_ld + id1 + c_batch_offset;
   }
 
   // Describes how to compute performance metrics
@@ -227,5 +214,5 @@ class TestXgemmBatched {
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_ROUTINES_XGEMMBATCHED_H_
+// CLBLAST_TEST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 #endif
