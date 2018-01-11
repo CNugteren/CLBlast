@@ -112,6 +112,34 @@ StatusCode FillCache(const RawDeviceID device) {
 
 // =================================================================================================
 
+// Retrieves the current tuning parameters for this device-precision-kernel combination
+StatusCode RetrieveParameters(const RawDeviceID device, const std::string &kernel_name,
+                              const Precision precision,
+                              std::unordered_map<std::string,size_t> &parameters) {
+  try {
+
+    // Retrieves the device name
+    const auto device_cpp = Device(device);
+    const auto platform_id = device_cpp.PlatformID();
+    const auto device_name = GetDeviceName(device_cpp);
+
+    // Retrieves the database values
+    auto in_cache = false;
+    auto database = DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device, precision, kernel_name}, &in_cache);
+    if (!in_cache) {
+      log_debug("Searching database for kernel '" + kernel_name + "'");
+      database = Database(device_cpp, kernel_name, precision, {});
+    }
+
+    // Retrieves the parameters
+    for (const auto &parameter: database.GetParameters()) {
+      parameters[parameter.first] = parameter.second;
+    }
+
+  } catch (...) { return DispatchException(); }
+  return StatusCode::kSuccess;
+}
+
 // Overrides the tuning parameters for this device-precision-kernel combination
 StatusCode OverrideParameters(const RawDeviceID device, const std::string &kernel_name,
                               const Precision precision,
