@@ -654,6 +654,11 @@ StatusCode PUBLIC_API FillCache(const CUdevice device);
 
 // =================================================================================================
 
+// Retrieves current tuning parameters for a specific device-precision-kernel combination
+StatusCode PUBLIC_API RetrieveParameters(const CUdevice device, const std::string &kernel_name,
+                                         const Precision precision,
+                                         std::unordered_map<std::string,size_t> &parameters);
+
 // Overrides tuning parameters for a specific device-precision-kernel combination. The next time
 // the target routine is called it will re-compile and use the new parameters from then on.
 StatusCode PUBLIC_API OverrideParameters(const CUdevice device, const std::string &kernel_name,

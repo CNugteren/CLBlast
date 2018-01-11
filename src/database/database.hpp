@@ -56,6 +56,7 @@ class Database {
   // Retrieves the values or names of all the parameters
   std::string GetValuesString() const;
   std::vector<std::string> GetParameterNames() const;
+  const database::Parameters& GetParameters() const { return *parameters_; }
 
  private:
   // Search method functions, returning a set of parameters (possibly empty)

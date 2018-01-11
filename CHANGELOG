@@ -10,6 +10,7 @@ Development (next version)
 - Improved compilation time by splitting the tuning database into multiple compilation units
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added the RetrieveParameters function to the API to be able to inspect the tuning parameters
 - Added a strided-batched (not part of the BLAS standard) routine, faster but less generic compared
   to the existing xGEMMBATCHED routines:
   * SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
@@ -70,7 +71,7 @@ Version 0.11.0
 - Replaced the R graph scripts with Python/Matplotlib scripts
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
-- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Added the OverrideParameters function to the API to be able to supply custom tuning parameters
 - Added triangular solver (level-2 & level-3) routines:
   * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
   * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)

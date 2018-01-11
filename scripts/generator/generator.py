@@ -47,7 +47,7 @@ FILES = [
     "/src/clblast_cuda.cpp",
 ]
 HEADER_LINES = [123, 21, 126, 24, 29, 41, 29, 65, 32, 95, 21]
-FOOTER_LINES = [36, 56, 27, 38, 6, 6, 6, 9, 2, 36, 55]
+FOOTER_LINES = [41, 56, 27, 38, 6, 6, 6, 9, 2, 41, 55]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
 
