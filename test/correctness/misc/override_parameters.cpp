@@ -86,11 +86,12 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto device_a = Buffer<T>(context, host_a.size());
   auto device_b = Buffer<T>(context, host_b.size());
   auto device_c = Buffer<T>(context, host_c.size());
+  auto device_temp = Buffer<T>(context, args.m * args.n * args.k); // just to be safe
   device_a.Write(queue, host_a.size(), host_a);
   device_b.Write(queue, host_b.size(), host_b);
   device_c.Write(queue, host_c.size(), host_c);
   auto dummy = Buffer<T>(context, 1);
-  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, dummy, dummy};
+  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, device_temp, dummy};
 
   // Loops over the valid combinations: run before and run afterwards
   fprintf(stdout, "* Testing OverrideParameters for '%s'\n", routine_name.c_str());
