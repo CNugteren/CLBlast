@@ -23,7 +23,7 @@ def parse_arguments(argv):
     parser.add_argument("-d", "--device", required=True, type=int, help="The ID of the OpenCL device to test on")
     parser.add_argument("-x", "--precision", type=int, default=32, help="The precision to test for (choose from 16, 32, 64, 3232, 6464")
     parser.add_argument("-l", "--load_from_disk", action="store_true", help="Increase verbosity of the script")
-    parser.add_argument("-t", "--plot_title", default=None, help="The title for the plots, defaults to benchmark name")
+    parser.add_argument("-t", "--plot_title", default="", help="The title for the plots, defaults to benchmark name")
     parser.add_argument("-o", "--output_folder", default=os.getcwd(), help="Sets the folder for output plots (defaults to current folder)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)

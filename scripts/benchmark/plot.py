@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 BLUEISH = [c / 255.0 for c in [71, 101, 177]]  # #4765b1
 REDISH = [c / 255.0 for c in [214, 117, 104]]  # #d67568
 PURPLISH = [c / 255.0 for c in [85, 0, 119]]  # #550077
-COLORS = [BLUEISH, REDISH, PURPLISH]
+GREEN = [c / 255.0 for c in [144, 224, 98]] # #90e062
+COLORS = [BLUEISH, REDISH, PURPLISH, GREEN]
 MARKERS = ["o-", "x-", ".-"]
 
 
@@ -86,7 +87,8 @@ def plot_graphs(results, file_name, num_rows, num_cols,
 
             # Sets the y-data
             y_list = [[r[y_key] if y_key in r.keys() else 0 for r in result] for y_key in y_keys[index]]
-            y_max = max([max(y) for y in y_list])
+            y_max = [max(y) if len(y) else 1 for y in y_list]
+            y_max = max(y_max) if len(y_list) > 0 else 1
 
             # Sets the axes
             y_rounding = 10 if y_max < 80 else 50 if y_max < 400 else 200
@@ -106,7 +108,10 @@ def plot_graphs(results, file_name, num_rows, num_cols,
             assert len(MARKERS) >= len(y_keys[index])
             assert len(label_names) == len(y_keys[index])
             for i in range(len(y_keys[index])):
-                ax.plot(x_location, y_list[i], MARKERS[i], label=label_names[i], color=COLORS[i])
+                color = COLORS[i]
+                if label_names[i] == "cuBLAS":
+                    color = GREEN
+                ax.plot(x_location, y_list[i], MARKERS[i], label=label_names[i], color=color)
 
             # Sets the legend
             leg = ax.legend(loc=(0.02, 1.0 - legend_from_top - legend_from_top_per_item * len(y_keys[index])),
