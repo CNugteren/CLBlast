@@ -388,6 +388,7 @@ if(TUNERS)
       src/utilities/utilities.hpp
       src/tuning/configurations.hpp
       src/tuning/tuning.hpp
+      src/tuning/routines/routine_tuner.hpp
       src/kernel_preprocessor.hpp)
   set(TUNERS_COMMON ${TUNERS_COMMON} ${TUNERS_HEADERS})
 

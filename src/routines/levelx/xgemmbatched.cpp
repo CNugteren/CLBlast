@@ -96,7 +96,7 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   }
 
   // Selects which version of the batched GEMM to run
-  const auto do_gemm_direct = true;
+  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // single generic kernel
     BatchedGemmDirect(m, n, k, alphas_device,
                       a_buffer, a_offsets_int, a_ld, b_buffer, b_offsets_int, b_ld,
