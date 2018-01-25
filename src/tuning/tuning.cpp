@@ -17,7 +17,7 @@
 #include <random>
 #include <utility>
 #include <algorithm>
-#include <iostream>
+#include <cstdio>
 
 #include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
@@ -95,6 +95,19 @@ void Tuner(int argc, char* argv[], const int V,
            SetConstraintsFunc SetConstraints,
            SetArgumentsFunc<T> SetArguments) {
   constexpr auto kSeed = 42; // fixed seed for reproducibility
+
+  // Constants holding start and end strings for terminal-output in colour
+  #if defined(_WIN32)
+    const std::string kPrintError = "";
+    const std::string kPrintSuccess = "";
+    const std::string kPrintMessage = "";
+    const std::string kPrintEnd = "";
+  #else
+    const std::string kPrintError = "\x1b[31m";
+    const std::string kPrintSuccess = "\x1b[32m";
+    const std::string kPrintMessage = "\x1b[1m";
+    const std::string kPrintEnd = "\x1b[0m";
+  #endif
 
   // Sets the parameters and platform/device for which to tune (command-line options)
   const TunerDefaults defaults = GetTunerDefaults(V);
