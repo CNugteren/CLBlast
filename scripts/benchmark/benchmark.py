@@ -22,6 +22,7 @@ EXPERIMENTS = {
     "gemm": settings.GEMM,
     "gemm_small": settings.GEMM_SMALL,
     "gemmbatched": settings.GEMMBATCHED,
+    "gemmstridedbatched": settings.GEMMSTRIDEDBATCHED,
     "symm": settings.SYMM,
     "syrk": settings.SYRK,
     "summary": settings.SUMMARY,
@@ -161,6 +162,11 @@ def benchmark_single(benchmark, comparisons, platform, device, num_runs, precisi
             label_names[index] += " FP32"
         label_names.append("CLBlast FP32")
         y_keys = [y_key + [y_key[0] + "_FP32"] for y_key in y_keys]
+
+    # For batched routines: comparison is non-batched
+    if benchmark in ["axpybatched", "gemmbatched", "gemmstridedbatched"]:
+        for index in range(1, len(label_names)):
+            label_names[index] += " (non-batched)"
 
     # Plots the graphs
     plot.plot_graphs(results["benchmarks"], pdf_file_name, results["num_rows"], results["num_cols"],

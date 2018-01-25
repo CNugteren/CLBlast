@@ -63,28 +63,28 @@ AXPYBATCHED = {
     "num_rows": 1, "num_cols": 3,
     "benchmarks": [
         {
-            "name": "axpybatched", "num_runs": 30,
-            "title": "8 AXPYs",
+            "name": "axpybatched", "num_runs": 10,
+            "title": "b=8",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 8, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
                           for n in utils.powers_of_2(utils.k(8), utils.m(4))],
         },
         {
-            "name": "axpybatched", "num_runs": 20,
-            "title": "64 AXPYs",
+            "name": "axpybatched", "num_runs": 5,
+            "title": "b=64",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 64, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
                           for n in utils.powers_of_2(utils.k(8), utils.m(4))],
         },
         {
-            "name": "axpybatched", "num_runs": 40,
+            "name": "axpybatched", "num_runs": 10,
             "title": "n=512K",
-            "x_label": "batch size", "x_keys": ["batch_num"],
+            "x_label": "num batches (b)", "x_keys": ["batch_num"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": b, "n": utils.k(512), "incx": 1, "incy": 1, "step": 1, "num_steps": 1}
-                          for b in utils.powers_of_2(1, 512)],
+                          for b in utils.powers_of_2(1, 256)],
         }
     ]
 }
@@ -221,28 +221,58 @@ GEMMBATCHED = {
     "num_rows": 1, "num_cols": 3,
     "benchmarks": [
         {
-            "name": "gemmbatched", "num_runs": 40,
-            "title": "8 GEMMs",
+            "name": "gemmbatched", "num_runs": 20,
+            "title": "b=8",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
                            "transA": 111, "transB": 111, "step": 32, "num_steps": 20}],
         },
         {
-            "name": "gemmbatched", "num_runs": 20,
-            "title": "64 GEMMs",
+            "name": "gemmbatched", "num_runs": 10,
+            "title": "b=64",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
                            "transA": 111, "transB": 111, "step": 32, "num_steps": 20}],
         },
         {
-            "name": "gemmbatched", "num_runs": 30,
+            "name": "gemmbatched", "num_runs": 10,
             "title": "m=n=k=128",
-            "x_label": "batch size", "x_keys": ["batch_num"],
+            "x_label": "num batches (b)", "x_keys": ["batch_num"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": b, "m": 128, "n": 128, "k": 128, "layout": 102,
-                           "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(16))],
+                           "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(4))],
+        }
+    ]
+}
+
+GEMMSTRIDEDBATCHED = {
+    "num_rows": 1, "num_cols": 3,
+    "benchmarks": [
+        {
+            "name": "gemmstridedbatched", "num_runs": 20,
+            "title": "b=8",
+            "x_label": "sizes (m=n=k)", "x_keys": ["m"],
+            "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
+            "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
+                           "transA": 111, "transB": 111, "step": 32, "num_steps": 20}],
+        },
+        {
+            "name": "gemmstridedbatched", "num_runs": 10,
+            "title": "b=64",
+            "x_label": "sizes (m=n=k)", "x_keys": ["m"],
+            "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
+            "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
+                           "transA": 111, "transB": 111, "step": 32, "num_steps": 20}],
+        },
+        {
+            "name": "gemmstridedbatched", "num_runs": 10,
+            "title": "m=n=k=128",
+            "x_label": "num batches (b)", "x_keys": ["batch_num"],
+            "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
+            "arguments": [{"batch_num": b, "m": 128, "n": 128, "k": 128, "layout": 102,
+                           "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(4))],
         }
     ]
 }

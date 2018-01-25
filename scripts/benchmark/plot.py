@@ -109,9 +109,20 @@ def plot_graphs(results, file_name, num_rows, num_cols,
             assert len(label_names) == len(y_keys[index])
             for i in range(len(y_keys[index])):
                 color = COLORS[i]
-                if label_names[i] == "cuBLAS":
+                marker = MARKERS[i]
+                if label_names[i] in ["CLBlast", "CLBlast FP32"]:
+                    color = BLUEISH
+                    marker = "o-"
+                elif label_names[i] in ["CLBlast FP16"]:
+                    color = PURPLISH
+                    marker = ".-"
+                elif label_names[i] in ["clBLAS", "clBLAS FP32"]:
+                    color = REDISH
+                    marker = "x-"
+                elif label_names[i] == "cuBLAS":
                     color = GREEN
-                ax.plot(x_location, y_list[i], MARKERS[i], label=label_names[i], color=color)
+                    marker = ".-"
+                ax.plot(x_location, y_list[i], marker, label=label_names[i], color=color)
 
             # Sets the legend
             leg = ax.legend(loc=(0.02, 1.0 - legend_from_top - legend_from_top_per_item * len(y_keys[index])),
