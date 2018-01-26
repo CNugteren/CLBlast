@@ -243,7 +243,7 @@ void XgemmBatched<T>::BatchedGemmIndirect(const size_t m, const size_t n, const 
 
   // Launches the kernel
   auto eventKernel = Event();
-  auto eventPointer = eventKernel.pointer();
+  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
   RunKernel(kernel, queue_, device_, global, local, eventPointer, eventWaitList);
 
   // Runs the post-processing kernel if needed
