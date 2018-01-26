@@ -64,7 +64,7 @@ AXPYBATCHED = {
     "benchmarks": [
         {
             "name": "axpybatched", "num_runs": 10,
-            "title": "b=8",
+            "title": "num batches = 8",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 8, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
@@ -72,7 +72,7 @@ AXPYBATCHED = {
         },
         {
             "name": "axpybatched", "num_runs": 5,
-            "title": "b=64",
+            "title": "num batches = 64",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 64, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
@@ -222,7 +222,7 @@ GEMMBATCHED = {
     "benchmarks": [
         {
             "name": "gemmbatched", "num_runs": 20,
-            "title": "b=8",
+            "title": "num batches = 8",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -230,7 +230,7 @@ GEMMBATCHED = {
         },
         {
             "name": "gemmbatched", "num_runs": 10,
-            "title": "b=64",
+            "title": "num batches = 64",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -252,7 +252,7 @@ GEMMSTRIDEDBATCHED = {
     "benchmarks": [
         {
             "name": "gemmstridedbatched", "num_runs": 20,
-            "title": "b=8",
+            "title": "num batches = 8",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -260,7 +260,7 @@ GEMMSTRIDEDBATCHED = {
         },
         {
             "name": "gemmstridedbatched", "num_runs": 10,
-            "title": "b=64",
+            "title": "num batches = 64",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
