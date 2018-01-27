@@ -62,10 +62,10 @@ def plot_graphs(results, file_name, num_rows, num_cols,
     # Initializes the plot
     size_x = plot_size * num_cols
     size_y = plot_size * num_rows
+    rcParams.update({'font.size': font_size})
     fig, axes = plt.subplots(nrows=num_rows, ncols=num_cols, figsize=(size_x, size_y), facecolor='w', edgecolor='k')
     fig.text(.5, 0.92, title, horizontalalignment="center", fontsize=font_size_title)
     plt.subplots_adjust(wspace=w_space, hspace=h_space)
-    rcParams.update({'font.size': font_size})
 
     # Loops over each subplot
     for row in range(num_rows):
@@ -116,10 +116,10 @@ def plot_graphs(results, file_name, num_rows, num_cols,
                 elif label_names[i] in ["CLBlast FP16"]:
                     color = PURPLISH
                     marker = ".-"
-                elif label_names[i] in ["clBLAS", "clBLAS FP32"]:
+                elif label_names[i] in ["clBLAS", "clBLAS FP32", "clBLAS (non-batched)"]:
                     color = REDISH
                     marker = "x-"
-                elif label_names[i] == "cuBLAS":
+                elif label_names[i] in ["cuBLAS", "cuBLAS (non-batched)"]:
                     color = GREEN
                     marker = ".-"
                 ax.plot(x_location, y_list[i], marker, label=label_names[i], color=color)

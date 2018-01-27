@@ -64,7 +64,7 @@ AXPYBATCHED = {
     "benchmarks": [
         {
             "name": "axpybatched", "num_runs": 10,
-            "title": "num batches = 8",
+            "title": "num AXPYs = 8",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 8, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
@@ -72,7 +72,7 @@ AXPYBATCHED = {
         },
         {
             "name": "axpybatched", "num_runs": 5,
-            "title": "num batches = 64",
+            "title": "num AXPYs = 64",
             "x_label": "sizes (n)", "x_keys": ["n"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": 64, "n": n, "incx": 1, "incy": 1, "step": 0, "num_steps": 1}
@@ -81,7 +81,7 @@ AXPYBATCHED = {
         {
             "name": "axpybatched", "num_runs": 10,
             "title": "n=512K",
-            "x_label": "num batches (b)", "x_keys": ["batch_num"],
+            "x_label": "num AXPYs", "x_keys": ["batch_num"],
             "y_label": "GB/s (higher is better)", "y_key": "GBs",
             "arguments": [{"batch_num": b, "n": utils.k(512), "incx": 1, "incy": 1, "step": 1, "num_steps": 1}
                           for b in utils.powers_of_2(1, 256)],
@@ -222,7 +222,7 @@ GEMMBATCHED = {
     "benchmarks": [
         {
             "name": "gemmbatched", "num_runs": 20,
-            "title": "num batches = 8",
+            "title": "num GEMMs = 8",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -230,7 +230,7 @@ GEMMBATCHED = {
         },
         {
             "name": "gemmbatched", "num_runs": 10,
-            "title": "num batches = 64",
+            "title": "num GEMMs = 64",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -239,7 +239,7 @@ GEMMBATCHED = {
         {
             "name": "gemmbatched", "num_runs": 10,
             "title": "m=n=k=128",
-            "x_label": "num batches (b)", "x_keys": ["batch_num"],
+            "x_label": "num GEMMs", "x_keys": ["batch_num"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": b, "m": 128, "n": 128, "k": 128, "layout": 102,
                            "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(4))],
@@ -252,7 +252,7 @@ GEMMSTRIDEDBATCHED = {
     "benchmarks": [
         {
             "name": "gemmstridedbatched", "num_runs": 20,
-            "title": "num batches = 8",
+            "title": "num GEMMs = 8",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 8, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -260,7 +260,7 @@ GEMMSTRIDEDBATCHED = {
         },
         {
             "name": "gemmstridedbatched", "num_runs": 10,
-            "title": "num batches = 64",
+            "title": "num GEMMs = 64",
             "x_label": "sizes (m=n=k)", "x_keys": ["m"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": 64, "m": 32, "n": 32, "k": 32, "layout": 102,
@@ -269,7 +269,7 @@ GEMMSTRIDEDBATCHED = {
         {
             "name": "gemmstridedbatched", "num_runs": 10,
             "title": "m=n=k=128",
-            "x_label": "num batches (b)", "x_keys": ["batch_num"],
+            "x_label": "num GEMMs", "x_keys": ["batch_num"],
             "y_label": "GFLOPS (higher is better)", "y_key": "GFLOPS",
             "arguments": [{"batch_num": b, "m": 128, "n": 128, "k": 128, "layout": 102,
                            "transA": 111, "transB": 111} for b in utils.powers_of_2(1, utils.k(4))],
