@@ -305,10 +305,11 @@ CLBlast supports almost all the Netlib BLAS routines plus a couple of extra non-
 
 Furthermore, there are also batched versions of BLAS routines available, processing multiple smaller computations in one go for better performance:
 
-| Batched      | S | D | C | Z | H |
-| -------------|---|---|---|---|---|
-| xAXPYBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
-| xGEMMBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Batched             | S | D | C | Z | H |
+| --------------------|---|---|---|---|---|
+| xAXPYBATCHED        | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGEMMBATCHED        | ✔ | ✔ | ✔ | ✔ | ✔ |
+| xGEMMSTRIDEDBATCHED | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 In addition, some extra non-BLAS routines are also supported by CLBlast, classified as level-X. They are experimental and should be used with care:
 
@@ -377,6 +378,10 @@ Other known issues:
 * Routines returning an integer are currently not properly tested for half-precision FP16: IHAMAX/IHAMIN/IHMAX/IHMIN
 
 * Half-precision FP16 tests might sometimes fail based on order multiplication, i.e. (a * b) * c != (c * b) * a
+
+* The AMD APP SDK has a bug causing a conflict with libstdc++, resulting in a segfault when initialising static variables. This has been reported to occur with the CLBlast tuners.
+
+* The AMD run-time compiler has a bug causing it to get stuck in an infinite loop. This is reported to happen occasionally when tuning the CLBlast GEMM routine.
 
 
 Contributing
