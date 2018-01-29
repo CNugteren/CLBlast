@@ -584,7 +584,7 @@ if(TESTS)
     set(MISC_TESTS ${MISC_TESTS} preprocessor)
   endif()
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp)
+    set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp src/utilities/compile.cpp)
   endif()
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}
