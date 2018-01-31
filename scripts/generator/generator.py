@@ -83,6 +83,7 @@ xn = "n * x_inc"
 xm = "m * x_inc"
 yn = "n * y_inc"
 ym = "m * y_inc"
+zn = "n * z_inc"
 an = "n * a_ld"
 apn = "((n*(n+1)) / 2)"
 cn = "n * c_ld"
@@ -169,6 +170,7 @@ ROUTINES = [
 ],
 [  # Level X: extra routines (not part of BLAS)
   # Special routines:
+  Routine(True,  True,  0, False, "x", "had",      T, [S,D,C,Z,H],   ["n"],                [],                                                    ["x","y"],  ["z"],                        [xn,yn,zn],      ["alpha","beta"], "",    "Element-wise vector product (Hadamard)", "Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_z are vectors and _alpha_ and _beta_ are scalar constants.", []),
   Routine(True,  True,  0, False, "x", "omatcopy", T, [S,D,C,Z,H],   ["m","n"],            ["layout","a_transpose"],                              ["a"],      ["b"],                        [amn,bnma],      ["alpha"],        "",    "Scaling and out-place transpose/copy (non-BLAS function)", "Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.", [ald_m, bld_n]),
   Routine(True,  True,  0, False, "x", "im2col",   T, [S,D,C,Z,H],   im2col_constants,     [],                                                    ["im"],     ["col"],                      [im,col],        [""],             "",    "Im2col function (non-BLAS function)", "Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.", []),
   # Batched routines:

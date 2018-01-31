@@ -2884,6 +2884,81 @@ Arguments to TRSM:
 
 
 
+xHAD: Element-wise vector product (Hadamard)
+-------------
+
+Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_z are vectors and _alpha_ and _beta_ are scalar constants.
+
+C++ API:
+```
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastShad(const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const float beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDhad(const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const double beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastChad(const size_t n,
+                              const cl_float2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_float2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZhad(const size_t n,
+                              const cl_double2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_double2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHhad(const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_half beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to HAD:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
+* `const size_t y_offset`: The offset in elements from the start of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
+* `const T beta`: Input scalar constant.
+* `cl_mem z_buffer`: OpenCL buffer to store the output z vector.
+* `const size_t z_offset`: The offset in elements from the start of the output z vector.
+* `const size_t z_inc`: Stride/increment of the output z vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xOMATCOPY: Scaling and out-place transpose/copy (non-BLAS function)
 -------------
 

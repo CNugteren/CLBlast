@@ -898,6 +898,32 @@ void PUBLIC_API cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, 
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+void PUBLIC_API cblas_shad(const int n,
+                           const float alpha,
+                           const float* x, const int x_inc,
+                           const float* y, const int y_inc,
+                           const float beta,
+                           float* z, const int z_inc);
+void PUBLIC_API cblas_dhad(const int n,
+                           const double alpha,
+                           const double* x, const int x_inc,
+                           const double* y, const int y_inc,
+                           const double beta,
+                           double* z, const int z_inc);
+void PUBLIC_API cblas_chad(const int n,
+                           const void* alpha,
+                           const void* x, const int x_inc,
+                           const void* y, const int y_inc,
+                           const void* beta,
+                           void* z, const int z_inc);
+void PUBLIC_API cblas_zhad(const int n,
+                           const void* alpha,
+                           const void* x, const int x_inc,
+                           const void* y, const int y_inc,
+                           const void* beta,
+                           void* z, const int z_inc);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 void PUBLIC_API cblas_somatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                                 const int m, const int n,

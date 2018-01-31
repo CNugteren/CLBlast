@@ -3423,6 +3423,103 @@ CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide sid
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// HAD
+CLBlastStatusCode CLBlastShad(const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const float beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Had(n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   beta,
+                   z_buffer, z_offset, z_inc,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastDhad(const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const double beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Had(n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   beta,
+                   z_buffer, z_offset, z_inc,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastChad(const size_t n,
+                              const cl_float2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_float2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Had(n,
+                   float2{alpha.s[0], alpha.s[1]},
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   float2{beta.s[0], beta.s[1]},
+                   z_buffer, z_offset, z_inc,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastZhad(const size_t n,
+                              const cl_double2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_double2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Had(n,
+                   double2{alpha.s[0], alpha.s[1]},
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   double2{beta.s[0], beta.s[1]},
+                   z_buffer, z_offset, z_inc,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastHhad(const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_half beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Had(n,
+                   alpha,
+                   x_buffer, x_offset, x_inc,
+                   y_buffer, y_offset, y_inc,
+                   beta,
+                   z_buffer, z_offset, z_inc,
+                   queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
 // OMATCOPY
 CLBlastStatusCode CLBlastSomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                                    const size_t m, const size_t n,

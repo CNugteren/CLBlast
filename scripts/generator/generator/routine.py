@@ -129,12 +129,12 @@ class Routine:
     @staticmethod
     def postfix(name):
         """Retrieves the postfix for a buffer"""
-        return "inc" if (name in ["x", "y"]) else "ld"
+        return "inc" if (name in ["x", "y", "z"]) else "ld"
 
     @staticmethod
     def buffers_vector():
         """Distinguish between vectors and matrices"""
-        return ["x", "y"]
+        return ["x", "y", "z"]
 
     @staticmethod
     def buffers_matrix():
@@ -219,13 +219,13 @@ class Routine:
 
     def buffers_first(self):
         """Determines which buffers go first (between alpha and beta) and which ones go after"""
-        if self.level == "2b":
+        if self.level == "2b" or self.name == "had":
             return ["x", "y"]
         return ["ap", "a", "b", "x", "im"]
 
     def buffers_second(self):
-        if self.level == "2b":
-            return ["ap", "a", "b", "c"]
+        if self.level == "2b" or self.name == "had":
+            return ["z", "ap", "a", "b", "c"]
         return ["y", "c", "col"]
 
     def buffer(self, name):
@@ -330,7 +330,7 @@ class Routine:
             a = [name + "_buffer()"]
             b = [name + "_offset"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
@@ -349,7 +349,7 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y", "a", "b", "c"]:
+            if name in ["x", "y", "z", "a", "b", "c"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             return [", ".join(a + c)]
         return []
@@ -370,7 +370,7 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]

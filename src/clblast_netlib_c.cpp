@@ -4621,6 +4621,140 @@ void cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// HAD
+void cblas_shad(const int n,
+                const float alpha,
+                const float* x, const int x_inc,
+                const float* y, const int y_inc,
+                const float beta,
+                float* z, const int z_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = alpha;
+  const auto beta_cpp = beta;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<float>(context, x_size);
+  auto y_buffer = clblast::Buffer<float>(context, y_size);
+  auto z_buffer = clblast::Buffer<float>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<float*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<float*>(z));
+}
+void cblas_dhad(const int n,
+                const double alpha,
+                const double* x, const int x_inc,
+                const double* y, const int y_inc,
+                const double beta,
+                double* z, const int z_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = alpha;
+  const auto beta_cpp = beta;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<double>(context, x_size);
+  auto y_buffer = clblast::Buffer<double>(context, y_size);
+  auto z_buffer = clblast::Buffer<double>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<double*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<double*>(z));
+}
+void cblas_chad(const int n,
+                const void* alpha,
+                const void* x, const int x_inc,
+                const void* y, const int y_inc,
+                const void* beta,
+                void* z, const int z_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
+  const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<float2>(context, x_size);
+  auto y_buffer = clblast::Buffer<float2>(context, y_size);
+  auto z_buffer = clblast::Buffer<float2>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<float2*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<float2*>(z));
+}
+void cblas_zhad(const int n,
+                const void* alpha,
+                const void* x, const int x_inc,
+                const void* y, const int y_inc,
+                const void* beta,
+                void* z, const int z_inc) {
+  auto device = get_device();
+  auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
+  const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<double2>(context, x_size);
+  auto y_buffer = clblast::Buffer<double2>(context, y_size);
+  auto z_buffer = clblast::Buffer<double2>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<double2*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<double2*>(z));
+}
+
 // OMATCOPY
 void cblas_somatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
