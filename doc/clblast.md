@@ -2887,7 +2887,7 @@ Arguments to TRSM:
 xHAD: Element-wise vector product (Hadamard)
 -------------
 
-Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_z are vectors and _alpha_ and _beta_ are scalar constants.
+Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_ are vectors and _alpha_ and _beta_ are scalar constants.
 
 C++ API:
 ```
