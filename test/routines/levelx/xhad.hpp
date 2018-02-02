@@ -21,12 +21,43 @@
 namespace clblast {
 // =================================================================================================
 
+template <typename T>
+StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
+  for (auto index = size_t{0}; index < args.n; ++index) {
+    const auto x = buffers_host.x_vec[index * args.x_inc + args.x_offset];
+    const auto y = buffers_host.y_vec[index * args.y_inc + args.y_offset];
+    const auto z = buffers_host.c_mat[index]; // * args.z_inc + args.z_offset];
+    buffers_host.c_mat[index] = args.alpha * x * y + args.beta * z;
+  }
+  return StatusCode::kSuccess;
+}
+
+// Half-precision version calling the above reference implementation after conversions
+template <>
+StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &buffers_host) {
+  auto x_buffer2 = HalfToFloatBuffer(buffers_host.x_vec);
+  auto y_buffer2 = HalfToFloatBuffer(buffers_host.y_vec);
+  auto c_buffer2 = HalfToFloatBuffer(buffers_host.c_mat);
+  auto dummy = std::vector<float>(0);
+  auto buffers2 = BuffersHost<float>{x_buffer2, y_buffer2, dummy, dummy, c_buffer2, dummy, dummy};
+  auto args2 = Arguments<float>();
+  args2.x_size = args.x_size; args2.y_size = args.y_size; args2.c_size = args.c_size;
+  args2.x_inc = args.x_inc; args2.y_inc = args.y_inc; args2.n = args.n;
+  args2.x_offset = args.x_offset; args2.y_offset = args.y_offset;
+  args2.alpha = HalfToFloat(args.alpha); args2.beta = HalfToFloat(args.beta);
+  auto status = RunReference(args2, buffers2);
+  FloatToHalfBuffer(buffers_host.c_mat, buffers2.c_mat);
+  return status;
+}
+
+// =================================================================================================
+
 // See comment at top of file for a description of the class
 template <typename T>
 class TestXhad {
 public:
 
-  // The BLAS level: 4 for the extra routines
+  // The BLAS level: 4 for the extra routines (note: tested with matrix-size values for 'n')
   static size_t BLASLevel() { return 4; }
 
   // The list of arguments relevant for this routine
@@ -34,7 +65,7 @@ public:
     return {kArgN,
             kArgXInc, kArgYInc,
             kArgXOffset, kArgYOffset,
-            kArgAlpha};
+            kArgAlpha, kArgBeta};
   }
   static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufVecY, kBufMatC}; }
   static std::vector<std::string> BuffersOut() { return {kBufMatC}; }
@@ -133,19 +164,6 @@ public:
     return (4 * args.n) * sizeof(T);
   }
 };
-
-// =================================================================================================
-
-template <typename T>
-StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
-  for (auto index = size_t{0}; index < args.n; ++index) {
-    const auto x = buffers_host.x_vec[index * args.x_inc + args.x_offset];
-    const auto y = buffers_host.y_vec[index * args.y_inc + args.y_offset];
-    const auto z = buffers_host.c_mat[index]; // * args.z_inc + args.z_offset];
-    buffers_host.c_mat[index] = x * y * args.alpha + z * args.beta;
-  }
-  return StatusCode::kSuccess;
-}
 
 // =================================================================================================
 } // namespace clblast
