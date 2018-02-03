@@ -610,6 +610,16 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
 StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
