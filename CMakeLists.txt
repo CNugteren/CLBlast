@@ -23,6 +23,8 @@ project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
 set(clblast_VERSION_MINOR 3)
 set(clblast_VERSION_PATCH 0)
+set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
+set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
@@ -300,6 +302,7 @@ if(BUILD_SHARED_LIBS)
 else(BUILD_SHARED_LIBS)
   add_library(clblast STATIC ${SOURCES} ${HEADERS})
 endif()
+set_target_properties(clblast PROPERTIES VERSION ${clblast_VERSION} SOVERSION ${clblast_SOVERSION})
 
 target_link_libraries(clblast ${API_LIBRARIES})
 
