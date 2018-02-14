@@ -815,6 +815,25 @@ class Routine:
                 list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])) +
                 self.batch_count_doc())
 
+    def arguments_python(self):
+        """Arguments for the Python wrapper pyclblast"""
+        result = list()
+        result.extend(self.sizes)
+        buffers = self.inputs + self.outputs
+        result.extend(buffers[:])
+        for buf in buffers:
+            if buf in self.buffers_matrix():
+                result.append(buf + "_ld")
+        for buf in buffers:
+            if buf in self.buffers_vector():
+                result.append(buf + "_inc = 1")
+        for option in self.options:
+            default = convert.option_to_clblastdefault(option)
+            result.append(option + " = " + default)
+        for buf in buffers:
+            result.append(buf + "_offset = 0")
+        return result
+
     def requirements_doc(self):
         """Retrieves a list of routine requirements for documentation"""
         return self.requirements

@@ -1,7 +1,6 @@
 
 ####################################################################################################
 # This file is part of the CLBlast project. The project is licensed under Apache Version 2.0.
-# This file follows uses a max-width of 100 characters per line.
 #
 # Author(s):
 #   Cedric Nugteren <www.cedricnugteren.nl>
@@ -287,87 +286,38 @@ def check_vector(a, name):
     check_array(a, 1, name)
 
 
-def check_shape_dim(shape, dim, target, name):
-    if shape[dim] != target:
-        raise ValueError("PyCLBlast: '%s.shape[%d]' must be %d (got %d)" % (name, dim, target, shape[dim]))
-
 ####################################################################################################
 # Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 ####################################################################################################
 
 cdef extern from "clblast_c.h":
-    CLBlastStatusCode CLBlastSswap(
-        const size_t n,
-        cl_mem x_buffer,
-        const size_t x_offset,
-        const size_t x_inc,
-        cl_mem y_buffer,
-        const size_t y_offset,
-        const size_t y_inc,
-        cl_command_queue* queue,
-        cl_event* event)
-    CLBlastStatusCode CLBlastDswap(
-        const size_t n,
-        cl_mem x_buffer,
-        const size_t x_offset,
-        const size_t x_inc,
-        cl_mem y_buffer,
-        const size_t y_offset,
-        const size_t y_inc,
-        cl_command_queue* queue,
-        cl_event* event)
-    CLBlastStatusCode CLBlastCswap(
-        const size_t n,
-        cl_mem x_buffer,
-        const size_t x_offset,
-        const size_t x_inc,
-        cl_mem y_buffer,
-        const size_t y_offset,
-        const size_t y_inc,
-        cl_command_queue* queue,
-        cl_event* event)
-    CLBlastStatusCode CLBlastZswap(
-        const size_t n,
-        cl_mem x_buffer,
-        const size_t x_offset,
-        const size_t x_inc,
-        cl_mem y_buffer,
-        const size_t y_offset,
-        const size_t y_inc,
-        cl_command_queue* queue,
-        cl_event* event)
+    CLBlastStatusCode CLBlastSswap(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDswap(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCswap(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZswap(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
-def swap(queue, x, y):
-    """y, x = x, y"""
+def swap(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
     dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef size_t N = x.shape[0]
-    check_shape_dim(y.shape, 0, N, "y")
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
 
-    cdef size_t element_size = dtype_size[dtype]
-    cdef cl_mem xdata = <cl_mem><size_t>x.base_data.int_ptr
-    cdef size_t offx = x.offset / element_size
-    cdef int incx = x.strides[0] / element_size
-    cdef cl_mem ydata = <cl_mem><size_t>y.base_data.int_ptr
-    cdef size_t offy = y.offset / element_size
-    cdef int incy = y.strides[0] / element_size
-
-    cdef cl_command_queue commandQueue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
     cdef cl_event event = NULL
 
-    cdef CLBlastStatusCode
+    cdef CLBlastStatusCode err
     if dtype == np.dtype("float32"):
-        err = CLBlastSswap(N, xdata, offx, incx, ydata, offy, incy, &commandQueue, &event)
+        err = CLBlastSswap(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
     elif dtype == np.dtype("float64"):
-        err = CLBlastDswap(N, xdata, offx, incx, ydata, offy, incy, &commandQueue, &event)
+        err = CLBlastDswap(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
     elif dtype == np.dtype("complex64"):
-        err = CLBlastCswap(N, xdata, offx, incx, ydata, offy, incy, &commandQueue, &event)
+        err = CLBlastCswap(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
     elif dtype == np.dtype("complex128"):
-        err = CLBlastZswap(N, xdata, offx, incx, ydata, offy, incy, &commandQueue, &event)
+        err = CLBlastZswap(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
     else:
-        raise ValueError("PyCLBlast: Unrecognized dtype '%s'" % dtype)
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXswap' failed: %s" % get_status_message(err))
     return cl.Event.from_int_ptr(<size_t>event)
