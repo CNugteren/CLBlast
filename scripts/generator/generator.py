@@ -47,7 +47,7 @@ FILES = [
     "/src/clblast_netlib_c.cpp",
     "/include/clblast_cuda.h",
     "/src/clblast_cuda.cpp",
-    "/src/pyclblast/pyclblast/pyclblast.pyx"
+    "/src/pyclblast/src/pyclblast.pyx"
 ]
 HEADER_LINES = [123, 21, 126, 24, 29, 41, 29, 65, 32, 95, 21, 288]
 FOOTER_LINES = [41, 56, 27, 38, 6, 6, 6, 9, 2, 41, 55, 1]

@@ -14,7 +14,7 @@ ext_modules = list()
 ext_modules.append(
     Extension(
         "pyclblast",
-        ["pyclblast/pyclblast.pyx"],
+        ["src/pyclblast.pyx"],
         libraries=["clblast"],
         language="c++"
     )
@@ -27,10 +27,19 @@ setup(
     author_email="web@cedricnugteren.nl",
     url="https://github.com/cnugteren/clblast",
     description="Python bindings for CLBlast, the tuned OpenCL BLAS library",
-    license="ApacheV2",
-    requires=["pyopencl","cython"],
-    packages=["pyclblast"],
+    license="Apache Software License",
+    requires=["numpy", "pyopencl", "cython"],
+    package_dir={'': 'src'},
     scripts=[],
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext},
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+    ],
+    keywords="OpenCL BLAS CLBlast GEMM matrix-multiplication"
 )
