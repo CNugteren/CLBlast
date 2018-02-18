@@ -22,10 +22,10 @@ ext_modules.append(
 
 setup(
     name="pyclblast",
-    version="1.3.0",
+    version="1.0.0",
     author="Cedric Nugteren",
     author_email="web@cedricnugteren.nl",
-    url="https://github.com/cnugteren/clblast",
+    url="https://github.com/CNugteren/CLBlast/blob/master/src/pyclblast",
     description="Python bindings for CLBlast, the tuned OpenCL BLAS library",
     license="Apache Software License",
     requires=["numpy", "pyopencl", "cython"],
