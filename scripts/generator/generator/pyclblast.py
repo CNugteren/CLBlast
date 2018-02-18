@@ -21,9 +21,21 @@ def to_np_dtype(flavour):
     raise RuntimeError("Could not convert flavour '%s' to numpy" % flavour.precision_name)
 
 
+def scalar_cython_conversion(scalar, flavour):
+    if flavour.precision_name == "S":
+        return "<cl_float>" + scalar
+    if flavour.precision_name == "D":
+        return "<cl_double>" + scalar
+    if flavour.precision_name == "C":
+        return "<cl_float2>cl_float2(x=" + scalar + ".real,y=" + scalar + ".imag)"
+    if flavour.precision_name == "Z":
+        return "<cl_double2>cl_double2(x=" + scalar + ".real,y=" + scalar + ".imag)"
+    raise RuntimeError("Could not convert flavour '%s'" % flavour.precision_name)
+
+
 def generate_pyx(routine):
     result = ""
-    if routine.implemented and routine.plain_name() == "swap":  # TODO: Generalize
+    if routine.implemented and routine.plain_name() in ["swap", "gemm"]:  # TODO: Generalize
 
         result += SEPARATOR + NL
         result += "# " + routine.description + ": " + routine.short_names() + NL
@@ -59,16 +71,35 @@ def generate_pyx(routine):
 
         result += "    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr" + NL
         result += "    cdef cl_event event = NULL" + NL
-        result += "" + NL
 
+        for option in routine.options:
+            if option == "a_transpose":
+                result += "    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo" + NL
+            if option == "b_transpose":
+                result += "    b_transpose = CLBlastTransposeYes if b_transp else CLBlastTransposeNo" + NL
+            if option == "ab_transpose":
+                result += "    ab_transpose = CLBlastTransposeYes if ab_transp else CLBlastTransposeNo" + NL
+            if option == "side":
+                result += "    side = CLBlastSideRight if right_side else CLBlastSideLeft" + NL
+            if option == "triangle":
+                result += "    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper" + NL
+            if option == "diagonal":
+                result += "    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit" + NL
+
+        result += "" + NL
         result += "    cdef CLBlastStatusCode err" + NL
         if_prefix = ""
         for flavour in routine.flavours:
             if flavour.precision_name in ["S", "D", "C", "Z"]:
                 np_dtype = to_np_dtype(flavour)
+                argument_names = [x.
+                                  replace("layout", "CLBlastLayoutRowMajor").
+                                  replace("alpha", scalar_cython_conversion("alpha", flavour)).
+                                  replace("beta", scalar_cython_conversion("beta", flavour))
+                                  for x in routine.arguments()]
                 result += "    " + if_prefix + "if dtype == np.dtype(\"" + np_dtype + "\"):" + NL
                 result += "        err = CLBlast" + flavour.name + routine.plain_name()
-                result += "(" + ", ".join(routine.arguments()) + ", &command_queue, &event)" + NL
+                result += "(" + ", ".join(argument_names) + ", &command_queue, &event)" + NL
                 if_prefix = "el"
 
         result += "    else:" + NL

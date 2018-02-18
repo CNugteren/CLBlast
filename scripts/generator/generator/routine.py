@@ -827,9 +827,22 @@ class Routine:
         for buf in buffers:
             if buf in self.buffers_vector():
                 result.append(buf + "_inc = 1")
+        for scalar in self.scalars:
+            default = "1.0" if scalar == "alpha" else "0.0"
+            result.append(scalar + " = " + default)
         for option in self.options:
-            default = convert.option_to_clblastdefault(option)
-            result.append(option + " = " + default)
+            if option == "a_transpose":
+                result.append("a_transp = False")
+            if option == "b_transpose":
+                result.append("b_transp = False")
+            if option == "ab_transpose":
+                result.append("ab_transp = False")
+            if option == "side":
+                result.append("right_side = False")
+            if option == "triangle":
+                result.append("lower_triangle = False")
+            if option == "diagonal":
+                result.append("unit_diagonal = False")
         for buf in buffers:
             result.append(buf + "_offset = 0")
         return result

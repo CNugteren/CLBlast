@@ -80,16 +80,3 @@ def option_to_documentation(x):
         'triangle': "The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).",
         'diagonal': "The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.",
     }[x]
-
-
-def option_to_clblastdefault(x):
-    """Translates an option name to a CLBlast C default type"""
-    return {
-        'layout': "CLBlastLayoutColMajor",
-        'a_transpose': "CLBlastTransposeNo",
-        'b_transpose': "CLBlastTransposeNo",
-        'ab_transpose': "CLBlastTransposeNo",
-        'side': "CLBlastSideLeft",
-        'triangle': "CLBlastTriangleUpper",
-        'diagonal': "CLBlastDiagonalNonUnit",
-    }[x]
