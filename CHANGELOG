@@ -1,5 +1,6 @@
 
 Development (next version)
+- Added Python interface to CLBlast 'PyCLBlast'
 - Added non-BLAS level-1 routines:
   * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
 
