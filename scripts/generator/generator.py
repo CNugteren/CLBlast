@@ -18,6 +18,7 @@
 #    clblast_netlib_c.cpp
 #    wrapper_clblas.h
 #    wrapper_cblas.h
+#    pyclblast.pyx
 # It also generates the main functions for the correctness and performance tests as found in
 #    test/correctness/routines/levelX/xYYYY.cpp
 #    test/performance/routines/levelX/xYYYY.cpp
@@ -30,6 +31,7 @@ import argparse
 
 import generator.cpp as cpp
 import generator.doc as doc
+import generator.pyclblast as pyclblast
 from generator.routine import Routine
 from generator.datatype import H, S, D, C, Z, Sc, Dz, iH, iS, iD, iC, iZ, Css, Zdd, Ccs, Zzd, T, Tc, TU
 
@@ -45,9 +47,10 @@ FILES = [
     "/src/clblast_netlib_c.cpp",
     "/include/clblast_cuda.h",
     "/src/clblast_cuda.cpp",
+    "/src/pyclblast/src/pyclblast.pyx"
 ]
-HEADER_LINES = [123, 21, 126, 24, 29, 41, 29, 65, 32, 95, 21]
-FOOTER_LINES = [41, 56, 27, 38, 6, 6, 6, 9, 2, 41, 55]
+HEADER_LINES = [123, 21, 126, 24, 29, 41, 29, 65, 32, 95, 21, 288]
+FOOTER_LINES = [41, 56, 27, 38, 6, 6, 6, 9, 2, 41, 55, 1]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 63
 
@@ -209,7 +212,8 @@ def main(argv):
             body = ""
             levels = [1, 2, 3] if (i == 4 or i == 5 or i == 6) else [1, 2, 3, 4]
             for level in levels:
-                body += cpp.LEVEL_SEPARATORS[level - 1] + "\n"
+                if i not in [11]:
+                    body += cpp.LEVEL_SEPARATORS[level - 1] + "\n"
                 for routine in ROUTINES[level - 1]:
                     if i == 0:
                         body += cpp.clblast_h(routine)
@@ -235,6 +239,8 @@ def main(argv):
                         body += cpp.clblast_h(routine, cuda=True)
                     if i == 10:
                         body += cpp.clblast_cc(routine, cuda=True)
+                    if i == 11:
+                        body += pyclblast.generate_pyx(routine)
             f.write("".join(file_header))
             f.write(body)
             f.write("".join(file_footer))

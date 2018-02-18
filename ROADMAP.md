@@ -15,5 +15,5 @@ This file gives an overview of the main features planned for addition to CLBlast
 | [#95](https://github.com/CNugteren/CLBlast/issues/95)   & #237 | Jan '18     | CNugteren | ✔      | Implement strided batch GEMM |
 | [#224](https://github.com/CNugteren/CLBlast/issues/224)        | Jan-Feb '18 | CNugteren | ✔      | Implement Hadamard product (element-wise vector-vector product) |
 | [#233](https://github.com/CNugteren/CLBlast/issues/233)        | Feb '18     | CNugteren |        | Add CLBlast to common package managers |
-| [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren |        | Python OpenCL interface |
+| [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren | ✔      | Python OpenCL interface |
 | [#169](https://github.com/CNugteren/CLBlast/issues/169)        | ??          | dividiti  |        | Problem-specific tuning parameter selection |

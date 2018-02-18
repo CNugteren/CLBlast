@@ -815,6 +815,38 @@ class Routine:
                 list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])) +
                 self.batch_count_doc())
 
+    def arguments_python(self):
+        """Arguments for the Python wrapper pyclblast"""
+        result = list()
+        result.extend(self.sizes)
+        buffers = self.inputs + self.outputs
+        result.extend(buffers[:])
+        for buf in buffers:
+            if buf in self.buffers_matrix():
+                result.append(buf + "_ld")
+        for buf in buffers:
+            if buf in self.buffers_vector():
+                result.append(buf + "_inc = 1")
+        for scalar in self.scalars:
+            default = "1.0" if scalar == "alpha" else "0.0"
+            result.append(scalar + " = " + default)
+        for option in self.options:
+            if option == "a_transpose":
+                result.append("a_transp = False")
+            if option == "b_transpose":
+                result.append("b_transp = False")
+            if option == "ab_transpose":
+                result.append("ab_transp = False")
+            if option == "side":
+                result.append("right_side = False")
+            if option == "triangle":
+                result.append("lower_triangle = False")
+            if option == "diagonal":
+                result.append("unit_diagonal = False")
+        for buf in buffers:
+            result.append(buf + "_offset = 0")
+        return result
+
     def requirements_doc(self):
         """Retrieves a list of routine requirements for documentation"""
         return self.requirements
