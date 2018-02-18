@@ -323,6 +323,1244 @@ def swap(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
     return cl.Event.from_int_ptr(<size_t>event)
 
 ####################################################################################################
+# Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSscal(const size_t n, const float alpha, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDscal(const size_t n, const double alpha, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCscal(const size_t n, const cl_float2 alpha, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZscal(const size_t n, const cl_double2 alpha, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def scal(queue, n, x, x_inc = 1, alpha = 1.0, x_offset = 0):
+    dtype = check_dtype([x], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSscal(n, <cl_float>alpha, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDscal(n, <cl_double>alpha, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCscal(n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZscal(n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXscal' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastScopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def copy(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastScopy(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDcopy(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCcopy(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZcopy(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXcopy' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSaxpy(const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDaxpy(const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCaxpy(const size_t n, const cl_float2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZaxpy(const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def axpy(queue, n, x, y, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSaxpy(n, <cl_float>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDaxpy(n, <cl_double>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCaxpy(n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZaxpy(n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXaxpy' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Dot product of two vectors: SDOT/DDOT/HDOT
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSdot(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDdot(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def dot(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    dtype = check_dtype([x, y, dot], ["float32", "float64"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(dot, "dot")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSdot(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDdot(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXdot' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Dot product of two complex vectors: CDOTU/ZDOTU
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCdotu(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZdotu(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def dotu(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    dtype = check_dtype([x, y, dot], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(dot, "dot")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCdotu(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZdotu(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXdotu' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCdotc(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZdotc(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def dotc(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    dtype = check_dtype([x, y, dot], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(dot, "dot")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCdotc(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZdotc(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXdotc' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSnrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDnrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastScnrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDznrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def nrm2(queue, n, x, nrm2, x_inc = 1, x_offset = 0, nrm2_offset = 0):
+    dtype = check_dtype([x, nrm2], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(nrm2, "nrm2")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem nrm2_buffer = <cl_mem><size_t>nrm2.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSnrm2(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDnrm2(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastScnrm2(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastDznrm2(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXnrm2' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSasum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDasum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastScasum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDzasum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def asum(queue, n, x, asum, x_inc = 1, x_offset = 0, asum_offset = 0):
+    dtype = check_dtype([x, asum], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(asum, "asum")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem asum_buffer = <cl_mem><size_t>asum.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSasum(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDasum(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastScasum(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastDzasum(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXasum' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastScsum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDzsum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def sum(queue, n, x, sum, x_inc = 1, x_offset = 0, sum_offset = 0):
+    dtype = check_dtype([x, sum], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(sum, "sum")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem sum_buffer = <cl_mem><size_t>sum.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsum(n, sum_buffer, sum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsum(n, sum_buffer, sum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastScsum(n, sum_buffer, sum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastDzsum(n, sum_buffer, sum_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsum' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastiSamax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiDamax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiCamax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiZamax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def amax(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
+    dtype = check_dtype([x, imax], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(imax, "imax")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem imax_buffer = <cl_mem><size_t>imax.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastiSamax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastiDamax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastiCamax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastiZamax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXamax' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastiSamin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiDamin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiCamin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiZamin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def amin(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
+    dtype = check_dtype([x, imin], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(imin, "imin")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem imin_buffer = <cl_mem><size_t>imin.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastiSamin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastiDamin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastiCamin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastiZamin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXamin' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastiSmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiDmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiCmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiZmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def max(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
+    dtype = check_dtype([x, imax], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(imax, "imax")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem imax_buffer = <cl_mem><size_t>imax.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastiSmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastiDmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastiCmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastiZmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXmax' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastiSmin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiDmin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiCmin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastiZmin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def min(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
+    dtype = check_dtype([x, imin], ["float32", "float64", "complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(imin, "imin")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem imin_buffer = <cl_mem><size_t>imin.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastiSmin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastiDmin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastiCmin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastiZmin(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXmin' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def gemv(queue, m, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, a_transp = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSgemv(CLBlastLayoutRowMajor, a_transpose, m, n, <cl_float>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDgemv(CLBlastLayoutRowMajor, a_transpose, m, n, <cl_double>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCgemv(CLBlastLayoutRowMajor, a_transpose, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float2>cl_float2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZgemv(CLBlastLayoutRowMajor, a_transpose, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double2>cl_double2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXgemv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const size_t kl, const size_t ku, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const size_t kl, const size_t ku, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const size_t kl, const size_t ku, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const size_t kl, const size_t ku, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def gbmv(queue, m, n, kl, ku, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, a_transp = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSgbmv(CLBlastLayoutRowMajor, a_transpose, m, n, kl, ku, <cl_float>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDgbmv(CLBlastLayoutRowMajor, a_transpose, m, n, kl, ku, <cl_double>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCgbmv(CLBlastLayoutRowMajor, a_transpose, m, n, kl, ku, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float2>cl_float2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZgbmv(CLBlastLayoutRowMajor, a_transpose, m, n, kl, ku, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double2>cl_double2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXgbmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian matrix-vector multiplication: CHEMV/ZHEMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChemv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhemv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def hemv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChemv(CLBlastLayoutRowMajor, triangle, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float2>cl_float2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhemv(CLBlastLayoutRowMajor, triangle, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double2>cl_double2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhemv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian banded matrix-vector multiplication: CHBMV/ZHBMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def hbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChbmv(CLBlastLayoutRowMajor, triangle, n, k, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float2>cl_float2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhbmv(CLBlastLayoutRowMajor, triangle, n, k, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double2>cl_double2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhbmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_float2 alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def hpmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, ap_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([ap, x, y], ["complex64", "complex128"])
+    check_matrix(ap, "ap")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChpmv(CLBlastLayoutRowMajor, triangle, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), ap_buffer, ap_offset, x_buffer, x_offset, x_inc, <cl_float2>cl_float2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhpmv(CLBlastLayoutRowMajor, triangle, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), ap_buffer, ap_offset, x_buffer, x_offset, x_inc, <cl_double2>cl_double2(x=beta.real,y=beta.imag), y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhpmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def symv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["float32", "float64"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsymv(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsymv(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsymv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def sbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([a, x, y], ["float32", "float64"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsbmv(CLBlastLayoutRowMajor, triangle, n, k, <cl_float>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_float>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsbmv(CLBlastLayoutRowMajor, triangle, n, k, <cl_double>alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, <cl_double>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsbmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
+
+def spmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, ap_offset = 0, x_offset = 0, y_offset = 0):
+    dtype = check_dtype([ap, x, y], ["float32", "float64"])
+    check_matrix(ap, "ap")
+    check_vector(x, "x")
+    check_vector(y, "y")
+
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSspmv(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, <cl_float>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDspmv(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, <cl_double>beta, y_buffer, y_offset, y_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXspmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def trmv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStrmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtrmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtrmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtrmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtrmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def tbmv(queue, n, k, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStbmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, k, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtbmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, k, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtbmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, k, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtbmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, k, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtbmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem ap_buffer, const size_t ap_offset, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem ap_buffer, const size_t ap_offset, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem ap_buffer, const size_t ap_offset, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem ap_buffer, const size_t ap_offset, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def tpmv(queue, n, ap, x, ap_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, ap_offset = 0, x_offset = 0):
+    dtype = check_dtype([ap, x], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(ap, "ap")
+    check_vector(x, "x")
+
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStpmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtpmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtpmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtpmv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, ap_buffer, ap_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtpmv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
+
+def trsv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_vector(x, "x")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStrsv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtrsv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtrsv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtrsv(CLBlastLayoutRowMajor, triangle, a_transpose, diagonal, n, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtrsv' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# General rank-1 matrix update: SGER/DGER/HGER
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSger(const CLBlastLayout layout, const size_t m, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDger(const CLBlastLayout layout, const size_t m, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def ger(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, y, a], ["float32", "float64"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSger(CLBlastLayoutRowMajor, m, n, <cl_float>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDger(CLBlastLayoutRowMajor, m, n, <cl_double>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXger' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# General rank-1 complex matrix update: CGERU/ZGERU
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCgeru(const CLBlastLayout layout, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZgeru(const CLBlastLayout layout, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def geru(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, y, a], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCgeru(CLBlastLayoutRowMajor, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZgeru(CLBlastLayoutRowMajor, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXgeru' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# General rank-1 complex conjugated matrix update: CGERC/ZGERC
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCgerc(const CLBlastLayout layout, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZgerc(const CLBlastLayout layout, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def gerc(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, y, a], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCgerc(CLBlastLayoutRowMajor, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZgerc(CLBlastLayoutRowMajor, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXgerc' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian rank-1 matrix update: CHER/ZHER
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCher(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZher(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def her(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, a], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCher(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZher(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXher' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian packed rank-1 matrix update: CHPR/ZHPR
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChpr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhpr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+
+def hpr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, ap_offset = 0):
+    dtype = check_dtype([x, ap], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_matrix(ap, "ap")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChpr(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, ap_buffer, ap_offset, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhpr(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, ap_buffer, ap_offset, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhpr' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian rank-2 matrix update: CHER2/ZHER2
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCher2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_float2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZher2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def her2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, y, a], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCher2(CLBlastLayoutRowMajor, triangle, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZher2(CLBlastLayoutRowMajor, triangle, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXher2' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChpr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_float2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+
+def hpr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, ap_offset = 0):
+    dtype = check_dtype([x, y, ap], ["complex64", "complex128"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(ap, "ap")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChpr2(CLBlastLayoutRowMajor, triangle, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, ap_buffer, ap_offset, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhpr2(CLBlastLayoutRowMajor, triangle, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, ap_buffer, ap_offset, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhpr2' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsyr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsyr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def syr(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, a], ["float32", "float64"])
+    check_vector(x, "x")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsyr(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsyr(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsyr' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+
+def spr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, ap_offset = 0):
+    dtype = check_dtype([x, ap], ["float32", "float64"])
+    check_vector(x, "x")
+    check_matrix(ap, "ap")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSspr(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, ap_buffer, ap_offset, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDspr(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, ap_buffer, ap_offset, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXspr' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
+
+def syr2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, a_offset = 0):
+    dtype = check_dtype([x, y, a], ["float32", "float64"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(a, "a")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsyr2(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsyr2(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, a_buffer, a_offset, a_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsyr2' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSspr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDspr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
+
+def spr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, ap_offset = 0):
+    dtype = check_dtype([x, y, ap], ["float32", "float64"])
+    check_vector(x, "x")
+    check_vector(y, "y")
+    check_matrix(ap, "ap")
+
+    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSspr2(CLBlastLayoutRowMajor, triangle, n, <cl_float>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, ap_buffer, ap_offset, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDspr2(CLBlastLayoutRowMajor, triangle, n, <cl_double>alpha, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, ap_buffer, ap_offset, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXspr2' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
 # General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
 ####################################################################################################
 
@@ -360,6 +1598,304 @@ def gemm(queue, m, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, a_t
         raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgemm' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const float beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_float2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def symm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_side = False, lower_triangle = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, b, c], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    side = CLBlastSideRight if right_side else CLBlastSideLeft
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsymm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_float>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsymm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_double>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCsymm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float2>cl_float2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZsymm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double2>cl_double2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsymm' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastChemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_float2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def hemm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_side = False, lower_triangle = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, b, c], ["complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    side = CLBlastSideRight if right_side else CLBlastSideLeft
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastChemm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float2>cl_float2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZhemm(CLBlastLayoutRowMajor, side, triangle, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double2>cl_double2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXhemm' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const float beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_float2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def syrk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, a_transp = False, a_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, c], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsyrk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_float>alpha, a_buffer, a_offset, a_ld, <cl_float>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsyrk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_double>alpha, a_buffer, a_offset, a_ld, <cl_double>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCsyrk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, <cl_float2>cl_float2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZsyrk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, <cl_double2>cl_double2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsyrk' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Rank-K update of a hermitian matrix: CHERK/ZHERK
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const float beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def herk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, a_transp = False, a_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, c], ["complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCherk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_float>alpha, a_buffer, a_offset, a_ld, <cl_float>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZherk(CLBlastLayoutRowMajor, triangle, a_transpose, n, k, <cl_double>alpha, a_buffer, a_offset, a_ld, <cl_double>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXherk' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const float beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_float2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def syr2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, ab_transp = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, b, c], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    ab_transpose = CLBlastTransposeYes if ab_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSsyr2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_float>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDsyr2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_double>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCsyr2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float2>cl_float2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZsyr2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double2>cl_double2(x=beta.real,y=beta.imag), c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXsyr2k' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastCher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const float beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
+
+def her2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, ab_transp = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    dtype = check_dtype([a, b, c], ["complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+    check_matrix(c, "c")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    ab_transpose = CLBlastTransposeYes if ab_transp else CLBlastTransposeNo
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("complex64"):
+        err = CLBlastCher2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_float>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZher2k(CLBlastLayoutRowMajor, triangle, ab_transpose, n, k, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, <cl_double>beta, c_buffer, c_offset, c_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXher2k' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+
+def trmm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, b_offset = 0):
+    dtype = check_dtype([a, b], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    side = CLBlastSideRight if right_side else CLBlastSideLeft
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStrmm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_float>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtrmm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_double>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtrmm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtrmm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtrmm' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastStrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastDtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastCtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+    CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
+
+def trsm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, b_offset = 0):
+    dtype = check_dtype([a, b], ["float32", "float64", "complex64", "complex128"])
+    check_matrix(a, "a")
+    check_matrix(b, "b")
+
+    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_event event = NULL
+    side = CLBlastSideRight if right_side else CLBlastSideLeft
+    triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
+    a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
+    diagonal = CLBlastDiagonalUnit if unit_diagonal else CLBlastDiagonalNonUnit
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastStrsm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_float>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDtrsm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_double>alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCtrsm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_float2>cl_float2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZtrsm(CLBlastLayoutRowMajor, side, triangle, a_transpose, diagonal, m, n, <cl_double2>cl_double2(x=alpha.real,y=alpha.imag), a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXtrsm' failed: %s" % get_status_message(err))
     return cl.Event.from_int_ptr(<size_t>event)
 
 ####################################################################################################

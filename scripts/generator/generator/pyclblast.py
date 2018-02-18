@@ -22,20 +22,21 @@ def to_np_dtype(flavour):
 
 
 def scalar_cython_conversion(scalar, flavour):
-    if flavour.precision_name == "S":
+    scalar_type = flavour.alpha_cl if scalar == "alpha" else flavour.beta_cl
+    if scalar_type == "float":
         return "<cl_float>" + scalar
-    if flavour.precision_name == "D":
+    if scalar_type == "double":
         return "<cl_double>" + scalar
-    if flavour.precision_name == "C":
+    if scalar_type in ["cl_float2", "float2"]:
         return "<cl_float2>cl_float2(x=" + scalar + ".real,y=" + scalar + ".imag)"
-    if flavour.precision_name == "Z":
+    if scalar_type in ["cl_double2", "double2"]:
         return "<cl_double2>cl_double2(x=" + scalar + ".real,y=" + scalar + ".imag)"
-    raise RuntimeError("Could not convert flavour '%s'" % flavour.precision_name)
+    raise RuntimeError("Could not convert flavour '%s:%s'" % (flavour.precision_name, scalar_type))
 
 
 def generate_pyx(routine):
     result = ""
-    if routine.implemented and routine.plain_name() in ["swap", "gemm"]:  # TODO: Generalize
+    if routine.implemented and routine.plain_name() and routine.level in ["1", "2a", "2b", "3"]:
 
         result += SEPARATOR + NL
         result += "# " + routine.description + ": " + routine.short_names() + NL
