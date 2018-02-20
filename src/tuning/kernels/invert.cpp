@@ -24,7 +24,7 @@ namespace clblast {
 TunerDefaults GetTunerDefaults(const int) {
   auto settings = TunerDefaults();
   settings.options = {kArgN, kArgM, kArgK};
-  settings.default_n = 128; // dimension of input matrix
+  settings.default_n = 128; // dimension of input matrix 'n'
   settings.default_m = 64; // block size
   settings.default_k = 16; // current size
   return settings;
@@ -45,15 +45,15 @@ TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
   ;
 
   // Buffer sizes
-  settings.size_a = args.n * args.a_ld + args.a_offset;
-  settings.size_b = CeilDiv(args.n, args.m) * args.m * args.m;
+  settings.size_a = args.n * args.n + args.a_offset;
+  settings.size_b = Ceil(args.n, args.m) * args.m; // Ceil(n, block_size) * block_size
 
   // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
   settings.inputs = {2, 3};
   settings.outputs = {3};
 
   // Sets the base thread configuration
-  const auto num_pages = CeilDiv(args.n, args.m*2);
+  const auto num_pages = CeilDiv(args.n, args.k * 2); // CeilDiv(n, current_size*2)
   settings.global_size = {args.k / 4, num_pages * (args.k / 16) * 4};
   settings.global_size_ref = settings.global_size;
   settings.local_size = {1, 1};
@@ -91,12 +91,12 @@ std::vector<Constraint> SetConstraints(const int) { return {}; }
 // Sets the kernel's arguments
 template <typename T>
 void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
-  const auto num_pages = CeilDiv(args.n, args.m*2);
-  kernel.SetArgument(0, static_cast<int>(args.n));
-  kernel.SetArgument(1, buffers[0]()); // 0 == A matrix
+  const auto num_pages = CeilDiv(args.n, args.k * 2); // CeilDiv(n, current_size*2)
+  kernel.SetArgument(0, static_cast<int>(args.n)); // n
+  kernel.SetArgument(1, buffers[2]()); // 2 == A matrix
   kernel.SetArgument(2, 0); // a_offset
   kernel.SetArgument(3, static_cast<int>(args.n)); // a_ld
-  kernel.SetArgument(4, buffers[1]()); // 1 == B matrix
+  kernel.SetArgument(4, buffers[3]()); // 3 == B matrix
   kernel.SetArgument(5, static_cast<int>(args.k)); // current_size
   kernel.SetArgument(6, static_cast<int>(num_pages)); // num_pages
   kernel.SetArgument(7, static_cast<int>(args.m)); // block_size
