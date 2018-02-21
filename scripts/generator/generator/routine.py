@@ -806,7 +806,6 @@ class Routine:
         """Retrieves a combination of all the argument types"""
         return (self.options_doc() + self.sizes_doc() +
                 list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
-                list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
                 self.scalar_doc("alpha") +
                 list(chain(*[self.buffer_doc(b) for b in self.buffers_first()])) +
                 self.scalar_doc("beta") +
