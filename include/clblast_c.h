@@ -1318,6 +1318,43 @@ CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBl
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+CLBlastStatusCode PUBLIC_API CLBlastShad(const size_t n,
+                                         const float alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const float beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDhad(const size_t n,
+                                         const double alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const double beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastChad(const size_t n,
+                                         const cl_float2 alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_float2 beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZhad(const size_t n,
+                                         const cl_double2 alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_double2 beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHhad(const size_t n,
+                                         const cl_half alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_half beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 CLBlastStatusCode PUBLIC_API CLBlastSomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                                               const size_t m, const size_t n,

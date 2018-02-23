@@ -76,7 +76,7 @@ void XgemmStridedBatched<T>::DoGemmStridedBatched(const Layout layout, const Tra
   }
 
   // Selects which version of the batched GEMM to run
-  const auto do_gemm_direct = true;
+  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);;
   if (do_gemm_direct) { // single generic kernel
     BatchedGemmDirect(m, n, k, alpha,
                       a_buffer, a_offset, a_ld, a_stride,
@@ -199,7 +199,7 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(const size_t m, const size_t n,
 
   // Launches the kernel
   auto eventKernel = Event();
-  auto eventPointer = eventKernel.pointer();
+  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
   RunKernel(kernel, queue_, device_, global, local, eventPointer, eventWaitList);
 
   // Runs the post-processing kernel if needed

@@ -12,8 +12,8 @@ This file gives an overview of the main features planned for addition to CLBlast
 | [#128](https://github.com/CNugteren/CLBlast/issues/128) & #205 | Nov-Dec '17 | CNugteren | ✔      | Pre-processor for loop unrolling and array-to-register-promotion for e.g. ARM Mali |
 | [#207](https://github.com/CNugteren/CLBlast/issues/207)        | Dec '17     | CNugteren | ✔      | Tuning of the TRSM/TRSV routines |
 | [#195](https://github.com/CNugteren/CLBlast/issues/195)        | Jan '18     | CNugteren | ✔      | Extra GEMM API with pre-allocated temporary buffer |
-| [#95](https://github.com/CNugteren/CLBlast/issues/95)   & #237 | Jan '18     | CNugteren |        | Implement strided batch GEMM |
-| [#224](https://github.com/CNugteren/CLBlast/issues/224)        | Jan-Feb '18 | CNugteren |        | Implement Hadamard product (element-wise vector-vector product) |
+| [#95](https://github.com/CNugteren/CLBlast/issues/95)   & #237 | Jan '18     | CNugteren | ✔      | Implement strided batch GEMM |
+| [#224](https://github.com/CNugteren/CLBlast/issues/224)        | Jan-Feb '18 | CNugteren | ✔      | Implement Hadamard product (element-wise vector-vector product) |
 | [#233](https://github.com/CNugteren/CLBlast/issues/233)        | Feb '18     | CNugteren |        | Add CLBlast to common package managers |
-| [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren |        | Python OpenCL interface |
+| [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren | ✔      | Python OpenCL interface |
 | [#169](https://github.com/CNugteren/CLBlast/issues/169)        | ??          | dividiti  |        | Problem-specific tuning parameter selection |

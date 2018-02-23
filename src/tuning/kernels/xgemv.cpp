@@ -29,6 +29,7 @@ TunerDefaults GetTunerDefaults(const int) {
   settings.options = {kArgM, kArgN, kArgAlpha, kArgBeta};
   settings.default_m = 2048;
   settings.default_n = 2048;
+  settings.default_num_runs = 4;
   return settings;
 }
 

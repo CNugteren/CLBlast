@@ -22,6 +22,7 @@ EXPERIMENTS = {
     "gemm": settings.GEMM,
     "gemm_small": settings.GEMM_SMALL,
     "gemmbatched": settings.GEMMBATCHED,
+    "gemmstridedbatched": settings.GEMMSTRIDEDBATCHED,
     "symm": settings.SYMM,
     "syrk": settings.SYRK,
     "summary": settings.SUMMARY,
@@ -147,7 +148,9 @@ def benchmark_single(benchmark, comparisons, platform, device, num_runs, precisi
     # Retrieves the data from the benchmark settings
     file_name_suffix = "_tight" if tight_plot else ""
     pdf_file_name = os.path.join(output_folder, benchmark_name.lower() + "_plot" + file_name_suffix + ".pdf")
-    titles = [utils.precision_to_letter(precision) + b["name"].upper() + " " + b["title"] for b in benchmarks]
+    titles = [b["title"] if "BATCHED" in b["name"].upper() else
+              utils.precision_to_letter(precision) + b["name"].upper() + " " + b["title"]
+              for b in benchmarks]
     x_keys = [b["x_keys"] for b in benchmarks]
     y_keys = [["%s_%d" % (b["y_key"], i) for i in library_ids] for b in benchmarks]
     x_labels = [b["x_label"] for b in benchmarks]
@@ -161,6 +164,11 @@ def benchmark_single(benchmark, comparisons, platform, device, num_runs, precisi
             label_names[index] += " FP32"
         label_names.append("CLBlast FP32")
         y_keys = [y_key + [y_key[0] + "_FP32"] for y_key in y_keys]
+
+    # For batched routines: comparison is non-batched
+    if benchmark in ["axpybatched", "gemmbatched", "gemmstridedbatched"]:
+        for index in range(1, len(label_names)):
+            label_names[index] += " (non-batched)"
 
     # Plots the graphs
     plot.plot_graphs(results["benchmarks"], pdf_file_name, results["num_rows"], results["num_cols"],

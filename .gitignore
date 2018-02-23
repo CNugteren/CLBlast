@@ -5,3 +5,5 @@ stash
 database.json
 database_best.json
 cl.hpp
+src/pyclblast/dist
+*.egg-info

@@ -129,12 +129,12 @@ class Routine:
     @staticmethod
     def postfix(name):
         """Retrieves the postfix for a buffer"""
-        return "inc" if (name in ["x", "y"]) else "ld"
+        return "inc" if (name in ["x", "y", "z"]) else "ld"
 
     @staticmethod
     def buffers_vector():
         """Distinguish between vectors and matrices"""
-        return ["x", "y"]
+        return ["x", "y", "z"]
 
     @staticmethod
     def buffers_matrix():
@@ -219,13 +219,13 @@ class Routine:
 
     def buffers_first(self):
         """Determines which buffers go first (between alpha and beta) and which ones go after"""
-        if self.level == "2b":
+        if self.level == "2b" or self.name == "had":
             return ["x", "y"]
         return ["ap", "a", "b", "x", "im"]
 
     def buffers_second(self):
-        if self.level == "2b":
-            return ["ap", "a", "b", "c"]
+        if self.level == "2b" or self.name == "had":
+            return ["z", "ap", "a", "b", "c"]
         return ["y", "c", "col"]
 
     def buffer(self, name):
@@ -330,7 +330,7 @@ class Routine:
             a = [name + "_buffer()"]
             b = [name + "_offset"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
@@ -349,7 +349,7 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y", "a", "b", "c"]:
+            if name in ["x", "y", "z", "a", "b", "c"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             return [", ".join(a + c)]
         return []
@@ -370,7 +370,7 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
@@ -806,7 +806,6 @@ class Routine:
         """Retrieves a combination of all the argument types"""
         return (self.options_doc() + self.sizes_doc() +
                 list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
-                list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
                 self.scalar_doc("alpha") +
                 list(chain(*[self.buffer_doc(b) for b in self.buffers_first()])) +
                 self.scalar_doc("beta") +
@@ -814,6 +813,38 @@ class Routine:
                 list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_second()])) +
                 list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])) +
                 self.batch_count_doc())
+
+    def arguments_python(self):
+        """Arguments for the Python wrapper pyclblast"""
+        result = list()
+        result.extend(self.sizes)
+        buffers = self.inputs + self.outputs
+        result.extend(buffers[:])
+        for buf in buffers:
+            if buf in self.buffers_matrix():
+                result.append(buf + "_ld")
+        for buf in buffers:
+            if buf in self.buffers_vector():
+                result.append(buf + "_inc = 1")
+        for scalar in self.scalars:
+            default = "1.0" if scalar == "alpha" else "0.0"
+            result.append(scalar + " = " + default)
+        for option in self.options:
+            if option == "a_transpose":
+                result.append("a_transp = False")
+            if option == "b_transpose":
+                result.append("b_transp = False")
+            if option == "ab_transpose":
+                result.append("ab_transp = False")
+            if option == "side":
+                result.append("right_side = False")
+            if option == "triangle":
+                result.append("lower_triangle = False")
+            if option == "diagonal":
+                result.append("unit_diagonal = False")
+        for buf in buffers:
+            result.append(buf + "_offset = 0")
+        return result
 
     def requirements_doc(self):
         """Retrieves a list of routine requirements for documentation"""

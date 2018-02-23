@@ -2109,6 +2109,63 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhad<T>(queue_cpp, event);
+    routine.DoHad(n,
+                  alpha,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(y_buffer), y_offset, y_inc,
+                  beta,
+                  Buffer<T>(z_buffer), z_offset, z_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Had<float>(const size_t,
+                                          const float,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const float,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double>(const size_t,
+                                           const double,
+                                           const cl_mem, const size_t, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           const double,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<float2>(const size_t,
+                                           const float2,
+                                           const cl_mem, const size_t, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           const float2,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double2>(const size_t,
+                                            const double2,
+                                            const cl_mem, const size_t, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            const double2,
+                                            cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<half>(const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         const half,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
 StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,

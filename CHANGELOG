@@ -1,5 +1,11 @@
 
 Development (next version)
+- Added Python interface to CLBlast 'PyCLBlast'
+- Various minor fixes and enhancements
+- Added non-BLAS level-1 routines:
+  * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
+
+Version 1.3.0
 - Re-designed and integrated the auto-tuner, no more dependency on CLTune
 - Made it possible to override the tuning parameters in the clients straight from JSON tuning files
 - Added OpenCL pre-processor to unroll loops and perform array-to-register promotions for compilers

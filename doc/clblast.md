@@ -254,8 +254,6 @@ Arguments to DOT:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -301,8 +299,6 @@ Arguments to DOTU:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -346,8 +342,6 @@ CLBlastStatusCode CLBlastZdotc(const size_t n,
 Arguments to DOTC:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -404,8 +398,6 @@ Arguments to NRM2:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
 * `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
-* `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
-* `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -455,8 +447,6 @@ CLBlastStatusCode CLBlastHasum(const size_t n,
 Arguments to ASUM:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
-* `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
 * `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -510,8 +500,6 @@ Arguments to SUM:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
 * `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
-* `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
-* `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -561,8 +549,6 @@ CLBlastStatusCode CLBlastiHamax(const size_t n,
 Arguments to AMAX:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
-* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -616,8 +602,6 @@ Arguments to AMIN:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
-* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
-* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -669,8 +653,6 @@ Arguments to MAX:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
-* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
-* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -720,8 +702,6 @@ CLBlastStatusCode CLBlastiHmin(const size_t n,
 Arguments to MIN:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
-* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -2879,6 +2859,81 @@ Arguments to TRSM:
 * `cl_mem b_buffer`: OpenCL buffer to store the output B matrix.
 * `const size_t b_offset`: The offset in elements from the start of the output B matrix.
 * `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
+xHAD: Element-wise vector product (Hadamard)
+-------------
+
+Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_ are vectors and _alpha_ and _beta_ are scalar constants.
+
+C++ API:
+```
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastShad(const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const float beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDhad(const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const double beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastChad(const size_t n,
+                              const cl_float2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_float2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZhad(const size_t n,
+                              const cl_double2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_double2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHhad(const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_half beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to HAD:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
+* `const size_t y_offset`: The offset in elements from the start of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
+* `const T beta`: Input scalar constant.
+* `cl_mem z_buffer`: OpenCL buffer to store the output z vector.
+* `const size_t z_offset`: The offset in elements from the start of the output z vector.
+* `const size_t z_inc`: Stride/increment of the output z vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
