@@ -267,7 +267,7 @@ def main(argv):
                     f.write(cpp.FOOTER)
 
     # API documentation
-    filename = cl_args.clblast_root + "/doc/clblast.md"
+    filename = cl_args.clblast_root + "/doc/api.md"
 
     # Stores the header and the footer of the original documentation file
     with open(filename) as f:
