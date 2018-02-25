@@ -3339,6 +3339,43 @@ Requirements for GEMMSTRIDEDBATCHED:
 
 
 
+GemmTempBufferSize: Retrieves the size of the temporary buffer for GEMM (auxiliary function)
+-------------
+
+Retrieves the required size of the temporary buffer for the GEMM kernel for specific arguments and for a specific device/platform and tuning parameters. This could be 0 in case no temporary buffer is required. Arguments are similar to those for GEMM.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              cl_command_queue* queue, size_t& temp_buffer_size)
+```
+
+A C API is not available for this function.
+
+Arguments to GemmTempBufferSize:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const size_t b_offset`: The offset in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const size_t c_offset`: The offset in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `size_t& temp_buffer_size`: The result of this function: the required buffer size.
+
+
+
 ClearCache: Resets the cache of compiled binaries (auxiliary function)
 -------------
 
@@ -3374,6 +3411,29 @@ CLBlastStatusCode CLBlastFillCache(const cl_device_id device)
 Arguments to FillCache:
 
 * `const cl_device_id device`: The OpenCL device to fill the cache for.
+
+
+
+RetrieveParameters: Retrieves current tuning parameters (auxiliary function)
+-------------
+
+This function retrieves current tuning parameters for a specific device-precision-kernel combination. This can be used for debugging or inspection.
+
+C++ API:
+```
+StatusCode RetrieveParameters(const cl_device_id device, const std::string &kernel_name,
+                              const Precision precision,
+                              std::unordered_map<std::string,size_t> &parameters)
+```
+
+A C API is not available for this function.
+
+Arguments to RetrieveParameters (C++ version):
+
+* `const cl_device_id device`: The OpenCL device to query the parameters for.
+* `const std::string &kernel_name`: The target kernel name. This has to be one of the existing CLBlast kernels (Xaxpy, Xdot, Xgemv, XgemvFast, XgemvFastRot, Xgemv, Xger, Copy, Pad, Transpose, Padtranspose, Xgemm, or XgemmDirect). If this argument is incorrect, this function will return with the `clblast::kInvalidOverrideKernel` status-code.
+* `const Precision precision`: The CLBlast precision enum to query the parameters for.
+* `std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This will be filled with the current tuning parameters for a specific kernel.
 
 
 
