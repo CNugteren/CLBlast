@@ -44,6 +44,7 @@ def generate_pyx(routine):
         result += SEPARATOR + NL
         result += NL
 
+        # Reference C definition
         result += "cdef extern from \"clblast_c.h\":" + NL
         np_dtypes = []
         for flavour in routine.flavours:
@@ -54,9 +55,18 @@ def generate_pyx(routine):
                 np_dtypes.append(to_np_dtype(flavour))
         result += "" + NL
 
+        # Function definition
         buffers = routine.inputs[:] + routine.outputs[:]
         result += "def " + routine.plain_name() + "(queue, "
         result += ", ".join(routine.arguments_python()) + "):" + NL
+
+        # Documentation
+        result += indent + "\"\"\"" + NL
+        result += indent + "x" + routine.upper_name() + ": " + routine.description + NL
+        result += indent + "\"\"\"" + NL
+        result += NL
+
+        # Data types and checks
         result += indent + "dtype = check_dtype([" + ", ".join(buffers) + "], "
         result += "[" + ", ".join(['"%s"' % d for d in np_dtypes]) + "])" + NL
         for buf in buffers:
@@ -65,11 +75,12 @@ def generate_pyx(routine):
             else:
                 result += indent + "check_matrix("
             result += buf + ", \"" + buf + "\")" + NL
-        result += "" + NL
+        result += NL
 
+        # Buffer transformation
         for buf in buffers:
             result += indent + "cdef cl_mem " + buf + "_buffer = <cl_mem><size_t>" + buf + ".base_data.int_ptr" + NL
-        result += "" + NL
+        result += NL
 
         result += indent + "cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr" + NL
         result += indent + "cdef cl_event event = NULL" + NL

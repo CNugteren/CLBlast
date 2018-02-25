@@ -297,6 +297,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZswap(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def swap(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
+    """
+    xSWAP: Swap two vectors
+    """
+
     dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -333,6 +337,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZscal(const size_t n, const cl_double2 alpha, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def scal(queue, n, x, x_inc = 1, alpha = 1.0, x_offset = 0):
+    """
+    xSCAL: Vector scaling
+    """
+
     dtype = check_dtype([x], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
 
@@ -367,6 +375,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def copy(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
+    """
+    xCOPY: Vector copy
+    """
+
     dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -403,6 +415,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZaxpy(const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def axpy(queue, n, x, y, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0):
+    """
+    xAXPY: Vector-times-constant plus vector
+    """
+
     dtype = check_dtype([x, y], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -437,6 +453,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDdot(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def dot(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    """
+    xDOT: Dot product of two vectors
+    """
+
     dtype = check_dtype([x, y, dot], ["float32", "float64"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -469,6 +489,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZdotu(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def dotu(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    """
+    xDOTU: Dot product of two complex vectors
+    """
+
     dtype = check_dtype([x, y, dot], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -501,6 +525,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZdotc(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def dotc(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, dot_offset = 0):
+    """
+    xDOTC: Dot product of two complex vectors, one conjugated
+    """
+
     dtype = check_dtype([x, y, dot], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -535,6 +563,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDznrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def nrm2(queue, n, x, nrm2, x_inc = 1, x_offset = 0, nrm2_offset = 0):
+    """
+    xNRM2: Euclidian norm of a vector
+    """
+
     dtype = check_dtype([x, nrm2], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(nrm2, "nrm2")
@@ -571,6 +603,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDzasum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def asum(queue, n, x, asum, x_inc = 1, x_offset = 0, asum_offset = 0):
+    """
+    xASUM: Absolute sum of values in a vector
+    """
+
     dtype = check_dtype([x, asum], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(asum, "asum")
@@ -607,6 +643,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDzsum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def sum(queue, n, x, sum, x_inc = 1, x_offset = 0, sum_offset = 0):
+    """
+    xSUM: Sum of values in a vector (non-BLAS function)
+    """
+
     dtype = check_dtype([x, sum], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(sum, "sum")
@@ -643,6 +683,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastiZamax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def amax(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
+    """
+    xAMAX: Index of absolute maximum value in a vector
+    """
+
     dtype = check_dtype([x, imax], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(imax, "imax")
@@ -679,6 +723,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastiZamin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def amin(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
+    """
+    xAMIN: Index of absolute minimum value in a vector (non-BLAS function)
+    """
+
     dtype = check_dtype([x, imin], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(imin, "imin")
@@ -715,6 +763,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastiZmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def max(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
+    """
+    xMAX: Index of maximum value in a vector (non-BLAS function)
+    """
+
     dtype = check_dtype([x, imax], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(imax, "imax")
@@ -751,6 +803,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastiZmin(const size_t n, cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def min(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
+    """
+    xMIN: Index of minimum value in a vector (non-BLAS function)
+    """
+
     dtype = check_dtype([x, imin], ["float32", "float64", "complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(imin, "imin")
@@ -787,6 +843,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def gemv(queue, m, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, a_transp = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xGEMV: General matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -826,6 +886,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const size_t m, const size_t n, const size_t kl, const size_t ku, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def gbmv(queue, m, n, kl, ku, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, a_transp = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xGBMV: General banded matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -863,6 +927,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhemv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def hemv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xHEMV: Hermitian matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -896,6 +964,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def hbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xHBMV: Hermitian banded matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -929,6 +1001,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def hpmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, ap_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xHPMV: Hermitian packed matrix-vector multiplication
+    """
+
     dtype = check_dtype([ap, x, y], ["complex64", "complex128"])
     check_matrix(ap, "ap")
     check_vector(x, "x")
@@ -962,6 +1038,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def symv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xSYMV: Symmetric matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["float32", "float64"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -995,6 +1075,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def sbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, a_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xSBMV: Symmetric banded matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x, y], ["float32", "float64"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -1028,6 +1112,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta, cl_mem y_buffer, const size_t y_offset, const size_t y_inc,cl_command_queue* queue, cl_event* event)
 
 def spmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0, lower_triangle = False, ap_offset = 0, x_offset = 0, y_offset = 0):
+    """
+    xSPMV: Symmetric packed matrix-vector multiplication
+    """
+
     dtype = check_dtype([ap, x, y], ["float32", "float64"])
     check_matrix(ap, "ap")
     check_vector(x, "x")
@@ -1063,6 +1151,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def trmv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    """
+    xTRMV: Triangular matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -1102,6 +1194,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def tbmv(queue, n, k, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    """
+    xTBMV: Triangular banded matrix-vector multiplication
+    """
+
     dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -1141,6 +1237,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem ap_buffer, const size_t ap_offset, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def tpmv(queue, n, ap, x, ap_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, ap_offset = 0, x_offset = 0):
+    """
+    xTPMV: Triangular packed matrix-vector multiplication
+    """
+
     dtype = check_dtype([ap, x], ["float32", "float64", "complex64", "complex128"])
     check_matrix(ap, "ap")
     check_vector(x, "x")
@@ -1180,6 +1280,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,cl_command_queue* queue, cl_event* event)
 
 def trsv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, x_offset = 0):
+    """
+    xTRSV: Solves a triangular system of equations
+    """
+
     dtype = check_dtype([a, x], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_vector(x, "x")
@@ -1217,6 +1321,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDger(const CLBlastLayout layout, const size_t m, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def ger(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    """
+    xGER: General rank-1 matrix update
+    """
+
     dtype = check_dtype([x, y, a], ["float32", "float64"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1249,6 +1357,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZgeru(const CLBlastLayout layout, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def geru(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    """
+    xGERU: General rank-1 complex matrix update
+    """
+
     dtype = check_dtype([x, y, a], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1281,6 +1393,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZgerc(const CLBlastLayout layout, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def gerc(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offset = 0, a_offset = 0):
+    """
+    xGERC: General rank-1 complex conjugated matrix update
+    """
+
     dtype = check_dtype([x, y, a], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1313,6 +1429,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZher(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def her(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, a_offset = 0):
+    """
+    xHER: Hermitian rank-1 matrix update
+    """
+
     dtype = check_dtype([x, a], ["complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(a, "a")
@@ -1344,6 +1464,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhpr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
 
 def hpr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, ap_offset = 0):
+    """
+    xHPR: Hermitian packed rank-1 matrix update
+    """
+
     dtype = check_dtype([x, ap], ["complex64", "complex128"])
     check_vector(x, "x")
     check_matrix(ap, "ap")
@@ -1375,6 +1499,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZher2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def her2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, a_offset = 0):
+    """
+    xHER2: Hermitian rank-2 matrix update
+    """
+
     dtype = check_dtype([x, y, a], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1408,6 +1536,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const cl_double2 alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
 
 def hpr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, ap_offset = 0):
+    """
+    xHPR2: Hermitian packed rank-2 matrix update
+    """
+
     dtype = check_dtype([x, y, ap], ["complex64", "complex128"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1441,6 +1573,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDsyr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def syr(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, a_offset = 0):
+    """
+    xSYR: Symmetric rank-1 matrix update
+    """
+
     dtype = check_dtype([x, a], ["float32", "float64"])
     check_vector(x, "x")
     check_matrix(a, "a")
@@ -1472,6 +1608,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
 
 def spr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, ap_offset = 0):
+    """
+    xSPR: Symmetric packed rank-1 matrix update
+    """
+
     dtype = check_dtype([x, ap], ["float32", "float64"])
     check_vector(x, "x")
     check_matrix(ap, "ap")
@@ -1503,6 +1643,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,cl_command_queue* queue, cl_event* event)
 
 def syr2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, a_offset = 0):
+    """
+    xSYR2: Symmetric rank-2 matrix update
+    """
+
     dtype = check_dtype([x, y, a], ["float32", "float64"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1536,6 +1680,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastDspr2(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n, const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset,cl_command_queue* queue, cl_event* event)
 
 def spr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_triangle = False, x_offset = 0, y_offset = 0, ap_offset = 0):
+    """
+    xSPR2: Symmetric packed rank-2 matrix update
+    """
+
     dtype = check_dtype([x, y, ap], ["float32", "float64"])
     check_vector(x, "x")
     check_vector(y, "y")
@@ -1571,6 +1719,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose, const size_t m, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def gemm(queue, m, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, a_transp = False, b_transp = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    """
+    xGEMM: General matrix-matrix multiplication
+    """
+
     dtype = check_dtype([a, b, c], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1611,6 +1763,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def symm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_side = False, lower_triangle = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    """
+    xSYMM: Symmetric matrix-matrix multiplication
+    """
+
     dtype = check_dtype([a, b, c], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1649,6 +1805,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def hemm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_side = False, lower_triangle = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    """
+    xHEMM: Hermitian matrix-matrix multiplication
+    """
+
     dtype = check_dtype([a, b, c], ["complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1685,6 +1845,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def syrk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, a_transp = False, a_offset = 0, c_offset = 0):
+    """
+    xSYRK: Rank-K update of a symmetric matrix
+    """
+
     dtype = check_dtype([a, c], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(c, "c")
@@ -1721,6 +1885,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZherk(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const size_t n, const size_t k, const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def herk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, a_transp = False, a_offset = 0, c_offset = 0):
+    """
+    xHERK: Rank-K update of a hermitian matrix
+    """
+
     dtype = check_dtype([a, c], ["complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(c, "c")
@@ -1755,6 +1923,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def syr2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, ab_transp = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    """
+    xSYR2K: Rank-2K update of a symmetric matrix
+    """
+
     dtype = check_dtype([a, b, c], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1793,6 +1965,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, const CLBlastTranspose ab_transpose, const size_t n, const size_t k, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const double beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld,cl_command_queue* queue, cl_event* event)
 
 def her2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle = False, ab_transp = False, a_offset = 0, b_offset = 0, c_offset = 0):
+    """
+    xHER2K: Rank-2K update of a hermitian matrix
+    """
+
     dtype = check_dtype([a, b, c], ["complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1829,6 +2005,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
 
 def trmm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, b_offset = 0):
+    """
+    xTRMM: Triangular matrix-matrix multiplication
+    """
+
     dtype = check_dtype([a, b], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
@@ -1869,6 +2049,10 @@ cdef extern from "clblast_c.h":
     CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBlastTriangle triangle, const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t m, const size_t n, const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,cl_command_queue* queue, cl_event* event)
 
 def trsm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_triangle = False, a_transp = False, unit_diagonal = False, a_offset = 0, b_offset = 0):
+    """
+    xTRSM: Solves a triangular system of equations
+    """
+
     dtype = check_dtype([a, b], ["float32", "float64", "complex64", "complex128"])
     check_matrix(a, "a")
     check_matrix(b, "b")
