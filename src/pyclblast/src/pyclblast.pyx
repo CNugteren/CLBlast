@@ -1,4 +1,4 @@
-
+#cython: binding=True
 ####################################################################################################
 # This file is part of the CLBlast project. The project is licensed under Apache Version 2.0.
 #
