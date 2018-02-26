@@ -64,6 +64,12 @@ Building a static version of the library instead of shared one (.dylib/.so) can 
 
     cmake -DBUILD_SHARED_LIBS=OFF ..
 
+In case you run into segfaults with OpenCL programs (known to happen with the AMD APP), you can try the following (thanks to [kpot](https://github.com/CNugteren/CLBlast/issues/243#issuecomment-367277297)):
+
+1. Use `-fPIC` or its analogue when compiling. In CMake you can do this by adding `set(CMAKE_POSITION_INDEPENDENT_CODE ON)` to the project config.
+
+2. Forbid CMake to add RPATH entries to binaries. You can do this project-wise with `set(CMAKE_SKIP_BUILD_RPATH ON)` in CMake.
+
 
 Windows compilation from source
 -------------
