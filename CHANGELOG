@@ -1,6 +1,8 @@
 
 Development (next version)
 - Added Python interface to CLBlast 'PyCLBlast'
+- Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
+- Updated and reorganised the CLBlast documentation
 - Various minor fixes and enhancements
 - Added non-BLAS level-1 routines:
   * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
