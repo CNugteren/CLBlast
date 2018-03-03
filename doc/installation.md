@@ -37,6 +37,8 @@ For Ubuntu, CLBlast is available through [a PPA](https://launchpad.net/~cnugtere
     sudo apt-get update
     sudo apt-get install libclblast-dev
 
+For Arch Linux and Manjaro, CLBlast is available as a [package](https://aur.archlinux.org/packages/clblast-git) maintained by a 3rd party.
+
 For OS X / macOS, CLBlast is available through [Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/clblast.rb). It can be installed as follows:
 
     brew update
