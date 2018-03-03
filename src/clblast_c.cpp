@@ -4074,14 +4074,14 @@ CLBlastStatusCode CLBlastHgemmStridedBatched(const CLBlastLayout layout, const C
 
 // GEMM with temporary buffer (optional, for advanced users)
 CLBlastStatusCode CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
-                               const size_t m, const size_t n, const size_t k,
-                               const float alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               const float beta,
-                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                               cl_command_queue* queue, cl_event* event,
-							   cl_mem temp_buffer) {
+                                             const size_t m, const size_t n, const size_t k,
+                                             const float alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                             const float beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                             cl_command_queue* queue, cl_event* event,
+                                             cl_mem temp_buffer) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gemm(static_cast<clblast::Layout>(layout),
@@ -4098,14 +4098,14 @@ CLBlastStatusCode CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const C
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 CLBlastStatusCode CLBlastDgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
-                               const size_t m, const size_t n, const size_t k,
-                               const double alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               const double beta,
-                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                               cl_command_queue* queue, cl_event* event,
-							   cl_mem temp_buffer) {
+                                             const size_t m, const size_t n, const size_t k,
+                                             const double alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                             const double beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                             cl_command_queue* queue, cl_event* event,
+                                             cl_mem temp_buffer) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gemm(static_cast<clblast::Layout>(layout),
@@ -4122,14 +4122,14 @@ CLBlastStatusCode CLBlastDgemmWithTempBuffer(const CLBlastLayout layout, const C
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 CLBlastStatusCode CLBlastCgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
-                               const size_t m, const size_t n, const size_t k,
-                               const cl_float2 alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               const cl_float2 beta,
-                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                               cl_command_queue* queue, cl_event* event,
-							   cl_mem temp_buffer) {
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_float2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                             const cl_float2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                             cl_command_queue* queue, cl_event* event,
+                                             cl_mem temp_buffer) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gemm(static_cast<clblast::Layout>(layout),
@@ -4146,14 +4146,14 @@ CLBlastStatusCode CLBlastCgemmWithTempBuffer(const CLBlastLayout layout, const C
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 CLBlastStatusCode CLBlastZgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
-                               const size_t m, const size_t n, const size_t k,
-                               const cl_double2 alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               const cl_double2 beta,
-                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                               cl_command_queue* queue, cl_event* event,
-							   cl_mem temp_buffer) {
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_double2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                             const cl_double2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                             cl_command_queue* queue, cl_event* event,
+                                             cl_mem temp_buffer) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gemm(static_cast<clblast::Layout>(layout),
@@ -4170,14 +4170,14 @@ CLBlastStatusCode CLBlastZgemmWithTempBuffer(const CLBlastLayout layout, const C
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 CLBlastStatusCode CLBlastHgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
-                               const size_t m, const size_t n, const size_t k,
-                               const cl_half alpha,
-                               const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                               const cl_half beta,
-                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                               cl_command_queue* queue, cl_event* event,
-							   cl_mem temp_buffer) {
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_half alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                             const cl_half beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                             cl_command_queue* queue, cl_event* event,
+                                             cl_mem temp_buffer) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gemm(static_cast<clblast::Layout>(layout),
