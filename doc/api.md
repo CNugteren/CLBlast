@@ -2236,6 +2236,50 @@ CLBlastStatusCode CLBlastHgemm(const CLBlastLayout layout, const CLBlastTranspos
                                cl_command_queue* queue, cl_event* event)
 ```
 
+C API with temporary buffer (user to allocate & pass `temp_buffer` with size provided by xGemmTempBufferSize() ):
+```
+CLBlastStatusCode CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                          const size_t m, const size_t n, const size_t k,
+                                          const float alpha,
+                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                          const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                          const float beta,
+                                          cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                          cl_command_queue* queue, cl_event* event, cl_mem temp_buffer)
+CLBlastStatusCode CLBlastDgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                          const size_t m, const size_t n, const size_t k,
+                                          const double alpha,
+                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                          const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                          const double beta,
+                                          cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                          cl_command_queue* queue, cl_event* event, cl_mem temp_buffer)
+CLBlastStatusCode CLBlastCgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                          const size_t m, const size_t n, const size_t k,
+                                          const cl_float2 alpha,
+                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                          const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                          const cl_float2 beta,
+                                          cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                          cl_command_queue* queue, cl_event* event, cl_mem temp_buffer)
+CLBlastStatusCode CLBlastZgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                          const size_t m, const size_t n, const size_t k,
+                                          const cl_double2 alpha,
+                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                          const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                          const cl_double2 beta,
+                                          cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                          cl_command_queue* queue, cl_event* event, cl_mem temp_buffer)
+CLBlastStatusCode CLBlastHgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                          const size_t m, const size_t n, const size_t k,
+                                          const cl_half alpha,
+                                          const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                          const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                          const cl_half beta,
+                                          cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                          cl_command_queue* queue, cl_event* event, cl_mem temp_buffer)
+```
+
 Arguments to GEMM:
 
 * `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
@@ -3355,8 +3399,43 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
                               cl_command_queue* queue, size_t& temp_buffer_size)
 ```
 
-A C API is not available for this function.
+C API:
+```
+CLBlastStatusCode CLBlastSGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
 
+CLBlastStatusCode CLBlastDGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastCGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastZGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastHGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+```
 Arguments to GemmTempBufferSize:
 
 * `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
