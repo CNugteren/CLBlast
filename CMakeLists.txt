@@ -210,7 +210,7 @@ set(PRECISIONS 32 64 3232 6464 16)
 
 # Sample programs
 if(OPENCL)
-  set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched dtrsm)
+  set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched dtrsm tuning_api)
   set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
   if(NETLIB)
     set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
@@ -235,6 +235,8 @@ set(SOURCES
   src/kernel_preprocessor.cpp
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
+  src/tuning/configurations.cpp
+  src/tuning/tuning_api.cpp
 )
 set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
   include/clblast_half.h
@@ -258,6 +260,9 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/kernel_preprocessor.hpp
   src/cxpp11_common.hpp
   src/routine.hpp
+  src/tuning/configurations.hpp
+  src/tuning/tuning.hpp
+  src/tuning/routines/routine_tuner.hpp
 )
 if(OPENCL)
   set(SOURCES ${SOURCES} src/clblast.cpp src/clblast_c.cpp)
@@ -294,6 +299,9 @@ foreach(DATABASE ${DATABASES})
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_64.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_3232.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_6464.hpp)
+endforeach()
+foreach(KERNEL ${KERNELS})
+  set(HEADERS ${HEADERS} src/tuning/kernels/${KERNEL}.hpp)
 endforeach()
 
 # Creates and links the library

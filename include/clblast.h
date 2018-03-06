@@ -705,6 +705,12 @@ StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::s
 
 // =================================================================================================
 
+template <typename T>
+StatusCode PUBLIC_API TuneCopyMatrixFast(cl_command_queue* queue, const size_t m, const size_t n,
+                                         const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// =================================================================================================
+
 } // namespace clblast
 
 // CLBLAST_CLBLAST_H_
