@@ -706,8 +706,36 @@ StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::s
 // =================================================================================================
 
 template <typename T>
-StatusCode PUBLIC_API TuneCopyMatrixFast(cl_command_queue* queue, const size_t m, const size_t n,
-                                         const double fraction, std::unordered_map<std::string,size_t> &parameters);
+StatusCode PUBLIC_API TuneXaxpy(cl_command_queue* queue, const size_t n,
+                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneXdot(cl_command_queue* queue, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneXgemv(cl_command_queue* queue, const size_t m, const size_t n,
+                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneXger(cl_command_queue* queue, const size_t m, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneCopy(cl_command_queue* queue, const size_t m, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TunePad(cl_command_queue* queue, const size_t m, const size_t n,
+                              const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneTranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TunePadtranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                                       const double fraction, std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 

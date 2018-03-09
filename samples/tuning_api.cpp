@@ -60,10 +60,10 @@ int main() {
   printf("Starting the tuning...\n");
   std::unordered_map<std::string,size_t> parameters;
   auto queue_plain = queue();
-  auto status = clblast::TuneCopyMatrixFast<float>(&queue_plain, m, n, fraction, parameters);
+  auto status = clblast::TuneCopy<float>(&queue_plain, m, n, fraction, parameters);
 
   // Tuning completed. See "clblast.h" for status codes (0 -> success).
-  printf("Completed TuneCopyMatrixFast with status %d (0 == OK), found parameters:\n", static_cast<int>(status));
+  printf("Completed TuneCopy with status %d (0 == OK), found parameters:\n", static_cast<int>(status));
   for (const auto parameter: parameters) {
     printf(">  %s = %zu\n", parameter.first.c_str(), parameter.second);
   }
