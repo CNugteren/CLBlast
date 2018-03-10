@@ -62,5 +62,8 @@ def parse_results(csv_data):
     results = [r for r in results]
     for result in results:
         for key in result:
-            result[key] = float(result[key]) if "." in result[key] else int(result[key])
+            if "i" in result[key]:
+                continue
+            else:
+                result[key] = float(result[key]) if "." in result[key] else int(result[key])
     return results
