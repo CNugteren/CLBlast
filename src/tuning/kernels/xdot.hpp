@@ -22,7 +22,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int) {
+TunerDefaults XdotGetTunerDefaults(const int) {
   auto settings = TunerDefaults();
   settings.options = {kArgN};
   settings.default_n = 2*1024*1024;
@@ -31,7 +31,7 @@ TunerDefaults GetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
+TunerSettings XdotGetTunerSettings(const int V, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -74,12 +74,12 @@ TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &) { }
-std::vector<Constraint> SetConstraints(const int) { return {}; }
+void XdotTestValidArguments(const int, const Arguments<T> &) { }
+std::vector<Constraint> XdotSetConstraints(const int) { return {}; }
 
 // Sets the kernel's arguments
 template <typename T>
-void SetArguments(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void XdotSetArguments(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   if (V == 1) {
     kernel.SetArgument(0, static_cast<int>(args.n));
     kernel.SetArgument(1, buffers[0]()); // 0 == X vector

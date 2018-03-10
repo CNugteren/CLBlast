@@ -23,7 +23,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int V) {
+TunerDefaults XgemmGetTunerDefaults(const int V) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
                       kArgHeuristicSelection, kArgPsoSwarmSize,
@@ -38,7 +38,7 @@ TunerDefaults GetTunerDefaults(const int V) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
+TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -118,8 +118,8 @@ TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &) { }
-std::vector<Constraint> SetConstraints(const int V) {
+void XgemmTestValidArguments(const int, const Arguments<T> &) { }
+std::vector<Constraint> XgemmSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
@@ -148,7 +148,7 @@ std::vector<Constraint> SetConstraints(const int V) {
 
 // Sets the kernel's arguments
 template <typename T>
-void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void XgemmSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.k));

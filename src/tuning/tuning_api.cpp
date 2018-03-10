@@ -17,10 +17,19 @@
 #include <random>
 #include <utility>
 #include <algorithm>
-#include <cstdio>
 
 #include "tuning/tuning.hpp"
+#include "tuning/kernels/xaxpy.hpp"
+#include "tuning/kernels/xdot.hpp"
+#include "tuning/kernels/xgemv.hpp"
+#include "tuning/kernels/xger.hpp"
+#include "tuning/kernels/xgemm.hpp"
+#include "tuning/kernels/xgemm_direct.hpp"
 #include "tuning/kernels/copy_fast.hpp"
+#include "tuning/kernels/copy_pad.hpp"
+#include "tuning/kernels/transpose_fast.hpp"
+#include "tuning/kernels/transpose_pad.hpp"
+#include "tuning/kernels/invert.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -30,8 +39,8 @@ StatusCode TuneXaxpy(RawCommandQueue * queue, const size_t n,
                      const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, XaxpyGetTunerDefaults, XaxpyGetTunerSettings<T>,
+                     XaxpyTestValidArguments<T>, XaxpySetConstraints, XaxpySetArguments<T>, parameters);
 }
 template StatusCode TuneXaxpy<half>(RawCommandQueue*, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXaxpy<float>(RawCommandQueue*, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -44,11 +53,11 @@ StatusCode TuneXdot(RawCommandQueue * queue, const size_t n,
                     const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.n = n;
   auto queue_cpp = Queue(*queue);
-  auto status = TunerAPI<T>(queue_cpp, args, 1, GetTunerDefaults, GetTunerSettings<T>,
-                            TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  auto status = TunerAPI<T>(queue_cpp, args, 1, XdotGetTunerDefaults, XdotGetTunerSettings<T>,
+                            XdotTestValidArguments<T>, XdotSetConstraints, XdotSetArguments<T>, parameters);
   if (status != StatusCode::kSuccess) { return status; }
-  return TunerAPI<T>(queue_cpp, args, 2, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 2, XdotGetTunerDefaults, XdotGetTunerSettings<T>,
+                     XdotTestValidArguments<T>, XdotSetConstraints, XdotSetArguments<T>, parameters);
 }
 template StatusCode TuneXdot<half>(RawCommandQueue*, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXdot<float>(RawCommandQueue*, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -61,14 +70,14 @@ StatusCode TuneXgemv(RawCommandQueue * queue, const size_t m, const size_t n,
                      const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  auto status = TunerAPI<T>(queue_cpp, args, 1, GetTunerDefaults, GetTunerSettings<T>,
-                            TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  auto status = TunerAPI<T>(queue_cpp, args, 1, XgemvGetTunerDefaults, XgemvGetTunerSettings<T>,
+                            XgemvTestValidArguments<T>, XgemvSetConstraints, XgemvSetArguments<T>, parameters);
   if (status != StatusCode::kSuccess) { return status; }
-  status = TunerAPI<T>(queue_cpp, args, 2, GetTunerDefaults, GetTunerSettings<T>,
-                       TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  status = TunerAPI<T>(queue_cpp, args, 2, XgemvGetTunerDefaults, XgemvGetTunerSettings<T>,
+                       XgemvTestValidArguments<T>, XgemvSetConstraints, XgemvSetArguments<T>, parameters);
   if (status != StatusCode::kSuccess) { return status; }
-  return TunerAPI<T>(queue_cpp, args, 3, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 3, XgemvGetTunerDefaults, XgemvGetTunerSettings<T>,
+                     XgemvTestValidArguments<T>, XgemvSetConstraints, XgemvSetArguments<T>, parameters);
 }
 template StatusCode TuneXgemv<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXgemv<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -81,8 +90,8 @@ StatusCode TuneXger(RawCommandQueue * queue, const size_t m, const size_t n,
                     const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, XgerGetTunerDefaults, XgerGetTunerSettings<T>,
+                     XgerTestValidArguments<T>, XgerSetConstraints, XgerSetArguments<T>, parameters);
 }
 template StatusCode TuneXger<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXger<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -95,8 +104,8 @@ StatusCode TuneXgemm(RawCommandQueue * queue, const size_t m, const size_t n, co
                      const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n; args.k = k;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 2, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 2, XgemmGetTunerDefaults, XgemmGetTunerSettings<T>,
+                     XgemmTestValidArguments<T>, XgemmSetConstraints, XgemmSetArguments<T>, parameters);
 }
 template StatusCode TuneXgemm<half>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXgemm<float>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -109,8 +118,8 @@ StatusCode TuneXgemmDirect(RawCommandQueue * queue, const size_t m, const size_t
                            const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n; args.k = k;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 2, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 2, XgemmDirectGetTunerDefaults, XgemmDirectGetTunerSettings<T>,
+                     XgemmDirectTestValidArguments<T>, XgemmDirectSetConstraints, XgemmDirectSetArguments<T>, parameters);
 }
 template StatusCode TuneXgemmDirect<half>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneXgemmDirect<float>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -123,8 +132,8 @@ StatusCode TuneCopy(RawCommandQueue * queue, const size_t m, const size_t n,
                     const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, CopyGetTunerDefaults, CopyGetTunerSettings<T>,
+                     CopyTestValidArguments<T>, CopySetConstraints, CopySetArguments<T>, parameters);
 }
 template StatusCode TuneCopy<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneCopy<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -137,8 +146,8 @@ StatusCode TunePad(RawCommandQueue * queue, const size_t m, const size_t n,
                    const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, PadGetTunerDefaults, PadGetTunerSettings<T>,
+                     PadTestValidArguments<T>, PadSetConstraints, PadSetArguments<T>, parameters);
 }
 template StatusCode TunePad<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TunePad<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -151,8 +160,8 @@ StatusCode TuneTranspose(RawCommandQueue * queue, const size_t m, const size_t n
                          const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, TransposeGetTunerDefaults, TransposeGetTunerSettings<T>,
+                     TransposeTestValidArguments<T>, TransposeSetConstraints, TransposeSetArguments<T>, parameters);
 }
 template StatusCode TuneTranspose<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneTranspose<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -165,8 +174,8 @@ StatusCode TunePadtranspose(RawCommandQueue * queue, const size_t m, const size_
                             const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, PadtransposeGetTunerDefaults, PadtransposeGetTunerSettings<T>,
+                     PadtransposeTestValidArguments<T>, PadtransposeSetConstraints, PadtransposeSetArguments<T>, parameters);
 }
 template StatusCode TunePadtranspose<half>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TunePadtranspose<float>(RawCommandQueue*, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
@@ -179,8 +188,8 @@ StatusCode TuneInvert(RawCommandQueue * queue, const size_t m, const size_t n, c
                       const double fraction, std::unordered_map<std::string,size_t> &parameters) {
   auto args = Arguments<T>(); args.fraction = fraction; args.m = m; args.n = n; args.k = k;
   auto queue_cpp = Queue(*queue);
-  return TunerAPI<T>(queue_cpp, args, 0, GetTunerDefaults, GetTunerSettings<T>,
-                     TestValidArguments<T>, SetConstraints, SetArguments<T>, parameters);
+  return TunerAPI<T>(queue_cpp, args, 0, InvertGetTunerDefaults, InvertGetTunerSettings<T>,
+                     InvertTestValidArguments<T>, InvertSetConstraints, InvertSetArguments<T>, parameters);
 }
 template StatusCode TuneInvert<half>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);
 template StatusCode TuneInvert<float>(RawCommandQueue*, const size_t, const size_t, const size_t, const double, std::unordered_map<std::string,size_t>&);

@@ -21,7 +21,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int) {
+TunerDefaults PadtransposeGetTunerDefaults(const int) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -31,7 +31,7 @@ TunerDefaults GetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
+TunerSettings PadtransposeGetTunerSettings(const int, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -76,12 +76,12 @@ TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &) { }
-std::vector<Constraint> SetConstraints(const int) { return {}; }
+void PadtransposeTestValidArguments(const int, const Arguments<T> &) { }
+std::vector<Constraint> PadtransposeSetConstraints(const int) { return {}; }
 
 // Sets the kernel's arguments
 template <typename T>
-void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void PadtransposeSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.m));

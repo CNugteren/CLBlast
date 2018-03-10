@@ -21,7 +21,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int) {
+TunerDefaults XaxpyGetTunerDefaults(const int) {
   auto settings = TunerDefaults();
   settings.options = {kArgN, kArgAlpha};
   settings.default_n = 4096*1024;
@@ -30,7 +30,7 @@ TunerDefaults GetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
+TunerSettings XaxpyGetTunerSettings(const int, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -75,16 +75,16 @@ TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &args) {
+void XaxpyTestValidArguments(const int, const Arguments<T> &args) {
   if (!IsMultiple(args.n, 64)) {
     throw std::runtime_error("'XaxpyFastest' requires 'n' to be a multiple of WGS*WPT*VW");
   }
 }
-std::vector<Constraint> SetConstraints(const int) { return {}; }
+std::vector<Constraint> XaxpySetConstraints(const int) { return {}; }
 
 // Sets the kernel's arguments
 template <typename T>
-void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void XaxpySetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.n));
   kernel.SetArgument(1, GetRealArg(args.alpha));
   kernel.SetArgument(2, buffers[0]()); // 0 == X vector

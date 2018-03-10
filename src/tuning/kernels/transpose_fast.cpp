@@ -22,11 +22,11 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<half>, clblast::TestValidArguments<half>, clblast::SetConstraints, clblast::SetArguments<half>); break;
-    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<float>, clblast::TestValidArguments<float>, clblast::SetConstraints, clblast::SetArguments<float>); break;
-    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<double>, clblast::TestValidArguments<double>, clblast::SetConstraints, clblast::SetArguments<double>); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<float2>, clblast::TestValidArguments<float2>, clblast::SetConstraints, clblast::SetArguments<float2>); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<double2>, clblast::TestValidArguments<double2>, clblast::SetConstraints, clblast::SetArguments<double2>); break;
+    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<half>, clblast::TransposeTestValidArguments<half>, clblast::TransposeSetConstraints, clblast::TransposeSetArguments<half>); break;
+    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<float>, clblast::TransposeTestValidArguments<float>, clblast::TransposeSetConstraints, clblast::TransposeSetArguments<float>); break;
+    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double>, clblast::TransposeTestValidArguments<double>, clblast::TransposeSetConstraints, clblast::TransposeSetArguments<double>); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<float2>, clblast::TransposeTestValidArguments<float2>, clblast::TransposeSetConstraints, clblast::TransposeSetArguments<float2>); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double2>, clblast::TransposeTestValidArguments<double2>, clblast::TransposeSetConstraints, clblast::TransposeSetArguments<double2>); break;
   }
   return 0;
 }

@@ -24,7 +24,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int) {
+TunerDefaults XgemvGetTunerDefaults(const int) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha, kArgBeta};
   settings.default_m = 2048;
@@ -35,7 +35,7 @@ TunerDefaults GetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
+TunerSettings XgemvGetTunerSettings(const int V, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -96,8 +96,8 @@ TunerSettings GetTunerSettings(const int V, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TestValidArguments(const int, const Arguments<T> &) { }
-std::vector<Constraint> SetConstraints(const int V) {
+void XgemvTestValidArguments(const int, const Arguments<T> &) { }
+std::vector<Constraint> XgemvSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   if (V==2 || V==3) {
     auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
@@ -112,7 +112,7 @@ std::vector<Constraint> SetConstraints(const int V) {
 
 // Sets the kernel's arguments
 template <typename T>
-void SetArguments(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void XgemvSetArguments(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   auto a_rotated = (V==3) ? 1 : 0;
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
