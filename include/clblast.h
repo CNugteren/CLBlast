@@ -722,6 +722,14 @@ StatusCode PUBLIC_API TuneXger(cl_command_queue* queue, const size_t m, const si
                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
 
 template <typename T>
+StatusCode PUBLIC_API TuneXgemm(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneXgemmDirect(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                                      const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
 StatusCode PUBLIC_API TuneCopy(cl_command_queue* queue, const size_t m, const size_t n,
                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
 
@@ -736,6 +744,10 @@ StatusCode PUBLIC_API TuneTranspose(cl_command_queue* queue, const size_t m, con
 template <typename T>
 StatusCode PUBLIC_API TunePadtranspose(cl_command_queue* queue, const size_t m, const size_t n,
                                        const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+template <typename T>
+StatusCode PUBLIC_API TuneInvert(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                                 const double fraction, std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 
