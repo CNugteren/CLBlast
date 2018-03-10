@@ -78,6 +78,7 @@ More detailed documentation is available in separate files:
 * [Tuning for better performance](doc/tuning.md)
 * [Testing the library for correctness](doc/testing.md)
 * [Bindings / wrappers for other languages](doc/bindings.md)
+* [Glossary with some terms explained](doc/glossary.md)
 
 
 Known issues
