@@ -17,6 +17,6 @@ This file gives an overview of the main features planned for addition to CLBlast
 | [#233](https://github.com/CNugteren/CLBlast/issues/233)        | Feb '18     | CNugteren | ✔      | Add CLBlast to common package managers |
 | [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren | ✔      | Python OpenCL interface |
 | [#228](https://github.com/CNugteren/CLBlast/issues/228)        | Mar '18     | CNugteren |        | Improving performance for Qualcomm Adreno GPUs |
-| [#237](https://github.com/CNugteren/CLBlast/issues/237)        | Mar '18     | CNugteren |        | Making tuning possible from the CLBlast API |
+| [#237](https://github.com/CNugteren/CLBlast/issues/237)        | Mar '18     | CNugteren | ✔      | Making tuning possible from the CLBlast API |
 | [#136](https://github.com/CNugteren/CLBlast/issues/136)        | Apr '18     | CNugteren |        | Implement xAXPBY and xSET |
 | [#169](https://github.com/CNugteren/CLBlast/issues/169)        | ??          | dividiti  |        | Problem-specific tuning parameter selection |

@@ -100,6 +100,14 @@ In summary, tuning the entire library for your device can be done as follows (st
 After the kernels are tuned, you can run the `clblast_tuner_routine_xgemm` tuner to optimize the high-level GEMM routine, i.e. selecting which method to use: the direct kernel or the in-direct kernel.
 
 
+Tuning using the API (advanced users only)
+-------------
+
+Apart from running the tuning binaries, it is also possible to run the tuners programmatically through the CLBlast API. This could be useful if you want to tune for non-standard arguments (e.g. a rectangular or very small matrix). The tuning results can then also be set programmatically using `OverrideParameters`.
+
+The tuning API does not perform any disk or stdout I/O, thus it is not possible to track progress. Running the regular tuner binaries should give an idea of the amount of configurations to explore for a particular device, thus giving an indication of a good value for the `fraction` argument (see the [API documentation](api.md) for more details).
+
+
 Inspecting and changing tuning parameters at run-time
 -------------
 
@@ -120,3 +128,19 @@ Tuning OpenCL compiler options
 -------------
 
 For all of CLBlast's APIs, it is possible to optionally set an OS environmental variable `CLBLAST_BUILD_OPTIONS` to pass specific build options to the OpenCL compiler. Also make sure this is set in the same way when running the tuners.
+
+
+Which kernels are used for which routines?
+-------------
+
+To find out which tuners to run for which routines, you can use the table below. The kernel names correspond to the tuner binaries, the tuner API, and to the arguments for `OverrideParameters` and `RetrieveParameters`.
+
+| Routines                                                                 | Kernel(s) / Tuner(s)            |
+| -------------------------------------------------------------------------|---------------------------------|
+| AXPY COPY SCAL SWAP OMATCOPY AXPYBATCHED                                 | Xaxpy                           |
+| AMAX ASUM DOT DOTC DOTU NRM2 SUM MAX MIN AMIN                            | Xdot                            |
+| GBMV GEMV HBMV HEMV HPMV SBMV SPMV SYMV TMBV TPMV TRMV TRSV              | Xgemv                           |
+| GER GERC GERU HER HER2 HPR HPR2 SPR SPR2 SYR SYR2                        | Xger                            |
+| GEMM HEMM HER2K HERK SYMM SYR2K SYRK TRMM GEMMBATCHED GEMMSTRIDEDBATCHED | Xgemm XgemmDirect Copy Pad Transpose Padtranspose |
+| TRSM                                                                     | Xgemm XgemmDirect Copy Pad Transpose Padtranspose Invert |
+| IM2COL                                                                   | Copy                            |
