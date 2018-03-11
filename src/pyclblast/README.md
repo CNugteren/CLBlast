@@ -29,3 +29,11 @@ After installation OpenCL and CLBlast, simply use pip to install PyCLBlast, e.g.
     pip install --user pyclblast
 
 To start using the library, browse the [CLBlast](https://github.com/CNugteren/CLBlast) documentation or check out the PyCLBlast samples provides in the `samples` subfolder.
+
+
+Testing PyCLBlast
+-------------
+
+The main exhaustive tests are the main CLBlast test binaries. Apart from that, you can also run the PyCLBlast smoke tests from the `test` subfolder, e.g. as follows:
+
+    python -m unittest discover
