@@ -11,88 +11,7 @@
 //
 // =================================================================================================
 
-#include <string>
-#include <vector>
-
-#include "utilities/utilities.hpp"
-#include "tuning/tuning.hpp"
-
-namespace clblast {
-// =================================================================================================
-
-// Settings for this kernel (default command-line arguments)
-TunerDefaults GetTunerDefaults(const int) {
-  auto settings = TunerDefaults();
-  settings.options = {kArgN, kArgAlpha};
-  settings.default_n = 4096*1024;
-  return settings;
-}
-
-// Settings for this kernel (general)
-template <typename T>
-TunerSettings GetTunerSettings(const int, const Arguments<T> &args) {
-  auto settings = TunerSettings();
-
-  // Identification of the kernel
-  settings.kernel_family = "xaxpy";
-  settings.kernel_name = "XaxpyFastest";
-  settings.sources =
-#include "../src/kernels/level1/level1.opencl"
-#include "../src/kernels/level1/xaxpy.opencl"
-  ;
-
-  // Buffer sizes
-  settings.size_x = args.n;
-  settings.size_y = args.n;
-
-  // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
-  settings.inputs = {0, 1};
-  settings.outputs = {1};
-
-  // Sets the base thread configuration
-  settings.global_size = {args.n};
-  settings.global_size_ref = settings.global_size;
-  settings.local_size = {1};
-  settings.local_size_ref = {64};
-
-  // Transforms the thread configuration based on the parameters
-  settings.mul_local = {{"WGS"}};
-  settings.div_global = {{"WPT"},{"VW"}};
-
-  // Sets the tuning parameters and their possible values
-  settings.parameters = {
-    {"WGS", {64, 128, 256, 512, 1024, 2048}},
-    {"WPT", {1, 2, 4, 8}},
-    {"VW", {1, 2, 4, 8}},
-  };
-
-  // Describes how to compute the performance metrics
-  settings.metric_amount = 3 * args.n * GetBytes(args.precision);
-  settings.performance_unit = "GB/s";
-
-  return settings;
-}
-
-// Tests for valid arguments
-template <typename T>
-void TestValidArguments(const int, const Arguments<T> &args) {
-  if (!IsMultiple(args.n, 64)) {
-    throw std::runtime_error("'XaxpyFastest' requires 'n' to be a multiple of WGS*WPT*VW");
-  }
-}
-std::vector<Constraint> SetConstraints(const int) { return {}; }
-
-// Sets the kernel's arguments
-template <typename T>
-void SetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
-  kernel.SetArgument(0, static_cast<int>(args.n));
-  kernel.SetArgument(1, GetRealArg(args.alpha));
-  kernel.SetArgument(2, buffers[0]()); // 0 == X vector
-  kernel.SetArgument(3, buffers[1]()); // 1 == Y vector
-}
-
-// =================================================================================================
-} // namespace clblast
+#include "tuning/kernels/xaxpy.hpp"
 
 // Shortcuts to the clblast namespace
 using half = clblast::half;
@@ -103,11 +22,11 @@ using double2 = clblast::double2;
 int main(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<half>, clblast::TestValidArguments<half>, clblast::SetConstraints, clblast::SetArguments<half>); break;
-    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<float>, clblast::TestValidArguments<float>, clblast::SetConstraints, clblast::SetArguments<float>); break;
-    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<double>, clblast::TestValidArguments<double>, clblast::SetConstraints, clblast::SetArguments<double>); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<float2>, clblast::TestValidArguments<float2>, clblast::SetConstraints, clblast::SetArguments<float2>); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, 0, clblast::GetTunerDefaults, clblast::GetTunerSettings<double2>, clblast::TestValidArguments<double2>, clblast::SetConstraints, clblast::SetArguments<double2>); break;
+    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<half>, clblast::XaxpyTestValidArguments<half>, clblast::XaxpySetConstraints, clblast::XaxpySetArguments<half>); break;
+    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<float>, clblast::XaxpyTestValidArguments<float>, clblast::XaxpySetConstraints, clblast::XaxpySetArguments<float>); break;
+    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<double>, clblast::XaxpyTestValidArguments<double>, clblast::XaxpySetConstraints, clblast::XaxpySetArguments<double>); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<float2>, clblast::XaxpyTestValidArguments<float2>, clblast::XaxpySetConstraints, clblast::XaxpySetArguments<float2>); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<double2>, clblast::XaxpyTestValidArguments<double2>, clblast::XaxpySetConstraints, clblast::XaxpySetArguments<double2>); break;
   }
   return 0;
 }

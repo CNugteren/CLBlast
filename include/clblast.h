@@ -705,6 +705,63 @@ StatusCode PUBLIC_API OverrideParameters(const cl_device_id device, const std::s
 
 // =================================================================================================
 
+// Tunes the "Xaxpy" kernel, used for many level-1 routines such as XAXPY, XCOPY, and XSWAP
+template <typename T>
+StatusCode TuneXaxpy(cl_command_queue* queue, const size_t n,
+                     const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xdot" kernel, used for level-1 reduction routines such as XDOT, XMAX, and XSUM
+template <typename T>
+StatusCode TuneXdot(cl_command_queue* queue, const size_t n,
+                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemv" kernel, used for matrix-vector level-2 routines such as XGEMV, XGBMV, and XHEMV
+template <typename T>
+StatusCode TuneXgemv(cl_command_queue* queue, const size_t m, const size_t n,
+                     const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xger" kernel, used for matrix update level-2 routines such as XGER, XHER, and XSYR2
+template <typename T>
+StatusCode TuneXger(cl_command_queue* queue, const size_t m, const size_t n,
+                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemm" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TuneXgemm(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "XgemmDiret" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TuneXgemmDirect(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                           const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Copy" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TuneCopy(cl_command_queue* queue, const size_t m, const size_t n,
+                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Pad" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TunePad(cl_command_queue* queue, const size_t m, const size_t n,
+                   const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Transpose" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TuneTranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                         const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Padtranspose" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode TunePadtranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                            const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemm" kernel, used for the level-3 routine XTRSM
+template <typename T>
+StatusCode TuneInvert(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                      const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// =================================================================================================
+
 } // namespace clblast
 
 // CLBLAST_CLBLAST_H_
