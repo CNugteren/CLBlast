@@ -36,5 +36,6 @@ cly.set(y)
 
 print("# Example level-2 operation: GEMV")
 pyclblast.gemv(queue, m, n, cla, clx, cly, a_ld=n, alpha=alpha, beta=beta)
+queue.finish()
 print("# Result for vector y: %s" % cly.get())
 print("# Expected result:     %s" % (alpha * np.dot(a, x) + beta * y))

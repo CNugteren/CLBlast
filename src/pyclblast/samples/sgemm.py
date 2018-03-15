@@ -34,5 +34,6 @@ clc.set(c)
 
 print("# Example level-3 operation: GEMM")
 pyclblast.gemm(queue, m, n, k, cla, clb, clc, a_ld=k, b_ld=n, c_ld=n)
+queue.finish()
 print("# Matrix C result: %s" % clc.get())
 print("# Expected result: %s" % (np.dot(a, b)))

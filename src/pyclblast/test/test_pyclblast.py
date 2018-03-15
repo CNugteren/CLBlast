@@ -32,6 +32,7 @@ class TestPyCLBlast(unittest.TestCase):
             opencl_array.set(numpy_array)
             host_arrays.append(numpy_array)
             device_arrays.append(opencl_array)
+        queue.finish()
         return queue, host_arrays, device_arrays
 
     def test_axpy(self):
@@ -40,6 +41,7 @@ class TestPyCLBlast(unittest.TestCase):
                 for n in [1, 7, 32]:
                     queue, h, d = self.setup([(n,), (n,)], dtype=dtype)
                     pyclblast.axpy(queue, n, d[0], d[1], alpha=alpha)
+                    queue.finish()
                     result = d[1].get()
                     reference = alpha * h[0] + h[1]
                     for i in range(n):
@@ -54,6 +56,7 @@ class TestPyCLBlast(unittest.TestCase):
                             queue, h, d = self.setup([(m, n), (n,), (m,)], dtype=dtype)
                             pyclblast.gemv(queue, m, n, d[0], d[1], d[2],
                                            a_ld=n, alpha=alpha, beta=beta)
+                            queue.finish()
                             result = d[2].get()
                             reference = alpha * np.dot(h[0], h[1]) + beta * h[2]
                             for i in range(m):
@@ -69,6 +72,7 @@ class TestPyCLBlast(unittest.TestCase):
                                 queue, h, d = self.setup([(m, k), (k, n), (m, n)], dtype=dtype)
                                 pyclblast.gemm(queue, m, n, k, d[0], d[1], d[2],
                                                a_ld=k, b_ld=n, c_ld=n, alpha=alpha, beta=beta)
+                                queue.finish()
                                 result = d[2].get()
                                 reference = alpha * np.dot(h[0], h[1]) + beta * h[2]
                                 for i in range(m):
