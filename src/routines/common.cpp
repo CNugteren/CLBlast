@@ -89,8 +89,8 @@ void FillMatrix(Queue &queue, const Device &device,
   kernel.SetArgument(3, static_cast<int>(offset));
   kernel.SetArgument(4, dest());
   kernel.SetArgument(5, GetRealArg(constant_value));
-  auto local = std::vector<size_t>{8, 8};
-  auto global = std::vector<size_t>{Ceil(m, 8), Ceil(n, 8)};
+  auto local = std::vector<size_t>{16, 1};
+  auto global = std::vector<size_t>{Ceil(m, 16), n};
   RunKernel(kernel, queue, device, global, local, event, waitForEvents);
 }
 
