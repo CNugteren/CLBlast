@@ -125,8 +125,8 @@ void FillVector(Queue &queue, const Device &device,
   kernel.SetArgument(2, static_cast<int>(offset));
   kernel.SetArgument(3, dest());
   kernel.SetArgument(4, GetRealArg(constant_value));
-  auto local = std::vector<size_t>{64};
-  auto global = std::vector<size_t>{Ceil(n, 64)};
+  auto local = std::vector<size_t>{16};
+  auto global = std::vector<size_t>{Ceil(n, 16)};
   RunKernel(kernel, queue, device, global, local, event, waitForEvents);
 }
 
