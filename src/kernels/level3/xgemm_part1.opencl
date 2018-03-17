@@ -50,28 +50,28 @@ R"(
   #define NWG 8      // Tile-size in dimension N (e.g. 64, 128)
 #endif
 #ifndef KWG
-  #define KWG 8      // Tile-size in dimension K (e.g. 8, 16)
+  #define KWG 4      // Tile-size in dimension K (e.g. 8, 16)
 #endif
 #ifndef MDIMC
-  #define MDIMC 8    // Threads per workgroup in M-dimension (e.g. 8, 16, 32)
+  #define MDIMC 2    // Threads per workgroup in M-dimension (e.g. 8, 16, 32)
 #endif
 #ifndef NDIMC
-  #define NDIMC 8    // Threads per workgroup in N-dimension (e.g. 8, 16, 32)
+  #define NDIMC 1    // Threads per workgroup in N-dimension (e.g. 8, 16, 32)
 #endif
 #ifndef MDIMA
-  #define MDIMA 8    // Re-shaped tile dimension of matrix A: KDIMA * MDIMA
+  #define MDIMA 2    // Re-shaped tile dimension of matrix A: KDIMA * MDIMA
 #endif
 #ifndef NDIMB
-  #define NDIMB 8    // Re-shaped tile dimension of matrix B: KDIMB * NDIMB
+  #define NDIMB 1    // Re-shaped tile dimension of matrix B: KDIMB * NDIMB
 #endif
 #ifndef KWI
   #define KWI 1      // Unroll factor of the KWG loop (smaller or equal than KWG)
 #endif
 #ifndef VWM
-  #define VWM 1      // Vector width of matrices A and C
+  #define VWM 4      // Vector width of matrices A and C
 #endif
 #ifndef VWN
-  #define VWN 1      // Vector width of matrix B
+  #define VWN 4      // Vector width of matrix B
 #endif
 #ifndef STRM
   #define STRM 0     // Use strided access within a thread in the M-dimension (1) or not (0)

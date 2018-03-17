@@ -39,16 +39,20 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
 
   const __global real* restrict A = (const __global real* restrict) &agm[0];
   const __global real* restrict B = (const __global real* restrict) &bgm[0];
-  __global real* C = &cgm[0];
+
+  // Allocates workitem-private memory (registers)
+  #pragma promote_to_registers
+  realN apm[NWI];
+  #pragma promote_to_registers
+  realM bpm[MWI];
+  #pragma promote_to_registers
+  realM cpm[NWI*(MWI/VWM)];
 
   if (((gx << 2) < kSizeN) && ((gy << 3) < kSizeM)) {
-    real4 a[8];
-    real4 b[4];
-    real4 c[8];
 
     #pragma unroll
-    for (int i = 0; i < 8; i++) {
-      SetToZero(c[i]);
+    for (int _ni = 0; _ni < NWI; _ni += 1) {
+      SetToZero(cpm[_ni]);
     }
 
     const int A_y_off = (gy << 3) * kSizeK;
@@ -58,28 +62,32 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
       for (int i = 0; i < 4; i++) {
         // Original code: b[i] = read_imagef(Bi, (int2)(gx, pos + i));
         int B_off = (pos + i) * kSizeN + (gx << 2);
-        b[i] = vload4(0, B + B_off);
+        bpm[i] = vload4(0, B + B_off);
       }
 
       int A_off = A_y_off + pos;
 
       #pragma unroll
       for (int i = 0; i < 8; i++) {
-        a[i] = vload4(0, A + A_off);
+        apm[i] = vload4(0, A + A_off);
         A_off += kSizeK;
       }
 
       #pragma unroll
       for (int i = 0; i < 8; i++) {
-        c[i] += a[i].x * b[0] + a[i].y * b[1] + a[i].z * b[2] + a[i].w * b[3];
+        cpm[i] += apm[i].x * bpm[0] + apm[i].y * bpm[1] + apm[i].z * bpm[2] + apm[i].w * bpm[3];
       }
-    }
 
-    #pragma unroll
-    for (int i = 0; i < 8; i++) {
-      int C_offs = ((gy << 3) + i) * kSizeN + (gx << 2);
-      vstore4(c[i], 0, C + C_offs);
+      #if SA == 1 || SB == 1
+        barrier(CLK_LOCAL_MEM_FENCE);
+      #endif
     }
+    #if GLOBAL_MEM_FENCE == 1
+      barrier(CLK_GLOBAL_MEM_FENCE);
+    #endif
+
+    // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
+    StoreResults(cgm, cpm, kSizeN, alpha, beta);
   }
 }
 

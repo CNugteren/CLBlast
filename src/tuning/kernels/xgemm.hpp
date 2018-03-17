@@ -64,7 +64,7 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
   settings.global_size = {args.m, args.n};
   settings.global_size_ref = settings.global_size;
   settings.local_size = {1, 1};
-  settings.local_size_ref = {8, 8};
+  settings.local_size_ref = {2, 1};
 
   // Transforms the thread configuration based on the parameters
   settings.mul_local = {{"MDIMC", "NDIMC"}};
