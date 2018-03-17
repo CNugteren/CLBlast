@@ -35,7 +35,7 @@ class Database {
   static const std::string kDeviceVendorAll;
 
   // The database consists of separate database entries, stored together in a vector
-  static const std::vector<database::DatabaseEntry> database;
+  static std::vector<database::DatabaseEntry> database;
 
   // Database for a special case: Apple CPUs support limited number of threads
   static const std::vector<database::DatabaseEntry> apple_cpu_fallback;
@@ -56,6 +56,7 @@ class Database {
   // Retrieves the values or names of all the parameters
   std::string GetValuesString() const;
   std::vector<std::string> GetParameterNames() const;
+  const database::Parameters& GetParameters() const { return *parameters_; }
 
  private:
   // Search method functions, returning a set of parameters (possibly empty)

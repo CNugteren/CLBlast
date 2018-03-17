@@ -549,12 +549,12 @@ public:
   // Regular constructor with memory management. If this class does not own the buffer object, then
   // the memory will not be freed automatically afterwards.
   explicit Buffer(const Context &, const BufferAccess access, const size_t size):
-      buffer_(new CUdeviceptr, [access](CUdeviceptr* m) {
-          if (access != BufferAccess::kNotOwned) { CheckError(cuMemFree(*m)); }
+      buffer_(new CUdeviceptr, [access, size](CUdeviceptr* m) {
+          if (access != BufferAccess::kNotOwned && size > 0) { CheckError(cuMemFree(*m)); }
           delete m;
       }),
       access_(access) {
-    CheckError(cuMemAlloc(buffer_.get(), size*sizeof(T)));
+    if (size > 0) { CheckError(cuMemAlloc(buffer_.get(), size*sizeof(T))); }
   }
 
   // As above, but now with read/write access as a default

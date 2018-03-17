@@ -51,7 +51,7 @@ class TestXaxpyBatched {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
 
@@ -62,7 +62,7 @@ class TestXaxpyBatched {
     for (auto batch = size_t{0}; batch < args.batch_count; ++batch) {
       args.x_offsets[batch] = batch * PerBatchSizeX(args) + args.x_offset;
       args.y_offsets[batch] = batch * PerBatchSizeY(args) + args.y_offset;
-      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch));
+      args.alphas[batch] = args.alpha + Constant<T>(static_cast<double>(batch + 1));
     }
   }
 

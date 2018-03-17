@@ -21,8 +21,10 @@ endif()
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
-set(clblast_VERSION_MINOR 2)
+set(clblast_VERSION_MINOR 3)
 set(clblast_VERSION_PATCH 0)
+set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
+set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
@@ -202,13 +204,13 @@ set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
                     xger xgeru xgerc xher xhpr xher2 xhpr2 xsyr xspr xsyr2 xspr2)
 set(LEVEL3_ROUTINES xgemm xsymm xhemm xsyrk xherk xsyr2k xher2k xtrmm xtrsm)
-set(LEVELX_ROUTINES xomatcopy xim2col xaxpybatched xgemmbatched)
+set(LEVELX_ROUTINES xhad xomatcopy xim2col xaxpybatched xgemmbatched xgemmstridedbatched)
 set(ROUTINES ${LEVEL1_ROUTINES} ${LEVEL2_ROUTINES} ${LEVEL3_ROUTINES} ${LEVELX_ROUTINES})
 set(PRECISIONS 32 64 3232 6464 16)
 
 # Sample programs
 if(OPENCL)
-  set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched dtrsm)
+  set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched dtrsm tuning_api)
   set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
   if(NETLIB)
     set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
@@ -233,6 +235,8 @@ set(SOURCES
   src/kernel_preprocessor.cpp
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
+  src/tuning/configurations.cpp
+  src/tuning/tuning_api.cpp
 )
 set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
   include/clblast_half.h
@@ -256,6 +260,9 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/kernel_preprocessor.hpp
   src/cxpp11_common.hpp
   src/routine.hpp
+  src/tuning/configurations.hpp
+  src/tuning/tuning.hpp
+  src/tuning/routines/routine_tuner.hpp
 )
 if(OPENCL)
   set(SOURCES ${SOURCES} src/clblast.cpp src/clblast_c.cpp)
@@ -285,12 +292,16 @@ foreach(ROUTINE ${LEVELX_ROUTINES})
   set(HEADERS ${HEADERS} src/routines/levelx/${ROUTINE}.hpp)
 endforeach()
 foreach(DATABASE ${DATABASES})
+  set(SOURCES ${SOURCES} src/database/kernels/${DATABASE}/${DATABASE}.cpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_16.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_32.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_64.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_3232.hpp)
   set(HEADERS ${HEADERS} src/database/kernels/${DATABASE}/${DATABASE}_6464.hpp)
+endforeach()
+foreach(KERNEL ${KERNELS})
+  set(HEADERS ${HEADERS} src/tuning/kernels/${KERNEL}.hpp)
 endforeach()
 
 # Creates and links the library
@@ -299,6 +310,7 @@ if(BUILD_SHARED_LIBS)
 else(BUILD_SHARED_LIBS)
   add_library(clblast STATIC ${SOURCES} ${HEADERS})
 endif()
+set_target_properties(clblast PROPERTIES VERSION ${clblast_VERSION} SOVERSION ${clblast_SOVERSION})
 
 target_link_libraries(clblast ${API_LIBRARIES})
 
@@ -387,6 +399,7 @@ if(TUNERS)
       src/utilities/utilities.hpp
       src/tuning/configurations.hpp
       src/tuning/tuning.hpp
+      src/tuning/routines/routine_tuner.hpp
       src/kernel_preprocessor.hpp)
   set(TUNERS_COMMON ${TUNERS_COMMON} ${TUNERS_HEADERS})
 
@@ -577,12 +590,12 @@ if(TESTS)
   endforeach()
 
   # Miscellaneous tests
-  set(MISC_TESTS override_parameters)
+  set(MISC_TESTS override_parameters retrieve_parameters)
   if(NOT CUDA)
     set(MISC_TESTS ${MISC_TESTS} preprocessor)
   endif()
   if(MSVC)
-    set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp)
+    set(TESTS_COMMON ${TESTS_COMMON} src/kernel_preprocessor.cpp src/utilities/compile.cpp)
   endif()
   foreach(MISC_TEST ${MISC_TESTS})
     add_executable(clblast_test_${MISC_TEST} ${TESTS_COMMON}

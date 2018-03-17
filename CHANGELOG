@@ -1,12 +1,28 @@
 
 Development (next version)
+- Added Python interface to CLBlast 'PyCLBlast'
+- Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
+- Added an API to run the tuners programmatically without any I/O
+- Updated and reorganised the CLBlast documentation
+- Various minor fixes and enhancements
+- Added non-BLAS level-1 routines:
+  * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
+
+Version 1.3.0
 - Re-designed and integrated the auto-tuner, no more dependency on CLTune
 - Made it possible to override the tuning parameters in the clients straight from JSON tuning files
 - Added OpenCL pre-processor to unroll loops and perform array-to-register promotions for compilers
   which don't do this themselves (ARM Mali) - greatly improves performance on these platforms
 - Added first tuners for the TRSV (block size) and TRSM (invert kernel) routines
+- Added an optional argument to the GEMM routine to provide a pre-allocated temporary buffer
+- Fixed an issue with a crashing/hanging AMD APP compiler with the TRSM routine (invert kernel)
+- Improved compilation time by splitting the tuning database into multiple compilation units
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
+- Added the RetrieveParameters function to the API to be able to inspect the tuning parameters
+- Added a strided-batched (not part of the BLAS standard) routine, faster but less generic compared
+  to the existing xGEMMBATCHED routines:
+  * SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
 
 Version 1.2.0
 - Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
@@ -64,7 +80,7 @@ Version 0.11.0
 - Replaced the R graph scripts with Python/Matplotlib scripts
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
-- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Added the OverrideParameters function to the API to be able to supply custom tuning parameters
 - Added triangular solver (level-2 & level-3) routines:
   * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
   * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)

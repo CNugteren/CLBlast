@@ -20,7 +20,6 @@
 #include <random>
 #include <utility>
 #include <algorithm>
-#include <iostream>
 #include <chrono>
 #include <functional>
 
@@ -30,21 +29,6 @@
 #include "tuning/configurations.hpp"
 
 namespace clblast {
-// =================================================================================================
-
-// Constants holding start and end strings for terminal-output in colour
-#if defined(_WIN32)
-  const std::string kPrintError = "";
-  const std::string kPrintSuccess = "";
-  const std::string kPrintMessage = "";
-  const std::string kPrintEnd = "";
-#else
-  const std::string kPrintError = "\x1b[31m";
-  const std::string kPrintSuccess = "\x1b[32m";
-  const std::string kPrintMessage = "\x1b[1m";
-  const std::string kPrintEnd = "\x1b[0m";
-#endif
-
 // =================================================================================================
 
 // Structures for the tuners with all the default settings
@@ -136,6 +120,16 @@ void Tuner(int argc, char* argv[], const int V,
            TestValidArgumentsFunc<T> TestValidArguments,
            SetConstraintsFunc SetConstraints,
            SetArgumentsFunc<T> SetArguments);
+
+// Function to run the tuners through the CLBlast API, no I/O
+template <typename T>
+StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
+                    const GetTunerDefaultsFunc GetTunerDefaults,
+                    const GetTunerSettingsFunc<T> GetTunerSettings,
+                    const TestValidArgumentsFunc<T> TestValidArguments,
+                    const SetConstraintsFunc SetConstraints,
+                    const SetArgumentsFunc<T> SetArguments,
+                    std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 } // namespace clblast

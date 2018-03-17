@@ -7,8 +7,16 @@
 //
 // =================================================================================================
 
-#include "database/kernels/xger/xger_16.hpp"
-#include "database/kernels/xger/xger_32.hpp"
-#include "database/kernels/xger/xger_3232.hpp"
-#include "database/kernels/xger/xger_64.hpp"
-#include "database/kernels/xger/xger_6464.hpp"
+#include "database/database_structure.hpp"
+
+namespace clblast {
+namespace database {
+
+extern const DatabaseEntry XgerHalf;
+extern const DatabaseEntry XgerSingle;
+extern const DatabaseEntry XgerComplexSingle;
+extern const DatabaseEntry XgerDouble;
+extern const DatabaseEntry XgerComplexDouble;
+
+} // namespace database
+} // namespace clblast

@@ -90,10 +90,26 @@ def get_cpp_device_vendor(vendor, device_type):
 
 def get_cpp_family_includes(family, precisions):
     result = "\n"
-    # result += "#include \"clblast.h\"\n"
-    # result += "#include \"database/database_structure.hpp\"\n"
+    result += "#include \"database/kernels/%s/%s.hpp\"\n" % (family, family)
     for precision in precisions:
         result += "#include \"database/kernels/%s/%s_%s.hpp\"\n" % (family, family, precision)
+    return result
+
+
+def get_hpp_family_includes(family, precisions):
+    result = "\n"
+    result += "#include \"database/database_structure.hpp\"\n"
+    result += "\n"
+    result += "namespace clblast {\n"
+    result += "namespace database {\n"
+    result += "\n"
+    camelcase_name = family.title().replace("_", "")
+    for precision in precisions:
+        precision_string = precision_to_string(precision)
+        result += "extern const DatabaseEntry %s%s;\n" % (camelcase_name, precision_string)
+    result += "\n"
+    result += "} // namespace database\n"
+    result += "} // namespace clblast\n"
     return result
 
 
@@ -238,8 +254,14 @@ def print_cpp_database(database, output_dir):
                 # Prints the file footer
                 f.write(get_cpp_footer())
 
+            # Creates the combined family sources
+            full_path = os.path.join(family_path, family_name + ".cpp")
+            with open(full_path, 'w+') as f:
+                f.write(get_cpp_header(family_name, ""))
+                f.write(get_cpp_family_includes(family_name, precisions))
+
             # Creates the combined family includes header
             full_path = os.path.join(family_path, family_name + ".hpp")
             with open(full_path, 'w+') as f:
                 f.write(get_cpp_header(family_name, ""))
-                f.write(get_cpp_family_includes(family_name, precisions))
+                f.write(get_hpp_family_includes(family_name, precisions))

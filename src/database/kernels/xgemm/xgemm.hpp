@@ -7,8 +7,16 @@
 //
 // =================================================================================================
 
-#include "database/kernels/xgemm/xgemm_16.hpp"
-#include "database/kernels/xgemm/xgemm_32.hpp"
-#include "database/kernels/xgemm/xgemm_3232.hpp"
-#include "database/kernels/xgemm/xgemm_64.hpp"
-#include "database/kernels/xgemm/xgemm_6464.hpp"
+#include "database/database_structure.hpp"
+
+namespace clblast {
+namespace database {
+
+extern const DatabaseEntry XgemmHalf;
+extern const DatabaseEntry XgemmSingle;
+extern const DatabaseEntry XgemmComplexSingle;
+extern const DatabaseEntry XgemmDouble;
+extern const DatabaseEntry XgemmComplexDouble;
+
+} // namespace database
+} // namespace clblast

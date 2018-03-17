@@ -48,7 +48,7 @@ class Client {
   using Reference1 = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using Reference2 = std::function<StatusCode(const Arguments<U>&, BuffersHost<T>&, Queue&)>;
   using Reference3 = std::function<StatusCode(const Arguments<U>&, BuffersCUDA<T>&, Queue&)>;
-  using SetMetric = std::function<void(Arguments<U>&)>;
+  using SetMetric = std::function<void(Arguments<U>&, Queue&)>;
   using GetMetric = std::function<size_t(const Arguments<U>&)>;
 
   // The constructor

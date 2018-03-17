@@ -214,7 +214,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
   while(true) {
 
     // Sets the buffer sizes (routine-specific)
-    set_sizes(args);
+    set_sizes(args, queue);
 
     // Populates input host matrices with random data
     std::vector<T> x_source(args.x_size);
@@ -271,7 +271,10 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
       auto buffers_cuda = BuffersCUDA<T>();
       DeviceToHost(args, buffers, buffers_host, queue, buffers_in_);
       HostToCUDA(args, buffers_cuda, buffers_host, buffers_in_);
-      auto ms_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
+      auto ms_cublas = 0.0;
+      try {
+        ms_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
+      } catch (std::runtime_error e) { }
       CUDAToHost(args, buffers_cuda, buffers_host, buffers_out_);
       HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
       timings.push_back(std::pair<std::string, double>("cuBLAS", ms_cublas));

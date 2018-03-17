@@ -365,7 +365,7 @@ size_t Ceil(const size_t x, const size_t y) {
 // Helper function to determine whether or not 'a' is a multiple of 'b'
 bool IsMultiple(const size_t a, const size_t b) {
   return ((a/b)*b == a) ? true : false;
-};
+}
 
 // =================================================================================================
 

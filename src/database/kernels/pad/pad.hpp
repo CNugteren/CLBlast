@@ -7,8 +7,16 @@
 //
 // =================================================================================================
 
-#include "database/kernels/pad/pad_16.hpp"
-#include "database/kernels/pad/pad_32.hpp"
-#include "database/kernels/pad/pad_3232.hpp"
-#include "database/kernels/pad/pad_64.hpp"
-#include "database/kernels/pad/pad_6464.hpp"
+#include "database/database_structure.hpp"
+
+namespace clblast {
+namespace database {
+
+extern const DatabaseEntry PadHalf;
+extern const DatabaseEntry PadSingle;
+extern const DatabaseEntry PadComplexSingle;
+extern const DatabaseEntry PadDouble;
+extern const DatabaseEntry PadComplexDouble;
+
+} // namespace database
+} // namespace clblast

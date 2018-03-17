@@ -83,7 +83,7 @@ R"(
 
 // Inverts a diagonal block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE elements in a larger matrix
 __kernel __attribute__((reqd_work_group_size(INTERNAL_BLOCK_SIZE, 1, 1)))
-void InvertDiagonalBlock(int n, __global const real* restrict src, const int src_offset, const int src_ld,
+void InvertDiagonalBlock(const int n, __global const real* restrict src, const int src_offset, const int src_ld,
                          __global real* restrict dest, const int outer_block_size,
                          const int unit_diagonal, const int is_upper)
 {
@@ -91,29 +91,38 @@ void InvertDiagonalBlock(int n, __global const real* restrict src, const int src
   const int block_index = get_group_id(0);
 
   // Sets the offset for this particular block in the source and destination matrices
+  const int block_index_per_block = block_index * INTERNAL_BLOCK_SIZE;
   const int src_block_offset = block_index * (INTERNAL_BLOCK_SIZE + src_ld * INTERNAL_BLOCK_SIZE) + src_offset;
   const int num_inner_blocks = outer_block_size / INTERNAL_BLOCK_SIZE;
-  const int dest_block_offset = (block_index / num_inner_blocks) * outer_block_size * outer_block_size + // go to the (block_index / num_inner_blocks) outer outer_block_size*outer_block_size block,
-                                (block_index % num_inner_blocks) * (outer_block_size*INTERNAL_BLOCK_SIZE + INTERNAL_BLOCK_SIZE); // then to the (block_index % num_inner_blocks) inner INTERNAL_BLOCK_SIZE*INTERNAL_BLOCK_SIZE block inside that
+  const int block_index_div = block_index / num_inner_blocks;
+  const int block_index_mod = block_index % num_inner_blocks;
+  const int offset_part1 = block_index_div * outer_block_size * outer_block_size; // go to the block_index_div outer outer_block_size*outer_block_size block
+  const int offset_part2 = block_index_mod * (outer_block_size*INTERNAL_BLOCK_SIZE + INTERNAL_BLOCK_SIZE); // then to the block_index_mod inner INTERNAL_BLOCK_SIZE*INTERNAL_BLOCK_SIZE block inside that
+  const int dest_block_offset = offset_part1 + offset_part2;
 
   // Local memory to store the inverted block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE
   __local real lm[INTERNAL_BLOCK_SIZE][INTERNAL_BLOCK_SIZE];
 
   // Loads the source lower triangle into local memory. Any values in the upper triangle or
   // outside of the matrix are set to zero
-  #pragma unroll
   for (int _j = 0; _j < INTERNAL_BLOCK_SIZE; _j += 1) {
-    const bool condition = (is_upper) ? (thread_index <= _j && block_index*INTERNAL_BLOCK_SIZE + _j < n) :
-                                        (thread_index >= _j && block_index*INTERNAL_BLOCK_SIZE + thread_index < n);
+    bool condition = false;
+    if (is_upper) {
+      condition = (thread_index <= _j) && (block_index_per_block + _j < n);
+    }
+    else {
+      condition = (thread_index >= _j) && (block_index_per_block + thread_index < n);
+    }
     if (condition) {
-      lm[thread_index][_j] = src[_j*src_ld + thread_index + src_block_offset];
+      const int src_index = _j*src_ld + thread_index + src_block_offset;
+      lm[thread_index][_j] = src[src_index];
     }
     else {
       SetToZero(lm[thread_index][_j]);
     }
   }
   barrier(CLK_LOCAL_MEM_FENCE);
-  
+
   // Inverts the diagonal
   real inverted_diagonal;
   SetToOne(inverted_diagonal);

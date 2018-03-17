@@ -67,10 +67,12 @@
 #include "routines/level3/xtrsm.hpp"
 
 // Level-x includes (non-BLAS)
+#include "routines/levelx/xhad.hpp"
 #include "routines/levelx/xomatcopy.hpp"
 #include "routines/levelx/xim2col.hpp"
 #include "routines/levelx/xaxpybatched.hpp"
 #include "routines/levelx/xgemmbatched.hpp"
+#include "routines/levelx/xgemmstridedbatched.hpp"
 
 // CLBLAST_ROUTINES_ROUTINES_H_
 #endif

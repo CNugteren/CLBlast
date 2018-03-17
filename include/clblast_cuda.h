@@ -69,6 +69,7 @@ enum class StatusCode {
   kInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  kInsufficientMemoryTemp    = -2050, // Temporary buffer provided to GEMM routine is too small
   kInvalidBatchCount         = -2049, // The batch count needs to be positive
   kInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   kMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
@@ -492,7 +493,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const CUdeviceptr b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 CUdeviceptr c_buffer, const size_t c_offset, const size_t c_ld,
-                const CUcontext context, const CUdevice device);
+                const CUcontext context, const CUdevice device,
+                CUdeviceptr temp_buffer = 0);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -580,6 +582,16 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const CUdeviceptr x_buffer, const size_t x_offset, const size_t x_inc,
+               const CUdeviceptr y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               CUdeviceptr z_buffer, const size_t z_offset, const size_t z_inc,
+               const CUcontext context, const CUdevice device);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
 StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
@@ -617,6 +629,29 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        const size_t batch_count,
                        const CUcontext context, const CUdevice device);
 
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const CUdeviceptr a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const CUdeviceptr b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              CUdeviceptr c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              const CUcontext context, const CUdevice device);
+
+// =================================================================================================
+
+// Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              const CUdevice device, size_t& temp_buffer_size);
+
 // =================================================================================================
 
 // CLBlast stores binaries of compiled kernels into a cache in case the same kernel is used later on
@@ -628,6 +663,11 @@ StatusCode PUBLIC_API ClearCache();
 StatusCode PUBLIC_API FillCache(const CUdevice device);
 
 // =================================================================================================
+
+// Retrieves current tuning parameters for a specific device-precision-kernel combination
+StatusCode PUBLIC_API RetrieveParameters(const CUdevice device, const std::string &kernel_name,
+                                         const Precision precision,
+                                         std::unordered_map<std::string,size_t> &parameters);
 
 // Overrides tuning parameters for a specific device-precision-kernel combination. The next time
 // the target routine is called it will re-compile and use the new parameters from then on.

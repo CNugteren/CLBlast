@@ -254,8 +254,6 @@ Arguments to DOT:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -301,8 +299,6 @@ Arguments to DOTU:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -346,8 +342,6 @@ CLBlastStatusCode CLBlastZdotc(const size_t n,
 Arguments to DOTC:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
-* `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `cl_mem dot_buffer`: OpenCL buffer to store the output dot vector.
 * `const size_t dot_offset`: The offset in elements from the start of the output dot vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -404,8 +398,6 @@ Arguments to NRM2:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
 * `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
-* `cl_mem nrm2_buffer`: OpenCL buffer to store the output nrm2 vector.
-* `const size_t nrm2_offset`: The offset in elements from the start of the output nrm2 vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -455,8 +447,6 @@ CLBlastStatusCode CLBlastHasum(const size_t n,
 Arguments to ASUM:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
-* `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `cl_mem asum_buffer`: OpenCL buffer to store the output asum vector.
 * `const size_t asum_offset`: The offset in elements from the start of the output asum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -510,8 +500,6 @@ Arguments to SUM:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
 * `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
-* `cl_mem sum_buffer`: OpenCL buffer to store the output sum vector.
-* `const size_t sum_offset`: The offset in elements from the start of the output sum vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -561,8 +549,6 @@ CLBlastStatusCode CLBlastiHamax(const size_t n,
 Arguments to AMAX:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
-* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -616,8 +602,6 @@ Arguments to AMIN:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
-* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
-* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -669,8 +653,6 @@ Arguments to MAX:
 * `const size_t n`: Integer size argument. This value must be positive.
 * `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
 * `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
-* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
-* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
 * `const size_t x_offset`: The offset in elements from the start of the input x vector.
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
@@ -720,8 +702,6 @@ CLBlastStatusCode CLBlastiHmin(const size_t n,
 Arguments to MIN:
 
 * `const size_t n`: Integer size argument. This value must be positive.
-* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
-* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
 * `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
 * `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
@@ -2208,7 +2188,8 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                cl_mem temp_buffer = nullptr)
 ```
 
 C API:
@@ -2883,6 +2864,81 @@ Arguments to TRSM:
 
 
 
+xHAD: Element-wise vector product (Hadamard)
+-------------
+
+Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_ are vectors and _alpha_ and _beta_ are scalar constants.
+
+C++ API:
+```
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastShad(const size_t n,
+                              const float alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const float beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDhad(const size_t n,
+                              const double alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const double beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastChad(const size_t n,
+                              const cl_float2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_float2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZhad(const size_t n,
+                              const cl_double2 alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_double2 beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHhad(const size_t n,
+                              const cl_half alpha,
+                              const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                              const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                              const cl_half beta,
+                              cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                              cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to HAD:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `const cl_mem y_buffer`: OpenCL buffer to store the input y vector.
+* `const size_t y_offset`: The offset in elements from the start of the input y vector.
+* `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
+* `const T beta`: Input scalar constant.
+* `cl_mem z_buffer`: OpenCL buffer to store the output z vector.
+* `const size_t z_offset`: The offset in elements from the start of the output z vector.
+* `const size_t z_inc`: Stride/increment of the output z vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
 xOMATCOPY: Scaling and out-place transpose/copy (non-BLAS function)
 -------------
 
@@ -3181,6 +3237,180 @@ Requirements for GEMMBATCHED:
 
 
 
+xGEMMSTRIDEDBATCHED: StridedBatched version of GEMM
+-------------
+
+As GEMM, but multiple strided operations are batched together for better performance.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const float alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const float beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const double alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const double beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_float2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_float2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_double2 alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_double2 beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                             const size_t m, const size_t n, const size_t k,
+                                             const cl_half alpha,
+                                             const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                             const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                             const cl_half beta,
+                                             cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                             const size_t batch_count,
+                                             cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to GEMMSTRIDEDBATCHED:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const T alpha`: Input scalar constant.
+* `const cl_mem a_buffer`: OpenCL buffer to store the input A matrix.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const size_t a_stride`: The (fixed) stride between two batches of the A matrix.
+* `const cl_mem b_buffer`: OpenCL buffer to store the input B matrix.
+* `const size_t b_offset`: The offset in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const size_t b_stride`: The (fixed) stride between two batches of the B matrix.
+* `const T beta`: Input scalar constant.
+* `cl_mem c_buffer`: OpenCL buffer to store the output C matrix.
+* `const size_t c_offset`: The offset in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `const size_t c_stride`: The (fixed) stride between two batches of the C matrix.
+* `const size_t batch_count`: Number of batches. This value must be positive.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for GEMMSTRIDEDBATCHED:
+
+* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* The value of `c_ld` must be at least `m`.
+
+
+
+GemmTempBufferSize: Retrieves the size of the temporary buffer for GEMM (auxiliary function)
+-------------
+
+Retrieves the required size of the temporary buffer for the GEMM kernel for specific arguments and for a specific device/platform and tuning parameters. This could be 0 in case no temporary buffer is required. Arguments are similar to those for GEMM.
+
+C++ API:
+```
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              cl_command_queue* queue, size_t& temp_buffer_size)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastDGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastCGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastZGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+
+CLBlastStatusCode CLBlastHGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                               const size_t m, const size_t n, const size_t k,
+                               const size_t a_offset, const size_t a_ld,
+                               const size_t b_offset, const size_t b_ld,
+                               const size_t c_offset, const size_t c_ld,
+                               cl_command_queue* queue, size_t* temp_buffer_size)
+```
+Arguments to GemmTempBufferSize:
+
+* `const Layout layout`: Data-layout of the matrices, either `Layout::kRowMajor` (101) for row-major layout or `Layout::kColMajor` (102) for column-major data-layout.
+* `const Transpose a_transpose`: Transposing the input matrix A, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const Transpose b_transpose`: Transposing the input matrix B, either `Transpose::kNo` (111), `Transpose::kYes` (112), or `Transpose::kConjugate` (113) for a complex-conjugate transpose.
+* `const size_t m`: Integer size argument. This value must be positive.
+* `const size_t n`: Integer size argument. This value must be positive.
+* `const size_t k`: Integer size argument. This value must be positive.
+* `const size_t a_offset`: The offset in elements from the start of the input A matrix.
+* `const size_t a_ld`: Leading dimension of the input A matrix. This value must be greater than 0.
+* `const size_t b_offset`: The offset in elements from the start of the input B matrix.
+* `const size_t b_ld`: Leading dimension of the input B matrix. This value must be greater than 0.
+* `const size_t c_offset`: The offset in elements from the start of the output C matrix.
+* `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `size_t& temp_buffer_size`: The result of this function: the required buffer size.
+
+
+
 ClearCache: Resets the cache of compiled binaries (auxiliary function)
 -------------
 
@@ -3219,6 +3449,29 @@ Arguments to FillCache:
 
 
 
+RetrieveParameters: Retrieves current tuning parameters (auxiliary function)
+-------------
+
+This function retrieves current tuning parameters for a specific device-precision-kernel combination. This can be used for debugging or inspection.
+
+C++ API:
+```
+StatusCode RetrieveParameters(const cl_device_id device, const std::string &kernel_name,
+                              const Precision precision,
+                              std::unordered_map<std::string,size_t> &parameters)
+```
+
+A C API is not available for this function.
+
+Arguments to RetrieveParameters (C++ version):
+
+* `const cl_device_id device`: The OpenCL device to query the parameters for.
+* `const std::string &kernel_name`: The target kernel name. This has to be one of the existing CLBlast kernels (Xaxpy, Xdot, Xgemv, XgemvFast, XgemvFastRot, Xgemv, Xger, Copy, Pad, Transpose, Padtranspose, Xgemm, or XgemmDirect). If this argument is incorrect, this function will return with the `clblast::kInvalidOverrideKernel` status-code.
+* `const Precision precision`: The CLBlast precision enum to query the parameters for.
+* `std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This will be filled with the current tuning parameters for a specific kernel.
+
+
+
 OverrideParameters: Override tuning parameters (auxiliary function)
 -------------
 
@@ -3244,3 +3497,77 @@ Arguments to OverrideParameters (C++ version):
 * `const std::string &kernel_name`: The target kernel name. This has to be one of the existing CLBlast kernels (Xaxpy, Xdot, Xgemv, XgemvFast, XgemvFastRot, Xgemv, Xger, Copy, Pad, Transpose, Padtranspose, Xgemm, or XgemmDirect). If this argument is incorrect, this function will return with the `clblast::kInvalidOverrideKernel` status-code.
 * `const Precision precision`: The CLBlast precision enum to set the new parameters for.
 * `const std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This has to contain all the tuning parameters for a specific kernel as reported by the included tuners (e.g. `{ {"COPY_DIMX",8}, {"COPY_DIMY",32}, {"COPY_VW",4}, {"COPY_WPT",8} }` for the `Copy` kernel). If this argument is incorrect, this function will return with the `clblast::kMissingOverrideParameter` status-code.
+
+
+
+Tune<kernel_name>: Run the tuner for a particular kernel (advanced usage)
+-------------
+
+The CLBlast kernels can be tuned using the tuning binaries, but also programmatically through an API. This is only recommended for advanced usage, see for more information [the tuning docs](tuning.md).
+
+C++ API:
+```
+// Tunes the "Xaxpy" kernel, used for many level-1 routines such as XAXPY, XCOPY, and XSWAP
+template <typename T>
+StatusCode PUBLIC_API TuneXaxpy(cl_command_queue* queue, const size_t n,
+                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xdot" kernel, used for level-1 reduction routines such as XDOT, XMAX, and XSUM
+template <typename T>
+StatusCode PUBLIC_API TuneXdot(cl_command_queue* queue, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemv" kernel, used for matrix-vector level-2 routines such as XGEMV, XGBMV, and XHEMV
+template <typename T>
+StatusCode PUBLIC_API TuneXgemv(cl_command_queue* queue, const size_t m, const size_t n,
+                                const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xger" kernel, used for matrix update level-2 routines such as XGER, XHER, and XSYR2
+template <typename T>
+StatusCode PUBLIC_API TuneXger(cl_command_queue* queue, const size_t m, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemm" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TuneXgemm(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "XgemmDiret" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TuneXgemmDirect(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                                      const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Copy" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TuneCopy(cl_command_queue* queue, const size_t m, const size_t n,
+                               const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Pad" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TunePad(cl_command_queue* queue, const size_t m, const size_t n,
+                              const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Transpose" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TuneTranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                                    const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Padtranspose" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
+template <typename T>
+StatusCode PUBLIC_API TunePadtranspose(cl_command_queue* queue, const size_t m, const size_t n,
+                                       const double fraction, std::unordered_map<std::string,size_t> &parameters);
+
+// Tunes the "Xgemm" kernel, used for the level-3 routine XTRSM
+template <typename T>
+StatusCode PUBLIC_API TuneInvert(cl_command_queue* queue, const size_t m, const size_t n, const size_t k,
+                                 const double fraction, std::unordered_map<std::string,size_t> &parameters);
+```
+
+Arguments to Tune<kernel_name> (C++ version):
+
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to tune the kernel for.
+* `const size_t m`: The routine argument `m` to tune for (not applicable for all kernels)
+* `const size_t n`: The routine argument `n` to tune for
+* `const size_t k`: The routine argument `k` to tune for (not applicable for all kernels)
+* `const double fraction`: A value between 0.0 and 1.0 which determines the fraction of the tuning search space to explore.
+* `std::unordered_map<std::string,size_t> &parameters`: An unordered map of strings to integers. This will return the best found tuning parameters.

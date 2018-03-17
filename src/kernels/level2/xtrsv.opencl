@@ -18,7 +18,7 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_TRSV)
 
-__kernel __attribute__((reqd_work_group_size(64, 1, 1)))
+__kernel __attribute__((reqd_work_group_size(16, 1, 1)))
 void FillVector(const int n, const int inc, const int offset,
                 __global real* restrict dest, const real_arg arg_value) {
   const real value = GetRealArg(arg_value);

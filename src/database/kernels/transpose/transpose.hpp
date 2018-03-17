@@ -7,8 +7,16 @@
 //
 // =================================================================================================
 
-#include "database/kernels/transpose/transpose_16.hpp"
-#include "database/kernels/transpose/transpose_32.hpp"
-#include "database/kernels/transpose/transpose_3232.hpp"
-#include "database/kernels/transpose/transpose_64.hpp"
-#include "database/kernels/transpose/transpose_6464.hpp"
+#include "database/database_structure.hpp"
+
+namespace clblast {
+namespace database {
+
+extern const DatabaseEntry TransposeHalf;
+extern const DatabaseEntry TransposeSingle;
+extern const DatabaseEntry TransposeComplexSingle;
+extern const DatabaseEntry TransposeDouble;
+extern const DatabaseEntry TransposeComplexDouble;
+
+} // namespace database
+} // namespace clblast

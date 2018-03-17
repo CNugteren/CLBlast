@@ -45,7 +45,7 @@ class TestXscal {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.x_size = GetSizeX(args);
   }
 

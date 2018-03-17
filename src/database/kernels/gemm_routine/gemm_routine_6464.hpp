@@ -12,16 +12,16 @@ namespace database {
 
 const DatabaseEntry GemmRoutineComplexDouble = {
   "GemmRoutine", Precision::kComplexDouble, {"XGEMM_MIN_INDIRECT_SIZE"}, {
-    { // Intel(R) Corporation CPUs
-      kDeviceTypeCPU, "Intel(R) Corporation", {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 1536, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1536, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
-    { // NVIDIA Corporation GPUs
-      kDeviceTypeGPU, "NVIDIA Corporation", {
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
         { "SM5.0", {
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

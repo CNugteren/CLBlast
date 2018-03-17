@@ -614,10 +614,11 @@ class Buffer {
   }
 
   // Regular constructor with memory management. If this class does not own the buffer object, then
-  // the memory will not be freed automatically afterwards.
+  // the memory will not be freed automatically afterwards. If the size is set to 0, this will
+  // become a stub containing a nullptr
   explicit Buffer(const Context &context, const BufferAccess access, const size_t size):
-      buffer_(new cl_mem, [access](cl_mem* m) {
-        if (access != BufferAccess::kNotOwned) { CheckError(clReleaseMemObject(*m)); }
+      buffer_(new cl_mem, [access, size](cl_mem* m) {
+        if (access != BufferAccess::kNotOwned && size > 0) { CheckError(clReleaseMemObject(*m)); }
         delete m;
       }),
       access_(access) {
@@ -625,7 +626,7 @@ class Buffer {
     if (access_ == BufferAccess::kReadOnly) { flags = CL_MEM_READ_ONLY; }
     if (access_ == BufferAccess::kWriteOnly) { flags = CL_MEM_WRITE_ONLY; }
     auto status = CL_SUCCESS;
-    *buffer_ = clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status);
+    *buffer_ = (size > 0) ? clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status) : nullptr;
     CLCudaAPIError::Check(status, "clCreateBuffer");
   }
 

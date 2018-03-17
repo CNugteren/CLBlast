@@ -96,6 +96,7 @@ typedef enum CLBlastStatusCode_ {
   CLBlastInsufficientMemoryY       = -1007, // Vector Y's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
+  CLBlastInsufficientMemoryTemp    = -2050, // Temporary buffer provided to GEMM routine is too small
   CLBlastInvalidBatchCount         = -2049, // The batch count needs to be positive
   CLBlastInvalidOverrideKernel     = -2048, // Trying to override parameters for an invalid kernel
   CLBlastMissingOverrideParameter  = -2047, // Missing override parameter(s) for the target kernel
@@ -1318,6 +1319,43 @@ CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBl
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+CLBlastStatusCode PUBLIC_API CLBlastShad(const size_t n,
+                                         const float alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const float beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDhad(const size_t n,
+                                         const double alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const double beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastChad(const size_t n,
+                                         const cl_float2 alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_float2 beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZhad(const size_t n,
+                                         const cl_double2 alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_double2 beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHhad(const size_t n,
+                                         const cl_half alpha,
+                                         const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                         const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                                         const cl_half beta,
+                                         cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+                                         cl_command_queue* queue, cl_event* event);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 CLBlastStatusCode PUBLIC_API CLBlastSomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                                               const size_t m, const size_t n,
@@ -1450,6 +1488,138 @@ CLBlastStatusCode PUBLIC_API CLBlastHgemmBatched(const CLBlastLayout layout, con
                                                  cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
                                                  const size_t batch_count,
                                                  cl_command_queue* queue, cl_event* event);
+
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+CLBlastStatusCode PUBLIC_API CLBlastSgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const float alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const float beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const double alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const double beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_float2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_float2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_double2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_double2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmStridedBatched(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_half alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                                                        const cl_half beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                                                        const size_t batch_count,
+                                                        cl_command_queue* queue, cl_event* event);
+
+// =================================================================================================
+// General matrix-matrix multiplication with temporary buffer from user (optional, for advanced users): SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
+CLBlastStatusCode PUBLIC_API CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const float alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                                        const float beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue, cl_event* event, cl_mem temp_buffer);
+CLBlastStatusCode PUBLIC_API CLBlastDgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const double alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                                        const double beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue, cl_event* event, cl_mem temp_buffer);
+CLBlastStatusCode PUBLIC_API CLBlastCgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_float2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                                        const cl_float2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue, cl_event* event, cl_mem temp_buffer);
+CLBlastStatusCode PUBLIC_API CLBlastZgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_double2 alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                                        const cl_double2 beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue, cl_event* event, cl_mem temp_buffer);
+CLBlastStatusCode PUBLIC_API CLBlastHgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const cl_half alpha,
+                                                        const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                                        const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
+                                                        const cl_half beta,
+                                                        cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue, cl_event* event, cl_mem temp_buffer);
+
+// =================================================================================================
+// Retrieves the required size of the temporary buffer for the GEMM kernel: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM (optional)
+CLBlastStatusCode PUBLIC_API CLBlastSGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const size_t a_offset, const size_t a_ld,
+                                                        const size_t b_offset, const size_t b_ld,
+                                                        const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue,
+                                                        size_t* temp_buffer_size);
+
+CLBlastStatusCode PUBLIC_API CLBlastDGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const size_t a_offset, const size_t a_ld,
+                                                        const size_t b_offset, const size_t b_ld,
+                                                        const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue,
+                                                        size_t* temp_buffer_size);
+
+CLBlastStatusCode PUBLIC_API CLBlastCGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const size_t a_offset, const size_t a_ld,
+                                                        const size_t b_offset, const size_t b_ld,
+                                                        const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue,
+                                                        size_t* temp_buffer_size);
+
+CLBlastStatusCode PUBLIC_API CLBlastZGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const size_t a_offset, const size_t a_ld,
+                                                        const size_t b_offset, const size_t b_ld,
+                                                        const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue,
+                                                        size_t* temp_buffer_size);
+
+CLBlastStatusCode PUBLIC_API CLBlastHGemmTempBufferSize(const CLBlastLayout layout, const CLBlastTranspose a_transpose, const CLBlastTranspose b_transpose,
+                                                        const size_t m, const size_t n, const size_t k,
+                                                        const size_t a_offset, const size_t a_ld,
+                                                        const size_t b_offset, const size_t b_ld,
+                                                        const size_t c_offset, const size_t c_ld,
+                                                        cl_command_queue* queue,
+                                                        size_t* temp_buffer_size);
 
 // =================================================================================================
 
