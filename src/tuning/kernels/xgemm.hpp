@@ -76,10 +76,10 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
       {"MWG", {8, 16, 32, 64, 128, 256}},
       {"NWG", {8, 16, 32, 64, 128, 256}},
       {"KWG", {4}},
-      {"MDIMC", {2, 4, 8, 16, 32, 64, 128}},
-      {"NDIMC", {2, 4, 8, 16, 32, 64, 128}},
-      {"MDIMA", {2, 4, 8, 16, 32, 64, 128}},
-      {"NDIMB", {2, 4, 8, 16, 32, 64, 128}},
+      {"MDIMC", {2, 4, 8, 16, 32}},
+      {"NDIMC", {2, 4, 8, 16, 32}},
+      {"MDIMA", {2, 4, 8, 16, 32}},
+      {"NDIMB", {2, 4, 8, 16, 32}},
       {"KWI", {1}},
       {"VWM", {4}},
       {"VWN", {4}},
@@ -103,23 +103,13 @@ std::vector<Constraint> XgemmSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
-  auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
-  // Requirement for Qualcomm specific code
-  auto IsFourTimesLarger = [] (std::vector<size_t> v) { return v[0] == 4 * v[1]; };
-  constraints.push_back({IsFourTimesLarger, {"MWG", "MDIMC"}});
-  auto IsEightTimesLarger = [] (std::vector<size_t> v) { return v[0] == 8 * v[1]; };
-  constraints.push_back({IsEightTimesLarger, {"NWG", "NDIMC"}});
-  // Requirement for unrolling the KWG loop
-  constraints.push_back({MultipleOfX, {"KWG", "KWI"}});
-  // Required for integer MWI and NWI
-  constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMC", "VWM"}});
-  constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMC", "VWN"}});
+  auto EqualOfXMulY = [] (std::vector<size_t> v) { return v[0] == v[1]*v[2]; };
+  // Required for matching MWI and VWN/VWM
+  constraints.push_back({EqualOfXMulY, {"MWG", "MDIMC", "VWM"}});
+  constraints.push_back({EqualOfXMulY, {"MWG", "MDIMC", "VWN"}});
   // Required for integer MWIA and NWIB
   constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMA", "VWM"}});
   constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMB", "VWN"}});
-  // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
-  // constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"}});
-  // constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"}});
 
   // Extra constraints for variation 1 to limit the set of options significantly
   if (V==1) {

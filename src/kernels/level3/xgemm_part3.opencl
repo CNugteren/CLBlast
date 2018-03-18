@@ -17,25 +17,18 @@ R"(
 
 // =================================================================================================
 
-// Main body of the matrix-multiplication algorithm. It calls various (inlined) functions.
+// Following is a Qualcomm specific kernel
+// https://developer.qualcomm.com/blog/matrix-multiply-adreno-gpus-part-2-host-code-and-kernel
+// Assumes:
+// SA == 0, SB == 0
+// VWN == MWI
+// KWG == 4
+// Unused: KWI, STRM, STRN
 INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            const __global realM* restrict agm, const __global realN* restrict bgm,
-                           __global realM* cgm, const real alpha, const real beta
-                           #if SA == 1 && SB == 1
-                             , LOCAL_PTR realM* alm, LOCAL_PTR realN* blm
-                           #elif SA == 1
-                             , LOCAL_PTR realM* alm
-                           #elif SB == 1
-                             , LOCAL_PTR realN* blm
-                           #endif
-                           ) {
-  //
-  // Following is a Qualcomm specific kernel to test, it assumes alpha=1.0 and beta=0.0
-  // https://developer.qualcomm.com/blog/matrix-multiply-adreno-gpus-part-2-host-code-and-kernel
-  //
-
-  const int gx = get_global_id(0);
-  const int gy = get_global_id(1);
+                           __global realM* cgm, const real alpha, const real beta) {
+  const int tidx = get_global_id(0);
+  const int tidy = get_global_id(1);
 
   const __global real* restrict a_ptr = (const __global real* restrict) &agm[0];
   const __global real* restrict b_ptr = (const __global real* restrict) &bgm[0];
@@ -54,23 +47,36 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   }
 
   for (int _ki = 0; _ki < kSizeK; _ki += VWN) {
+
+    // Loads the B matrix from global memory and stores into registers
     #pragma unroll
     for (int _mi = 0; _mi < VWM; _mi += 1) {
-      const int b_index = (_ki + _mi) * kSizeN + gx * MWI;
-      bpm[_mi] = vload4(0, b_ptr + b_index);
+      const int b_index = (_ki + _mi) * kSizeN + tidx * MWI;
+      #if VWM == 1
+        bpm[_mi] = b_ptr[b_index];
+      #elif VWM == 2
+        bpm[_mi] = vload2(0, b_ptr + b_index);
+      #elif VWM == 4
+        bpm[_mi] = vload4(0, b_ptr + b_index);
+      #endif
     }
 
-    // Loads the data from global memory and stores into registers
+    // Loads the A matrix from global memory and stores into registers
     #pragma unroll
     for (int _ni = 0; _ni < NWI; _ni += 1) {
-      const int a_index = (gy * NWI + _ni) * kSizeK + _ki;
-      apm[_ni] = vload4(0, a_ptr + a_index);
+      const int a_index = (tidy * NWI + _ni) * kSizeK + _ki;
+      #if VWN == 1
+        apm[_ni] = a_ptr[a_index];
+      #elif VWN == 2
+        apm[_ni] = vload2(0, a_ptr + a_index);
+      #elif VWN == 4
+        apm[_ni] = vload4(0, a_ptr + a_index);
+      #endif
     }
 
     // Performs the accumulation (Cpm += Apm * Bpm)
     #pragma unroll
     for (int _ni = 0; _ni < NWI; _ni += 1) {
-      // VWN == MWI
       #if VWN == 1
         cpm[_ni] += apm[_ni] * bpm[0];
       #elif VWN == 2
