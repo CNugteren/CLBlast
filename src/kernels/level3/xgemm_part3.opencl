@@ -37,8 +37,8 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   const int gx = get_global_id(0);
   const int gy = get_global_id(1);
 
-  const __global real* restrict A = (const __global real* restrict) &agm[0];
-  const __global real* restrict B = (const __global real* restrict) &bgm[0];
+  const __global real* restrict a_ptr = (const __global real* restrict) &agm[0];
+  const __global real* restrict b_ptr = (const __global real* restrict) &bgm[0];
 
   // Allocates workitem-private memory (registers)
   #pragma promote_to_registers
@@ -48,47 +48,41 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   #pragma promote_to_registers
   realM cpm[NWI*(MWI/VWM)];
 
-  if (((gx << 2) < kSizeN) && ((gy << 3) < kSizeM)) {
+  #pragma unroll
+  for (int _ni = 0; _ni < NWI; _ni += 1) {
+    SetToZero(cpm[_ni]);
+  }
 
+  for (int _ki = 0; _ki < kSizeK; _ki += VWN) {
+    #pragma unroll
+    for (int _mi = 0; _mi < VWM; _mi += 1) {
+      const int b_index = (_ki + _mi) * kSizeN + gx * MWI;
+      bpm[_mi] = vload4(0, b_ptr + b_index);
+    }
+
+    // Loads the data from global memory and stores into registers
     #pragma unroll
     for (int _ni = 0; _ni < NWI; _ni += 1) {
-      SetToZero(cpm[_ni]);
+      const int a_index = (gy * NWI + _ni) * kSizeK + _ki;
+      apm[_ni] = vload4(0, a_ptr + a_index);
     }
 
-    const int A_y_off = (gy << 3) * kSizeK;
-
-    for (int pos = 0; pos < kSizeK; pos += 4) {
-      #pragma unroll
-      for (int i = 0; i < 4; i++) {
-        // Original code: b[i] = read_imagef(Bi, (int2)(gx, pos + i));
-        int B_off = (pos + i) * kSizeN + (gx << 2);
-        bpm[i] = vload4(0, B + B_off);
-      }
-
-      int A_off = A_y_off + pos;
-
-      #pragma unroll
-      for (int i = 0; i < 8; i++) {
-        apm[i] = vload4(0, A + A_off);
-        A_off += kSizeK;
-      }
-
-      #pragma unroll
-      for (int i = 0; i < 8; i++) {
-        cpm[i] += apm[i].x * bpm[0] + apm[i].y * bpm[1] + apm[i].z * bpm[2] + apm[i].w * bpm[3];
-      }
-
-      #if SA == 1 || SB == 1
-        barrier(CLK_LOCAL_MEM_FENCE);
+    // Performs the accumulation (Cpm += Apm * Bpm)
+    #pragma unroll
+    for (int _ni = 0; _ni < NWI; _ni += 1) {
+      // VWN == MWI
+      #if VWN == 1
+        cpm[_ni] += apm[_ni] * bpm[0];
+      #elif VWN == 2
+        cpm[_ni] += apm[_ni].x * bpm[0] + apm[_ni].y * bpm[1];
+      #elif VWN == 4
+        cpm[_ni] += apm[_ni].x * bpm[0] + apm[_ni].y * bpm[1] + apm[_ni].z * bpm[2] + apm[_ni].w * bpm[3];
       #endif
     }
-    #if GLOBAL_MEM_FENCE == 1
-      barrier(CLK_GLOBAL_MEM_FENCE);
-    #endif
-
-    // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
-    StoreResults(cgm, cpm, kSizeN, alpha, beta);
   }
+
+  // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
+  StoreResults(cgm, cpm, kSizeN, alpha, beta);
 }
 
 // =================================================================================================
