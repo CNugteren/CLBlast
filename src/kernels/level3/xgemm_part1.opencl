@@ -43,6 +43,9 @@ R"(
 
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
+#ifndef GEMMK
+  #define GEMMK 0    // Selection of the kernel, 0 == main kernel, 1 == secondary kernel
+#endif
 #ifndef MWG
   #define MWG 8      // Tile-size in dimension M (e.g. 64, 128)
 #endif
