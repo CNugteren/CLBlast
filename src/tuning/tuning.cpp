@@ -93,6 +93,7 @@ void Tuner(int argc, char* argv[], const int V,
            GetTunerSettingsFunc<T> GetTunerSettings,
            TestValidArgumentsFunc<T> TestValidArguments,
            SetConstraintsFunc SetConstraints,
+           ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
            SetArgumentsFunc<T> SetArguments) {
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
@@ -171,7 +172,8 @@ void Tuner(int argc, char* argv[], const int V,
   }
 
   // Sets the tunable parameters and their possible values
-  auto configurations = SetConfigurations(settings.parameters, SetConstraints(V));
+  auto configurations = SetConfigurations(device, settings.parameters,
+                                          SetConstraints(V), ComputeLocalMemSize(V));
   printf("* Found %s%zu configuration(s)%s\n",
          kPrintMessage.c_str(), configurations.size(), kPrintEnd.c_str());
 
@@ -380,11 +382,11 @@ void Tuner(int argc, char* argv[], const int V,
 }
 
 // Compiles the above function
-template void Tuner<half>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<half> GetTunerSettings, TestValidArgumentsFunc<half> TestValidArguments, SetConstraintsFunc SetConstraints, SetArgumentsFunc<half> SetArguments);
-template void Tuner<float>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<float> GetTunerSettings, TestValidArgumentsFunc<float> TestValidArguments, SetConstraintsFunc SetConstraints, SetArgumentsFunc<float> SetArguments);
-template void Tuner<double>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<double> GetTunerSettings, TestValidArgumentsFunc<double> TestValidArguments, SetConstraintsFunc SetConstraints, SetArgumentsFunc<double> SetArguments);
-template void Tuner<float2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<float2> GetTunerSettings, TestValidArgumentsFunc<float2> TestValidArguments, SetConstraintsFunc SetConstraints, SetArgumentsFunc<float2> SetArguments);
-template void Tuner<double2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<double2> GetTunerSettings, TestValidArgumentsFunc<double2> TestValidArguments, SetConstraintsFunc SetConstraints, SetArgumentsFunc<double2> SetArguments);
+template void Tuner<half>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<half> GetTunerSettings, TestValidArgumentsFunc<half> TestValidArguments, SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<half> ComputeLocalMemSize, SetArgumentsFunc<half> SetArguments);
+template void Tuner<float>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<float> GetTunerSettings, TestValidArgumentsFunc<float> TestValidArguments, SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<float> ComputeLocalMemSize, SetArgumentsFunc<float> SetArguments);
+template void Tuner<double>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<double> GetTunerSettings, TestValidArgumentsFunc<double> TestValidArguments, SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<double> ComputeLocalMemSize, SetArgumentsFunc<double> SetArguments);
+template void Tuner<float2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<float2> GetTunerSettings, TestValidArgumentsFunc<float2> TestValidArguments, SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<float2> ComputeLocalMemSize, SetArgumentsFunc<float2> SetArguments);
+template void Tuner<double2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<double2> GetTunerSettings, TestValidArgumentsFunc<double2> TestValidArguments, SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<double2> ComputeLocalMemSize, SetArgumentsFunc<double2> SetArguments);
 
 // =================================================================================================
 } // namespace clblast

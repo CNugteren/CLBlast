@@ -21,11 +21,15 @@ namespace clblast {
 // =================================================================================================
 
 // Finds all configurations. It also applies the user-defined constraints within.
-std::vector<Configuration> SetConfigurations(const std::vector<Parameter> parameters,
-                                             const Constraints& constraints) {
+std::vector<Configuration> SetConfigurations(const Device& device,
+                                             const std::vector<Parameter> parameters,
+                                             const Constraints& constraints,
+                                             const LocalMemSizeInfo& local_mem_size_info) {
+  const auto local_mem_max = device.LocalMemSize();
   auto config = Configuration();
   auto configurations = std::vector<Configuration>();
-  PopulateConfigurations(parameters, 0, config, configurations, constraints);
+  PopulateConfigurations(parameters, 0, config, configurations,
+                         local_mem_max, constraints, local_mem_size_info);
   return configurations;
 }
 
@@ -33,12 +37,14 @@ std::vector<Configuration> SetConfigurations(const std::vector<Parameter> parame
 void PopulateConfigurations(const std::vector<Parameter> &parameters,
                             const size_t index, const Configuration &config,
                             std::vector<Configuration> &configuration,
-                            const Constraints& constraints) {
+                            const size_t local_mem_max,
+                            const Constraints& constraints,
+                            const LocalMemSizeInfo& local_mem_size_info) {
 
   // End of the chain: all parameters are considered, store the resulting configuration if it is a
   // valid one according to the constraints
   if (index == parameters.size()) {
-    if (ValidConfiguration(config, constraints)) {
+    if (ValidConfiguration(config, local_mem_max, constraints, local_mem_size_info)) {
       configuration.push_back(config);
     }
     return;
@@ -49,13 +55,16 @@ void PopulateConfigurations(const std::vector<Parameter> &parameters,
   for (auto &value: parameter.second) {
     auto config_copy = config;
     config_copy[parameter.first] = value;
-    PopulateConfigurations(parameters, index+1, config_copy, configuration, constraints);
+    PopulateConfigurations(parameters, index+1, config_copy, configuration,
+                           local_mem_max, constraints, local_mem_size_info);
   }
 }
 
 // Loops over all user-defined constraints to check whether or not the configuration is valid
 bool ValidConfiguration(const Configuration &config,
-                        const Constraints& constraints) {
+                        const size_t local_mem_max,
+                        const Constraints& constraints,
+                        const LocalMemSizeInfo& local_mem_size_info) {
 
   // Iterates over all constraints
   for (auto &constraint: constraints) {
@@ -70,6 +79,17 @@ bool ValidConfiguration(const Configuration &config,
     if (!constraint.valid_if(values)) {
       return false;
     }
+  }
+
+  // Finds the values of the local memory parameters
+  auto local_mem_values = std::vector<size_t>(local_mem_size_info.parameters.size());
+  for (auto i=size_t{0}; i<local_mem_size_info.parameters.size(); ++i) {
+    local_mem_values[i] = config.at(local_mem_size_info.parameters[i]);
+  }
+
+  // Checks the local memory size
+  if (local_mem_size_info.local_mem_size(local_mem_values) > local_mem_max) {
+    return false;
   }
 
   // Everything was OK: this configuration is valid
