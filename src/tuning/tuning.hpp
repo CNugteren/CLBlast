@@ -108,6 +108,8 @@ template <typename T>
 using TestValidArgumentsFunc = std::function<void(const int V, const Arguments<T> &args)>;
 using SetConstraintsFunc = std::function<std::vector<Constraint>(const int V)>;
 template <typename T>
+using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(const int V)>;
+template <typename T>
 using SetArgumentsFunc = std::function<void(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers)>;
 
 // Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
@@ -119,6 +121,7 @@ void Tuner(int argc, char* argv[], const int V,
            GetTunerSettingsFunc<T> GetTunerSettings,
            TestValidArgumentsFunc<T> TestValidArguments,
            SetConstraintsFunc SetConstraints,
+           ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
            SetArgumentsFunc<T> SetArguments);
 
 // Function to run the tuners through the CLBlast API, no I/O
@@ -128,6 +131,7 @@ StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
                     const GetTunerSettingsFunc<T> GetTunerSettings,
                     const TestValidArgumentsFunc<T> TestValidArguments,
                     const SetConstraintsFunc SetConstraints,
+                    const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
                     const SetArgumentsFunc<T> SetArguments,
                     std::unordered_map<std::string,size_t> &parameters);
 

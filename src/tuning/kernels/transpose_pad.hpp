@@ -78,6 +78,15 @@ TunerSettings PadtransposeGetTunerSettings(const int, const Arguments<T> &args) 
 template <typename T>
 void PadtransposeTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> PadtransposeSetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo PadtransposeComputeLocalMemSize(const int) {
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+        return GetBytes(PrecisionValue<T>()) * (v[1] * v[0]) * (v[1] * v[0] + v[2]);
+      },
+      {"PADTRA_TILE", "PADTRA_WPT", "PADTRA_PAD"}
+  };
+}
 
 // Sets the kernel's arguments
 template <typename T>

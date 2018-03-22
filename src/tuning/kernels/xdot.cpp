@@ -24,11 +24,11 @@ template <int V>
 void StartVariation(int argc, char *argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<half>, clblast::XdotTestValidArguments<half>, clblast::XdotSetConstraints, clblast::XdotSetArguments<half>); break;
-    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<float>, clblast::XdotTestValidArguments<float>, clblast::XdotSetConstraints, clblast::XdotSetArguments<float>); break;
-    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<double>, clblast::XdotTestValidArguments<double>, clblast::XdotSetConstraints, clblast::XdotSetArguments<double>); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<float2>, clblast::XdotTestValidArguments<float2>, clblast::XdotSetConstraints, clblast::XdotSetArguments<float2>); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<double2>, clblast::XdotTestValidArguments<double2>, clblast::XdotSetConstraints, clblast::XdotSetArguments<double2>); break;
+    case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<half>, clblast::XdotTestValidArguments<half>, clblast::XdotSetConstraints, clblast::XdotComputeLocalMemSize<half>, clblast::XdotSetArguments<half>); break;
+    case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<float>, clblast::XdotTestValidArguments<float>, clblast::XdotSetConstraints, clblast::XdotComputeLocalMemSize<float>, clblast::XdotSetArguments<float>); break;
+    case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<double>, clblast::XdotTestValidArguments<double>, clblast::XdotSetConstraints, clblast::XdotComputeLocalMemSize<double>, clblast::XdotSetArguments<double>); break;
+    case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<float2>, clblast::XdotTestValidArguments<float2>, clblast::XdotSetConstraints, clblast::XdotComputeLocalMemSize<float2>, clblast::XdotSetArguments<float2>); break;
+    case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<double2>, clblast::XdotTestValidArguments<double2>, clblast::XdotSetConstraints, clblast::XdotComputeLocalMemSize<double2>, clblast::XdotSetArguments<double2>); break;
   }
 }
 

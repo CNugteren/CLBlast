@@ -76,6 +76,14 @@ TunerSettings XdotGetTunerSettings(const int V, const Arguments<T> &args) {
 template <typename T>
 void XdotTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XdotSetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo XdotComputeLocalMemSize(const int V) {
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * v[0];
+      },
+      {"WGS"+std::to_string(V)}
+  };}
 
 // Sets the kernel's arguments
 template <typename T>

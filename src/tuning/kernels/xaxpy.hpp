@@ -81,6 +81,10 @@ void XaxpyTestValidArguments(const int, const Arguments<T> &args) {
   }
 }
 std::vector<Constraint> XaxpySetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo XaxpyComputeLocalMemSize(const int) {
+  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
+}
 
 // Sets the kernel's arguments
 template <typename T>

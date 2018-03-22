@@ -79,6 +79,15 @@ TunerSettings TransposeGetTunerSettings(const int, const Arguments<T> &args) {
 template <typename T>
 void TransposeTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> TransposeSetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo TransposeComputeLocalMemSize(const int) {
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * v[1] * (v[1] * v[0]) * (v[0] + v[2]);
+      },
+      {"TRA_DIM", "TRA_WPT", "TRA_PAD"}
+  };
+}
 
 // Sets the kernel's arguments
 template <typename T>

@@ -79,6 +79,10 @@ TunerSettings XgerGetTunerSettings(const int, const Arguments<T> &args) {
 template <typename T>
 void XgerTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XgerSetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo XgerComputeLocalMemSize(const int) {
+  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
+}
 
 // Sets the kernel's arguments
 template <typename T>

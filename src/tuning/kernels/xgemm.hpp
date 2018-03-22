@@ -145,6 +145,15 @@ std::vector<Constraint> XgemmSetConstraints(const int V) {
   }
   return constraints;
 }
+template <typename T>
+LocalMemSizeInfo XgemmComputeLocalMemSize(const int) {
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * ((v[0]*v[1]*v[2]) + (v[3]*v[4]*v[5]));
+      },
+      {"SA", "KWG", "MWG", "SB", "KWG", "NWG"}
+  };
+}
 
 // Sets the kernel's arguments
 template <typename T>
