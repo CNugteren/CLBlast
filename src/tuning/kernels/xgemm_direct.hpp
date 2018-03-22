@@ -135,6 +135,15 @@ std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   }
   return constraints;
 }
+template <typename T>
+LocalMemSizeInfo XgemmDirectComputeLocalMemSize(const int) {
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * ((v[0]*(v[0] + v[1]) + v[0]*(v[0] + v[2])));
+      },
+      {"WGD", "PADA", "PADB"}
+  };
+}
 
 // Sets the kernel's arguments
 template <typename T>

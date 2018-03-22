@@ -79,6 +79,10 @@ TunerSettings CopyGetTunerSettings(const int, const Arguments<T> &args) {
 template <typename T>
 void CopyTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> CopySetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo CopyComputeLocalMemSize(const int) {
+  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
+}
 
 // Sets the kernel's arguments
 template <typename T>

@@ -79,6 +79,10 @@ TunerSettings PadGetTunerSettings(const int, const Arguments<T> &args) {
 template <typename T>
 void PadTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> PadSetConstraints(const int) { return {}; }
+template <typename T>
+LocalMemSizeInfo PadComputeLocalMemSize(const int) {
+  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
+}
 
 // Sets the kernel's arguments
 template <typename T>

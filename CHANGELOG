@@ -3,6 +3,7 @@ Development (next version)
 - Added Python interface to CLBlast 'PyCLBlast'
 - Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
 - Added an API to run the tuners programmatically without any I/O
+- Re-added a local memory size constraint to the tuners
 - Updated and reorganised the CLBlast documentation
 - Various minor fixes and enhancements
 - Added non-BLAS level-1 routines:
