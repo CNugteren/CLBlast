@@ -171,59 +171,48 @@ INLINE_FUNC real LocalToPrivateDirectB(LOCAL_PTR real* blm, const int _ni, const
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-INLINE_FUNC void StoreResultsDirect(__global real* cgm, real cpd[NWID * MWID],
-                                    const int idm, const int idn,
+INLINE_FUNC void StoreResultsDirect(__global real* cgm, const real c_value,
+                                    const int _mi, const int _ni, const int idm, const int idn,
                                     const real alpha, const real beta,
                                     const int c_ld, const int c_offset, const int c_transpose) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    #pragma unroll
-    for (int _mi = 0; _mi < MWID; _mi += 1) {
 
-      // Deter_mines the destination index
-      int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
+  // Determines the destination index
+  int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
-      // The final multiplication with alpha (in case beta == 0)
-      real result;
-      if (IsZero(beta)) {
-        Multiply(result, alpha, cpd[_ni * MWID + _mi]);
-      }
-      // The final multiplication with alpha and the addition with beta*C
-      else {
-        AXPBY(result, alpha, cpd[_ni * MWID + _mi], beta, cgm[c_index + c_offset]);
-      }
-      cgm[c_index + c_offset] = result;
-    }
+  // The final multiplication with alpha (in case beta == 0)
+  real result;
+  if (IsZero(beta)) {
+    Multiply(result, alpha, c_value);
   }
+  // The final multiplication with alpha and the addition with beta*C
+  else {
+    AXPBY(result, alpha, c_value, beta, cgm[c_index + c_offset]);
+  }
+  cgm[c_index + c_offset] = result;
 }
 
 // Merges the results in Cpm with the global array in Cgm. This also performs the multiplication
 // with the constants: Cgm = alpha*A*B + beta*Cgm = alpha*Cpm + beta*Cgm
-INLINE_FUNC void StoreResultsChecked(__global real* cgm, real cpd[NWID * MWID],
-                                     const int idm, const int idn, const int kSizeM, const int kSizeN,
+INLINE_FUNC void StoreResultsChecked(__global real* cgm, const real c_value,
+                                     const int _mi, const int _ni, const int idm, const int idn,
+                                     const int kSizeM, const int kSizeN,
                                      const real alpha, const real beta,
                                      const int c_ld, const int c_offset, const int c_transpose) {
-  #pragma unroll
-  for (int _ni = 0; _ni < NWID; _ni += 1) {
-    #pragma unroll
-    for (int _mi = 0; _mi < MWID; _mi += 1) {
-      if ((idm + _mi) < kSizeM && (idn + _ni) < kSizeN) {
+  if ((idm + _mi) < kSizeM && (idn + _ni) < kSizeN) {
 
-        // Deter_mines the destination index
-        int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
+    // Deter_mines the destination index
+    int c_index = (c_transpose) ? (idm + _mi)*c_ld + (idn + _ni) : (idn + _ni)*c_ld + (idm + _mi);
 
-        // The final multiplication with alpha (in case beta == 0)
-        real result;
-        if (IsZero(beta)) {
-          Multiply(result, alpha, cpd[_ni * MWID + _mi]);
-        }
-        // The final multiplication with alpha and the addition with beta*C
-        else {
-          AXPBY(result, alpha, cpd[_ni * MWID + _mi], beta, cgm[c_index + c_offset]);
-        }
-        cgm[c_index + c_offset] = result;
-      }
+    // The final multiplication with alpha (in case beta == 0)
+    real result;
+    if (IsZero(beta)) {
+      Multiply(result, alpha, c_value);
     }
+    // The final multiplication with alpha and the addition with beta*C
+    else {
+      AXPBY(result, alpha, c_value, beta, cgm[c_index + c_offset]);
+    }
+    cgm[c_index + c_offset] = result;
   }
 }
 

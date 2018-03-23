@@ -158,7 +158,13 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   #endif
 
   // Stores an MWG * NWG tile of results and performs the multiplication with alpha and beta
-  StoreResults(cgm, cpm, kSizeM, alpha, beta);
+  #pragma unroll
+  for (int _ni = 0; _ni < NWI; _ni += 1) {
+    #pragma unroll
+    for (int _mi = 0; _mi < MWI/VWM; _mi += 1) {
+      StoreResults(cgm, cpm[_ni * (MWI/VWM) + _mi], _mi, _ni, kSizeM, alpha, beta);
+    }
+  }
 }
 
 // =================================================================================================
