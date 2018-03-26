@@ -37,12 +37,21 @@ struct Constraint {
 };
 using Constraints = std::vector<Constraint>;
 
+// As above, but for local memory size
+using LocalMemSizeFunction = std::function<size_t(std::vector<size_t>)>;
+struct LocalMemSizeInfo {
+  LocalMemSizeFunction local_mem_size;
+  std::vector<std::string> parameters;
+};
+
 // =================================================================================================
 
 // Initializes an empty configuration (vector of name/value pairs) and kicks-off the recursive
 // function to find all configurations. It also applies the user-defined constraints within.
-std::vector<Configuration> SetConfigurations(const std::vector<Parameter> parameters,
-                                             const Constraints& constraints);
+std::vector<Configuration> SetConfigurations(const Device& device,
+                                             const std::vector<Parameter> parameters,
+                                             const Constraints& constraints,
+                                             const LocalMemSizeInfo& local_mem_size_info);
 
 // Iterates recursively over all permutations of the user-defined parameters. This code creates
 // multiple chains, in which each chain selects a unique combination of values for all parameters.
@@ -51,14 +60,18 @@ std::vector<Configuration> SetConfigurations(const std::vector<Parameter> parame
 void PopulateConfigurations(const std::vector<Parameter> &parameters,
                             const size_t index, const Configuration &config,
                             std::vector<Configuration> &configuration,
-                            const Constraints& constraints);
+                            const size_t local_mem_max,
+                            const Constraints& constraints,
+                            const LocalMemSizeInfo& local_mem_size_info);
 
 // Loops over all user-defined constraints to check whether or not the configuration is valid.
 // Assumes initially all configurations are valid, then returns false if one of the constraints has
 // not been met. Constraints consist of a user-defined function and a list of parameter names, which
 // are replaced by parameter values in this function.
 bool ValidConfiguration(const Configuration &config,
-                        const Constraints& constraints);
+                        const size_t local_mem_max,
+                        const Constraints& constraints,
+                        const LocalMemSizeInfo& local_mem_size_info);
 
 // Processes multipliers and dividers to obtain the final thread configuration
 std::vector<size_t> SetThreadConfiguration(const Configuration& config,

@@ -32,5 +32,6 @@ cly.set(y)
 
 print("# Example level-1 operation: AXPY")
 pyclblast.axpy(queue, n, clx, cly, alpha=alpha)
+queue.finish()
 print("# Result for vector y: %s" % cly.get())
 print("# Expected result:     %s" % (alpha * x + y))

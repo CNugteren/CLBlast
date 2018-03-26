@@ -44,7 +44,8 @@ double RunKernelTimed(const size_t num_runs, Kernel &kernel, Queue &queue, const
                       std::vector<size_t> global, const std::vector<size_t> &local);
 
 double TimeKernel(const size_t num_runs, Kernel &kernel, Queue &queue, const Device &device,
-                  std::vector<size_t> global, const std::vector<size_t> &local);
+                  std::vector<size_t> global, const std::vector<size_t> &local,
+                  const bool silent = false);
 
 // =================================================================================================
 

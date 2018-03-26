@@ -245,12 +245,14 @@ size_t RunPreprocessor(int argc, char *argv[], const bool silent, const Precisio
   if (TestKernel(device, context, "XgemmDirectTN", gemm_direct_sources, precision)) { passed++; } else { errors++; }
 
   // HEMM
-  const auto herm_sources =
-    "#define ROUTINE_HEMM\n"
-    #include "../src/kernels/level3/level3.opencl"
-    #include "../src/kernels/level3/convert_hermitian.opencl"
-  ;
-  if (TestKernel(device, context, "HermLowerToSquared", herm_sources, precision)) { passed++; } else { errors++; }
+  if (precision == Precision::kComplexSingle || precision == Precision::kComplexDouble) {
+    const auto herm_sources =
+      "#define ROUTINE_HEMM\n"
+      #include "../src/kernels/level3/level3.opencl"
+      #include "../src/kernels/level3/convert_hermitian.opencl"
+    ;
+    if (TestKernel(device, context, "HermLowerToSquared", herm_sources, precision)) { passed++; } else { errors++; }
+  }
 
   // Prints and returns the statistics
   std::cout << std::endl;

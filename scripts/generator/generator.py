@@ -50,9 +50,9 @@ FILES = [
     "/src/pyclblast/src/pyclblast.pyx"
 ]
 HEADER_LINES = [123, 21, 127, 24, 29, 41, 29, 65, 32, 95, 21, 290]
-FOOTER_LINES = [41, 56, 112, 275, 6, 6, 6, 9, 2, 41, 55, 37]
+FOOTER_LINES = [98, 56, 112, 275, 6, 6, 6, 9, 2, 41, 55, 37]
 HEADER_LINES_DOC = 0
-FOOTER_LINES_DOC = 158
+FOOTER_LINES_DOC = 232
 
 # Different possibilities for requirements
 ald_m = "The value of `a_ld` must be at least `m`."

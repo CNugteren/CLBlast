@@ -6,7 +6,7 @@ CLBlast: The tuned OpenCL BLAS library
 |-----|-----|-----|-----|-----|
 | Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | N/A | N/A | N/A |
 | Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-intel-e5-2620-v4.svg)](http://67.207.87.39:8010/#/builders/97) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-nvidia-k80.svg)](http://67.207.87.39:8010/#/builders/98) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-amd-w9100.svg)](http://67.207.87.39:8010/#/builders/96) |
-| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | N/A | N/A | N/A |
+| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |  [![Build Status](http://67.207.87.39:8010/badges/clblast-osx-intel-e5-2620-v4.svg)](http://67.207.87.39:8010/#/builders/101) | N/A | N/A |
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
@@ -78,6 +78,7 @@ More detailed documentation is available in separate files:
 * [Tuning for better performance](doc/tuning.md)
 * [Testing the library for correctness](doc/testing.md)
 * [Bindings / wrappers for other languages](doc/bindings.md)
+* [Glossary with some terms explained](doc/glossary.md)
 
 
 Known issues
