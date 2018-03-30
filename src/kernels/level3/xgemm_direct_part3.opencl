@@ -129,7 +129,14 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     }
 
     // Stores a tile of results and performs the multiplication with alpha and beta
-    StoreResultsDirect(cgm, cpd, idm, idn, alpha, beta, c_ld, c_offset, c_transpose);
+    #pragma unroll
+    for (int _ni = 0; _ni < NWID; _ni += 1) {
+      #pragma unroll
+      for (int _mi = 0; _mi < MWID; _mi += 1) {
+        StoreResultsDirect(cgm, cpd[_ni * MWID + _mi], _mi, _ni, idm, idn,
+                           alpha, beta, c_ld, c_offset, c_transpose);
+      }
+    }
   }
 
   // Simple but slower version for the parts on the edge (incomplete tiles in M and N-dimensions)
@@ -197,7 +204,14 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     }
 
     // Stores a tile of results and performs the multiplication with alpha and beta
-    StoreResultsChecked(cgm, cpd, idm, idn, kSizeM, kSizeN, alpha, beta, c_ld, c_offset, c_transpose);
+    #pragma unroll
+    for (int _ni = 0; _ni < NWID; _ni += 1) {
+      #pragma unroll
+      for (int _mi = 0; _mi < MWID; _mi += 1) {
+        StoreResultsChecked(cgm, cpd[_ni * MWID + _mi], _mi, _ni, idm, idn, kSizeM, kSizeN,
+                            alpha, beta, c_ld, c_offset, c_transpose);
+      }
+    }
   }
 }
 
