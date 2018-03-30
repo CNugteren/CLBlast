@@ -1,3 +1,4 @@
+#distutils: language = c++
 #cython: binding=True
 ####################################################################################################
 # This file is part of the CLBlast project. The project is licensed under Apache Version 2.0.
@@ -13,8 +14,9 @@
 import numpy as np
 import pyopencl as cl
 from pyopencl.array import Array
-
 from libcpp cimport bool
+from cpython.mem cimport PyMem_Malloc, PyMem_Free
+from libc.string cimport strdup
 
 ####################################################################################################
 # CLBlast and OpenCL data-types
@@ -2081,5 +2083,41 @@ def trsm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_t
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtrsm' failed: %s" % get_status_message(err))
     return cl.Event.from_int_ptr(<size_t>event)
+
+####################################################################################################
+# Overrides the parameters
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    ctypedef struct _cl_device_id:
+        pass
+    ctypedef _cl_device_id* cl_device_id
+    CLBlastStatusCode CLBlastOverrideParameters(const cl_device_id device, const char* kernel_name, const CLBlastPrecision precision, const size_t num_parameters, const char** parameters_names, const size_t* parameters_values)
+
+def override_parameters(device, kernel_name, precision, parameters):
+    """
+    Override the current parameters for the given kernel, on this device, with this precision.
+    """
+ 
+    cdef cl_device_id device_id = <cl_device_id><size_t>device.int_ptr
+
+    # read the parameters dictionary into names/values arrays, for use in CLBlastOverrideParameters
+    cdef size_t n = len(parameters)
+    cdef const char **parameter_names = <const char**> PyMem_Malloc(n * sizeof(char*))
+    cdef size_t *parameter_values = <size_t*> PyMem_Malloc(n * sizeof(size_t))
+    if not (parameter_names or parameter_values):
+        raise MemoryError()
+    for i, (k, v) in enumerate(parameters.items()):
+        parameter_names[i] = strdup(k.encode('ascii'))
+        parameter_values[i] = v
+    
+    # call the underlying API
+    err = CLBlastOverrideParameters(device_id, kernel_name.encode('ascii'), precision, n, parameter_names, parameter_values)
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'OverrideParameters' failed: %s" % get_status_message(err))
+
+    # tidy up:
+    PyMem_Free(parameter_names)
+    PyMem_Free(parameter_values)
 
 ####################################################################################################
