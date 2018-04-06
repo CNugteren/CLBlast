@@ -299,16 +299,21 @@ INLINE_FUNC realN GlobalToPrivateB(const __global realN* restrict bgm, const int
 INLINE_FUNC realN GlobalToPrivateA2D(const __global real* restrict a_ptr, const int tid_y, const int _ni,
                                      const int kSizeK, const int idk, const int _ki) {
   const int a_index = (tid_y * NWI + _ni) * kSizeK + idk + _ki * VWN;
-  #if VWN == 1
-    return a_ptr[a_index];
-  #elif VWN == 2
-    return vload2(0, a_ptr + a_index);
-  #elif VWN == 4
-    return vload4(0, a_ptr + a_index);
-  #elif VWN == 8
-    return vload8(0, a_ptr + a_index);
-  #elif VWN == 16
-    return vload16(0, a_ptr + a_index);
+  #if PRECISION == 3232 || PRECISION == 6464
+    const __global realN* restrict agm = (const __global realN* restrict) a_ptr;
+    return agm[a_index];
+  #else
+    #if VWN == 1
+      return a_ptr[a_index];
+    #elif VWN == 2
+      return vload2(0, a_ptr + a_index);
+    #elif VWN == 4
+      return vload4(0, a_ptr + a_index);
+    #elif VWN == 8
+      return vload8(0, a_ptr + a_index);
+    #elif VWN == 16
+      return vload16(0, a_ptr + a_index);
+    #endif
   #endif
 }
 
@@ -316,16 +321,21 @@ INLINE_FUNC realN GlobalToPrivateA2D(const __global real* restrict a_ptr, const 
 INLINE_FUNC realM GlobalToPrivateB2D(const __global real* restrict b_ptr, const int tid_x, const int _mi,
                                      const int kSizeN, const int idk, const int _ki) {
   const int b_index = (idk + _ki) * kSizeN + tid_x * MWI + _mi * VWM;
-  #if VWM == 1
-    return b_ptr[b_index];
-  #elif VWM == 2
-    return vload2(0, b_ptr + b_index);
-  #elif VWM == 4
-    return vload4(0, b_ptr + b_index);
-  #elif VWM == 8
-    return vload8(0, b_ptr + b_index);
-  #elif VWM == 16
-    return vload16(0, b_ptr + b_index);
+  #if PRECISION == 3232 || PRECISION == 6464
+    const __global realM* restrict bgm = (const __global realM* restrict) b_ptr;
+    return bgm[b_index];
+  #else
+    #if VWM == 1
+      return b_ptr[b_index];
+    #elif VWM == 2
+      return vload2(0, b_ptr + b_index);
+    #elif VWM == 4
+      return vload4(0, b_ptr + b_index);
+    #elif VWM == 8
+      return vload8(0, b_ptr + b_index);
+    #elif VWM == 16
+      return vload16(0, b_ptr + b_index);
+    #endif
   #endif
 }
 
