@@ -57,7 +57,7 @@ R"(
   #define NWG 8      // Tile-size in dimension N (e.g. 64, 128)
 #endif
 #ifndef KWG
-  #define KWG 8      // Tile-size in dimension K (e.g. 8, 16)
+  #define KWG 1      // Tile-size in dimension K (e.g. 8, 16)
 #endif
 #ifndef MDIMC
   #define MDIMC 8    // Threads per workgroup in M-dimension (e.g. 8, 16, 32)

@@ -7,9 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the auto-tuner to tune the xgemm OpenCL kernels. There are two variations:
-// - V==1: This tests some limited set of tuning parameters exhaustively.
-// - V==2: This tests a much larger set of tuning parameters by randomly sampling a subset.
+// This file uses the auto-tuner to tune the xgemm OpenCL kernels. There are multiple variations:
+// - V==1: Kernel 0: This tests some limited set of tuning parameters exhaustively.
+// - V==2: Kernel 0: This tests a much larger set of parameters by randomly sampling a subset.
+// - V==11: Kernel 1: This tests some limited set of tuning parameters exhaustively.
+// - V==12: Kernel 1: This tests a much larger set of parameters by randomly sampling a subset.
 //
 // =================================================================================================
 
@@ -31,7 +33,7 @@ TunerDefaults XgemmGetTunerDefaults(const int V) {
   settings.default_m = 1024;
   settings.default_n = 1024;
   settings.default_k = 1024;
-  settings.default_fraction = (V==1) ? 1.0 : 512.0; // test all or sample randomly
+  settings.default_fraction = (V == 1 || V == 11) ? 1.0 : (V == 2) ? 512.0 : 128.0; // test all or sample randomly
   settings.default_num_runs = 2;
   return settings;
 }
@@ -42,9 +44,10 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
-  settings.kernel_family = (V==1) ? "xgemm_1" : "xgemm_2";
+  settings.kernel_family = "xgemm_" + ToString(V);
   settings.kernel_name = "Xgemm";
-  settings.sources =
+  settings.sources = (V == 11 || V == 12) ? "#define GEMMK 1" : "#define GEMMK 0";
+  settings.sources +=
 #include "../src/kernels/level3/xgemm_part1.opencl"
 #include "../src/kernels/level3/xgemm_part2.opencl"
 #include "../src/kernels/level3/xgemm_part3.opencl"
@@ -72,8 +75,9 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
   settings.div_global = {{"MWG", "NWG"}};
 
   // Sets the tuning parameters and their possible values
-  if (V==1) { // limited subset of tuning parameters - but explorable exhaustively
+  if (V == 1) { // Kernel 0: limited subset of tuning parameters - but explorable exhaustively
     settings.parameters = {
+      {"GEMMK", {0}},
       {"MWG", {16, 32, 64}},
       {"NWG", {16, 32, 64}},
       {"KWG", {32}},
@@ -88,10 +92,12 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
       {"STRN", {0}},
       {"SA", {0, 1}},
       {"SB", {0, 1}},
+      {"KREG", {1}}
     };
   }
-  else { // a lot more tuning parameters - has to be sampled randomly, too much to test all
+  else if (V == 2) { // Kernel 0: a lot more tuning parameters - has to be sampled randomly, too much to test all
     settings.parameters = {
+      {"GEMMK", {0}},
       {"MWG", {16, 32, 64, 128}},
       {"NWG", {16, 32, 64, 128}},
       {"KWG", {16, 32}},
@@ -106,6 +112,47 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
       {"STRN", {0, 1}},
       {"SA", {0, 1}},
       {"SB", {0, 1}},
+      {"KREG", {1}}
+    };
+  }
+  else if (V == 11) { // Kernel 1: limited subset of tuning parameters - but explorable exhaustively
+    settings.parameters = {
+      {"GEMMK", {1}},
+      {"MWG", {16, 32, 64}},
+      {"NWG", {16, 32, 64}},
+      {"KWG", {1}},
+      {"MDIMC", {4, 8, 16}},
+      {"NDIMC", {4, 8, 16}},
+      {"MDIMA", {4, 8, 16}},
+      {"NDIMB", {4, 8, 16}},
+      {"KWI", {1}},
+      {"VWM", {1, 2, 4}},
+      {"VWN", {1, 2, 4}},
+      {"STRM", {0}},
+      {"STRN", {0}},
+      {"SA", {0}},
+      {"SB", {0}},
+      {"KREG", {1, 2, 4}}
+    };
+  }
+  else if (V == 12) { // Kernel 1: a lot more tuning parameters - has to be sampled randomly, too much to test all
+    settings.parameters = {
+      {"GEMMK", {1}},
+      {"MWG", {8, 16, 32, 64, 128}},
+      {"NWG", {8, 16, 32, 64, 128}},
+      {"KWG", {1}},
+      {"MDIMC", {2, 4, 8, 16, 32}},
+      {"NDIMC", {2, 4, 8, 16, 32}},
+      {"MDIMA", {2, 4, 8, 16, 32}},
+      {"NDIMB", {2, 4, 8, 16, 32}},
+      {"KWI", {1}},
+      {"VWM", {1, 2, 4, 8}},
+      {"VWN", {1, 2, 4, 8}},
+      {"STRM", {0}},
+      {"STRN", {0}},
+      {"SA", {0}},
+      {"SB", {0}},
+      {"KREG", {1, 2, 4, 8, 16}}
     };
   }
 
@@ -119,8 +166,8 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
 // Tests for valid arguments
 template <typename T>
 void XgemmTestValidArguments(const int V, const Arguments<T> &args) {
-  const auto mwg_max = (V == 1) ? 64 : 128;
-  const auto nwg_max = (V == 1) ? 64 : 128;
+  const auto mwg_max = (V == 1 || V == 11) ? 64 : 128;
+  const auto nwg_max = (V == 1 || V == 11) ? 64 : 128;
   if (!IsMultiple(args.m, mwg_max)) {
     throw std::runtime_error("'Xgemm' kernel requires 'm' to be a multiple of MWG (max " + ToString(mwg_max) + ")");
   }
@@ -130,27 +177,49 @@ void XgemmTestValidArguments(const int V, const Arguments<T> &args) {
 }
 std::vector<Constraint> XgemmSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
+  auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
   auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
+
   // Requirement for unrolling the KWG loop
   constraints.push_back({MultipleOfX, {"KWG", "KWI"}});
+
   // Required for integer MWI and NWI
   constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMC", "VWM"}});
   constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMC", "VWN"}});
+
   // Required for integer MWIA and NWIB
   constraints.push_back({MultipleOfXMulY, {"MWG", "MDIMA", "VWM"}});
   constraints.push_back({MultipleOfXMulY, {"NWG", "NDIMB", "VWN"}});
-  // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
-  constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"}});
-  constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"}});
 
-  // Extra constraints for variation 1 to limit the set of options significantly
-  if (V==1) {
-    auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
+  if (V == 1 || V == 2) {
+    // KWG has to be a multiple of KDIMA = ((MDIMC*NDIMC)/(MDIMA)) and KDIMB = (...)
+    constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "MDIMA"}});
+    constraints.push_back({MultipleOfXMulYDivZ, {"KWG", "MDIMC", "NDIMC", "NDIMB"}});
+  }
+
+  if (V == 11 || V == 12) {
+    // KREG has to be a multiple of VWN
+    constraints.push_back({MultipleOfX, {"KREG", "VWN"}});
+  }
+
+  // Extra constraints for kernel 1 to limit the set of options significantly
+  if (V == 11 || V == 12) {
+    constraints.push_back({IsEqual, {"MDIMC", "MDIMA"}});
+    constraints.push_back({IsEqual, {"NDIMC", "NDIMB"}});
+  }
+
+  // Extra constraints for kernel 0 variation 1 to limit the set of options significantly
+  if (V == 1) {
     constraints.push_back({IsEqual, {"MDIMC", "MDIMA"}});
     constraints.push_back({IsEqual, {"NDIMC", "NDIMB"}});
     constraints.push_back({IsEqual, {"SA", "SB"}});
+  }
+
+  // Extra constraints for kernel 1 variation 11 to limit the set of options significantly
+  if (V == 11) {
+    constraints.push_back({IsEqual, {"VWN", "VWM"}});
   }
   return constraints;
 }
