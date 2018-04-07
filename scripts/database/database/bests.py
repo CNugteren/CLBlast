@@ -7,7 +7,7 @@
 
 import sys
 
-import clblast
+import database.clblast as clblast
 
 
 def get_best_results(database):

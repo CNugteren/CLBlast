@@ -54,6 +54,14 @@ const DatabaseEntry XgemmDirectDouble = {
         } },
       }
     },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) HD Graphics 620                          "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM2.0", {
@@ -69,8 +77,13 @@ const DatabaseEntry XgemmDirectDouble = {
           { kDeviceNameDefault                                        , Params{ 8, 16, 16, 16, 8, 1, 0, 1, 1, 16, 0, 0, 0, 0 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 2, 8, 8, 8, 8, 1, 1, 4, 4, 32, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 2, 8, 8, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0 } },
+        } },
+        { "SM5.2", {
+          { Name{"GeForce GTX 970                                   "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0 } },
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1080                                  "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0 } },
@@ -86,7 +99,7 @@ const DatabaseEntry XgemmDirectDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 16, 1, 1, 2, 2, 32, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 2, 16, 0, 0, 0, 0 } },
         } },
       }
     },

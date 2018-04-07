@@ -72,6 +72,14 @@ const DatabaseEntry XgemmDouble = {
         } },
       }
     },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) HD Graphics 620                          "}, Params{ 16, 2, 16, 8, 32, 8, 8, 32, 0, 0, 1, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 8, 32, 8, 8, 32, 0, 0, 1, 0, 1, 1 } },
+        } },
+      }
+    },
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
         { "default", {
@@ -102,14 +110,16 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 16, 2, 16, 8, 16, 16, 8, 16, 1, 0, 0, 0, 1, 1 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 32, 8, 16, 32, 64, 16, 8, 128, 0, 0, 0, 1, 2, 1 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 32, 2, 8, 8, 32, 16, 16, 32, 0, 0, 0, 0, 4, 2 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 16, 8, 32, 0, 0, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 32, 0, 0, 0, 0, 2, 2 } },
         } },
         { "SM5.2", {
+          { Name{"GeForce GTX 970                                   "}, Params{ 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"GeForce GTX 980                                   "}, Params{ 32, 8, 16, 8, 64, 32, 32, 128, 0, 0, 1, 0, 2, 4 } },
           { Name{"GeForce GTX TITAN X                               "}, Params{ 16, 8, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 16, 8, 16, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 16, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 16, 2, 8, 16, 32, 8, 8, 64, 0, 0, 1, 1, 2, 8 } },
@@ -119,7 +129,7 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 8, 8, 64, 0, 0, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },

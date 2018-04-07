@@ -6,6 +6,7 @@ Development (next version)
 - Re-added a local memory size constraint to the tuners
 - Updated and reorganised the CLBlast documentation
 - Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
 - Added non-BLAS level-1 routines:
   * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
 

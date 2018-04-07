@@ -8,8 +8,8 @@
 import ast
 from collections import defaultdict
 
-import clblast
-import bests
+import database.bests as bests
+import database.clblast as clblast
 
 
 def set_identifiers(database, group_by_attributes, identifier_name):
