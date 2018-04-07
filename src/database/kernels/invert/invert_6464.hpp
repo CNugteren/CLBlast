@@ -12,6 +12,17 @@ namespace database {
 
 const DatabaseEntry InvertComplexDouble = {
   "Invert", Precision::kComplexDouble, {"INTERNAL_BLOCK_SIZE", "LOCALPAD", "TMMWGSX", "TMMWGSY"}, {
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {

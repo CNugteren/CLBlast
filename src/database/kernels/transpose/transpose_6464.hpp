@@ -102,6 +102,7 @@ const DatabaseEntry TransposeComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 16, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 8, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 16, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 16, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

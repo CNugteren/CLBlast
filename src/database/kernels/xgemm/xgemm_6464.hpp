@@ -109,9 +109,10 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 32, 16, 16, 64, 0, 0, 0, 0, 4, 1 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 32, 2, 8, 8, 64, 8, 8, 32, 0, 0, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 32, 2, 8, 32, 32, 8, 8, 64, 0, 0, 1, 0, 1, 4 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
         } },
         { "SM5.2", {
           { Name{"GeForce GTX 980                                   "}, Params{ 16, 2, 16, 8, 32, 8, 16, 128, 0, 0, 1, 1, 2, 2 } },

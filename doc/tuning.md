@@ -19,6 +19,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 750
   - GeForce GTX 750 Ti
   - GeForce GTX 760 Ti
+  - GeForce GTX 920MX
   - GeForce GTX 980
   - GeForce GTX 1070
   - GeForce GTX 1080
@@ -43,6 +44,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
+  - HD Graphics 630
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2

@@ -127,6 +127,7 @@ const DatabaseEntry TransposeSingle = {
           { kDeviceNameDefault                                        , Params{ 8, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 4, 0, 1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 4, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 32, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

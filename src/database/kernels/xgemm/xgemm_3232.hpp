@@ -124,9 +124,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 128, 8, 8, 64, 0, 1, 0, 1, 8, 2 } },
         } },
         { "SM5.0", {
+          { Name{"GeForce 920MX                                     "}, Params{ 32, 2, 16, 8, 64, 8, 32, 128, 0, 0, 1, 0, 2, 2 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 16, 8, 16, 16, 64, 16, 16, 64, 1, 1, 1, 0, 2, 2 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 16, 2, 16, 8, 32, 32, 16, 64, 1, 1, 1, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 16, 2, 16, 8, 32, 16, 16, 64, 1, 1, 1, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 32, 16, 16, 64, 1, 1, 0, 0, 2, 1 } },
         } },
         { "SM5.2", {
           { Name{"GeForce GTX 980                                   "}, Params{ 32, 8, 32, 32, 64, 16, 16, 64, 1, 1, 1, 0, 2, 1 } },
