@@ -72,6 +72,14 @@ const DatabaseEntry XgemmComplexDouble = {
         } },
       }
     },
+    { // Intel GPUs
+      kDeviceTypeGPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) HD Graphics 620                          "}, Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 2, 1 } },
+        } },
+      }
+    },
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
         { "default", {
