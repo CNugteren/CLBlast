@@ -84,7 +84,7 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
     // Loops over all workitem tiles, unrolled by a factor KWI
     for (int pwi = 0; pwi < KWG * KREG; pwi += KWI * KREG) {
       #pragma unroll
-      for (int _pit = 0; _pit < KWI * KREG; _pit += KREG) {
+      for (int _pit = 0; _pit < KWI*KREG; _pit += KREG) {
         #if SA == 0 || SB == 0
           int idk = kwg + pwi + _pit;
         #endif
