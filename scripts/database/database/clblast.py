@@ -9,7 +9,7 @@ import os
 
 # Type settings (also change in database_structure.hpp)
 STRING_LENGTH = 50
-PARAMETERS_LENGTH = 14
+PARAMETERS_LENGTH = 16
 
 # Constants from the C++ code
 VENDOR_DEFAULT = "default"
