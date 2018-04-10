@@ -73,6 +73,18 @@ def remove_database_entries(database, remove_if_matches_fields):
     print("[database] Removed %d entries from the database" % (old_length - new_length))
 
 
+def add_tuning_parameter(database, parameter_name, kernel, value):
+    num_changes = 0
+    for section in database["sections"]:
+        if section["kernel"] == kernel:
+            for result in section["results"]:
+                if parameter_name not in result["parameters"]:
+                    result["parameters"][parameter_name] = value
+            section["parameter_names"].append(parameter_name)
+            num_changes += 1
+    print("[database] Made %d addition(s) of %s" % (num_changes, parameter_name))
+
+
 def main(argv):
 
     # Parses the command-line arguments
@@ -80,6 +92,9 @@ def main(argv):
     parser.add_argument("source_folder", help="The folder with JSON files to parse to add to the database")
     parser.add_argument("clblast_root", help="Root of the CLBlast sources")
     parser.add_argument("-r", "--remove_device", type=str, default=None, help="Removes all entries for a specific device")
+    parser.add_argument("--add_tuning_parameter", type=str, default=None, help="Adds this parameter to existing entries")
+    parser.add_argument("--add_tuning_parameter_for_kernel", type=str, default=None, help="Adds the above parameter for this kernel")
+    parser.add_argument("--add_tuning_parameter_value", type=int, default=0, help="Set this value as the default for the above parameter")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -132,6 +147,17 @@ def main(argv):
     if cl_args.remove_device is not None:
         print("[database] Removing all results for device '%s'" % cl_args.remove_device)
         remove_database_entries(database, {"clblast_device_name": cl_args.remove_device})
+        io.save_database(database, database_filename)
+
+    # Adds new tuning parameters to existing database entries
+    if cl_args.add_tuning_parameter is not None and\
+       cl_args.add_tuning_parameter_for_kernel is not None:
+        print("[database] Adding tuning parameter: '%s' for kernel '%s' with default %d" %
+              (cl_args.add_tuning_parameter, cl_args.add_tuning_parameter_for_kernel,
+               cl_args.add_tuning_parameter_value))
+        add_tuning_parameter(database, cl_args.add_tuning_parameter,
+                             cl_args.add_tuning_parameter_for_kernel,
+                             cl_args.add_tuning_parameter_value)
         io.save_database(database, database_filename)
 
     # Retrieves the best performing results
