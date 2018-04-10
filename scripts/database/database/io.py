@@ -45,14 +45,14 @@ def compress_database(database):
         new_section = {}
         for field in section:
             if field == "results":
-                parameter_names = [result["parameters"].keys() for result in section["results"]]
+                parameter_names = [sorted(result["parameters"].keys()) for result in section["results"]]
                 assert len(list(set([" ".join(p) for p in parameter_names]))) == 1
-                new_section["parameter_names"] = parameter_names[0]  # they are all be the same
-                new_results = [[",".join([str(v) for v in result["parameters"].values()]),
+                new_section["parameter_names"] = parameter_names[0]  # they are all the same
+                new_results = [[",".join([str(result["parameters"][p]) for p in new_section["parameter_names"]]),
                                 result["time"]]
                                for result in section["results"]]
                 new_section[field] = new_results
-            else:
+            elif field != "parameter_names":
                 new_section[field] = section[field]
         new_sections.append(new_section)
     return {"sections": new_sections}
