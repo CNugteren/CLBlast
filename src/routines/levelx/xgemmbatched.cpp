@@ -65,13 +65,17 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
     throw BLASError(StatusCode::kInvalidBatchCount);
   }
 
+  // Two methods to choose from, select which one to run
+  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
+
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
   size_t a_one, a_two, b_one, b_two, c_one, c_two;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, m, n, k,
                              a_one, a_two, b_one, b_two, c_one, c_two,
                              a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
-                             db_["GEMMK"]);
+                             gemm_kernel_id);
 
   // Tests the matrices for validity
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
@@ -97,7 +101,6 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   }
 
   // Selects which version of the batched GEMM to run
-  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // single generic kernel
     BatchedGemmDirect(m, n, k, alphas_device,
                       a_buffer, a_offsets_int, a_ld, b_buffer, b_offsets_int, b_ld,

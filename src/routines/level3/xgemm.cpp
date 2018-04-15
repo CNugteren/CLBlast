@@ -59,13 +59,17 @@ void Xgemm<T>::DoGemm(const Layout layout,
                       const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
                       const Buffer<T> &temp_buffer, const bool temp_buffer_provided) { // optional arguments
 
+  // Two methods to choose from, select which one to run
+  const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
+
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
   size_t a_one, a_two, b_one, b_two, c_one, c_two;
   ProcessArguments(layout, a_transpose, b_transpose, m, n, k,
                    a_one, a_two, b_one, b_two, c_one, c_two,
                    a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
-                   db_["GEMMK"]);
+                   gemm_kernel_id);
 
   // Tests three matrices (A, B, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. m, n, k). Tests whether the
@@ -79,7 +83,6 @@ void Xgemm<T>::DoGemm(const Layout layout,
   TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
 
   // Selects which version of GEMM to run
-  const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // for small sizes (single kernel)
     GemmDirect(m, n, k, alpha,
                a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
