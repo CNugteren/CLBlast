@@ -12,6 +12,7 @@
 // =================================================================================================
 
 #include "routines/level3/xherk.hpp"
+#include "routines/level3/xgemm.hpp"
 
 #include <string>
 #include <vector>
@@ -46,24 +47,20 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
                               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                               const U beta,
                               const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
+  const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
 
-  // Makes sure all dimensions are larger than zero
-  if ((n == 0) || (k == 0) ) { throw BLASError(StatusCode::kInvalidDimension); }
+  // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
+  bool a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2;
+  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, n, n, k,
+                             a_one, a_two, b_one, b_two, c_one, c_two,
+                             a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2,
+                             db_["GEMMK"]);
 
   // Determines whether to apply the conjugate transpose to matrix B (argument: no transpose) or
   // to matrix A (argument: conjugate transpose)
   auto a_conjugate = (a_transpose != Transpose::kNo);
-  auto b_conjugate = (a_transpose == Transpose::kNo);
-
-  // Computes whether or not the matrices are transposed in memory. This is based on their layout
-  // (row or column-major) and whether or not they are requested to be pre-transposed.
-  auto a_rotated = (layout == Layout::kColMajor && a_conjugate) ||
-                   (layout == Layout::kRowMajor && !a_conjugate);
-  auto c_rotated = (layout == Layout::kRowMajor);
-
-  // Computes the first and second dimensions of the A matrix taking the layout into account
-  auto a_one = (a_rotated) ? k : n;
-  auto a_two = (a_rotated) ? n : k;
+  auto b_conjugate = (b_transpose != Transpose::kNo);
 
   // Tests the two matrices (A, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. n, k). Tests whether the
@@ -76,20 +73,25 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
 
   // Calculates the ceiled versions of n and k
   auto n_ceiled = Ceil(Ceil(n, db_["MWG"]), db_["NWG"]);
-  auto k_ceiled = Ceil(k, db_["KWG"]);
+  auto k_ceiled = Ceil(k, db_["KWG"] * db_["KREG"]);
+
+  // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
+  // whether the matrices need to be rotated or not for the kernel.
+  const auto a_one_i = (Xgemm<T>::a_want_rotated_(db_["GEMMK"])) ? k_ceiled : n_ceiled;
+  const auto a_two_i = (Xgemm<T>::a_want_rotated_(db_["GEMMK"])) ? n_ceiled : k_ceiled;
+  const auto b_one_i = (!Xgemm<T>::b_want_rotated_(db_["GEMMK"])) ? k_ceiled : n_ceiled;
+  const auto b_two_i = (!Xgemm<T>::b_want_rotated_(db_["GEMMK"])) ? n_ceiled : k_ceiled;
 
   // Decides which kernel to run: the upper-triangular or lower-triangular version
   auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
 
   // Determines whether or not temporary matrices are needed
-  auto a_no_temp = a_one == n_ceiled && a_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
-                   a_rotated == false && a_conjugate == false;
-  auto b_no_temp = a_one == n_ceiled && a_two == k_ceiled && a_ld == n_ceiled && a_offset == 0 &&
-                   a_rotated == false && b_conjugate == false;
+  const auto a_no_temp = Xgemm<T>::NoTempBuffer(a_one, a_one_i, a_two, a_two_i, a_ld, a_offset, a_do_transpose, a_conjugate);
+  const auto b_no_temp = Xgemm<T>::NoTempBuffer(a_one, b_one_i, a_two, b_two_i, a_ld, a_offset, b_do_transpose, b_conjugate);
 
   // Creates the temporary matrices
-  auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
-  auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, k_ceiled*n_ceiled);
+  auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i * a_two_i);
+  auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, b_one_i * b_two_i);
   auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
   // Convert the arguments to complex versions
@@ -107,18 +109,18 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
     auto eventProcessA = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList,
                            a_one, a_two, a_ld, a_offset, a_buffer,
-                           n_ceiled, k_ceiled, n_ceiled, 0, a_temp,
+                           a_one_i, a_two_i, a_one_i, 0, a_temp,
                            ConstantOne<T>(), program_,
-                           true, a_rotated, a_conjugate);
+                           true, a_do_transpose, a_conjugate);
     eventWaitList.push_back(eventProcessA);
   }
   if (!b_no_temp) {
     auto eventProcessB = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
-                           a_one, a_two, a_ld, a_offset, a_buffer,
-                           n_ceiled, k_ceiled, n_ceiled, 0, b_temp,
+                           b_one, b_two, a_ld, a_offset, a_buffer,
+                           b_one_i, b_two_i, b_one_i, 0, b_temp,
                            ConstantOne<T>(), program_,
-                           true, a_rotated, b_conjugate);
+                           true, b_do_transpose, b_conjugate);
     eventWaitList.push_back(eventProcessB);
   }
 
@@ -129,7 +131,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
                          n, n, c_ld, c_offset, c_buffer,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                          ConstantOne<T>(), program_,
-                         true, c_rotated, false);
+                         true, c_do_transpose, false);
   eventWaitList.push_back(eventProcessC);
 
   // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
@@ -157,13 +159,14 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   eventWaitList.push_back(eventKernel);
 
   // Runs the post-processing kernel
-  auto upper = (triangle == Triangle::kUpper);
-  auto lower = (triangle == Triangle::kLower);
+  const auto upper = Xgemm<T>::c_want_rotated_(db_["GEMMK"]) ? (triangle == Triangle::kLower) :
+                     (triangle == Triangle::kUpper);
+  const auto lower = !upper;
   PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                          n, n, c_ld, c_offset, c_buffer,
                          ConstantOne<T>(), program_,
-                         false, c_rotated, false, upper, lower, true);
+                         false, c_do_transpose, false, upper, lower, true);
 }
 
 // =================================================================================================
