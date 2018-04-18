@@ -48,6 +48,25 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
                               const U beta,
                               const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
   const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
+  const auto b_buffer = a_buffer;
+  const auto b_offset = a_offset;
+  const auto b_ld = a_ld;
+  const auto complex_alpha = T{alpha, static_cast<U>(0.0)};
+  const auto complex_beta = T{beta, static_cast<U>(0.0)};
+  HerkAB(layout, triangle, a_transpose, b_transpose, n, k, complex_alpha,
+         a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, complex_beta, c_buffer, c_offset, c_ld,
+         event_, true);
+}
+
+template <typename T, typename U>
+void Xherk<T,U>::HerkAB(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Transpose b_transpose,
+                        const size_t n, const size_t k,
+                        const T complex_alpha,
+                        const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                        const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                        const T complex_beta,
+                        const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                        EventPointer final_event, const bool diagonal_to_zero) {
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2;
@@ -69,6 +88,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   //    matrix A cannot be less than N when rotated, or less than K when not-rotated
   //    matrix C cannot be less than N
   TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
+  TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
   TestMatrixC(n, n, c_buffer, c_offset, c_ld);
 
   // Calculates the ceiled versions of n and k
@@ -87,16 +107,12 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
 
   // Determines whether or not temporary matrices are needed
   const auto a_no_temp = Xgemm<T>::NoTempBuffer(a_one, a_one_i, a_two, a_two_i, a_ld, a_offset, a_do_transpose, a_conjugate);
-  const auto b_no_temp = Xgemm<T>::NoTempBuffer(a_one, b_one_i, a_two, b_two_i, a_ld, a_offset, b_do_transpose, b_conjugate);
+  const auto b_no_temp = Xgemm<T>::NoTempBuffer(b_one, b_one_i, b_two, b_two_i, b_ld, b_offset, b_do_transpose, b_conjugate);
 
   // Creates the temporary matrices
   auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i * a_two_i);
-  auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, b_one_i * b_two_i);
+  auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, b_one_i * b_two_i);
   auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
-
-  // Convert the arguments to complex versions
-  auto complex_alpha = T{alpha, static_cast<U>(0.0)};
-  auto complex_beta = T{beta, static_cast<U>(0.0)};
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
@@ -117,7 +133,7 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   if (!b_no_temp) {
     auto eventProcessB = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
-                           b_one, b_two, a_ld, a_offset, a_buffer,
+                           b_one, b_two, b_ld, b_offset, b_buffer,
                            b_one_i, b_two_i, b_one_i, 0, b_temp,
                            ConstantOne<T>(), program_,
                            true, b_do_transpose, b_conjugate);
@@ -162,11 +178,11 @@ void Xherk<T,U>::DoHerk(const Layout layout, const Triangle triangle, const Tran
   const auto upper = Xgemm<T>::c_want_rotated_(db_["GEMMK"]) ? (triangle == Triangle::kLower) :
                      (triangle == Triangle::kUpper);
   const auto lower = !upper;
-  PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
+  PadCopyTransposeMatrix(queue_, device_, db_, final_event, eventWaitList,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                          n, n, c_ld, c_offset, c_buffer,
                          ConstantOne<T>(), program_,
-                         false, c_do_transpose, false, upper, lower, true);
+                         false, c_do_transpose, false, upper, lower, diagonal_to_zero);
 }
 
 // =================================================================================================
