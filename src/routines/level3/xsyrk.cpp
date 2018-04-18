@@ -48,6 +48,22 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
                       const T beta,
                       const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
   const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
+  const auto b_buffer = a_buffer;
+  const auto b_offset = a_offset;
+  const auto b_ld = a_ld;
+  SyrkAB(layout, triangle, a_transpose, b_transpose, n, k, alpha,
+         a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta, c_buffer, c_offset, c_ld, event_);
+}
+
+template <typename T>
+void Xsyrk<T>::SyrkAB(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Transpose b_transpose,
+                      const size_t n, const size_t k,
+                      const T alpha,
+                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+                      const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+                      const T beta,
+                      const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+                      EventPointer final_event) {
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
@@ -64,6 +80,7 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
   //    matrix A cannot be less than N when rotated, or less than K when not-rotated
   //    matrix C cannot be less than N
   TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
+  TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
   TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
 
   // Calculates the ceiled versions of n and k
@@ -82,11 +99,11 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
 
   // Determines whether or not temporary matrices are needed
   const auto a_no_temp = Xgemm<T>::NoTempBuffer(a_one, a_one_i, a_two, a_two_i, a_ld, a_offset, a_do_transpose, a_conjugate);
-  const auto b_no_temp = Xgemm<T>::NoTempBuffer(a_one, b_one_i, a_two, b_two_i, a_ld, a_offset, b_do_transpose, b_conjugate);
+  const auto b_no_temp = Xgemm<T>::NoTempBuffer(b_one, b_one_i, b_two, b_two_i, b_ld, b_offset, b_do_transpose, b_conjugate);
 
   // Creates the temporary matrices
   auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i * a_two_i);
-  auto b_temp = (b_no_temp) ? a_buffer : Buffer<T>(context_, b_one_i * b_two_i);
+  auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, b_one_i * b_two_i);
   auto c_temp = Buffer<T>(context_, n_ceiled*n_ceiled);
 
   // Events of all kernels (including pre/post processing kernels)
@@ -108,8 +125,8 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
   if (!b_no_temp) {
     auto eventProcessB = Event();
     PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList,
-                           b_one, b_two, a_ld, a_offset, a_buffer, // from A
-                           b_one_i, b_two_i, b_one_i, 0, b_temp, // to a copy, named 'B'
+                           b_one, b_two, b_ld, b_offset, b_buffer,
+                           b_one_i, b_two_i, b_one_i, 0, b_temp,
                            ConstantOne<T>(), program_,
                            true, b_do_transpose, false);
     eventWaitList.push_back(eventProcessB);
@@ -153,7 +170,7 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
   const auto upper = Xgemm<T>::c_want_rotated_(db_["GEMMK"]) ? (triangle == Triangle::kLower) :
                                                                (triangle == Triangle::kUpper);
   const auto lower = !upper;
-  PadCopyTransposeMatrix(queue_, device_, db_, event_, eventWaitList,
+  PadCopyTransposeMatrix(queue_, device_, db_, final_event, eventWaitList,
                          n_ceiled, n_ceiled, n_ceiled, 0, c_temp,
                          n, n, c_ld, c_offset, c_buffer,
                          ConstantOne<T>(), program_,
