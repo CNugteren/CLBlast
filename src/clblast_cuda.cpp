@@ -2593,7 +2593,8 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
     else {
       temp_buffer_size = Xgemm<T>::GetTempSize(layout, a_transpose, b_transpose, m, n, k,
                                                a_offset, a_ld, b_offset, b_ld, c_offset, c_ld,
-                                               db["MWG"], db["NWG"], db["KWG"]);
+                                               db["MWG"], db["NWG"], db["KWG"] * db["KREG"],
+                                               db["GEMMK"]);
     }
     temp_buffer_size *= sizeof(T); // translate from num-elements to bytes
     return StatusCode::kSuccess;

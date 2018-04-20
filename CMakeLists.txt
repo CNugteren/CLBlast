@@ -236,7 +236,6 @@ set(SOURCES
   src/routine.cpp
   src/routines/levelx/xinvert.cpp  # only source, don't include it as a test
   src/tuning/configurations.cpp
-  src/tuning/tuning_api.cpp
 )
 set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual Studio
   include/clblast_half.h
@@ -265,7 +264,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/tuning/routines/routine_tuner.hpp
 )
 if(OPENCL)
-  set(SOURCES ${SOURCES} src/clblast.cpp src/clblast_c.cpp)
+  set(SOURCES ${SOURCES} src/clblast.cpp src/clblast_c.cpp src/tuning/tuning_api.cpp)
   set(HEADERS ${HEADERS} include/clblast.h include/clblast_c.h src/clpp11.hpp)
   if(NETLIB)
     set(SOURCES ${SOURCES} src/clblast_netlib_c.cpp)
