@@ -17,14 +17,19 @@
 #define CLBLAST_ROUTINES_XSYR2K_H_
 
 #include "routine.hpp"
+#include "routines/level3/xsyrk.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xsyr2k: public Routine {
- public:
+class Xsyr2k: public Xsyrk<T> {
+public:
+
+  // Uses methods and variables the regular Xsyrk routine
+  using Xsyrk<T>::event_;
+  using Xsyrk<T>::SyrkAB;
 
   // Constructor
   Xsyr2k(Queue &queue, EventPointer event, const std::string &name = "SYR2K");

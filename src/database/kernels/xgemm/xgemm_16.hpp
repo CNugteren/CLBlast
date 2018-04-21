@@ -11,40 +11,40 @@ namespace clblast {
 namespace database {
 
 const DatabaseEntry XgemmHalf = {
-  "Xgemm", Precision::kHalf, {"KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, {
+  "Xgemm", Precision::kHalf, {"GEMMK", "KREG", "KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere", {
-          { Name{"AMD Radeon RX 480                                 "}, Params{ 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"AMD Radeon RX 480                                 "}, Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
-          { Name{"Mali-T628                                         "}, Params{ 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
-          { Name{"Mali-T760                                         "}, Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Mali-T628                                         "}, Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
+          { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
-          { Name{"Intel(R) HD Graphics 620                          "}, Params{ 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
-          { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
+          { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
+          { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 0, 1, 16, 2, 8, 8, 32, 16, 16, 128, 0, 1, 1, 0, 4, 8 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
         } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },

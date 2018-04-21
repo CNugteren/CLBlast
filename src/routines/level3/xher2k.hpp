@@ -17,14 +17,19 @@
 #define CLBLAST_ROUTINES_XHER2K_H_
 
 #include "routine.hpp"
+#include "routines/level3/xherk.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
 template <typename T, typename U>
-class Xher2k: public Routine {
- public:
+class Xher2k: public Xherk<T, U> {
+public:
+
+  // Uses methods and variables the regular Xherk routine
+  using Xherk<T, U>::event_;
+  using Xherk<T, U>::HerkAB;
 
   // Constructor
   Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");

@@ -19,11 +19,6 @@
 namespace clblast {
 // =================================================================================================
 
-// Defines the assumptions of the GEMM kernels
-template <typename T> const bool Xgemm<T>::a_want_rotated_ = false;
-template <typename T> const bool Xgemm<T>::b_want_rotated_ = true;
-template <typename T> const bool Xgemm<T>::c_want_rotated_ = false;
-
 // Constructor: forwards to base class constructor
 template <typename T>
 Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
@@ -64,12 +59,17 @@ void Xgemm<T>::DoGemm(const Layout layout,
                       const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
                       const Buffer<T> &temp_buffer, const bool temp_buffer_provided) { // optional arguments
 
+  // Two methods to choose from, select which one to run
+  const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
+
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
   size_t a_one, a_two, b_one, b_two, c_one, c_two;
   ProcessArguments(layout, a_transpose, b_transpose, m, n, k,
                    a_one, a_two, b_one, b_two, c_one, c_two,
-                   a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate);
+                   a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate,
+                   gemm_kernel_id);
 
   // Tests three matrices (A, B, C) for validity, first from a perspective of the OpenCL buffers and
   // their sizes, and then from a perspective of parameter values (e.g. m, n, k). Tests whether the
@@ -83,7 +83,6 @@ void Xgemm<T>::DoGemm(const Layout layout,
   TestMatrixC(c_one, c_two, c_buffer, c_offset, c_ld);
 
   // Selects which version of GEMM to run
-  const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
   if (do_gemm_direct) { // for small sizes (single kernel)
     GemmDirect(m, n, k, alpha,
                a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld, beta,
@@ -122,13 +121,14 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   // Calculates the ceiled versions of m, n, and k
   const auto m_ceiled = Ceil(m, db_["MWG"]);
   const auto n_ceiled = Ceil(n, db_["NWG"]);
-  const auto k_ceiled = Ceil(k, db_["KWG"]);
+  const auto k_ceiled = Ceil(k, db_["KWG"] * db_["KREG"]);
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
   // whether the matrices need to be rotated or not for the kernel.
   size_t a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i;
-  CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"],
-                              a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i);
+  CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"] * db_["KREG"],
+                              a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i,
+                              db_["GEMMK"]);
 
   // Determines whether or not temporary matrices are needed
   auto a_no_temp = NoTempBuffer(a_one, a_one_i, a_two, a_two_i, a_ld, a_offset, a_do_transpose, a_conjugate);

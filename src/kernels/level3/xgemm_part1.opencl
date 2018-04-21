@@ -7,15 +7,19 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file contains an optimized matrix-multiplication kernel inspired by the paper by Matsumoto
-// et al. and the tutorial on http://www.cedricnugteren.nl/tutorial.php. It is fully configurable
-// (and tunable!) using more or less the same parameters/naming conventions as in the paper. It
-// supports different data-types (SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM) through a pre-processor define.
+// This file contains two optimized matrix-multiplication kernels:
+// - Kernel 0: inspired by the paper by Matsumoto et al. and the tutorial on
+//   http://www.cedricnugteren.nl/tutorial.php
+// - Kernel 1: inspired by a Qualcomm optimized GPU kernel with 2D register tiling
+//   https://developer.qualcomm.com/blog/matrix-multiply-adreno-gpus-part-2-host-code-and-kernel
+// Both are fully configurable (and tunable!) using many parameters. Both kernels support
+// different data-types (SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM) through a pre-processor define.
 //
-// Matrices are accessed as follows:
+// For kernel 0 matrices are accessed as follows:
 // A: [k*M + m], with 'k' ranging from 0:K and 'm' from 0:M (m,k,m)
 // B: [k*N + n], with 'k' ranging from 0:K and 'n' from 0:N (n,k,n)
 // C: [n*M + m], with 'n' ranging from 0:N and 'm' from 0:M (m,n,m)
+// For kernel 1, both A and C are transposed w.r.t. the above
 //
 // Or as an image (assuming column-major)
 //       K                      
@@ -31,7 +35,7 @@
 //    o-------o        o-----o  
 //                              
 //
-// This kernel is separated into three files. This is part 1 out of 4.
+// This kernel is separated into multiple files. This is part 1 out of 4.
 //
 // =================================================================================================
 
@@ -43,6 +47,9 @@ R"(
 
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
+#ifndef GEMMK
+  #define GEMMK 0    // Kernel to choose: 0 regular, 1 with 2D register tiling
+#endif
 #ifndef MWG
   #define MWG 8      // Tile-size in dimension M (e.g. 64, 128)
 #endif
@@ -59,10 +66,10 @@ R"(
   #define NDIMC 8    // Threads per workgroup in N-dimension (e.g. 8, 16, 32)
 #endif
 #ifndef MDIMA
-  #define MDIMA 8    // Re-shaped tile dimension of matrix A: KDIMA * MDIMA
+  #define MDIMA 8    // Re-shaped tile dimension of matrix A: KDIMA * MDIMA (kernel 0 only)
 #endif
 #ifndef NDIMB
-  #define NDIMB 8    // Re-shaped tile dimension of matrix B: KDIMB * NDIMB
+  #define NDIMB 8    // Re-shaped tile dimension of matrix B: KDIMB * NDIMB (kernel 0 only)
 #endif
 #ifndef KWI
   #define KWI 1      // Unroll factor of the KWG loop (smaller or equal than KWG)
@@ -74,16 +81,19 @@ R"(
   #define VWN 1      // Vector width of matrix B
 #endif
 #ifndef STRM
-  #define STRM 0     // Use strided access within a thread in the M-dimension (1) or not (0)
+  #define STRM 0     // Use strided access within a thread in the M-dimension (1) or not (0) (kernel 0 only)
 #endif
 #ifndef STRN
-  #define STRN 0     // Use strided access within a thread in the N-dimension (1) or not (0)
+  #define STRN 0     // Use strided access within a thread in the N-dimension (1) or not (0) (kernel 0 only)
 #endif
 #ifndef SA
-  #define SA 0       // Use local/shared memory to cache matrix A (1) or not (0)
+  #define SA 0       // Use local/shared memory to cache matrix A (1) or not (0) (kernel 0 only)
 #endif
 #ifndef SB
-  #define SB 0       // Use local/shared memory to cache matrix B (1) or not (0)
+  #define SB 0       // Use local/shared memory to cache matrix B (1) or not (0) (kernel 0 only)
+#endif
+#ifndef KREG
+  #define KREG 1     // Amount of register tiling in second dimension, multiple of VWN (kernel 1 only)
 #endif
 
 // Helper parameters based on the above tuning parameters
@@ -244,7 +254,7 @@ INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, LOCAL_PTR re
 
 // Caches global off-chip memory directly into per-thread private memory (registers). This function
 // is specific for caching the A input matrix.
-#if SA == 0
+#if SA == 0 && GEMMK == 0
 INLINE_FUNC realM GlobalToPrivateA(const __global realM* restrict agm, const int _mi,
                                    const int kSizeM, const int idk, const int kwg) {
   // Computes the indices based on strided/non-strided access
@@ -263,7 +273,7 @@ INLINE_FUNC realM GlobalToPrivateA(const __global realM* restrict agm, const int
 #endif
 
 // Same as above, but now for the B input matrix
-#if SB == 0
+#if SB == 0 && GEMMK == 0
 INLINE_FUNC realN GlobalToPrivateB(const __global realN* restrict bgm, const int _ni,
                                    const int kSizeN, const int idk) {
   // Computes the indices based on strided/non-strided access
@@ -281,6 +291,57 @@ INLINE_FUNC realN GlobalToPrivateB(const __global realN* restrict bgm, const int
 }
 #endif
 
+// =================================================================================================
+#if GEMMK == 1
+
+// Caches global off-chip memory directly into per-thread private memory (registers). This function
+// is specific for caching the A input matrix for kernel 1.
+INLINE_FUNC realN GlobalToPrivateA2D(const __global real* restrict a_ptr, const int tid_y, const int _ni,
+                                     const int kSizeK, const int idk, const int _ki) {
+  #if PRECISION == 3232 || PRECISION == 6464
+    const int a_index = (tid_y * NWI + _ni) * (kSizeK / VWN) + idk / VWN + _ki;
+    const __global realN* restrict agm = (const __global realN* restrict) a_ptr;
+    return agm[a_index];
+  #else
+    const int a_index = (tid_y * NWI + _ni) * kSizeK + idk + _ki * VWN;
+    #if VWN == 1
+      return a_ptr[a_index];
+    #elif VWN == 2
+      return vload2(0, a_ptr + a_index);
+    #elif VWN == 4
+      return vload4(0, a_ptr + a_index);
+    #elif VWN == 8
+      return vload8(0, a_ptr + a_index);
+    #elif VWN == 16
+      return vload16(0, a_ptr + a_index);
+    #endif
+  #endif
+}
+
+// Same as above, but now for the B input matrix
+INLINE_FUNC realM GlobalToPrivateB2D(const __global real* restrict b_ptr, const int tid_x, const int _mi,
+                                     const int kSizeN, const int idk, const int _ki) {
+  #if PRECISION == 3232 || PRECISION == 6464
+    const int b_index = (idk + _ki) * (kSizeN / VWM) + tid_x * (MWI / VWM) + _mi;
+    const __global realM* restrict bgm = (const __global realM* restrict) b_ptr;
+    return bgm[b_index];
+  #else
+    const int b_index = (idk + _ki) * kSizeN + tid_x * MWI + _mi * VWM;
+    #if VWM == 1
+      return b_ptr[b_index];
+    #elif VWM == 2
+      return vload2(0, b_ptr + b_index);
+    #elif VWM == 4
+      return vload4(0, b_ptr + b_index);
+    #elif VWM == 8
+      return vload8(0, b_ptr + b_index);
+    #elif VWM == 16
+      return vload16(0, b_ptr + b_index);
+    #endif
+  #endif
+}
+
+#endif
 // =================================================================================================
 
 // Caches on-chip local memory into per-thread private memory (registers). This function is specific

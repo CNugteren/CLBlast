@@ -35,6 +35,8 @@ void StartVariation(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   StartVariation<1>(argc, argv);
   StartVariation<2>(argc, argv);
+  StartVariation<11>(argc, argv);
+  StartVariation<12>(argc, argv);
   return 0;
 }
 
