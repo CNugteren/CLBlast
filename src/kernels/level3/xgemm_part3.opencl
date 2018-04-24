@@ -37,8 +37,13 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
     #pragma promote_to_registers
     realN bpm[NWI/VWN]; // 1 * NWI
   #elif GEMMK == 1
-    #pragma promote_to_registers
-    realN apm[NWI*(KREG/VWN)]; // NWI * KREG
+    #if USE_SUBGROUP_SHUFFLING == 1
+      #pragma promote_to_registers
+      realN apm[KREG/VWN]; // KREG (subgroup shuffling in NWI dimension)
+    #else
+      #pragma promote_to_registers
+      realN apm[NWI*(KREG/VWN)]; // NWI * KREG
+    #endif
     #pragma promote_to_registers
     realM bpm[KREG*(MWI/VWM)]; // KREG * MWI
   #endif
@@ -123,14 +128,23 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
             #endif
           }
         #elif GEMMK == 1
-          // Loads data: 2D global --> 2D private (matrix A)
-          #pragma unroll
-          for (int _ni = 0; _ni < NWI; _ni += 1) {
+          // Loads data: 2D global --> 2D private (matrix A). Partly, shuffled later among subgroups
+          #if USE_SUBGROUP_SHUFFLING == 1
+            const int _ni = get_sub_group_local_id();
             #pragma unroll
             for (int _ki = 0; _ki < KREG/VWN; _ki += 1) {
-              apm[_ni * (KREG/VWN) + _ki] = GlobalToPrivateA2D(a_ptr, tid_y, _ni, kSizeK, idk, _ki);
+              apm[_ki] = GlobalToPrivateA2D(a_ptr, tid_y, _ni, kSizeK, idk, _ki);
             }
-          }
+          // Loads data: 2D global --> 2D private (matrix A)
+          #else
+            #pragma unroll
+            for (int _ni = 0; _ni < NWI; _ni += 1) {
+              #pragma unroll
+              for (int _ki = 0; _ki < KREG/VWN; _ki += 1) {
+                apm[_ni * (KREG/VWN) + _ki] = GlobalToPrivateA2D(a_ptr, tid_y, _ni, kSizeK, idk, _ki);
+              }
+            }
+          #endif
         #endif
 
         // Performs the accumulation (Cpm += Apm * Bpm)
@@ -187,7 +201,11 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
               #pragma unroll
               for (int _ki = 0; _ki < KREG/VWN; _ki += 1) {
                 const int index =  _ni * (MWI/VWM) + _mi;
-                const realN aval = apm[_ni * (KREG/VWN) + _ki];
+                #if USE_SUBGROUP_SHUFFLING == 1
+                  const realN aval = intel_sub_group_shuffle(apm[_ki], _ni);
+                #else
+                  const realN aval = apm[_ni * (KREG/VWN) + _ki];
+                #endif
                 #if VWN == 1
                   cpm[index] = MultiplyAddVector(cpm[index], bpm[(VWN * _ki + 0) * (MWI/VWM) + _mi], aval);
                 #elif VWN == 2
