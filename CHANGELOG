@@ -6,6 +6,7 @@ Development (next version)
 - Improved the performance potential by adding a second tunable GEMM kernel with 2D register tiling
 - Re-added a local memory size constraint to the tuners
 - Updated and reorganised the CLBlast documentation
+- Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)
 - Added non-BLAS level-1 routines:

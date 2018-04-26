@@ -442,7 +442,9 @@ class Program {
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source):
       program_(new cl_program, [](cl_program* p) {
-        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
+        #ifndef _MSC_VER // 'clReleaseProgram' caused an access violation with Visual Studio
+          if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
+        #endif
         delete p;
       }) {
     const char *source_ptr = &source[0];
