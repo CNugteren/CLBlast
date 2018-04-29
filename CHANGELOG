@@ -4,6 +4,7 @@ Development (next version)
 - Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
 - Added an API to run the tuners programmatically without any I/O
 - Improved the performance potential by adding a second tunable GEMM kernel with 2D register tiling
+- Added support for Intel specific subgroup shuffling extensions for faster GEMM on Intel GPUs
 - Re-added a local memory size constraint to the tuners
 - Updated and reorganised the CLBlast documentation
 - Various minor fixes and enhancements
