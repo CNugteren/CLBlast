@@ -57,6 +57,11 @@ Program CompileFromSource(const std::string &source_string, const Precision prec
     header_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
+  // For Intel GPUs with subgroup support, use subgroup shuffling.
+  if (device.IsGPU() && device.HasExtension(kKhronosIntelSubgroups)) {
+    header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
+  }
+
   // Optionally adds a translation header from OpenCL kernels to CUDA kernels
   #ifdef CUDA_API
     header_string +=

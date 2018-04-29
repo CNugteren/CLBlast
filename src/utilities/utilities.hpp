@@ -47,6 +47,7 @@ using double2 = std::complex<double>;
 // Khronos OpenCL extensions
 const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
 const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
+const std::string kKhronosIntelSubgroups = "cl_intel_subgroups";
 
 // Catched an unknown error
 constexpr auto kUnknownError = -999;

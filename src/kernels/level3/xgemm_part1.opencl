@@ -114,6 +114,18 @@ R"(
   #define GLOBAL_MEM_FENCE 0    // Global synchronisation barrier for potential better performance
 #endif
 
+// Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.txt)
+#ifndef USE_SUBGROUP_SHUFFLING
+  #define USE_SUBGROUP_SHUFFLING 0     // Optionally enables subgroup shuffling for Intel GPUs
+#endif
+#if USE_SUBGROUP_SHUFFLING == 1
+  #define SUBGROUP_SIZE 8              // Assumes subgroup size is always 8 on Intel GPUs
+#endif
+#if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
+  #undef USE_SUBGROUP_SHUFFLING
+  #define USE_SUBGROUP_SHUFFLING 0     // Disables subgroups in case the assumptions don't hold
+#endif
+
 // =================================================================================================
 
 // Data-widths in dimension M
