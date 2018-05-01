@@ -2,11 +2,11 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | Build status | Tests on Intel CPU | Tests on NVIDIA GPU | Tests on AMD GPU |
+| | Build status | Tests on Intel CPU | Tests on NVIDIA GPU | Tests on Intel GPU |
 |-----|-----|-----|-----|-----|
-| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | N/A | N/A | N/A |
-| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-intel-e5-2620-v4.svg)](http://67.207.87.39:8010/#/builders/97) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-nvidia-k80.svg)](http://67.207.87.39:8010/#/builders/98) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-amd-w9100.svg)](http://67.207.87.39:8010/#/builders/96) |
-| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |  [![Build Status](http://67.207.87.39:8010/badges/clblast-osx-intel-e5-2620-v4.svg)](http://67.207.87.39:8010/#/builders/101) | N/A | N/A |
+| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](http://67.207.87.39:8010/badges/clblast-windows-intel-i7-4790k.svg)](http://67.207.87.39:8010/#/builders/106) | [![Build Status](http://67.207.87.39:8010/badges/clblast-windows-nvidia-k5000.svg)](http://67.207.87.39:8010/#/builders/105) | [![Build Status](http://67.207.87.39:8010/badges/clblast-windows-intel-HD4600.svg)](http://67.207.87.39:8010/#/builders/107) |
+| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-intel-e5-2620-v4.svg)](http://67.207.87.39:8010/#/builders/97) | [![Build Status](http://67.207.87.39:8010/badges/clblast-linux-nvidia-k80.svg)](http://67.207.87.39:8010/#/builders/98) | N/A |
+| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |  [![Build Status](http://67.207.87.39:8010/badges/clblast-osx-intel-i5-4278U.svg)](http://67.207.87.39:8010/#/builders/110) | N/A | N/A |
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
@@ -118,6 +118,7 @@ The main contributing authors (code, pull requests, testing) are:
 * [Dimitri Van Assche](https://github.com/dvasschemacq)
 * [Shehzan Mohammed](https://shehzan10.github.io)
 * [Marco Cianfriglia](https://github.com/mcian)
+* [Kodonnell](https://github.com/kodonnell)
 * Everyone else listed as a [GitHub contributor](https://github.com/CNugteren/CLBlast/graphs/contributors)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
@@ -127,11 +128,12 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 * [dividiti](http://www.dividiti.com)
 * [SURFsara HPC center](http://www.surfsara.com)
 * [ArrayFire](http://arrayfire.org)
+* [TomTom](http://www.tomtom.com)
 * Everyone reporting [tuning results](https://github.com/CNugteren/CLBlast/issues/1)
 
 Hardware/software for this project was contributed by:
 
-* [ArrayFire](http://arrayfire.org) for settings up and supporting Jenkins CI correctness tests on 7 platforms
+* [ArrayFire](http://arrayfire.org) for settings up and supporting Buildbot correctness tests on multiple platforms
 * [JetBrains](https://www.jetbrains.com/clion/) for supply a free CLion IDE license for CLBlast developers
 * [Travis CI](https://travis-ci.org/CNugteren/CLBlast/branches) and [AppVeyor](https://ci.appveyor.com/project/CNugteren/clblast) for free automated build tests for open-source projects
 
@@ -142,11 +144,12 @@ More information
 Further information on CLBlast is available through the following links:
 
 * A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slide-set is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf).
-* More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (May 2017). For CLTune, the inspiration for the included auto-tuner, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
+* More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (May 2017, updated April 2018). For CLTune, the inspiration for the included auto-tuner, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
 
 How to cite this work:
 
-    C. Nugteren. CLBlast: A Tuned OpenCL BLAS Library. ArXiv pre-print 1705.05249, 2017.
+    Cedric Nugteren. CLBlast: A Tuned OpenCL BLAS Library. In IWOCL'18: International Workshop
+    on OpenCL. ACM, New York, NY, USA, 10 pages. 2018. https://doi.org/10.1145/3204919.3204924
 
 
 Support us
