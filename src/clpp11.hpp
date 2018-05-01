@@ -437,39 +437,33 @@ using ContextPointer = cl_context*;
 // C++11 version of 'cl_program'.
 class Program {
  public:
-  Program() = default;
 
   // Source-based constructor with memory management
-  explicit Program(const Context &context, const std::string &source):
-      program_(new cl_program, [](cl_program* p) {
-        #ifndef _MSC_VER // 'clReleaseProgram' caused an access violation with Visual Studio
-          if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
-        #endif
-        delete p;
-      }) {
+  explicit Program(const Context &context, const std::string &source) {
     const char *source_ptr = &source[0];
     const auto length = source.length();
     auto status = CL_SUCCESS;
-    *program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
+    program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
     CLCudaAPIError::Check(status, "clCreateProgramWithSource");
   }
 
   // Binary-based constructor with memory management
-  explicit Program(const Device &device, const Context &context, const std::string &binary):
-      program_(new cl_program, [](cl_program* p) {
-        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
-        delete p;
-      }) {
+  explicit Program(const Device &device, const Context &context, const std::string &binary) {
     const char *binary_ptr = &binary[0];
     const auto length = binary.length();
     auto status1 = CL_SUCCESS;
     auto status2 = CL_SUCCESS;
     const auto dev = device();
-    *program_ = clCreateProgramWithBinary(context(), 1, &dev, &length,
+    program_ = clCreateProgramWithBinary(context(), 1, &dev, &length,
                                           reinterpret_cast<const unsigned char**>(&binary_ptr),
                                           &status1, &status2);
     CLCudaAPIError::Check(status1, "clCreateProgramWithBinary (binary status)");
     CLCudaAPIError::Check(status2, "clCreateProgramWithBinary");
+  }
+
+  // Clean-up
+  ~Program() {
+    if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
   }
 
   // Compiles the device program and checks whether or not there are any warnings/errors
@@ -477,7 +471,7 @@ class Program {
     options.push_back("-cl-std=CL1.1");
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
-    CheckError(clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
+    CheckError(clBuildProgram(program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
   }
 
   // Confirms whether a certain status code is an actual compilation error or warning
@@ -489,28 +483,28 @@ class Program {
   std::string GetBuildInfo(const Device &device) const {
     auto bytes = size_t{0};
     auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, 0, nullptr, &bytes));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, 0, nullptr, &bytes));
     auto result = std::string{};
     result.resize(bytes);
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, bytes, &result[0], nullptr));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, bytes, &result[0], nullptr));
     return result;
   }
 
   // Retrieves a binary or an intermediate representation of the compiled program
   std::string GetIR() const {
     auto bytes = size_t{0};
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
     auto result = std::string{};
     result.resize(bytes);
     auto result_ptr = result.data();
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
     return result;
   }
 
   // Accessor to the private data-member
-  const cl_program& operator()() const { return *program_; }
+  const cl_program& operator()() const { return program_; }
  private:
-  std::shared_ptr<cl_program> program_;
+  cl_program program_ = nullptr;
 };
 
 // =================================================================================================
@@ -757,13 +751,13 @@ class Kernel {
   }
 
   // Regular constructor with memory management
-  explicit Kernel(const Program &program, const std::string &name):
+  explicit Kernel(const std::shared_ptr<Program> program, const std::string &name):
       kernel_(new cl_kernel, [](cl_kernel* k) {
         if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
         delete k;
       }) {
     auto status = CL_SUCCESS;
-    *kernel_ = clCreateKernel(program(), name.c_str(), &status);
+    *kernel_ = clCreateKernel(program->operator()(), name.c_str(), &status);
     CLCudaAPIError::Check(status, "clCreateKernel");
   }
 
