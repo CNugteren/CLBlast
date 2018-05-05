@@ -3063,10 +3063,10 @@ Arguments to IM2COL:
 * `const size_t stride_w`: Integer size argument. This value must be positive.
 * `const size_t dilation_h`: Integer size argument. This value must be positive.
 * `const size_t dilation_w`: Integer size argument. This value must be positive.
-* `const cl_mem im_buffer`: OpenCL buffer to store the input im vector.
-* `const size_t im_offset`: The offset in elements from the start of the input im vector.
-* `cl_mem col_buffer`: OpenCL buffer to store the output col vector.
-* `const size_t col_offset`: The offset in elements from the start of the output col vector.
+* `const cl_mem im_buffer`: OpenCL buffer to store the input im tensor.
+* `const size_t im_offset`: The offset in elements from the start of the input im tensor.
+* `cl_mem col_buffer`: OpenCL buffer to store the output col tensor.
+* `const size_t col_offset`: The offset in elements from the start of the output col tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 

@@ -142,6 +142,11 @@ class Routine:
         return ["a", "b", "c", "ap"]
 
     @staticmethod
+    def buffers_tensor():
+        """Distinguish between vectors and matrices and tensors"""
+        return ["im", "col", "kernel", "result"]
+
+    @staticmethod
     def routines_scalar_no_return():
         return ["dotu", "dotc"]
 
@@ -187,7 +192,7 @@ class Routine:
 
     def buffers_without_ld_inc(self):
         """List of buffers without 'inc' or 'ld'"""
-        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap", "im", "col"]
+        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap", "im", "col", "kernel", "result"]
 
     def get_buffer_type(self, name, flavour):
         if name in self.index_buffers():
@@ -200,7 +205,7 @@ class Routine:
 
     def no_scalars(self):
         """Determines whether or not this routine has scalar arguments (alpha/beta)"""
-        return self.scalars == [] or self.name == "im2col"
+        return self.scalars == [] or self.name in ["im2col", "convgemm"]
 
     def has_layout(self):
         """Determines whether the layout is an argument"""
@@ -221,12 +226,12 @@ class Routine:
         """Determines which buffers go first (between alpha and beta) and which ones go after"""
         if self.level == "2b" or self.name == "had":
             return ["x", "y"]
-        return ["ap", "a", "b", "x", "im"]
+        return ["ap", "a", "b", "x", "im", "kernel"]
 
     def buffers_second(self):
         if self.level == "2b" or self.name == "had":
             return ["z", "ap", "a", "b", "c"]
-        return ["y", "c", "col"]
+        return ["y", "c", "col", "result"]
 
     def buffer(self, name):
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
@@ -397,7 +402,7 @@ class Routine:
         prefix = "const " if (name in self.inputs) else ""
         inout = "input" if (name in self.inputs) else "output"
         if (name in self.inputs) or (name in self.outputs):
-            math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " vector"
+            math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " tensor" if (name in self.buffers_tensor()) else name + " vector"
             inc_ld_description = "Leading dimension " if (name in self.buffers_matrix()) else "Stride/increment "
             a = ["`" + prefix + "cl_mem " + name + "_buffer`: OpenCL buffer to store the " + inout + " " + math_name + "."]
             b = ["`const size_t " + self.b_star() + name + "_offset" + self.b_s() + "`: The offset" + self.b_s() + " in elements from the start of the " + inout + " " + math_name + "."]

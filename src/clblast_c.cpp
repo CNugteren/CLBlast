@@ -3679,6 +3679,83 @@ CLBlastStatusCode CLBlastHim2col(const size_t channels, const size_t height, con
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
 
+// CONVGEMM
+CLBlastStatusCode CLBlastSconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Convgemm<float>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                               im_buffer, im_offset,
+                               kernel_buffer, kernel_offset,
+                               result_buffer, result_offset,
+                               queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastDconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Convgemm<double>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                                im_buffer, im_offset,
+                                kernel_buffer, kernel_offset,
+                                result_buffer, result_offset,
+                                queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastCconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Convgemm<float2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                                im_buffer, im_offset,
+                                kernel_buffer, kernel_offset,
+                                result_buffer, result_offset,
+                                queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastZconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Convgemm<double2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                                 im_buffer, im_offset,
+                                 kernel_buffer, kernel_offset,
+                                 result_buffer, result_offset,
+                                 queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+CLBlastStatusCode CLBlastHconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+      clblast::Convgemm<half>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                              im_buffer, im_offset,
+                              kernel_buffer, kernel_offset,
+                              result_buffer, result_offset,
+                              queue, event)
+    );
+  } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
+}
+
 // AXPY
 CLBlastStatusCode CLBlastSaxpyBatched(const size_t n,
                                       const float *alphas,

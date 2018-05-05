@@ -2252,6 +2252,41 @@ template StatusCode PUBLIC_API Im2col<half>(const size_t, const size_t, const si
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
+// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/CCONVGEMM/ZCONVGEMM/HCONVGEMM
+template <typename T>
+StatusCode Convgemm(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                    const cl_mem, const size_t,
+                    const cl_mem, const size_t,
+                    cl_mem, const size_t,
+                    cl_command_queue*, cl_event*) {
+  return StatusCode::kNotImplemented;
+}
+template StatusCode PUBLIC_API Convgemm<float>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                               const cl_mem, const size_t,
+                                               const cl_mem, const size_t,
+                                               cl_mem, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<double>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                                const cl_mem, const size_t,
+                                                const cl_mem, const size_t,
+                                                cl_mem, const size_t,
+                                                cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<float2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                                const cl_mem, const size_t,
+                                                const cl_mem, const size_t,
+                                                cl_mem, const size_t,
+                                                cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<double2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                                 const cl_mem, const size_t,
+                                                 const cl_mem, const size_t,
+                                                 cl_mem, const size_t,
+                                                 cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<half>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 template <typename T>
 StatusCode AxpyBatched(const size_t n,
