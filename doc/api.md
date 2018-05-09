@@ -3075,7 +3075,7 @@ Arguments to IM2COL:
 xCONVGEMM: Batched convolution as GEMM (non-BLAS function)
 -------------
 
-Integrates im2col and GEMM for batched 3D convolution, in which _im_ is the 4D input tensor, _kernel_ the 4D kernel weights tensor, and _result_ the 4D output tensor.
+Integrates im2col and GEMM for batched 3D convolution, in which _im_ is the 4D input tensor (NCHW - batch-channelin-height-width), _kernel_ the 4D kernel weights tensor (KCHW - channelout-channelin-height-width), and _result_ the 4D output tensor (NCHW - batch-channelout-height-width).
 
 C++ API:
 ```
