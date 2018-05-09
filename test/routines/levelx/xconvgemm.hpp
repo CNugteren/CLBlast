@@ -151,7 +151,9 @@ public:
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return args.batch_count; // TODO
+    const auto patch_size = args.kernel_h * args.kernel_w * args.channels;
+    const auto num_patches = OutputHeight(args) * OutputWidth(args);
+    return args.batch_count * 2 * num_patches * args.num_kernels * patch_size;
   }
   static size_t GetBytes(const Arguments<T> &args) {
     return (GetSizeA(args) + GetSizeB(args) + GetSizeC(args)) * sizeof(T);
