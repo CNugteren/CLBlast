@@ -105,7 +105,7 @@ void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
 
 #endif
 // =================================================================================================
-#if defined(ROUTINE_GEMMSTRIDEDBATCHED)
+#if defined(ROUTINE_GEMMSTRIDEDBATCHED) || defined(ROUTINE_CONVGEMM)
 
 // Direct version of the strided-batched GEMM kernel with [A, B] = [non-transposed, non-transposed]
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
