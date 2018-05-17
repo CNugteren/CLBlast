@@ -78,6 +78,7 @@ More detailed documentation is available in separate files:
 * [Tuning for better performance](doc/tuning.md)
 * [Testing the library for correctness](doc/testing.md)
 * [Bindings / wrappers for other languages](doc/bindings.md)
+* [More details on the GEMM kernel](doc/details_gemm.md)
 * [Glossary with some terms explained](doc/glossary.md)
 
 
@@ -133,6 +134,7 @@ Tuning and testing on a variety of OpenCL devices was made possible by:
 
 Hardware/software for this project was contributed by:
 
+* [HPC research group at the University of Bristol](http://uob-hpc.github.io/zoo/) for access to their GPU zoo
 * [ArrayFire](http://arrayfire.org) for settings up and supporting Buildbot correctness tests on multiple platforms
 * [JetBrains](https://www.jetbrains.com/clion/) for supply a free CLion IDE license for CLBlast developers
 * [Travis CI](https://travis-ci.org/CNugteren/CLBlast/branches) and [AppVeyor](https://ci.appveyor.com/project/CNugteren/clblast) for free automated build tests for open-source projects
@@ -143,8 +145,8 @@ More information
 
 Further information on CLBlast is available through the following links:
 
-* A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slide-set is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf).
-* More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (May 2017, updated April 2018). For CLTune, the inspiration for the included auto-tuner, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
+* A 20-minute presentation of CLBlast was given at the GPU Technology Conference in May 2017. A recording is available on the [GTC on-demand website](http://on-demand.gputechconf.com/gtc/2017/video/s7280-nugteren-clblast.mp4) (poor audio quality however) and a full slide-set is also available [as PDF](http://on-demand.gputechconf.com/gtc/2017/presentation/s7280-cedric-nugteren-clblast.pdf). An updated version was also presented at IWOCL in May 2018. The slide set can be found [here as PDF](https://cnugteren.github.io/downloads/CLBlastIWOCL18.pdf).
+* More in-depth information and experimental results are also available in a scientific paper titled [CLBlast: A Tuned OpenCL BLAS Library](https://arxiv.org/abs/1705.05249) (v1 May 2017, updated to v2 in April 2018). For CLTune, the inspiration for the included auto-tuner, see also the [CLTune: A Generic Auto-Tuner for OpenCL Kernels](https://arxiv.org/abs/1703.06503) paper.
 
 How to cite this work:
 
