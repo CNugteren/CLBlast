@@ -66,14 +66,14 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
   const auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
   const auto max_batch_count = *std::max_element(kBatchCounts.begin(), kBatchCounts.end());
 
-  // Creates test input data
-  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
-  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
-  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
-  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset);
+  // Creates test input data. Adds a 'canary' region to detect buffer overflows
+  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset + kCanarySize);
+  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset + kCanarySize);
+  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset + kCanarySize);
+  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset + kCanarySize);
   std::mt19937 mt(kSeed);
   std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
   PopulateVector(x_source_, mt, dist);
@@ -94,7 +94,16 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
   TestStart("regular behaviour", name);
 
   // Iterates over all the to-be-tested combinations of arguments
-  for (const auto &args: test_vector) {
+  for (auto &args: test_vector) {
+
+    // Adds a 'canary' region to detect buffer overflows
+    args.x_size += kCanarySize;
+    args.y_size += kCanarySize;
+    args.a_size += kCanarySize;
+    args.b_size += kCanarySize;
+    args.c_size += kCanarySize;
+    args.ap_size += kCanarySize;
+    args.scalar_size += kCanarySize;
 
     // Prints the current test configuration
     if (verbose_) {
@@ -209,6 +218,20 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         }
       }
     }
+    // Checks for differences in the 'canary' region to detect buffer overflows
+    for (auto canary_id=size_t{0}; canary_id<kCanarySize; ++canary_id) {
+      auto index = get_index_(args, get_id1_(args), get_id2_(args)) + canary_id;
+      if (!TestSimilarity(result1[index], result2[index])) {
+        errors++;
+        if (verbose_) {
+          if (get_id2_(args) == 1) { std::cout << std::endl << "   Buffer overflow index " << index << ": "; }
+          else { std::cout << std::endl << "   Buffer overflow " << index << ": "; }
+          std::cout << " " << ToString(result1[index]) << " (reference) versus ";
+          std::cout << " " << ToString(result2[index]) << " (CLBlast)";
+        }
+      }
+    }
+
 
     // Report the results
     if (verbose_ && errors > 0) {
