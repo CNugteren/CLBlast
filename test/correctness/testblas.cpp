@@ -220,7 +220,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     }
     // Checks for differences in the 'canary' region to detect buffer overflows
     for (auto canary_id=size_t{0}; canary_id<kCanarySize; ++canary_id) {
-      auto index = get_index_(args, get_id1_(args), get_id2_(args)) + canary_id;
+      auto index = get_index_(args, get_id1_(args) - 1, get_id2_(args) - 1) + canary_id;
       if (!TestSimilarity(result1[index], result2[index])) {
         errors++;
         if (verbose_) {
