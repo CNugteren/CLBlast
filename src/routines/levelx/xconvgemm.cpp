@@ -117,6 +117,21 @@ void Xconvgemm<T>::DoConvgemm(const size_t channels, const size_t height, const 
   kernel.SetArgument(8, result_buffer());
   kernel.SetArgument(9, static_cast<int>(result_offset));
   kernel.SetArgument(10, static_cast<int>(result_stride));
+  kernel.SetArgument(11, static_cast<int>(height));
+  kernel.SetArgument(12, static_cast<int>(width));
+  kernel.SetArgument(13, static_cast<int>(channels));
+  kernel.SetArgument(14, static_cast<int>(kernel_h));
+  kernel.SetArgument(15, static_cast<int>(kernel_w));
+  kernel.SetArgument(16, static_cast<int>(pad_h));
+  kernel.SetArgument(17, static_cast<int>(pad_w));
+  kernel.SetArgument(18, static_cast<int>(stride_h));
+  kernel.SetArgument(19, static_cast<int>(stride_w));
+  kernel.SetArgument(20, static_cast<int>(dilation_h));
+  kernel.SetArgument(21, static_cast<int>(dilation_w));
+  kernel.SetArgument(22, im_buffer());
+  kernel.SetArgument(23, static_cast<int>(im_offset));
+  kernel.SetArgument(24, static_cast<int>(output_h));
+  kernel.SetArgument(25, static_cast<int>(output_w));
 
   // Computes the global and local thread sizes
   const auto m_ceiled = Ceil(num_patches, db_["WGD"]);
