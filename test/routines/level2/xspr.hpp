@@ -139,7 +139,7 @@ class TestXspr {
   }
 
   // Describes how to compute the indices of the result buffer
-  static size_t ResultID1(const Arguments<T> &args) { return args.ap_size - args.ap_offset; }
+  static size_t ResultID1(const Arguments<T> &args) { return GetSizeAP(args) - args.ap_offset; }
   static size_t ResultID2(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t) {
     return id1 + args.ap_offset;

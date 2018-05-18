@@ -7,6 +7,8 @@ Development (next version)
 - Added support for Intel specific subgroup shuffling extensions for faster GEMM on Intel GPUs
 - Re-added a local memory size constraint to the tuners
 - Updated and reorganised the CLBlast documentation
+- Added a 'canary' region to check for overflows in the tuner and tests (insipred by clARMOR)
+- Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program
 - Fixed incorrect releasing of the OpenCL program resulting in segfaults / access violations
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)

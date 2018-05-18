@@ -139,7 +139,7 @@ class TestXhpr {
   }
 
   // Describes how to compute the indices of the result buffer
-  static size_t ResultID1(const Arguments<U> &args) { return args.ap_size - args.ap_offset; }
+  static size_t ResultID1(const Arguments<U> &args) { return GetSizeAP(args) - args.ap_offset; }
   static size_t ResultID2(const Arguments<U> &) { return 1; } // N/A for this routine
   static size_t GetResultIndex(const Arguments<U> &args, const size_t id1, const size_t) {
     return id1 + args.ap_offset;
