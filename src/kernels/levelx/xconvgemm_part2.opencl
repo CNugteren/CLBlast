@@ -8,7 +8,7 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file contains the an implementation of 3D convolution on a 4D image using GEMM kernels. It
-// uses parameters from the direct GEMM kernel.
+// uses parameters from the direct GEMM kernel. This part contains the main kernel (2/2).
 //
 // =================================================================================================
 
