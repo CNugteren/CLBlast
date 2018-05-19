@@ -31,6 +31,7 @@ Xconvgemm<T>::Xconvgemm(Queue &queue, EventPointer event, const std::string &nam
             #include "../../kernels/level3/xgemm_direct_part2.opencl"
             #include "../../kernels/level3/xgemm_direct_part3.opencl"
             , // separated in multiple parts to prevent C1091 in MSVC 2013
+            #include "../../kernels/levelx/xconvgemm_part1.opencl"
             #include "../../kernels/level3/xconvgemm.opencl"
         }) {
 }

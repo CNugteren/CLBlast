@@ -19,35 +19,6 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_CONVGEMM)
 
-// Loads global off-chip memory into thread-private register files. This function is specific for
-// loading the image input tensor. This includes a bounds check.
-INLINE_FUNC real GlobalToPrivateCheckedImage(const __global real* restrict imagegm, const int image_offset_batch,
-                                             const int h_id, const int w_id, const int kwg,
-                                             const int input_h, const int input_w, const int channels,
-                                             const int kernel_h, const int kernel_w,
-                                             const int pad_h, const int pad_w,
-                                             const int stride_h, const int stride_w,
-                                             const int dilation_h, const int dilation_w) {
-  real result;
-
-  const int kernel_2d_index = kwg % (kernel_h * kernel_w);
-  const int kw_id = kernel_2d_index % kernel_w;
-  const int kh_id = kernel_2d_index / kernel_w;
-  const int c_id = kwg / (kernel_h * kernel_w);
-
-  const int h_index = -pad_h + kh_id * dilation_h + stride_h * h_id;
-  const int w_index = -pad_w + kw_id * dilation_w + stride_w * w_id;
-  if (h_index >= 0 && h_index < input_h &&
-      w_index >= 0 && w_index < input_w) {
-    const int image_index = w_index + input_w * (h_index + input_h * c_id);
-    result = imagegm[image_index + image_offset_batch];
-  }
-  else {
-    SetToZero(result);
-  }
-  return result;
-}
-
 // ConvGEMM kernel
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void Xconvgemm(const int num_patches, const int num_kernels, const int patch_size,
@@ -189,8 +160,15 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
     int kwg = 0;
     for (; kwg < (patch_size/WGD) * WGD; kwg+=WGD) {
 
-      // Loads data: off-chip --> local (matrix A and B)
-      GlobalToLocalCheckedA(colgms, alm, num_patches, col_offset_batch, kwg, false, false, num_patches, patch_size);
+      // Loads data: off-chip --> local
+      #if defined(CONVGEMM_WITH_IM2COL)
+        GlobalToLocalCheckedA(colgms, alm, num_patches, col_offset_batch, kwg, false, false, num_patches, patch_size);
+      #else
+        GlobalToLocalCheckedImage(imagegm, alm, image_offset_batch, h_id, w_id, kwg,
+                                  input_h, input_w, channels, kernel_h, kernel_w,
+                                  pad_h, pad_w, stride_h, stride_w,
+                                  dilation_h, dilation_w);
+      #endif
       GlobalToLocalCheckedB(kernelgms, blm, patch_size, kernel_offset, kwg, true, false, num_kernels, patch_size);
       barrier(CLK_LOCAL_MEM_FENCE);
 
@@ -200,7 +178,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
         for (int _pit = 0; _pit < KWID; _pit += 1) {
           int kg = pwi + _pit;
 
-          // Loads data: local --> private (matrix A and B)
+          // Loads data: local --> private
           #pragma unroll
           for (int _mi = 0; _mi < MWID; _mi += 1) {
             apd[_mi] = LocalToPrivateDirectA(alm, _mi, kg, false);
@@ -226,7 +204,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
     // Loop over the remaining part (incomplete tile in K-dimension)
     for (; kwg < patch_size; ++kwg) {
 
-      // Loads data: off-chip --> private (matrix A and B)
+      // Loads data: off-chip --> private
       #pragma unroll
       for (int _mi = 0; _mi < MWID; _mi += 1) {
         apd[_mi] = GlobalToPrivateCheckedImage(imagegm, image_offset_batch, h_id, w_id, kwg,
