@@ -52,6 +52,9 @@ const std::string kKhronosIntelSubgroups = "cl_intel_subgroups";
 // Catched an unknown error
 constexpr auto kUnknownError = -999;
 
+// Canary size to add to buffers to check for buffer overflows
+constexpr auto kCanarySize = 127;
+
 // =================================================================================================
 
 // The routine-specific arguments in string form

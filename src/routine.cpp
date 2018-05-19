@@ -96,10 +96,10 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   auto binary = BinaryCache::Instance().Get(BinaryKeyRef{platform_id,  precision_, routine_info, device_name },
                                             &has_binary);
   if (has_binary) {
-    program_ = Program(device_, context_, binary);
-    program_.Build(device_, options);
+    program_ = std::make_shared<Program>(Program(device_, context_, binary));
+    program_->Build(device_, options);
     ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_info },
-                                   Program{ program_ });
+                                    std::shared_ptr<Program>{program_});
     return;
   }
 
@@ -135,10 +135,10 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
 
   // Store the compiled binary and program in the cache
   BinaryCache::Instance().Store(BinaryKey{platform_id, precision_, routine_info, device_name},
-                                program_.GetIR());
+                                program_->GetIR());
 
   ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
-                                 Program{ program_ });
+                                 std::shared_ptr<Program>{program_});
 }
 
 // =================================================================================================

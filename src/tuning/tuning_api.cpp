@@ -241,11 +241,11 @@ StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
   const auto device_architecture = GetDeviceArchitecture(device);
   const auto device_name = GetDeviceName(device);
 
-  // Creates input buffers with random data
+  // Creates input buffers with random data. Adds a 'canary' region to detect buffer overflows.
   const auto buffer_sizes = std::vector<size_t>{
-      settings.size_x, settings.size_y,
-      settings.size_a, settings.size_b, settings.size_c,
-      settings.size_temp
+      settings.size_x + kCanarySize, settings.size_y + kCanarySize,
+      settings.size_a + kCanarySize, settings.size_b + kCanarySize, settings.size_c + kCanarySize,
+      settings.size_temp + kCanarySize
   };
   const auto seed = static_cast<unsigned long>(time(nullptr));
   std::mt19937 mt(seed);

@@ -33,6 +33,7 @@ namespace clblast {
 class Routine {
  public:
 
+  // Initializes db_, fetching cached database or building one
   static void InitDatabase(const Device &device, const std::vector<std::string> &kernel_names,
                            const Precision precision, const std::vector<database::DatabaseEntry> &userDatabase,
                            Databases &db) {
@@ -78,9 +79,6 @@ class Routine {
   // Initializes program_, fetching cached program or building one
   void InitProgram(std::initializer_list<const char *> source);
 
-  // Initializes db_, fetching cached database or building one
-  void InitDatabase(const std::vector<database::DatabaseEntry> &userDatabase);
-
  protected:
 
   // Non-static variable for the precision
@@ -97,7 +95,7 @@ class Routine {
   const Device device_;
 
   // Compiled program (either retrieved from cache or compiled in slow path)
-  Program program_;
+  std::shared_ptr<Program> program_;
 
   // Connection to the database for all the device-specific parameters
   Databases db_;
