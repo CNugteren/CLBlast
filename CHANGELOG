@@ -6,6 +6,7 @@ Development (next version)
 - Improved the performance potential by adding a second tunable GEMM kernel with 2D register tiling
 - Added support for Intel specific subgroup shuffling extensions for faster GEMM on Intel GPUs
 - Re-added a local memory size constraint to the tuners
+- The routine tuners now automatically pick up tuning results from disk from the kernel tuners
 - Updated and reorganised the CLBlast documentation
 - Added a 'canary' region to check for overflows in the tuner and tests (insipred by clARMOR)
 - Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program

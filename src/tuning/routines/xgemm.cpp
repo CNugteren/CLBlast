@@ -15,8 +15,10 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "utilities/utilities.hpp"
+#include "../test/test_utilities.hpp"
 #include "tuning/routines/routine_tuner.hpp"
 
 namespace clblast {
@@ -100,6 +102,22 @@ void TuneXgemm(int argc, char* argv[]) {
   }
   const auto context = Context(device);
   auto queue = Queue(context, device);
+
+  // Pre-load GEMM kernel tuning results if they exist
+  printf("* The GEMM routine tuner requires already tuned kernels\n");
+  printf("  Applying tuning results from disk if they exist...\n\n");
+  const auto kernel_names = {"xgemm_1", "xgemm_direct_1", "copy", "pad", "transpose", "padtranspose"};
+  for (const auto& kernel_name : kernel_names) {
+    const auto tuner_file_name = "clblast_" + std::string{kernel_name} + "_" +
+                                 ToString(static_cast<int>(precision)) + ".json";
+    printf("* Looking for tuning results in the current folder: '%s'\n", tuner_file_name.c_str());
+    if (std::ifstream(tuner_file_name)) { // Checks if the file exists on disk
+      OverrideParametersFromJSONFiles({tuner_file_name}, device(), precision);
+    }
+    else {
+      printf("  Not found: assuming the kernel '%s' is already tuned\n\n", kernel_name);
+    }
+  }
 
   // Run the tuners for the XGEMM routines
   TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmRoutine<T>,

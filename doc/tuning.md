@@ -82,7 +82,7 @@ Compiling with `-DTUNERS=ON` will generate a number of tuners, each named `clbla
 
 The kernels `gemm` and `gemm_direct` have too many parameters to explore. Therefore, they will run in two stages: a first stage with a fixed limited number of parameter combinations, and a second stage with a random selection from a much larger search space. The random fraction is determined by the `fraction` argument on the command-line.
 
-There are also several routine-level tuners. They tune inter-kernel parameters and should only be run after the kernels are tuned. An example is the GEMM routine tuner, which determines when to use the direct or the in-direct GEMM kernel.
+There are also several routine-level tuners. They tune inter-kernel parameters and should only be run after the kernels are tuned. However, they do automatically pick up kernel tuning results from the current folder if there are any. An example is the GEMM routine tuner, which determines when to use the direct or the in-direct GEMM kernel.
 
 
 Using the tuning results
@@ -99,8 +99,6 @@ In summary, tuning the entire library for your device can be done as follows (st
     make alltuners
     python ../scripts/database/database.py . ..
     make
-
-After the kernels are tuned, you can run the `clblast_tuner_routine_xgemm` tuner to optimize the high-level GEMM routine, i.e. selecting which method to use: the direct kernel or the in-direct kernel.
 
 
 Tuning using the API (advanced users only)

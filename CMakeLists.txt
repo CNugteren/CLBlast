@@ -388,6 +388,7 @@ if(TUNERS)
       src/utilities/clblast_exceptions.cpp
       src/utilities/timing.cpp
       src/utilities/utilities.cpp
+      test/test_utilities.cpp
       src/tuning/configurations.cpp
       src/tuning/tuning.cpp
       src/kernel_preprocessor.cpp)
@@ -396,6 +397,7 @@ if(TUNERS)
       src/utilities/clblast_exceptions.hpp
       src/utilities/timing.hpp
       src/utilities/utilities.hpp
+      test/test_utilities.hpp
       src/tuning/configurations.hpp
       src/tuning/tuning.hpp
       src/tuning/routines/routine_tuner.hpp
@@ -438,6 +440,12 @@ if(TUNERS)
       set(ALLTUNERS ${ALLTUNERS} COMMAND clblast_tuner_${KERNEL} -precision ${PRECISION})
     endforeach()
     set(ALLTUNERSDEPENDS clblast_tuner_${KERNEL})
+  endforeach()
+  foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
+    foreach(PRECISION ${PRECISIONS})
+      set(ALLTUNERS ${ALLTUNERS} COMMAND clblast_tuner_routine_${ROUTINE_TUNER} -precision ${PRECISION})
+    endforeach()
+    set(ALLTUNERSDEPENDS clblast_tuner_routine_${ROUTINE_TUNER})
   endforeach()
   add_custom_target(alltuners ${ALLTUNERS} DEPENDS ${ALLTUNERSDEPENDS})
 
