@@ -171,6 +171,7 @@ void GetBestParametersFromJSONFile(const std::string& file_name,
       kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '1'), kernel_family.end());
       kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '2'), kernel_family.end());
       kernel_family.erase(std::remove(kernel_family.begin(), kernel_family.end(), '3'), kernel_family.end());
+      if (kernel_family == "Xgemmdirect") { kernel_family = "XgemmDirect"; } // more kinds of mismatches
     }
 
     // Retrieves the best-parameters and sets the override
