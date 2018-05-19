@@ -388,7 +388,6 @@ if(TUNERS)
       src/utilities/clblast_exceptions.cpp
       src/utilities/timing.cpp
       src/utilities/utilities.cpp
-      test/test_utilities.cpp
       src/tuning/configurations.cpp
       src/tuning/tuning.cpp
       src/kernel_preprocessor.cpp)
@@ -397,7 +396,6 @@ if(TUNERS)
       src/utilities/clblast_exceptions.hpp
       src/utilities/timing.hpp
       src/utilities/utilities.hpp
-      test/test_utilities.hpp
       src/tuning/configurations.hpp
       src/tuning/tuning.hpp
       src/tuning/routines/routine_tuner.hpp
@@ -426,9 +424,9 @@ if(TUNERS)
     install(TARGETS clblast_tuner_${KERNEL} DESTINATION bin)
   endforeach()
   foreach(ROUTINE_TUNER ${ROUTINE_TUNERS})
-    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp)
+    add_executable(clblast_tuner_routine_${ROUTINE_TUNER} ${TUNERS_COMMON} src/tuning/routines/${ROUTINE_TUNER}.cpp test/test_utilities.cpp)
     target_link_libraries(clblast_tuner_routine_${ROUTINE_TUNER} clblast)
-    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES> ${API_INCLUDE_DIRS})
+    target_include_directories(clblast_tuner_routine_${ROUTINE_TUNER} PUBLIC $<TARGET_PROPERTY:clblast,INTERFACE_INCLUDE_DIRECTORIES> ${API_INCLUDE_DIRS} ${clblast_SOURCE_DIR})
     install(TARGETS clblast_tuner_routine_${ROUTINE_TUNER} DESTINATION bin)
   endforeach()
 

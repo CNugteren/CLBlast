@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include "utilities/utilities.hpp"
-#include "../test/test_utilities.hpp"
+#include "test/test_utilities.hpp"
 #include "tuning/routines/routine_tuner.hpp"
 
 namespace clblast {
