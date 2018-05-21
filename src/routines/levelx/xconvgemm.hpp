@@ -27,7 +27,9 @@ class Xconvgemm: public Routine {
  public:
 
   // Constructor
-  Xconvgemm(Queue &queue, EventPointer event, const std::string &name = "CONVGEMM");
+  enum class ConvGemmMethod {kWithIm2Col, kSingleKernel};
+  Xconvgemm(Queue &queue, EventPointer event, const std::string &name = "CONVGEMM",
+            const ConvGemmMethod method = ConvGemmMethod::kSingleKernel);
 
   // Templated-precision implementation of the routine
   void DoConvgemm(const size_t channels, const size_t height, const size_t width,
@@ -39,6 +41,9 @@ class Xconvgemm: public Routine {
                   const Buffer<T> &im_buffer, const size_t im_offset,
                   const Buffer<T> &kernel_buffer, const size_t kernel_offset,
                   const Buffer<T> &result_buffer, const size_t result_offset);
+
+ private:
+  const ConvGemmMethod method_;
 };
 
 // =================================================================================================

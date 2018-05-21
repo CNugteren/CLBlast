@@ -9,6 +9,8 @@
 //
 // This file contains the an implementation of 3D convolution on a 4D image using GEMM kernels. It
 // uses parameters from the direct GEMM kernel. This is the part with the loads from memory (1/2).
+// This uses "CONVGEMM_WITH_IM2COL" as a switch to select between direct convgemm or first running
+// the im2col kernel to create a 'col' temporary matrix.
 //
 // =================================================================================================
 
@@ -17,7 +19,7 @@
 R"(
 
 // =================================================================================================
-#if defined(ROUTINE_CONVGEMM)
+#if defined(ROUTINE_CONVGEMM) && !defined(CONVGEMM_WITH_IM2COL)
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the image input tensor. This includes a bounds check.

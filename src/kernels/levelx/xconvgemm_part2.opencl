@@ -9,6 +9,8 @@
 //
 // This file contains the an implementation of 3D convolution on a 4D image using GEMM kernels. It
 // uses parameters from the direct GEMM kernel. This part contains the main kernel (2/2).
+// This uses "CONVGEMM_WITH_IM2COL" as a switch to select between direct convgemm or first running
+// the im2col kernel to create a 'col' temporary matrix.
 //
 // =================================================================================================
 
@@ -22,28 +24,37 @@ R"(
 // ConvGEMM kernel
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void Xconvgemm(const int num_patches, const int num_kernels, const int patch_size,
-               const __global realMD* restrict colgm, const int col_offset, const int col_stride,
                const __global realND* restrict kernelgm, const int kernel_offset,
                __global real* resultgm, const int result_offset, const int result_stride,
+#if defined(CONVGEMM_WITH_IM2COL)
+               const __global realMD* restrict colgm, const int col_offset, const int col_stride)
+#else
+               const __global realMD* restrict imagegm, const int image_offset,
                const int input_h, const int input_w, const int channels,
                const int kernel_h, const int kernel_w,
                const int pad_h, const int pad_w,
                const int stride_h, const int stride_w,
                const int dilation_h, const int dilation_w,
-               const __global realMD* restrict imagegm, const int image_offset,
-               const int output_h, const int output_w) {
+               const int output_h, const int output_w)
+#endif
+{
 
   // Batch offsets
   const int batch = get_group_id(2);
-  const int image_offset_batch = image_offset + channels * input_h * input_w * batch;
-  const int col_offset_batch = col_offset + col_stride * batch;
+  #if defined(CONVGEMM_WITH_IM2COL)
+    const int col_offset_batch = col_offset + col_stride * batch;
+  #else
+    const int image_offset_batch = image_offset + channels * input_h * input_w * batch;
+  #endif
   const int result_offset_batch = result_offset + result_stride * batch;
 
   __local real alm[WGD * (WGD + PADA)];
   __local real blm[WGD * (WGD + PADB)];
 
   // Extra pointers to scalar versions of global memory
-  const __global real* restrict colgms = (const __global real* restrict) colgm;
+  #if defined(CONVGEMM_WITH_IM2COL)
+    const __global real* restrict colgms = (const __global real* restrict) colgm;
+  #endif
   const __global real* restrict kernelgms = (const __global real* restrict) kernelgm;
 
   // Allocates workitem-private memory (registers)
@@ -63,12 +74,17 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
     }
   }
 
-  // The faster version of GEMM is not allowed on the (incomplete) borders. Therefore, this section
-  // processes only the main parts: output blocks of WGD by WGD.
+  // Global m/n indices
   const int idm = get_local_id(0) * MWID + GetGroupID0() * WGD;
   const int idn = get_local_id(1) * NWID + GetGroupID1() * WGD;
-  const int w_id = idm % output_w;
-  const int h_id = idm / output_w;
+  #if !defined(CONVGEMM_WITH_IM2COL)
+    const int w_id = idm % output_w;
+    const int h_id = idm / output_w;
+  #endif
+
+  // The faster version of GEMM is not allowed on the (incomplete) borders. Therefore, this section
+  // processes only the main parts: output blocks of WGD by WGD.
+  #if defined(CONVGEMM_WITH_IM2COL) // TEMP: To be implemented for other case as well
   if ((idm < (num_patches/WGD)*WGD) && (idn < (num_kernels/WGD)*WGD)) {
 
     // Loops over all complete workgroup tiles (K-dimension)
@@ -155,7 +171,9 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
 
   // Simple but slower version for the parts on the edge (incomplete tiles in M and N-dimensions)
   else {
-
+  #else  // TEMP, to be implemented
+  {      // TEMP, to be implemented
+  #endif // TEMP, to be implemented
     // Loops over all complete workgroup tiles (K-dimension)
     int kwg = 0;
     for (; kwg < (patch_size/WGD) * WGD; kwg+=WGD) {
@@ -207,10 +225,14 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
       // Loads data: off-chip --> private
       #pragma unroll
       for (int _mi = 0; _mi < MWID; _mi += 1) {
+      #if defined(CONVGEMM_WITH_IM2COL)
+        apd[_mi] = GlobalToPrivateCheckedA(colgms, _mi, num_patches, col_offset_batch, idm, kwg, false, false, num_patches);
+      #else
         apd[_mi] = GlobalToPrivateCheckedImage(imagegm, image_offset_batch, h_id, w_id, kwg,
                                                input_h, input_w, channels, kernel_h, kernel_w,
                                                pad_h, pad_w, stride_h, stride_w,
                                                dilation_h, dilation_w);
+      #endif
       }
       #pragma unroll
       for (int _ni = 0; _ni < NWID; _ni += 1) {
