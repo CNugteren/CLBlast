@@ -49,6 +49,11 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     throw BLASError(StatusCode::kInvalidDimension);
   }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Helper variables
   const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
   assert(internal_block_size == 16);
@@ -75,8 +80,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // Fills the output buffer with zeros
   auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), event_wait_list,
-             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>());
+  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list,
+             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(),
+             16);
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
