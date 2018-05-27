@@ -78,6 +78,11 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
   // Makes sure all dimensions are larger than zero
   if ((m == 0) || (n == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Computes the k dimension. This is based on whether or not matrix is A (on the left)
   // or B (on the right) in the Xgemm routine.
   const auto k = (side == Side::kLeft) ? m : n;

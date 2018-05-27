@@ -87,6 +87,11 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Makes sure all dimensions are larger than zero
   if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Tests the matrix and vector
   TestMatrixA(n, n, a_buffer, a_offset, a_ld);
   TestVectorX(n, b_buffer, b_offset, b_inc);

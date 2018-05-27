@@ -49,6 +49,11 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     throw BLASError(StatusCode::kInvalidDimension);
   }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Helper variables
   const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
   assert(internal_block_size == 16);
