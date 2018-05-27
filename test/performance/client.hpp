@@ -42,7 +42,7 @@ template <typename T, typename U>
 class Client {
  public:
   static const int kSeed;
-  struct TimeResult { double minimum; double mean; double standard_deviation; };
+  struct TimeResult { double minimum; double maximum; double mean; double standard_deviation; };
 
   // Shorthand for the routine-specific functions passed to the tester
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;

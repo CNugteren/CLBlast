@@ -355,6 +355,7 @@ typename Client<T,U>::TimeResult Client<T,U>::TimedExecution(const size_t num_ru
   result.mean = mean;
   result.standard_deviation = std::sqrt(sq_sum / timings.size());
   result.minimum = *std::min_element(timings.begin(), timings.end());
+  result.maximum = *std::max_element(timings.begin(), timings.end());
   return result;
 }
 
@@ -367,20 +368,28 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   // First line (optional)
   if (!args.silent) {
     for (auto i=size_t{0}; i<options_.size(); ++i) { fprintf(stdout, "%9s ", ""); }
-    fprintf(stdout, " | <--       CLBlast       -->");
-    if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
-    if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
-    if (args.compare_cublas) { fprintf(stdout, " | <--       cuBLAS        -->"); }
+    if (args.full_statistics) {
+      fprintf(stdout, " | <--            CLBlast            -->");
+      if (args.compare_clblas) { fprintf(stdout, " | <--            clBLAS             -->"); }
+      if (args.compare_cblas) { fprintf(stdout, " | <--           CPU BLAS            -->"); }
+      if (args.compare_cublas) { fprintf(stdout, " | <--            cuBLAS             -->"); }
+    }
+    else {
+      fprintf(stdout, " | <--       CLBlast       -->");
+      if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
+      if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
+      if (args.compare_cublas) { fprintf(stdout, " | <--       cuBLAS        -->"); }
+    }
     fprintf(stdout, " |\n");
   }
 
   // Second line
   for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
   if (args.full_statistics) {
-    fprintf(stdout, "%9s;%9s;%9s", "min_ms_1", "mean_ms_1", "stddev_1");
-    if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "min_ms_2", "mean_ms_2", "stddev_2"); }
-    if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "min_ms_3", "mean_ms_3", "stddev_3"); }
-    if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s", "min_ms_4", "mean_ms_4", "stddev_4"); }
+    fprintf(stdout, "%9s;%9s;%9s;%9s", "min_ms_1", "max_ms_1", "mean_1", "stddev_1");
+    if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_2", "max_ms_2", "mean_2", "stddev_2"); }
+    if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_3", "max_ms_3", "mean_3", "stddev_3"); }
+    if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_4", "max_ms_4", "mean_4", "stddev_4"); }
   }
   else {
     fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
@@ -468,9 +477,10 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
 
     // Either output full statistics
     if (args.full_statistics) {
+      const auto maximum_ms = timing.second.maximum;
       const auto mean_ms = timing.second.mean;
       const auto standard_deviation = timing.second.standard_deviation;
-      fprintf(stdout, "%9.3lf;%9.3lf;%9.3lf", minimum_ms, mean_ms, standard_deviation);
+      fprintf(stdout, "%9.3lf;%9.3lf;%9.3lf;%9.3lf", minimum_ms, maximum_ms, mean_ms, standard_deviation);
     }
 
     // ... or outputs minimum time and the GFLOPS and GB/s metrics
