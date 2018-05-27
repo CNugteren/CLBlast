@@ -105,8 +105,8 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), eventWaitList,
-             x_one, x_two, x_ld, x_offset, x_buffer, ConstantZero<T>());
+  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), eventWaitList,
+             x_one, x_two, x_ld, x_offset, x_buffer, ConstantZero<T>(), 16);
   fill_matrix_event.WaitForCompletion();
 
   // Inverts the diagonal blocks

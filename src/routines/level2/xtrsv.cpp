@@ -102,8 +102,8 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_vector_event = Event();
-  FillVector(queue_, device_, program_, db_, fill_vector_event.pointer(), eventWaitList,
-             n, x_inc, x_offset, x_buffer, ConstantZero<T>());
+  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList,
+             n, x_inc, x_offset, x_buffer, ConstantZero<T>(), 16);
   fill_vector_event.WaitForCompletion();
 
   // Derives properties based on the arguments

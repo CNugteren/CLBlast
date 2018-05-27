@@ -75,8 +75,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // Fills the output buffer with zeros
   auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), event_wait_list,
-             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>());
+  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list,
+             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(),
+             16);
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
