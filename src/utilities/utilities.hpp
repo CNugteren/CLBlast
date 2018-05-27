@@ -121,6 +121,7 @@ constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
 constexpr auto kArgNumRuns = "runs";
+constexpr auto kArgFullStatistics = "full_statistics";
 
 // The buffer names
 constexpr auto kBufVecX = "X";
@@ -243,6 +244,7 @@ struct Arguments {
   size_t num_steps = 0;
   size_t num_runs = 10;
   std::vector<std::string> tuner_files = {};
+  bool full_statistics = false;
   #ifdef CLBLAST_REF_CUBLAS
     void* cublas_handle; // cublasHandle_t
   #endif
