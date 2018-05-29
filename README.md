@@ -2,9 +2,9 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | Build status | Tests on Intel CPU | Tests on NVIDIA GPU | Tests on Intel GPU |
+| | Build status | Tests on Intel CPU | Tests on NVIDIA GPU | Other tests |
 |-----|-----|-----|-----|-----|
-| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-intel-i7-4790k.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-intel-i7-4790k) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-nvidia-k5000.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-nvidia-k5000) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-intel-HD4600.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-intel-HD4600) |
+| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-intel-i7-4790k.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-intel-i7-4790k) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-nvidia-k5000.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-nvidia-k5000) | N/A |
 | Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-linux-intel-e5-2620-v4.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-intel-e5-2620-v4) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-k80.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-k80) | N/A |
 | OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |  [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-osx-intel-i5-4278U.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-osx-intel-i5-4278U) | N/A | N/A |
 

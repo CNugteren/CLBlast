@@ -45,7 +45,8 @@ const std::vector<database::DatabaseEntry> Database::apple_cpu_fallback = std::v
   database::XgemvApple, database::XgemvFastApple, database::XgemvFastRotApple, database::XgerApple, database::XtrsvApple,
   database::XgemmApple, database::XgemmDirectApple,
   database::CopyApple, database::PadApple, database::TransposeApple, database::PadtransposeApple,
-  database::InvertApple
+  database::InvertApple,
+  database::TrsvRoutineApple
 };
 
 // The default values

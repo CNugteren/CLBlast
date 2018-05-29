@@ -64,6 +64,9 @@ const DatabaseEntry PadtransposeApple = {
 const DatabaseEntry InvertApple = {
   "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
+const DatabaseEntry TrsvRoutineApple = {
+  "TrsvRoutine", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
+};
 
 // =================================================================================================
 } // namespace database
