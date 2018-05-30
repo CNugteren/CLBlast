@@ -99,7 +99,8 @@ Database::Database(const Device &device, const std::string &kernel_name,
     if (device.Type() == "CPU") {
       const auto extensions = device.Capabilities();
       const auto is_apple = (extensions.find("cl_APPLE_SetMemObjectDestructor") == std::string::npos) ? false : true;
-      if (is_apple) {
+      const auto is_likely_apple = device.MaxWorkGroupSize() <= 32;
+      if (is_apple || is_likely_apple) {
         databases.push_front(apple_cpu_fallback);
       }
     }

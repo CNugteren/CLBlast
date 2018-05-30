@@ -38,7 +38,8 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
     auto local_size = size_t{1};
     for (auto &item: local) { local_size *= item; }
     if (local_size > device.MaxWorkGroupSize()) {
-      throw RuntimeErrorCode(StatusCode::kInvalidLocalThreadsTotal);
+      throw RuntimeErrorCode(StatusCode::kInvalidLocalThreadsTotal,
+                             ToString(local_size) + " is larger than " + ToString(device.MaxWorkGroupSize()));
     }
 
     // Make sure the global thread sizes are at least equal to the local sizes
