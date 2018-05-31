@@ -113,7 +113,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     const auto npages = CeilDiv(n, current_size*2);
     const auto local0 = (current_size <= 32) ? current_size/4 : 16;
     const auto local = std::vector<size_t>{local0, 4};
-    const auto global = std::vector<size_t>{(current_size/local[1]), npages*(current_size/16)*local[1]};
+    const auto global = std::vector<size_t>{Ceil(current_size/local[1], local[0]),
+                                            Ceil(npages*(current_size/16)*local[1], local[1])};
 
     // Part 1
     auto kernel1 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
