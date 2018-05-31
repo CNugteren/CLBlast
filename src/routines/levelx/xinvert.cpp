@@ -95,11 +95,11 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   kernel.SetArgument(5, static_cast<int>(block_size));
   kernel.SetArgument(6, static_cast<int>(unit_diagonal));
   kernel.SetArgument(7, static_cast<int>(is_upper));
-  const auto local = std::vector<size_t>{internal_block_size};
-  const auto global = std::vector<size_t>{num_internal_blocks * internal_block_size};
+  const auto local_invert = std::vector<size_t>{internal_block_size};
+  const auto global_invert = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
   auto base_kernel_event_pointer = (internal_block_size == block_size) ? event_ : base_kernel_event.pointer();
-  RunKernel(kernel, queue_, device_, global, local, base_kernel_event_pointer, event_wait_list);
+  RunKernel(kernel, queue_, device_, global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
   if (internal_block_size == block_size) { event_wait_list.push_back(base_kernel_event); }
 
   // Builds up block_size x block_size blocks. For example, internal_block_size=16:

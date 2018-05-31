@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <chrono>
+#include <iostream>
 
 #include "routines/common.hpp"
 
@@ -45,6 +46,14 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
     // Make sure the global thread sizes are at least equal to the local sizes
     for (auto i=size_t{0}; i<global.size(); ++i) {
       if (global[i] < local[i]) { global[i] = local[i]; }
+    }
+
+    // Verify that the global thread sizes are a multiple of the local sizes
+    for (auto i=size_t{0}; i<global.size(); ++i) {
+      if ((global[i] / local[i]) * local[i] != global[i]) {
+        throw RuntimeErrorCode(StatusCode::kInvalidLocalThreadsDim,
+                               ToString(global[i]) + " is not divisible by " + ToString(local[i]));
+      }
     }
   }
 
