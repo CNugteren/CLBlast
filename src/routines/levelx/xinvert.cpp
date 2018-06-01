@@ -56,7 +56,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
 
   // Helper variables
   const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
-  assert(internal_block_size == 16);
+  if (internal_block_size != 16) {
+    throw RuntimeErrorCode(StatusCode::kNotImplemented); // e.g. Apple CPU OpenCL with a WGS of 1
+  }                                                      // when barriers are present
   const auto num_blocks = CeilDiv(n, block_size);
   const auto num_internal_blocks = CeilDiv(n, internal_block_size);
   const auto unit_diagonal = (diag == Diagonal::kUnit) ? true : false;

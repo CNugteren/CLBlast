@@ -41,7 +41,7 @@ const DatabaseEntry XgerApple = {
   "Xger", Precision::kAny, {"WGS1", "WGS2", "WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 64, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 const DatabaseEntry XtrsvApple = {
-  "Xtrsv", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
+  "Xtrsv", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 const DatabaseEntry XgemmApple = {
   "Xgemm", Precision::kAny, {"GEMMK", "KREG", "KWG", "KWI", "MDIMA", "MDIMC", "MWG", "NDIMB", "NDIMC", "NWG", "SA", "SB", "STRM", "STRN", "VWM", "VWN"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1 } } } } } } }
@@ -62,10 +62,10 @@ const DatabaseEntry PadtransposeApple = {
   "Padtranspose", Precision::kAny, {"PADTRA_PAD", "PADTRA_TILE", "PADTRA_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 const DatabaseEntry InvertApple = {
-  "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
+  "Invert", Precision::kAny, {"INTERNAL_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 const DatabaseEntry TrsvRoutineApple = {
-  "TrsvRoutine", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
+  "TrsvRoutine", Precision::kAny, {"TRSV_BLOCK_SIZE"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
 
 // =================================================================================================
