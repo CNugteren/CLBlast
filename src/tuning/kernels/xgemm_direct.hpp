@@ -83,6 +83,8 @@ TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T> &args)
       {"VWND", {1, 2, 4, 8}},
       {"PADA", {1}},
       {"PADB", {1}},
+      {"SA", {0, 1}},
+      {"SB", {0, 1}},
     };
   }
   else { // a lot more tuning parameters - has to be sampled randomly, too much to test all
@@ -97,6 +99,8 @@ TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T> &args)
       {"VWND", {1, 2, 4, 8}},
       {"PADA", {0, 1}},
       {"PADB", {0, 1}},
+      {"SA", {0, 1}},
+      {"SB", {0, 1}},
     };
   }
 
@@ -112,6 +116,7 @@ template <typename T>
 void XgemmDirectTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
+  auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
   auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
   auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
@@ -126,10 +131,11 @@ std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   // WGD has to be a multiple of KDIMAD = ((MDIMCD*NDIMCD)/(MDIMAD)) and KDIMBD = (...)
   constraints.push_back({MultipleOfXMulYDivZ, {"WGD", "MDIMCD", "NDIMCD", "MDIMAD"}});
   constraints.push_back({MultipleOfXMulYDivZ, {"WGD", "MDIMCD", "NDIMCD", "NDIMBD"}});
+  // For now the kernel supports only either local memory (SA == SB == 1) or not at all (SA == SB == 0)
+  constraints.push_back({IsEqual, {"SA", "SB"}});
 
   // Extra constraints for variation 1 to limit the set of options significantly
   if (V==1) {
-    auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
     constraints.push_back({IsEqual, {"MDIMCD", "MDIMAD"}});
     constraints.push_back({IsEqual, {"NDIMCD", "NDIMBD"}});
   }

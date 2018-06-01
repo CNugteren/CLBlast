@@ -45,6 +45,12 @@ R"(
 #ifndef VWND
   #define VWND 1      // Vector width of matrix B
 #endif
+#ifndef SA
+  #define SA 1       // Use local/shared memory to cache matrix A (1) or not (0)
+#endif
+#ifndef SB
+  #define SB 1       // Use local/shared memory to cache matrix B (1) or not (0)
+#endif
 #ifndef PADA
   #define PADA 1      // Local memory padding for matrix A
 #endif
