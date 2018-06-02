@@ -64,9 +64,9 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
 
     // Loops over all complete workgroup tiles (K-dimension)
     int kwg = 0;
-    #if SA == 1 && SB == 1 // both or neither; otherwise disables this whole block in favor of code size
-      for (; kwg < (kSizeK/WGD) * WGD; kwg += WGD) {
+    for (; kwg < (kSizeK/WGD) * WGD; kwg += WGD) {
 
+      #if SA == 1 && SB == 1 // both or neither for now
         // Loads data: off-chip --> local (matrix A and B)
         if (a_ld % VWMD == 0 && a_offset % VWMD == 0) {
           GlobalToLocalDirectA(agm, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
@@ -81,14 +81,16 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
           GlobalToLocalScalarB(bgms, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate);
         }
         barrier(CLK_LOCAL_MEM_FENCE);
+      #endif
 
-        // Loops over all workitem tiles, unrolled by a factor KWID
-        for (int pwi = 0; pwi < WGD; pwi += KWID) {
-          #pragma unroll
-          for (int _pit = 0; _pit < KWID; _pit += 1) {
-            int kg = pwi + _pit;
+      // Loops over all workitem tiles, unrolled by a factor KWID
+      for (int pwi = 0; pwi < WGD; pwi += KWID) {
+        #pragma unroll
+        for (int _pit = 0; _pit < KWID; _pit += 1) {
+          int kg = pwi + _pit;
 
-            // Loads data: local --> private (matrix A and B)
+          // Loads data: local --> private (matrix A and B)
+          #if SA == 1 && SB == 1 // both or neither for now
             #pragma unroll
             for (int _mi = 0; _mi < MWID; _mi += 1) {
               apd[_mi] = LocalToPrivateDirectA(alm, _mi, kg, a_transpose);
@@ -98,19 +100,32 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
               bpd[_ni] = LocalToPrivateDirectB(blm, _ni, kg, b_transpose);
             }
 
-            // Performs the accumulation (Cpmd += Apmd * Bpmd)
+          // Loads data: off-chip --> private (matrix A and B)
+          #else
+            #pragma unroll
+            for (int _mi = 0; _mi < MWID; _mi += 1) {
+              apd[_mi] = GlobalToPrivateDirectA(agms, _mi, a_ld, a_offset, idm, kg + kwg, a_transpose, a_conjugate);
+            }
             #pragma unroll
             for (int _ni = 0; _ni < NWID; _ni += 1) {
-              #pragma unroll
-              for (int _mi = 0; _mi < MWID; _mi += 1) {
-                MultiplyAdd(cpd[_ni * MWID + _mi], apd[_mi], bpd[_ni]);
-              }
+              bpd[_ni] = GlobalToPrivateDirectB(bgms, _ni, b_ld, b_offset, idn, kg + kwg, b_transpose, b_conjugate);
+            }
+          #endif
+
+          // Performs the accumulation (Cpmd += Apmd * Bpmd)
+          #pragma unroll
+          for (int _ni = 0; _ni < NWID; _ni += 1) {
+            #pragma unroll
+            for (int _mi = 0; _mi < MWID; _mi += 1) {
+              MultiplyAdd(cpd[_ni * MWID + _mi], apd[_mi], bpd[_ni]);
             }
           }
         }
-        barrier(CLK_LOCAL_MEM_FENCE);
       }
-    #endif
+      #if SA == 1 && SB == 1
+        barrier(CLK_LOCAL_MEM_FENCE);
+      #endif
+    }
 
     // Loop over the remaining part (incomplete tile in K-dimension)
     for (; kwg < kSizeK; ++kwg) {
