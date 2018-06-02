@@ -9,6 +9,7 @@ Development (next version)
 - The routine tuners now automatically pick up tuning results from disk from the kernel tuners
 - Updated and reorganised the CLBlast documentation
 - Added a 'canary' region to check for overflows in the tuner and tests (insipred by clARMOR)
+- Added an option to test against and compare performance with Intel's MKL
 - Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program
 - Fixed incorrect releasing of the OpenCL program resulting in segfaults / access violations
 - Various minor fixes and enhancements
