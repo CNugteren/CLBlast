@@ -18,8 +18,8 @@ This file gives an overview of the main features planned for addition to CLBlast
 | [#223](https://github.com/CNugteren/CLBlast/issues/223)        | Feb '18     | CNugteren | ✔      | Python OpenCL interface |
 | [#237](https://github.com/CNugteren/CLBlast/issues/237)        | Mar '18     | CNugteren | ✔      | Making tuning possible from the CLBlast API |
 | [#228](https://github.com/CNugteren/CLBlast/issues/228)        | Mar-Apr '18 | CNugteren | ✔      | Improving performance for Qualcomm Adreno GPUs |
-| [#267](https://github.com/CNugteren/CLBlast/issues/267)        | May '18     | CNugteren |        | Merge im2col and GEMM into a direct kernel |
-| [#270](https://github.com/CNugteren/CLBlast/issues/270)        | July '18    | CNugteren |        | Implement col2im |
-| -                                                              | July '18    | CNugteren |        | Add a SYCL interface to the library |
+| [#267](https://github.com/CNugteren/CLBlast/issues/267)        | July '18    | CNugteren |        | Merge im2col and GEMM into a direct kernel |
+| [#270](https://github.com/CNugteren/CLBlast/issues/270)        | Aug '18     | CNugteren |        | Implement col2im |
+| -                                                              | Aug '18     | CNugteren |        | Add a SYCL interface to the library |
 | [#136](https://github.com/CNugteren/CLBlast/issues/136)        | ??          | CNugteren |        | Implement xAXPBY and xSET |
 | [#169](https://github.com/CNugteren/CLBlast/issues/169)        | ??          | dividiti  |        | Problem-specific tuning parameter selection |

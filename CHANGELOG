@@ -1,5 +1,5 @@
 
-Development (next version)
+Version 1.4.0
 - Added Python interface to CLBlast 'PyCLBlast'
 - Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
 - Added an API to run the tuners programmatically without any I/O
@@ -8,7 +8,7 @@ Development (next version)
 - Re-added a local memory size constraint to the tuners
 - The routine tuners now automatically pick up tuning results from disk from the kernel tuners
 - Updated and reorganised the CLBlast documentation
-- Added a 'canary' region to check for overflows in the tuner and tests (insipred by clARMOR)
+- Added a 'canary' region to check for overflows in the tuner and tests (inspired by clARMOR)
 - Added an option to test against and compare performance with Intel's MKL
 - Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program
 - Fixed incorrect releasing of the OpenCL program resulting in segfaults / access violations
