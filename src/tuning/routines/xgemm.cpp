@@ -25,20 +25,25 @@ namespace clblast {
 // =================================================================================================
 
 template <typename T>
-void RunGemmRoutine(const size_t value, const Queue& queue, const std::vector<Buffer<T>>& buffers) {
+void RunGemmRoutineMNK(const size_t m, const size_t n, const size_t k,
+                       const Queue& queue, const std::vector<Buffer<T>>& buffers) {
   auto queue_plain = queue();
   auto event = cl_event{};
   auto status = Gemm(Layout::kRowMajor, Transpose::kNo, Transpose::kNo,
-                     value, value, value, ConstantOne<T>(),
-                     buffers[0](), 0, value,
-                     buffers[1](), 0, value, ConstantOne<T>(),
-                     buffers[2](), 0, value,
+                     m, n, k, ConstantOne<T>(),
+                     buffers[0](), 0, k,
+                     buffers[1](), 0, n, ConstantOne<T>(),
+                     buffers[2](), 0, n,
                      &queue_plain, &event);
   if (status != StatusCode::kSuccess) {
     throw RuntimeError("Gemm failed with status " + ToString(status));
   }
   clWaitForEvents(1, &event);
   clReleaseEvent(event);
+}
+template <typename T>
+void RunGemmRoutine(const size_t value, const Queue& queue, const std::vector<Buffer<T>>& buffers) {
+  RunGemmRoutineMNK(value, value, value, queue, buffers);
 }
 
 template <typename T, size_t batch_count>
@@ -80,6 +85,55 @@ void RunGemmStridedBatchedRoutine(const size_t value, const Queue& queue, const 
   clWaitForEvents(1, &event);
   clReleaseEvent(event);
 }
+// =================================================================================================
+
+template <typename T>
+void TuneGemmSingleSize(const Platform& platform, const Device& device, const Context& context, Queue& queue,
+                        const size_t m, const size_t n, const size_t k, const size_t num_runs) {
+
+  // Buffers
+  auto buffers = std::vector<Buffer<T>>{
+      Buffer<T>(context, m * k),
+      Buffer<T>(context, k * n),
+      Buffer<T>(context, m * n)
+  };
+  const auto FunctionToTune = [&]() { RunGemmRoutineMNK(m, n, k, queue, buffers); };
+
+  // Collects the timings for two methods
+  auto scores = std::vector<TuningResult>();
+  const auto methods = std::vector<std::string>{"in-direct", "direct"};
+  for (auto& method: methods) {
+
+    printf("* Testing the %s routine\n", method.c_str());
+    const auto limit = (method == "in-direct") ? 0 : std::max(std::max(m, n), k) + 1; // small or large number
+    ForceSelectIndirectFrom<T>(limit, device, "GemmRoutine", "XGEMM_MIN_INDIRECT_SIZE");
+    auto time_ms = -1.0;
+    try {
+      time_ms = TimeFunction(num_runs, FunctionToTune);
+      printf("  --> %9.2lf ms\n", time_ms);
+    }
+    catch (...) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      printf("  --> error %-5d\n", static_cast<int>(status_code));
+    }
+    auto tuning_results = Configuration();
+    tuning_results["XGEMM_MIN_INDIRECT_SIZE"] = limit;
+    tuning_results["PRECISION"] = static_cast<size_t>(PrecisionValue<T>());
+    scores.push_back(TuningResult{"gemm_kernel_selection_single_size", time_ms, tuning_results});
+  }
+
+  // Outputs the results as JSON to disk, including some meta-data
+  const auto precision_string = std::to_string(static_cast<size_t>(PrecisionValue<T>()));
+  auto metadata = std::vector<std::pair<std::string,std::string>>{
+      {"kernel_family", "gemm_routine_single_size"},
+      {"precision", precision_string},
+      {"arg_m", ToString(m)},
+      {"arg_n", ToString(n)},
+      {"arg_k", ToString(k)},
+  };
+  PrintTimingsToFileAsJSON("clblast_gemm_routine_single_size_" + precision_string + ".json",
+                           device, platform, metadata, scores);
+}
 
 // =================================================================================================
 
@@ -91,6 +145,9 @@ void TuneXgemm(int argc, char* argv[]) {
   const auto device_id   = GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   const auto precision   = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
   const auto num_runs    = GetArgument(command_line_args, help, kArgNumRuns, size_t{10});
+  const auto arg_m       = GetArgument(command_line_args, help, kArgM, -1); // optional
+  const auto arg_n       = GetArgument(command_line_args, help, kArgN, -1); // optional
+  const auto arg_k       = GetArgument(command_line_args, help, kArgK, -1); // optional
   fprintf(stdout, "%s\n", help.c_str());
 
   // OpenCL initialisation
@@ -119,16 +176,29 @@ void TuneXgemm(int argc, char* argv[]) {
     }
   }
 
-  // Run the tuners for the XGEMM routines
-  TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmRoutine<T>,
-                         64, 2048, 64, 1, num_runs,
-                         "gemm", "GemmRoutine", "gemm_routine", "XGEMM_MIN_INDIRECT_SIZE");
-  //TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmBatchedRoutine<T, 30>,
-  //                       16, 128, 32, 30, num_runs,
-  //                       "gemmbatched", "GemmRoutine", "gemm_routine_2", "XGEMMBATCHED_MIN_INDIRECT_SIZE");
-  //TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmStridedBatchedRoutine<T, 30>,
-  //                       16, 128, 32, 30, num_runs,
-  //                       "gemmstridedbatched", "GemmRoutine", "gemm_routine_3", "XGEMMSTRIDEDBATCHED_MIN_INDIRECT_SIZE");
+  // Test for only one m/n/k size
+  if (arg_m != -1 || arg_n != -1 || arg_k != -1) {
+    printf("* Tuning for one specific size: m=%d, n=%d, k=%d\n", arg_m, arg_n, arg_k);
+    if (arg_m == -1 || arg_n == -1 || arg_k == -1) {
+      printf("* Error: If one of m/n/k specified, please specify all three\n");
+      return;
+    }
+    TuneGemmSingleSize<T>(platform, device, context, queue, static_cast<size_t>(arg_m),
+                          static_cast<size_t>(arg_n), static_cast<size_t>(arg_k), num_runs);
+  }
+
+  else {
+    // Run the tuners for the XGEMM routines
+    TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmRoutine<T>,
+                           64, 2048, 64, 1, num_runs,
+                           "gemm", "GemmRoutine", "gemm_routine", "XGEMM_MIN_INDIRECT_SIZE");
+    //TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmBatchedRoutine<T, 30>,
+    //                       16, 128, 32, 30, num_runs,
+    //                       "gemmbatched", "GemmRoutine", "gemm_routine_2", "XGEMMBATCHED_MIN_INDIRECT_SIZE");
+    //TuneKernelSelection<T>(platform, device, context, queue, precision, RunGemmStridedBatchedRoutine<T, 30>,
+    //                       16, 128, 32, 30, num_runs,
+    //                       "gemmstridedbatched", "GemmRoutine", "gemm_routine_3", "XGEMMSTRIDEDBATCHED_MIN_INDIRECT_SIZE");
+  }
 
   printf("* Completed tuning process\n");
   printf("\n");

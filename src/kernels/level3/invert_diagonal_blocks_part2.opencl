@@ -19,7 +19,7 @@ R"(
 #if defined(ROUTINE_INVERT)
 
 // B21 = A21 * B11
-__kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul16Part1Lower(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -28,7 +28,7 @@ void TripleMatMul16Part1Lower(int n, __global const real* restrict src, const in
 }
 
 // B21 = -B22 * B21
-__kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul16Part2Lower(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];
@@ -36,7 +36,7 @@ void TripleMatMul16Part2Lower(int n, __global real* restrict dest, int current_s
 }
 
 // B21 = A21 * B11
-__kernel __attribute__((reqd_work_group_size(2 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul32Part1Lower(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -45,7 +45,7 @@ void TripleMatMul32Part1Lower(int n, __global const real* restrict src, const in
 }
 
 // B21 = -B22 * B21
-__kernel __attribute__((reqd_work_group_size(2 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul32Part2Lower(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];
@@ -53,7 +53,7 @@ void TripleMatMul32Part2Lower(int n, __global real* restrict dest, int current_s
 }
 
 // B21 = A21 * B11
-__kernel __attribute__((reqd_work_group_size(4 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul64Part1Lower(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -62,7 +62,7 @@ void TripleMatMul64Part1Lower(int n, __global const real* restrict src, const in
 }
 
 // B21 = -B22 * B21
-__kernel __attribute__((reqd_work_group_size(4 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul64Part2Lower(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];
@@ -72,7 +72,7 @@ void TripleMatMul64Part2Lower(int n, __global real* restrict dest, int current_s
 // =================================================================================================
 
 // B12 =  A12 * B22
-__kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul16Part1Upper(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -81,7 +81,7 @@ void TripleMatMul16Part1Upper(int n, __global const real* restrict src, const in
 }
 
 // B12 = -B11 * B12
-__kernel __attribute__((reqd_work_group_size(1 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul16Part2Upper(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];
@@ -89,7 +89,7 @@ void TripleMatMul16Part2Upper(int n, __global real* restrict dest, int current_s
 }
 
 // B12 =  A12 * B22
-__kernel __attribute__((reqd_work_group_size(2 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul32Part1Upper(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -98,7 +98,7 @@ void TripleMatMul32Part1Upper(int n, __global const real* restrict src, const in
 }
 
 // B12 = -B11 * B12
-__kernel __attribute__((reqd_work_group_size(2 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul32Part2Upper(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];
@@ -106,7 +106,7 @@ void TripleMatMul32Part2Upper(int n, __global real* restrict dest, int current_s
 }
 
 // B12 =  A12 * B22
-__kernel __attribute__((reqd_work_group_size(4 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul64Part1Upper(int n, __global const real* restrict src, const int a_offset, const int lda,
                               __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
@@ -115,7 +115,7 @@ void TripleMatMul64Part1Upper(int n, __global const real* restrict src, const in
 }
 
 // B12 = -B11 * B12
-__kernel __attribute__((reqd_work_group_size(4 * TMMWGSX, TMMWGSY, 1)))
+__kernel
 void TripleMatMul64Part2Upper(int n, __global real* restrict dest, int current_size, int num_pages, const int block_size)
 {
   __local real lm[LOCALY * LOCALX];

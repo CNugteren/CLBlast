@@ -68,7 +68,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
 
   // Launches the kernel
   const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};
-  const auto global = std::vector<size_t>{1};
+  const auto global = std::vector<size_t>{Ceil(n, db_["TRSV_BLOCK_SIZE"])};
   auto event = Event();
   RunKernel(kernel, queue_, device_, global, local, event.pointer());
   event.WaitForCompletion();
@@ -87,6 +87,11 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Makes sure all dimensions are larger than zero
   if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Tests the matrix and vector
   TestMatrixA(n, n, a_buffer, a_offset, a_ld);
   TestVectorX(n, b_buffer, b_offset, b_inc);
@@ -102,8 +107,8 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_vector_event = Event();
-  FillVector(queue_, device_, program_, db_, fill_vector_event.pointer(), eventWaitList,
-             n, x_inc, x_offset, x_buffer, ConstantZero<T>());
+  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList,
+             n, x_inc, x_offset, x_buffer, ConstantZero<T>(), 16);
   fill_vector_event.WaitForCompletion();
 
   // Derives properties based on the arguments

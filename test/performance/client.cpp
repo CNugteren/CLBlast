@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <chrono>
 #include <random>
+#include <tuning/tuning.hpp>
 
 #include "utilities/utilities.hpp"
 #include "test/performance/client.hpp"
@@ -145,6 +146,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
   args.print_help     = CheckArgument(command_line_args, help, kArgHelp);
   args.silent         = CheckArgument(command_line_args, help, kArgQuiet);
   args.no_abbrv       = CheckArgument(command_line_args, help, kArgNoAbbreviations);
+  args.full_statistics= CheckArgument(command_line_args, help, kArgFullStatistics);
   warm_up_            = CheckArgument(command_line_args, help, kArgWarmUp);
 
   // Parse the optional JSON file name arguments
@@ -253,32 +255,32 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar};
 
     // Runs the routines and collects the timings
-    auto timings = std::vector<std::pair<std::string, double>>();
-    auto ms_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
-    timings.push_back(std::pair<std::string, double>("CLBlast", ms_clblast));
+    auto timings = std::vector<std::pair<std::string, TimeResult>>();
+    auto time_clblast = TimedExecution(args.num_runs, args, buffers, queue, run_routine_, "CLBlast");
+    timings.push_back(std::pair<std::string, TimeResult>("CLBlast", time_clblast));
     if (args.compare_clblas) {
-      auto ms_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference1_, "clBLAS");
-      timings.push_back(std::pair<std::string, double>("clBLAS", ms_clblas));
+      auto time_clblas = TimedExecution(args.num_runs, args, buffers, queue, run_reference1_, "clBLAS");
+      timings.push_back(std::pair<std::string, TimeResult>("clBLAS", time_clblas));
     }
     if (args.compare_cblas) {
       auto buffers_host = BuffersHost<T>();
       DeviceToHost(args, buffers, buffers_host, queue, buffers_in_);
-      auto ms_cblas = TimedExecution(args.num_runs, args, buffers_host, queue, run_reference2_, "CPU BLAS");
+      auto time_cblas = TimedExecution(args.num_runs, args, buffers_host, queue, run_reference2_, "CPU BLAS");
       HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
-      timings.push_back(std::pair<std::string, double>("CPU BLAS", ms_cblas));
+      timings.push_back(std::pair<std::string, TimeResult>("CPU BLAS", time_cblas));
     }
     if (args.compare_cublas) {
       auto buffers_host = BuffersHost<T>();
       auto buffers_cuda = BuffersCUDA<T>();
       DeviceToHost(args, buffers, buffers_host, queue, buffers_in_);
       HostToCUDA(args, buffers_cuda, buffers_host, buffers_in_);
-      auto ms_cublas = 0.0;
+      TimeResult time_cublas;
       try {
-        ms_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
+        time_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
       } catch (std::runtime_error e) { }
       CUDAToHost(args, buffers_cuda, buffers_host, buffers_out_);
       HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
-      timings.push_back(std::pair<std::string, double>("cuBLAS", ms_cublas));
+      timings.push_back(std::pair<std::string, TimeResult>("cuBLAS", time_cublas));
     }
 
     // Prints the performance of the tested libraries
@@ -311,9 +313,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
 // value found in the vector of timing results. The return value is in milliseconds.
 template <typename T, typename U>
 template <typename BufferType, typename RoutineType>
-double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
-                                   BufferType &buffers, Queue &queue,
-                                   RoutineType run_blas, const std::string &library_name) {
+typename Client<T,U>::TimeResult Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &args,
+                                                             BufferType &buffers, Queue &queue,
+                                                             RoutineType run_blas, const std::string &library_name) {
   auto status = StatusCode::kSuccess;
 
   // Do an optional warm-up to omit compilation times and initialisations from the measurements
@@ -343,7 +345,19 @@ double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &ar
     auto elapsed_time = std::chrono::steady_clock::now() - start_time;
     timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
   }
-  return *std::min_element(timings.begin(), timings.end());
+
+  // Compute statistics
+  auto result = TimeResult();
+  const auto sum = std::accumulate(timings.begin(), timings.end(), 0.0);
+  const auto mean = sum / timings.size();
+  std::vector<double> diff(timings.size());
+  std::transform(timings.begin(), timings.end(), diff.begin(), [mean](double x) { return x - mean; });
+  const auto sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
+  result.mean = mean;
+  result.standard_deviation = std::sqrt(sq_sum / timings.size());
+  result.minimum = *std::min_element(timings.begin(), timings.end());
+  result.maximum = *std::max_element(timings.begin(), timings.end());
+  return result;
 }
 
 // =================================================================================================
@@ -355,26 +369,42 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   // First line (optional)
   if (!args.silent) {
     for (auto i=size_t{0}; i<options_.size(); ++i) { fprintf(stdout, "%9s ", ""); }
-    fprintf(stdout, " | <--       CLBlast       -->");
-    if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
-    if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
-    if (args.compare_cublas) { fprintf(stdout, " | <--       cuBLAS        -->"); }
+    if (args.full_statistics) {
+      fprintf(stdout, " | <--            CLBlast            -->");
+      if (args.compare_clblas) { fprintf(stdout, " | <--            clBLAS             -->"); }
+      if (args.compare_cblas) { fprintf(stdout, " | <--           CPU BLAS            -->"); }
+      if (args.compare_cublas) { fprintf(stdout, " | <--            cuBLAS             -->"); }
+    }
+    else {
+      fprintf(stdout, " | <--       CLBlast       -->");
+      if (args.compare_clblas) { fprintf(stdout, " | <--       clBLAS        -->"); }
+      if (args.compare_cblas) { fprintf(stdout, " | <--      CPU BLAS       -->"); }
+      if (args.compare_cublas) { fprintf(stdout, " | <--       cuBLAS        -->"); }
+    }
     fprintf(stdout, " |\n");
   }
 
   // Second line
   for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
-  fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
-  if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
-  if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }
-  if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_4", "GFLOPS_4", "GBs_4"); }
+  if (args.full_statistics) {
+    fprintf(stdout, "%9s;%9s;%9s;%9s", "min_ms_1", "max_ms_1", "mean_1", "stddev_1");
+    if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_2", "max_ms_2", "mean_2", "stddev_2"); }
+    if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_3", "max_ms_3", "mean_3", "stddev_3"); }
+    if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s;%9s", "min_ms_4", "max_ms_4", "mean_4", "stddev_4"); }
+  }
+  else {
+    fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
+    if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
+    if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }
+    if (args.compare_cublas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_4", "GFLOPS_4", "GBs_4"); }
+  }
   fprintf(stdout, "\n");
 }
 
 // Print a performance-result row
 template <typename T, typename U>
 void Client<T,U>::PrintTableRow(const Arguments<U>& args,
-                                const std::vector<std::pair<std::string, double>>& timings) {
+                                const std::vector<std::pair<std::string, TimeResult>>& timings) {
 
   // Creates a vector of relevant variables
   auto integers = std::vector<size_t>{};
@@ -443,16 +473,26 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
 
   // Loops over all tested libraries
   for (const auto& timing : timings) {
+    const auto library_name = timing.first;
+    const auto minimum_ms = timing.second.minimum;
+    if (library_name != "CLBlast") { fprintf(stdout, ";"); }
 
-    // Computes the GFLOPS and GB/s metrics
-    auto flops = get_flops_(args);
-    auto bytes = get_bytes_(args);
-    auto gflops = (timing.second != 0.0) ? (flops*1e-6)/timing.second : 0;
-    auto gbs = (timing.second != 0.0) ? (bytes*1e-6)/timing.second : 0;
+    // Either output full statistics
+    if (args.full_statistics) {
+      const auto maximum_ms = timing.second.maximum;
+      const auto mean_ms = timing.second.mean;
+      const auto standard_deviation = timing.second.standard_deviation;
+      fprintf(stdout, "%9.3lf;%9.3lf;%9.3lf;%9.3lf", minimum_ms, maximum_ms, mean_ms, standard_deviation);
+    }
 
-    // Outputs the performance numbers
-    if (timing.first != "CLBlast") { fprintf(stdout, ";"); }
-    fprintf(stdout, "%9.2lf;%9.1lf;%9.1lf", timing.second, gflops, gbs);
+    // ... or outputs minimum time and the GFLOPS and GB/s metrics
+    else {
+      const auto flops = get_flops_(args);
+      const auto bytes = get_bytes_(args);
+      const auto gflops = (minimum_ms != 0.0) ? (flops*1e-6)/minimum_ms : 0;
+      const auto gbs = (minimum_ms != 0.0) ? (bytes*1e-6)/minimum_ms : 0;
+      fprintf(stdout, "%9.2lf;%9.1lf;%9.1lf", minimum_ms, gflops, gbs);
+    }
   }
   fprintf(stdout, "\n");
 }

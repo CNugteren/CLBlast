@@ -17,7 +17,11 @@
 
 extern "C"
 {
-  #include <cblas.h>
+  #ifdef CLBLAST_REF_CBLAS_MKL
+    #include <mkl_cblas.h>
+  #else
+    #include <cblas.h>
+  #endif
 }
 
 #include "utilities/utilities.hpp"

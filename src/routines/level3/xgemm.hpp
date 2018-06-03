@@ -25,9 +25,9 @@ class Xgemm: public Routine {
  public:
 
   // Defines the assumptions of the GEMM kernels
-  static const bool a_want_rotated_(const size_t gemm_kernel_id) { return gemm_kernel_id == 1; }
-  static const bool b_want_rotated_(const size_t gemm_kernel_id) { return true; }
-  static const bool c_want_rotated_(const size_t gemm_kernel_id) { return gemm_kernel_id == 1; }
+  static bool a_want_rotated_(const size_t gemm_kernel_id) { return gemm_kernel_id == 1; }
+  static bool b_want_rotated_(const size_t) { return true; }
+  static bool c_want_rotated_(const size_t gemm_kernel_id) { return gemm_kernel_id == 1; }
 
   // Computes the size of the temporary GEMM buffer based on user-arguments
   static size_t GetTempSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,

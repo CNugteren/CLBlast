@@ -42,6 +42,7 @@ template <typename T, typename U>
 class Client {
  public:
   static const int kSeed;
+  struct TimeResult { double minimum; double maximum; double mean; double standard_deviation; };
 
   // Shorthand for the routine-specific functions passed to the tester
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
@@ -72,15 +73,15 @@ class Client {
 
   // Runs a function a given number of times and returns the execution time of the shortest instance
   template <typename BufferType, typename RoutineType>
-  double TimedExecution(const size_t num_runs, const Arguments<U> &args, BufferType &buffers,
-                        Queue &queue, RoutineType run_blas, const std::string &library_name);
+  TimeResult TimedExecution(const size_t num_runs, const Arguments<U> &args, BufferType &buffers,
+                            Queue &queue, RoutineType run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
   void PrintTableHeader(const Arguments<U>& args);
 
   // Prints a row of performance data, including results of two libraries
   void PrintTableRow(const Arguments<U>& args,
-                     const std::vector<std::pair<std::string, double>>& timings);
+                     const std::vector<std::pair<std::string, TimeResult>>& timings);
 
   // The routine-specific functions passed to the tester
   const Routine run_routine_;
