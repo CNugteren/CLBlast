@@ -84,6 +84,74 @@ The kernels `gemm` and `gemm_direct` have too many parameters to explore. Theref
 
 There are also several routine-level tuners. They tune inter-kernel parameters and should only be run after the kernels are tuned. However, they do automatically pick up kernel tuning results from the current folder if there are any. An example is the GEMM routine tuner, which determines when to use the direct or the in-direct GEMM kernel.
 
+Here are all the tuners included in the `make alltuners` target (in the same order) with all their precision arguments:
+
+    ./clblast_tuner_copy_fast -precision 32
+    ./clblast_tuner_copy_fast -precision 64
+    ./clblast_tuner_copy_fast -precision 3232
+    ./clblast_tuner_copy_fast -precision 6464
+    ./clblast_tuner_copy_fast -precision 16
+    ./clblast_tuner_copy_pad -precision 32
+    ./clblast_tuner_copy_pad -precision 64
+    ./clblast_tuner_copy_pad -precision 3232
+    ./clblast_tuner_copy_pad -precision 6464
+    ./clblast_tuner_copy_pad -precision 16
+    ./clblast_tuner_transpose_fast -precision 32
+    ./clblast_tuner_transpose_fast -precision 64
+    ./clblast_tuner_transpose_fast -precision 3232
+    ./clblast_tuner_transpose_fast -precision 6464
+    ./clblast_tuner_transpose_fast -precision 16
+    ./clblast_tuner_transpose_pad -precision 32
+    ./clblast_tuner_transpose_pad -precision 64
+    ./clblast_tuner_transpose_pad -precision 3232
+    ./clblast_tuner_transpose_pad -precision 6464
+    ./clblast_tuner_transpose_pad -precision 16
+    ./clblast_tuner_xaxpy -precision 32
+    ./clblast_tuner_xaxpy -precision 64
+    ./clblast_tuner_xaxpy -precision 3232
+    ./clblast_tuner_xaxpy -precision 6464
+    ./clblast_tuner_xaxpy -precision 16
+    ./clblast_tuner_xdot -precision 32
+    ./clblast_tuner_xdot -precision 64
+    ./clblast_tuner_xdot -precision 3232
+    ./clblast_tuner_xdot -precision 6464
+    ./clblast_tuner_xdot -precision 16
+    ./clblast_tuner_xger -precision 32
+    ./clblast_tuner_xger -precision 64
+    ./clblast_tuner_xger -precision 3232
+    ./clblast_tuner_xger -precision 6464
+    ./clblast_tuner_xger -precision 16
+    ./clblast_tuner_xgemm -precision 32
+    ./clblast_tuner_xgemm -precision 64
+    ./clblast_tuner_xgemm -precision 3232
+    ./clblast_tuner_xgemm -precision 6464
+    ./clblast_tuner_xgemm -precision 16
+    ./clblast_tuner_xgemm_direct -precision 32
+    ./clblast_tuner_xgemm_direct -precision 64
+    ./clblast_tuner_xgemm_direct -precision 3232
+    ./clblast_tuner_xgemm_direct -precision 6464
+    ./clblast_tuner_xgemm_direct -precision 16
+    ./clblast_tuner_xgemv -precision 32
+    ./clblast_tuner_xgemv -precision 64
+    ./clblast_tuner_xgemv -precision 3232
+    ./clblast_tuner_xgemv -precision 6464
+    ./clblast_tuner_xgemv -precision 16
+    ./clblast_tuner_invert -precision 32
+    ./clblast_tuner_invert -precision 64
+    ./clblast_tuner_invert -precision 3232
+    ./clblast_tuner_invert -precision 6464
+    ./clblast_tuner_invert -precision 16
+    ./clblast_tuner_routine_xgemm -precision 32
+    ./clblast_tuner_routine_xgemm -precision 64
+    ./clblast_tuner_routine_xgemm -precision 3232
+    ./clblast_tuner_routine_xgemm -precision 6464
+    ./clblast_tuner_routine_xgemm -precision 16
+    ./clblast_tuner_routine_xtrsv -precision 32
+    ./clblast_tuner_routine_xtrsv -precision 64
+    ./clblast_tuner_routine_xtrsv -precision 3232
+    ./clblast_tuner_routine_xtrsv -precision 6464
+    ./clblast_tuner_routine_xtrsv -precision 16
+
 
 Using the tuning results
 -------------
