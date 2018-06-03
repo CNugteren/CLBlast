@@ -678,8 +678,8 @@ public:
   }
 
   // Regular constructor with memory management
-  explicit Kernel(const Program &program, const std::string &name): name_(name) {
-    CheckError(cuModuleGetFunction(&kernel_, program.GetModule(), name.c_str()));
+  explicit Kernel(const std::shared_ptr<Program> program, const std::string &name): name_(name) {
+    CheckError(cuModuleGetFunction(&kernel_, program->GetModule(), name.c_str()));
   }
 
   // Sets a kernel argument at the indicated position. This stores both the value of the argument
