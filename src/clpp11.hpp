@@ -463,7 +463,9 @@ class Program {
 
   // Clean-up
   ~Program() {
-    if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
+    #ifndef _MSC_VER // causes an access violation under Windows when the driver is already unloaded
+      if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
+    #endif
   }
 
   // Compiles the device program and checks whether or not there are any warnings/errors
