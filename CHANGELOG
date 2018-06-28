@@ -1,4 +1,7 @@
 
+Development (next version)
+- Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded
+
 Version 1.4.0
 - Added Python interface to CLBlast 'PyCLBlast'
 - Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
