@@ -36,7 +36,7 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
 // Sets all elements of a matrix to a constant value
 template <typename T>
 void FillMatrix(Queue &queue, const Device &device,
-                const std::shared_ptr<Program> program,
+                const Program &program,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t m, const size_t n, const size_t ld, const size_t offset,
                 const Buffer<T> &dest, const T constant_value, const size_t local_size);
@@ -44,7 +44,7 @@ void FillMatrix(Queue &queue, const Device &device,
 // Sets all elements of a vector to a constant value
 template <typename T>
 void FillVector(Queue &queue, const Device &device,
-                const std::shared_ptr<Program> program,
+                const Program &program,
                 EventPointer event, const std::vector<Event> &waitForEvents,
                 const size_t n, const size_t inc, const size_t offset,
                 const Buffer<T> &dest, const T constant_value, const size_t local_size);
@@ -64,7 +64,7 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
                             const size_t dest_ld, const size_t dest_offset,
                             const Buffer<T> &dest,
                             const T alpha,
-                            const std::shared_ptr<Program> program, const bool do_pad,
+                            const Program &program, const bool do_pad,
                             const bool do_transpose, const bool do_conjugate,
                             const bool upper = false, const bool lower = false,
                             const bool diagonal_imag_zero = false) {
@@ -184,7 +184,7 @@ void PadCopyTransposeMatrixBatched(Queue &queue, const Device &device,
                                    const size_t dest_one, const size_t dest_two,
                                    const size_t dest_ld, const Buffer<int> &dest_offsets,
                                    const Buffer<T> &dest,
-                                   const std::shared_ptr<Program> program, const bool do_pad,
+                                   const Program &program, const bool do_pad,
                                    const bool do_transpose, const bool do_conjugate,
                                    const size_t batch_count) {
 
@@ -248,7 +248,7 @@ void PadCopyTransposeMatrixStridedBatched(Queue &queue, const Device &device,
                                           const size_t dest_one, const size_t dest_two,
                                           const size_t dest_ld, const size_t dest_offset,
                                           const size_t dest_stride, const Buffer<T> &dest,
-                                          const std::shared_ptr<Program> program, const bool do_pad,
+                                          const Program &program, const bool do_pad,
                                           const bool do_transpose, const bool do_conjugate,
                                           const size_t batch_count) {
 

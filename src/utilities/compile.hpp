@@ -24,8 +24,7 @@ namespace clblast {
 // =================================================================================================
 
 // Compiles a program from source code
-std::shared_ptr<Program> CompileFromSource(
-                          const std::string &source_string, const Precision precision,
+Program CompileFromSource(const std::string &source_string, const Precision precision,
                           const std::string &routine_name,
                           const Device& device, const Context& context,
                           std::vector<std::string>& options,

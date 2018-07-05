@@ -21,8 +21,7 @@ namespace clblast {
 // =================================================================================================
 
 // Compiles a program from source code
-std::shared_ptr<Program> CompileFromSource(
-                          const std::string &source_string, const Precision precision,
+Program CompileFromSource(const std::string &source_string, const Precision precision,
                           const std::string &routine_name,
                           const Device& device, const Context& context,
                           std::vector<std::string>& options,
@@ -94,13 +93,13 @@ std::shared_ptr<Program> CompileFromSource(
   }
 
   // Compiles the kernel
-  auto program = std::make_shared<Program>(context, kernel_string);
+  auto program = Program(context, kernel_string);
   try {
-    program->Build(device, options);
+    program.Build(device, options);
   } catch (const CLCudaAPIBuildError &e) {
-    if (program->StatusIsCompilationWarningOrError(e.status()) && !silent) {
+    if (program.StatusIsCompilationWarningOrError(e.status()) && !silent) {
       fprintf(stdout, "OpenCL compiler error/warning:\n%s\n",
-              program->GetBuildInfo(device).c_str());
+              program.GetBuildInfo(device).c_str());
     }
     throw;
   }

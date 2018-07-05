@@ -83,10 +83,10 @@ extern template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const
 typedef std::tuple<RawContext, RawDeviceID, Precision, std::string> ProgramKey;
 typedef std::tuple<const RawContext &, const RawDeviceID &, const Precision &, const std::string &> ProgramKeyRef;
 
-typedef Cache<ProgramKey, std::shared_ptr<Program>> ProgramCache;
+typedef Cache<ProgramKey, Program> ProgramCache;
 
-extern template class Cache<ProgramKey, std::shared_ptr<Program>>;
-extern template std::shared_ptr<Program> ProgramCache::Get(const ProgramKeyRef &, bool *) const;
+extern template class Cache<ProgramKey, Program>;
+extern template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
 
 // =================================================================================================
 

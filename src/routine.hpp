@@ -95,7 +95,7 @@ class Routine {
   const Device device_;
 
   // Compiled program (either retrieved from cache or compiled in slow path)
-  std::shared_ptr<Program> program_;
+  Program program_;
 
   // Connection to the database for all the device-specific parameters
   Databases db_;
