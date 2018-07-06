@@ -96,7 +96,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
   auto binary = BinaryCache::Instance().Get(BinaryKeyRef{platform_id,  precision_, routine_info, device_name },
                                             &has_binary);
   if (has_binary) {
-    program_ = std::make_shared<Program>(Program(device_, context_, binary));
+    program_ = std::make_shared<Program>(device_, context_, binary);
     program_->Build(device_, options);
     ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_info },
                                     std::shared_ptr<Program>{program_});
