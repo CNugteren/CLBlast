@@ -17,6 +17,44 @@ R"(
 
 // =================================================================================================
 
+// A common interface for subgroup functions
+
+#if USE_SUBGROUP_SHUFFLING == 1
+
+INLINE_FUNC int clblast_get_sub_group_local_id() {
+  
+  // Intel extension 
+  #if INTEL_SUBGROUP_EXTENSION == 1
+  return get_sub_group_local_id();
+  
+  // Nvidia inline PTX
+  #elif NVIDIA_WARPS_AS_SUBGROUPS == 1
+  int ret;
+  asm volatile("mov.u32 %0, %%laneid;" : "=r"(ret) );
+  return ret;
+  #endif 
+}
+
+INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
+  
+  // Intel extension 
+  #if INTEL_SUBGROUP_EXTENSION == 1
+  return intel_sub_group_shuffle(reg, src);
+  
+  // Nvidia inline PTX
+  // Volta and later requires .sync shuffle instructions with an extra mask arg
+  #elif NVIDIA_WARPS_AS_SUBGROUPS == 1
+  realN ret;
+    #if NVIDIA_POST_VOLTA == 1
+    asm volatile("shfl.sync.idx.b32 %0, %1, %2, 0x1f, 0xffffffff;" : "=f"(ret): "f"(reg), "r"(src));
+    #else
+    asm volatile("shfl.idx.b32 %0, %1, %2, 0x1f;" : "=f"(ret): "f"(reg), "r"(src));
+    #endif
+  return ret;
+  #endif
+}
+#endif
+
 // Main body of the matrix-multiplication algorithm. It calls various (inlined) functions.
 INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
                            const __global realM* restrict agm, const __global realN* restrict bgm,
@@ -130,7 +168,7 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
         #elif GEMMK == 1
           // Loads data: 2D global --> 2D private (matrix A). Partly, shuffled later among subgroups
           #if USE_SUBGROUP_SHUFFLING == 1
-            const int _ni = get_sub_group_local_id();
+            const int _ni = clblast_get_sub_group_local_id();
             #pragma unroll
             for (int _ki = 0; _ki < KREG/VWN; _ki += 1) {
               apm[_ki] = GlobalToPrivateA2D(a_ptr, tid_y, _ni, kSizeK, idk, _ki);
@@ -202,7 +240,7 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
               for (int _ki = 0; _ki < KREG/VWN; _ki += 1) {
                 const int index =  _ni * (MWI/VWM) + _mi;
                 #if USE_SUBGROUP_SHUFFLING == 1
-                  const realN aval = intel_sub_group_shuffle(apm[_ki], _ni);
+                  const realN aval = clblast_sub_group_shuffle(apm[_ki], _ni);
                 #else
                   const realN aval = apm[_ni * (KREG/VWN) + _ki];
                 #endif

@@ -44,6 +44,7 @@
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
 #include <cstdio>    // fprintf, stderr
+#include "assert.h"
 
 // OpenCL
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
@@ -353,6 +354,12 @@ class Device {
     #endif
     return std::string{"SM"} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV)) +
            std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
+  }
+
+  // Returns if the Nvidia chip is a Volta or later archicture (sm_70 or higher)
+  bool IsPostNVIDIAVolta() const {
+    assert(HasExtension("cl_nv_device_attribute_query"));
+    return GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) >= 7;
   }
 
   // Retrieves the above extra information (if present)

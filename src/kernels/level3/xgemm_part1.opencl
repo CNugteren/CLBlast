@@ -114,13 +114,29 @@ R"(
   #define GLOBAL_MEM_FENCE 0    // Global synchronisation barrier for potential better performance
 #endif
 
-// Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.txt)
-#ifndef USE_SUBGROUP_SHUFFLING
-  #define USE_SUBGROUP_SHUFFLING 0     // Optionally enables subgroup shuffling for Intel GPUs
+#ifndef NVIDIA_WARPS_AS_SUBGROUPS
+  #define NVIDIA_WARPS_AS_SUBGROUPS 0
 #endif
-#if USE_SUBGROUP_SHUFFLING == 1
+#ifndef NVIDIA_POST_VOLTA
+  #define NVIDIA_POST_VOLTA 0
+#endif
+#ifndef INTEL_SUBGROUP_EXTENSION
+  #define INTEL_SUBGROUP_EXTENSION 0
+#endif
+//#ifndef USE_SUBGROUP_SHUFFLING
+  #define USE_SUBGROUP_SHUFFLING 0     // Optionally enables subgroup shuffling for Intel GPUs
+//#endif
+
+// Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.txt)
+#if USE_SUBGROUP_SHUFFLING == 1 && INTEL_SUBGROUP_EXTENSION
   #define SUBGROUP_SIZE 8              // Assumes subgroup size is always 8 on Intel GPUs
 #endif
+
+// NVIDIA warps as subgroups using inline PTX (https://docs.nvidia.com/cuda/inline-ptx-assembly/index.html)
+#if USE_SUBGROUP_SHUFFLING == 1 && NVIDIA_WARPS_AS_SUBGROUPS
+  #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 32 on NVIDIA GPUs
+#endif
+
 #if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
   #undef USE_SUBGROUP_SHUFFLING
   #define USE_SUBGROUP_SHUFFLING 0     // Disables subgroups in case the assumptions don't hold

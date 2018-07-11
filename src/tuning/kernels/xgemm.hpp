@@ -116,7 +116,7 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
     };
   }
   else if (V == 11) { // Kernel 1: limited subset of tuning parameters - but explorable exhaustively
-    settings.parameters = {
+    /*settings.parameters = {
       {"GEMMK", {1}},
       {"MWG", {16, 32, 64}},
       {"NWG", {16, 32, 64}},
@@ -133,6 +133,24 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
       {"SA", {0}},
       {"SB", {0}},
       {"KREG", {1, 2, 4}}
+    };*/
+    settings.parameters = {
+      { "GEMMK",{ 1 } },
+      { "MWG",{ 16, 32, 64 } },
+      { "NWG",{ 64 } }, // This divided by NDIMC needs to be 32
+      { "KWG",{ 1 } },
+      { "MDIMC",{ 64 } }, // This needs to be greater than 32
+      { "NDIMC",{ 2 } },
+      { "MDIMA",{ 64 } }, // This needs to be equal to MDIMC
+      { "NDIMB",{ 2 } }, // This needs to be equal to NDIMC
+      { "KWI",{ 1 } },
+      { "VWM",{ 1, 2, 4, 8 } },
+      { "VWN",{ 1, 2, 4 } },
+      { "STRM",{ 0 } },
+      { "STRN",{ 0 } },
+      { "SA",{ 0 } },
+      { "SB",{ 0 } },
+      { "KREG",{ 1, 2, 4 } }
     };
   }
   else if (V == 12) { // Kernel 1: a lot more tuning parameters - has to be sampled randomly, too much to test all
