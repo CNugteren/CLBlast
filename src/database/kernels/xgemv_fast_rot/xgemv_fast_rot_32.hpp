@@ -102,6 +102,7 @@ const DatabaseEntry XgemvFastRotSingle = {
           { kDeviceNameDefault                                        , Params{ 8, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM6.1", {
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 8, 32, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 8, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 8, 64, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 8, 64, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

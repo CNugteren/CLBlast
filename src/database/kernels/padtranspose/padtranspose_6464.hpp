@@ -123,6 +123,7 @@ const DatabaseEntry PadtransposeComplexDouble = {
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 1, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 1, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

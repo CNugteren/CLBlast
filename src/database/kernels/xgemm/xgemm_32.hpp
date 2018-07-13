@@ -141,6 +141,7 @@ const DatabaseEntry XgemmSingle = {
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 0, 1, 16, 2, 32, 16, 128, 32, 8, 128, 1, 1, 1, 0, 4, 1 } },
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 8, 64, 1, 1, 1, 1, 4, 8 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 16, 2, 32, 16, 64, 16, 8, 128, 1, 1, 0, 1, 2, 8 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },

@@ -122,13 +122,14 @@ const DatabaseEntry XgemmComplexDouble = {
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 0, 1, 32, 8, 32, 16, 32, 8, 8, 32, 0, 0, 0, 1, 1, 4 } },
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 0, 0, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 32, 32, 64, 0, 0, 0, 0, 1, 2 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },

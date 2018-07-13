@@ -20,6 +20,17 @@ const DatabaseEntry TrsvRoutineComplexSingle = {
         } },
       }
     },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "SM6.1", {
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
