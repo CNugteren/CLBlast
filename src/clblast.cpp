@@ -1655,6 +1655,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 cl_mem temp_buffer) {
   try {
     auto queue_cpp = Queue(*queue);
+    Xgemm<T>::OverrideParametersGivenArguments(queue_cpp, PrecisionValue<T>(), m, n, k);
     auto routine = Xgemm<T>(queue_cpp, event);
     const auto temp_buffer_provided = temp_buffer != nullptr;
     auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);

@@ -189,6 +189,36 @@ class Xgemm: public Routine {
                   const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
                   const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
                   const bool a_conjugate, const bool b_conjugate);
+
+// =================================================================================================
+
+  static void OverrideParametersGivenArguments(Queue &queue, const Precision precision,
+                                               const size_t m, const size_t n, const size_t k) {
+    const auto device = queue.GetDevice();
+    std::unordered_map<std::string,size_t> gemm_parameters;
+    // Placeholder: run model here, example results to simulate behaviour:
+    gemm_parameters["GEMMK"] = 0;
+    gemm_parameters["KREG"] = 1;
+    gemm_parameters["KWG"] = 32;
+    gemm_parameters["KWI"] = 2;
+    gemm_parameters["MDIMA"] = 4;
+    gemm_parameters["MDIMC"] = 4;
+    gemm_parameters["MWG"] = 32;
+    gemm_parameters["NDIMB"] = 4;
+    gemm_parameters["NDIMC"] = 4;
+    gemm_parameters["NWG"] = 32;
+    gemm_parameters["SA"] = 0;
+    gemm_parameters["SB"] = 0;
+    gemm_parameters["STRM"] = 0;
+    gemm_parameters["STRN"] = 0;
+    gemm_parameters["VWM"] = 1;
+    gemm_parameters["VWN"] = 1;
+    const auto status = OverrideParameters(device(), "Xgemm", precision, gemm_parameters);
+    if (status != StatusCode::kSuccess) {
+      throw RuntimeError("CLBlast: OverrideParameters error: " + ToString(status));
+    };
+  }
+
 };
 
 // =================================================================================================
