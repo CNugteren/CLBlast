@@ -2,6 +2,7 @@
 Development (next version)
 - Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded
 - Fixed an issue with double cl_program release in the CLBlast caching system
+- Added tuned parameters for various devices (see doc/tuning.md)
 
 Version 1.4.0
 - Added Python interface to CLBlast 'PyCLBlast'

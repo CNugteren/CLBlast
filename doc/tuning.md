@@ -45,6 +45,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
+  - HD Graphics 6000 BroadWell U-Processor GT3
   - HD Graphics 630
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics IvyBridge M GT2
