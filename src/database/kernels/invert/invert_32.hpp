@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry InvertSingle = {
   "Invert", Precision::kSingle, {"INTERNAL_BLOCK_SIZE", "LOCALPAD", "TMMWGSX", "TMMWGSY"}, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {

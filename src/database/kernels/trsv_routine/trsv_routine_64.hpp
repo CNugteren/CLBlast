@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry TrsvRoutineDouble = {
   "TrsvRoutine", Precision::kDouble, {"TRSV_BLOCK_SIZE"}, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM6.1", {

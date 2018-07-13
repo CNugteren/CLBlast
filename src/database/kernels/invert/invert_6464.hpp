@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry InvertComplexDouble = {
   "Invert", Precision::kComplexDouble, {"INTERNAL_BLOCK_SIZE", "LOCALPAD", "TMMWGSX", "TMMWGSY"}, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM5.0", {

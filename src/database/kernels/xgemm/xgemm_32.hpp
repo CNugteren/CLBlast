@@ -71,6 +71,7 @@ const DatabaseEntry XgemmSingle = {
         { "default", {
           { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 0, 1, 16, 2, 8, 8, 128, 16, 8, 128, 0, 1, 1, 1, 1, 8 } },
           { Name{"Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz           "}, Params{ 0, 1, 32, 2, 32, 16, 64, 32, 8, 64, 0, 1, 1, 0, 1, 1 } },
+          { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 1, 16, 1, 1, 2, 2, 64, 2, 2, 128, 0, 0, 0, 0, 8, 2 } },
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 0, 1, 32, 8, 32, 32, 64, 32, 16, 64, 1, 1, 1, 0, 2, 2 } },
           { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 0, 1, 32, 2, 16, 8, 128, 16, 8, 64, 0, 0, 1, 0, 1, 2 } },
           { Name{"Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz           "}, Params{ 0, 1, 32, 2, 32, 8, 128, 8, 8, 128, 1, 1, 1, 1, 2, 8 } },
