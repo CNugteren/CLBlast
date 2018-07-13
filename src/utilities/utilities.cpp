@@ -477,6 +477,14 @@ std::string GetDeviceName(const Device& device) {
   for (auto &find_and_replace : device_mapping::kDeviceNames) { // replacing to common names
     if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
   }
+
+  for (auto &removal : device_mapping::kDeviceRemovals) { // removing certain things
+    if (device_name.find(removal) != std::string::npos) {
+      auto start_position_to_erase = device_name.find(removal);
+      device_name.erase(start_position_to_erase, removal.length());
+    }
+  }
+
   return device_name;
 }
 
