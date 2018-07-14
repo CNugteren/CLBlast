@@ -44,7 +44,7 @@
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
 #include <cstdio>    // fprintf, stderr
-#include "assert.h"
+#include <assert.h>
 
 // OpenCL
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings

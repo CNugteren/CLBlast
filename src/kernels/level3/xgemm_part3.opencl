@@ -24,11 +24,11 @@ R"(
 INLINE_FUNC int clblast_get_sub_group_local_id() {
   
   // Intel extension 
-  #if INTEL_SUBGROUP_EXTENSION == 1
+  #if SUBGROUP_SHUFFLING_INTEL == 1
   return get_sub_group_local_id();
   
   // Nvidia inline PTX
-  #elif NVIDIA_WARPS_AS_SUBGROUPS == 1
+  #elif SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA == 1 || SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA == 1
   int ret;
   asm volatile("mov.u32 %0, %%laneid;" : "=r"(ret) );
   return ret;
@@ -38,14 +38,14 @@ INLINE_FUNC int clblast_get_sub_group_local_id() {
 INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
   
   // Intel extension 
-  #if INTEL_SUBGROUP_EXTENSION == 1
+  #if SUBGROUP_SHUFFLING_INTEL == 1
   return intel_sub_group_shuffle(reg, src);
   
   // Nvidia inline PTX
   // Volta and later requires .sync shuffle instructions with an extra mask arg
-  #elif NVIDIA_WARPS_AS_SUBGROUPS == 1
+  #elif SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA == 1 || SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA == 1
   realN ret;
-    #if NVIDIA_POST_VOLTA == 1
+    #if SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA == 1
     asm volatile("shfl.sync.idx.b32 %0, %1, %2, 0x1f, 0xffffffff;" : "=f"(ret): "f"(reg), "r"(src));
     #else
     asm volatile("shfl.idx.b32 %0, %1, %2, 0x1f;" : "=f"(ret): "f"(reg), "r"(src));
