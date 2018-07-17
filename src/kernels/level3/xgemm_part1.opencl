@@ -133,8 +133,7 @@ R"(
 #endif
 
 // NVIDIA warps as subgroups using inline PTX (https://docs.nvidia.com/cuda/inline-ptx-assembly/index.html)
-#if USE_SUBGROUP_SHUFFLING == 1 && (SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA || \ 
-                                    SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA)
+#if USE_SUBGROUP_SHUFFLING == 1 && (SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA || SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA)
   #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 32 on NVIDIA GPUs
 #endif
 
