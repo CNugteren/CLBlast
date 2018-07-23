@@ -327,6 +327,11 @@ public:
   std::string AMDBoardName() const { return ""; }
   std::string NVIDIAComputeCapability() const { return Capabilities(); }
 
+  // Returns if the Nvidia chip is a Volta or later archicture (major version  7 or higher)
+  bool IsPostNVIDIAVolta() const {
+    return GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR) >= 7;
+  }
+
   // Retrieves the above extra information
   std::string GetExtraInfo() const { return NVIDIAComputeCapability(); }
 

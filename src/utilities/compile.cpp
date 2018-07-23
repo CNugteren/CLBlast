@@ -61,8 +61,22 @@ std::shared_ptr<Program> CompileFromSource(
   // For Intel GPUs with subgroup support, use subgroup shuffling.
   if (device.IsGPU() && device.HasExtension(kKhronosIntelSubgroups)) {
     header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
+    header_string += "#define SUBGROUP_SHUFFLING_INTEL 1\n";
   }
 
+  // For NVIDIA GPUs, inline PTX can provide subgroup support
+  if (device.IsGPU() && device.IsNVIDIA() && precision == Precision::kSingle) {
+    header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
+
+    // Nvidia needs to check pre or post volta due to new shuffle commands
+    if (device.IsPostNVIDIAVolta()) {
+      header_string += "#define SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA 1\n";
+    }
+    else {
+      header_string += "#define SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA 1\n";
+    }
+  }
+  
   // Optionally adds a translation header from OpenCL kernels to CUDA kernels
   #ifdef CUDA_API
     header_string +=
