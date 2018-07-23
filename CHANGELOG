@@ -1,4 +1,8 @@
 
+Development (next version)
+- Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
+- Various minor fixes and enhancements
+
 Version 1.4.1
 - Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded
 - Fixed an issue with double cl_program release in the CLBlast caching system
