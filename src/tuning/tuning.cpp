@@ -342,8 +342,17 @@ void Tuner(int argc, char* argv[], const int V,
   const auto best_time_ms = best_configuration->score;
   if (best_time_ms == 0.0) { return; }
 
-  // Also prints the performance of the best-case in terms of GB/s or GFLOPS
+  // Computes and prints some other statistics
+  auto average_ms = 0.0;
+  for (const auto result : results) { average_ms += result.score; }
+  average_ms /= results.size();
   printf("\n");
+  printf("* Got average result of %.2lf ms", average_ms);
+  printf(": %.1lf %s\n", settings.metric_amount / (average_ms * 1.0e6),
+         settings.performance_unit.c_str());
+
+
+  // Also prints the performance of the best-case in terms of GB/s or GFLOPS
   printf("* Found best result %.2lf ms", best_time_ms);
   printf(": %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6),
          settings.performance_unit.c_str());
