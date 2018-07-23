@@ -95,9 +95,9 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
     const int tid_y = get_global_id(1);
   #endif
 
-  // Combined thread identifier (volatile to disable caching)
+  // Combined thread identifier
   #if SA == 1 || SB == 1
-    volatile int tid = get_local_id(0) + MDIMC*get_local_id(1);
+    int tid = get_local_id(0) + MDIMC*get_local_id(1);
   #endif
 
   // Initializes the accumulation registers
