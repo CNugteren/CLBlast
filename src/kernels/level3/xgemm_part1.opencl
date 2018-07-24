@@ -51,10 +51,10 @@ R"(
   #define GEMMK 0    // Kernel to choose: 0 regular, 1 with 2D register tiling
 #endif
 #ifndef MWG
-  #define MWG 8      // Tile-size in dimension M (e.g. 64, 128)
+  #define MWG 16      // Tile-size in dimension M (e.g. 64, 128)
 #endif
 #ifndef NWG
-  #define NWG 8      // Tile-size in dimension N (e.g. 64, 128)
+  #define NWG 16      // Tile-size in dimension N (e.g. 64, 128)
 #endif
 #ifndef KWG
   #define KWG 8      // Tile-size in dimension K (e.g. 8, 16)

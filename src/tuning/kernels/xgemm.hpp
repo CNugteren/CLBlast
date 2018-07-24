@@ -65,7 +65,7 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
 
   // Sets the base thread configuration
   settings.global_size = {args.m, args.n};
-  settings.global_size_ref = settings.global_size;
+  settings.global_size_ref = {args.m / 2, args.n / 2};
   settings.local_size = {1, 1};
   settings.local_size_ref = {8, 8};
 
