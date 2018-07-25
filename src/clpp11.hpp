@@ -447,8 +447,15 @@ class Program {
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source) {
-    const char *source_ptr = &source[0];
-    const auto length = source.length();
+    #ifdef AMD_HAINAN_WORKAROUND
+      const std::string source_hainan = source + "\n__kernel void null_kernel() {}\n";
+      const char *source_ptr = &source_hainan[0];
+      const auto length = source_hainan.length();
+      printf("%s\n", source_hainan.c_str());
+    #else
+      const char *source_ptr = &source[0];
+      const auto length = source.length();
+    #endif
     auto status = CL_SUCCESS;
     program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
     CLCudaAPIError::Check(status, "clCreateProgramWithSource");
@@ -768,6 +775,10 @@ class Kernel {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program->operator()(), name.c_str(), &status);
     CLCudaAPIError::Check(status, "clCreateKernel");
+    #ifdef AMD_HAINAN_WORKAROUND
+      *null_kernel_ = clCreateKernel(program->operator()(), "null_kernel", &status);
+      CLCudaAPIError::Check(status, "clCreateKernel");
+    #endif
   }
 
   // Sets a kernel argument at the indicated position
@@ -831,12 +842,22 @@ class Kernel {
                                       static_cast<cl_uint>(waitForEventsPlain.size()),
                                       !waitForEventsPlain.empty() ? waitForEventsPlain.data() : nullptr,
                                       event));
+    #ifdef AMD_HAINAN_WORKAROUND
+      const std::vector<size_t> nullRange = {1};
+      CheckError(clEnqueueNDRangeKernel(queue(), *null_kernel_, static_cast<cl_uint>(nullRange.size()),
+                                        nullptr, nullRange.data(), nullptr,
+                                        static_cast<cl_uint>(waitForEventsPlain.size()),
+                                        nullptr, event));
+    #endif
   }
 
   // Accessor to the private data-member
   const cl_kernel& operator()() const { return *kernel_; }
  private:
   std::shared_ptr<cl_kernel> kernel_;
+  #ifdef AMD_HAINAN_WORKAROUND
+    std::shared_ptr<cl_kernel> null_kernel_;
+  #endif
 
   // Internal implementation for the recursive SetArguments function.
   template <typename T>

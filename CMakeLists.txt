@@ -35,6 +35,12 @@ option(TESTS "Enable compilation of the correctness tests" OFF)
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
 
+# Workarounds for bugs
+option(AMD_HAINAN "Enables workaround for bug in AMD SI Hainan GPUs" OFF)
+if(AMD_HAINAN)
+  add_definitions(-DAMD_HAINAN_WORKAROUND)
+endif()
+
 # Select between an OpenCL API (default) or a CUDA API (beta)
 option(OPENCL "Build CLBlast with an OpenCL API (default)" ON)
 option(CUDA "Build CLBlast with a CUDA API (beta)" OFF)
