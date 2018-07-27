@@ -448,9 +448,9 @@ class Program {
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source) {
     #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
-      const std::string source_hainan = source + "\n__kernel void null_kernel() {}\n";
-      const char *source_ptr = &source_hainan[0];
-      const auto length = source_hainan.length();
+      const std::string source_null_kernel = source + "\n__kernel void null_kernel() {}\n";
+      const char *source_ptr = &source_null_kernel[0];
+      const auto length = source_null_kernel.length();
     #else
       const char *source_ptr = &source[0];
       const auto length = source.length();
@@ -770,7 +770,14 @@ class Kernel {
       kernel_(new cl_kernel, [](cl_kernel* k) {
         if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
         delete k;
-      }) {
+      })
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      , null_kernel_(new cl_kernel, [](cl_kernel* k) {
+        if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
+        delete k;
+      })
+    #endif
+  {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program->operator()(), name.c_str(), &status);
     CLCudaAPIError::Check(status, "clCreateKernel");
