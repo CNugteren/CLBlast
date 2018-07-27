@@ -36,9 +36,9 @@ option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
 
 # Workarounds for bugs
-option(AMD_HAINAN "Enables workaround for bug in AMD SI Hainan GPUs" OFF)
-if(AMD_HAINAN)
-  add_definitions(-DAMD_HAINAN_WORKAROUND)
+option(AMD_SI_EMPTY_KERNEL_WORKAROUND "Enables workaround for bug in AMD Southern Island GPUs" OFF)
+if(AMD_SI_EMPTY_KERNEL_WORKAROUND)
+  add_definitions(-DAMD_SI_EMPTY_KERNEL_WORKAROUND)
 endif()
 
 # Select between an OpenCL API (default) or a CUDA API (beta)
