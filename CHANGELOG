@@ -1,6 +1,7 @@
 
 Development (next version)
 - Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
+- Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
 - Various minor fixes and enhancements
 
 Version 1.4.1
