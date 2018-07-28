@@ -50,6 +50,9 @@ struct LocalMemSizeInfo {
 // function to find all configurations. It also applies the user-defined constraints within.
 std::vector<Configuration> SetConfigurations(const Device& device,
                                              const std::vector<Parameter> parameters,
+                                             const std::vector<size_t>& local_size_base,
+                                             const TransformVector& mul_local_config,
+                                             const TransformVector& div_local_config,
                                              const Constraints& constraints,
                                              const LocalMemSizeInfo& local_mem_size_info);
 
@@ -58,11 +61,16 @@ std::vector<Configuration> SetConfigurations(const Device& device,
 // At the end of each chain (when all parameters are considered), the function stores the result
 // into the configuration list.
 void PopulateConfigurations(const std::vector<Parameter> &parameters,
+                            const std::vector<size_t> local_size_base,
+                            const TransformVector& mul_local_config,
+                            const TransformVector& div_local_config,
                             const size_t index, const Configuration &config,
                             std::vector<Configuration> &configuration,
                             const size_t local_mem_max,
                             const Constraints& constraints,
-                            const LocalMemSizeInfo& local_mem_size_info);
+                            const LocalMemSizeInfo& local_mem_size_info,
+                            const std::vector<size_t>& max_work_item_sizes,
+                            const size_t max_work_group_size);
 
 // Loops over all user-defined constraints to check whether or not the configuration is valid.
 // Assumes initially all configurations are valid, then returns false if one of the constraints has
@@ -71,7 +79,12 @@ void PopulateConfigurations(const std::vector<Parameter> &parameters,
 bool ValidConfiguration(const Configuration &config,
                         const size_t local_mem_max,
                         const Constraints& constraints,
-                        const LocalMemSizeInfo& local_mem_size_info);
+                        const LocalMemSizeInfo& local_mem_size_info,
+                        const std::vector<size_t> local_size_base,
+                        const TransformVector& mul_local_config,
+                        const TransformVector& div_local_config,
+                        const std::vector<size_t>& max_work_item_sizes,
+                        const size_t max_work_group_size);
 
 // Processes multipliers and dividers to obtain the final thread configuration
 std::vector<size_t> SetThreadConfiguration(const Configuration& config,
