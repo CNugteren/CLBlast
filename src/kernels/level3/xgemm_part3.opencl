@@ -91,8 +91,8 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   #if GEMMK == 1
     const __global real* restrict a_ptr = (const __global real* restrict) &agm[0];
     const __global real* restrict b_ptr = (const __global real* restrict) &bgm[0];
-    const int tid_x = get_global_id(0);
-    const int tid_y = get_global_id(1);
+    const int tid_x = get_local_id(0) + MDIMC * GetGroupID0();
+    const int tid_y = get_local_id(1) + NDIMC * GetGroupID1();
   #endif
 
   // Combined thread identifier (volatile to disable caching)
