@@ -33,9 +33,13 @@ void StartVariation(int argc, char *argv[]) {
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
+  printf("* (1/4) Tuning main GEMM kernel (GEMMK == 0) for fixed set of parameters\n\n");
   StartVariation<1>(argc, argv);
+  printf("* (2/4) Tuning main GEMM kernel (GEMMK == 0) for random parameters out of larger set\n\n");
   StartVariation<2>(argc, argv);
+  printf("* (3/4) Tuning secondary GEMM kernel (GEMMK == 1) for fixed set of parameters\n\n");
   StartVariation<11>(argc, argv);
+  printf("* (4/4) Tuning secondary GEMM kernel (GEMMK == 1) for random parameters out of larger set\n\n");
   StartVariation<12>(argc, argv);
   return 0;
 }
