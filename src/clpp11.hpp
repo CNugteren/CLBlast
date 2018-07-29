@@ -852,8 +852,7 @@ class Kernel {
       const std::vector<size_t> nullRange = {1};
       CheckError(clEnqueueNDRangeKernel(queue(), *null_kernel_, static_cast<cl_uint>(nullRange.size()),
                                         nullptr, nullRange.data(), nullptr,
-                                        static_cast<cl_uint>(waitForEventsPlain.size()),
-                                        nullptr, event));
+                                        0, nullptr, nullptr));
     #endif
   }
 
