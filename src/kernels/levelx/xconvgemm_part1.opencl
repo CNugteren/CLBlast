@@ -54,7 +54,7 @@ INLINE_FUNC real GlobalToPrivateCheckedImage(const __global real* restrict image
 
 // Loads global off-chip memory into local (shared) memory on-chip. This function is specific for
 // loading the image input tensor. This includes a bounds check.
-INLINE_FUNC real GlobalToLocalCheckedImage(const __global realMD* restrict imagegm, LOCAL_PTR real* alm,
+INLINE_FUNC real GlobalToLocalCheckedImage(const __global real* restrict imagegm, LOCAL_PTR real* alm,
                                            const int image_offset_batch,
                                            const int h_id, const int w_id, const int kwg,
                                            const int input_h, const int input_w, const int channels,

@@ -54,6 +54,8 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
   // Extra pointers to scalar versions of global memory
   #if defined(CONVGEMM_WITH_IM2COL)
     const __global real* restrict colgms = (const __global real* restrict) colgm;
+  #else
+    const __global real* restrict imagegms = (const __global real* restrict) imagegm;
   #endif
   const __global real* restrict kernelgms = (const __global real* restrict) kernelgm;
 
@@ -99,7 +101,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
           GlobalToLocalScalarA(colgms, alm, num_patches, col_offset_batch, kwg, false, false);
         }
       #else
-        GlobalToLocalCheckedImage(imagegm, alm, image_offset_batch, h_id, w_id, kwg,
+        GlobalToLocalCheckedImage(imagegms, alm, image_offset_batch, h_id, w_id, kwg,
                                   input_h, input_w, channels, kernel_h, kernel_w,
                                   pad_h, pad_w, stride_h, stride_w,
                                   dilation_h, dilation_w);
@@ -150,7 +152,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
         #if defined(CONVGEMM_WITH_IM2COL)
           apd[_mi] = GlobalToPrivateDirectA(colgms, _mi, num_patches, col_offset_batch, idm, kwg, false, false);
         #else
-          apd[_mi] = GlobalToPrivateCheckedImage(imagegm, image_offset_batch, h_id, w_id, kwg,
+          apd[_mi] = GlobalToPrivateCheckedImage(imagegms, image_offset_batch, h_id, w_id, kwg,
                                                  input_h, input_w, channels, kernel_h, kernel_w,
                                                  pad_h, pad_w, stride_h, stride_w,
                                                  dilation_h, dilation_w);
@@ -192,7 +194,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
       #if defined(CONVGEMM_WITH_IM2COL)
         GlobalToLocalCheckedA(colgms, alm, num_patches, col_offset_batch, kwg, false, false, num_patches, patch_size);
       #else
-        GlobalToLocalCheckedImage(imagegm, alm, image_offset_batch, h_id, w_id, kwg,
+        GlobalToLocalCheckedImage(imagegms, alm, image_offset_batch, h_id, w_id, kwg,
                                   input_h, input_w, channels, kernel_h, kernel_w,
                                   pad_h, pad_w, stride_h, stride_w,
                                   dilation_h, dilation_w);
@@ -238,7 +240,7 @@ void Xconvgemm(const int num_patches, const int num_kernels, const int patch_siz
       #if defined(CONVGEMM_WITH_IM2COL)
         apd[_mi] = GlobalToPrivateCheckedA(colgms, _mi, num_patches, col_offset_batch, idm, kwg, false, false, num_patches);
       #else
-        apd[_mi] = GlobalToPrivateCheckedImage(imagegm, image_offset_batch, h_id, w_id, kwg,
+        apd[_mi] = GlobalToPrivateCheckedImage(imagegms, image_offset_batch, h_id, w_id, kwg,
                                                input_h, input_w, channels, kernel_h, kernel_w,
                                                pad_h, pad_w, stride_h, stride_w,
                                                dilation_h, dilation_w);
