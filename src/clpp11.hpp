@@ -44,6 +44,7 @@
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
 #include <cstdio>    // fprintf, stderr
+#include <assert.h>
 
 // OpenCL
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
@@ -355,6 +356,12 @@ class Device {
            std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
   }
 
+  // Returns if the Nvidia chip is a Volta or later archicture (sm_70 or higher)
+  bool IsPostNVIDIAVolta() const {
+    assert(HasExtension("cl_nv_device_attribute_query"));
+    return GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) >= 7;
+  }
+
   // Retrieves the above extra information (if present)
   std::string GetExtraInfo() const {
     if (HasExtension("cl_amd_device_attribute_query")) { return AMDBoardName(); }
@@ -463,7 +470,9 @@ class Program {
 
   // Clean-up
   ~Program() {
-    if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
+    #ifndef _MSC_VER // causes an access violation under Windows when the driver is already unloaded
+      if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
+    #endif
   }
 
   // Compiles the device program and checks whether or not there are any warnings/errors

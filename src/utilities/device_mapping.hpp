@@ -43,6 +43,11 @@ const std::unordered_map<std::string, std::string> kDeviceNames {
   // Empty
 };
 
+// Things to remove from device names (low-level)
+const std::vector<std::string> kDeviceRemovals {
+  "pthread-"
+};
+
 // =================================================================================================
 } // namespace device_mapping
 } // namespace clblast

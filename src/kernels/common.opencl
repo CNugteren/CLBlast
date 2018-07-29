@@ -260,7 +260,7 @@ R"(
 // Staggered/shuffled group indices to avoid partition camping (AMD GPUs). Formula's are taken from:
 // http://docs.nvidia.com/cuda/samples/6_Advanced/transpose/doc/MatrixTranspose.pdf
 // More details: https://github.com/CNugteren/CLBlast/issues/53
-#if USE_STAGGERED_INDICES == 1
+#if USE_STAGGERED_INDICES == 1 && GEMMK == 0
   INLINE_FUNC int GetGroupIDFlat() {
     return get_group_id(0) + get_num_groups(0) * get_group_id(1);
   }

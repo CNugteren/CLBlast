@@ -71,6 +71,7 @@ const DatabaseEntry XgemmSingle = {
         { "default", {
           { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 0, 1, 16, 2, 8, 8, 128, 16, 8, 128, 0, 1, 1, 1, 1, 8 } },
           { Name{"Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz           "}, Params{ 0, 1, 32, 2, 32, 16, 64, 32, 8, 64, 0, 1, 1, 0, 1, 1 } },
+          { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 1, 16, 1, 1, 2, 2, 64, 2, 2, 128, 0, 0, 0, 0, 8, 2 } },
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 0, 1, 32, 8, 32, 32, 64, 32, 16, 64, 1, 1, 1, 0, 2, 2 } },
           { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 0, 1, 32, 2, 16, 8, 128, 16, 8, 64, 0, 0, 1, 0, 1, 2 } },
           { Name{"Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz           "}, Params{ 0, 1, 32, 2, 32, 8, 128, 8, 8, 128, 1, 1, 1, 1, 2, 8 } },
@@ -86,6 +87,7 @@ const DatabaseEntry XgemmSingle = {
         { "default", {
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 0, 1, 32, 2, 8, 8, 128, 32, 16, 64, 0, 0, 1, 0, 4, 2 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 0, 1, 32, 8, 8, 8, 64, 32, 16, 64, 1, 1, 1, 1, 4, 2 } },
+          { Name{"Intel(R) HD Graphics 6000 BroadWell U-Processor GT"}, Params{ 1, 4, 1, 1, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 32, 8, 64, 16, 16, 128, 0, 0, 0, 1, 1, 2 } },
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 0, 1, 16, 2, 16, 8, 32, 8, 16, 128, 1, 1, 1, 1, 2, 4 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 16, 128, 1, 1, 0, 1, 1, 4 } },
@@ -140,6 +142,7 @@ const DatabaseEntry XgemmSingle = {
         } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 0, 1, 16, 2, 32, 16, 128, 32, 8, 128, 1, 1, 1, 0, 4, 1 } },
+          { Name{"GeForce GTX 1070 Ti                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 8, 64, 1, 1, 1, 1, 4, 8 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 16, 2, 32, 16, 64, 16, 8, 128, 1, 1, 0, 1, 2, 8 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },

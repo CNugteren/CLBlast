@@ -1,4 +1,14 @@
 
+Development (next version)
+- Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
+- Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
+- Various minor fixes and enhancements
+
+Version 1.4.1
+- Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded
+- Fixed an issue with double cl_program release in the CLBlast caching system
+- Added tuned parameters for various devices (see doc/tuning.md)
+
 Version 1.4.0
 - Added Python interface to CLBlast 'PyCLBlast'
 - Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
