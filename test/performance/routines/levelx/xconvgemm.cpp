@@ -22,10 +22,8 @@ int main(int argc, char *argv[]) {
       clblast::RunClient<clblast::TestXconvgemm<float>, float, float>(argc, argv); break;
     case clblast::Precision::kDouble:
       clblast::RunClient<clblast::TestXconvgemm<double>, double, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle:
-      clblast::RunClient<clblast::TestXconvgemm<clblast::float2>, clblast::float2, clblast::float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble:
-      clblast::RunClient<clblast::TestXconvgemm<clblast::double2>, clblast::double2, clblast::double2>(argc, argv); break;
+    case clblast::Precision::kComplexSingle: throw std::runtime_error("Unsupported precision mode");
+    case clblast::Precision::kComplexDouble: throw std::runtime_error("Unsupported precision mode");
   }
   return 0;
 }

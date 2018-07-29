@@ -17,8 +17,6 @@ int main(int argc, char *argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunTests<clblast::TestXconvgemm<float>, float, float>(argc, argv, false, "SCONVGEMM");
   errors += clblast::RunTests<clblast::TestXconvgemm<double>, double, double>(argc, argv, true, "DCONVGEMM");
-  errors += clblast::RunTests<clblast::TestXconvgemm<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true, "CCONVGEMM");
-  errors += clblast::RunTests<clblast::TestXconvgemm<clblast::double2>, clblast::double2, clblast::double2>(argc, argv, true, "ZCONVGEMM");
   errors += clblast::RunTests<clblast::TestXconvgemm<clblast::half>, clblast::half, clblast::half>(argc, argv, true, "HCONVGEMM");
   if (errors > 0) { return 1; } else { return 0; }
 }

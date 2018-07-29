@@ -636,7 +636,7 @@ StatusCode Im2col(const size_t channels, const size_t height, const size_t width
                   cl_mem col_buffer, const size_t col_offset,
                   cl_command_queue* queue, cl_event* event = nullptr);
 
-// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/CCONVGEMM/ZCONVGEMM/HCONVGEMM
+// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
 template <typename T>
 StatusCode Convgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
                     const cl_mem im_buffer, const size_t im_offset,

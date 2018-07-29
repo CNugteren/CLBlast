@@ -2350,7 +2350,7 @@ template StatusCode PUBLIC_API Im2col<half>(const size_t, const size_t, const si
                                             CUdeviceptr, const size_t,
                                             const CUcontext, const CUdevice);
 
-// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/CCONVGEMM/ZCONVGEMM/HCONVGEMM
+// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
 template <typename T>
 StatusCode Convgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
                     const CUdeviceptr im_buffer, const size_t im_offset,
@@ -2379,16 +2379,6 @@ template StatusCode PUBLIC_API Convgemm<double>(const size_t, const size_t, cons
                                                 const CUdeviceptr, const size_t,
                                                 CUdeviceptr, const size_t,
                                                 const CUcontext, const CUdevice);
-template StatusCode PUBLIC_API Convgemm<float2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
-                                                const CUdeviceptr, const size_t,
-                                                const CUdeviceptr, const size_t,
-                                                CUdeviceptr, const size_t,
-                                                const CUcontext, const CUdevice);
-template StatusCode PUBLIC_API Convgemm<double2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
-                                                 const CUdeviceptr, const size_t,
-                                                 const CUdeviceptr, const size_t,
-                                                 CUdeviceptr, const size_t,
-                                                 const CUcontext, const CUdevice);
 template StatusCode PUBLIC_API Convgemm<half>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
                                               const CUdeviceptr, const size_t,
                                               const CUdeviceptr, const size_t,

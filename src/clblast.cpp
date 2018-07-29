@@ -2252,7 +2252,7 @@ template StatusCode PUBLIC_API Im2col<half>(const size_t, const size_t, const si
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
-// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/CCONVGEMM/ZCONVGEMM/HCONVGEMM
+// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
 template <typename T>
 StatusCode Convgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
                     const cl_mem im_buffer, const size_t im_offset,
@@ -2279,16 +2279,6 @@ template StatusCode PUBLIC_API Convgemm<double>(const size_t, const size_t, cons
                                                 const cl_mem, const size_t,
                                                 cl_mem, const size_t,
                                                 cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Convgemm<float2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
-                                                const cl_mem, const size_t,
-                                                const cl_mem, const size_t,
-                                                cl_mem, const size_t,
-                                                cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Convgemm<double2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
-                                                 const cl_mem, const size_t,
-                                                 const cl_mem, const size_t,
-                                                 cl_mem, const size_t,
-                                                 cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Convgemm<half>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
                                               const cl_mem, const size_t,
                                               const cl_mem, const size_t,
