@@ -122,8 +122,14 @@ void Tuner(int argc, char* argv[], const int V,
     if (o == kArgM)        { args.m        = GetArgument(command_line_args, help, kArgM, defaults.default_m); }
     if (o == kArgN)        { args.n        = GetArgument(command_line_args, help, kArgN, defaults.default_n); }
     if (o == kArgK)        { args.k        = GetArgument(command_line_args, help, kArgK, defaults.default_k); }
-    if (o == kArgAlpha)    { args.alpha    = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
-    if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
+    if (o == kArgChannels)   { args.channels    = GetArgument(command_line_args, help, kArgChannels, defaults.channels); }
+    if (o == kArgHeight)     { args.height      = GetArgument(command_line_args, help, kArgHeight, defaults.height); }
+    if (o == kArgWidth)      { args.width       = GetArgument(command_line_args, help, kArgWidth, defaults.width); }
+    if (o == kArgKernelH)    { args.kernel_h    = GetArgument(command_line_args, help, kArgKernelH, defaults.kernel_h); }
+    if (o == kArgKernelW)    { args.kernel_w    = GetArgument(command_line_args, help, kArgKernelW, defaults.kernel_w); }
+    if (o == kArgNumKernels) { args.num_kernels = GetArgument(command_line_args, help, kArgNumKernels, defaults.num_kernels); }
+    if (o == kArgAlpha)      { args.alpha       = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
+    if (o == kArgBeta)       { args.beta        = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
     if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, defaults.default_batch_count); }
   }
   args.fraction = GetArgument(command_line_args, help, kArgFraction, defaults.default_fraction);
