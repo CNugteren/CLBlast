@@ -23,28 +23,42 @@ namespace clblast {
 // Finds all configurations. It also applies the user-defined constraints within.
 std::vector<Configuration> SetConfigurations(const Device& device,
                                              const std::vector<Parameter> parameters,
+                                             const std::vector<size_t>& local_size_base,
+                                             const TransformVector& mul_local_config,
+                                             const TransformVector& div_local_config,
                                              const Constraints& constraints,
                                              const LocalMemSizeInfo& local_mem_size_info) {
   const auto local_mem_max = device.LocalMemSize();
+  const auto max_work_item_sizes = device.MaxWorkItemSizes();
+  const auto max_work_group_size = device.MaxWorkGroupSize();
   auto config = Configuration();
   auto configurations = std::vector<Configuration>();
-  PopulateConfigurations(parameters, 0, config, configurations,
-                         local_mem_max, constraints, local_mem_size_info);
+  PopulateConfigurations(parameters, local_size_base, mul_local_config, div_local_config,
+                         0, config, configurations,
+                         local_mem_max, constraints, local_mem_size_info,
+                         max_work_item_sizes, max_work_group_size);
   return configurations;
 }
 
 // Iterates recursively over all permutations of the user-defined parameters
 void PopulateConfigurations(const std::vector<Parameter> &parameters,
+                            const std::vector<size_t> local_size_base,
+                            const TransformVector& mul_local_config,
+                            const TransformVector& div_local_config,
                             const size_t index, const Configuration &config,
                             std::vector<Configuration> &configuration,
                             const size_t local_mem_max,
                             const Constraints& constraints,
-                            const LocalMemSizeInfo& local_mem_size_info) {
+                            const LocalMemSizeInfo& local_mem_size_info,
+                            const std::vector<size_t>& max_work_item_sizes,
+                            const size_t max_work_group_size) {
 
   // End of the chain: all parameters are considered, store the resulting configuration if it is a
   // valid one according to the constraints
   if (index == parameters.size()) {
-    if (ValidConfiguration(config, local_mem_max, constraints, local_mem_size_info)) {
+    if (ValidConfiguration(config, local_mem_max, constraints, local_mem_size_info,
+                           local_size_base, mul_local_config, div_local_config,
+                           max_work_item_sizes, max_work_group_size)) {
       configuration.push_back(config);
     }
     return;
@@ -55,8 +69,10 @@ void PopulateConfigurations(const std::vector<Parameter> &parameters,
   for (auto &value: parameter.second) {
     auto config_copy = config;
     config_copy[parameter.first] = value;
-    PopulateConfigurations(parameters, index+1, config_copy, configuration,
-                           local_mem_max, constraints, local_mem_size_info);
+    PopulateConfigurations(parameters, local_size_base, mul_local_config, div_local_config,
+                           index+1, config_copy, configuration,
+                           local_mem_max, constraints, local_mem_size_info,
+                           max_work_item_sizes, max_work_group_size);
   }
 }
 
@@ -64,7 +80,12 @@ void PopulateConfigurations(const std::vector<Parameter> &parameters,
 bool ValidConfiguration(const Configuration &config,
                         const size_t local_mem_max,
                         const Constraints& constraints,
-                        const LocalMemSizeInfo& local_mem_size_info) {
+                        const LocalMemSizeInfo& local_mem_size_info,
+                        const std::vector<size_t> local_size_base,
+                        const TransformVector& mul_local_config,
+                        const TransformVector& div_local_config,
+                        const std::vector<size_t>& max_work_item_sizes,
+                        const size_t max_work_group_size) {
 
   // Iterates over all constraints
   for (auto &constraint: constraints) {
@@ -89,6 +110,20 @@ bool ValidConfiguration(const Configuration &config,
 
   // Checks the local memory size
   if (local_mem_size_info.local_mem_size(local_mem_values) > local_mem_max) {
+    return false;
+  }
+
+  // Checks the local thread size (both per dimension and in total)
+  const auto local = SetThreadConfiguration(config, local_size_base,
+                                            mul_local_config, div_local_config);
+  for (auto i=size_t{0}; i<local.size(); ++i) {
+    if (local[i] > max_work_item_sizes[i]) {
+      return false;
+    }
+  }
+  auto local_size = size_t{1};
+  for (auto &item: local) { local_size *= item; }
+  if (local_size > max_work_group_size) {
     return false;
   }
 
