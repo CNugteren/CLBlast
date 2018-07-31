@@ -101,6 +101,8 @@ Other known issues:
 
 * The AMD run-time compiler has a bug causing it to get stuck in an infinite loop. This is reported to happen occasionally when tuning the CLBlast GEMM routine.
 
+* Tests might fail on an Intel IvyBridge GPU with the latest Beignet. Please downgrade Beignet to 1.2.1, [see issue #231](https://github.com/CNugteren/CLBlast/issues/231).
+
 
 Contributing
 -------------
