@@ -31,6 +31,16 @@ template <> bool IsCloseToZero(const double2 value) { return IsCloseToZero(value
 
 // =================================================================================================
 
+// Performs a complex conjugate if complex
+template <typename T> T ComplexConjugate(const T value) { return value; }
+template half ComplexConjugate(const half);
+template float ComplexConjugate(const float);
+template double ComplexConjugate(const double);
+template <> float2 ComplexConjugate(const float2 value) { return float2{value.real(), -value.imag()}; }
+template <> double2 ComplexConjugate(const double2 value) { return double2{value.real(), -value.imag()}; }
+
+// =================================================================================================
+
 template <typename T, typename U>
 void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
                   Queue &queue, const std::vector<std::string> &names) {

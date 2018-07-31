@@ -45,7 +45,9 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
       const auto b_two = (b_rotated) ? id1 : id2;
       const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
       const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
-      buffers_host.b_mat[b_index] = args.alpha * buffers_host.a_mat[a_index];
+      auto a_value = buffers_host.a_mat[a_index];
+      if (args.a_transpose == Transpose::kConjugate) { a_value = ComplexConjugate(a_value); }
+      buffers_host.b_mat[b_index] = args.alpha * a_value;
     }
   }
   return StatusCode::kSuccess;
