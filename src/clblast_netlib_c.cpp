@@ -25,7 +25,7 @@ using double2 = clblast::double2;
 
 // Option to make OpenCL device and context static to avoid re-creation upon multiple calls to the
 // Netlib API. Disadvantage is that they are not cleaned-up until program termination.
-#ifdef NETLIB_STATIC_OPENCL
+#ifdef NETLIB_PERSISTENT_OPENCL
   #define OPTIONAL_STATIC static
 #else
   #define OPTIONAL_STATIC

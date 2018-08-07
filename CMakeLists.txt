@@ -36,12 +36,12 @@ option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF
 
 # The optional Netlib API for CLBlast
 option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
-option(NETLIB_STATIC_OPENCL "Makes OpenCL device and context in the CBLAS Netlib API static" OFF)
+option(NETLIB_PERSISTENT_OPENCL "Makes OpenCL device and context in the CBLAS Netlib API static" OFF)
 if(NETLIB)
   message("-- Building the Netlib API of CLBlast")
-  if(NETLIB_STATIC_OPENCL)
+  if(NETLIB_PERSISTENT_OPENCL)
     message("   ^^ while using static variables for OpenCL device and context")
-    add_definitions(-DNETLIB_STATIC_OPENCL)
+    add_definitions(-DNETLIB_PERSISTENT_OPENCL)
   endif()
 endif()
 
