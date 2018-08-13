@@ -33,7 +33,8 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
                             const size_t n,
                             const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                             const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc,
-                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
+                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                            EventPointer event) {
 
   if (n > db_["TRSV_BLOCK_SIZE"]) { throw BLASError(StatusCode::kUnexpectedError); };
 
@@ -69,9 +70,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
   // Launches the kernel
   const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};
   const auto global = std::vector<size_t>{Ceil(n, db_["TRSV_BLOCK_SIZE"])};
-  auto event = Event();
-  RunKernel(kernel, queue_, device_, global, local, event.pointer());
-  event.WaitForCompletion();
+  RunKernel(kernel, queue_, device_, global, local, event);
 }
 
 // =================================================================================================
@@ -146,10 +145,12 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
     }
 
     // Runs the triangular substitution for the block size
+    auto sub_event = Event();
     Substitution(layout, triangle, a_transpose, diagonal, block_size,
                  a_buffer, a_offset + col + col*a_ld, a_ld,
                  b_buffer, b_offset + col*b_inc, b_inc,
-                 x_buffer, x_offset + col*x_inc, x_inc);
+                 x_buffer, x_offset + col*x_inc, x_inc, sub_event.pointer());
+    sub_event.WaitForCompletion();
   }
 
   // Retrieves the results

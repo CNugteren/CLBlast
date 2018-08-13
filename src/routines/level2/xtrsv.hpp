@@ -50,7 +50,8 @@ class Xtrsv: public Xgemv<T> {
                     const size_t n,
                     const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                     const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc,
-                    const Buffer<T> &x_buffer, const size_t offset_x, const size_t x_inc);
+                    const Buffer<T> &x_buffer, const size_t offset_x, const size_t x_inc,
+                    EventPointer event);
 };
 
 // =================================================================================================
