@@ -246,7 +246,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle,
   }
 
   // Retrieves the results
-  x_buffer.CopyTo(queue_, b_size, b_buffer);
+  x_buffer.CopyToAsync(queue_, b_size, b_buffer, event_);
 }
 
 // =================================================================================================

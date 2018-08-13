@@ -154,7 +154,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   }
 
   // Retrieves the results
-  x_buffer.CopyTo(queue_, x_size, b_buffer);
+  x_buffer.CopyToAsync(queue_, x_size, b_buffer, event_);
 }
 
 // =================================================================================================

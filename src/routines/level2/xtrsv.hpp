@@ -32,6 +32,7 @@ class Xtrsv: public Xgemv<T> {
   using Xgemv<T>::device_;
   using Xgemv<T>::db_;
   using Xgemv<T>::program_;
+  using Xgemv<T>::event_;
   using Xgemv<T>::DoGemv;
 
   // Constructor
