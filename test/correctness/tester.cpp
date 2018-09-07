@@ -370,6 +370,7 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgChannels) { result += kArgChannels + equals + ToString(args.channels) + " "; }
     if (o == kArgHeight)   { result += kArgHeight + equals + ToString(args.height) + " "; }
     if (o == kArgWidth)    { result += kArgWidth + equals + ToString(args.width) + " "; }
+    if (o == kArgNumKernels){result += kArgNumKernels + equals + ToString(args.num_kernels) + " "; }
     if (o == kArgKernelH)  { result += kArgKernelH + equals + ToString(args.kernel_h) + " "; }
     if (o == kArgKernelW)  { result += kArgKernelW + equals + ToString(args.kernel_w) + " "; }
     if (o == kArgPadH)     { result += kArgPadH + equals + ToString(args.pad_h) + " "; }

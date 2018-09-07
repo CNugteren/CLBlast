@@ -139,9 +139,9 @@ template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBatc
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kPadSizes = { 0, 1 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kDilationSizes = { 1, 2 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kKernelSizes = { 1, 3 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kNumKernels = { 1, 67 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kNumKernels = { 1, 6 };
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kStrideValues = { 1, 3 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kChannelValues = { 1, 4 };
+template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kChannelValues = { 1, 2 };
 
 // Test settings for the invalid tests
 template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
