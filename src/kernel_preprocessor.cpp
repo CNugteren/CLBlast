@@ -557,6 +557,8 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
+  lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, false);
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
 
   // Gather the results
