@@ -5,6 +5,7 @@ Development (next version)
 - The tuners now check beforehand on invalid local thread sizes and skip those completely
 - Fixed an issue with conjugate transpose not being executed in certain cases for a.o. XOMATCOPY
 - Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
+- Fixed an issue with the preprocessor and the new GEMMK == 1 kernel
 - Various minor fixes and enhancements
 
 Version 1.4.1
