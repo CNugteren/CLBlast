@@ -43,8 +43,6 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
-// =================================================================================================
-
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
 #ifndef GEMMK
@@ -397,9 +395,7 @@ INLINE_FUNC realN LocalToPrivateB(LOCAL_PTR realN* blm, const int _ni, const int
 }
 #endif
 
-// =================================================================================================
-
-// End of the C++11 raw string literal
 )"
+// End of the C++11 raw string literal
 
 // =================================================================================================

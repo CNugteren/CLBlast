@@ -15,14 +15,12 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
-// =================================================================================================
-
 // A common interface for subgroup functions
 
 #if USE_SUBGROUP_SHUFFLING == 1
 
 INLINE_FUNC int clblast_get_sub_group_local_id() {
-  
+
   // Intel extension 
   #if SUBGROUP_SHUFFLING_INTEL == 1
   return get_sub_group_local_id();
@@ -36,7 +34,7 @@ INLINE_FUNC int clblast_get_sub_group_local_id() {
 }
 
 INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
-  
+
   // Intel extension 
   #if SUBGROUP_SHUFFLING_INTEL == 1
   return intel_sub_group_shuffle(reg, src);
@@ -310,9 +308,7 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   }
 }
 
-// =================================================================================================
-
-// End of the C++11 raw string literal
 )"
+// End of the C++11 raw string literal
 
 // =================================================================================================
