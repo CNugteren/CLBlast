@@ -101,6 +101,10 @@ Other known issues:
 
 * The AMD run-time compiler has a bug causing it to get stuck in an infinite loop. This is reported to happen occasionally when tuning the CLBlast GEMM routine.
 
+* AMD Southern Island GPUs might cause wrong results with the amdgpu-pro drivers. Do configure CMake with `AMD_SI_EMPTY_KERNEL_WORKAROUND` to resolve the issue, [see issue #301](https://github.com/CNugteren/CLBlast/issues/301).
+
+* Tests might fail on an Intel IvyBridge GPU with the latest Beignet. Please downgrade Beignet to 1.2.1, [see issue #231](https://github.com/CNugteren/CLBlast/issues/231).
+
 
 Contributing
 -------------

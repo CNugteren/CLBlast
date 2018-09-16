@@ -264,7 +264,8 @@ StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
   }
 
   // Sets the tunable parameters and their possible values
-  auto configurations = SetConfigurations(device, settings.parameters,
+  auto configurations = SetConfigurations(device, settings.parameters, settings.local_size,
+                                          settings.mul_local, settings.div_local,
                                           SetConstraints(V), ComputeLocalMemSize(V));
 
   // Select the search method (full search or a random fraction)

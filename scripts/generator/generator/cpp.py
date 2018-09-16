@@ -145,8 +145,8 @@ def clblast_netlib_c_cc(routine):
             result += routine.routine_header_netlib(flavour, 9, "") + " {" + NL
 
             # Initialize OpenCL
-            result += "  auto device = get_device();" + NL
-            result += "  auto context = clblast::Context(device);" + NL
+            result += "  OPTIONAL_STATIC auto device = get_device();" + NL
+            result += "  OPTIONAL_STATIC auto context = clblast::Context(device);" + NL
             result += "  auto queue = clblast::Queue(context, device);" + NL
 
             # Set alpha and beta

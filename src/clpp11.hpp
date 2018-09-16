@@ -447,8 +447,14 @@ class Program {
 
   // Source-based constructor with memory management
   explicit Program(const Context &context, const std::string &source) {
-    const char *source_ptr = &source[0];
-    const auto length = source.length();
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      const std::string source_null_kernel = source + "\n__kernel void null_kernel() {}\n";
+      const char *source_ptr = &source_null_kernel[0];
+      const auto length = source_null_kernel.length();
+    #else
+      const char *source_ptr = &source[0];
+      const auto length = source.length();
+    #endif
     auto status = CL_SUCCESS;
     program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
     CLCudaAPIError::Check(status, "clCreateProgramWithSource");
@@ -723,9 +729,10 @@ class Buffer {
   }
 
   // Copies the contents of this buffer into another device buffer
-  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
+  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination,
+                   EventPointer event = nullptr) const {
     CheckError(clEnqueueCopyBuffer(queue(), *buffer_, destination(), 0, 0, size*sizeof(T), 0,
-                                   nullptr, nullptr));
+                                   nullptr, event));
   }
   void CopyTo(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
     CopyToAsync(queue, size, destination);
@@ -764,10 +771,21 @@ class Kernel {
       kernel_(new cl_kernel, [](cl_kernel* k) {
         if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
         delete k;
-      }) {
+      })
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      , null_kernel_(new cl_kernel, [](cl_kernel* k) {
+        if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
+        delete k;
+      })
+    #endif
+  {
     auto status = CL_SUCCESS;
     *kernel_ = clCreateKernel(program->operator()(), name.c_str(), &status);
     CLCudaAPIError::Check(status, "clCreateKernel");
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      *null_kernel_ = clCreateKernel(program->operator()(), "null_kernel", &status);
+      CLCudaAPIError::Check(status, "clCreateKernel");
+    #endif
   }
 
   // Sets a kernel argument at the indicated position
@@ -831,12 +849,21 @@ class Kernel {
                                       static_cast<cl_uint>(waitForEventsPlain.size()),
                                       !waitForEventsPlain.empty() ? waitForEventsPlain.data() : nullptr,
                                       event));
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      const std::vector<size_t> nullRange = {1};
+      CheckError(clEnqueueNDRangeKernel(queue(), *null_kernel_, static_cast<cl_uint>(nullRange.size()),
+                                        nullptr, nullRange.data(), nullptr,
+                                        0, nullptr, nullptr));
+    #endif
   }
 
   // Accessor to the private data-member
   const cl_kernel& operator()() const { return *kernel_; }
  private:
   std::shared_ptr<cl_kernel> kernel_;
+  #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+    std::shared_ptr<cl_kernel> null_kernel_;
+  #endif
 
   // Internal implementation for the recursive SetArguments function.
   template <typename T>
