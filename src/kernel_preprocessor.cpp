@@ -182,6 +182,31 @@ bool EvaluateCondition(std::string condition,
     const auto right = condition.substr(equal_pos + 4);
     return (left == right);
   }
+
+  // Process the not equal sign
+  const auto not_equal_pos = condition.find(" != ");
+  if (not_equal_pos != std::string::npos) {
+    const auto left = condition.substr(0, not_equal_pos);
+    const auto right = condition.substr(not_equal_pos + 4);
+    return (left != right);
+  }
+
+  // Process the smaller than sign
+  const auto smaller_than_pos = condition.find(" < ");
+  if (smaller_than_pos != std::string::npos) {
+    const auto left = condition.substr(0, smaller_than_pos);
+    const auto right = condition.substr(smaller_than_pos + 3);
+    return (left < right);
+  }
+
+  // Process the larger than sign
+  const auto larger_than_pos = condition.find(" > ");
+  if (larger_than_pos != std::string::npos) {
+    const auto left = condition.substr(0, larger_than_pos);
+    const auto right = condition.substr(larger_than_pos + 3);
+    return (left > right);
+  }
+
   printf("Warning unknown condition: %s\n", condition.c_str());
   return false; // unknown error
 }
