@@ -201,7 +201,7 @@ These two functions require/retrieve the parameters as given in [src/database/ke
 | --------------------|-----------------------|
 | Xaxpy               |  VW, WGS, WPT         |
 | Xdot                |  WGS1, WGS2           |
-| Xgemv               |  WGS1, WPT1, UNROLL1  |
+| Xgemv               |  WGS1, WPT1           |
 | XgemvFast           |  VW2, WGS2, WPT2      |
 | XgemvFastRot        |  VW3, WGS3, WPT3      |
 | Xger                |  WGS1, WGS2, WPT      |
