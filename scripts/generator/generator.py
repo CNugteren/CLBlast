@@ -106,11 +106,16 @@ ammn = size_helper("layout == CLBlastLayoutRowMajor", "m", "((side == CLBlastSid
 bmnn = size_helper("layout == CLBlastLayoutRowMajor", "((side == CLBlastSideLeft) ? m : n)", "n", "b_ld")
 im = "height * width * channels"
 col = "height * width * channels"
+imb = "height * width * channels * batch_count"
+kernel = "kernel_h * kernel_w * num_kernels"
+result = "height_out * width_out * num_kernels * batch_count"
+
 
 # ==================================================================================================
 
 # Populates a list of routines
 im2col_constants = ["channels", "height", "width", "kernel_h", "kernel_w", "pad_h", "pad_w", "stride_h", "stride_w", "dilation_h", "dilation_w"]
+convgemm_constants = im2col_constants + ["num_kernels", "batch_count"]
 ROUTINES = [
 [  # Level 1: vector-vector
   Routine(False, True,  0, False, "1", "rotg",  T, [S,D],            [],                  [],                                                     [],         ["sa","sb","sc","ss"],        ["1","1","1","1"], [],       "",    "Generate givens plane rotation", "", []),
@@ -176,6 +181,7 @@ ROUTINES = [
   Routine(True,  True,  0, False, "x", "had",      T, [S,D,C,Z,H],   ["n"],                [],                                                    ["x","y"],  ["z"],                        [xn,yn,zn],      ["alpha","beta"], "",    "Element-wise vector product (Hadamard)", "Performs the Hadamard element-wise product _z = alpha * x * y + beta * z_, in which _x_, _y_, and _z_ are vectors and _alpha_ and _beta_ are scalar constants.", []),
   Routine(True,  True,  0, False, "x", "omatcopy", T, [S,D,C,Z,H],   ["m","n"],            ["layout","a_transpose"],                              ["a"],      ["b"],                        [amn,bnma],      ["alpha"],        "",    "Scaling and out-place transpose/copy (non-BLAS function)", "Performs scaling and out-of-place transposition/copying of matrices according to _B = alpha*op(A)_, in which _A_ is an input matrix (_m_ rows by _n_ columns), _B_ an output matrix, and _alpha_ a scalar value. The operation _op_ can be a normal matrix copy, a transposition or a conjugate transposition.", [ald_m, bld_n]),
   Routine(True,  True,  0, False, "x", "im2col",   T, [S,D,C,Z,H],   im2col_constants,     [],                                                    ["im"],     ["col"],                      [im,col],        [""],             "",    "Im2col function (non-BLAS function)", "Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.", []),
+  Routine(True,  True,  0, False, "x", "convgemm", T, [S,D,H],       convgemm_constants,   [],                                                    ["im","kernel"], ["result"],              [imb,kernel,result],[""],          "",    "Batched convolution as GEMM (non-BLAS function)", "Integrates im2col and GEMM for batched 3D convolution, in which _im_ is the 4D input tensor (NCHW - batch-channelin-height-width), _kernel_ the 4D kernel weights tensor (KCHW - channelout-channelin-height-width), and _result_ the 4D output tensor (NCHW - batch-channelout-height-width).", []),
   # Batched routines:
   Routine(True,  True,  1, False, "x", "axpy",     T, [S,D,C,Z,H],   ["n"],                [],                                                    ["x"],      ["y"],                        [xn,yn],         ["alpha"],        "",    "Batched version of AXPY", "As AXPY, but multiple operations are batched together for better performance.", []),
   Routine(True,  True,  1, False, "x", "gemm",     T, [S,D,C,Z,H],   ["m","n","k"],        ["layout","a_transpose","b_transpose"],                ["a","b"],  ["c"],                        [amk,bkn,cmn],   ["alpha","beta"], "",    "Batched version of GEMM", "As GEMM, but multiple operations are batched together for better performance.", [ald_transa_m_k, bld_transb_k_n, cld_m]),
@@ -230,10 +236,10 @@ def main(argv):
                     if i == 6:
                         body += cpp.wrapper_cublas(routine)
                     if i == 7:
-                        if routine.batched == 0:
+                        if routine.batched == 0 and routine.name not in ["convgemm"]:
                             body += cpp.clblast_netlib_c_h(routine)
                     if i == 8:
-                        if routine.batched == 0:
+                        if routine.batched == 0 and routine.name not in ["convgemm"]:
                             body += cpp.clblast_netlib_c_cc(routine)
                     if i == 9:
                         body += cpp.clblast_h(routine, cuda=True)

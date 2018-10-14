@@ -87,6 +87,7 @@ constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 constexpr auto kArgBatchCount = "batch_num";
+constexpr auto kArgNumKernels = "num_kernels";
 
 // Constants for im2col
 constexpr auto kArgChannels = "channels";
@@ -199,7 +200,7 @@ struct Arguments {
   size_t imax_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
-  // Arguments for im2col
+  // Arguments for im2col and convgemm
   size_t channels = 1;
   size_t height = 1;
   size_t width = 1;
@@ -211,6 +212,7 @@ struct Arguments {
   size_t stride_w = 1;
   size_t dilation_h = 1;
   size_t dilation_w = 1;
+  size_t num_kernels = 1;
   // Batch-specific arguments
   size_t batch_count = 1;
   std::vector<size_t> x_offsets; // = {0};

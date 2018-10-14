@@ -8,6 +8,8 @@ Development (next version)
 - Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
 - Fixed an issue with the preprocessor and the new GEMMK == 1 kernel
 - Various minor fixes and enhancements
+- Added non-BLAS routines:
+  * SCONVGEMM/DCONVGEMM/HCONVGEMM (convolution as im2col followed by batched GEMM)
 
 Version 1.4.1
 - Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded

@@ -106,7 +106,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     if (o == kArgAlpha) { args.alpha = GetArgument(command_line_args, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(command_line_args, help, kArgBeta, GetScalar<U>()); }
 
-    // Arguments for im2col
+    // Arguments for im2col and convgemm
     if (o == kArgChannels)  { args.channels = GetArgument(command_line_args, help, kArgChannels, size_t{64}); }
     if (o == kArgHeight)    { args.height = GetArgument(command_line_args, help, kArgHeight, size_t{64}); }
     if (o == kArgWidth)     { args.width = GetArgument(command_line_args, help, kArgWidth, size_t{64}); }
@@ -118,6 +118,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     if (o == kArgStrideW)   { args.stride_w = GetArgument(command_line_args, help, kArgStrideW, size_t{1}); }
     if (o == kArgDilationH) { args.dilation_h = GetArgument(command_line_args, help, kArgDilationH, size_t{1}); }
     if (o == kArgDilationW) { args.dilation_w = GetArgument(command_line_args, help, kArgDilationW, size_t{1}); }
+    if (o == kArgNumKernels){ args.num_kernels = GetArgument(command_line_args, help, kArgNumKernels, size_t{1}); }
   }
 
   // These are the options common to all routines
@@ -446,6 +447,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgStrideW)   {integers.push_back(args.stride_w); }
     else if (o == kArgDilationH) {integers.push_back(args.dilation_h); }
     else if (o == kArgDilationW) {integers.push_back(args.dilation_w); }
+    else if (o == kArgNumKernels){integers.push_back(args.num_kernels); }
   }
   auto strings = std::vector<std::string>{};
   for (auto &o: options_) {

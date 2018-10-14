@@ -3063,10 +3063,70 @@ Arguments to IM2COL:
 * `const size_t stride_w`: Integer size argument. This value must be positive.
 * `const size_t dilation_h`: Integer size argument. This value must be positive.
 * `const size_t dilation_w`: Integer size argument. This value must be positive.
-* `const cl_mem im_buffer`: OpenCL buffer to store the input im vector.
-* `const size_t im_offset`: The offset in elements from the start of the input im vector.
-* `cl_mem col_buffer`: OpenCL buffer to store the output col vector.
-* `const size_t col_offset`: The offset in elements from the start of the output col vector.
+* `const cl_mem im_buffer`: OpenCL buffer to store the input im tensor.
+* `const size_t im_offset`: The offset in elements from the start of the input im tensor.
+* `cl_mem col_buffer`: OpenCL buffer to store the output col tensor.
+* `const size_t col_offset`: The offset in elements from the start of the output col tensor.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
+xCONVGEMM: Batched convolution as GEMM (non-BLAS function)
+-------------
+
+Integrates im2col and GEMM for batched 3D convolution, in which _im_ is the 4D input tensor (NCHW - batch-channelin-height-width), _kernel_ the 4D kernel weights tensor (KCHW - channelout-channelin-height-width), and _result_ the 4D output tensor (NCHW - batch-channelout-height-width).
+
+C++ API:
+```
+template <typename T>
+StatusCode Convgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                    const cl_mem im_buffer, const size_t im_offset,
+                    const cl_mem kernel_buffer, const size_t kernel_offset,
+                    cl_mem result_buffer, const size_t result_offset,
+                    cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastSconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHconvgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                                   const cl_mem im_buffer, const size_t im_offset,
+                                   const cl_mem kernel_buffer, const size_t kernel_offset,
+                                   cl_mem result_buffer, const size_t result_offset,
+                                   cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to CONVGEMM:
+
+* `const size_t channels`: Integer size argument. This value must be positive.
+* `const size_t height`: Integer size argument. This value must be positive.
+* `const size_t width`: Integer size argument. This value must be positive.
+* `const size_t kernel_h`: Integer size argument. This value must be positive.
+* `const size_t kernel_w`: Integer size argument. This value must be positive.
+* `const size_t pad_h`: Integer size argument. This value must be positive.
+* `const size_t pad_w`: Integer size argument. This value must be positive.
+* `const size_t stride_h`: Integer size argument. This value must be positive.
+* `const size_t stride_w`: Integer size argument. This value must be positive.
+* `const size_t dilation_h`: Integer size argument. This value must be positive.
+* `const size_t dilation_w`: Integer size argument. This value must be positive.
+* `const size_t num_kernels`: Integer size argument. This value must be positive.
+* `const size_t batch_count`: Integer size argument. This value must be positive.
+* `const cl_mem im_buffer`: OpenCL buffer to store the input im tensor.
+* `const size_t im_offset`: The offset in elements from the start of the input im tensor.
+* `const cl_mem kernel_buffer`: OpenCL buffer to store the input kernel tensor.
+* `const size_t kernel_offset`: The offset in elements from the start of the input kernel tensor.
+* `cl_mem result_buffer`: OpenCL buffer to store the output result tensor.
+* `const size_t result_offset`: The offset in elements from the start of the output result tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 
