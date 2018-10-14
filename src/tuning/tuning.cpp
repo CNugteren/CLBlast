@@ -178,7 +178,8 @@ void Tuner(int argc, char* argv[], const int V,
   }
 
   // Sets the tunable parameters and their possible values
-  auto configurations = SetConfigurations(device, settings.parameters,
+  auto configurations = SetConfigurations(device, settings.parameters, settings.local_size,
+                                          settings.mul_local, settings.div_local,
                                           SetConstraints(V), ComputeLocalMemSize(V));
   printf("* Found %s%zu configuration(s)%s\n",
          kPrintMessage.c_str(), configurations.size(), kPrintEnd.c_str());

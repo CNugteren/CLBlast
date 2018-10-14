@@ -15,8 +15,6 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
-// =================================================================================================
-
 // The vectorised multiply-add function
 INLINE_FUNC realM MultiplyAddVector(realM cvec, const realM avec, const real bval) {
   #if USE_VECTOR_MAD == 1
@@ -171,9 +169,7 @@ INLINE_FUNC void StoreResults(__global realM* cgm, realM c_value, const int _mi,
   cgm[index] = result;
 }
 
-// =================================================================================================
-
-// End of the C++11 raw string literal
 )"
+// End of the C++11 raw string literal
 
 // =================================================================================================

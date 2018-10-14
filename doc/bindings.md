@@ -30,3 +30,9 @@ Nim: nim-CLBlast (3rd party)
 -------------
 
 A 3rd party CLBlast wrapper for the nim language is available [here](https://github.com/numforge/nim-clblast).
+
+
+Julia: CLBlast.jl (3rd party)
+-------------
+
+A 3rd party CLBlast wrapper for [Julia](https://julialang.org/) is available [here](https://github.com/JuliaGPU/CLBlast.jl).

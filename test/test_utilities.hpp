@@ -70,6 +70,10 @@ struct BuffersHost {
 
 // =================================================================================================
 
+template <typename T> T ComplexConjugate(const T value);
+
+// =================================================================================================
+
 // Converts a value (e.g. an integer) to a string. This also covers special cases for CLBlast
 // data-types such as the Layout and Transpose data-types.
 template <typename T>

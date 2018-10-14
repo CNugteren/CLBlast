@@ -32,8 +32,24 @@ option(SAMPLES "Enable compilation of the examples" OFF)
 option(TUNERS "Enable compilation of the tuners" ON)
 option(CLIENTS "Enable compilation of the clients to test and compare performance" OFF)
 option(TESTS "Enable compilation of the correctness tests" OFF)
-option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
 option(CUBLAS "Enables performance comparison against cuBLAS on NVIDIA GPUs" OFF)
+
+# The optional Netlib API for CLBlast
+option(NETLIB "Enable compilation of the CBLAS Netlib API" OFF)
+option(NETLIB_PERSISTENT_OPENCL "Makes OpenCL device and context in the CBLAS Netlib API static" OFF)
+if(NETLIB)
+  message("-- Building the Netlib API of CLBlast")
+  if(NETLIB_PERSISTENT_OPENCL)
+    message("   ^^ while using static variables for OpenCL device and context")
+    add_definitions(-DNETLIB_PERSISTENT_OPENCL)
+  endif()
+endif()
+
+# Workarounds for bugs
+option(AMD_SI_EMPTY_KERNEL_WORKAROUND "Enables workaround for bug in AMD Southern Island GPUs" OFF)
+if(AMD_SI_EMPTY_KERNEL_WORKAROUND)
+  add_definitions(-DAMD_SI_EMPTY_KERNEL_WORKAROUND)
+endif()
 
 # Select between an OpenCL API (default) or a CUDA API (beta)
 option(OPENCL "Build CLBlast with an OpenCL API (default)" ON)

@@ -195,6 +195,26 @@ To inspect current behaviour, you can also retrieve the parameters for a specifi
                                              const Precision precision,
                                              std::unordered_map<std::string,size_t> &parameters)
 
+These two functions require/retrieve the parameters as given in [src/database/kernels](../src/database/kernels), i.e.:
+
+| Kernel name         | Parameters            |
+| --------------------|-----------------------|
+| Xaxpy               |  VW, WGS, WPT         |
+| Xdot                |  WGS1, WGS2           |
+| Xgemv               |  WGS1, WPT1           |
+| XgemvFast           |  VW2, WGS2, WPT2      |
+| XgemvFastRot        |  VW3, WGS3, WPT3      |
+| Xger                |  WGS1, WGS2, WPT      |
+| Xtrsv               |  TRSV_BLOCK_SIZE      |
+| Xgemm               |  GEMMK, KREG, KWG, KWI, MDIMA, MDIMC, MWG, NDIMB, NDIMC, NWG, SA, SB, STRM, STRN, VWM, VWN |
+| XgemmDirect         |  KWID, MDIMAD, MDIMCD, NDIMBD, NDIMCD, PADA, PADB, VWMD, VWND, WGD |
+| Copy                |  COPY_DIMX, COPY_DIMY, COPY_VW, COPY_WPT |
+| Pad                 |  PAD_DIMX, PAD_DIMY, PAD_WPTX, PAD_WPTY |
+| Transpose           |  TRA_DIM, TRA_PAD, TRA_SHUFFLE, TRA_WPT |
+| Padtranspose        |  PADTRA_PAD, PADTRA_TILE, PADTRA_WPT |
+| Invert              |  INTERNAL_BLOCK_SIZE  |
+| TrsvRoutine         |  TRSV_BLOCK_SIZE      |
+
 
 Tuning OpenCL compiler options
 -------------

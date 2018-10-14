@@ -43,8 +43,6 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
-// =================================================================================================
-
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
 #ifndef GEMMK
@@ -128,13 +126,15 @@ R"(
 #endif
 
 // Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.txt)
-#if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_INTEL
+#if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_INTEL == 1
   #define SUBGROUP_SIZE 8              // Assumes subgroup size is always 8 on Intel GPUs
 #endif
 
 // NVIDIA warps as subgroups using inline PTX (https://docs.nvidia.com/cuda/inline-ptx-assembly/index.html)
-#if USE_SUBGROUP_SHUFFLING == 1 && (SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA || SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA)
-  #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 32 on NVIDIA GPUs
+#if USE_SUBGROUP_SHUFFLING == 1
+  #if SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA == 1 || SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA == 1
+    #define SUBGROUP_SIZE 32            // Assumes subgroup size is always 32 on NVIDIA GPUs
+  #endif
 #endif
 
 #if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
@@ -397,9 +397,7 @@ INLINE_FUNC realN LocalToPrivateB(LOCAL_PTR realN* blm, const int _ni, const int
 }
 #endif
 
-// =================================================================================================
-
-// End of the C++11 raw string literal
 )"
+// End of the C++11 raw string literal
 
 // =================================================================================================

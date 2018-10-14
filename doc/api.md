@@ -3512,7 +3512,7 @@ Arguments to FillCache:
 RetrieveParameters: Retrieves current tuning parameters (auxiliary function)
 -------------
 
-This function retrieves current tuning parameters for a specific device-precision-kernel combination. This can be used for debugging or inspection.
+This function retrieves current tuning parameters for a specific device-precision-kernel combination. This can be used for debugging or inspection. See [tuning.md](tuning.md) for more details on which kernel names and parameters are valid.
 
 C++ API:
 ```
@@ -3535,7 +3535,7 @@ Arguments to RetrieveParameters (C++ version):
 OverrideParameters: Override tuning parameters (auxiliary function)
 -------------
 
-This function overrides tuning parameters for a specific device-precision-kernel combination. The next time the target routine is called it will be re-compiled and use the new parameters. All further times (until `OverrideParameters` is called again) it will load the kernel from the cache and thus continue to use the new parameters. Note that the first time after calling `OverrideParameters` a performance drop can be observable due to the re-compilation of the kernel.
+This function overrides tuning parameters for a specific device-precision-kernel combination. The next time the target routine is called it will be re-compiled and use the new parameters. All further times (until `OverrideParameters` is called again) it will load the kernel from the cache and thus continue to use the new parameters. Note that the first time after calling `OverrideParameters` a performance drop can be observable due to the re-compilation of the kernel. See [tuning.md](tuning.md) for more details on which kernel names and parameters are valid.
 
 C++ API:
 ```

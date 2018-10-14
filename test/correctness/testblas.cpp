@@ -239,7 +239,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     }
 
     // Tests the error count (should be zero)
-    TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);
+    TestErrorCount(errors, get_id1_(args)*get_id2_(args) + kCanarySize, args);
   }
   TestEnd();
 }
