@@ -13,7 +13,6 @@
 
 #include <string>
 #include <vector>
-#include <assert.h>
 
 #include "routines/levelx/xconvgemm.hpp"
 #include "routines/levelx/xim2col.hpp"
@@ -51,9 +50,6 @@ void Xconvgemm<T>::DoConvgemm(const size_t channels, const size_t height, const 
                               const Buffer<T> &im_buffer, const size_t im_offset,
                               const Buffer<T> &kernel_buffer, const size_t kernel_offset,
                               const Buffer<T> &result_buffer, const size_t result_offset) {
-
-  // TODO: Implement single-kernel approach
-  assert(method_ == ConvGemmMethod::kWithIm2Col);
 
   // Tests for a valid batch count
   if (batch_count == 0) {

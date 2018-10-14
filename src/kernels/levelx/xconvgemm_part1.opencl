@@ -11,7 +11,6 @@
 // uses parameters from the direct GEMM kernel. This is the part with the loads from memory (1/2).
 // This uses "CONVGEMM_WITH_IM2COL" as a switch to select between direct convgemm or first running
 // the im2col kernel to create a 'col' temporary matrix.
-// TODO: Currently only works with 'CONVGEMM_WITH_IM2COL' set
 //
 // =================================================================================================
 
