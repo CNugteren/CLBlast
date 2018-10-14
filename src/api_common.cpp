@@ -161,7 +161,7 @@ StatusCode OverrideParameters(const RawDeviceID device, const std::string &kerne
 
     // Verifies the parameters size
     const auto current_parameter_names = current_database.GetParameterNames();
-    if (current_parameter_names.size() != parameters.size()) {
+    if (current_parameter_names.size() > parameters.size()) {
       return StatusCode::kMissingOverrideParameter;
     }
 
