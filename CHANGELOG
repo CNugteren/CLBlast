@@ -7,6 +7,7 @@ Development (next version)
 - Fixed an issue with conjugate transpose not being executed in certain cases for a.o. XOMATCOPY
 - Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
 - Fixed an issue with the preprocessor and the new GEMMK == 1 kernel
+- Fixed an issue for certain parameters for AXPY's 'XaxpyFaster' kernel
 - Various minor fixes and enhancements
 - Added non-BLAS routines:
   * SCONVGEMM/DCONVGEMM/HCONVGEMM (convolution as im2col followed by batched GEMM)
