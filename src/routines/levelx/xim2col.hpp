@@ -8,6 +8,7 @@
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file implements the Xim2col routine. The precision is implemented using a template argument.
+// Uses the tuning parameters from the regular copy kernel.
 //
 // =================================================================================================
 
