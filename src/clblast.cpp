@@ -2252,6 +2252,42 @@ template StatusCode PUBLIC_API Im2col<half>(const size_t, const size_t, const si
                                             cl_mem, const size_t,
                                             cl_command_queue*, cl_event*);
 
+// Col2im function (non-BLAS function): SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM
+template <typename T>
+StatusCode Col2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem col_buffer, const size_t col_offset,
+                  cl_mem im_buffer, const size_t im_offset,
+                  cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xcol2im<T>(queue_cpp, event);
+    routine.DoCol2im(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                     Buffer<T>(col_buffer), col_offset,
+                     Buffer<T>(im_buffer), im_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Col2im<float>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                             const cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<double>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<float2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<double2>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                               const cl_mem, const size_t,
+                                               cl_mem, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<half>(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                            const cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
+
 // Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
 template <typename T>
 StatusCode Convgemm(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,

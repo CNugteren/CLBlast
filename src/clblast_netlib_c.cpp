@@ -4967,4 +4967,94 @@ void cblas_zim2col(const int channels, const int height, const int width, const 
   col_buffer.Read(queue, col_size, reinterpret_cast<double2*>(col));
 }
 
+// COL2IM
+void cblas_scol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const float* col,
+                   float* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<float>(context, col_size);
+  auto im_buffer = clblast::Buffer<float>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const float*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<float*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<float>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                  col_buffer(), 0,
+                                  im_buffer(), 0,
+                                  &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<float*>(im));
+}
+void cblas_dcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const double* col,
+                   double* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<double>(context, col_size);
+  auto im_buffer = clblast::Buffer<double>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const double*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<double*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<double>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   col_buffer(), 0,
+                                   im_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<double*>(im));
+}
+void cblas_ccol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* col,
+                   void* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<float2>(context, col_size);
+  auto im_buffer = clblast::Buffer<float2>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const float2*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<float2*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<float2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   col_buffer(), 0,
+                                   im_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<float2*>(im));
+}
+void cblas_zcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* col,
+                   void* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<double2>(context, col_size);
+  auto im_buffer = clblast::Buffer<double2>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const double2*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<double2*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<double2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                    col_buffer(), 0,
+                                    im_buffer(), 0,
+                                    &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<double2*>(im));
+}
+
 // =================================================================================================
