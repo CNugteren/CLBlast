@@ -37,6 +37,7 @@ set(OPENCL_PATHS
   /opt/intel/opencl
   /usr
   /usr/local
+  /opt/rocm/opencl
 )
 
 # Finds the include directories
