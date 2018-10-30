@@ -159,6 +159,15 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
   // Reference taken from im2col but swapped the input/output
   const auto col_h = TestXcol2im<T>::ColHeight(args);
   const auto col_w = TestXcol2im<T>::ColWidth(args);
+
+  for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) {
+    for (auto h_index = size_t{0}; h_index < args.height; ++h_index) {
+      for (auto w_index = size_t{0}; w_index < args.width; ++w_index) {
+        const auto im_index = w_index + args.width * (h_index + args.height * c_id);
+        buffers_host.a_mat[im_index + args.a_offset] = 0;
+      }
+    }
+  }
   for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) { // image channels
     for (auto kh_id = size_t{0}; kh_id < args.kernel_h; ++kh_id) { // kernel height
       for (auto kw_id = size_t{0}; kw_id < args.kernel_w; ++kw_id) { // kernel width
@@ -178,7 +187,7 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
             if (h_index >= 0 && h_index < args.height &&
                 w_index >= 0 && w_index < args.width) {
               const auto im_index = w_index + args.width * (h_index + args.height * c_id);
-              buffers_host.a_mat[im_index + args.a_offset] = val;
+              buffers_host.a_mat[im_index + args.a_offset] += val;
             }
           }
         }

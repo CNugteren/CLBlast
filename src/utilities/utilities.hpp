@@ -372,6 +372,12 @@ std::string GetDeviceArchitecture(const Device& device);
 std::string GetDeviceName(const Device& device);
 
 // =================================================================================================
+
+// Solve Bezout's identity
+// a * p + b * q = r = GCD(a, b)
+void EuclidGCD(int a, int b, int &p, int &q, int &r);
+
+// =================================================================================================
 } // namespace clblast
 
 // CLBLAST_UTILITIES_H_

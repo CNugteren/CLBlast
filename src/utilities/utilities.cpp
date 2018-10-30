@@ -489,4 +489,30 @@ std::string GetDeviceName(const Device& device) {
 }
 
 // =================================================================================================
+
+// Solve Bezout's identity
+// a * p + b * q = r = GCD(a, b)
+void EuclidGCD(int a, int b, int &p, int &q, int &r) {
+  p = 0;
+  q = 1;
+  int p_1 = 1;
+  int q_1 = 0;
+  for (;;) {
+    const int c = a % b;
+    if (c == 0) {
+      break;
+    }
+    const int p_2 = p_1;
+    const int q_2 = q_1;
+    p_1 = p;
+    q_1 = q;
+    p = p_2 - p_1 * (a / b);
+    q = q_2 - q_1 * (a / b);
+    a = b;
+    b = c;
+  }
+  r = b;
+}
+
+// =================================================================================================
 } // namespace clblast
