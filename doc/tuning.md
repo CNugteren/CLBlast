@@ -235,4 +235,4 @@ To find out which tuners to run for which routines, you can use the table below.
 | GER GERC GERU HER HER2 HPR HPR2 SPR SPR2 SYR SYR2                        | Xger                            |
 | GEMM HEMM HER2K HERK SYMM SYR2K SYRK TRMM GEMMBATCHED GEMMSTRIDEDBATCHED | Xgemm XgemmDirect Copy Pad Transpose Padtranspose |
 | TRSM                                                                     | Xgemm XgemmDirect Copy Pad Transpose Padtranspose Invert |
-| IM2COL                                                                   | Copy                            |
+| IM2COL COL2IM                                                            | Copy                            |

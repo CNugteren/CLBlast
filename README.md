@@ -124,6 +124,7 @@ The main contributing authors (code, pull requests, testing) are:
 * [Shehzan Mohammed](https://shehzan10.github.io)
 * [Marco Cianfriglia](https://github.com/mcian)
 * [Kodonnell](https://github.com/kodonnell)
+* [Koichi Akabe](https://github.com/vbkaisetsu)
 * Everyone else listed as a [GitHub contributor](https://github.com/CNugteren/CLBlast/graphs/contributors)
 
 Tuning and testing on a variety of OpenCL devices was made possible by:

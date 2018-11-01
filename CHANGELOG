@@ -11,6 +11,7 @@ Development (next version)
 - Various minor fixes and enhancements
 - Added non-BLAS routines:
   * SCONVGEMM/DCONVGEMM/HCONVGEMM (convolution as im2col followed by batched GEMM)
+  * SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM (col2im transform as used in machine learning)
 
 Version 1.4.1
 - Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded

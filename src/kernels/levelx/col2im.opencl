@@ -80,7 +80,7 @@ void col2im(const int input_h, const int input_w, const int channels,
       }
     }
 
-    // Sets the input value
+    // Sets the resulting value
     const int input_index = w_index + input_w * (h_index + input_h * c_id);
     im_buffer[input_index + im_offset] = val;
   }
