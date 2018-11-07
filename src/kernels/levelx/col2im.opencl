@@ -80,9 +80,10 @@ void col2im(const int input_h, const int input_w, const int channels,
       }
     }
 
-    // Sets the resulting value
+    // Accumulates the resulting value with the existing im-buffer (+= val)
     const int input_index = w_index + input_w * (h_index + input_h * c_id);
-    im_buffer[input_index + im_offset] = val;
+    real im_buffer_value = im_buffer[input_index + im_offset];
+    Add(im_buffer[input_index + im_offset], im_buffer_value, val);
   }
 }
 

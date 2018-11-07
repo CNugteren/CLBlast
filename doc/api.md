@@ -3015,7 +3015,7 @@ Requirements for OMATCOPY:
 xIM2COL: Im2col function (non-BLAS function)
 -------------
 
-Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.
+Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix. Overwrites any existing values in the _col_ buffer
 
 C++ API:
 ```
@@ -3075,7 +3075,7 @@ Arguments to IM2COL:
 xCOL2IM: Col2im function (non-BLAS function)
 -------------
 
-Performs the col2im algorithm, in which _col_ is the input matrix and _im_ is the output matrix.
+Performs the col2im algorithm, in which _col_ is the input matrix and _im_ is the output matrix. Accumulates results on top of the existing values in the _im_ buffer.
 
 C++ API:
 ```
