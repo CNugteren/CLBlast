@@ -3015,7 +3015,7 @@ Requirements for OMATCOPY:
 xIM2COL: Im2col function (non-BLAS function)
 -------------
 
-Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix.
+Performs the im2col algorithm, in which _im_ is the input matrix and _col_ is the output matrix. Overwrites any existing values in the _col_ buffer
 
 C++ API:
 ```
@@ -3067,6 +3067,66 @@ Arguments to IM2COL:
 * `const size_t im_offset`: The offset in elements from the start of the input im tensor.
 * `cl_mem col_buffer`: OpenCL buffer to store the output col tensor.
 * `const size_t col_offset`: The offset in elements from the start of the output col tensor.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+
+
+xCOL2IM: Col2im function (non-BLAS function)
+-------------
+
+Performs the col2im algorithm, in which _col_ is the input matrix and _im_ is the output matrix. Accumulates results on top of the existing values in the _im_ buffer.
+
+C++ API:
+```
+template <typename T>
+StatusCode Col2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem col_buffer, const size_t col_offset,
+                  cl_mem im_buffer, const size_t im_offset,
+                  cl_command_queue* queue, cl_event* event)
+```
+
+C API:
+```
+CLBlastStatusCode CLBlastScol2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem col_buffer, const size_t col_offset,
+                                 cl_mem im_buffer, const size_t im_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastDcol2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem col_buffer, const size_t col_offset,
+                                 cl_mem im_buffer, const size_t im_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastCcol2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem col_buffer, const size_t col_offset,
+                                 cl_mem im_buffer, const size_t im_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastZcol2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem col_buffer, const size_t col_offset,
+                                 cl_mem im_buffer, const size_t im_offset,
+                                 cl_command_queue* queue, cl_event* event)
+CLBlastStatusCode CLBlastHcol2im(const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                                 const cl_mem col_buffer, const size_t col_offset,
+                                 cl_mem im_buffer, const size_t im_offset,
+                                 cl_command_queue* queue, cl_event* event)
+```
+
+Arguments to COL2IM:
+
+* `const size_t channels`: Integer size argument. This value must be positive.
+* `const size_t height`: Integer size argument. This value must be positive.
+* `const size_t width`: Integer size argument. This value must be positive.
+* `const size_t kernel_h`: Integer size argument. This value must be positive.
+* `const size_t kernel_w`: Integer size argument. This value must be positive.
+* `const size_t pad_h`: Integer size argument. This value must be positive.
+* `const size_t pad_w`: Integer size argument. This value must be positive.
+* `const size_t stride_h`: Integer size argument. This value must be positive.
+* `const size_t stride_w`: Integer size argument. This value must be positive.
+* `const size_t dilation_h`: Integer size argument. This value must be positive.
+* `const size_t dilation_w`: Integer size argument. This value must be positive.
+* `const cl_mem col_buffer`: OpenCL buffer to store the input col tensor.
+* `const size_t col_offset`: The offset in elements from the start of the input col tensor.
+* `cl_mem im_buffer`: OpenCL buffer to store the output im tensor.
+* `const size_t im_offset`: The offset in elements from the start of the output im tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
 

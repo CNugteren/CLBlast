@@ -7,14 +7,14 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements a class with static methods to describe the Xim2col routine. Examples of
+// This file implements a class with static methods to describe the Xcol2im routine. Examples of
 // such 'descriptions' are how to calculate the size a of buffer or how to run the routine. These
 // static methods are used by the correctness tester and the performance tester.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TEST_ROUTINES_XIM2COL_H_
-#define CLBLAST_TEST_ROUTINES_XIM2COL_H_
+#ifndef CLBLAST_TEST_ROUTINES_XCOL2IM_H_
+#define CLBLAST_TEST_ROUTINES_XCOL2IM_H_
 
 #include "test/routines/common.hpp"
 
@@ -23,7 +23,7 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class TestXim2col {
+class TestXcol2im {
 public:
 
   // The BLAS level: 4 for the extra routines
@@ -35,8 +35,8 @@ public:
             kArgStrideH, kArgStrideW, kArgDilationH, kArgDilationW,
             kArgAOffset, kArgBOffset};
   }
-  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB}; }
-  static std::vector<std::string> BuffersOut() { return {kBufMatB}; }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB}; } // b = col
+  static std::vector<std::string> BuffersOut() { return {kBufMatA}; } // a = im
 
   // Describes how to obtain the sizes of the buffers
   static size_t ColHeight(const Arguments<T> &args) {
@@ -63,8 +63,8 @@ public:
 
   // Describes how to set the sizes of all the buffers
   static void SetSizes(Arguments<T> &args, Queue&) {
-    args.a_size = GetSizeA(args);
-    args.b_size = GetSizeB(args);
+    args.a_size = GetSizeA(args); // im
+    args.b_size = GetSizeB(args); // col
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -87,23 +87,23 @@ public:
     #ifdef OPENCL_API
       auto queue_plain = queue();
       auto event = cl_event{};
-      auto status = Im2col<T>(args.channels, args.height, args.width,
+      auto status = Col2im<T>(args.channels, args.height, args.width,
                               args.kernel_h, args.kernel_w,
                               args.pad_h, args.pad_w,
                               args.stride_h, args.stride_w,
                               args.dilation_h, args.dilation_w,
-                              buffers.a_mat(), args.a_offset,
-                              buffers.b_mat(), args.b_offset,
+                              buffers.b_mat(), args.b_offset, // col
+                              buffers.a_mat(), args.a_offset, // im
                               &queue_plain, &event);
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
-      auto status = Im2col<T>(args.channels, args.height, args.width,
+      auto status = Col2im<T>(args.channels, args.height, args.width,
                               args.kernel_h, args.kernel_w,
                               args.pad_h, args.pad_w,
                               args.stride_h, args.stride_w,
                               args.dilation_h, args.dilation_w,
-                              buffers.a_mat(), args.a_offset,
-                              buffers.b_mat(), args.b_offset,
+                              buffers.b_mat(), args.b_offset, // col
+                              buffers.a_mat(), args.a_offset, // im
                               queue.GetContext()(), queue.GetDevice()());
       cuStreamSynchronize(queue());
     #endif
@@ -129,16 +129,16 @@ public:
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    std::vector<T> result(args.b_size, static_cast<T>(0));
-    buffers.b_mat.Read(queue, args.b_size, result);
+    std::vector<T> result(args.a_size, static_cast<T>(0));
+    buffers.a_mat.Read(queue, args.a_size, result);
     return result;
   }
 
   // Describes how to compute the indices of the result buffer
-  static size_t ResultID1(const Arguments<T> &args) { return args.kernel_h * args.kernel_w; }
-  static size_t ResultID2(const Arguments<T> &args) { return NumPatches(args); }
+  static size_t ResultID1(const Arguments<T> &args) { return args.height * args.width; }
+  static size_t ResultID2(const Arguments<T> &args) { return args.channels; }
   static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t id2) {
-    return id1 + args.kernel_h * args.kernel_w * id2 + args.b_offset;
+    return id1 + args.height * args.width * id2 + args.a_offset;
   }
 
   // Describes how to compute performance metrics
@@ -146,9 +146,9 @@ public:
     return 1;
   }
   static size_t GetBytes(const Arguments<T> &args) {
-    const auto input = args.channels * args.width * args.height; // possibly less with striding
-    const auto output = args.kernel_h * args.kernel_w * NumPatches(args);
-    return (input + output) * sizeof(T);
+    const auto im = args.channels * args.width * args.height; // possibly less with striding
+    const auto col = args.kernel_h * args.kernel_w * NumPatches(args);
+    return (im + col) * sizeof(T);
   }
 };
 
@@ -156,30 +156,31 @@ public:
 
 template <typename T>
 StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) {
-  const auto col_h = TestXim2col<T>::ColHeight(args);
-  const auto col_w = TestXim2col<T>::ColWidth(args);
-  for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) { // input channels
+  // Reference taken from im2col but swapped the input/output
+  const auto col_h = TestXcol2im<T>::ColHeight(args);
+  const auto col_w = TestXcol2im<T>::ColWidth(args);
+
+  for (auto c_id = size_t{0}; c_id < args.channels; ++c_id) { // image channels
     for (auto kh_id = size_t{0}; kh_id < args.kernel_h; ++kh_id) { // kernel height
       for (auto kw_id = size_t{0}; kw_id < args.kernel_w; ++kw_id) { // kernel width
         for (auto h_id = size_t{0}; h_id < col_h; ++h_id) { // image height
           for (auto w_id = size_t{0}; w_id < col_w; ++w_id) { // image width
 
-            // Retrieves the input value
-            const auto h_index = kh_id * args.dilation_h + args.stride_h * h_id - args.pad_h;
-            const auto w_index = kw_id * args.dilation_w + args.stride_w * w_id - args.pad_w;
-            auto val = ConstantZero<T>();
-            if (h_index >= 0 && h_index < args.height &&
-                w_index >= 0 && w_index < args.width) {
-              const auto im_index = w_index + args.width * (h_index + args.height * c_id);
-              val = buffers_host.a_mat[im_index + args.a_offset];
-            }
-
-            // Sets the output value
+            // Reads the input value
             const auto kernel_index = kw_id + args.kernel_w * kh_id;
             const auto patch_index = w_id + col_w * h_id;
             const auto col_index = patch_index + kernel_index * col_w * col_h +
                                    c_id * col_w * col_h * args.kernel_h * args.kernel_w;
-            buffers_host.b_mat[col_index + args.b_offset] = val;
+            const auto val = buffers_host.b_mat[col_index + args.b_offset];
+
+            // Sets the output value
+            const auto h_index = kh_id * args.dilation_h + args.stride_h * h_id - args.pad_h;
+            const auto w_index = kw_id * args.dilation_w + args.stride_w * w_id - args.pad_w;
+            if (h_index >= 0 && h_index < args.height &&
+                w_index >= 0 && w_index < args.width) {
+              const auto im_index = w_index + args.width * (h_index + args.height * c_id);
+              buffers_host.a_mat[im_index + args.a_offset] += val;
+            }
           }
         }
       }
@@ -204,12 +205,12 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   args2.dilation_h = args.dilation_h; args2.dilation_w = args.dilation_w;
   args2.a_offset = args.a_offset; args2.b_offset = args.b_offset;
   auto status = RunReference(args2, buffers2);
-  FloatToHalfBuffer(buffers_host.b_mat, buffers2.b_mat);
+  FloatToHalfBuffer(buffers_host.a_mat, buffers2.a_mat);
   return status;
 }
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TEST_ROUTINES_XIM2COL_H_
+// CLBLAST_TEST_ROUTINES_XCOL2IM_H_
 #endif

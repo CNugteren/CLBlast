@@ -7,11 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the Xim2col class (see the header for information about the class).
+// This file implements the Xcol2im class (see the header for information about the class).
 //
 // =================================================================================================
 
-#include "routines/levelx/xim2col.hpp"
+#include "routines/levelx/xcol2im.hpp"
 
 #include <string>
 #include <vector>
@@ -21,27 +21,27 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xim2col<T>::Xim2col(Queue &queue, EventPointer event, const std::string &name):
-        Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {}, {
-#include "../../kernels/levelx/im2col.opencl"
-        }) {
+Xcol2im<T>::Xcol2im(Queue &queue, EventPointer event, const std::string &name):
+    Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {}, {
+#include "../../kernels/levelx/col2im.opencl"
+    }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size_t width,
+void Xcol2im<T>::DoCol2im(const size_t channels, const size_t height, const size_t width,
                           const size_t kernel_h, const size_t kernel_w, const size_t pad_h,
                           const size_t pad_w, const size_t stride_h, const size_t stride_w,
                           const size_t dilation_h, const size_t dilation_w,
-                          const Buffer<T> &im_buffer, const size_t im_offset,
-                          const Buffer<T> &col_buffer, const size_t col_offset) {
+                          const Buffer<T> &col_buffer, const size_t col_offset,
+                          const Buffer<T> &im_buffer, const size_t im_offset) {
 
   // Makes sure all dimensions are larger than zero
   if ((channels == 0) || (height == 0) || (width == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
 
-  // Sets the height and width of the 'col' result
+  // Sets the output height and width
   const auto size_h = height + 2 * pad_h;
   const auto padding_h = dilation_h * (kernel_h - 1) + 1;
   const auto col_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
@@ -49,8 +49,17 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
   const auto padding_w = dilation_w * (kernel_w - 1) + 1;
   const auto col_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
 
+  int stride_bez_h = 0;
+  int stride_bez_w = 0;
+  int dilation_bez_h = 0;
+  int dilation_bez_w = 0;
+  int gcd_h = 0;
+  int gcd_w = 0;
+  EuclidGCD(static_cast<int>(stride_h), static_cast<int>(dilation_h), stride_bez_h, dilation_bez_h, gcd_h);
+  EuclidGCD(static_cast<int>(stride_w), static_cast<int>(dilation_w), stride_bez_w, dilation_bez_w, gcd_w);
+
   // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program_, "im2col");
+  auto kernel = Kernel(program_, "col2im");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(height));
@@ -66,14 +75,20 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
   kernel.SetArgument(10, static_cast<int>(stride_w));
   kernel.SetArgument(11, static_cast<int>(dilation_h));
   kernel.SetArgument(12, static_cast<int>(dilation_w));
-  kernel.SetArgument(13, im_buffer());
-  kernel.SetArgument(14, static_cast<int>(im_offset));
-  kernel.SetArgument(15, col_buffer());
-  kernel.SetArgument(16, static_cast<int>(col_offset));
+  kernel.SetArgument(13, stride_bez_h);
+  kernel.SetArgument(14, stride_bez_w);
+  kernel.SetArgument(15, dilation_bez_h);
+  kernel.SetArgument(16, dilation_bez_w);
+  kernel.SetArgument(17, gcd_h);
+  kernel.SetArgument(18, gcd_w);
+  kernel.SetArgument(19, col_buffer());
+  kernel.SetArgument(20, static_cast<int>(col_offset));
+  kernel.SetArgument(21, im_buffer());
+  kernel.SetArgument(22, static_cast<int>(im_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil(col_w, db_["COPY_DIMX"]);
-  const auto h_ceiled = Ceil(col_h, db_["COPY_DIMY"]);
+  const auto w_ceiled = Ceil((width - 1) / gcd_w + 1, db_["COPY_DIMX"]);
+  const auto h_ceiled = Ceil((height - 1) / gcd_h + 1, db_["COPY_DIMY"]);
   const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
   const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
   RunKernel(kernel, queue_, device_, global, local, event_);
@@ -82,11 +97,11 @@ void Xim2col<T>::DoIm2col(const size_t channels, const size_t height, const size
 // =================================================================================================
 
 // Compiles the templated class
-template class Xim2col<half>;
-template class Xim2col<float>;
-template class Xim2col<double>;
-template class Xim2col<float2>;
-template class Xim2col<double2>;
+template class Xcol2im<half>;
+template class Xcol2im<float>;
+template class Xcol2im<double>;
+template class Xcol2im<float2>;
+template class Xcol2im<double2>;
 
 // =================================================================================================
 } // namespace clblast

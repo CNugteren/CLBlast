@@ -70,6 +70,7 @@
 #include "routines/levelx/xhad.hpp"
 #include "routines/levelx/xomatcopy.hpp"
 #include "routines/levelx/xim2col.hpp"
+#include "routines/levelx/xcol2im.hpp"
 #include "routines/levelx/xconvgemm.hpp"
 #include "routines/levelx/xaxpybatched.hpp"
 #include "routines/levelx/xgemmbatched.hpp"

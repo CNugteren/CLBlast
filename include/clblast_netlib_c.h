@@ -960,6 +960,20 @@ void PUBLIC_API cblas_zim2col(const int channels, const int height, const int wi
                               const void* im,
                               void* col);
 
+// Col2im function (non-BLAS function): SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM
+void PUBLIC_API cblas_scol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const float* col,
+                              float* im);
+void PUBLIC_API cblas_dcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const double* col,
+                              double* im);
+void PUBLIC_API cblas_ccol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const void* col,
+                              void* im);
+void PUBLIC_API cblas_zcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                              const void* col,
+                              void* im);
+
 // =================================================================================================
 
 #ifdef __cplusplus
