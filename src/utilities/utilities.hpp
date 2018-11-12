@@ -69,6 +69,7 @@ constexpr auto kArgBTransp = "transB";
 constexpr auto kArgSide = "side";
 constexpr auto kArgTriangle = "triangle";
 constexpr auto kArgDiagonal = "diagonal";
+constexpr auto kArgKernelMode = "kernel_mode";
 constexpr auto kArgXInc = "incx";
 constexpr auto kArgYInc = "incy";
 constexpr auto kArgXOffset = "offx";
@@ -183,6 +184,7 @@ struct Arguments {
   Side side = Side::kLeft;
   Triangle triangle = Triangle::kUpper;
   Diagonal diagonal = Diagonal::kUnit;
+  KernelMode kernel_mode = KernelMode::kCrossCorrelation;
   size_t x_inc = 1;
   size_t y_inc = 1;
   size_t x_offset = 0;
