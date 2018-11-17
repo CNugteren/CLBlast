@@ -27,6 +27,7 @@ def option_to_clblast(x):
         'side': "Side",
         'triangle': "Triangle",
         'diagonal': "Diagonal",
+        'kernel_mode': "KernelMode",
     }[x]
 
 
@@ -79,4 +80,5 @@ def option_to_documentation(x):
         'side': "The position of the triangular matrix in the operation, either on the `Side::kLeft` (141) or `Side::kRight` (142).",
         'triangle': "The part of the array of the triangular matrix to be used, either `Triangle::kUpper` (121) or `Triangle::kLower` (122).",
         'diagonal': "The property of the diagonal matrix, either `Diagonal::kNonUnit` (131) for non-unit values on the diagonal or `Diagonal::kUnit` (132) for unit values on the diagonal.",
+        'kernel_mode': "The kernel mode, either `KernelMode::kCrossCorrelation` for the normal mode, or `KernelMode::kConvolution` for the convolution mode that flips a kernel along `h` and `w` axes.",
     }[x]

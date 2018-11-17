@@ -29,7 +29,8 @@ class Xcol2im: public Routine {
   Xcol2im(Queue &queue, EventPointer event, const std::string &name = "COL2IM");
 
   // Templated-precision implementation of the routine
-  void DoCol2im(const size_t channels, const size_t height, const size_t width,
+  void DoCol2im(const KernelMode kernel_mode,
+                const size_t channels, const size_t height, const size_t width,
                 const size_t kernel_h, const size_t kernel_w,
                 const size_t pad_h, const size_t pad_w,
                 const size_t stride_h, const size_t stride_w,

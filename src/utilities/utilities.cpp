@@ -175,6 +175,13 @@ std::string ToString(Precision value) {
   }
 }
 template <>
+std::string ToString(KernelMode value) {
+  switch(value) {
+    case KernelMode::kCrossCorrelation: return ToString(static_cast<int>(value))+" (cross-correlation)";
+    case KernelMode::kConvolution: return ToString(static_cast<int>(value))+" (convolution)";
+  }
+}
+template <>
 std::string ToString(StatusCode value) {
   return std::to_string(static_cast<int>(value));
 }
@@ -281,6 +288,7 @@ template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, c
 template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&, const Triangle);
 template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&, const Diagonal);
 template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&, const Precision);
+template KernelMode GetArgument<KernelMode>(const std::vector<std::string>&, std::string&, const std::string&, const KernelMode);
 
 // =================================================================================================
 

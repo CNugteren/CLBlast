@@ -45,6 +45,7 @@ typedef enum CLBlastTriangle_ { CLBlastTriangleUpper = 121,
 typedef enum CLBlastDiagonal_ { CLBlastDiagonalNonUnit = 131,
                                 CLBlastDiagonalUnit = 132 } CLBlastDiagonal;
 typedef enum CLBlastSide_ { CLBlastSideLeft = 141, CLBlastSideRight = 142 } CLBlastSide;
+typedef enum CLBlastKernelMode_ { CLBlastKernelModeCrossCorrelation = 141, CLBlastKernelModeConvolution = 152 } CLBlastKernelMode;
 
 // For full compatibility with CBLAS
 typedef CLBlastLayout CBLAS_ORDER;
@@ -947,30 +948,38 @@ void PUBLIC_API cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspo
                                 void* b, const int b_ld);
 
 // Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
-void PUBLIC_API cblas_sim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_sim2col(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const float* im,
                               float* col);
-void PUBLIC_API cblas_dim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_dim2col(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const double* im,
                               double* col);
-void PUBLIC_API cblas_cim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_cim2col(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const void* im,
                               void* col);
-void PUBLIC_API cblas_zim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_zim2col(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const void* im,
                               void* col);
 
 // Col2im function (non-BLAS function): SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM
-void PUBLIC_API cblas_scol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_scol2im(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const float* col,
                               float* im);
-void PUBLIC_API cblas_dcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_dcol2im(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const double* col,
                               double* im);
-void PUBLIC_API cblas_ccol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_ccol2im(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const void* col,
                               void* im);
-void PUBLIC_API cblas_zcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void PUBLIC_API cblas_zcol2im(const CLBlastKernelMode kernel_mode,
+                              const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const void* col,
                               void* im);
 

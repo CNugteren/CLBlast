@@ -32,7 +32,8 @@ class Xconvgemm: public Routine {
             const ConvGemmMethod method = ConvGemmMethod::kWithIm2Col);
 
   // Templated-precision implementation of the routine
-  void DoConvgemm(const size_t channels, const size_t height, const size_t width,
+  void DoConvgemm(const KernelMode kernel_mode,
+                  const size_t channels, const size_t height, const size_t width,
                   const size_t kernel_h, const size_t kernel_w,
                   const size_t pad_h, const size_t pad_w,
                   const size_t stride_h, const size_t stride_w,

@@ -60,6 +60,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   args.layout = GetArgument(arguments, help, kArgLayout, Layout::kRowMajor);
   args.a_transpose = GetArgument(arguments, help, kArgATransp, Transpose::kNo);
   args.b_transpose = GetArgument(arguments, help, kArgBTransp, Transpose::kNo);
+  args.kernel_mode = GetArgument(arguments, help, kArgKernelMode, KernelMode::kCrossCorrelation);
   args.alpha = GetArgument(arguments, help, kArgAlpha, GetScalar<T>());
   args.beta  = GetArgument(arguments, help, kArgBeta, GetScalar<T>());
 

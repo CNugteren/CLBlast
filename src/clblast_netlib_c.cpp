@@ -4878,7 +4878,8 @@ void cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
 }
 
 // IM2COL
-void cblas_sim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_sim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const float* im,
                    float* col) {
   OPTIONAL_STATIC auto device = get_device();
@@ -4891,7 +4892,8 @@ void cblas_sim2col(const int channels, const int height, const int width, const 
   im_buffer.Write(queue, im_size, reinterpret_cast<const float*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<float*>(col));
   auto queue_cl = queue();
-  auto s = clblast::Im2col<float>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Im2col<float>(static_cast<clblast::KernelMode>(kernel_mode),
+                                  channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                   im_buffer(), 0,
                                   col_buffer(), 0,
                                   &queue_cl);
@@ -4900,7 +4902,8 @@ void cblas_sim2col(const int channels, const int height, const int width, const 
   }
   col_buffer.Read(queue, col_size, reinterpret_cast<float*>(col));
 }
-void cblas_dim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_dim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const double* im,
                    double* col) {
   OPTIONAL_STATIC auto device = get_device();
@@ -4913,7 +4916,8 @@ void cblas_dim2col(const int channels, const int height, const int width, const 
   im_buffer.Write(queue, im_size, reinterpret_cast<const double*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<double*>(col));
   auto queue_cl = queue();
-  auto s = clblast::Im2col<double>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Im2col<double>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                    im_buffer(), 0,
                                    col_buffer(), 0,
                                    &queue_cl);
@@ -4922,7 +4926,8 @@ void cblas_dim2col(const int channels, const int height, const int width, const 
   }
   col_buffer.Read(queue, col_size, reinterpret_cast<double*>(col));
 }
-void cblas_cim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_cim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const void* im,
                    void* col) {
   OPTIONAL_STATIC auto device = get_device();
@@ -4935,7 +4940,8 @@ void cblas_cim2col(const int channels, const int height, const int width, const 
   im_buffer.Write(queue, im_size, reinterpret_cast<const float2*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<float2*>(col));
   auto queue_cl = queue();
-  auto s = clblast::Im2col<float2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Im2col<float2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                    im_buffer(), 0,
                                    col_buffer(), 0,
                                    &queue_cl);
@@ -4944,7 +4950,8 @@ void cblas_cim2col(const int channels, const int height, const int width, const 
   }
   col_buffer.Read(queue, col_size, reinterpret_cast<float2*>(col));
 }
-void cblas_zim2col(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_zim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const void* im,
                    void* col) {
   OPTIONAL_STATIC auto device = get_device();
@@ -4957,7 +4964,8 @@ void cblas_zim2col(const int channels, const int height, const int width, const 
   im_buffer.Write(queue, im_size, reinterpret_cast<const double2*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<double2*>(col));
   auto queue_cl = queue();
-  auto s = clblast::Im2col<double2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Im2col<double2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                    channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                     im_buffer(), 0,
                                     col_buffer(), 0,
                                     &queue_cl);
@@ -4968,7 +4976,8 @@ void cblas_zim2col(const int channels, const int height, const int width, const 
 }
 
 // COL2IM
-void cblas_scol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_scol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const float* col,
                    float* im) {
   OPTIONAL_STATIC auto device = get_device();
@@ -4981,7 +4990,8 @@ void cblas_scol2im(const int channels, const int height, const int width, const 
   col_buffer.Write(queue, col_size, reinterpret_cast<const float*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<float*>(im));
   auto queue_cl = queue();
-  auto s = clblast::Col2im<float>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Col2im<float>(static_cast<clblast::KernelMode>(kernel_mode),
+                                  channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                   col_buffer(), 0,
                                   im_buffer(), 0,
                                   &queue_cl);
@@ -4990,7 +5000,8 @@ void cblas_scol2im(const int channels, const int height, const int width, const 
   }
   im_buffer.Read(queue, im_size, reinterpret_cast<float*>(im));
 }
-void cblas_dcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_dcol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const double* col,
                    double* im) {
   OPTIONAL_STATIC auto device = get_device();
@@ -5003,7 +5014,8 @@ void cblas_dcol2im(const int channels, const int height, const int width, const 
   col_buffer.Write(queue, col_size, reinterpret_cast<const double*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<double*>(im));
   auto queue_cl = queue();
-  auto s = clblast::Col2im<double>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Col2im<double>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                    col_buffer(), 0,
                                    im_buffer(), 0,
                                    &queue_cl);
@@ -5012,7 +5024,8 @@ void cblas_dcol2im(const int channels, const int height, const int width, const 
   }
   im_buffer.Read(queue, im_size, reinterpret_cast<double*>(im));
 }
-void cblas_ccol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_ccol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const void* col,
                    void* im) {
   OPTIONAL_STATIC auto device = get_device();
@@ -5025,7 +5038,8 @@ void cblas_ccol2im(const int channels, const int height, const int width, const 
   col_buffer.Write(queue, col_size, reinterpret_cast<const float2*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<float2*>(im));
   auto queue_cl = queue();
-  auto s = clblast::Col2im<float2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Col2im<float2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                    col_buffer(), 0,
                                    im_buffer(), 0,
                                    &queue_cl);
@@ -5034,7 +5048,8 @@ void cblas_ccol2im(const int channels, const int height, const int width, const 
   }
   im_buffer.Read(queue, im_size, reinterpret_cast<float2*>(im));
 }
-void cblas_zcol2im(const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+void cblas_zcol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                    const void* col,
                    void* im) {
   OPTIONAL_STATIC auto device = get_device();
@@ -5047,7 +5062,8 @@ void cblas_zcol2im(const int channels, const int height, const int width, const 
   col_buffer.Write(queue, col_size, reinterpret_cast<const double2*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<double2*>(im));
   auto queue_cl = queue();
-  auto s = clblast::Col2im<double2>(channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+  auto s = clblast::Col2im<double2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                    channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
                                     col_buffer(), 0,
                                     im_buffer(), 0,
                                     &queue_cl);
