@@ -29,7 +29,6 @@ inline int grid_ceil(const int x, const int step) {
 }
 
 // Main body of the kernel
-__kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 INLINE_FUNC void Xcol2im(const int input_h, const int input_w, const int channels,
                          const int output_h, const int output_w,
                          const int kernel_h, const int kernel_w,
