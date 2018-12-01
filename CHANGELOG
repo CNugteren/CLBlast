@@ -2,6 +2,7 @@
 Development (next version)
 - Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
 - Added an option to compile the Netlib API with static OpenCL device and context (-DNETLIB_PERSISTENT_OPENCL=ON)
+- Added a FAQ page to the documentation
 - The tuners now check beforehand on invalid local thread sizes and skip those completely
 - Made the tuning API (OverrideParameters) more flexible, disregarding superfluous parameters
 - Fixed an issue with conjugate transpose not being executed in certain cases for a.o. XOMATCOPY

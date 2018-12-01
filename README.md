@@ -80,6 +80,7 @@ More detailed documentation is available in separate files:
 * [Bindings / wrappers for other languages](doc/bindings.md)
 * [More details on the GEMM kernel](doc/details_gemm.md)
 * [Glossary with some terms explained](doc/glossary.md)
+* [Frequently asked questions (FAQ) and their answers](doc/faq.md)
 
 
 Known issues
