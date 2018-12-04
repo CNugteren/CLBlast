@@ -21,8 +21,8 @@ endif()
 # CMake project details
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
-set(clblast_VERSION_MINOR 4)
-set(clblast_VERSION_PATCH 1)
+set(clblast_VERSION_MINOR 5)
+set(clblast_VERSION_PATCH 0)
 set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
 set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 

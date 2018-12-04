@@ -21,7 +21,7 @@ matrix:
 
 env:
   global:
-    - CLBLAST_VERSION=1.4.1
+    - CLBLAST_VERSION=1.5.0
     - CLBLAST_ROOT=${TRAVIS_BUILD_DIR}/bin/clblast
     - CLBLAST_INSTALL=${TRAVIS_BUILD_DIR}/bin/CLBlast-${CLBLAST_VERSION}
     - CLBLAST_TAR=CLBlast-${CLBLAST_VERSION}-${TRAVIS_OS_NAME}-x64.tar.gz

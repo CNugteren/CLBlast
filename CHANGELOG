@@ -1,5 +1,5 @@
 
-Development (next version)
+Version 1.5.0
 - Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
 - Added an option to compile the Netlib API with static OpenCL device and context (-DNETLIB_PERSISTENT_OPENCL=ON)
 - Added a FAQ page to the documentation
