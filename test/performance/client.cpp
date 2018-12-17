@@ -107,6 +107,7 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     if (o == kArgBeta)  { args.beta  = GetArgument(command_line_args, help, kArgBeta, GetScalar<U>()); }
 
     // Arguments for im2col and convgemm
+    if (o == kArgKernelMode){ args.kernel_mode = GetArgument(command_line_args, help, kArgKernelMode, KernelMode::kConvolution); }
     if (o == kArgChannels)  { args.channels = GetArgument(command_line_args, help, kArgChannels, size_t{64}); }
     if (o == kArgHeight)    { args.height = GetArgument(command_line_args, help, kArgHeight, size_t{64}); }
     if (o == kArgWidth)     { args.width = GetArgument(command_line_args, help, kArgWidth, size_t{64}); }
@@ -436,6 +437,7 @@ void Client<T,U>::PrintTableRow(const Arguments<U>& args,
     else if (o == kArgAsumOffset){integers.push_back(args.asum_offset); }
     else if (o == kArgImaxOffset){integers.push_back(args.imax_offset); }
     else if (o == kArgBatchCount){integers.push_back(args.batch_count); }
+    else if (o == kArgKernelMode){integers.push_back(static_cast<size_t>(args.kernel_mode)); }
     else if (o == kArgChannels)  {integers.push_back(args.channels); }
     else if (o == kArgHeight)    {integers.push_back(args.height); }
     else if (o == kArgWidth)     {integers.push_back(args.width); }

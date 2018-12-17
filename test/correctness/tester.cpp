@@ -367,6 +367,7 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
     if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
     if (o == kArgBatchCount){result += kArgBatchCount + equals + ToString(args.batch_count) + " "; }
+    if (o == kArgKernelMode){result += kArgKernelMode + equals + ToString(args.kernel_mode) + " "; }
     if (o == kArgChannels) { result += kArgChannels + equals + ToString(args.channels) + " "; }
     if (o == kArgHeight)   { result += kArgHeight + equals + ToString(args.height) + " "; }
     if (o == kArgWidth)    { result += kArgWidth + equals + ToString(args.width) + " "; }
