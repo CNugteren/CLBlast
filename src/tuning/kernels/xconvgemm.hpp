@@ -44,8 +44,8 @@ TunerDefaults XConvGemmGetTunerDefaults(const int) {
   settings.options = {kArgChannels, kArgHeight, kArgWidth, kArgKernelH, kArgKernelW,
                       kArgNumKernels, kArgBatchCount, kArgFraction};
   settings.channels = 32;
-  settings.height = 64;
-  settings.width = 64;
+  settings.height = 66;
+  settings.width = 66;  // num_patches = 64x64 = 4096
   settings.kernel_h = 3;
   settings.kernel_w = 3;
   settings.num_kernels = 32;
@@ -62,7 +62,7 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T> &args) {
 
   // Identification of the kernel
   settings.kernel_family = "xconvgemm";
-  settings.kernel_name = "Xconvgemm";
+  settings.kernel_name = "XconvgemmNormal";
   settings.sources =
 "#define ROUTINE_CONVGEMM"
 #include "../src/kernels/level3/xgemm_direct_part1.opencl"
@@ -79,7 +79,7 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T> &args) {
   // Buffer sizes
   settings.size_a = args.batch_count * args.channels * args.height * args.width;
   settings.size_b = args.num_kernels * args.channels * args.kernel_h * args.kernel_w;
-  settings.size_a = args.batch_count * args.num_kernels * OutputHeight(args) * OutputWidth(args);
+  settings.size_c = args.batch_count * args.num_kernels * OutputHeight(args) * OutputWidth(args);
 
   // Inputs and outputs IDs (X:0, Y:1, A:2, B:3, C:4, temp:5)
   settings.inputs = {2, 3, 4};
