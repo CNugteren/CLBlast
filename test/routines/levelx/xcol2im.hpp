@@ -204,6 +204,7 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size;
+  args2.kernel_mode = args.kernel_mode;
   args2.channels = args.channels; args2.height = args.height; args2.width = args.width;
   args2.kernel_h = args.kernel_h; args2.kernel_w = args.kernel_w;
   args2.pad_h = args.pad_h; args2.pad_w = args.pad_w;

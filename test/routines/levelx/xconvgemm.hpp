@@ -31,7 +31,8 @@ public:
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
-    return {kArgChannels, kArgHeight, kArgWidth, kArgKernelH, kArgKernelW, kArgPadH, kArgPadW,
+    return {kArgKernelMode,
+            kArgChannels, kArgHeight, kArgWidth, kArgKernelH, kArgKernelW, kArgPadH, kArgPadW,
             kArgStrideH, kArgStrideW, kArgDilationH, kArgDilationW, kArgNumKernels, kArgBatchCount,
             kArgAOffset, kArgBOffset, kArgCOffset};
   }
@@ -232,6 +233,7 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, c_buffer2, dummy, dummy};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size; args2.c_size = args.c_size;
+  args2.kernel_mode = args.kernel_mode;
   args2.channels = args.channels; args2.height = args.height; args2.width = args.width;
   args2.kernel_h = args.kernel_h; args2.kernel_w = args.kernel_w;
   args2.pad_h = args.pad_h; args2.pad_w = args.pad_w;
