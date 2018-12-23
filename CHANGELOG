@@ -1,3 +1,6 @@
+Development (next version)
+- Implemented single-kernel version of convolution as GEMM
+- Various minor fixes and enhancements
 
 Version 1.5.0
 - Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')

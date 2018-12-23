@@ -41,6 +41,13 @@ struct TunerDefaults {
   size_t default_m = 1;
   size_t default_n = 1;
   size_t default_k = 1;
+  size_t channels = 1;
+  size_t height = 1;
+  size_t width = 1;
+  size_t kernel_h = 3;
+  size_t kernel_w = 3;
+  size_t num_kernels = 1;
+  size_t batch_count = 1;
 
   // Other defaults
   size_t default_batch_count = 1;
