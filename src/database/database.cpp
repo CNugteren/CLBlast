@@ -25,6 +25,7 @@
 #include "database/kernels/xger/xger.hpp"
 #include "database/kernels/xgemm/xgemm.hpp"
 #include "database/kernels/xgemm_direct/xgemm_direct.hpp"
+#include "database/kernels/xconvgemm/xconvgemm.hpp"
 #include "database/kernels/copy/copy.hpp"
 #include "database/kernels/pad/pad.hpp"
 #include "database/kernels/transpose/transpose.hpp"
@@ -43,7 +44,7 @@ std::vector<database::DatabaseEntry> Database::database = std::vector<database::
 const std::vector<database::DatabaseEntry> Database::apple_cpu_fallback = std::vector<database::DatabaseEntry>{
   database::XaxpyApple, database::XdotApple,
   database::XgemvApple, database::XgemvFastApple, database::XgemvFastRotApple, database::XgerApple, database::XtrsvApple,
-  database::XgemmApple, database::XgemmDirectApple,
+  database::XgemmApple, database::XgemmDirectApple, database::XconvgemmApple,
   database::CopyApple, database::PadApple, database::TransposeApple, database::PadtransposeApple,
   database::InvertApple,
   database::TrsvRoutineApple
@@ -71,6 +72,7 @@ Database::Database(const Device &device, const std::string &kernel_name,
         database::XgerHalf, database::XgerSingle, database::XgerDouble, database::XgerComplexSingle, database::XgerComplexDouble,
         database::XgemmHalf, database::XgemmSingle, database::XgemmDouble, database::XgemmComplexSingle, database::XgemmComplexDouble,
         database::XgemmDirectHalf, database::XgemmDirectSingle, database::XgemmDirectDouble, database::XgemmDirectComplexSingle, database::XgemmDirectComplexDouble,
+        database::XconvgemmHalf, database::XconvgemmSingle, database::XconvgemmDouble, database::XconvgemmComplexSingle, database::XconvgemmComplexDouble,
         database::CopyHalf, database::CopySingle, database::CopyDouble, database::CopyComplexSingle, database::CopyComplexDouble,
         database::PadHalf, database::PadSingle, database::PadDouble, database::PadComplexSingle, database::PadComplexDouble,
         database::TransposeHalf, database::TransposeSingle, database::TransposeDouble, database::TransposeComplexSingle, database::TransposeComplexDouble,

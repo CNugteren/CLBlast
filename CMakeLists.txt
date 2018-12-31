@@ -212,11 +212,10 @@ endif()
 
 # Sets the supported routines and the used kernels. New routines and kernels should be added here.
 set(KERNELS copy_fast copy_pad transpose_fast transpose_pad xaxpy xdot xger
-            xgemm xgemm_direct xgemv invert)
-set(KERNELS_EXTRA xconvgemm)  # kernels for which not to include a tuner in 'all tuners' target
+            xgemm xgemm_direct xgemv invert xconvgemm)
 set(DATABASES copy pad padtranspose transpose xaxpy xdot
               xgemm xgemm_direct xgemv xgemv_fast xgemv_fast_rot xger invert
-              gemm_routine trsv_routine)
+              gemm_routine trsv_routine xconvgemm)
 set(ROUTINE_TUNERS xgemm xtrsv)
 set(LEVEL1_ROUTINES xswap xscal xcopy xaxpy xdot xdotu xdotc xnrm2 xasum xamax)
 set(LEVEL2_ROUTINES xgemv xgbmv xhemv xhbmv xhpmv xsymv xsbmv xspmv xtrmv xtbmv xtpmv xtrsv
@@ -435,7 +434,7 @@ if(TUNERS)
   endif()
 
   # Adds tuning executables
-  set(ALLKERNELS ${KERNELS} ${KERNELS_EXTRA})
+  set(ALLKERNELS ${KERNELS})
   foreach(KERNEL ${ALLKERNELS})
     add_executable(clblast_tuner_${KERNEL} ${TUNERS_COMMON} src/tuning/kernels/${KERNEL}.cpp)
     target_link_libraries(clblast_tuner_${KERNEL} ${API_LIBRARIES})

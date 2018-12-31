@@ -25,7 +25,7 @@ namespace clblast {
 template <typename T>
 Xconvgemm<T>::Xconvgemm(Queue &queue, EventPointer event, const std::string &name,
                         const ConvGemmMethod method):
-    Routine(queue, event, name, {"XgemmDirect"},
+    Routine(queue, event, name, {"Xconvgemm"},
         PrecisionValue<T>(), {}, {
             (method == ConvGemmMethod::kWithIm2Col) ? "#define CONVGEMM_WITH_IM2COL\n" : "",
             #include "../../kernels/level3/level3.opencl"
