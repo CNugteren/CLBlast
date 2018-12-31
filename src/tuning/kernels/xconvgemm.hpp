@@ -86,10 +86,10 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T> &args) {
   settings.outputs = {4};
 
   // Sets the base thread configuration
-  settings.global_size = {num_patches, args.num_kernels};
+  settings.global_size = {num_patches, args.num_kernels, args.batch_count};
   settings.global_size_ref = settings.global_size;
-  settings.local_size = {1, 1};
-  settings.local_size_ref = {8, 8};
+  settings.local_size = {1, 1, 1};
+  settings.local_size_ref = {8, 8, 1};
 
   // Transforms the thread configuration based on the parameters
   settings.mul_local = {{"MDIMCD", "NDIMCD"}};
@@ -161,12 +161,12 @@ void XConvGemmSetArguments(const int, Kernel &kernel, const Arguments<T> &args, 
   kernel.SetArgument(1, static_cast<int>(args.num_kernels));
   kernel.SetArgument(2, static_cast<int>(patch_size));
   kernel.SetArgument(3, buffers[3]()); // 3 == B matrix ==> kernel buffer
-  kernel.SetArgument(4, 0); // c_offset
+  kernel.SetArgument(4, 0); // kernel offset
   kernel.SetArgument(5, buffers[4]()); // 4 == C matrix ==> result buffer
-  kernel.SetArgument(6, 0); // c_offset
+  kernel.SetArgument(6, 0); // result offset
   kernel.SetArgument(7, static_cast<int>(result_stride));
   kernel.SetArgument(8, buffers[2]()); // 2 == A matrix ==> image buffer
-  kernel.SetArgument(9, 0); // c_offset
+  kernel.SetArgument(9, 0); // image offset
   kernel.SetArgument(10, static_cast<int>(args.height));
   kernel.SetArgument(11, static_cast<int>(args.width));
   kernel.SetArgument(12, static_cast<int>(args.channels));
