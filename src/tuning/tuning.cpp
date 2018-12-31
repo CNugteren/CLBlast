@@ -389,6 +389,12 @@ void Tuner(int argc, char* argv[], const int V,
     if (o == kArgAlpha) { metadata.push_back({"arg_alpha", ToString(args.alpha)}); }
     if (o == kArgBeta)  { metadata.push_back({"arg_beta", ToString(args.beta)}); }
     if (o == kArgBatchCount) { metadata.push_back({"arg_batch_count", ToString(args.batch_count)}); }
+    if (o == kArgHeight)     { metadata.push_back({"arg_height", ToString(args.height)}); }
+    if (o == kArgWidth)      { metadata.push_back({"arg_width", ToString(args.width)}); }
+    if (o == kArgKernelH)    { metadata.push_back({"arg_kernel_h", ToString(args.kernel_h)}); }
+    if (o == kArgKernelW)    { metadata.push_back({"arg_kernel_w", ToString(args.kernel_w)}); }
+    if (o == kArgChannels)   { metadata.push_back({"arg_channels", ToString(args.channels)}); }
+    if (o == kArgNumKernels) { metadata.push_back({"arg_num_kernels", ToString(args.num_kernels)}); }
   }
   PrintTimingsToFileAsJSON("clblast_" + settings.kernel_family + "_" + precision_string + ".json",
                            device, platform, metadata, results);
