@@ -43,6 +43,9 @@ def generate(routine):
     result += "Pointer to an OpenCL command queue associated with a context and device to execute the routine on." + NL
     result += "* `cl_event* event`: "
     result += "Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). "
+    result += "This is an optional argument." + NL
+    result += "* `const std::vector<cl_event*>& event_wait_list`: "
+    result += "A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s)."
     result += "This is an optional argument." + NL + NL
 
     # Routine requirements

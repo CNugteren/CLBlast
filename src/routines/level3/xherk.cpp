@@ -22,8 +22,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xherk<T,U>::Xherk(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>(), {}, {
+Xherk<T,U>::Xherk(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Routine(queue, event, event_wait_list, name, {"Copy","Pad","Transpose","Padtranspose","Xgemm"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
     #include "../../kernels/level3/copy_pad.opencl"

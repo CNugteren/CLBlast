@@ -28,7 +28,7 @@ class Xspr: public Xher<T,T> {
   using Xher<T,T>::DoHer;
 
   // Constructor
-  Xspr(Queue &queue, EventPointer event, const std::string &name = "SPR");
+  Xspr(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SPR");
 
   // Templated-precision implementation of the routine
   void DoSpr(const Layout layout, const Triangle triangle,

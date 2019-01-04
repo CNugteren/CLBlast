@@ -32,7 +32,7 @@ class Xtpmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xtpmv(Queue &queue, EventPointer event, const std::string &name = "TPMV");
+  Xtpmv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "TPMV");
 
   // Templated-precision implementation of the routine
   void DoTpmv(const Layout layout, const Triangle triangle,

@@ -25,7 +25,7 @@ class Xher2: public Routine {
  public:
 
   // Constructor
-  Xher2(Queue &queue, EventPointer event, const std::string &name = "HER2");
+  Xher2(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HER2");
 
   // Templated-precision implementation of the routine
   void DoHer2(const Layout layout, const Triangle triangle,

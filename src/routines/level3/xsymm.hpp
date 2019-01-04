@@ -37,7 +37,7 @@ class Xsymm: public Xgemm<T> {
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xsymm(Queue &queue, EventPointer event, const std::string &name = "SYMM");
+  Xsymm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SYMM");
 
   // Templated-precision implementation of the routine
   void DoSymm(const Layout layout, const Side side, const Triangle triangle,

@@ -57,7 +57,8 @@ def clblast_cc(routine, cuda=False):
         else:
             result += "    auto queue_cpp = Queue(*queue);" + NL
         event = "nullptr" if cuda else "event"
-        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, " + event + ");" + NL
+        event_wait_list = "{}" if cuda else "event_wait_list"
+        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, " + event + ", " + event_wait_list + ");" + NL
         if routine.batched == 1:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
         if routine.temp_buffer:
@@ -88,7 +89,7 @@ def clblast_cc(routine, cuda=False):
             if routine.temp_buffer:
                 result += ", CUdeviceptr"
         else:
-            result += "cl_command_queue*, cl_event*"
+            result += "cl_command_queue*, cl_event*, const std::vector<cl_event*>&"
             if routine.temp_buffer:
                 result += ", cl_mem"
         result += ");" + NL

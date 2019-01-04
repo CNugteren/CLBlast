@@ -25,7 +25,7 @@ class Xgemv: public Routine {
  public:
 
   // Constructor
-  Xgemv(Queue &queue, EventPointer event, const std::string &name = "GEMV");
+  Xgemv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "GEMV");
 
   // Templated-precision implementation of the routine
   void DoGemv(const Layout layout, const Transpose a_transpose,

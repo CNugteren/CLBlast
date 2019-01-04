@@ -29,8 +29,8 @@ class Xmin: public Xamax<T> {
   using Xamax<T>::DoAmax;
 
   // Constructor
-  Xmin(Queue &queue, EventPointer event, const std::string &name = "MIN"):
-    Xamax<T>(queue, event, name) {
+  Xmin(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "MIN"):
+    Xamax<T>(queue, event, event_wait_list, name) {
   }
 
   // Forwards to the regular max-absolute version. The implementation difference is realised in the

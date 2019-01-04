@@ -36,7 +36,7 @@ class Xtrmm: public Xgemm<T> {
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xtrmm(Queue &queue, EventPointer event, const std::string &name = "TRMM");
+  Xtrmm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "TRMM");
 
   // Templated-precision implementation of the routine
   void DoTrmm(const Layout layout, const Side side, const Triangle triangle,

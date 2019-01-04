@@ -32,10 +32,11 @@ class Xtrsm: public Xgemm<T> {
   using Xgemm<T>::db_;
   using Xgemm<T>::program_;
   using Xgemm<T>::event_;
+  using Xgemm<T>::event_wait_list_;
   using Xgemm<T>::DoGemm;
 
   // Constructor
-  Xtrsm(Queue &queue, EventPointer event, const std::string &name = "TRSM");
+  Xtrsm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "TRSM");
 
   // Templated-precision implementation of the routine
   void DoTrsm(const Layout layout, Side side, Triangle triangle,

@@ -25,7 +25,7 @@ class Xnrm2: public Routine {
  public:
 
   // Constructor
-  Xnrm2(Queue &queue, EventPointer event, const std::string &name = "NRM2");
+  Xnrm2(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "NRM2");
 
   // Templated-precision implementation of the routine
   void DoNrm2(const size_t n,

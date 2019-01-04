@@ -29,8 +29,8 @@ class Xmax: public Xamax<T> {
   using Xamax<T>::DoAmax;
 
   // Constructor
-  Xmax(Queue &queue, EventPointer event, const std::string &name = "MAX"):
-    Xamax<T>(queue, event, name) {
+  Xmax(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "MAX"):
+    Xamax<T>(queue, event, event_wait_list, name) {
   }
 
   // Forwards to the regular absolute version. The implementation difference is realised in the

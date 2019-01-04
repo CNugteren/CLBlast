@@ -20,8 +20,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xher2<T>::Xher2(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {}, {
+Xher2<T>::Xher2(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Routine(queue, event, event_wait_list, name, {"Xger"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level2/level2.opencl"
     #include "../../kernels/level2/xher2.opencl"
     }) {

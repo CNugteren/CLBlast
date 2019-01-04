@@ -21,8 +21,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xim2col<T>::Xim2col(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {}, {
+Xim2col<T>::Xim2col(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Routine(queue, event, event_wait_list, name, {"Copy"}, PrecisionValue<T>(), {}, {
         #include "../../kernels/levelx/im2col.opencl"
     }) {
 }

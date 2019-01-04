@@ -59,7 +59,8 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   // NOTE: the caller must provide the same userDatabase for each combination of device, precision
   // and routine list, otherwise the caching logic will break.
-  explicit Routine(Queue &queue, EventPointer event, const std::string &name,
+  explicit Routine(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list,
+                   const std::string &name,
                    const std::vector<std::string> &routines, const Precision precision,
                    const std::vector<database::DatabaseEntry> &userDatabase,
                    std::initializer_list<const char *> source);
@@ -91,6 +92,7 @@ class Routine {
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
   EventPointer event_;
+  const std::vector<EventPointer>& event_wait_list_;
   const Context context_;
   const Device device_;
 

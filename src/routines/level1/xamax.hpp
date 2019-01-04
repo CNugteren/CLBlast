@@ -25,7 +25,7 @@ class Xamax: public Routine {
  public:
 
   // Constructor
-  Xamax(Queue &queue, EventPointer event, const std::string &name = "AMAX");
+  Xamax(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "AMAX");
 
   // Templated-precision implementation of the routine
   void DoAmax(const size_t n,

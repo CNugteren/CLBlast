@@ -22,8 +22,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsyr2k<T>::Xsyr2k(Queue &queue, EventPointer event, const std::string &name):
-    Xsyrk<T>(queue, event, name) {
+Xsyr2k<T>::Xsyr2k(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Xsyrk<T>(queue, event, event_wait_list, name) {
 }
 
 // =================================================================================================

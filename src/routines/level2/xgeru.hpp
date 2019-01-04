@@ -28,7 +28,7 @@ class Xgeru: public Xger<T> {
   using Xger<T>::DoGer;
 
   // Constructor
-  Xgeru(Queue &queue, EventPointer event, const std::string &name = "GERU");
+  Xgeru(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "GERU");
 
   // Templated-precision implementation of the routine
   void DoGeru(const Layout layout,

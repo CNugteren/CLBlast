@@ -873,6 +873,9 @@ class Routine:
             result += "const CUcontext context, const CUdevice device"
         else:
             result += "cl_command_queue* queue, cl_event* event" + default_event
+            result += ",\n" + indent + "const std::vector<cl_event*>& event_wait_list"
+            if not implementation:
+                result += " = std::vector<cl_event*>()"
         if self.temp_buffer:
             result += ",\n" + indent + mem_type + " temp_buffer"
             if not implementation:
@@ -893,7 +896,7 @@ class Routine:
         if cuda:
             result += "const CUcontext, const CUdevice"
         else:
-            result += "cl_command_queue*, cl_event*"
+            result += "cl_command_queue*, cl_event*, const std::vector<cl_event*>&"
         result += ")"
         return result
 

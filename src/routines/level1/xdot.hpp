@@ -25,7 +25,7 @@ class Xdot: public Routine {
  public:
 
   // Constructor
-  Xdot(Queue &queue, EventPointer event, const std::string &name = "DOT");
+  Xdot(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "DOT");
 
   // Templated-precision implementation of the routine
   void DoDot(const size_t n,

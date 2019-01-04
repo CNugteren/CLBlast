@@ -28,7 +28,7 @@ class Xconvgemm: public Routine {
 
   // Constructor
   enum class ConvGemmMethod {kWithIm2Col, kSingleKernel};
-  Xconvgemm(Queue &queue, EventPointer event, const std::string &name = "CONVGEMM",
+  Xconvgemm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "CONVGEMM",
             const ConvGemmMethod method = ConvGemmMethod::kWithIm2Col);
 
   // Templated-precision implementation of the routine

@@ -25,7 +25,7 @@ class Xscal: public Routine {
  public:
 
   // Constructor
-  Xscal(Queue &queue, EventPointer event, const std::string &name = "SCAL");
+  Xscal(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SCAL");
 
   // Templated-precision implementation of the routine
   void DoScal(const size_t n, const T alpha,

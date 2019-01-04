@@ -33,57 +33,57 @@ void FillCacheForPrecision(Queue &queue) {
   try {
 
     // Runs all the level 1 set-up functions
-    Xswap<Real>(queue, nullptr); Xswap<Complex>(queue, nullptr);
-    Xswap<Real>(queue, nullptr); Xswap<Complex>(queue, nullptr);
-    Xscal<Real>(queue, nullptr); Xscal<Complex>(queue, nullptr);
-    Xcopy<Real>(queue, nullptr); Xcopy<Complex>(queue, nullptr);
-    Xaxpy<Real>(queue, nullptr); Xaxpy<Complex>(queue, nullptr);
-    Xdot<Real>(queue, nullptr);
-    Xdotu<Complex>(queue, nullptr);
-    Xdotc<Complex>(queue, nullptr);
-    Xnrm2<Real>(queue, nullptr); Xnrm2<Complex>(queue, nullptr);
-    Xasum<Real>(queue, nullptr); Xasum<Complex>(queue, nullptr);
-    Xsum<Real>(queue, nullptr); Xsum<Complex>(queue, nullptr);
-    Xamax<Real>(queue, nullptr); Xamax<Complex>(queue, nullptr);
-    Xmax<Real>(queue, nullptr); Xmax<Complex>(queue, nullptr);
-    Xmin<Real>(queue, nullptr); Xmin<Complex>(queue, nullptr);
+    Xswap<Real>(queue, nullptr, {}); Xswap<Complex>(queue, nullptr, {});
+    Xswap<Real>(queue, nullptr, {}); Xswap<Complex>(queue, nullptr, {});
+    Xscal<Real>(queue, nullptr, {}); Xscal<Complex>(queue, nullptr, {});
+    Xcopy<Real>(queue, nullptr, {}); Xcopy<Complex>(queue, nullptr, {});
+    Xaxpy<Real>(queue, nullptr, {}); Xaxpy<Complex>(queue, nullptr, {});
+    Xdot<Real>(queue, nullptr, {});
+    Xdotu<Complex>(queue, nullptr, {});
+    Xdotc<Complex>(queue, nullptr, {});
+    Xnrm2<Real>(queue, nullptr, {}); Xnrm2<Complex>(queue, nullptr, {});
+    Xasum<Real>(queue, nullptr, {}); Xasum<Complex>(queue, nullptr, {});
+    Xsum<Real>(queue, nullptr, {}); Xsum<Complex>(queue, nullptr, {});
+    Xamax<Real>(queue, nullptr, {}); Xamax<Complex>(queue, nullptr, {});
+    Xmax<Real>(queue, nullptr, {}); Xmax<Complex>(queue, nullptr, {});
+    Xmin<Real>(queue, nullptr, {}); Xmin<Complex>(queue, nullptr, {});
 
     // Runs all the level 2 set-up functions
-    Xgemv<Real>(queue, nullptr); Xgemv<Complex>(queue, nullptr);
-    Xgbmv<Real>(queue, nullptr); Xgbmv<Complex>(queue, nullptr);
-    Xhemv<Complex>(queue, nullptr);
-    Xhbmv<Complex>(queue, nullptr);
-    Xhpmv<Complex>(queue, nullptr);
-    Xsymv<Real>(queue, nullptr);
-    Xsbmv<Real>(queue, nullptr);
-    Xspmv<Real>(queue, nullptr);
-    Xtrmv<Real>(queue, nullptr); Xtrmv<Complex>(queue, nullptr);
-    Xtbmv<Real>(queue, nullptr); Xtbmv<Complex>(queue, nullptr);
-    Xtpmv<Real>(queue, nullptr); Xtpmv<Complex>(queue, nullptr);
-    Xger<Real>(queue, nullptr);
-    Xgeru<Complex>(queue, nullptr);
-    Xgerc<Complex>(queue, nullptr);
-    Xher<Complex,Real>(queue, nullptr);
-    Xhpr<Complex,Real>(queue, nullptr);
-    Xher2<Complex>(queue, nullptr);
-    Xhpr2<Complex>(queue, nullptr);
-    Xsyr<Real>(queue, nullptr);
-    Xspr<Real>(queue, nullptr);
-    Xsyr2<Real>(queue, nullptr);
-    Xspr2<Real>(queue, nullptr);
+    Xgemv<Real>(queue, nullptr, {}); Xgemv<Complex>(queue, nullptr, {});
+    Xgbmv<Real>(queue, nullptr, {}); Xgbmv<Complex>(queue, nullptr, {});
+    Xhemv<Complex>(queue, nullptr, {});
+    Xhbmv<Complex>(queue, nullptr, {});
+    Xhpmv<Complex>(queue, nullptr, {});
+    Xsymv<Real>(queue, nullptr, {});
+    Xsbmv<Real>(queue, nullptr, {});
+    Xspmv<Real>(queue, nullptr, {});
+    Xtrmv<Real>(queue, nullptr, {}); Xtrmv<Complex>(queue, nullptr, {});
+    Xtbmv<Real>(queue, nullptr, {}); Xtbmv<Complex>(queue, nullptr, {});
+    Xtpmv<Real>(queue, nullptr, {}); Xtpmv<Complex>(queue, nullptr, {});
+    Xger<Real>(queue, nullptr, {});
+    Xgeru<Complex>(queue, nullptr, {});
+    Xgerc<Complex>(queue, nullptr, {});
+    Xher<Complex,Real>(queue, nullptr, {});
+    Xhpr<Complex,Real>(queue, nullptr, {});
+    Xher2<Complex>(queue, nullptr, {});
+    Xhpr2<Complex>(queue, nullptr, {});
+    Xsyr<Real>(queue, nullptr, {});
+    Xspr<Real>(queue, nullptr, {});
+    Xsyr2<Real>(queue, nullptr, {});
+    Xspr2<Real>(queue, nullptr, {});
 
     // Runs all the level 3 set-up functions
-    Xgemm<Real>(queue, nullptr); Xgemm<Complex>(queue, nullptr);
-    Xsymm<Real>(queue, nullptr); Xsymm<Complex>(queue, nullptr);
-    Xhemm<Complex>(queue, nullptr);
-    Xsyrk<Real>(queue, nullptr); Xsyrk<Complex>(queue, nullptr);
-    Xherk<Complex,Real>(queue, nullptr);
-    Xsyr2k<Real>(queue, nullptr); Xsyr2k<Complex>(queue, nullptr);
-    Xher2k<Complex,Real>(queue, nullptr);
-    Xtrmm<Real>(queue, nullptr); Xtrmm<Complex>(queue, nullptr);
+    Xgemm<Real>(queue, nullptr, {}); Xgemm<Complex>(queue, nullptr, {});
+    Xsymm<Real>(queue, nullptr, {}); Xsymm<Complex>(queue, nullptr, {});
+    Xhemm<Complex>(queue, nullptr, {});
+    Xsyrk<Real>(queue, nullptr, {}); Xsyrk<Complex>(queue, nullptr, {});
+    Xherk<Complex,Real>(queue, nullptr, {});
+    Xsyr2k<Real>(queue, nullptr, {}); Xsyr2k<Complex>(queue, nullptr, {});
+    Xher2k<Complex,Real>(queue, nullptr, {});
+    Xtrmm<Real>(queue, nullptr, {}); Xtrmm<Complex>(queue, nullptr, {});
 
     // Runs all the non-BLAS set-up functions
-    Xomatcopy<Real>(queue, nullptr); Xomatcopy<Complex>(queue, nullptr);
+    Xomatcopy<Real>(queue, nullptr, {}); Xomatcopy<Complex>(queue, nullptr, {});
 
   } catch(const RuntimeErrorCode &e) {
     if (e.status() != StatusCode::kNoDoublePrecision &&

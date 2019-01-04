@@ -25,7 +25,7 @@ class Xger: public Routine {
  public:
 
   // Constructor
-  Xger(Queue &queue, EventPointer event, const std::string &name = "GER");
+  Xger(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "GER");
 
   // Templated-precision implementation of the routine
   void DoGer(const Layout layout,

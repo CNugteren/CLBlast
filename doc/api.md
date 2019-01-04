@@ -13,7 +13,8 @@ template <typename T>
 StatusCode Swap(const size_t n,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -51,6 +52,7 @@ Arguments to SWAP:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -65,7 +67,8 @@ template <typename T>
 StatusCode Scal(const size_t n,
                 const T alpha,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -101,6 +104,7 @@ Arguments to SCAL:
 * `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -115,7 +119,8 @@ template <typename T>
 StatusCode Copy(const size_t n,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -153,6 +158,7 @@ Arguments to COPY:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -168,7 +174,8 @@ StatusCode Axpy(const size_t n,
                 const T alpha,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -212,6 +219,7 @@ Arguments to AXPY:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -227,7 +235,8 @@ StatusCode Dot(const size_t n,
                cl_mem dot_buffer, const size_t dot_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -262,6 +271,7 @@ Arguments to DOT:
 * `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -277,7 +287,8 @@ StatusCode Dotu(const size_t n,
                 cl_mem dot_buffer, const size_t dot_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -307,6 +318,7 @@ Arguments to DOTU:
 * `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -322,7 +334,8 @@ StatusCode Dotc(const size_t n,
                 cl_mem dot_buffer, const size_t dot_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -352,6 +365,7 @@ Arguments to DOTC:
 * `const size_t y_inc`: Stride/increment of the input y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -366,7 +380,8 @@ template <typename T>
 StatusCode Nrm2(const size_t n,
                 cl_mem nrm2_buffer, const size_t nrm2_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -403,6 +418,7 @@ Arguments to NRM2:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -417,7 +433,8 @@ template <typename T>
 StatusCode Asum(const size_t n,
                 cl_mem asum_buffer, const size_t asum_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -454,6 +471,7 @@ Arguments to ASUM:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -468,7 +486,8 @@ template <typename T>
 StatusCode Sum(const size_t n,
                cl_mem sum_buffer, const size_t sum_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -505,6 +524,7 @@ Arguments to SUM:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -519,7 +539,8 @@ template <typename T>
 StatusCode Amax(const size_t n,
                 cl_mem imax_buffer, const size_t imax_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -556,6 +577,7 @@ Arguments to AMAX:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -570,7 +592,8 @@ template <typename T>
 StatusCode Amin(const size_t n,
                 cl_mem imin_buffer, const size_t imin_offset,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -607,6 +630,7 @@ Arguments to AMIN:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -621,7 +645,8 @@ template <typename T>
 StatusCode Max(const size_t n,
                cl_mem imax_buffer, const size_t imax_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -658,6 +683,7 @@ Arguments to MAX:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -672,7 +698,8 @@ template <typename T>
 StatusCode Min(const size_t n,
                cl_mem imin_buffer, const size_t imin_offset,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -709,6 +736,7 @@ Arguments to MIN:
 * `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -727,7 +755,8 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -793,6 +822,7 @@ Arguments to GEMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GEMV:
 
@@ -815,7 +845,8 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -883,6 +914,7 @@ Arguments to GBMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GBMV:
 
@@ -905,7 +937,8 @@ StatusCode Hemv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -946,6 +979,7 @@ Arguments to HEMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HEMV:
 
@@ -968,7 +1002,8 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1010,6 +1045,7 @@ Arguments to HBMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HBMV:
 
@@ -1032,7 +1068,8 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1072,6 +1109,7 @@ Arguments to HPMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1090,7 +1128,8 @@ StatusCode Symv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1139,6 +1178,7 @@ Arguments to SYMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYMV:
 
@@ -1161,7 +1201,8 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1211,6 +1252,7 @@ Arguments to SBMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SBMV:
 
@@ -1233,7 +1275,8 @@ StatusCode Spmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1281,6 +1324,7 @@ Arguments to SPMV:
 * `const size_t y_inc`: Stride/increment of the output y vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1296,7 +1340,8 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1343,6 +1388,7 @@ Arguments to TRMV:
 * `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for TRMV:
 
@@ -1362,7 +1408,8 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n, const size_t k,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1410,6 +1457,7 @@ Arguments to TBMV:
 * `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for TBMV:
 
@@ -1429,7 +1477,8 @@ StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n,
                 const cl_mem ap_buffer, const size_t ap_offset,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1475,6 +1524,7 @@ Arguments to TPMV:
 * `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1490,7 +1540,8 @@ StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1532,6 +1583,7 @@ Arguments to TRSV:
 * `const size_t x_inc`: Stride/increment of the output x vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1549,7 +1601,8 @@ StatusCode Ger(const Layout layout,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1594,6 +1647,7 @@ Arguments to GER:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GER:
 
@@ -1615,7 +1669,8 @@ StatusCode Geru(const Layout layout,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1653,6 +1708,7 @@ Arguments to GERU:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GERU:
 
@@ -1674,7 +1730,8 @@ StatusCode Gerc(const Layout layout,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1712,6 +1769,7 @@ Arguments to GERC:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GERC:
 
@@ -1732,7 +1790,8 @@ StatusCode Her(const Layout layout, const Triangle triangle,
                const T alpha,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1765,6 +1824,7 @@ Arguments to HER:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HER:
 
@@ -1785,7 +1845,8 @@ StatusCode Hpr(const Layout layout, const Triangle triangle,
                const T alpha,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem ap_buffer, const size_t ap_offset,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1817,6 +1878,7 @@ Arguments to HPR:
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1834,7 +1896,8 @@ StatusCode Her2(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1872,6 +1935,7 @@ Arguments to HER2:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HER2:
 
@@ -1893,7 +1957,8 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem ap_buffer, const size_t ap_offset,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1930,6 +1995,7 @@ Arguments to HPR2:
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -1946,7 +2012,8 @@ StatusCode Syr(const Layout layout, const Triangle triangle,
                const T alpha,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -1985,6 +2052,7 @@ Arguments to SYR:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYR:
 
@@ -2005,7 +2073,8 @@ StatusCode Spr(const Layout layout, const Triangle triangle,
                const T alpha,
                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                cl_mem ap_buffer, const size_t ap_offset,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2043,6 +2112,7 @@ Arguments to SPR:
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -2060,7 +2130,8 @@ StatusCode Syr2(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2105,6 +2176,7 @@ Arguments to SYR2:
 * `const size_t a_ld`: Leading dimension of the output A matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYR2:
 
@@ -2126,7 +2198,8 @@ StatusCode Spr2(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                 cl_mem ap_buffer, const size_t ap_offset,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2170,6 +2243,7 @@ Arguments to SPR2:
 * `const size_t ap_offset`: The offset in elements from the start of the output AP matrix.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -2189,6 +2263,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
                 cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>(),
                 cl_mem temp_buffer = nullptr)
 ```
 
@@ -2257,6 +2332,7 @@ Arguments to GEMM:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GEMM:
 
@@ -2281,7 +2357,8 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2348,6 +2425,7 @@ Arguments to SYMM:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYMM:
 
@@ -2372,7 +2450,8 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle,
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2415,6 +2494,7 @@ Arguments to HEMM:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HEMM:
 
@@ -2438,7 +2518,8 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2497,6 +2578,7 @@ Arguments to SYRK:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYRK:
 
@@ -2519,7 +2601,8 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2557,6 +2640,7 @@ Arguments to HERK:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HERK:
 
@@ -2580,7 +2664,8 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                  const T beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                 cl_command_queue* queue, cl_event* event)
+                 cl_command_queue* queue, cl_event* event,
+                 const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2647,6 +2732,7 @@ Arguments to SYR2K:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for SYR2K:
 
@@ -2671,7 +2757,8 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                  const U beta,
                  cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                 cl_command_queue* queue, cl_event* event)
+                 cl_command_queue* queue, cl_event* event,
+                 const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2714,6 +2801,7 @@ Arguments to HER2K:
 * `const size_t c_ld`: Leading dimension of the output C matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for HER2K:
 
@@ -2736,7 +2824,8 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 const T alpha,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2791,6 +2880,7 @@ Arguments to TRMM:
 * `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for TRMM:
 
@@ -2812,7 +2902,8 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
                 const T alpha,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                cl_command_queue* queue, cl_event* event)
+                cl_command_queue* queue, cl_event* event,
+                const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2861,6 +2952,7 @@ Arguments to TRSM:
 * `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -2878,7 +2970,8 @@ StatusCode Had(const size_t n,
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
                const T beta,
                cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
-               cl_command_queue* queue, cl_event* event)
+               cl_command_queue* queue, cl_event* event,
+               const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -2936,6 +3029,7 @@ Arguments to HAD:
 * `const size_t z_inc`: Stride/increment of the output z vector. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -2952,7 +3046,8 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
                     const T alpha,
                     const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                     cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
-                    cl_command_queue* queue, cl_event* event)
+                    cl_command_queue* queue, cl_event* event,
+                    const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3004,6 +3099,7 @@ Arguments to OMATCOPY:
 * `const size_t b_ld`: Leading dimension of the output B matrix. This value must be greater than 0.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for OMATCOPY:
 
@@ -3024,7 +3120,8 @@ StatusCode Im2col(const KernelMode kernel_mode,
                   const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
                   const cl_mem im_buffer, const size_t im_offset,
                   cl_mem col_buffer, const size_t col_offset,
-                  cl_command_queue* queue, cl_event* event)
+                  cl_command_queue* queue, cl_event* event,
+                  const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3076,6 +3173,7 @@ Arguments to IM2COL:
 * `const size_t col_offset`: The offset in elements from the start of the output col tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -3091,7 +3189,8 @@ StatusCode Col2im(const KernelMode kernel_mode,
                   const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
                   const cl_mem col_buffer, const size_t col_offset,
                   cl_mem im_buffer, const size_t im_offset,
-                  cl_command_queue* queue, cl_event* event)
+                  cl_command_queue* queue, cl_event* event,
+                  const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3143,6 +3242,7 @@ Arguments to COL2IM:
 * `const size_t im_offset`: The offset in elements from the start of the output im tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -3159,7 +3259,8 @@ StatusCode Convgemm(const KernelMode kernel_mode,
                     const cl_mem im_buffer, const size_t im_offset,
                     const cl_mem kernel_buffer, const size_t kernel_offset,
                     cl_mem result_buffer, const size_t result_offset,
-                    cl_command_queue* queue, cl_event* event)
+                    cl_command_queue* queue, cl_event* event,
+                    const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3208,6 +3309,7 @@ Arguments to CONVGEMM:
 * `const size_t result_offset`: The offset in elements from the start of the output result tensor.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -3224,7 +3326,8 @@ StatusCode AxpyBatched(const size_t n,
                        const cl_mem x_buffer, const size_t *x_offsets, const size_t x_inc,
                        cl_mem y_buffer, const size_t *y_offsets, const size_t y_inc,
                        const size_t batch_count,
-                       cl_command_queue* queue, cl_event* event)
+                       cl_command_queue* queue, cl_event* event,
+                       const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3274,6 +3377,7 @@ Arguments to AXPYBATCHED:
 * `const size_t batch_count`: Number of batches. This value must be positive.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 
 
@@ -3293,7 +3397,8 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        const T *betas,
                        cl_mem c_buffer, const size_t *c_offsets, const size_t c_ld,
                        const size_t batch_count,
-                       cl_command_queue* queue, cl_event* event)
+                       cl_command_queue* queue, cl_event* event,
+                       const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3367,6 +3472,7 @@ Arguments to GEMMBATCHED:
 * `const size_t batch_count`: Number of batches. This value must be positive.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GEMMBATCHED:
 
@@ -3392,7 +3498,8 @@ StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, 
                               const T beta,
                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
                               const size_t batch_count,
-                              cl_command_queue* queue, cl_event* event)
+                              cl_command_queue* queue, cl_event* event,
+                              const std::vector<cl_event*>& event_wait_list = std::vector<cl_event*>())
 ```
 
 C API:
@@ -3469,6 +3576,7 @@ Arguments to GEMMSTRIDEDBATCHED:
 * `const size_t batch_count`: Number of batches. This value must be positive.
 * `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
 * `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+* `const std::vector<cl_event*>& event_wait_list`: A list of OpenCL events that need to be executed before this routine's OpenCL kernel(s).This is an optional argument.
 
 Requirements for GEMMSTRIDEDBATCHED:
 

@@ -27,7 +27,7 @@ class Xherk: public Routine {
  public:
 
   // Constructor
-  Xherk(Queue &queue, EventPointer event, const std::string &name = "HERK");
+  Xherk(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HERK");
 
   // Templated-precision implementation of the routine
   void DoHerk(const Layout layout, const Triangle triangle, const Transpose a_transpose,

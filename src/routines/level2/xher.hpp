@@ -25,7 +25,7 @@ class Xher: public Routine {
  public:
 
   // Constructor
-  Xher(Queue &queue, EventPointer event, const std::string &name = "HER");
+  Xher(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HER");
 
   // Translates alpha of type 'U' into type 'T'
   T GetAlpha(const U alpha);

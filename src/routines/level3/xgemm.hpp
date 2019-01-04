@@ -154,7 +154,7 @@ class Xgemm: public Routine {
   }
 
   // Constructor
-  Xgemm(Queue &queue, EventPointer event, const std::string &name = "GEMM");
+  Xgemm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "GEMM");
 
   // Templated-precision implementation of the routine
   void DoGemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,

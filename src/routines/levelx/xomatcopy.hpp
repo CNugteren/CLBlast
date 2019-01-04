@@ -25,7 +25,7 @@ class Xomatcopy: public Routine {
  public:
 
   // Constructor
-  Xomatcopy(Queue &queue, EventPointer event, const std::string &name = "OMATCOPY");
+  Xomatcopy(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "OMATCOPY");
 
   // Templated-precision implementation of the routine
   void DoOmatcopy(const Layout layout, const Transpose a_transpose,

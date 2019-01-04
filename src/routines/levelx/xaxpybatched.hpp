@@ -27,7 +27,7 @@ class XaxpyBatched: public Routine {
  public:
 
   // Constructor
-  XaxpyBatched(Queue &queue, EventPointer event, const std::string &name = "AXPYBATCHED");
+  XaxpyBatched(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "AXPYBATCHED");
 
   // Templated-precision implementation of the routine
   void DoAxpyBatched(const size_t n, const std::vector<T> &alphas,

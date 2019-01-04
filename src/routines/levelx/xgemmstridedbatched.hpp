@@ -27,7 +27,7 @@ class XgemmStridedBatched: public Routine {
 public:
 
   // Constructor
-  XgemmStridedBatched(Queue &queue, EventPointer event, const std::string &name = "GEMMSTRIDEDBATCHED");
+  XgemmStridedBatched(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "GEMMSTRIDEDBATCHED");
 
   // Templated-precision implementation of the routine
   void DoGemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,

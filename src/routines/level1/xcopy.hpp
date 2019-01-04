@@ -25,7 +25,7 @@ class Xcopy: public Routine {
  public:
 
   // Constructor
-  Xcopy(Queue &queue, EventPointer event, const std::string &name = "COPY");
+  Xcopy(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "COPY");
 
   // Templated-precision implementation of the routine
   void DoCopy(const size_t n,

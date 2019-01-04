@@ -32,7 +32,7 @@ public:
   using Xherk<T, U>::HerkAB;
 
   // Constructor
-  Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");
+  Xher2k(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HER2K");
 
   // Templated-precision implementation of the routine
   void DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,

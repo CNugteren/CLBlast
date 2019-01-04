@@ -21,8 +21,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {}, {
+Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Routine(queue, event, event_wait_list, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {}, {
     #include "../../kernels/level2/xgemv.opencl"
     #include "../../kernels/level2/xgemv_fast.opencl"
     #include "../../kernels/level2/xtrsv.opencl"

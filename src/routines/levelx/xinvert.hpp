@@ -24,7 +24,7 @@ class Xinvert: public Routine {
  public:
 
   // Constructor
-  Xinvert(Queue &queue, EventPointer event, const std::string &name = "INVERT");
+  Xinvert(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "INVERT");
 
   // Inverts diagonal square blocks of a matrix
   void InvertMatrixDiagonalBlocks(const Layout layout, const Triangle triangle, const Diagonal diag,

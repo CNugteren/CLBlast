@@ -49,7 +49,8 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
 // =================================================================================================
 
 // The constructor does all heavy work, errors are returned as exceptions
-Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
+Routine::Routine(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list,
+                 const std::string &name,
                  const std::vector<std::string> &kernel_names, const Precision precision,
                  const std::vector<database::DatabaseEntry> &userDatabase,
                  std::initializer_list<const char *> source):
@@ -58,6 +59,7 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     kernel_names_(kernel_names),
     queue_(queue),
     event_(event),
+    event_wait_list_(event_wait_list),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
     db_(kernel_names) {

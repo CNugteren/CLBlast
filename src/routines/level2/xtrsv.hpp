@@ -33,10 +33,11 @@ class Xtrsv: public Xgemv<T> {
   using Xgemv<T>::db_;
   using Xgemv<T>::program_;
   using Xgemv<T>::event_;
+  using Xgemv<T>::event_wait_list_;
   using Xgemv<T>::DoGemv;
 
   // Constructor
-  Xtrsv(Queue &queue, EventPointer event, const std::string &name = "TRSV");
+  Xtrsv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "TRSV");
 
   // Templated-precision implementation of the routine
   void DoTrsv(const Layout layout, const Triangle triangle,

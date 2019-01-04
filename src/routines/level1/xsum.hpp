@@ -29,8 +29,8 @@ class Xsum: public Xasum<T> {
   using Xasum<T>::DoAsum;
 
   // Constructor
-  Xsum(Queue &queue, EventPointer event, const std::string &name = "SUM"):
-    Xasum<T>(queue, event, name) {
+  Xsum(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SUM"):
+    Xasum<T>(queue, event, event_wait_list, name) {
   }
 
   // Forwards to the regular absolute version. The implementation difference is realised in the

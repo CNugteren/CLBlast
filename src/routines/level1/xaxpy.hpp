@@ -25,7 +25,7 @@ class Xaxpy: public Routine {
  public:
 
   // Constructor
-  Xaxpy(Queue &queue, EventPointer event, const std::string &name = "AXPY");
+  Xaxpy(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "AXPY");
 
   // Templated-precision implementation of the routine
   void DoAxpy(const size_t n, const T alpha,

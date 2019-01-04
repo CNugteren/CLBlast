@@ -30,7 +30,7 @@ class Xsymv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xsymv(Queue &queue, EventPointer event, const std::string &name = "SYMV");
+  Xsymv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SYMV");
 
   // Templated-precision implementation of the routine
   void DoSymv(const Layout layout, const Triangle triangle,

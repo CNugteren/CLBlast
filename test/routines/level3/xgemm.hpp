@@ -115,7 +115,7 @@ class TestXgemm {
                          buffers.a_mat(), args.a_offset, args.a_ld,
                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
                          buffers.c_mat(), args.c_offset, args.c_ld,
-                         &queue_plain, &event, buffers.ap_mat()); // temp buffer
+                         &queue_plain, &event, {}, buffers.ap_mat()); // temp buffer
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,

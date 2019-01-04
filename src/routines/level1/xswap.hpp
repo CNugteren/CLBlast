@@ -25,7 +25,7 @@ class Xswap: public Routine {
  public:
 
   // Constructor
-  Xswap(Queue &queue, EventPointer event, const std::string &name = "SWAP");
+  Xswap(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SWAP");
 
   // Templated-precision implementation of the routine
   void DoSwap(const size_t n,

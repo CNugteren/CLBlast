@@ -30,7 +30,7 @@ class Xhpmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xhpmv(Queue &queue, EventPointer event, const std::string &name = "HPMV");
+  Xhpmv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HPMV");
 
   // Templated-precision implementation of the routine
   void DoHpmv(const Layout layout, const Triangle triangle,

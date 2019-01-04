@@ -23,9 +23,9 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xconvgemm<T>::Xconvgemm(Queue &queue, EventPointer event, const std::string &name,
+Xconvgemm<T>::Xconvgemm(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name,
                         const ConvGemmMethod method):
-    Routine(queue, event, name, {"XgemmDirect"},
+    Routine(queue, event, event_wait_list, name, {"XgemmDirect"},
         PrecisionValue<T>(), {}, {
             (method == ConvGemmMethod::kWithIm2Col) ? "#define CONVGEMM_WITH_IM2COL\n" : "",
             #include "../../kernels/level3/level3.opencl"
@@ -94,7 +94,7 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode,
       const auto im_batch_offset = batch_id * channels * height * width + im_offset;
       const auto col_batch_offset = batch_id * patch_size * num_patches;
       auto im2col_event = Event();
-      auto im2col = Xim2col<T>(queue_, im2col_event.pointer());
+      auto im2col = Xim2col<T>(queue_, im2col_event.pointer(), event_wait_list_);
       im2col.DoIm2col(kernel_mode,
                       channels, height, width, kernel_h, kernel_w,
                       pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,

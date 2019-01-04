@@ -28,7 +28,7 @@ class Xhpr: public Xher<T,U> {
   using Xher<T,U>::DoHer;
 
   // Constructor
-  Xhpr(Queue &queue, EventPointer event, const std::string &name = "HPR");
+  Xhpr(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HPR");
 
   // Templated-precision implementation of the routine
   void DoHpr(const Layout layout, const Triangle triangle,

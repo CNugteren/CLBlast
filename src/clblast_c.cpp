@@ -4233,7 +4233,7 @@ CLBlastStatusCode CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const C
                     b_buffer, b_offset, b_ld,
                     beta,
                     c_buffer, c_offset, c_ld,
-                    queue, event, temp_buffer)
+                    queue, event, {}, temp_buffer)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -4257,7 +4257,7 @@ CLBlastStatusCode CLBlastDgemmWithTempBuffer(const CLBlastLayout layout, const C
                     b_buffer, b_offset, b_ld,
                     beta,
                     c_buffer, c_offset, c_ld,
-                    queue, event, temp_buffer)
+                    queue, event, {}, temp_buffer)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -4281,7 +4281,7 @@ CLBlastStatusCode CLBlastCgemmWithTempBuffer(const CLBlastLayout layout, const C
                     b_buffer, b_offset, b_ld,
                     float2{beta.s[0], beta.s[1]},
                     c_buffer, c_offset, c_ld,
-                    queue, event, temp_buffer)
+                    queue, event, {}, temp_buffer)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -4305,7 +4305,7 @@ CLBlastStatusCode CLBlastZgemmWithTempBuffer(const CLBlastLayout layout, const C
                     b_buffer, b_offset, b_ld,
                     double2{beta.s[0], beta.s[1]},
                     c_buffer, c_offset, c_ld,
-                    queue, event, temp_buffer)
+                    queue, event, {}, temp_buffer)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -4329,7 +4329,7 @@ CLBlastStatusCode CLBlastHgemmWithTempBuffer(const CLBlastLayout layout, const C
                     b_buffer, b_offset, b_ld,
                     beta,
                     c_buffer, c_offset, c_ld,
-                    queue, event, temp_buffer)
+                    queue, event, {}, temp_buffer)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }

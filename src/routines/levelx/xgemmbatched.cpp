@@ -22,8 +22,8 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XgemmBatched<T>::XgemmBatched(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name,
+XgemmBatched<T>::XgemmBatched(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list, const std::string &name):
+    Routine(queue, event, event_wait_list, name,
             {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","GemmRoutine"},
             PrecisionValue<T>(), {}, {
     #include "../../kernels/level3/level3.opencl"

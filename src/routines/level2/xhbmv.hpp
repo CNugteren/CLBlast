@@ -30,7 +30,7 @@ class Xhbmv: public Xgemv<T> {
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xhbmv(Queue &queue, EventPointer event, const std::string &name = "HBMV");
+  Xhbmv(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "HBMV");
 
   // Templated-precision implementation of the routine
   void DoHbmv(const Layout layout, const Triangle triangle,

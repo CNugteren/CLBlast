@@ -29,7 +29,7 @@ class Xsyrk: public Routine {
  public:
 
   // Constructor
-  Xsyrk(Queue &queue, EventPointer event, const std::string &name = "SYRK");
+  Xsyrk(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SYRK");
 
   // Templated-precision implementation of the routine
   void DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose,

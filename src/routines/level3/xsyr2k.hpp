@@ -32,7 +32,7 @@ public:
   using Xsyrk<T>::SyrkAB;
 
   // Constructor
-  Xsyr2k(Queue &queue, EventPointer event, const std::string &name = "SYR2K");
+  Xsyr2k(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "SYR2K");
 
   // Templated-precision implementation of the routine
   void DoSyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,

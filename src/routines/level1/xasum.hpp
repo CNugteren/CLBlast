@@ -25,7 +25,7 @@ class Xasum: public Routine {
  public:
 
   // Constructor
-  Xasum(Queue &queue, EventPointer event, const std::string &name = "ASUM");
+  Xasum(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "ASUM");
 
   // Templated-precision implementation of the routine
   void DoAsum(const size_t n,

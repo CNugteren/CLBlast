@@ -26,7 +26,7 @@ class Xim2col: public Routine {
  public:
 
   // Constructor
-  Xim2col(Queue &queue, EventPointer event, const std::string &name = "IM2COL");
+  Xim2col(Queue &queue, EventPointer event, const std::vector<EventPointer>& event_wait_list = {}, const std::string &name = "IM2COL");
 
   // Templated-precision implementation of the routine
   void DoIm2col(const KernelMode kernel_mode,
