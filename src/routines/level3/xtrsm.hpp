@@ -32,7 +32,7 @@ class Xtrsm: public Xgemm<T> {
   using Xgemm<T>::db_;
   using Xgemm<T>::program_;
   using Xgemm<T>::event_;
-  using Xgemm<T>::event_wait_list_;
+  using Xgemm<T>::event_wait_list_plain_;
   using Xgemm<T>::DoGemm;
 
   // Constructor

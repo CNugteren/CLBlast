@@ -59,10 +59,15 @@ Routine::Routine(Queue &queue, EventPointer event, const std::vector<EventPointe
     kernel_names_(kernel_names),
     queue_(queue),
     event_(event),
-    event_wait_list_(event_wait_list),
+    event_wait_list_plain_(event_wait_list),
+    event_wait_list_(),
     context_(queue_.GetContext()),
     device_(queue_.GetDevice()),
     db_(kernel_names) {
+
+  for (auto event_pointer : event_wait_list) {
+    event_wait_list_.push_back(Event(*event_pointer));
+  }
 
   InitDatabase(device_, kernel_names, precision, userDatabase, db_);
   InitProgram(source);

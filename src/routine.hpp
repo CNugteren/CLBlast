@@ -92,7 +92,8 @@ class Routine {
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
   EventPointer event_;
-  const std::vector<EventPointer>& event_wait_list_;
+  const std::vector<EventPointer> event_wait_list_plain_;
+  std::vector<Event> event_wait_list_;
   const Context context_;
   const Device device_;
 

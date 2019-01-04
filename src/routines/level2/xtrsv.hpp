@@ -33,7 +33,7 @@ class Xtrsv: public Xgemv<T> {
   using Xgemv<T>::db_;
   using Xgemv<T>::program_;
   using Xgemv<T>::event_;
-  using Xgemv<T>::event_wait_list_;
+  using Xgemv<T>::event_wait_list_plain_;
   using Xgemv<T>::DoGemv;
 
   // Constructor
