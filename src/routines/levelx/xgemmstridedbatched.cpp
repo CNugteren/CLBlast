@@ -62,6 +62,9 @@ void XgemmStridedBatched<T>::DoGemmStridedBatched(const Layout layout, const Tra
     throw BLASError(StatusCode::kInvalidBatchCount);
   }
 
+  // Makes sure the strides are valid
+  if (c_stride == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+
   // Two methods to choose from, select which one to run
   const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
   const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
