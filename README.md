@@ -79,6 +79,7 @@ More detailed documentation is available in separate files:
 * [Testing the library for correctness](doc/testing.md)
 * [Bindings / wrappers for other languages](doc/bindings.md)
 * [More details on the GEMM kernel](doc/details_gemm.md)
+* [More details on the convolution implementation](doc/details_conv.md)
 * [Glossary with some terms explained](doc/glossary.md)
 * [Frequently asked questions (FAQ) and their answers](doc/faq.md)
 

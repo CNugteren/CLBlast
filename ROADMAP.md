@@ -20,6 +20,6 @@ This file gives an overview of the main features planned for addition to CLBlast
 | [#228](https://github.com/CNugteren/CLBlast/issues/228)        | Mar-Apr '18 | CNugteren | ✔      | Improving performance for Qualcomm Adreno GPUs |
 | [#270](https://github.com/CNugteren/CLBlast/issues/270)        | Oct '18     | CNugteren | ✔      | Implement col2im |
 | -                                                              | ??          | CNugteren |        | Add support for OpenCL image buffers |
-| [#267](https://github.com/CNugteren/CLBlast/issues/267)        | ??          | CNugteren | WIP    | Merge im2col and GEMM into a direct kernel |
+| [#267](https://github.com/CNugteren/CLBlast/issues/267)        | Jan '19     | vbkaisetsu| ✔      | Merge im2col and GEMM into a direct kernel |
 | [#136](https://github.com/CNugteren/CLBlast/issues/136)        | ??          | CNugteren |        | Implement xAXPBY and xSET |
 | [#169](https://github.com/CNugteren/CLBlast/issues/169)        | ??          | dividiti  |        | Problem-specific tuning parameter selection |
