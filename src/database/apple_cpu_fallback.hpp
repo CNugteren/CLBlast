@@ -49,6 +49,9 @@ const DatabaseEntry XgemmApple = {
 const DatabaseEntry XgemmDirectApple = {
   "XgemmDirect", Precision::kAny, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 } } } } } } }
 };
+const DatabaseEntry XconvgemmApple = {
+    "Xconvgemm", Precision::kAny, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 } } } } } } }
+};
 const DatabaseEntry CopyApple = {
   "Copy", Precision::kAny, {"COPY_DIMX", "COPY_DIMY", "COPY_VW", "COPY_WPT"}, { {  kDeviceTypeAll, "default", { { "default", { { kDeviceNameDefault, Params{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } } } } } }
 };

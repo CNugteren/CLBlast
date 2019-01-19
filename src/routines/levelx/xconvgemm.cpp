@@ -25,7 +25,7 @@ namespace clblast {
 template <typename T>
 Xconvgemm<T>::Xconvgemm(Queue &queue, EventPointer event, const std::string &name,
                         const ConvGemmMethod method):
-    Routine(queue, event, name, {"XgemmDirect"},
+    Routine(queue, event, name, {"Xconvgemm"},
         PrecisionValue<T>(), {}, {
             (method == ConvGemmMethod::kWithIm2Col) ? "#define CONVGEMM_WITH_IM2COL\n" : "",
             #include "../../kernels/level3/level3.opencl"
@@ -52,9 +52,6 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode,
                               const Buffer<T> &im_buffer, const size_t im_offset,
                               const Buffer<T> &kernel_buffer, const size_t kernel_offset,
                               const Buffer<T> &result_buffer, const size_t result_offset) {
-
-  // TODO: Implement single-kernel approach
-  assert(method_ == ConvGemmMethod::kWithIm2Col);
 
   // Tests for a valid batch count
   if (batch_count == 0) {
@@ -121,7 +118,12 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode,
   }
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  auto kernel = Kernel(program_, "Xconvgemm");
+  const std::string kernel_name = (method_ == ConvGemmMethod::kWithIm2Col)
+                                ? "Xconvgemm"
+                                : (kernel_mode == KernelMode::kConvolution)
+                                ? "XconvgemmFlip"
+                                : "XconvgemmNormal";
+  auto kernel = Kernel(program_, kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(num_patches));
