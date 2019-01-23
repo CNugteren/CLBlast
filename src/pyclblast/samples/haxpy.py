@@ -13,7 +13,8 @@ import pyclblast
 
 # Settings for this sample
 dtype = 'float16'
-alpha = np.array(1.0).astype(dtype=dtype).item()
+alpha = 1.5
+alpha_fp16 = pyclblast.float32_to_float16(alpha)
 n = 4
 
 print("# Setting up OpenCL")
@@ -31,7 +32,7 @@ clx.set(x)
 cly.set(y)
 
 print("# Example level-1 operation: AXPY")
-pyclblast.axpy(queue, n, clx, cly, alpha=alpha)
+pyclblast.axpy(queue, n, clx, cly, alpha=alpha_fp16)
 queue.finish()
 print("# Result for vector y: %s" % cly.get())
 print("# Expected result:     %s" % (alpha * x + y))
