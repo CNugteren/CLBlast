@@ -49,7 +49,7 @@ FILES = [
     "/src/clblast_cuda.cpp",
     "/src/pyclblast/src/pyclblast.pyx"
 ]
-HEADER_LINES = [124, 21, 128, 24, 29, 45, 29, 66, 40, 96, 21, 290]
+HEADER_LINES = [124, 21, 128, 24, 29, 45, 29, 66, 40, 96, 21, 327]
 FOOTER_LINES = [98, 57, 112, 275, 6, 6, 6, 9, 2, 41, 56, 37]
 HEADER_LINES_DOC = 0
 FOOTER_LINES_DOC = 232
