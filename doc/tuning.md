@@ -63,6 +63,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-4790K
   - Core i7-5930K
   - Core i7-6770HQ
+  - Xeon E5-2630 v3
+  - Xeon E5-2630 v4
 * Other devices:
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
