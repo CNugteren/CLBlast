@@ -32,6 +32,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - TITAN X (Pascal)
   - Tesla K20m
   - Tesla K40m
+  - Tesla P100 16GB
 * AMD GPUs:
   - Radeon HD 6750M
   - Radeon HD 6770M

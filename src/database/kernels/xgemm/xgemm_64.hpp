@@ -124,6 +124,10 @@ const DatabaseEntry XgemmDouble = {
           { Name{"GeForce GTX TITAN X                               "}, Params{ 0, 1, 16, 8, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
+        { "SM6.0", {
+          { Name{"Tesla P100-PCIE-16GB                              "}, Params{ 0, 1, 16, 2, 16, 16, 64, 32, 8, 64, 0, 1, 1, 1, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 64, 32, 8, 64, 0, 1, 1, 1, 4, 1 } },
+        } },
         { "SM6.1", {
           { Name{"GeForce GTX 1070                                  "}, Params{ 0, 1, 16, 2, 8, 16, 32, 8, 8, 64, 0, 0, 1, 1, 2, 8 } },
           { Name{"GeForce GTX 1070 Ti                               "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 32, 0, 0, 0, 0, 1, 2 } },
@@ -133,7 +137,7 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 32, 1, 1, 0, 0, 2, 2 } },
         } },
       }
     },
