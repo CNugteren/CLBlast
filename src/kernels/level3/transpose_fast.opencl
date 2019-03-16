@@ -38,7 +38,7 @@ R"(
 // offset. A more general version is available in 'padtranspose.opencl'.
 __kernel __attribute__((reqd_work_group_size(TRA_DIM, TRA_DIM, 1)))
 void TransposeMatrixFast(const int ld,
-                         __global const realT* restrict src,
+                         INPUT_MATRIX_TYPE_VEC_T src,
                          __global realT* dest,
                          const real_arg arg_alpha) {
   const real alpha = GetRealArg(arg_alpha);
@@ -65,7 +65,22 @@ void TransposeMatrixFast(const int ld,
     const int id_two = (gid0 * TRA_DIM + get_local_id(1))*TRA_WPT + _w_one;
 
     // Loads data into the local memory
-    realT value = src[id_two*(ld/TRA_WPT) + id_one];
+    #ifndef INPUT_MATRIX_AS_IMAGE
+      realT value = src[id_two*(ld/TRA_WPT) + id_one];
+    #else
+      realT value;
+      #if TRA_WPT == 1
+        value = read_imagef(src, sampler, (int2)(id_one, id_two)).x;
+      #elif TRA_WPT == 2
+        float4 img_value = read_imagef(src, sampler, (int2)(id_one, id_two));
+        value.x = img_value.x;
+        value.y = img_value.y;
+      #elif TRA_WPT == 4
+        value = read_imagef(src, sampler, (int2)(id_one, id_two));
+      #else
+        #error Unsupported TRA_WPT value when INPUT_MATRIX_AS_IMAGE is set
+      #endif
+    #endif
     tile[get_local_id(0)*TRA_WPT + _w_one][get_local_id(1)] = value;
   }
 

@@ -37,7 +37,7 @@ R"(
 // COPY_VW. Also requires both matrices to be of the same dimensions and without offset.
 __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 void CopyMatrixFast(const int ld,
-                    __global const realC* restrict src,
+                    INPUT_MATRIX_TYPE_VEC_C src,
                     __global realC* dest,
                     const real_arg arg_alpha) {
   const real alpha = GetRealArg(arg_alpha);
@@ -46,45 +46,56 @@ void CopyMatrixFast(const int ld,
     const int id_one = get_global_id(0);
     const int id_two = (get_group_id(1)*COPY_WPT + _w_one) * COPY_DIMY + get_local_id(1);
     const int id = id_two*(ld/COPY_VW) + id_one;
+    #ifndef INPUT_MATRIX_AS_IMAGE
+      realC value = src[id];
+    #else
+      #if COPY_VW == 1
+        float value = read_imagef(src, sampler, (int2)(id_one, id_two)).x;
+      #elif COPY_VW == 2 || COPY_VW == 4
+        float4 value = read_imagef(src, sampler, (int2)(id_one, id_two));
+      #else
+        #error Unsupported COPY_VW value when INPUT_MATRIX_AS_IMAGE is set
+      #endif
+    #endif
     realC result;
     #if COPY_VW == 1
-      Multiply(result, alpha, src[id]);
+      Multiply(result, alpha, value);
     #elif COPY_VW == 2
-      Multiply(result.x, alpha, src[id].x);
-      Multiply(result.y, alpha, src[id].y);
+      Multiply(result.x, alpha, value.x);
+      Multiply(result.y, alpha, value.y);
     #elif COPY_VW == 4
-      Multiply(result.x, alpha, src[id].x);
-      Multiply(result.y, alpha, src[id].y);
-      Multiply(result.z, alpha, src[id].z);
-      Multiply(result.w, alpha, src[id].w);
+      Multiply(result.x, alpha, value.x);
+      Multiply(result.y, alpha, value.y);
+      Multiply(result.z, alpha, value.z);
+      Multiply(result.w, alpha, value.w);
     #elif COPY_VW == 8
-      Multiply(result.s0, alpha, src[id].s0);
-      Multiply(result.s1, alpha, src[id].s1);
-      Multiply(result.s2, alpha, src[id].s2);
-      Multiply(result.s3, alpha, src[id].s3);
-      Multiply(result.s4, alpha, src[id].s4);
-      Multiply(result.s5, alpha, src[id].s5);
-      Multiply(result.s6, alpha, src[id].s6);
-      Multiply(result.s7, alpha, src[id].s7);
+      Multiply(result.s0, alpha, value.s0);
+      Multiply(result.s1, alpha, value.s1);
+      Multiply(result.s2, alpha, value.s2);
+      Multiply(result.s3, alpha, value.s3);
+      Multiply(result.s4, alpha, value.s4);
+      Multiply(result.s5, alpha, value.s5);
+      Multiply(result.s6, alpha, value.s6);
+      Multiply(result.s7, alpha, value.s7);
     #elif COPY_VW == 16
-      Multiply(result.s0, alpha, src[id].s0);
-      Multiply(result.s1, alpha, src[id].s1);
-      Multiply(result.s2, alpha, src[id].s2);
-      Multiply(result.s3, alpha, src[id].s3);
-      Multiply(result.s4, alpha, src[id].s4);
-      Multiply(result.s5, alpha, src[id].s5);
-      Multiply(result.s6, alpha, src[id].s6);
-      Multiply(result.s7, alpha, src[id].s7);
-      Multiply(result.s8, alpha, src[id].s8);
-      Multiply(result.s9, alpha, src[id].s9);
-      Multiply(result.sA, alpha, src[id].sA);
-      Multiply(result.sB, alpha, src[id].sB);
-      Multiply(result.sC, alpha, src[id].sC);
-      Multiply(result.sD, alpha, src[id].sD);
-      Multiply(result.sE, alpha, src[id].sE);
-      Multiply(result.sF, alpha, src[id].sF);
+      Multiply(result.s0, alpha, value.s0);
+      Multiply(result.s1, alpha, value.s1);
+      Multiply(result.s2, alpha, value.s2);
+      Multiply(result.s3, alpha, value.s3);
+      Multiply(result.s4, alpha, value.s4);
+      Multiply(result.s5, alpha, value.s5);
+      Multiply(result.s6, alpha, value.s6);
+      Multiply(result.s7, alpha, value.s7);
+      Multiply(result.s8, alpha, value.s8);
+      Multiply(result.s9, alpha, value.s9);
+      Multiply(result.sA, alpha, value.sA);
+      Multiply(result.sB, alpha, value.sB);
+      Multiply(result.sC, alpha, value.sC);
+      Multiply(result.sD, alpha, value.sD);
+      Multiply(result.sE, alpha, value.sE);
+      Multiply(result.sF, alpha, value.sF);
     #endif
-    dest[id] = result;;
+    dest[id] = result;
   }
 }
 

@@ -27,7 +27,7 @@ R"(
 INLINE_FUNC void _TransposePadMatrix(LOCAL_PTR real* tile,
                                      const int src_one, const int src_two,
                                      const int src_ld, const int src_offset,
-                                     __global const real* restrict src,
+                                     INPUT_MATRIX_TYPE src,
                                      const int dest_one, const int dest_two,
                                      const int dest_ld, const int dest_offset,
                                      __global real* dest,
@@ -50,7 +50,11 @@ INLINE_FUNC void _TransposePadMatrix(LOCAL_PTR real* tile,
       real value;
       SetToZero(value);
       if (id_src_two < src_two && id_src_one < src_one) {
-        value = src[id_src_two*src_ld + id_src_one + src_offset];
+        #ifndef INPUT_MATRIX_AS_IMAGE
+          value = src[id_src_two*src_ld + id_src_one + src_offset];
+        #else
+          real value = read_imagef(src, sampler, (int2)(id_src_one + src_offset, id_src_two)).x;
+        #endif
       }
       const int tile_id0 = get_local_id(0)*PADTRA_WPT + _w_one;
       const int tile_id1 = get_local_id(1)*PADTRA_WPT + _w_two;
@@ -87,7 +91,7 @@ INLINE_FUNC void _TransposePadMatrix(LOCAL_PTR real* tile,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposePadMatrix(const int src_one, const int src_two,
                         const int src_ld, const int src_offset,
-                        __global const real* restrict src,
+                        INPUT_MATRIX_TYPE src,
                         const int dest_one, const int dest_two,
                         const int dest_ld, const int dest_offset,
                         __global real* dest,
@@ -108,7 +112,7 @@ void TransposePadMatrix(const int src_one, const int src_two,
 INLINE_FUNC void _TransposeMatrix(LOCAL_PTR real* tile,
                                   const int src_one, const int src_two,
                                   const int src_ld, const int src_offset,
-                                  __global const real* restrict src,
+                                  INPUT_MATRIX_TYPE src,
                                   const int dest_one, const int dest_two,
                                   const int dest_ld, const int dest_offset,
                                   __global real* dest,
@@ -129,7 +133,11 @@ INLINE_FUNC void _TransposeMatrix(LOCAL_PTR real* tile,
 
       // Loads data into the local memory if the thread IDs are within bounds of the source matrix.
       if ((id_src_one < src_one) && (id_src_two < src_two)) {
-        real value = src[id_src_two*src_ld + id_src_one + src_offset];
+        #ifndef INPUT_MATRIX_AS_IMAGE
+          real value = src[id_src_two*src_ld + id_src_one + src_offset];
+        #else
+          real value = read_imagef(src, sampler, (int2)(id_src_one + src_offset, id_src_two)).x;
+        #endif
         const int tile_id0 = get_local_id(0)*PADTRA_WPT + _w_one;
         const int tile_id1 = get_local_id(1)*PADTRA_WPT + _w_two;
         tile[tile_id1 * (PADTRA_WPT*PADTRA_TILE + PADTRA_PAD) + tile_id0] = value;
@@ -175,7 +183,7 @@ INLINE_FUNC void _TransposeMatrix(LOCAL_PTR real* tile,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposeMatrix(const int src_one, const int src_two,
                      const int src_ld, const int src_offset,
-                     __global const real* restrict src,
+                     INPUT_MATRIX_TYPE src,
                      const int dest_one, const int dest_two,
                      const int dest_ld, const int dest_offset,
                      __global real* dest,
@@ -196,7 +204,7 @@ void TransposeMatrix(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposePadMatrixBatched(const int src_one, const int src_two,
                                const int src_ld, const __constant int* src_offsets,
-                               __global const real* restrict src,
+                               INPUT_MATRIX_TYPE src,
                                const int dest_one, const int dest_two,
                                const int dest_ld, const __constant int* dest_offsets,
                                __global real* dest,
@@ -215,7 +223,7 @@ void TransposePadMatrixBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposeMatrixBatched(const int src_one, const int src_two,
                             const int src_ld, const __constant int* src_offsets,
-                            __global const real* restrict src,
+                            INPUT_MATRIX_TYPE src,
                             const int dest_one, const int dest_two,
                             const int dest_ld, const __constant int* dest_offsets,
                             __global real* dest) {
@@ -237,7 +245,7 @@ void TransposeMatrixBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposePadMatrixStridedBatched(const int src_one, const int src_two,
                                       const int src_ld, const int src_offset,
-                                      const int src_stride, __global const real* restrict src,
+                                      const int src_stride, INPUT_MATRIX_TYPE src,
                                       const int dest_one, const int dest_two,
                                       const int dest_ld, const int dest_offset,
                                       const int dest_stride, __global real* dest,
@@ -256,7 +264,7 @@ void TransposePadMatrixStridedBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 void TransposeMatrixStridedBatched(const int src_one, const int src_two,
                                    const int src_ld, const int src_offset,
-                                   const int src_stride, __global const real* restrict src,
+                                   const int src_stride, INPUT_MATRIX_TYPE src,
                                    const int dest_one, const int dest_two,
                                    const int dest_ld, const int dest_offset,
                                    const int dest_stride, __global real* dest) {

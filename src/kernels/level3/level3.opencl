@@ -74,6 +74,20 @@ R"(
 #endif
 
 // =================================================================================================
+
+// Input matrices can be either regular buffers or 2D images
+#ifndef INPUT_MATRIX_AS_IMAGE
+  #define INPUT_MATRIX_TYPE __global const real* restrict
+  #define INPUT_MATRIX_TYPE_VEC_C __global const realC* restrict
+  #define INPUT_MATRIX_TYPE_VEC_T __global const realC* restrict
+#else
+  __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_NONE | CLK_FILTER_NEAREST;
+  #define INPUT_MATRIX_TYPE __read_only image2d_t
+  #define INPUT_MATRIX_TYPE_VEC_C __read_only image2d_t
+  #define INPUT_MATRIX_TYPE_VEC_T __read_only image2d_t
+#endif
+
+// =================================================================================================
 #if defined(ROUTINE_INVERT) || defined(ROUTINE_TRSM)
 
 __kernel

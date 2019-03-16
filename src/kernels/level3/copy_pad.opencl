@@ -26,7 +26,7 @@ R"(
 // value and offset can be different.
 INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
                                 const int src_ld, const int src_offset,
-                                __global const real* restrict src,
+                                INPUT_MATRIX_TYPE src,
                                 const int dest_one, const int dest_two,
                                 const int dest_ld, const int dest_offset,
                                 __global real* dest,
@@ -47,7 +47,11 @@ INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
         real value;
         SetToZero(value);
         if (id_two < src_two && id_one < src_one) {
-          value = src[id_two*src_ld + id_one + src_offset];
+          #ifndef INPUT_MATRIX_AS_IMAGE
+            value = src[id_two*src_ld + id_one + src_offset];
+          #else
+            value = read_imagef(src, sampler, (int2)(id_one + src_offset, id_two)).x;
+          #endif
         }
 
         // Stores the value in the destination matrix
@@ -62,7 +66,7 @@ INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyPadMatrix(const int src_one, const int src_two,
                    const int src_ld, const int src_offset,
-                   __global const real* restrict src,
+                   INPUT_MATRIX_TYPE src,
                    const int dest_one, const int dest_two,
                    const int dest_ld, const int dest_offset,
                    __global real* dest,
@@ -81,7 +85,7 @@ void CopyPadMatrix(const int src_one, const int src_two,
 // be different.
 INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
                              const int src_ld, const int src_offset,
-                             __global const real* restrict src,
+                             INPUT_MATRIX_TYPE src,
                              const int dest_one, const int dest_two,
                              const int dest_ld, const int dest_offset,
                              __global real* dest,
@@ -108,7 +112,11 @@ INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
         // Copies the value into the destination matrix. This is always within bounds of the source
         // matrix, as we know that the destination matrix is smaller or equal to the source.
         if (id_two < dest_two && id_one < dest_one) {
-          real value = src[id_two*src_ld + id_one + src_offset];
+          #ifndef INPUT_MATRIX_AS_IMAGE
+            real value = src[id_two*src_ld + id_one + src_offset];
+          #else
+            real value = read_imagef(src, sampler, (int2)(id_one + src_offset, id_two)).x;
+          #endif
           if (diagonal_imag_zero == 1 && id_one == id_two) { ImagToZero(value); }
           Multiply(dest[id_two*dest_ld + id_one + dest_offset], alpha, value);
         }
@@ -121,7 +129,7 @@ INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyMatrix(const int src_one, const int src_two,
                 const int src_ld, const int src_offset,
-                __global const real* restrict src,
+                INPUT_MATRIX_TYPE src,
                 const int dest_one, const int dest_two,
                 const int dest_ld, const int dest_offset,
                 __global real* dest,
@@ -141,7 +149,7 @@ void CopyMatrix(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyPadMatrixBatched(const int src_one, const int src_two,
                           const int src_ld, const __constant int* src_offsets,
-                          __global const real* restrict src,
+                          INPUT_MATRIX_TYPE src,
                           const int dest_one, const int dest_two,
                           const int dest_ld, const __constant int* dest_offsets,
                           __global real* dest,
@@ -159,7 +167,7 @@ void CopyPadMatrixBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyMatrixBatched(const int src_one, const int src_two,
                        const int src_ld, const __constant int* src_offsets,
-                       __global const real* restrict src,
+                       INPUT_MATRIX_TYPE src,
                        const int dest_one, const int dest_two,
                        const int dest_ld, const __constant int* dest_offsets,
                        __global real* dest) {
@@ -180,7 +188,7 @@ void CopyMatrixBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
                                  const int src_ld, const int src_offset,
-                                 const int src_stride, __global const real* restrict src,
+                                 const int src_stride, INPUT_MATRIX_TYPE src,
                                  const int dest_one, const int dest_two,
                                  const int dest_ld, const int dest_offset,
                                  const int dest_stride, __global real* dest,
@@ -198,7 +206,7 @@ void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
 __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 void CopyMatrixStridedBatched(const int src_one, const int src_two,
                               const int src_ld, const int src_offset,
-                              const int src_stride, __global const real* restrict src,
+                              const int src_stride, INPUT_MATRIX_TYPE src,
                               const int dest_one, const int dest_two,
                               const int dest_ld, const int dest_offset,
                               const int dest_stride, __global real* dest) {
