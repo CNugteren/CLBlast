@@ -56,6 +56,9 @@ struct Buffers {
   Buffer<T> c_mat;
   Buffer<T> ap_mat;
   Buffer<T> scalar;
+  Image2D<T, 1> a_img1;
+  Image2D<T, 2> a_img2;
+  Image2D<T, 4> a_img4;
 };
 template <typename T>
 struct BuffersHost {
@@ -116,6 +119,17 @@ Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
     cuMemAlloc(&raw_buffer, size * sizeof(T));
   #endif
   return Buffer<T>(raw_buffer);
+}
+
+template <typename T, int VectorWidth>
+Image2D<T, VectorWidth> CreateInvalidImage(const Context& context, const size_t size) {
+  #ifdef OPENCL_API
+    auto raw_buffer = clCreateBuffer(context(), CL_MEM_READ_ONLY, size * sizeof(T), nullptr, nullptr);
+  #elif CUDA_API
+    CUdeviceptr raw_buffer;
+    cuMemAlloc(&raw_buffer, size * sizeof(T));
+  #endif
+  return Image2D<T, VectorWidth>(raw_buffer);
 }
 
 // =================================================================================================

@@ -754,6 +754,143 @@ class Buffer {
   BufferAccess access_;
 };
 
+
+// C++11 version of 'cl_mem' holding a 2D OpenCL image for float32 only, for other cases it falls
+// back onto a regular memory object. Note that the generic case here doesn't actually use images,
+// see below for a specialization.
+template <typename T, int VectorWidth>
+class Image2D {
+public:
+
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Image2D(const cl_mem buffer):
+      buffer_(new cl_mem),
+      access_(BufferAccess::kNotOwned),
+      width_(0),
+      height_(0) {
+    *buffer_ = buffer;
+  }
+
+  // Essentially the same as for the Buffer<T> constructor
+  explicit Image2D(const Context &context, const size_t width, const size_t height):
+      buffer_(new cl_mem, [height, width](cl_mem* m) {
+          if (height*width > 0) { CheckError(clReleaseMemObject(*m)); }
+          delete m;
+      }),
+      access_(BufferAccess::kReadOnly),
+      width_(width),
+      height_(height) {
+    auto flags = cl_mem_flags{CL_MEM_READ_ONLY};
+    auto status = CL_SUCCESS;
+    *buffer_ = (height_*width_ > 0) ? clCreateBuffer(context(), flags, height_*width_*sizeof(T), nullptr, &status) : nullptr;
+    CLCudaAPIError::Check(status, "clCreateBuffer");
+  }
+
+  // Copies from host to device: writing the device buffer a-synchronously
+  // Essentially the same as for the Buffer<T> constructor
+  void WriteAsync(const Queue &queue, const T* host) {
+    CheckError(clEnqueueWriteBuffer(queue(), *buffer_, CL_FALSE, 0, height_*width_*sizeof(T),
+                                    host, 0, nullptr, nullptr));
+  }
+  void WriteAsync(const Queue &queue, const std::vector<T> &host) {
+    WriteAsync(queue, host.data());
+  }
+  void WriteAsync(const Queue &queue, const BufferHost<T> &host) {
+    WriteAsync(queue, host.data());
+  }
+
+  // Copies from host to device: writing the device buffer
+  void Write(const Queue &queue, const T* host) {
+    WriteAsync(queue, host);
+    queue.Finish();
+  }
+  void Write(const Queue &queue, const std::vector<T> &host) {
+    Write(queue, host.data());
+  }
+  void Write(const Queue &queue, const BufferHost<T> &host) {
+    Write(queue, host.data());
+  }
+
+  // Accessor to the private data-member
+  const cl_mem& operator()() const { return *buffer_; }
+private:
+  std::shared_ptr<cl_mem> buffer_;
+  BufferAccess access_;
+  const size_t width_;
+  const size_t height_;
+};
+
+// Specialisation of the above: this one actually uses images
+template <int VectorWidth>
+class Image2D<float, VectorWidth> {
+public:
+  using T = float;
+
+  // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
+  explicit Image2D(const cl_mem buffer):
+      buffer_(new cl_mem),
+      access_(BufferAccess::kNotOwned),
+      width_(0),
+      height_(0) {
+    *buffer_ = buffer;
+  }
+
+  // Constructor for a read-only 2D Image object. If the sizes are set to 0, this will become a stub
+  // containing a nullptr
+  explicit Image2D(const Context &context, const size_t width, const size_t height):
+      buffer_(new cl_mem, [width, height](cl_mem* m) {
+          if (width > 0 && height > 0) { CheckError(clReleaseMemObject(*m)); }
+          delete m;
+      }),
+      access_(BufferAccess::kReadOnly),
+      width_(width),
+      height_(height) {
+    auto flags = cl_mem_flags{CL_MEM_READ_ONLY};
+    auto image_format = (VectorWidth == 4) ? cl_image_format{CL_RGBA, CL_FLOAT} :
+                        (VectorWidth == 2) ? cl_image_format{CL_RG, CL_FLOAT} :
+                                             cl_image_format{CL_R, CL_FLOAT};
+    auto status = CL_SUCCESS;
+    *buffer_ = (width > 0 && height > 0) ? clCreateImage2D(context(), flags, &image_format,
+                                                           width_ / VectorWidth, height_,
+                                                           0, nullptr, &status) : nullptr;
+    CLCudaAPIError::Check(status, "clCreateImage");
+  }
+
+  // Copies from host to device: writing the device buffer a-synchronously
+  void WriteAsync(const Queue &queue, const T* host) {
+    auto origin = std::array<size_t, 3>{0, 0, 0};
+    auto region = std::array<size_t, 3>{width_ / VectorWidth, height_, 1};
+    CheckError(clEnqueueWriteImage(queue(), *buffer_, CL_FALSE, origin.data(), region.data(), 0, 0,
+                                   host, 0, nullptr, nullptr));
+  }
+  void WriteAsync(const Queue &queue, const std::vector<T> &host) {
+    WriteAsync(queue, host.data());
+  }
+  void WriteAsync(const Queue &queue, const BufferHost<T> &host) {
+    WriteAsync(queue, host.data());
+  }
+
+  // Copies from host to device: writing the device buffer
+  void Write(const Queue &queue, const T* host) {
+    WriteAsync(queue, host);
+    queue.Finish();
+  }
+  void Write(const Queue &queue, const std::vector<T> &host) {
+    Write(queue, host.data());
+  }
+  void Write(const Queue &queue, const BufferHost<T> &host) {
+    Write(queue, host.data());
+  }
+
+  // Accessor to the private data-member
+  const cl_mem& operator()() const { return *buffer_; }
+private:
+  std::shared_ptr<cl_mem> buffer_;
+  BufferAccess access_;
+  const size_t width_;
+  const size_t height_;
+};
+
 // =================================================================================================
 
 // C++11 version of 'cl_kernel'

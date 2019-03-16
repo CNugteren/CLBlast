@@ -124,6 +124,9 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat2 = Buffer<T>(context_, args.c_size);
     auto ap_mat2 = Buffer<T>(context_, args.ap_size);
     auto scalar2 = Buffer<T>(context_, args.scalar_size);
+    auto a_img1_2 = Image2D<T, 1>(context_, args.a_width, args.a_height);
+    auto a_img2_2 = Image2D<T, 2>(context_, args.a_width, args.a_height);
+    auto a_img4_2 = Image2D<T, 4>(context_, args.a_width, args.a_height);
     x_vec2.Write(queue_, args.x_size, x_source_);
     y_vec2.Write(queue_, args.y_size, y_source_);
     a_mat2.Write(queue_, args.a_size, a_source_);
@@ -131,7 +134,11 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     c_mat2.Write(queue_, args.c_size, c_source_);
     ap_mat2.Write(queue_, args.ap_size, ap_source_);
     scalar2.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
+    a_img1_2.Write(queue_, a_source_);
+    a_img2_2.Write(queue_, a_source_);
+    a_img4_2.Write(queue_, a_source_);
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2,
+                               a_img1_2, a_img2_2, a_img4_2};
 
     // Runs CLBlast
     if (verbose_) {
@@ -158,6 +165,9 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat1 = Buffer<T>(context_, args.c_size);
     auto ap_mat1 = Buffer<T>(context_, args.ap_size);
     auto scalar1 = Buffer<T>(context_, args.scalar_size);
+    auto a_img1_1 = Image2D<T, 1>(context_, args.a_width, args.a_height);
+    auto a_img2_1 = Image2D<T, 2>(context_, args.a_width, args.a_height);
+    auto a_img4_1 = Image2D<T, 4>(context_, args.a_width, args.a_height);
     x_vec1.Write(queue_, args.x_size, x_source_);
     y_vec1.Write(queue_, args.y_size, y_source_);
     a_mat1.Write(queue_, args.a_size, a_source_);
@@ -165,7 +175,11 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     c_mat1.Write(queue_, args.c_size, c_source_);
     ap_mat1.Write(queue_, args.ap_size, ap_source_);
     scalar1.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
+    a_img1_1.Write(queue_, a_source_);
+    a_img2_1.Write(queue_, a_source_);
+    a_img4_1.Write(queue_, a_source_);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1,
+                               a_img1_1, a_img2_1, a_img4_1};
 
     // Runs the reference code
     if (verbose_) {
@@ -273,6 +287,9 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat1 = CreateInvalidBuffer<T>(context_, args.c_size);
     auto ap_mat1 = CreateInvalidBuffer<T>(context_, args.ap_size);
     auto scalar1 = CreateInvalidBuffer<T>(context_, args.scalar_size);
+    auto a_img1_1 = CreateInvalidImage<T, 1>(context_, args.a_size);
+    auto a_img2_1 = CreateInvalidImage<T, 2>(context_, args.a_size);
+    auto a_img4_1 = CreateInvalidImage<T, 4>(context_, args.a_size);
     auto x_vec2 = CreateInvalidBuffer<T>(context_, args.x_size);
     auto y_vec2 = CreateInvalidBuffer<T>(context_, args.y_size);
     auto a_mat2 = CreateInvalidBuffer<T>(context_, args.a_size);
@@ -280,8 +297,13 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat2 = CreateInvalidBuffer<T>(context_, args.c_size);
     auto ap_mat2 = CreateInvalidBuffer<T>(context_, args.ap_size);
     auto scalar2 = CreateInvalidBuffer<T>(context_, args.scalar_size);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
+    auto a_img1_2 = CreateInvalidImage<T, 1>(context_, args.a_size);
+    auto a_img2_2 = CreateInvalidImage<T, 2>(context_, args.a_size);
+    auto a_img4_2 = CreateInvalidImage<T, 4>(context_, args.a_size);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1,
+                               a_img1_1, a_img2_1, a_img4_1};
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2,
+                               a_img1_2, a_img2_2, a_img4_2};
 
     // Runs CLBlast
     if (verbose_) {
