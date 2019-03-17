@@ -51,6 +51,26 @@ void FillVector(Queue &queue, const Device &device,
 
 // =================================================================================================
 
+// Determines whether the fast copy kernel can be used, argument & tuning parameter dependent
+bool UseFastCopyKernel(const Databases &db,
+                       const size_t src_one, const size_t src_two,
+                       const size_t src_ld, const size_t src_offset,
+                       const size_t dest_one, const size_t dest_two,
+                       const size_t dest_ld, const size_t dest_offset,
+                       const bool do_conjugate,
+                       const bool upper, const bool lower,
+                       const bool diagonal_imag_zero);
+
+// Determines whether the fast transpose kernel can be used, argument & tuning parameter dependent
+bool UseFastTransposeKernel(const Databases &db,
+                            const size_t src_one, const size_t src_two,
+                            const size_t src_ld, const size_t src_offset,
+                            const size_t dest_one, const size_t dest_two,
+                            const size_t dest_ld, const size_t dest_offset,
+                            const bool do_conjugate,
+                            const bool upper, const bool lower,
+                            const bool diagonal_imag_zero);
+
 // Copies or transposes a matrix and optionally pads/unpads it with zeros. This method is also able
 // to write to symmetric and triangular matrices through optional arguments.
 template <typename T>
@@ -69,36 +89,30 @@ void PadCopyTransposeMatrix(Queue &queue, const Device &device,
                             const bool upper = false, const bool lower = false,
                             const bool diagonal_imag_zero = false) {
 
-  // Determines whether or not the fast-version could potentially be used
-  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
-                         (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld) &&
-                         (upper == false) && (lower == false) && (diagonal_imag_zero == false);
-
   // Determines the right kernel
+  bool use_fast_kernel;
   auto kernel_name = std::string{};
   auto pad_kernel = false;
   if (do_transpose) {
-    if (use_fast_kernel &&
-        IsMultiple(src_ld, db["TRA_WPT"]) &&
-        IsMultiple(src_one, db["TRA_WPT"]*db["TRA_DIM"]) &&
-        IsMultiple(src_two, db["TRA_WPT"]*db["TRA_DIM"])) {
+    use_fast_kernel = UseFastTransposeKernel(db, src_one, src_two, src_ld, src_offset, dest_one, dest_two,
+                                             dest_ld, dest_offset, do_conjugate, upper, lower,
+                                             diagonal_imag_zero);
+    if (use_fast_kernel) {
       kernel_name = "TransposeMatrixFast";
     }
     else {
-      use_fast_kernel = false;
       pad_kernel = (do_pad || do_conjugate);
       kernel_name = (pad_kernel) ? "TransposePadMatrix" : "TransposeMatrix";
     }
   }
   else {
-    if (use_fast_kernel &&
-        IsMultiple(src_ld, db["COPY_VW"]) &&
-        IsMultiple(src_one, db["COPY_VW"]*db["COPY_DIMX"]) &&
-        IsMultiple(src_two, db["COPY_WPT"]*db["COPY_DIMY"])) {
+    use_fast_kernel = UseFastCopyKernel(db, src_one, src_two, src_ld, src_offset, dest_one, dest_two,
+                                        dest_ld, dest_offset, do_conjugate, upper, lower,
+                                        diagonal_imag_zero);
+    if (use_fast_kernel) {
       kernel_name = "CopyMatrixFast";
     }
     else {
-      use_fast_kernel = false;
       pad_kernel = do_pad;
       kernel_name = (pad_kernel) ? "CopyPadMatrix" : "CopyMatrix";
     }

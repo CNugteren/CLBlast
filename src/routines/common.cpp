@@ -156,4 +156,42 @@ template void FillVector<double2>(Queue&, const Device&, const std::shared_ptr<P
                                   const size_t, const Buffer<double2>&, const double2, const size_t);
 
 // =================================================================================================
+
+// Determines whether the fast copy kernel can be used, argument & tuning parameter dependent
+bool UseFastCopyKernel(const Databases &db,
+                       const size_t src_one, const size_t src_two,
+                       const size_t src_ld, const size_t src_offset,
+                       const size_t dest_one, const size_t dest_two,
+                       const size_t dest_ld, const size_t dest_offset,
+                       const bool do_conjugate,
+                       const bool upper, const bool lower,
+                       const bool diagonal_imag_zero) {
+  const auto prerequisite = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
+                            (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld) &&
+                            (upper == false) && (lower == false) && (diagonal_imag_zero == false);
+  return (prerequisite &&
+          IsMultiple(src_ld, db["COPY_VW"]) &&
+          IsMultiple(src_one, db["COPY_VW"]*db["COPY_DIMX"]) &&
+          IsMultiple(src_two, db["COPY_WPT"]*db["COPY_DIMY"]));
+}
+
+// Determines whether the fast transpose kernel can be used, argument & tuning parameter dependent
+bool UseFastTransposeKernel(const Databases &db,
+                            const size_t src_one, const size_t src_two,
+                            const size_t src_ld, const size_t src_offset,
+                            const size_t dest_one, const size_t dest_two,
+                            const size_t dest_ld, const size_t dest_offset,
+                            const bool do_conjugate,
+                            const bool upper, const bool lower,
+                            const bool diagonal_imag_zero) {
+  const auto prerequisite = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) &&
+                            (src_one == dest_one) && (src_two == dest_two) && (src_ld == dest_ld) &&
+                            (upper == false) && (lower == false) && (diagonal_imag_zero == false);
+  return (prerequisite &&
+          IsMultiple(src_ld, db["TRA_WPT"]) &&
+          IsMultiple(src_one, db["TRA_WPT"]*db["TRA_DIM"]) &&
+          IsMultiple(src_two, db["TRA_WPT"]*db["TRA_DIM"]));
+}
+
+// =================================================================================================
 } // namespace clblast
