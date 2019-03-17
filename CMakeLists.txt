@@ -75,6 +75,12 @@ if(VERBOSE)
   add_definitions(-DVERBOSE)
 endif()
 
+# Optionally compile parts of the library with OpenCL images instead of buffers
+option(INPUT_MATRIX_AS_IMAGE_OMATCOPY "Assumes input matrix A for the OMATCOPY routine is an OpenCL image rather than a buffer" OFF)
+if(INPUT_MATRIX_AS_IMAGE_OMATCOPY)
+  add_definitions(-DINPUT_MATRIX_AS_IMAGE_OMATCOPY)
+endif()
+
 # ==================================================================================================
 
 # RPATH settings

@@ -17,6 +17,9 @@
 #define CLBLAST_TEST_ROUTINES_XOMATCOPY_H_
 
 #include "test/routines/common.hpp"
+#ifdef INPUT_MATRIX_AS_IMAGE_OMATCOPY
+  #include "src/routines/levelx/xomatcopy.hpp"
+#endif
 
 namespace clblast {
 // =================================================================================================
@@ -109,6 +112,11 @@ class TestXomatcopy {
   static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
+    #ifdef INPUT_MATRIX_AS_IMAGE_OMATCOPY
+      const auto a_rotated = (args.layout == Layout::kRowMajor);
+      args.a_height = (a_rotated) ? args.m : args.n;
+      args.a_width = args.a_ld;
+    #endif
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -131,9 +139,21 @@ class TestXomatcopy {
     #ifdef OPENCL_API
       auto queue_plain = queue();
       auto event = cl_event{};
+      auto buffer_a = buffers.a_mat();
+      #ifdef INPUT_MATRIX_AS_IMAGE_OMATCOPY
+        if (std::is_same<T, float>::value) {
+          auto omatcopier = Xomatcopy<T>(queue, &event);
+          const auto vector_width = omatcopier.GetVectorWidth(args.layout, args.a_transpose,
+                                                              args.m, args.n, args.a_offset, args.a_ld,
+                                                              args.b_offset, args.b_ld);
+          if (vector_width > 4) { throw RuntimeError("Image support not available for vectorwidth>4"); }
+          buffer_a = (vector_width == 4) ? buffers.a_img4() :
+                     (vector_width == 2) ? buffers.a_img2() : buffers.a_img1();
+        }
+      #endif
       auto status = Omatcopy<T>(args.layout, args.a_transpose,
                                 args.m, args.n, args.alpha,
-                                buffers.a_mat(), args.a_offset, args.a_ld,
+                                buffer_a, args.a_offset, args.a_ld,
                                 buffers.b_mat(), args.b_offset, args.b_ld,
                                 &queue_plain, &event);
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
