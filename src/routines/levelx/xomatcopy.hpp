@@ -27,6 +27,32 @@ class Xomatcopy: public Routine {
   // Constructor
   Xomatcopy(Queue &queue, EventPointer event, const std::string &name = "OMATCOPY");
 
+  // Helper functions to query what kind of kernel will run
+  ssize_t GetVectorWidth(const Layout layout, const Transpose a_transpose,
+                        const size_t m, const size_t n,
+                        const size_t a_offset, const size_t a_ld,
+                        const size_t b_offset, const size_t b_ld) {
+    const auto transpose = (a_transpose != Transpose::kNo);
+    const auto conjugate = (a_transpose == Transpose::kConjugate);
+    const auto rotated = (layout == Layout::kRowMajor);
+    const auto a_one = (rotated) ? n : m;
+    const auto a_two = (rotated) ? m : n;
+    const auto b_one = (transpose) ? a_two : a_one;
+    const auto b_two = (transpose) ? a_one : a_two;
+    if (transpose) {
+      if (UseFastTransposeKernel(db_, a_one, a_two, a_ld, a_offset, b_one, b_two,
+                                 b_ld, b_offset, conjugate, false, false, false)) {
+        return db_["TRA_WPT"];
+      }
+      return 1;
+    }
+    if (UseFastCopyKernel(db_, a_one, a_two, a_ld, a_offset, b_one, b_two,
+                          b_ld, b_offset, conjugate, false, false, false)) {
+      return db_["COPY_VW"];
+    }
+    return 1;
+  }
+
   // Templated-precision implementation of the routine
   void DoOmatcopy(const Layout layout, const Transpose a_transpose,
                   const size_t m, const size_t n, const T alpha,
