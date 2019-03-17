@@ -826,6 +826,10 @@ class Image2D<float, VectorWidth> {
 public:
   using T = float;
 
+  static size_t CeilDiv(const size_t x, const int y) {
+    return 1 + ((x - 1) / y);
+  }
+
   // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
   explicit Image2D(const cl_mem buffer):
       buffer_(new cl_mem),
@@ -851,7 +855,7 @@ public:
                                              cl_image_format{CL_R, CL_FLOAT};
     auto status = CL_SUCCESS;
     *buffer_ = (width > 0 && height > 0) ? clCreateImage2D(context(), flags, &image_format,
-                                                           width_ / VectorWidth, height_,
+                                                           CeilDiv(width_, VectorWidth), height_,
                                                            0, nullptr, &status) : nullptr;
     CLCudaAPIError::Check(status, "clCreateImage");
   }

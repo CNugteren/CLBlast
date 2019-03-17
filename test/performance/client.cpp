@@ -246,6 +246,9 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     auto c_mat = Buffer<T>(context, args.c_size);
     auto ap_mat = Buffer<T>(context, args.ap_size);
     auto scalar = Buffer<T>(context, args.scalar_size);
+    auto a_img1 = Image2D<T, 1>(context, args.a_width, args.a_height);
+    auto a_img2 = Image2D<T, 2>(context, args.a_width, args.a_height);
+    auto a_img4 = Image2D<T, 4>(context, args.a_width, args.a_height);
     x_vec.Write(queue, args.x_size, x_source);
     y_vec.Write(queue, args.y_size, y_source);
     a_mat.Write(queue, args.a_size, a_source);
@@ -253,7 +256,11 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
     c_mat.Write(queue, args.c_size, c_source);
     ap_mat.Write(queue, args.ap_size, ap_source);
     scalar.Write(queue, args.scalar_size, scalar_source);
-    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar};
+    a_img1.Write(queue, a_source);
+    a_img2.Write(queue, a_source);
+    a_img4.Write(queue, a_source);
+    auto buffers = Buffers<T>{x_vec, y_vec, a_mat, b_mat, c_mat, ap_mat, scalar,
+                              a_img1, a_img2, a_img4};
 
     // Runs the routines and collects the timings
     auto timings = std::vector<std::pair<std::string, TimeResult>>();
