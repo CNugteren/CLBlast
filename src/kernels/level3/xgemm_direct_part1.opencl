@@ -94,11 +94,16 @@ R"(
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix.
-INLINE_FUNC real GlobalToPrivateDirectA(const __global real* restrict agms, const int _mi,
+INLINE_FUNC real GlobalToPrivateDirectA(INPUT_MATRIX_TYPE agms, const int _mi,
                                         const int a_ld, const int a_offset, const int idm, const int idk,
                                         const int a_transpose, const int a_conjugate) {
-  const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
-  real result = agms[a_index + a_offset];
+  const int a_one = (a_transpose) ? idk : idm + _mi;
+  const int a_two = (a_transpose) ? idm + _mi : idk;
+  #ifndef INPUT_MATRIX_AS_IMAGE
+    real result = agms[a_two*a_ld + a_one + a_offset];
+  #else
+    float result = read_imagef(agms, sampler, (int2)(a_one + a_offset, a_two)).x;
+  #endif
   if (a_conjugate) { COMPLEX_CONJUGATE(result); }
   return result;
 }
@@ -115,14 +120,19 @@ INLINE_FUNC real GlobalToPrivateDirectB(const __global real* restrict bgms, cons
 
 // Loads global off-chip memory into thread-private register files. This function is specific for
 // loading the A input matrix. This is the same as above but now includes a bounds check.
-INLINE_FUNC real GlobalToPrivateCheckedA(const __global real* restrict agms, const int _mi,
+INLINE_FUNC real GlobalToPrivateCheckedA(INPUT_MATRIX_TYPE agms, const int _mi,
                                          const int a_ld, const int a_offset, const int idm, const int idk,
                                          const int a_transpose, const int a_conjugate,
                                          const int kSizeM) {
   real result;
   if (idm + _mi < kSizeM) {
-    const int a_index = (a_transpose) ? (idm + _mi)*a_ld + idk : idk*a_ld + (idm + _mi);
-    result = agms[a_index + a_offset];
+    const int a_one = (a_transpose) ? idk : idm + _mi;
+    const int a_two = (a_transpose) ? idm + _mi : idk;
+    #ifndef INPUT_MATRIX_AS_IMAGE
+      result = agms[a_two*a_ld + a_one + a_offset];
+    #else
+      result = read_imagef(agms, sampler, (int2)(a_one + a_offset, a_two)).x;
+    #endif
     if (a_conjugate) { COMPLEX_CONJUGATE(result); }
   }
   else {

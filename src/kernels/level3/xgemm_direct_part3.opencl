@@ -21,7 +21,7 @@ R"(
 INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSizeK,
                              const real_arg arg_alpha,
                              const real_arg arg_beta,
-                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
+                             INPUT_MATRIX_TYPE_VEC_MD agm, const int a_offset, const int a_ld,
                              const __global realND* restrict bgm, const int b_offset, const int b_ld,
                              __global real* cgm, const int c_offset, const int c_ld,
                              LOCAL_PTR real* alm, LOCAL_PTR real* blm,
@@ -31,8 +31,13 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
   const real beta = GetRealArg(arg_beta);
 
   // Extra pointers to scalar versions of global memory
-  const __global real* restrict agms = (const __global real* restrict) agm;
-  const __global real* restrict bgms = (const __global real* restrict) bgm;
+  #ifndef INPUT_MATRIX_AS_IMAGE
+    const __global real* restrict agms = (const __global real* restrict) agm;
+    const __global real* restrict bgms = (const __global real* restrict) bgm;
+  #else
+    #define agms agm
+    #define bgms bgm
+  #endif
 
   // Allocates workitem-private memory (registers)
   #pragma promote_to_registers
@@ -221,7 +226,7 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
-                            const __global realMD* restrict agm, const int a_offset, const int a_ld,
+                            INPUT_MATRIX_TYPE_VEC_MD agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
                             __global real* cgm, const int c_offset, const int c_ld,
                             const int c_transpose, const int a_conjugate, const int b_conjugate) {
@@ -236,7 +241,7 @@ void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
-                            const __global realMD* restrict agm, const int a_offset, const int a_ld,
+                            INPUT_MATRIX_TYPE_VEC_MD agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
                             __global real* cgm, const int c_offset, const int c_ld,
                             const int c_transpose, const int a_conjugate, const int b_conjugate) {
@@ -251,7 +256,7 @@ void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
-                            const __global realMD* restrict agm, const int a_offset, const int a_ld,
+                            INPUT_MATRIX_TYPE_VEC_MD agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
                             __global real* cgm, const int c_offset, const int c_ld,
                             const int c_transpose, const int a_conjugate, const int b_conjugate) {
@@ -266,7 +271,7 @@ void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
 __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 void XgemmDirectTT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
-                            const __global realMD* restrict agm, const int a_offset, const int a_ld,
+                            INPUT_MATRIX_TYPE_VEC_MD agm, const int a_offset, const int a_ld,
                             const __global realND* restrict bgm, const int b_offset, const int b_ld,
                             __global real* cgm, const int c_offset, const int c_ld,
                             const int c_transpose, const int a_conjugate, const int b_conjugate) {

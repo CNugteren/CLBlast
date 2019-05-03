@@ -17,6 +17,9 @@
 #define CLBLAST_TEST_ROUTINES_XGEMM_H_
 
 #include "test/routines/common.hpp"
+#ifdef INPUT_MATRIX_AS_IMAGE_GEMM
+  #include "src/routines/level3/xgemm.hpp"
+#endif
 
 namespace clblast {
 // =================================================================================================
@@ -65,6 +68,10 @@ class TestXgemm {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
     args.c_size = GetSizeC(args);
+    auto a_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
+                     (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
+    args.a_width = args.a_ld;
+    args.a_height = (a_rotated) ? args.m : args.k;
 
     // Optionally (V != 0) enforces indirect (V == 1) or direct (V == 2) kernels
     if (V != 0) {
@@ -110,9 +117,20 @@ class TestXgemm {
     #ifdef OPENCL_API
       auto queue_plain = queue();
       auto event = cl_event{};
+      auto buffer_a = buffers.a_mat();
+      #ifdef INPUT_MATRIX_AS_IMAGE_GEMM
+        if (std::is_same<T, float>::value) {
+          auto gemm = Xgemm<T>(queue, &event);
+          const auto vector_width = gemm.GetVectorWidth(args.layout, args.a_transpose,
+                                                        args.m, args.n, args.k, args.a_offset, args.a_ld,
+                                                        args.b_offset, args.b_ld);
+          buffer_a = (vector_width == 4) ? buffers.a_img4() :
+                     (vector_width == 2) ? buffers.a_img2() : buffers.a_img1();
+        }
+      #endif
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
                          args.m, args.n, args.k, args.alpha,
-                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffer_a, args.a_offset, args.a_ld,
                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
                          buffers.c_mat(), args.c_offset, args.c_ld,
                          &queue_plain, &event, buffers.ap_mat()); // temp buffer

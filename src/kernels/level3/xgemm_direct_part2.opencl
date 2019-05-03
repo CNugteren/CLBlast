@@ -19,7 +19,7 @@ R"(
 
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
-INLINE_FUNC void GlobalToLocalDirectA(const __global realMD* restrict agm, LOCAL_PTR real* alm,
+INLINE_FUNC void GlobalToLocalDirectA(INPUT_MATRIX_TYPE_VEC_MD agm, LOCAL_PTR real* alm,
                                       const int a_ld, const int a_offset, const int kwg,
                                       const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
@@ -42,7 +42,17 @@ INLINE_FUNC void GlobalToLocalDirectA(const __global realMD* restrict agm, LOCAL
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      const realMD avec = agm[idk*(a_ld/VWMD) + idm + (a_offset/VWMD)];
+      #ifndef INPUT_MATRIX_AS_IMAGE
+        const realMD avec = agm[idk*(a_ld/VWMD) + idm + (a_offset/VWMD)];
+      #else
+        #if VWMD == 1
+          const float avec = read_imagef(agm, sampler, (int2)(idm + a_offset, idk)).x;
+        #elif VWMD == 2 || VWMD == 4
+          const float4 avec = read_imagef(agm, sampler, (int2)(idm + a_offset, idk));
+        #else
+          #error Unsupported VWMD value when INPUT_MATRIX_AS_IMAGE is set
+        #endif
+      #endif
       #if VWMD == 1
          alm[kg*(WGD + PADA) + mg] = avec;
       #elif VWMD == 2
@@ -166,7 +176,7 @@ INLINE_FUNC void GlobalToLocalDirectB(const __global realND* restrict bgm, LOCAL
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs doesn't
 // use the vector data-types.
-INLINE_FUNC void GlobalToLocalScalarA(const __global real* restrict agms, LOCAL_PTR real* alm,
+INLINE_FUNC void GlobalToLocalScalarA(INPUT_MATRIX_TYPE agms, LOCAL_PTR real* alm,
                                       const int a_ld, const int a_offset, const int kwg,
                                       const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
@@ -189,7 +199,11 @@ INLINE_FUNC void GlobalToLocalScalarA(const __global real* restrict agms, LOCAL_
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      real result = agms[idk*a_ld + idm + a_offset];
+      #ifndef INPUT_MATRIX_AS_IMAGE
+        real result = agms[idk*a_ld + idm + a_offset];
+      #else
+        float result = read_imagef(agms, sampler, (int2)(idm + a_offset, idk)).x;
+      #endif
       if (a_conjugate) { COMPLEX_CONJUGATE(result); }
       alm[kg*(WGD + PADA) + mg] = result;
     }
@@ -232,7 +246,7 @@ INLINE_FUNC void GlobalToLocalScalarB(const __global real* restrict bgms, LOCAL_
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs bounds
 // checks and doesn't use the vector data-types.
-INLINE_FUNC void GlobalToLocalCheckedA(const __global real* restrict agms, LOCAL_PTR real* alm,
+INLINE_FUNC void GlobalToLocalCheckedA(INPUT_MATRIX_TYPE agms, LOCAL_PTR real* alm,
                                        const int a_ld, const int a_offset, const int kwg,
                                        const int a_transpose, const int a_conjugate,
                                        const int kSizeM, const int kSizeK) {
@@ -259,7 +273,11 @@ INLINE_FUNC void GlobalToLocalCheckedA(const __global real* restrict agms, LOCAL
       int condition = (a_transpose) ? (idm < kSizeK) && (idk < kSizeM) :
                                       (idm < kSizeM) && (idk < kSizeK);
       if (condition) {
-        real result = agms[idk*a_ld + idm + a_offset];
+        #ifndef INPUT_MATRIX_AS_IMAGE
+          real result = agms[idk*a_ld + idm + a_offset];
+        #else
+          float result = read_imagef(agms, sampler, (int2)(idm + a_offset, idk)).x;
+        #endif
         if (a_conjugate) { COMPLEX_CONJUGATE(result); }
         alm[kg*(WGD + PADA) + mg] = result;
       }

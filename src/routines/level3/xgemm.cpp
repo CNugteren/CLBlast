@@ -25,6 +25,9 @@ Xgemm<T>::Xgemm(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name,
             {"Copy","Pad","Transpose","Padtranspose","Xgemm","XgemmDirect","GemmRoutine"},
             PrecisionValue<T>(), {}, {
+    #ifdef INPUT_MATRIX_AS_IMAGE_GEMM
+      (std::is_same<T, float>::value) ? "#define INPUT_MATRIX_AS_IMAGE\n" : "",
+    #endif
     #include "../../kernels/level3/level3.opencl"
     #include "../../kernels/level3/copy_fast.opencl"
     #include "../../kernels/level3/copy_pad.opencl"

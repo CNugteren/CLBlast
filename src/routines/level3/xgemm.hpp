@@ -153,6 +153,21 @@ class Xgemm: public Routine {
     c_two_i = (c_want_rotated_(gemm_kernel_id)) ? m_ceiled : n_ceiled;
   }
 
+  // Helper functions to query what kind of kernel will run
+  size_t GetVectorWidth(const Layout layout, const Transpose a_transpose,
+                        const size_t m, const size_t n, const size_t k,
+                        const size_t a_offset, const size_t a_ld,
+                        const size_t b_offset, const size_t b_ld) {
+    const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
+    if (!do_gemm_direct) { throw RuntimeError("Image support not available for non-direct GEMM kernel"); }
+    auto vector_width = db_["VWMD"];
+    if (vector_width > 4) { throw RuntimeError("Image support not available for non-direct GEMM kernel for vectorwidth > 4"); }
+    if (vector_width > 1 && (!IsMultiple(m, db_["WGD"]) || !IsMultiple(n, db_["WGD"]) || !IsMultiple(k, db_["WGD"]))) {
+      throw RuntimeError("Image support not available for non-direct GEMM kernel for m, n, k non-multiples of WGD");
+    }
+    return vector_width;
+  }
+
   // Constructor
   Xgemm(Queue &queue, EventPointer event, const std::string &name = "GEMM");
 
