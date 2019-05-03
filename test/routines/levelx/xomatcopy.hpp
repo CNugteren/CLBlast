@@ -112,11 +112,9 @@ class TestXomatcopy {
   static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
-    #ifdef INPUT_MATRIX_AS_IMAGE_OMATCOPY
-      const auto a_rotated = (args.layout == Layout::kRowMajor);
-      args.a_height = (a_rotated) ? args.m : args.n;
-      args.a_width = args.a_ld;
-    #endif
+    const auto a_rotated = (args.layout == Layout::kRowMajor);
+    args.a_height = (a_rotated) ? args.m : args.n;
+    args.a_width = args.a_ld;
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -146,7 +144,6 @@ class TestXomatcopy {
           const auto vector_width = omatcopier.GetVectorWidth(args.layout, args.a_transpose,
                                                               args.m, args.n, args.a_offset, args.a_ld,
                                                               args.b_offset, args.b_ld);
-          if (vector_width > 4) { throw RuntimeError("Image support not available for vectorwidth>4"); }
           buffer_a = (vector_width == 4) ? buffers.a_img4() :
                      (vector_width == 2) ? buffers.a_img2() : buffers.a_img1();
         }
