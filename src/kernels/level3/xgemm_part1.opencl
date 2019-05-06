@@ -220,7 +220,7 @@ INLINE_FUNC realM InitAccRegisters() {
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
 #if SA == 1
-INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, LOCAL_PTR realM* alm,
+INLINE_FUNC void GlobalToLocalA(INPUT_MATRIX_TYPE_VEC_M agm, LOCAL_PTR realM* alm,
                                 const int kSizeM, const int tid, const int kwg) {
   const int la0 = tid % MDIMA;
   const int la1 = tid / MDIMA;
@@ -242,7 +242,21 @@ INLINE_FUNC void GlobalToLocalA(const __global realM* restrict agm, LOCAL_PTR re
       int idk = kg + kwg;
 
       // Loads the data from global memory (not transposed) into the local memory
-      alm[kg*(MWG/VWM) + mg] = agm[idk*(kSizeM/VWM) + idm];
+      #ifndef INPUT_MATRIX_AS_IMAGE
+        realM result = agm[idk*(kSizeM/VWM) + idm];
+      #else
+        float4 image_data = read_imagef(agm, sampler, (int2)(idm, idk));
+        #if VWM == 1
+          float result = image_data.x;
+        #elif VWM == 2
+          float2 result; result.x = image_data.x; result.y = image_data.y;
+        #elif VWM == 4
+          float4 result = image_data;
+        #else
+          #error Unsupported VWM value when INPUT_MATRIX_AS_IMAGE is set
+        #endif
+      #endif
+      alm[kg*(MWG/VWM) + mg] = result;
     }
   }
 }
@@ -283,7 +297,7 @@ INLINE_FUNC void GlobalToLocalB(const __global realN* restrict bgm, LOCAL_PTR re
 // Caches global off-chip memory directly into per-thread private memory (registers). This function
 // is specific for caching the A input matrix.
 #if SA == 0 && GEMMK == 0
-INLINE_FUNC realM GlobalToPrivateA(const __global realM* restrict agm, const int _mi,
+INLINE_FUNC realM GlobalToPrivateA(INPUT_MATRIX_TYPE_VEC_M agm, const int _mi,
                                    const int kSizeM, const int idk, const int kwg) {
   // Computes the indices based on strided/non-strided access
   #if STRM == 0
@@ -296,7 +310,21 @@ INLINE_FUNC realM GlobalToPrivateA(const __global realM* restrict agm, const int
   int idm = mg + GetGroupID0() * (MWG/VWM);
 
   // Loads the data from global memory (not transposed) and stores into registers
-  return agm[idk*(kSizeM/VWM) + idm];
+  #ifndef INPUT_MATRIX_AS_IMAGE
+    return agm[idk*(kSizeM/VWM) + idm];
+  #else
+    float4 image_data = read_imagef(agm, sampler, (int2)(idm, idk));
+    #if VWM == 1
+      return image_data.x;
+    #elif VWM == 2
+      float2 result; result.x = image_data.x; result.y = image_data.y;
+      return result;
+    #elif VWM == 4
+      return image_data;
+    #else
+      #error Unsupported VWM value when INPUT_MATRIX_AS_IMAGE is set
+    #endif
+  #endif
 }
 #endif
 
@@ -324,24 +352,40 @@ INLINE_FUNC realN GlobalToPrivateB(const __global realN* restrict bgm, const int
 
 // Caches global off-chip memory directly into per-thread private memory (registers). This function
 // is specific for caching the A input matrix for kernel 1.
-INLINE_FUNC realN GlobalToPrivateA2D(const __global real* restrict a_ptr, const int tid_y, const int _ni,
+INLINE_FUNC realN GlobalToPrivateA2D(INPUT_MATRIX_TYPE a_ptr, const int tid_y, const int _ni,
                                      const int kSizeK, const int idk, const int _ki) {
   #if PRECISION == 3232 || PRECISION == 6464
     const int a_index = (tid_y * NWI + _ni) * (kSizeK / VWN) + idk / VWN + _ki;
     const __global realN* restrict agm = (const __global realN* restrict) a_ptr;
     return agm[a_index];
   #else
-    const int a_index = (tid_y * NWI + _ni) * kSizeK + idk + _ki * VWN;
-    #if VWN == 1
-      return a_ptr[a_index];
-    #elif VWN == 2
-      return vload2(0, a_ptr + a_index);
-    #elif VWN == 4
-      return vload4(0, a_ptr + a_index);
-    #elif VWN == 8
-      return vload8(0, a_ptr + a_index);
-    #elif VWN == 16
-      return vload16(0, a_ptr + a_index);
+    const int idn_ = tid_y * NWI + _ni;
+    const int idk_ = idk + _ki * VWN;
+    #ifndef INPUT_MATRIX_AS_IMAGE
+      const int a_index = idn_ * kSizeK + idk_;
+      #if VWN == 1
+        return a_ptr[a_index];
+      #elif VWN == 2
+        return vload2(0, a_ptr + a_index);
+      #elif VWN == 4
+        return vload4(0, a_ptr + a_index);
+      #elif VWN == 8
+        return vload8(0, a_ptr + a_index);
+      #elif VWN == 16
+        return vload16(0, a_ptr + a_index);
+      #endif
+    #else
+      float4 image_data = read_imagef(a_ptr, sampler, (int2)(idn_, idk_));
+      #if VWN == 1
+        return image_data.x;
+      #elif VWN == 2
+        float2 result; result.x = image_data.x; result.y = image_data.y;
+        return result;
+      #elif VWN == 4
+        return image_data;
+      #else
+        #error Unsupported VWN value when INPUT_MATRIX_AS_IMAGE is set
+      #endif
     #endif
   #endif
 }

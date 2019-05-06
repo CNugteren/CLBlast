@@ -118,6 +118,7 @@ class TestXgemm {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto buffer_a = buffers.a_mat();
+      auto buffer_ap = buffers.ap_mat(); // temp buffer
       #ifdef INPUT_MATRIX_AS_IMAGE_GEMM
         if (std::is_same<T, float>::value) {
           auto gemm = Xgemm<T>(queue, &event);
@@ -126,6 +127,7 @@ class TestXgemm {
                                                         args.b_offset, args.b_ld);
           buffer_a = (vector_width == 4) ? buffers.a_img4() :
                      (vector_width == 2) ? buffers.a_img2() : buffers.a_img1();
+          buffer_ap = nullptr;
         }
       #endif
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
@@ -133,7 +135,7 @@ class TestXgemm {
                          buffer_a, args.a_offset, args.a_ld,
                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
                          buffers.c_mat(), args.c_offset, args.c_ld,
-                         &queue_plain, &event, buffers.ap_mat()); // temp buffer
+                         &queue_plain, &event, buffer_ap); // temp buffer
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
       auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,

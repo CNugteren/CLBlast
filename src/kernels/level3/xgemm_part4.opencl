@@ -23,7 +23,7 @@ __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 void XgemmUpper(const int kSizeN, const int kSizeK,
                 const real_arg arg_alpha,
                 const real_arg arg_beta,
-                const __global realM* restrict agm,
+                INPUT_MATRIX_TYPE_VEC_M agm,
                 const __global realN* restrict bgm,
                 __global realM* cgm) {
   const real alpha = GetRealArg(arg_alpha);
@@ -59,7 +59,7 @@ __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 void XgemmLower(const int kSizeN, const int kSizeK,
                 const real_arg arg_alpha,
                 const real_arg arg_beta,
-                const __global realM* restrict agm,
+                INPUT_MATRIX_TYPE_VEC_M agm,
                 const __global realN* restrict bgm,
                 __global realM* cgm) {
   const real alpha = GetRealArg(arg_alpha);
@@ -99,7 +99,7 @@ __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 void Xgemm(const int kSizeM, const int kSizeN, const int kSizeK,
            const real_arg arg_alpha,
            const real_arg arg_beta,
-           const __global realM* restrict agm,
+           INPUT_MATRIX_TYPE_VEC_M agm,
            const __global realN* restrict bgm,
            __global realM* cgm,
            const int b_offset, const int c_offset) {

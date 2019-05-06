@@ -55,7 +55,7 @@ INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
 
 // Main body of the matrix-multiplication algorithm. It calls various (inlined) functions.
 INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
-                           const __global realM* restrict agm, const __global realN* restrict bgm,
+                           INPUT_MATRIX_TYPE_VEC_M agm, const __global realN* restrict bgm,
                            __global realM* cgm, const real alpha, const real beta
                            #if SA == 1 && SB == 1
                              , LOCAL_PTR realM* alm, LOCAL_PTR realN* blm
@@ -87,7 +87,11 @@ INLINE_FUNC void XgemmBody(const int kSizeM, const int kSizeN, const int kSizeK,
   realM cpm[NWI*(MWI/VWM)]; // NWI * MWI
 
   #if GEMMK == 1
-    const __global real* restrict a_ptr = (const __global real* restrict) &agm[0];
+    #ifndef INPUT_MATRIX_AS_IMAGE
+      const __global real* restrict a_ptr = (const __global real* restrict) &agm[0];
+    #else
+      #define a_ptr agm
+    #endif
     const __global real* restrict b_ptr = (const __global real* restrict) &bgm[0];
     const int tid_x = get_local_id(0) + MDIMC * GetGroupID0();
     const int tid_y = get_local_id(1) + NDIMC * GetGroupID1();

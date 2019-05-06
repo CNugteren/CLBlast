@@ -148,6 +148,17 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   if (!IsMultiple(b_temp_offset, db_["VWN"])) { throw BLASError(StatusCode::kUnexpectedError); }
   if (!IsMultiple(c_temp_offset, db_["VWM"])) { throw BLASError(StatusCode::kUnexpectedError); }
 
+  // Image support currently disabled for many use-cases due to the requirement of both an image
+  // and a non-image kernel in general
+  #ifdef INPUT_MATRIX_AS_IMAGE_GEMM
+    if (std::is_same<T, float>::value) {
+      if (!a_no_temp or !b_no_temp or !c_no_temp) {
+        throw RuntimeError("Image support not available for direct GEMM kernel in case a pre/post-"
+                           "processing kernel is required");
+      }
+    }
+  #endif
+
   // Creates the buffer for the (optional) temporary matrices. Note that we use 'a_buffer' in case
   // when no temporary buffer is needed, but that's just to make it compile: it is never used.
   const auto temp_buffer_all = (temp_buffer_provided) ? temp_buffer :

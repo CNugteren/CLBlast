@@ -159,13 +159,19 @@ class Xgemm: public Routine {
                         const size_t a_offset, const size_t a_ld,
                         const size_t b_offset, const size_t b_ld) {
     const auto do_gemm_direct = UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
-    if (!do_gemm_direct) { throw RuntimeError("Image support not available for non-direct GEMM kernel"); }
-    auto vector_width = db_["VWMD"];
-    if (vector_width > 4) { throw RuntimeError("Image support not available for non-direct GEMM kernel for vectorwidth > 4"); }
-    if (vector_width > 1 && (!IsMultiple(m, db_["WGD"]) || !IsMultiple(n, db_["WGD"]) || !IsMultiple(k, db_["WGD"]))) {
-      throw RuntimeError("Image support not available for non-direct GEMM kernel for m, n, k non-multiples of WGD");
+    if (do_gemm_direct) {
+      const auto vector_width = db_["VWMD"];
+      if (vector_width > 4) { throw RuntimeError("Image support not available for non-direct GEMM kernel for vectorwidth > 4"); }
+      if (vector_width > 1 && (!IsMultiple(m, db_["WGD"]) || !IsMultiple(n, db_["WGD"]) || !IsMultiple(k, db_["WGD"]))) {
+        throw RuntimeError("Image support not available for non-direct GEMM kernel for m, n, k non-multiples of WGD");
+      }
+      return vector_width;
     }
-    return vector_width;
+    else {
+      const auto vector_width = db_["VWM"];
+      if (vector_width > 4) { throw RuntimeError("Image support not available for direct GEMM kernel for vectorwidth > 4"); }
+      return vector_width;
+    }
   }
 
   // Constructor
