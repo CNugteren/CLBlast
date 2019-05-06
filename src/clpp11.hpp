@@ -18,13 +18,13 @@
 // =================================================================================================
 //
 // Copyright 2015 SURFsara
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -358,8 +358,10 @@ class Device {
 
   // Returns if the Nvidia chip is a Volta or later archicture (sm_70 or higher)
   bool IsPostNVIDIAVolta() const {
-    assert(HasExtension("cl_nv_device_attribute_query"));
-    return GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) >= 7;
+    if(HasExtension("cl_nv_device_attribute_query")) {
+      return GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) >= 7;
+    }
+    return false;
   }
 
   // Retrieves the above extra information (if present)
