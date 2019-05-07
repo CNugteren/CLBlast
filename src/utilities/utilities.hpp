@@ -48,6 +48,7 @@ using double2 = std::complex<double>;
 const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
 const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
 const std::string kKhronosIntelSubgroups = "cl_intel_subgroups";
+const std::string kKhronosIntelAvcMotionEstimation = "cl_intel_device_side_avc_motion_estimation";
 
 // Catched an unknown error
 constexpr auto kUnknownError = -999;

@@ -60,6 +60,7 @@ std::shared_ptr<Program> CompileFromSource(
 
   // For Intel GPUs with subgroup support, use subgroup shuffling.
   if (device.IsGPU() && device.HasExtension(kKhronosIntelSubgroups) &&
+      device.HasExtension(kKhronosIntelAvcMotionEstimation) &&
       (precision == Precision::kSingle || precision == Precision::kHalf)) {
     header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
     header_string += "#define SUBGROUP_SHUFFLING_INTEL 1\n";
