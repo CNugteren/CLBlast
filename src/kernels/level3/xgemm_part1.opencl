@@ -127,7 +127,7 @@ R"(
 
 // Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.html)
 #if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_INTEL == 1
-  #pragma OPENCL EXTENSION cl_intel_device_side_avc_motion_estimation: enable
+  #pragma OPENCL EXTENSION cl_intel_subgroups: enable
   #define SUBGROUP_SIZE 8              // Assumes subgroup size is always 8 on Intel GPUs
 #endif
 
