@@ -485,7 +485,6 @@ class Program {
 
   // Compiles the device program and checks whether or not there are any warnings/errors
   void Build(const Device &device, std::vector<std::string> &options) {
-    options.push_back("-cl-std=CL1.1");
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
     CheckError(clBuildProgram(program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
