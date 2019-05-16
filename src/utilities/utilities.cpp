@@ -498,6 +498,19 @@ std::string GetDeviceName(const Device& device) {
 
 // =================================================================================================
 
+void SetOpenCLKernelStandard(const Device &device, std::vector<std::string> &options) {
+  // Inclusion of one of the following extensions needs OpenCL 1.2 kernels
+  if (device.HasExtension(kKhronosIntelSubgroups)) {
+    options.push_back("-cl-std=CL1.2");
+  }
+    // Otherwise we fall-back to the default CLBlast OpenCL 1.1
+  else {
+    options.push_back("-cl-std=CL1.1");
+  }
+}
+
+// =================================================================================================
+
 // Solve Bezout's identity
 // a * p + b * q = r = GCD(a, b)
 void EuclidGCD(int a, int b, int &p, int &q, int &r) {

@@ -375,6 +375,10 @@ std::string GetDeviceName(const Device& device);
 
 // =================================================================================================
 
+void SetOpenCLKernelStandard(const Device &device, std::vector<std::string> &options);
+
+// =================================================================================================
+
 // Solve Bezout's identity
 // a * p + b * q = r = GCD(a, b)
 void EuclidGCD(int a, int b, int &p, int &q, int &r);

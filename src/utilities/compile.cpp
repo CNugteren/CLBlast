@@ -111,6 +111,7 @@ std::shared_ptr<Program> CompileFromSource(
   // Compiles the kernel
   auto program = std::make_shared<Program>(context, kernel_string);
   try {
+    SetOpenCLKernelStandard(device, options);
     program->Build(device, options);
   } catch (const CLCudaAPIBuildError &e) {
     if (program->StatusIsCompilationWarningOrError(e.status()) && !silent) {

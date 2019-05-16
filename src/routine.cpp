@@ -97,6 +97,7 @@ void Routine::InitProgram(std::initializer_list<const char *> source) {
                                             &has_binary);
   if (has_binary) {
     program_ = std::make_shared<Program>(device_, context_, binary);
+    SetOpenCLKernelStandard(device_, options);
     program_->Build(device_, options);
     ProgramCache::Instance().Store(ProgramKey{ context_(), device_(), precision_, routine_info },
                                     std::shared_ptr<Program>{program_});

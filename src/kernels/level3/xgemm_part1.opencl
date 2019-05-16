@@ -125,8 +125,9 @@ R"(
   #define USE_SUBGROUP_SHUFFLING 0     // Optionally enables subgroup shuffling for Intel GPUs
 #endif
 
-// Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.txt)
+// Intel subgroups (https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_subgroups.html)
 #if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_INTEL == 1
+  #pragma OPENCL EXTENSION cl_intel_subgroups: enable
   #define SUBGROUP_SIZE 8              // Assumes subgroup size is always 8 on Intel GPUs
 #endif
 
