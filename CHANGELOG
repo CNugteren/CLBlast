@@ -1,5 +1,6 @@
 Development (next version)
 - Implemented single-kernel version of convolution as GEMM
+- Fixed a bug in ISAMIN kernel
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)
 
