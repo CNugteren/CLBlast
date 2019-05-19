@@ -41,7 +41,7 @@ void Xamax(const int n,
   const int num_groups = get_num_groups(0);
 
   // Performs loading and the first steps of the reduction
-  #if defined(ROUTINE_MAX) || defined(ROUTINE_MIN) // non-absolute version
+  #if defined(ROUTINE_MAX) || defined(ROUTINE_MIN) || defined(ROUTINE_AMIN)
     singlereal max = SMALLEST;
   #else
     singlereal max = ZERO;
