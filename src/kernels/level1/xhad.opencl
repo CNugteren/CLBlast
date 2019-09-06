@@ -97,10 +97,12 @@ void XhadFaster(const int n, const real_arg arg_alpha, const real_arg arg_beta,
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
-  if (get_global_id(0) < n / (VW)) {
+  const int num_desired_threads = n / (VW * WPT);
+
+  if (get_global_id(0) < num_desired_threads) {
     #pragma unroll
     for (int _w = 0; _w < WPT; _w += 1) {
-      const int id = _w*get_global_size(0) + get_global_id(0);
+      const int id = _w * num_desired_threads + get_global_id(0);
       realV xvalue = xgm[id];
       realV yvalue = ygm[id];
       realV zvalue = zgm[id];
