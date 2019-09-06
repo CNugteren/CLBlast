@@ -1,6 +1,7 @@
 Development (next version)
 - Implemented single-kernel version of convolution as GEMM
 - Fixed a bug in ISAMIN kernel
+- Fixed an out-of-bounds read/write in the XHAD routine (thanks to etomzak)
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)
 
