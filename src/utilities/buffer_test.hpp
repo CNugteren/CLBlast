@@ -15,6 +15,9 @@
 #ifndef CLBLAST_BUFFER_TEST_H_
 #define CLBLAST_BUFFER_TEST_H_
 
+#include <algorithm>
+#include <vector>
+
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -102,6 +105,32 @@ void TestVectorIndex(const size_t n, const Buffer<T> &buffer, const size_t offse
     const auto required_size = (n + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryScalar); }
   } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorScalar, e.what()); }
+}
+
+// =================================================================================================
+
+// Tests matrix 'A' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixA(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t> &offsets, const size_t ld, const bool test_lead_dim = true) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixA(one, two, buffer, max_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'B' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixB(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t>& offsets, const size_t ld, const bool test_lead_dim = true) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixB(one, two, buffer, max_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'C' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixC(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t>& offsets, const size_t ld) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixC(one, two, buffer, max_offset, ld);
 }
 
 // =================================================================================================
