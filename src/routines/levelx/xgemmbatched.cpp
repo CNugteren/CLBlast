@@ -79,11 +79,9 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
                              gemm_kernel_id);
 
   // Tests the matrices for validity
-  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
-    TestMatrixA(a_one, a_two, a_buffer, a_offsets[batch], a_ld, false); // don't test for invalid LD
-    TestMatrixB(b_one, b_two, b_buffer, b_offsets[batch], b_ld, false); // don't test for invalid LD
-    TestMatrixC(c_one, c_two, c_buffer, c_offsets[batch], c_ld);
-  }
+  TestBatchedMatrixA(a_one, a_two, a_buffer, a_offsets, a_ld, false); // don't test for invalid LD
+  TestBatchedMatrixB(b_one, b_two, b_buffer, b_offsets, b_ld, false); // don't test for invalid LD
+  TestBatchedMatrixC(c_one, c_two, c_buffer, c_offsets, c_ld);
 
   // Upload the scalar arguments to the device
   auto alphas_device = Buffer<T>(context_, BufferAccess::kReadWrite, batch_count);
