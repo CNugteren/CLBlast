@@ -214,15 +214,17 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
-  switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::TuneXgemm<half>(argc, argv); break;
-    case clblast::Precision::kSingle: clblast::TuneXgemm<float>(argc, argv); break;
-    case clblast::Precision::kDouble: clblast::TuneXgemm<double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle: clblast::TuneXgemm<float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble: clblast::TuneXgemm<double2>(argc, argv); break;
-  }
-  return 0;
+  try {
+    const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+    switch(clblast::GetPrecision(command_line_args)) {
+      case clblast::Precision::kHalf: clblast::TuneXgemm<half>(argc, argv); break;
+      case clblast::Precision::kSingle: clblast::TuneXgemm<float>(argc, argv); break;
+      case clblast::Precision::kDouble: clblast::TuneXgemm<double>(argc, argv); break;
+      case clblast::Precision::kComplexSingle: clblast::TuneXgemm<float2>(argc, argv); break;
+      case clblast::Precision::kComplexDouble: clblast::TuneXgemm<double2>(argc, argv); break;
+    }
+    return 0;
+  } catch (...) { return static_cast<int>(clblast::DispatchException()); }
 }
 
 // =================================================================================================

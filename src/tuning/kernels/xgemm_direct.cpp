@@ -33,9 +33,11 @@ void StartVariation(int argc, char *argv[]) {
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  StartVariation<1>(argc, argv);
-  StartVariation<2>(argc, argv);
-  return 0;
+  try {
+    StartVariation<1>(argc, argv);
+    StartVariation<2>(argc, argv);
+    return 0;
+  } catch (...) { return static_cast<int>(clblast::DispatchException()); }
 }
 
 // =================================================================================================
