@@ -1,4 +1,4 @@
-Development (next version)
+Version 1.5.1
 - Implemented single-kernel version of convolution as GEMM
 - Now catches all exceptions thrown by the tuners
 - Fixed a bug in ISAMIN kernel
