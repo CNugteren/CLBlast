@@ -1,4 +1,5 @@
 Development version (next version)
+- Changed XAMAX/XAMIN to more likely return first rather than last min/max index, updated API docs
 - Various minor fixes and enhancements
 
 Version 1.5.1
