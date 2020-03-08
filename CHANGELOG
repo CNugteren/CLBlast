@@ -1,3 +1,6 @@
+Development version (next version)
+- Various minor fixes and enhancements
+
 Version 1.5.1
 - Implemented single-kernel version of convolution as GEMM
 - Now catches all exceptions thrown by the tuners
