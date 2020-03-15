@@ -228,7 +228,7 @@ set(PRECISIONS 32 64 3232 6464 16)
 # Sample programs
 if(OPENCL)
   set(SAMPLE_PROGRAMS_CPP sgemm sgemm_batched dtrsm tuning_api)
-  set(SAMPLE_PROGRAMS_C sasum dgemv sgemm haxpy cache)
+  set(SAMPLE_PROGRAMS_C sasum samax dgemv sgemm haxpy cache)
   if(NETLIB)
     set(SAMPLE_PROGRAMS_C ${SAMPLE_PROGRAMS_C} sgemm_netlib)
   endif()

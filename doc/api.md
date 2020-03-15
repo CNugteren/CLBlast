@@ -511,7 +511,7 @@ Arguments to SUM:
 xAMAX: Index of absolute maximum value in a vector
 -------------
 
-Finds the index of the maximum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer.
+Finds the index of a maximum (not necessarily the first if there are multiple) of the absolute values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer.
 
 C++ API:
 ```
@@ -562,7 +562,7 @@ Arguments to AMAX:
 xAMIN: Index of absolute minimum value in a vector (non-BLAS function)
 -------------
 
-Finds the index of the minimum of the absolute values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer.
+Finds the index of a minimum (not necessarily the first if there are multiple) of the absolute values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer.
 
 C++ API:
 ```
@@ -613,7 +613,7 @@ Arguments to AMIN:
 xMAX: Index of maximum value in a vector (non-BLAS function)
 -------------
 
-Finds the index of the maximum of the values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.
+Finds the index of a maximum (not necessarily the first if there are multiple) of the values in the _x_ vector. The resulting integer index is stored in the _imax_ buffer. This routine is the non-absolute version of the IxAMAX BLAS routine.
 
 C++ API:
 ```
@@ -664,7 +664,7 @@ Arguments to MAX:
 xMIN: Index of minimum value in a vector (non-BLAS function)
 -------------
 
-Finds the index of the minimum of the values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.
+Finds the index of a minimum (not necessarily the first if there are multiple) of the values in the _x_ vector. The resulting integer index is stored in the _imin_ buffer. This routine is the non-absolute minimum version of the IxAMAX BLAS routine.
 
 C++ API:
 ```
