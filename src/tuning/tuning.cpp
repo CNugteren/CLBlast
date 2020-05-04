@@ -145,6 +145,7 @@ void Tuner(int argc, char* argv[], const int V,
   const auto platform = Platform(args.platform_id);
   const auto device = Device(platform, args.device_id);
   const auto context = Context(device);
+  auto queue = Queue(context, device);
 
   // Tests for validity of the precision and retrieves properties
   if (!PrecisionSupported<T>(device)) {
@@ -208,7 +209,6 @@ void Tuner(int argc, char* argv[], const int V,
 
   // First runs a reference example to compare against
   try {
-    auto queue = Queue(context, device);
     printf("|  ref |     - |");
     for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
     printf("    - |");
@@ -251,8 +251,6 @@ void Tuner(int argc, char* argv[], const int V,
   auto results = std::vector<TuningResult>();
   for (auto config_id = size_t{0}; config_id < configurations.size(); ++config_id) {
     try {
-      auto queue = Queue(context, device);
-
       auto configuration = configurations[config_id];
       printf("| %4zu | %5zu |", config_id + 1, configurations.size());
       for (const auto& parameter : settings.parameters) {
