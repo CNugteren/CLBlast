@@ -220,8 +220,13 @@ void Tuner(int argc, char* argv[], const int V,
     }
 
     // Sets the thread configuration
-    const auto global = settings.global_size_ref;
-    const auto local = settings.local_size_ref;
+    auto global = settings.global_size_ref;
+    auto local = settings.local_size_ref;
+
+    // Make sure that the global worksize is a multiple of the local
+    for (auto i=size_t{0}; i<global.size(); ++i) {
+      while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
+    }
     printf("%5zu %5zu | %5zu %5zu |", local[0], local[1], global[0], global[1]);
 
     // Compiles the kernel
@@ -269,10 +274,15 @@ void Tuner(int argc, char* argv[], const int V,
       }
 
       // Sets the thread configuration
-      const auto global = SetThreadConfiguration(configuration, settings.global_size,
-                                                 settings.mul_global, settings.div_global);
-      const auto local = SetThreadConfiguration(configuration, settings.local_size,
-                                                settings.mul_local, settings.div_local);
+      auto global = SetThreadConfiguration(configuration, settings.global_size,
+                                           settings.mul_global, settings.div_global);
+      auto local = SetThreadConfiguration(configuration, settings.local_size,
+                                          settings.mul_local, settings.div_local);
+
+      // Make sure that the global worksize is a multiple of the local
+      for (auto i=size_t{0}; i<global.size(); ++i) {
+        while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
+      }
       printf("%5zu %5zu | %5zu %5zu |", local[0], local[1], global[0], global[1]);
 
       // Sets the parameters for this configuration
