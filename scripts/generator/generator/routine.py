@@ -825,17 +825,37 @@ class Routine:
         """Arguments for the Python wrapper pyclblast"""
         result = list()
         result.extend(self.sizes)
+        if self.batched == 2:  # strided batched
+            result.append("batch_count")
         buffers = self.inputs + self.outputs
         result.extend(buffers[:])
-        for buf in buffers:
-            if buf in self.buffers_matrix():
-                result.append(buf + "_ld")
-        for buf in buffers:
-            if buf in self.buffers_vector():
-                result.append(buf + "_inc = 1")
-        for scalar in self.scalars:
-            default = "1.0" if scalar == "alpha" else "0.0"
-            result.append(scalar + " = " + default)
+        if self.batched != 1:  # regular or strided-batched
+            for buf in buffers:
+                if buf in self.buffers_matrix():
+                    result.append(buf + "_ld")
+            for buf in buffers:
+                if buf in self.buffers_vector():
+                    result.append(buf + "_inc = 1")
+            if self.batched == 2:  # strided batched
+                for buf in buffers:
+                    if buf in self.buffers_matrix():
+                        result.append(buf + "_stride")
+            for scalar in self.scalars:
+                if scalar != "":
+                    default = "1.0" if scalar == "alpha" else "0.0"
+                    result.append(scalar + " = " + default)
+        else:  # batched but not strided-batched
+            for scalar in self.scalars:
+                result.append(scalar + "s")
+            for buf in buffers:
+                if buf in self.buffers_matrix():
+                    result.append(buf + "_ld")
+            for buf in buffers:
+                if buf in self.buffers_vector() + self.buffers_matrix():
+                    result.append(buf + "_offsets")
+            for buf in buffers:
+                if buf in self.buffers_vector():
+                    result.append(buf + "_inc = 1")
         for option in self.options:
             if option == "a_transpose":
                 result.append("a_transp = False")
@@ -849,8 +869,9 @@ class Routine:
                 result.append("lower_triangle = False")
             if option == "diagonal":
                 result.append("unit_diagonal = False")
-        for buf in buffers:
-            result.append(buf + "_offset = 0")
+        if self.batched != 1:
+            for buf in buffers:
+                result.append(buf + "_offset = 0")
         return result
 
     def requirements_doc(self):
