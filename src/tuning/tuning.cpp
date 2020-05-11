@@ -82,7 +82,7 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
 void print_separator(const size_t parameters_size) {
   printf("x------x-------x");
   for (auto i = size_t{0}; i < parameters_size; ++i) { printf("-----"); }
-  printf("-x----------------x--------------x--------x-------------------x\n");
+  printf("-x-----------------x-----------------x----------------x--------------x--------x-------------------x\n");
 }
 
 // =================================================================================================
@@ -204,7 +204,7 @@ void Tuner(int argc, char* argv[], const int V,
   printf("\n");
   printf("|   ID | total |");
   for (auto i = size_t{0}; i < settings.parameters.size() - 1; ++i) { printf("     "); }
-  printf("param |       compiles |         time | %6s |            status |\n", settings.performance_unit.c_str());
+  printf("param |      local      |      global     |       compiles |         time | %6s |            status |\n", settings.performance_unit.c_str());
   print_separator(settings.parameters.size());
 
   // First runs a reference example to compare against
@@ -219,6 +219,16 @@ void Tuner(int argc, char* argv[], const int V,
       device_buffers[id].Write(queue, buffer_sizes[id], source_buffers[id]);
     }
 
+    // Sets the thread configuration
+    auto global = settings.global_size_ref;
+    auto local = settings.local_size_ref;
+
+    // Make sure that the global worksize is a multiple of the local
+    for (auto i=size_t{0}; i<global.size(); ++i) {
+      while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
+    }
+    printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+
     // Compiles the kernel
     auto compiler_options = std::vector<std::string>();
     const auto program = CompileFromSource(settings.sources, args.precision, settings.kernel_name,
@@ -229,7 +239,7 @@ void Tuner(int argc, char* argv[], const int V,
 
     // Runs the kernel
     const auto time_ms = TimeKernel(args.num_runs, kernel, queue, device,
-                                    settings.global_size_ref, settings.local_size_ref);
+                                    global, local);
     printf("      - |");
     if (time_ms == -1.0) { throw std::runtime_error("Error in reference implementation"); }
 
@@ -264,10 +274,16 @@ void Tuner(int argc, char* argv[], const int V,
       }
 
       // Sets the thread configuration
-      const auto global = SetThreadConfiguration(configuration, settings.global_size,
-                                                 settings.mul_global, settings.div_global);
-      const auto local = SetThreadConfiguration(configuration, settings.local_size,
-                                                settings.mul_local, settings.div_local);
+      auto global = SetThreadConfiguration(configuration, settings.global_size,
+                                           settings.mul_global, settings.div_global);
+      auto local = SetThreadConfiguration(configuration, settings.local_size,
+                                          settings.mul_local, settings.div_local);
+
+      // Make sure that the global worksize is a multiple of the local
+      for (auto i=size_t{0}; i<global.size(); ++i) {
+        while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
+      }
+      printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
 
       // Sets the parameters for this configuration
       auto kernel_source = std::string{""};
