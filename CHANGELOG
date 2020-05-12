@@ -2,6 +2,7 @@ Development version (next version)
 - Changed XAMAX/XAMIN to more likely return first rather than last min/max index, updated API docs
 - Fixed a bug in the tuners related to global workgroup size not being a multiple of the local
 - Added batched routines to pyclblast
+- Added CLBLAST_VERSION_MAJOR/MINOR/PATCH defines in headers to store version numbering
 - Various minor fixes and enhancements
 
 Version 1.5.1
