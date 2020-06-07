@@ -4,6 +4,7 @@ Development version (next version)
 - Added batched routines to pyclblast
 - Added CLBLAST_VERSION_MAJOR/MINOR/PATCH defines in headers to store version numbering
 - Various minor fixes and enhancements
+- Fixed a bug in the caching when using a context with multiple devices
 
 Version 1.5.1
 - Implemented single-kernel version of convolution as GEMM

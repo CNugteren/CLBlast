@@ -519,6 +519,10 @@ class Program {
 
     auto bytes       = size_t{0};
     auto binSizeIter = size_t{0};
+    // Loop over the program binary sizes to find a binary whose size is > 0.
+    // The current logic assumes that there ever is only one valid program binary
+    // in a given cl_program. This should be the case unless the cl_program
+    // is built for all or a subset of devices associated to a given cl_program
     for (; binSizeIter < binSizesInBytes.size(); ++binSizeIter) {
         if (binSizesInBytes[binSizeIter] > 0) {
             bytes = binSizesInBytes[binSizeIter];
