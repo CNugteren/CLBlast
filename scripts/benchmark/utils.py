@@ -50,7 +50,8 @@ def run_binary(command, arguments):
     full_command = command + " " + " ".join(arguments)
     print("[benchmark] Calling binary: %s" % str(full_command))
     try:
-        return subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE).stdout.read()
+        result = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE).stdout.read()
+        return result.decode("ascii")
     except OSError as e:
         print("[benchmark] Error while running the binary, got exception: %s" + str(e))
         return False
