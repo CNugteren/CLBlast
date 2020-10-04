@@ -63,7 +63,7 @@ def run_benchmark(name, arguments_list, precision, num_runs, platform, device, c
             all_arguments = [arg if arg != "-precision 16" else "-precision 32" for arg in all_arguments]
             benchmark_output = utils.run_binary(binary, all_arguments)
             result_extra = utils.parse_results(benchmark_output)
-            for index in range(len(min(result, result_extra))):
+            for index in range(min(len(result), len(result_extra))):
                 result[index]["GBs_1_FP32"] = result_extra[index]["GBs_1"]
                 result[index]["GFLOPS_1_FP32"] = result_extra[index]["GFLOPS_1"]
                 for id in COMPARISON_IDS:
