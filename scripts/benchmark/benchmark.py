@@ -103,7 +103,7 @@ def benchmark_single(benchmark, comparisons, platform, device, num_runs, precisi
     # The benchmark name and plot title
     benchmark_name = utils.precision_to_letter(precision) + benchmark.upper()
     if benchmark.upper() != "SUMMARY":
-        plot_title = benchmark_name if plot_title is "" else benchmark_name + ": " + plot_title
+        plot_title = benchmark_name if plot_title == "" else benchmark_name + ": " + plot_title
 
     # Retrieves the comparison settings
     library_ids = [1]
