@@ -51,6 +51,10 @@ const DatabaseEntry XgemmSingle = {
           { Name{"ATI Radeon HD 6750M                               "}, Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 128, 0, 0, 1, 1, 8, 8 } },
         } },
+        { "Vega", {
+          { Name{"Radeon RX Vega                                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
+        } },
         { "default", {
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },

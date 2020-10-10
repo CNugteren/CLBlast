@@ -44,6 +44,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon RX 480
   - Radeon R9 Fury X
   - Radeon Pro 580
+  - Radeon RX Vega
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2

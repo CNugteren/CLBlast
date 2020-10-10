@@ -5,6 +5,8 @@ Development version (next version)
 - Added CLBLAST_VERSION_MAJOR/MINOR/PATCH defines in headers to store version numbering
 - Various minor fixes and enhancements
 - Fixed a bug in the caching when using a context with multiple devices
+- Several small improvements to the benchmark script (thanks to 'baryluk')
+- Added tuned parameters for various devices (see doc/tuning.md)
 
 Version 1.5.1
 - Implemented single-kernel version of convolution as GEMM
