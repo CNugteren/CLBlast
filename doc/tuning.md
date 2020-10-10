@@ -30,6 +30,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
   - TITAN X (Pascal)
+  - TITAN RTX
   - Tesla K20m
   - Tesla K40m
   - Tesla P100 16GB
