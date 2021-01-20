@@ -374,7 +374,7 @@ StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
   if (best_time_ms == 0.0) { return StatusCode::kUnexpectedError; }
 
   // Stores the best parameters
-  for (const auto config : best_configuration->config) {
+  for (const auto& config : best_configuration->config) {
     parameters[config.first] = config.second;
   }
   return StatusCode::kSuccess;

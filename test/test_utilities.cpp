@@ -131,7 +131,7 @@ void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
 
   // Retrieves the best parameters for each file from disk
   BestParametersCollection all_parameters;
-  for (const auto json_file_name : file_names) {
+  for (const auto& json_file_name : file_names) {
     GetBestParametersFromJSONFile(json_file_name, all_parameters, precision);
   }
 
@@ -199,7 +199,7 @@ void GetBestParametersFromJSONFile(const std::string& file_name,
 
       // Creates the list of parameters
       fprintf(stdout, "* Found parameters for kernel '%s': { ", kernel_family.c_str());
-      for (const auto config : config_split) {
+      for (const auto& config : config_split) {
         const auto params_split = split(config, '=');
         if (params_split.size() != 2) { break; }
         const auto parameter_name = params_split[0];
