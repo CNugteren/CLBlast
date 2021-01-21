@@ -39,9 +39,20 @@ And then compile the library from this location using the `setup.py` file:
 
     python setup.py install
 
+
 Testing PyCLBlast
 -------------
 
 The main exhaustive tests are the main CLBlast test binaries. Apart from that, you can also run the PyCLBlast smoke tests from the `test` subfolder, e.g. as follows:
 
     python -m unittest discover
+
+
+How to release a new version on PyPi
+-------------
+
+Following [the guide](https://packaging.python.org/tutorials/packaging-projects/), in essence doing (after changing the version number in `setup.py`):
+
+    python3 setup.py sdist bdist_wheel
+    python3 -m twine upload --repository pypi dist/pyclblast-1.3.1.tar.gz
+    # use '__token__' as username and supply the token from your PyPi account
