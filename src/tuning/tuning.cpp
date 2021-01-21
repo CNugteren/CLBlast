@@ -62,7 +62,7 @@ void PrintTimingsToFileAsJSON(const std::string &filename,
     fprintf(file, "      \"parameters\": {");
     auto num_configs = result.config.size();
     auto p = size_t{0};
-    for (const auto parameter : result.config) {
+    for (const auto& parameter : result.config) {
       fprintf(file, "\"%s\": %zu", parameter.first.c_str(), parameter.second);
       if (p < num_configs -1 ) { fprintf(file, ","); }
       ++p;
@@ -336,7 +336,7 @@ void Tuner(int argc, char* argv[], const int V,
       printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
       printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
     }
-    catch (CLCudaAPIBuildError) {
+    catch (CLCudaAPIBuildError&) {
       const auto status_code = DispatchExceptionCatchAll(true);
       printf("  %scompilation error: %5d%s     |",
              kPrintError.c_str(), static_cast<int>(status_code), kPrintEnd.c_str());
@@ -365,7 +365,7 @@ void Tuner(int argc, char* argv[], const int V,
 
   // Computes and prints some other statistics
   auto average_ms = 0.0;
-  for (const auto result : results) { average_ms += result.score; }
+  for (const auto& result : results) { average_ms += result.score; }
   average_ms /= results.size();
   printf("\n");
   printf("* Got average result of %.2lf ms", average_ms);
@@ -380,7 +380,7 @@ void Tuner(int argc, char* argv[], const int V,
   printf("* Best parameters: ");
   auto best_string = std::string{""};
   auto i = size_t{0};
-  for (const auto config : best_configuration->config) {
+  for (const auto& config : best_configuration->config) {
     best_string += "" + config.first + "=" + ToString(config.second);
     if (i < best_configuration->config.size() - 1) { best_string += " "; }
     ++i;

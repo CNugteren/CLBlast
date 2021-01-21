@@ -218,7 +218,7 @@ void ArrayToRegister(std::string &source_line, const DefinesIntMap& defines,
                      const std::unordered_map<std::string, size_t>& arrays_to_registers,
                      const size_t num_brackets) {
 
-  for (const auto array_name_map : arrays_to_registers) {  // only if marked to be promoted
+  for (const auto& array_name_map : arrays_to_registers) {  // only if marked to be promoted
 
     // Outside of a function
     if (num_brackets == 0) {
