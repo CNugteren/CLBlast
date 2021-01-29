@@ -10,12 +10,17 @@ from setuptools import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
+runtime_library_dirs = list()
+if platform.system() == "Linux":
+    runtime_library_dirs.append("/usr/local/lib")
+
 ext_modules = list()
 ext_modules.append(
     Extension(
         "pyclblast",
         ["src/pyclblast.pyx"],
         libraries=["clblast"],
+        runtime_library_dirs=runtime_library_dirs,
         language="c++"
     )
 )
