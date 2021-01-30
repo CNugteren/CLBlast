@@ -13,6 +13,8 @@ from Cython.Distutils import build_ext
 runtime_library_dirs = list()
 if platform.system() == "Linux":
     runtime_library_dirs.append("/usr/local/lib")
+elif platform.system() == "Windows":
+    runtime_library_dirs.append("C:\Program Files\CLBlast\lib")
 
 ext_modules = list()
 ext_modules.append(
