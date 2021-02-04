@@ -14,7 +14,8 @@ runtime_library_dirs = list()
 if platform.system() == "Linux":
     runtime_library_dirs.append("/usr/local/lib")
 elif platform.system() == "Windows":
-    runtime_library_dirs.append("C:\Program Files\CLBlast\lib")
+    runtime_library_dirs.append("C:\\Program Files\\CLBlast\\lib")
+    runtime_library_dirs.append("C:\\Program Files (x86)\\CLBlast\\lib")
 
 ext_modules = list()
 ext_modules.append(
