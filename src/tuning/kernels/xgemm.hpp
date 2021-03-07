@@ -159,7 +159,13 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T> &args) {
   }
 
   // Describes how to compute the performance metrics
-  settings.metric_amount = 2 * args.m * args.n * args.k;
+  if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+    // complex flops
+    settings.metric_amount = args.m * args.n * (8 * args.k - 2);
+  } else {
+    // scalar flops
+    settings.metric_amount = args.m * args.n * (2 * args.k - 1);
+  }
   settings.performance_unit = "GFLOPS";
 
   return settings;

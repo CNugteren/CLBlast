@@ -153,7 +153,13 @@ class TestXsyrk {
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return args.n * args.n * args.k;
+    if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+      // complex flops
+      return 4 * args.n * args.n * args.k;
+    } else {
+      // scalar flops
+      return args.n * args.n * args.k;
+    }
   }
   static size_t GetBytes(const Arguments<T> &args) {
     return (args.n*args.k + args.n*args.n) * sizeof(T);
