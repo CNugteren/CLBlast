@@ -204,7 +204,13 @@ public:
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return args.batch_count * (2 * args.m * args.n * args.k);
+    if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+      // complex flops
+      return args.batch_count * args.m * args.n * (8 * args.k - 2);
+    } else {
+      // scalar flops
+      return args.batch_count * args.m * args.n * (2 * args.k - 1);
+    }
   }
   static size_t GetBytes(const Arguments<T> &args) {
     return args.batch_count * (args.m*args.k + args.k*args.n + 2*args.m*args.n) * sizeof(T);

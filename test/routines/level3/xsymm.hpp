@@ -169,7 +169,14 @@ class TestXsymm {
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return 2 * args.m * args.n * args.m;
+    if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+      // complex flops
+      return 8 * args.m * args.n * args.m;
+    } else {
+      // scalar flops
+      return 2 * args.m * args.n * args.m;
+    }
+
   }
   static size_t GetBytes(const Arguments<T> &args) {
     return (args.m*args.m + args.m*args.n + 2*args.m*args.n) * sizeof(T);
