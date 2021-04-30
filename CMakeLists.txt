@@ -360,7 +360,7 @@ elseif(CUDA)
 endif()
 
 # Installs the config for find_package in dependent projects
-install(EXPORT CLBlast DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CLBLast FILE CLBlastConfig.cmake)
+install(EXPORT CLBlast DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CLBlast FILE CLBlastConfig.cmake)
 
 # Install pkg-config file on Linux
 if(UNIX)
