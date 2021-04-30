@@ -1685,7 +1685,7 @@ CLBlastStatusCode PUBLIC_API CLBlastHGemmTempBufferSize(const CLBlastLayout layo
 // for the same device. This cache can be cleared to free up system memory or in case of debugging.
 CLBlastStatusCode PUBLIC_API CLBlastClearCache();
 
-// The cache can also be pre-initialized for a specific device with all possible CLBLast kernels.
+// The cache can also be pre-initialized for a specific device with all possible CLBlast kernels.
 // Further CLBlast routine calls will then run at maximum speed.
 CLBlastStatusCode PUBLIC_API CLBlastFillCache(const cl_device_id device);
 
