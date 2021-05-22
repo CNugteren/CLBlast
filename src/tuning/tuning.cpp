@@ -227,7 +227,12 @@ void Tuner(int argc, char* argv[], const int V,
     for (auto i=size_t{0}; i<global.size(); ++i) {
       while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
     }
-    printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+    if (local.size() > 1 && global.size() > 1) {
+      printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+    }
+    else {
+      printf("%8zu%8d |%8zu%8d |", local[0], 1, global[0], 1);
+    }
 
     // Compiles the kernel
     auto compiler_options = std::vector<std::string>();
@@ -283,7 +288,12 @@ void Tuner(int argc, char* argv[], const int V,
       for (auto i=size_t{0}; i<global.size(); ++i) {
         while ((global[i] / local[i]) * local[i] != global[i]) { global[i]++; }
       }
-      printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+      if (local.size() > 1 && global.size() > 1) {
+        printf("%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+      }
+      else {
+        printf("%8zu%8d |%8zu%8d |", local[0], 1, global[0], 1);
+      }
 
       // Sets the parameters for this configuration
       auto kernel_source = std::string{""};
