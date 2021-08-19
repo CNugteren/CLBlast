@@ -159,6 +159,10 @@ const DatabaseEntry XgemmSingle = {
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
+        { "SM7.0", {
+          { Name{"Quadro GV100                                      "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+        } },
         { "SM7.5", {
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 2 } },
