@@ -34,6 +34,11 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Tesla K20m
   - Tesla K40m
   - Tesla P100 16GB
+  - Tesla T4
+  - Tesla V100
+  - Quadro T2000
+  - Quadro GV100
+  - A100
 * AMD GPUs:
   - Radeon HD 6750M
   - Radeon HD 6770M
@@ -66,6 +71,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-4790K
   - Core i7-5930K
   - Core i7-6770HQ
+  - Core i9-9980HK
   - Xeon E5-2630 v3
   - Xeon E5-2630 v4
 * Other devices:
