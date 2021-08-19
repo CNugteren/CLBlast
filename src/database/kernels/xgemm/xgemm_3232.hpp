@@ -155,6 +155,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 0, 0, 1, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 0, 0, 1, 2, 2 } },
         } },
+        { "SM8.0", {
+          { Name{"A100-PCIE-40GB                                    "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+        } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 32, 32, 64, 1, 1, 0, 0, 2, 1 } },
         } },
