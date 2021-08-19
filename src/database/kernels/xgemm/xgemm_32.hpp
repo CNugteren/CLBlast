@@ -161,6 +161,7 @@ const DatabaseEntry XgemmSingle = {
         } },
         { "SM7.0", {
           { Name{"Quadro GV100                                      "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
         } },
         { "SM7.5", {

@@ -102,6 +102,7 @@ const DatabaseEntry XgemmDirectDouble = {
         } },
         { "SM7.0", {
           { Name{"Quadro GV100                                      "}, Params{ 2, 32, 32, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 32, 32, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {

@@ -32,6 +32,7 @@ const DatabaseEntry XconvgemmDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "SM7.0", {
           { Name{"Quadro GV100                                      "}, Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
