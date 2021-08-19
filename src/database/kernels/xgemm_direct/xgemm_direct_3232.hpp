@@ -112,6 +112,7 @@ const DatabaseEntry XgemmDirectComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 16, 16, 16, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"Quadro T2000                                      "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
