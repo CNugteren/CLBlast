@@ -247,3 +247,27 @@ To find out which tuners to run for which routines, you can use the table below.
 | GEMM HEMM HER2K HERK SYMM SYR2K SYRK TRMM GEMMBATCHED GEMMSTRIDEDBATCHED | Xgemm XgemmDirect Copy Pad Transpose Padtranspose |
 | TRSM                                                                     | Xgemm XgemmDirect Copy Pad Transpose Padtranspose Invert |
 | IM2COL COL2IM                                                            | Copy                            |
+
+
+A note on clock frequencies for tuning
+-------------
+
+You should consider limiting the clock speeds of your processors before performing the tuning. Some examples are given below.
+
+To set the CPU frequency on a Linux machine:
+```
+sudo cpupower frequency-set -g performance
+sudo cpupower frequency-set -u 3100
+```
+
+To set the NVIDIA GPU frequency on a Linux machine:
+```
+sudo nvidia-smi -i <device id> -lgc <clock-speed>
+```
+
+You can get the possible frequencies for your NVIDIA GPU using the following command:
+```
+sudo nvidia-smi -i <device id> --query-supported-clocks=gr --format=csv
+```
+
+The suggestion is to pick a clock speed that would be stable. Somewhere in the middle of the range of frequencies listed above.
