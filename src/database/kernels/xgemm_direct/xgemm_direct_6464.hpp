@@ -51,6 +51,7 @@ const DatabaseEntry XgemmDirectComplexDouble = {
           { Name{"Intel(R) Core(TM) i7 CPU         920  @ 2.67GHz   "}, Params{ 8, 16, 16, 8, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 8, 16, 8, 8, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz         "}, Params{ 2, 32, 8, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz         "}, Params{ 2, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz         "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz         "}, Params{ 2, 8, 8, 8, 8, 1, 1, 2, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 1, 16, 0, 0, 0, 0, 0, 0 } },
@@ -99,9 +100,20 @@ const DatabaseEntry XgemmDirectComplexDouble = {
           { Name{"TITAN X (Pascal)                                  "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "SM7.0", {
+          { Name{"Quadro GV100                                      "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "SM7.5", {
+          { Name{"Quadro T2000                                      "}, Params{ 2, 8, 8, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla T4                                          "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 8, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "SM8.0", {
+          { Name{"A100-PCIE-40GB                                    "}, Params{ 16, 16, 16, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 16, 16, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
@@ -111,7 +123,7 @@ const DatabaseEntry XgemmDirectComplexDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

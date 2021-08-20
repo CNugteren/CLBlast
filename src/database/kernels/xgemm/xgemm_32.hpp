@@ -82,6 +82,7 @@ const DatabaseEntry XgemmSingle = {
           { Name{"Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz          "}, Params{ 0, 1, 16, 2, 8, 8, 128, 8, 8, 128, 1, 1, 1, 0, 1, 8 } },
           { Name{"Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz          "}, Params{ 0, 1, 32, 8, 16, 16, 64, 32, 32, 64, 0, 1, 1, 0, 1, 2 } },
           { Name{"Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz         "}, Params{ 0, 1, 32, 2, 16, 32, 32, 8, 8, 64, 0, 1, 0, 0, 1, 8 } },
+          { Name{"Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz         "}, Params{ 1, 2, 1, 1, 16, 16, 64, 4, 4, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz         "}, Params{ 0, 1, 32, 2, 16, 8, 32, 8, 32, 128, 1, 1, 1, 1, 1, 4 } },
           { Name{"Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz         "}, Params{ 1, 1, 1, 1, 16, 16, 16, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
@@ -158,12 +159,23 @@ const DatabaseEntry XgemmSingle = {
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
+        { "SM7.0", {
+          { Name{"Quadro GV100                                      "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+        } },
         { "SM7.5", {
+          { Name{"Quadro T2000                                      "}, Params{ 0, 1, 16, 2, 16, 16, 128, 32, 16, 128, 1, 1, 1, 1, 1, 2 } },
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 2 } },
+          { Name{"Tesla T4                                          "}, Params{ 1, 8, 1, 1, 16, 16, 128, 4, 4, 64, 0, 0, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 128, 32, 16, 128, 1, 1, 1, 1, 1, 2 } },
+        } },
+        { "SM8.0", {
+          { Name{"A100-PCIE-40GB                                    "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 32, 32, 64, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },

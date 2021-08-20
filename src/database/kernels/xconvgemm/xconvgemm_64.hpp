@@ -12,6 +12,14 @@ namespace database {
 
 const DatabaseEntry XconvgemmDouble = {
   "Xconvgemm", Precision::kDouble, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
+    { // Intel CPUs
+      kDeviceTypeCPU, "Intel", {
+        { "default", {
+          { Name{"Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz         "}, Params{ 1, 16, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
@@ -20,10 +28,31 @@ const DatabaseEntry XconvgemmDouble = {
         } },
       }
     },
+    { // NVIDIA GPUs
+      kDeviceTypeGPU, "NVIDIA", {
+        { "SM7.0", {
+          { Name{"Quadro GV100                                      "}, Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla V100-PCIE-16GB                              "}, Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "SM7.5", {
+          { Name{"Quadro T2000                                      "}, Params{ 1, 8, 16, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla T4                                          "}, Params{ 1, 8, 8, 8, 8, 0, 0, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "SM8.0", {
+          { Name{"A100-PCIE-40GB                                    "}, Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 1, 32, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
