@@ -39,6 +39,8 @@ CLBlast is in Ubuntu 21.04 (Hirsute Hippo) and Debian 11 (Bullseye) and later, a
 
 This may not be the latest version of CLBlast. The latest should be available in [Debian unstable](https://tracker.debian.org/pkg/clblast), or can be built from source as described below.
 
+Users of older versions of Ubuntu can use [this PPA](https://launchpad.net/~cnugteren/+archive/ubuntu/clblast).
+
 For Arch Linux and Manjaro, CLBlast is available as a [package](https://aur.archlinux.org/packages/clblast-git) maintained by a 3rd party.
 
 For OS X / macOS, CLBlast is available through [Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/clblast.rb). It can be installed as follows:
