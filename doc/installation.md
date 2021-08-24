@@ -31,13 +31,13 @@ The pre-requisites for compilation of CLBlast are kept as minimal as possible. A
 Using pre-built packages
 -------------
 
-There are pre-built binaries available for Ubuntu, macOS, and Windows.
+There are pre-built binaries available for Ubuntu, Debian, macOS, and Windows.
 
-For Ubuntu, CLBlast is available through [a PPA](https://launchpad.net/~cnugteren/+archive/ubuntu/clblast). The sources for the Debian packaging can be found [in a separate repository](https://github.com/CNugteren/CLBlast-packaging). CLBlast can be installed as follows on Ubuntu 16.04:
+CLBlast is in Ubuntu 21.04 (Hirsute Hippo) and Debian 11 (Bullseye) and later, and can be installed with:
 
-    sudo add-apt-repository ppa:cnugteren/clblast
-    sudo apt-get update
-    sudo apt-get install libclblast-dev
+    sudo apt install libclblast-dev
+
+This may not be the latest version of CLBlast. The latest should be available in [Debian unstable](https://tracker.debian.org/pkg/clblast), or can be built from source as described below.
 
 For Arch Linux and Manjaro, CLBlast is available as a [package](https://aur.archlinux.org/packages/clblast-git) maintained by a 3rd party.
 
