@@ -160,7 +160,7 @@ const DatabaseEntry XgemmComplexSingle = {
         { "SM7.5", {
           { Name{"Quadro T2000                                      "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 32, 128, 0, 0, 1, 0, 2, 2 } },
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 0, 0, 1, 2, 2 } },
-          { Name{"Tesla T4                                          "}, Params{ 1, 4, 1, 1, 8, 8, 32, 16, 16, 128, 0, 0, 0, 0, 4, 2 } },
+          { Name{"Tesla T4                                          "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 32, 128, 0, 0, 1, 0, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 0, 0, 1, 2, 2 } },
         } },
         { "SM8.0", {
