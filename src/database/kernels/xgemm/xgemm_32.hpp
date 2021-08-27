@@ -167,6 +167,7 @@ const DatabaseEntry XgemmSingle = {
         { "SM7.5", {
           { Name{"Quadro T2000                                      "}, Params{ 0, 1, 16, 2, 16, 16, 128, 32, 16, 128, 1, 1, 1, 1, 1, 2 } },
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 2 } },
+          { Name{"Tesla T4                                          "}, Params{ 0, 1, 16, 2, 16, 16, 128, 32, 16, 128, 1, 1, 1, 1, 1, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 128, 32, 16, 128, 1, 1, 1, 1, 1, 2 } },
         } },
         { "SM8.0", {

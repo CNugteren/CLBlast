@@ -144,7 +144,8 @@ const DatabaseEntry XgemmComplexDouble = {
         { "SM7.5", {
           { Name{"Quadro T2000                                      "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 2 } },
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { Name{"Tesla T4                                          "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 1, 2, 1, 1, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM8.0", {
           { Name{"A100-PCIE-40GB                                    "}, Params{ 0, 1, 16, 2, 8, 8, 16, 32, 16, 32, 1, 1, 1, 1, 2, 1 } },
