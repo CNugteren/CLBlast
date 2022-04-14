@@ -14,7 +14,7 @@
 
 #ifndef CLBLAST_ANDROID_HPP_
 #define CLBLAST_ANDROID_HPP_
-
+#ifndef __clang__ // not to include custom impl to avoid ambiguous definition
 // =================================================================================================
 
 #include <cstdlib>
@@ -42,6 +42,6 @@ inline int stoi( const std::string& str, std::size_t* pos = 0, int base = 10) {
 }
 
 // =================================================================================================
-
+#endif // clang header guard
 // CLBLAST_ANDROID_HPP_
 #endif
