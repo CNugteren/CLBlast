@@ -2,11 +2,21 @@
 CLBlast: The tuned OpenCL BLAS library
 ================
 
-| | Build status | Tests on Intel CPU | Tests on NVIDIA GPU | Other tests |
-|-----|-----|-----|-----|-----|
-| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-intel-i7-4790k.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-intel-i7-4790k) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-windows-nvidia-k5000.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-nvidia-k5000) | N/A |
-| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-linux-intel-e5-2620-v4.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-intel-e5-2620-v4) | [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-k80.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-k80) | N/A |
-| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |  [![Build Status](http://ci.arrayfire.org:8010/badges/clblast-osx-intel-i5-4278U.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-osx-intel-i5-4278U) | N/A | N/A |
+| Platform | Build status |
+|-----|-----|
+| Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
+| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
+| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
+
+| Test machine (thanks to [ArrayFire](https://ci.arrayfire.org:8010/#/builders)) | Test status |
+|-----|-----|
+| clblast-linux-nvidia-a100 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-a100.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-a100) |
+| clblast-linux-nvidia-k80 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-k80.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-k80) |
+| clblast-linux-nvidia-p100 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-p100.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-p100) |
+| clblast-linux-nvidia-t4 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-t4.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-t4) |
+| clblast-linux-nvidia-v100 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-linux-nvidia-v100.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-linux-nvidia-v100) |
+| clblast-windows-amd-r9 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-windows-amd-r9.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-amd-r9) |
+| clblast-windows-nvidia-m6000 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-windows-nvidia-m6000.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-nvidia-m6000) |
 
 CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
 
