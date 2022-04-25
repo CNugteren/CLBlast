@@ -80,6 +80,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
   - Qualcomm Adreno 330 GPU
+  - Qualcomm Adreno 540 GPU
   - Intel MIC
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
