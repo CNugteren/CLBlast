@@ -35,6 +35,10 @@ const DatabaseEntry XgemmDirectComplexDouble = {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 16, 8, 16, 8, 8, 0, 0, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 8, 16, 8, 8, 0, 0, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1034", {
+          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // ARM GPUs
