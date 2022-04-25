@@ -12,6 +12,21 @@ namespace database {
 
 const DatabaseEntry InvertComplexSingle = {
   "Invert", Precision::kComplexSingle, {"INTERNAL_BLOCK_SIZE", "LOCALPAD", "TMMWGSX", "TMMWGSY"}, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1030", {
+          { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1034", {
+          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {
@@ -70,10 +85,18 @@ const DatabaseEntry InvertComplexSingle = {
         } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "default", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

@@ -55,6 +55,14 @@ const DatabaseEntry XdotSingle = {
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 64, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 256, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1030", {
+          { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 256, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 256, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1034", {
+          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // ARM GPUs
@@ -165,7 +173,7 @@ const DatabaseEntry XdotSingle = {
     { // QUALCOMM GPUs
       kDeviceTypeGPU, "QUALCOMM", {
         { "default", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 256, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }

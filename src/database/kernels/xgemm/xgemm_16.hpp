@@ -21,6 +21,14 @@ const DatabaseEntry XgemmHalf = {
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
+        { "gfx1030", {
+          { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 0, 1, 32, 2, 8, 16, 128, 16, 16, 128, 1, 1, 1, 0, 8, 8 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 16, 128, 16, 16, 128, 1, 1, 1, 0, 8, 8 } },
+        } },
+        { "gfx1034", {
+          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 128, 32, 8, 128, 1, 1, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 128, 32, 8, 128, 1, 1, 0, 0, 2, 4 } },
+        } },
       }
     },
     { // ARM GPUs
@@ -41,10 +49,18 @@ const DatabaseEntry XgemmHalf = {
         } },
       }
     },
+    { // QUALCOMM GPUs
+      kDeviceTypeGPU, "QUALCOMM", {
+        { "default", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+        } },
+      }
+    },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },

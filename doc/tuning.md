@@ -51,6 +51,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon R9 Fury X
   - Radeon Pro 580
   - Radeon RX Vega
+  - Radeon RX 6500 XT
+  - Radeon RX 6800 XT
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -78,6 +80,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
   - Qualcomm Adreno 330 GPU
+  - Qualcomm Adreno 540 GPU
   - Intel MIC
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.

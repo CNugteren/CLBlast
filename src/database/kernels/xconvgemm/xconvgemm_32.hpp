@@ -12,6 +12,21 @@ namespace database {
 
 const DatabaseEntry XconvgemmSingle = {
   "Xconvgemm", Precision::kSingle, {"KWID", "MDIMAD", "MDIMCD", "NDIMBD", "NDIMCD", "PADA", "PADB", "VWMD", "VWND", "WGD"}, {
+    { // AMD GPUs
+      kDeviceTypeGPU, "AMD", {
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 32, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1030", {
+          { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 1, 8, 16, 32, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 32, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1034", {
+          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 1, 8, 8, 8, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 8, 8, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel CPUs
       kDeviceTypeCPU, "Intel", {
         { "default", {
@@ -53,7 +68,7 @@ const DatabaseEntry XconvgemmSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 16, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
