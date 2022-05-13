@@ -3,6 +3,9 @@ Development version (next version)
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)
 
+Version 1.5.3
+- Changed the complex sum routine to return the complex sum instead of the absolute complex sum.
+
 Version 1.5.2
 - Changed XAMAX/XAMIN to more likely return first rather than last min/max index, updated API docs
 - Added batched routines to pyclblast
