@@ -2,6 +2,7 @@ Development version (next version)
 - Fix a correctness issue with DGEMM on SM 7.5 Turing GPUs
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see doc/tuning.md)
+- Changed the complex sum routine to return the complex sum instead of the absolute complex sum.
 
 Version 1.5.2
 - Changed XAMAX/XAMIN to more likely return first rather than last min/max index, updated API docs
