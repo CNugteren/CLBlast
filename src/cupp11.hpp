@@ -647,7 +647,8 @@ public:
   }
 
   // Copies the contents of this buffer into another device buffer
-  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
+  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination,
+                   EventPointer event = nullptr) const {
     CheckError(cuMemcpyDtoDAsync(destination(), *buffer_, size*sizeof(T), queue()));
   }
   void CopyTo(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
