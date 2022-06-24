@@ -25,7 +25,7 @@ R"(
 // =================================================================================================
 
 #ifndef CUDA
-  // Enable support for double-precision
+  // Enable support for half-precision
   #if PRECISION == 16
     #pragma OPENCL EXTENSION cl_khr_fp16: enable
   #endif
