@@ -30,7 +30,7 @@ ext_modules.append(
 
 setup(
     name="pyclblast",
-    version="1.3.1",
+    version="1.3.2",
     author="Cedric Nugteren",
     author_email="web@cedricnugteren.nl",
     url="https://github.com/CNugteren/CLBlast/blob/master/src/pyclblast",
