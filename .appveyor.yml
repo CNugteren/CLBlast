@@ -1,7 +1,6 @@
 environment:
   global:
     CLBLAST_BUILD: "C:\\clblast\\build"
-    OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "C:\\dependencies\\opencl"
 
 platform:
@@ -18,7 +17,6 @@ init:
 install:
   - ps: mkdir $env:OPENCL_ROOT
   - ps: pushd $env:OPENCL_ROOT
-  - ps: $opencl_registry = $env:OPENCL_REGISTRY
   # This downloads the source to the Khronos ICD library
   - git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
   - ps: pushd OpenCL-ICD-Loader
@@ -29,7 +27,7 @@ install:
   # The cmake build files expect a directory called inc
   - ps: mkdir inc/CL
   - git clone https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
-  - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
+  - ps: wget https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp -OutFile inc/CL/cl.hpp
   # Switch to OpenCL 2.1 headers
   - ps: pushd inc/CL
   - git checkout bf0f43b  # OpenCL 2.1
