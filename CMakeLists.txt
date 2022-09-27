@@ -374,9 +374,9 @@ endif()
 # This section contains all the code related to the examples
 if(SAMPLES)
 
-  # Downloads the cl.hpp file from Khronos
+  # Downloads the opencl.hpp file from Khronos
   if(OPENCL)
-    file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+    file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/opencl.hpp)
   endif()
 
   # Adds sample programs (C++)
