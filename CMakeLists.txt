@@ -22,7 +22,7 @@ endif()
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
 set(clblast_VERSION_MINOR 5)
-set(clblast_VERSION_PATCH 2)
+set(clblast_VERSION_PATCH 3)
 set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
 set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 
@@ -374,9 +374,9 @@ endif()
 # This section contains all the code related to the examples
 if(SAMPLES)
 
-  # Downloads the cl.hpp file from Khronos
+  # Downloads the opencl.hpp file from Khronos
   if(OPENCL)
-    file(DOWNLOAD https://www.khronos.org/registry/OpenCL/api/2.1/cl.hpp ${clblast_SOURCE_DIR}/samples/cl.hpp)
+    file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/opencl.hpp)
   endif()
 
   # Adds sample programs (C++)

@@ -39,10 +39,10 @@
   #define PUBLIC_API
 #endif
 
-// Version numbering (v1.5.1)
+// Version numbering (v1.5.3)
 #define CLBLAST_VERSION_MAJOR 1
 #define CLBLAST_VERSION_MINOR 5
-#define CLBLAST_VERSION_PATCH 1
+#define CLBLAST_VERSION_PATCH 3
 
 namespace clblast {
 // =================================================================================================
