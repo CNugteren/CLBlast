@@ -76,7 +76,12 @@ def plot_graphs(results, file_name, num_rows, num_cols,
         for col in range(num_cols):
             index = row * num_cols + col
             result = results[index]
-            ax = axes[row, col]
+            if num_rows == 1:
+                ax = axes[col]
+            elif num_cols == 1:
+                ax = axes[row]
+            else:
+                ax = axes[row, col]
             plt.sca(ax)
             print("[plot] Plotting subplot %d" % index)
 
