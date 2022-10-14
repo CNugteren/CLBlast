@@ -76,7 +76,12 @@ def plot_graphs(results, file_name, num_rows, num_cols,
         for col in range(num_cols):
             index = row * num_cols + col
             result = results[index]
-            ax = axes[row, col]
+            if num_rows == 1:
+                ax = axes[col]
+            elif num_cols == 1:
+                ax = axes[row]
+            else:
+                ax = axes[row, col]
             plt.sca(ax)
             print("[plot] Plotting subplot %d" % index)
 
@@ -90,7 +95,8 @@ def plot_graphs(results, file_name, num_rows, num_cols,
                 x_ticks = [v if not (i % 2) else "" for i, v in enumerate(x_ticks)]
 
             # Sets the y-data
-            y_list = [[r[y_key] if y_key in r.keys() else 0 for r in result] for y_key in y_keys[index]]
+            y_list = [[r[y_key] if y_key in r.keys() and not isinstance(r[y_key], str) else 0 for r in result]
+                      for y_key in y_keys[index]]
             y_max = [max(y) if len(y) else 1 for y in y_list]
             y_max = max(y_max) if len(y_list) > 0 else 1
 

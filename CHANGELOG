@@ -1,3 +1,6 @@
+Development version (next version)
+- Fixes two small issues in the plotting script
+
 Version 1.5.3
 - Fix a correctness issue with DGEMM on SM 7.5 Turing GPUs
 - Various minor fixes and enhancements
