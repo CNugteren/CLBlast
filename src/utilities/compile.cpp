@@ -37,13 +37,13 @@ std::shared_ptr<Program> CompileFromSource(
 
   // Not all OpenCL compilers support the 'inline' keyword. The keyword is only used for devices on
   // which it is known to work with all OpenCL platforms.
-  if (device.IsNVIDIA() || device.IsARM()) {
+  if (device.IsNVIDIA() || device.IsARM() || device.IsQualcomm()) {
     header_string += "#define USE_INLINE_KEYWORD 1\n";
   }
 
   // For specific devices, use the non-IEE754 compliant OpenCL mad() instruction. This can improve
   // performance, but might result in a reduced accuracy.
-  if (device.IsAMD() && device.IsGPU()) {
+  if ((device.IsAMD() && device.IsGPU()) || device.IsQualcomm()) {
     header_string += "#define USE_CL_MAD 1\n";
   }
 
@@ -54,7 +54,7 @@ std::shared_ptr<Program> CompileFromSource(
 
   // For specific devices add a global synchronisation barrier to the GEMM kernel to optimize
   // performance through better cache behaviour
-  if (device.IsARM() && device.IsGPU()) {
+  if ((device.IsARM() && device.IsGPU()) || device.IsQualcomm()) {
     header_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 
@@ -76,6 +76,12 @@ std::shared_ptr<Program> CompileFromSource(
     else {
       header_string += "#define SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA 1\n";
     }
+  }
+
+  // For Qualcomm devices, specifying the OpenCL kernel attribute reqd_work_group_size reduces performance.
+  // This option compiles without the workgroup size requirement and does not affect correctness.
+  if (device.IsQualcomm()) {
+    header_string += "#define RELAX_WORKGROUP_SIZE 1\n";
   }
   
   // Optionally adds a translation header from OpenCL kernels to CUDA kernels

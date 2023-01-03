@@ -218,7 +218,11 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
 // =================================================================================================
 
 // Direct version of the GEMM kernel with [A, B] = [non-transposed, non-transposed]
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
@@ -233,7 +237,11 @@ void XgemmDirectNN(const int kSizeM, const int kSizeN, const int kSizeK,
 }
 
 // Direct version of the GEMM kernel with [A, B] = [non-transposed, transposed]
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
@@ -248,7 +256,11 @@ void XgemmDirectNT(const int kSizeM, const int kSizeN, const int kSizeK,
 }
 
 // Direct version of the GEMM kernel with [A, B] = [transposed, non-transposed]
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,
@@ -263,7 +275,11 @@ void XgemmDirectTN(const int kSizeM, const int kSizeN, const int kSizeK,
 }
 
 // Direct version of the GEMM kernel with [A, B] = [transposed, transposed]
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XgemmDirectTT(const int kSizeM, const int kSizeN, const int kSizeK,
                             const real_arg arg_alpha, const real_arg arg_beta,
                             const __global realMD* restrict agm, const int a_offset, const int a_ld,

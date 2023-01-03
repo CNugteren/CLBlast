@@ -365,6 +365,14 @@ class Device {
     return false;
   }
 
+  // Returns the Qualcomm Adreno GPU version (i.e. a650, a730, a740, etc.)
+  std::string AdrenoVersion() const {
+    if (IsQualcomm()) {
+      return GetInfoString(CL_DEVICE_OPENCL_C_VERSION);
+    }
+    else { return std::string{""}; }
+  }
+
   // Retrieves the above extra information (if present)
   std::string GetExtraInfo() const {
     if (HasExtension("cl_amd_device_attribute_query")) { return AMDBoardName(); }

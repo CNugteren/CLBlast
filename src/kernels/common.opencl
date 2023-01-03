@@ -132,6 +132,12 @@ R"(
   #define USE_CL_MAD 0
 #endif
 
+// By default the workgroup size requirement is enabled. For Qualcomm devices the workgroup size 
+// requirement results in worse performance and is disabled (src/utilities/compile.cpp)
+#ifndef RELAX_WORKGROUP_SIZE
+  #define RELAX_WORKGROUP_SIZE 0
+#endif
+
 // Sets a variable to zero
 #if PRECISION == 3232 || PRECISION == 6464
   #define SetToZero(a) a.x = ZERO; a.y = ZERO

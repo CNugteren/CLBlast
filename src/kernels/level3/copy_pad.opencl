@@ -59,7 +59,11 @@ INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
 }
 
 // Interface to the above function
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyPadMatrix(const int src_one, const int src_two,
                    const int src_ld, const int src_offset,
                    __global const real* restrict src,
@@ -118,7 +122,11 @@ INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
 }
 
 // Interface to the above function
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyMatrix(const int src_one, const int src_two,
                 const int src_ld, const int src_offset,
                 __global const real* restrict src,
@@ -138,7 +146,11 @@ void CopyMatrix(const int src_one, const int src_two,
 #if defined(ROUTINE_GEMMBATCHED)
 
 // Batched version of the above
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyPadMatrixBatched(const int src_one, const int src_two,
                           const int src_ld, const __constant int* src_offsets,
                           __global const real* restrict src,
@@ -156,7 +168,11 @@ void CopyPadMatrixBatched(const int src_one, const int src_two,
 }
 
 // Batched version of the above
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyMatrixBatched(const int src_one, const int src_two,
                        const int src_ld, const __constant int* src_offsets,
                        __global const real* restrict src,
@@ -177,7 +193,11 @@ void CopyMatrixBatched(const int src_one, const int src_two,
 #if defined(ROUTINE_GEMMSTRIDEDBATCHED)
 
 // Strided-batched version of the above
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
                                  const int src_ld, const int src_offset,
                                  const int src_stride, __global const real* restrict src,
@@ -195,7 +215,11 @@ void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
 }
 
 // Strided-batched version of the above
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void CopyMatrixStridedBatched(const int src_one, const int src_two,
                               const int src_ld, const int src_offset,
                               const int src_stride, __global const real* restrict src,

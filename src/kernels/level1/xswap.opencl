@@ -22,7 +22,11 @@ R"(
 // =================================================================================================
 
 // Full version of the kernel with offsets and strided accesses
-__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#endif
 void Xswap(const int n,
            __global real* xgm, const int x_offset, const int x_inc,
            __global real* ygm, const int y_offset, const int y_inc) {
@@ -39,7 +43,11 @@ void Xswap(const int n,
 
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
-__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#elif
+  __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#endif
 void XswapFast(const int n,
                __global realV* xgm,
                __global realV* ygm) {
