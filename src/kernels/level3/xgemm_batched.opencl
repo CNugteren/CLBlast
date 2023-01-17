@@ -21,7 +21,7 @@ R"(
 
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 #endif
 void XgemmBatched(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -68,7 +68,7 @@ void XgemmBatched(const int kSizeM, const int kSizeN, const int kSizeK,
 
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
 #endif
 void XgemmStridedBatched(const int kSizeM, const int kSizeN, const int kSizeK,

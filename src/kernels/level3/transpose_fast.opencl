@@ -38,7 +38,7 @@ R"(
 // offset. A more general version is available in 'padtranspose.opencl'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(TRA_DIM, TRA_DIM, 1)))
 #endif
 void TransposeMatrixFast(const int ld,

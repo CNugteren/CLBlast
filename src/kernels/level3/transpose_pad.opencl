@@ -86,7 +86,7 @@ INLINE_FUNC void _TransposePadMatrix(LOCAL_PTR real* tile,
 // Interface to the above function
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposePadMatrix(const int src_one, const int src_two,
@@ -178,7 +178,7 @@ INLINE_FUNC void _TransposeMatrix(LOCAL_PTR real* tile,
 // Interface to the above function
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposeMatrix(const int src_one, const int src_two,
@@ -203,7 +203,7 @@ void TransposeMatrix(const int src_one, const int src_two,
 // Batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposePadMatrixBatched(const int src_one, const int src_two,
@@ -226,7 +226,7 @@ void TransposePadMatrixBatched(const int src_one, const int src_two,
 // Batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposeMatrixBatched(const int src_one, const int src_two,
@@ -252,7 +252,7 @@ void TransposeMatrixBatched(const int src_one, const int src_two,
 // Strided-batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposePadMatrixStridedBatched(const int src_one, const int src_two,
@@ -275,7 +275,7 @@ void TransposePadMatrixStridedBatched(const int src_one, const int src_two,
 // Strided-batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PADTRA_TILE, PADTRA_TILE, 1)))
 #endif
 void TransposeMatrixStridedBatched(const int src_one, const int src_two,

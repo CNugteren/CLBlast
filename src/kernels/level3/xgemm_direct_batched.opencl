@@ -22,7 +22,7 @@ R"(
 // Direct version of the batched GEMM kernel with [A, B] = [non-transposed, non-transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -47,7 +47,7 @@ void XgemmDirectBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
 // Direct version of the batched GEMM kernel with [A, B] = [non-transposed, transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -72,7 +72,7 @@ void XgemmDirectBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
 // Direct version of the batched GEMM kernel with [A, B] = [transposed, non-transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -97,7 +97,7 @@ void XgemmDirectBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
 // Direct version of the batched GEMM kernel with [A, B] = [transposed, transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -126,7 +126,7 @@ void XgemmDirectBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,
 // Direct version of the strided-batched GEMM kernel with [A, B] = [non-transposed, non-transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectStridedBatchedNN(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -149,7 +149,7 @@ void XgemmDirectStridedBatchedNN(const int kSizeM, const int kSizeN, const int k
 // Direct version of the strided-batched GEMM kernel with [A, B] = [non-transposed, transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectStridedBatchedNT(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -172,7 +172,7 @@ void XgemmDirectStridedBatchedNT(const int kSizeM, const int kSizeN, const int k
 // Direct version of the strided-batched GEMM kernel with [A, B] = [transposed, non-transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectStridedBatchedTN(const int kSizeM, const int kSizeN, const int kSizeK,
@@ -195,7 +195,7 @@ void XgemmDirectStridedBatchedTN(const int kSizeM, const int kSizeN, const int k
 // Direct version of the strided-batched GEMM kernel with [A, B] = [transposed, transposed]
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XgemmDirectStridedBatchedTT(const int kSizeM, const int kSizeN, const int kSizeK,

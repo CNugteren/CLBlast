@@ -90,7 +90,7 @@ INLINE_FUNC realVF LoadMatrixAVF(const __global realVF* restrict agm, const int 
 // --> 'do_conjugate' is 0
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
 #endif
 void XgemvFast(const int m, const int n,
@@ -197,7 +197,7 @@ void XgemvFast(const int m, const int n,
 // --> 'do_conjugate' is 0
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
 #endif
 void XgemvFastRot(const int m, const int n,

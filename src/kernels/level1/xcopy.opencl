@@ -24,7 +24,7 @@ R"(
 // Full version of the kernel with offsets and strided accesses
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void Xcopy(const int n,
@@ -43,7 +43,7 @@ void Xcopy(const int n,
 // dividable by 'VW', 'WGS' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XcopyFast(const int n,

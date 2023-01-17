@@ -43,7 +43,7 @@ std::shared_ptr<Program> CompileFromSource(
 
   // For specific devices, use the non-IEE754 compliant OpenCL mad() instruction. This can improve
   // performance, but might result in a reduced accuracy.
-  if ((device.IsAMD() && device.IsGPU()) || device.IsQualcomm()) {
+  if ((device.IsAMD() && device.IsGPU()) || (device.IsQualcomm() && device.IsGPU())) {
     header_string += "#define USE_CL_MAD 1\n";
   }
 
@@ -54,7 +54,7 @@ std::shared_ptr<Program> CompileFromSource(
 
   // For specific devices add a global synchronisation barrier to the GEMM kernel to optimize
   // performance through better cache behaviour
-  if ((device.IsARM() && device.IsGPU()) || device.IsQualcomm()) {
+  if ((device.IsARM() && device.IsGPU()) || (device.IsQualcomm() && device.IsGPU())) {
     header_string += "#define GLOBAL_MEM_FENCE 1\n";
   }
 

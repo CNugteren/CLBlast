@@ -20,7 +20,7 @@ R"(
 // Symmetric version of the rank-2 matrix update kernel (HER2, HPR2, SYR2, SPR2)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
 #endif
 void Xher2(const int n,

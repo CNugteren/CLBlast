@@ -24,7 +24,7 @@ R"(
 // Full version of the kernel with offsets and strided accesses
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void Xswap(const int n,
@@ -45,7 +45,7 @@ void Xswap(const int n,
 // dividable by 'VW', 'WGS' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XswapFast(const int n,

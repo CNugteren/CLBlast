@@ -22,7 +22,7 @@ R"(
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void SymmLowerToSquared(const int src_dim,
@@ -59,7 +59,7 @@ void SymmLowerToSquared(const int src_dim,
 // Same as above, but now the matrix' data is stored in the upper-triangle
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void SymmUpperToSquared(const int src_dim,

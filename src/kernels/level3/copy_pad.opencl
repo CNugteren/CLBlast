@@ -61,7 +61,7 @@ INLINE_FUNC void _CopyPadMatrix(const int src_one, const int src_two,
 // Interface to the above function
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyPadMatrix(const int src_one, const int src_two,
@@ -124,7 +124,7 @@ INLINE_FUNC void _CopyMatrix(const int src_one, const int src_two,
 // Interface to the above function
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyMatrix(const int src_one, const int src_two,
@@ -148,7 +148,7 @@ void CopyMatrix(const int src_one, const int src_two,
 // Batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyPadMatrixBatched(const int src_one, const int src_two,
@@ -170,7 +170,7 @@ void CopyPadMatrixBatched(const int src_one, const int src_two,
 // Batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyMatrixBatched(const int src_one, const int src_two,
@@ -195,7 +195,7 @@ void CopyMatrixBatched(const int src_one, const int src_two,
 // Strided-batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
@@ -217,7 +217,7 @@ void CopyPadMatrixStridedBatched(const int src_one, const int src_two,
 // Strided-batched version of the above
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
 #endif
 void CopyMatrixStridedBatched(const int src_one, const int src_two,

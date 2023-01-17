@@ -463,7 +463,7 @@ std::string GetDeviceArchitecture(const Device& device) {
     else if (device.HasExtension(kKhronosAttributesAMD)) {
       device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
     }
-    else if (device.IsQualcomm()) { // queries the Adreno GPU architecture version
+    else if ((device.IsQualcomm() && device.IsGPU())) { // queries the Adreno GPU architecture version
       device_architecture = device.AdrenoVersion();
     }
     // Note: no else - 'device_architecture' might be the empty string

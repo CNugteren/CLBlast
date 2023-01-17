@@ -20,7 +20,7 @@ R"(
 // Regular version of the rank-1 matrix update kernel (GER, GERU, GERC)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
 #endif
 void Xger(const int max1, const int max2,

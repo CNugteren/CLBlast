@@ -24,7 +24,7 @@ R"(
 // Full version of the kernel with offsets and strided accesses
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void Xaxpy(const int n, const real_arg arg_alpha,
@@ -43,7 +43,7 @@ void Xaxpy(const int n, const real_arg arg_alpha,
 // assumes that 'n' is dividable by 'VW' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XaxpyFaster(const int n, const real_arg arg_alpha,
@@ -67,7 +67,7 @@ void XaxpyFaster(const int n, const real_arg arg_alpha,
 // dividable by 'VW', 'WGS' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XaxpyFastest(const int n, const real_arg arg_alpha,
@@ -89,7 +89,7 @@ void XaxpyFastest(const int n, const real_arg arg_alpha,
 // Full version of the kernel with offsets and strided accesses: batched version
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XaxpyBatched(const int n, const __constant real_arg* arg_alphas,

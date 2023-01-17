@@ -41,7 +41,7 @@ void FillVector(const int n, const int inc, const int offset,
 
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
 #endif
 void trsv_forward(int n,
@@ -93,7 +93,7 @@ void trsv_forward(int n,
 
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
 #endif
 void trsv_backward(int n,

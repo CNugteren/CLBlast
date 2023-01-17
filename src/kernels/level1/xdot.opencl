@@ -32,7 +32,7 @@ R"(
 // The main reduction kernel, performing the multiplication and the majority of the sum operation
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
 #endif
 void Xdot(const int n,
@@ -78,7 +78,7 @@ void Xdot(const int n,
 // be launched with a single workgroup only.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
 #endif
 void XdotEpilogue(const __global real* restrict input,

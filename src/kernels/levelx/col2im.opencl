@@ -94,7 +94,7 @@ INLINE_FUNC void Xcol2im(const int input_h, const int input_w, const int channel
 // Kernel flip version of the Xcol2im kernel (for convolution)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 #endif
 void Xcol2imKernelFlip(const int input_h, const int input_w, const int channels,
@@ -119,7 +119,7 @@ void Xcol2imKernelFlip(const int input_h, const int input_w, const int channels,
 // Normal version of the Xcol2im kernel (for cross-correlation)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 #endif
 void Xcol2imKernelNormal(const int input_h, const int input_w, const int channels,

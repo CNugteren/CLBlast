@@ -212,7 +212,7 @@ INLINE_FUNC real LoadMatrixA(const __global real* restrict agm, const int x, con
 // Full version of the kernel
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
 #endif
 void Xgemv(const int m, const int n,

@@ -32,7 +32,7 @@ R"(
 // The main reduction kernel, performing the loading and the majority of the operation
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
 #endif
 void Xasum(const int n,
@@ -79,7 +79,7 @@ void Xasum(const int n,
 // be launched with a single workgroup only.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
 #endif
 void XasumEpilogue(const __global real* restrict input,

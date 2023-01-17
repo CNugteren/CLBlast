@@ -68,7 +68,7 @@ INLINE_FUNC realV MultiplyVectorVector(realV cvec, const realV aval, const realV
 // Full version of the kernel with offsets and strided accesses
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void Xhad(const int n, const real_arg arg_alpha, const real_arg arg_beta,
@@ -96,7 +96,7 @@ void Xhad(const int n, const real_arg arg_alpha, const real_arg arg_beta,
 // assumes that 'n' is dividable by 'VW' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XhadFaster(const int n, const real_arg arg_alpha, const real_arg arg_beta,
@@ -127,7 +127,7 @@ void XhadFaster(const int n, const real_arg arg_alpha, const real_arg arg_beta,
 // dividable by 'VW', 'WGS' and 'WPT'.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
 #endif
 void XhadFastest(const int n, const real_arg arg_alpha, const real_arg arg_beta,

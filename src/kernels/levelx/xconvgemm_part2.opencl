@@ -25,7 +25,7 @@ R"(
 #if defined(CONVGEMM_WITH_IM2COL)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void Xconvgemm(const int num_patches, const int num_kernels, const int patch_size,
@@ -291,7 +291,7 @@ INLINE_FUNC void Xconvgemm(const int num_patches, const int num_kernels, const i
 #if !defined(CONVGEMM_WITH_IM2COL)
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XconvgemmFlip(const int num_patches, const int num_kernels, const int patch_size,
@@ -316,7 +316,7 @@ void XconvgemmFlip(const int num_patches, const int num_kernels, const int patch
 
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
 #endif
 void XconvgemmNormal(const int num_patches, const int num_kernels, const int patch_size,

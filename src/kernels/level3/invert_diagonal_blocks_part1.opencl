@@ -84,7 +84,7 @@ R"(
 // Inverts a diagonal block of INTERNAL_BLOCK_SIZE by INTERNAL_BLOCK_SIZE elements in a larger matrix
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(INTERNAL_BLOCK_SIZE, 1, 1)))
 #endif
 void InvertDiagonalBlock(const int n, __global const real* restrict src, const int src_offset, const int src_ld,

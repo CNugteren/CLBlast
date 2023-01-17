@@ -37,7 +37,7 @@ R"(
 // COPY_VW. Also requires both matrices to be of the same dimensions and without offset.
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
-#elif
+#else
   __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
 #endif
 void CopyMatrixFast(const int ld,
