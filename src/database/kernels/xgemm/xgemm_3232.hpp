@@ -111,8 +111,9 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
         { "default", {
+          { Name{"Intel(R) FPGA Emulation Device                    "}, Params{ 1, 4, 1, 1, 16, 16, 16, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) Many Integrated Core Acceleration Card   "}, Params{ 0, 1, 32, 2, 32, 32, 32, 32, 16, 128, 1, 0, 0, 0, 1, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 32, 16, 128, 1, 0, 0, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 1, 1, 16, 16, 16, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },

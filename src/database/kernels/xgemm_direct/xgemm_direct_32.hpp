@@ -88,6 +88,14 @@ const DatabaseEntry XgemmDirectSingle = {
         } },
       }
     },
+    { // Intel accelerators
+      kDeviceTypeAccelerator, "Intel", {
+        { "default", {
+          { Name{"Intel(R) FPGA Emulation Device                    "}, Params{ 2, 8, 32, 8, 8, 0, 1, 2, 1, 64, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 32, 8, 8, 0, 1, 2, 1, 64, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM2.0", {
