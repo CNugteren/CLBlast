@@ -197,6 +197,10 @@ const DatabaseEntry PadSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 32, 16, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 16, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 740", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 8, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 8, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default

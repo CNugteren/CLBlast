@@ -197,6 +197,10 @@ const DatabaseEntry XaxpySingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 4, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 740", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 8, 512, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 512, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default

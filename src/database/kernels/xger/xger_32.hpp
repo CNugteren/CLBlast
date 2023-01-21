@@ -183,6 +183,10 @@ const DatabaseEntry XgerSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 740", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default

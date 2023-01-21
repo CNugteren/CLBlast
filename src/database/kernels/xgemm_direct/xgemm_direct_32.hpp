@@ -152,6 +152,10 @@ const DatabaseEntry XgemmDirectSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 8, 16, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 16, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 740", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default

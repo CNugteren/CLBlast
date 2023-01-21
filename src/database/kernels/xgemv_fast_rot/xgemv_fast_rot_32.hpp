@@ -154,6 +154,10 @@ const DatabaseEntry XgemvFastRotSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 4, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 740", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 4, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default
