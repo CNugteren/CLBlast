@@ -1,5 +1,10 @@
 Development version (next version)
 - Fixes two small issues in the plotting script
+- Modifications to improve performance on Qualcomm Adreno GPUs:
+  * Unique database entries for specific Adreno devices
+  * Toggle OpenCL kernel compilation options for Adreno
+  * New preprocessor directive RELAX_WORKGROUP_SIZE
+- Fixed a bug in handling of #undef in CLBlast loop unrolling and array-to-register mapping functions
 
 Version 1.5.3
 - Fix a correctness issue with DGEMM on SM 7.5 Turing GPUs

@@ -20,7 +20,11 @@ R"(
 
 // Kernel to populate a squared symmetric matrix, given that the triangle which holds the data is
 // stored as the lower-triangle of the input matrix. This uses the padding kernel's parameters.
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void SymmLowerToSquared(const int src_dim,
                         const int src_ld, const int src_offset,
                         __global const real* restrict src,
@@ -53,7 +57,11 @@ void SymmLowerToSquared(const int src_dim,
 }
 
 // Same as above, but now the matrix' data is stored in the upper-triangle
-__kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(PAD_DIMX, PAD_DIMY, 1)))
+#endif
 void SymmUpperToSquared(const int src_dim,
                         const int src_ld, const int src_offset,
                         __global const real* restrict src,

@@ -30,7 +30,11 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the loading and the majority of the operation
-__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#endif
 void Xasum(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global real* output) {
@@ -73,7 +77,11 @@ void Xasum(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
-__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#endif
 void XasumEpilogue(const __global real* restrict input,
                    __global real* asum, const int asum_offset) {
   __local real lm[WGS2];

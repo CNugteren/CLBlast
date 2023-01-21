@@ -23,7 +23,11 @@ R"(
 
 // ConvGEMM kernel
 #if defined(CONVGEMM_WITH_IM2COL)
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void Xconvgemm(const int num_patches, const int num_kernels, const int patch_size,
                const __global realND* restrict kernelgm, const int kernel_offset,
                __global real* resultgm, const int result_offset, const int result_stride,
@@ -285,7 +289,11 @@ INLINE_FUNC void Xconvgemm(const int num_patches, const int num_kernels, const i
 }
 
 #if !defined(CONVGEMM_WITH_IM2COL)
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XconvgemmFlip(const int num_patches, const int num_kernels, const int patch_size,
                    const __global realND* restrict kernelgm, const int kernel_offset,
                    __global real* resultgm, const int result_offset, const int result_stride,
@@ -306,7 +314,11 @@ void XconvgemmFlip(const int num_patches, const int num_kernels, const int patch
             output_h, output_w, alm, blm, kernel_flip);
 }
 
-__kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(MDIMCD, NDIMCD, 1)))
+#endif
 void XconvgemmNormal(const int num_patches, const int num_kernels, const int patch_size,
                      const __global realND* restrict kernelgm, const int kernel_offset,
                      __global real* resultgm, const int result_offset, const int result_stride,

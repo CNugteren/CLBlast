@@ -19,7 +19,11 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_GEMMBATCHED)
 
-__kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+#endif
 void XgemmBatched(const int kSizeM, const int kSizeN, const int kSizeK,
                   const __constant real_arg* arg_alphas,
                   const __constant real_arg* arg_betas,
@@ -62,7 +66,11 @@ void XgemmBatched(const int kSizeM, const int kSizeN, const int kSizeK,
 // =================================================================================================
 #if defined(ROUTINE_GEMMSTRIDEDBATCHED)
 
-__kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(MDIMC, NDIMC, 1)))
+#endif
 void XgemmStridedBatched(const int kSizeM, const int kSizeN, const int kSizeK,
                          const real_arg arg_alpha, const real_arg arg_beta,
                          const __global realM* restrict agm, const int a_one, const int a_two,

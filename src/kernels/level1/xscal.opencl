@@ -22,7 +22,11 @@ R"(
 // =================================================================================================
 
 // Full version of the kernel with offsets and strided accesses
-__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#endif
 void Xscal(const int n, const real_arg arg_alpha,
            __global real* xgm, const int x_offset, const int x_inc) {
   const real alpha = GetRealArg(arg_alpha);
@@ -40,7 +44,11 @@ void Xscal(const int n, const real_arg arg_alpha,
 
 // Faster version of the kernel without offsets and strided accesses. Also assumes that 'n' is
 // dividable by 'VW', 'WGS' and 'WPT'.
-__kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS, 1, 1)))
+#endif
 void XscalFast(const int n, const real_arg arg_alpha,
                __global realV* xgm) {
   const real alpha = GetRealArg(arg_alpha);

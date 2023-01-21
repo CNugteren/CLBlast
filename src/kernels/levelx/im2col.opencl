@@ -74,7 +74,11 @@ INLINE_FUNC void Xim2col(const int input_h, const int input_w, const int channel
 // =================================================================================================
 
 // Kernel flip version of the Xim2col kernel (for convolution)
-__kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
+#endif
 void Xim2colKernelFlip(const int input_h, const int input_w, const int channels,
                        const int output_h, const int output_w,
                        const int kernel_h, const int kernel_w,
@@ -91,7 +95,11 @@ void Xim2colKernelFlip(const int input_h, const int input_w, const int channels,
 }
 
 // Normal version of the Xim2col kernel (for cross-correlation)
-__kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(COPY_DIMX, COPY_DIMY, 1)))
+#endif
 void Xim2colKernelNormal(const int input_h, const int input_w, const int channels,
                          const int output_h, const int output_w,
                          const int kernel_h, const int kernel_w,

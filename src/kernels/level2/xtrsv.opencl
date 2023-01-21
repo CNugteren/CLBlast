@@ -39,7 +39,11 @@ void FillVector(const int n, const int inc, const int offset,
 
 // =================================================================================================
 
-__kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
+#endif
 void trsv_forward(int n,
                   const __global real *A, const int a_offset, int a_ld,
                   __global real *b, const int b_offset, int b_inc,
@@ -87,7 +91,11 @@ void trsv_forward(int n,
   }
 }
 
-__kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(TRSV_BLOCK_SIZE, 1, 1)))
+#endif
 void trsv_backward(int n,
                    const __global real *A, const int a_offset, int a_ld,
                    __global real *b, const int b_offset, int b_inc,

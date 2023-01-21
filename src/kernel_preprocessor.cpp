@@ -371,6 +371,25 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
         defines_string.emplace(name, value);
       }
 
+      // Detect #undef macros
+      // When USE_SUBGROUP_SHUFFLING is set, but kernel parameters do not satisfy the conditions
+      // for subgroup shuffle, USE_SUBGROUP_SHUFFLING needs to be unset in preprocessing
+      // to avoid GEMM kernel errors. See src/kernels/level3/xgemm_part1.opencl line 142.
+      // In this preprocessor, macros are not redefined because of behavior defined by std::map::emplace
+      const auto undef_pos = line.find("#undef ");
+      if (undef_pos != std::string::npos) {
+        const auto undef = line.substr(undef_pos + 7); // length of "#undef "
+        // checks if definition is found in defines_int and/or defines_string, then removes the definition
+        auto int_undef = defines_int.find(undef);
+        if (int_undef != defines_int.end()){
+          defines_int.erase(int_undef);
+        }
+        auto string_undef = defines_string.find(undef);
+        if (string_undef != defines_string.end()){
+          defines_string.erase(string_undef);
+        }
+      }
+
       // Detect #ifndef blocks
       const auto ifndef_pos = line.find("#ifndef ");
       if (ifndef_pos != std::string::npos) {

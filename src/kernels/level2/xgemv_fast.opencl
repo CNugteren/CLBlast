@@ -88,7 +88,11 @@ INLINE_FUNC realVF LoadMatrixAVF(const __global realVF* restrict agm, const int 
 // --> 'a_ld' is a multiple of VW2
 // --> 'a_rotated' is 0
 // --> 'do_conjugate' is 0
-__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#endif
 void XgemvFast(const int m, const int n,
                const real_arg arg_alpha,
                const real_arg arg_beta,
@@ -191,7 +195,11 @@ void XgemvFast(const int m, const int n,
 // --> 'a_ld' is a multiple of VW3
 // --> 'a_rotated' is 1
 // --> 'do_conjugate' is 0
-__kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS3, 1, 1)))
+#endif
 void XgemvFastRot(const int m, const int n,
                   const real_arg arg_alpha,
                   const real_arg arg_beta,
