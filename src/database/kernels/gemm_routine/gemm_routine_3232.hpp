@@ -15,6 +15,7 @@ const DatabaseEntry GemmRoutineComplexSingle = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "default", {
+          { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 960, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {
