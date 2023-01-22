@@ -15,6 +15,7 @@ const DatabaseEntry TrsvRoutineDouble = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "default", {
+          { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {

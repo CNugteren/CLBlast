@@ -52,6 +52,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "default", {
+          { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
         } },
@@ -110,8 +111,9 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Intel accelerators
       kDeviceTypeAccelerator, "Intel", {
         { "default", {
+          { Name{"Intel(R) FPGA Emulation Device                    "}, Params{ 1, 4, 1, 1, 16, 16, 16, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) Many Integrated Core Acceleration Card   "}, Params{ 0, 1, 32, 2, 32, 32, 32, 32, 16, 128, 1, 0, 0, 0, 1, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 32, 16, 128, 1, 0, 0, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 1, 1, 16, 16, 16, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
