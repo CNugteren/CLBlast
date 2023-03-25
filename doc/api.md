@@ -2260,8 +2260,8 @@ Arguments to GEMM:
 
 Requirements for GEMM:
 
-* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
-* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* When `(transpose_a == Transpose::kNo && layout == Layout::kColMajor) || (transpose_a == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `(transpose_b == Transpose::kNo && layout == Layout::kColMajor) || (transpose_b == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
 * The value of `c_ld` must be at least `m`.
 
 
@@ -2500,7 +2500,7 @@ Arguments to SYRK:
 
 Requirements for SYRK:
 
-* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
 * The value of `c_ld` must be at least `m`.
 
 
@@ -2560,7 +2560,7 @@ Arguments to HERK:
 
 Requirements for HERK:
 
-* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
 * The value of `c_ld` must be at least `m`.
 
 
@@ -2650,8 +2650,8 @@ Arguments to SYR2K:
 
 Requirements for SYR2K:
 
-* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
-* When `transpose == Transpose::kNo`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
 * The value of `c_ld` must be at least `n`.
 
 
@@ -2717,8 +2717,8 @@ Arguments to HER2K:
 
 Requirements for HER2K:
 
-* When `transpose == Transpose::kNo`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
-* When `transpose == Transpose::kNo`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `n`, otherwise `a_ld` must be at least `k`.
+* When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`.
 * The value of `c_ld` must be at least `n`.
 
 
@@ -3370,8 +3370,8 @@ Arguments to GEMMBATCHED:
 
 Requirements for GEMMBATCHED:
 
-* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
-* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* When `(transpose_a == Transpose::kNo && layout == Layout::kColMajor) || (transpose_a == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `(transpose_b == Transpose::kNo && layout == Layout::kColMajor) || (transpose_b == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
 * The value of `c_ld` must be at least `m`.
 
 
@@ -3472,8 +3472,8 @@ Arguments to GEMMSTRIDEDBATCHED:
 
 Requirements for GEMMSTRIDEDBATCHED:
 
-* When `transpose_a == Transpose::kNo`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
-* When `transpose_b == Transpose::kNo`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
+* When `(transpose_a == Transpose::kNo && layout == Layout::kColMajor) || (transpose_a == Transpose::kYes && layout == Layout::kRowMajor)`, then `a_ld` must be at least `m`, otherwise `a_ld` must be at least `k`.
+* When `(transpose_b == Transpose::kNo && layout == Layout::kColMajor) || (transpose_b == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`.
 * The value of `c_ld` must be at least `m`.
 
 
