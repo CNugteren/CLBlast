@@ -133,6 +133,7 @@ constexpr auto kBufMatB = "B";
 constexpr auto kBufMatC = "C";
 constexpr auto kBufMatAP = "AP";
 constexpr auto kBufScalar = "Scalar";
+constexpr auto kBufScalarUint = "ScalarUint";
 
 // =================================================================================================
 
