@@ -70,7 +70,7 @@ void Xamax(const int n,
     #endif
     if (x > max) {
       max = x;
-      imax = id*x_inc + x_offset;
+      imax = id;
     }
     id += WGS1*num_groups;
   }

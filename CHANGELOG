@@ -5,6 +5,7 @@ Development version (next version)
   * Toggle OpenCL kernel compilation options for Adreno
   * New preprocessor directive RELAX_WORKGROUP_SIZE
 - Fixed a bug in handling of #undef in CLBlast loop unrolling and array-to-register mapping functions
+- Fixed a bug in XAMAX/XAMIN routines related to inadvertently including the increment and offset in the result
 - Fixed a documentation bug in the 'ld' requirements
 - Added tuned parameters for various devices (see doc/tuning.md)
 
