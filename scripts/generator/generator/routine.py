@@ -302,7 +302,10 @@ class Routine:
         """As above but as vectors"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = [prefix + "std::vector<" + flavour.buffer_type + ">& " + name + "_buffer"]
+            if name == "imax":
+                a = [prefix + "std::vector<unsigned int>& " + name + "_buffer"]
+            else:
+                a = [prefix + "std::vector<" + flavour.buffer_type + ">& " + name + "_buffer"]
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
