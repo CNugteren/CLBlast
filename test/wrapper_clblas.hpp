@@ -744,13 +744,13 @@ clblasStatus clblasXasum<half>(const size_t n,
 // Forwards the clBLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 clblasStatus clblasXamax(const size_t n,
-                         Buffer<T>& imax_buffer, const size_t imax_offset,
+                         Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                          const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
                          cl_uint num_queues, cl_command_queue *queues,
                          cl_uint num_wait_events, const cl_event *wait_events, cl_event *events);
 template <>
 clblasStatus clblasXamax<float>(const size_t n,
-                                Buffer<float>& imax_buffer, const size_t imax_offset,
+                                Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                                 const Buffer<float>& x_buffer, const size_t x_offset, const size_t x_inc,
                                 cl_uint num_queues, cl_command_queue *queues,
                                 cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
@@ -765,7 +765,7 @@ clblasStatus clblasXamax<float>(const size_t n,
 }
 template <>
 clblasStatus clblasXamax<double>(const size_t n,
-                                 Buffer<double>& imax_buffer, const size_t imax_offset,
+                                 Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                                  const Buffer<double>& x_buffer, const size_t x_offset, const size_t x_inc,
                                  cl_uint num_queues, cl_command_queue *queues,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
@@ -780,7 +780,7 @@ clblasStatus clblasXamax<double>(const size_t n,
 }
 template <>
 clblasStatus clblasXamax<float2>(const size_t n,
-                                 Buffer<float2>& imax_buffer, const size_t imax_offset,
+                                 Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                                  const Buffer<float2>& x_buffer, const size_t x_offset, const size_t x_inc,
                                  cl_uint num_queues, cl_command_queue *queues,
                                  cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
@@ -795,7 +795,7 @@ clblasStatus clblasXamax<float2>(const size_t n,
 }
 template <>
 clblasStatus clblasXamax<double2>(const size_t n,
-                                  Buffer<double2>& imax_buffer, const size_t imax_offset,
+                                  Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                                   const Buffer<double2>& x_buffer, const size_t x_offset, const size_t x_inc,
                                   cl_uint num_queues, cl_command_queue *queues,
                                   cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
@@ -810,17 +810,16 @@ clblasStatus clblasXamax<double2>(const size_t n,
 }
 template <>
 clblasStatus clblasXamax<half>(const size_t n,
-                               Buffer<half>& imax_buffer, const size_t imax_offset,
+                               Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                                const Buffer<half>& x_buffer, const size_t x_offset, const size_t x_inc,
                                cl_uint num_queues, cl_command_queue *queues,
                                cl_uint num_wait_events, const cl_event *wait_events, cl_event *events) {
   auto x_buffer_bis = HalfToFloatBuffer(x_buffer, queues[0]);
-  auto imax_buffer_bis = HalfToFloatBuffer(imax_buffer, queues[0]);
+  auto imax_buffer_bis = imax_buffer;
   auto status = clblasXamax(n,
                             imax_buffer_bis, imax_offset,
                             x_buffer_bis, x_offset, x_inc,
                             num_queues, queues, num_wait_events, wait_events, events);
-  FloatToHalfBuffer(imax_buffer, imax_buffer_bis, queues[0]);
   return status;
 }
 

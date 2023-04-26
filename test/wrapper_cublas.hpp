@@ -576,11 +576,11 @@ cublasStatus_t cublasXasum<half>(cublasHandle_t handle, const size_t n,
 // Forwards the cuBLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
 cublasStatus_t cublasXamax(cublasHandle_t handle, const size_t n,
-                           T* imax_buffer, const size_t imax_offset,
+                           unsigned int * imax_buffer, const size_t imax_offset,
                            const T* x_buffer, const size_t x_offset, const size_t x_inc);
 template <>
 cublasStatus_t cublasXamax<float>(cublasHandle_t handle, const size_t n,
-                                  float* imax_buffer, const size_t imax_offset,
+                                  unsigned int * imax_buffer, const size_t imax_offset,
                                   const float* x_buffer, const size_t x_offset, const size_t x_inc) {
   auto status = cublasIsamax(handle, static_cast<int>(n),
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -590,7 +590,7 @@ cublasStatus_t cublasXamax<float>(cublasHandle_t handle, const size_t n,
 }
 template <>
 cublasStatus_t cublasXamax<double>(cublasHandle_t handle, const size_t n,
-                                   double* imax_buffer, const size_t imax_offset,
+                                   unsigned int * imax_buffer, const size_t imax_offset,
                                    const double* x_buffer, const size_t x_offset, const size_t x_inc) {
   auto status = cublasIdamax(handle, static_cast<int>(n),
                             &x_buffer[x_offset], static_cast<int>(x_inc),
@@ -600,7 +600,7 @@ cublasStatus_t cublasXamax<double>(cublasHandle_t handle, const size_t n,
 }
 template <>
 cublasStatus_t cublasXamax<float2>(cublasHandle_t handle, const size_t n,
-                                   float2* imax_buffer, const size_t imax_offset,
+                                   unsigned int * imax_buffer, const size_t imax_offset,
                                    const float2* x_buffer, const size_t x_offset, const size_t x_inc) {
   auto status = cublasIcamax(handle, static_cast<int>(n),
                             reinterpret_cast<const cuComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -610,7 +610,7 @@ cublasStatus_t cublasXamax<float2>(cublasHandle_t handle, const size_t n,
 }
 template <>
 cublasStatus_t cublasXamax<double2>(cublasHandle_t handle, const size_t n,
-                                    double2* imax_buffer, const size_t imax_offset,
+                                    unsigned int * imax_buffer, const size_t imax_offset,
                                     const double2* x_buffer, const size_t x_offset, const size_t x_inc) {
   auto status = cublasIzamax(handle, static_cast<int>(n),
                             reinterpret_cast<const cuDoubleComplex*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
@@ -620,7 +620,7 @@ cublasStatus_t cublasXamax<double2>(cublasHandle_t handle, const size_t n,
 }
 template <>
 cublasStatus_t cublasXamax<half>(cublasHandle_t handle, const size_t n,
-                                 half* imax_buffer, const size_t imax_offset,
+                                 unsigned int * imax_buffer, const size_t imax_offset,
                                  const half* x_buffer, const size_t x_offset, const size_t x_inc) {
   return CUBLAS_STATUS_NOT_SUPPORTED;
 }

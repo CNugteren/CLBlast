@@ -226,7 +226,10 @@ def wrapper_clblas(routine):
 
                 # Convert to float (note: also integer buffers are stored as half/float)
                 for buf in routine.inputs + routine.outputs:
-                    result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
+                    else:
+                        result += "  auto " + buf + "_buffer_bis = " + buf + "_buffer;" + NL
 
                 # Call the float routine
                 result += "  auto status = clblasX" + routine.name + "("
@@ -236,7 +239,8 @@ def wrapper_clblas(routine):
 
                 # Convert back to half
                 for buf in routine.outputs:
-                    result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis, queues[0]);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis, queues[0]);" + NL
                 result += "  return status;"
 
             # Complete
