@@ -55,7 +55,7 @@ void Xamax(const int n,
   while (id < n) {
     const int x_index = id*x_inc + x_offset;
     #if PRECISION == 3232 || PRECISION == 6464
-      singlereal x = xgm[x_index].x;
+      singlereal x = fabs(xgm[x_index].x) + fabs(xgm[x_index].y);
     #else
       singlereal x = xgm[x_index];
     #endif

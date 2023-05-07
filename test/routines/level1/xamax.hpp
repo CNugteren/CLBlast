@@ -125,7 +125,9 @@ class TestXamax {
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     std::vector<unsigned int> result_uint(args.scalar_size, 0);
     buffers.scalar_uint.Read(queue, args.scalar_size, result_uint);
-    std::vector<T> result(args.scalar_size, static_cast<T>(result_uint[0]));
+    auto result_as_T = static_cast<T>(result_uint[0]);
+    std::vector<T> result(args.scalar_size);
+    result[args.imax_offset] = result_as_T;
     return result;
   }
 
