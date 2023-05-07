@@ -1,4 +1,5 @@
 Development version (next version)
+- Fixes a minor issue with the expected input buffer size in the TRMV routine
 - Fixes two small issues in the plotting script
 - Modifications to improve performance on Qualcomm Adreno GPUs:
   * Unique database entries for specific Adreno devices
