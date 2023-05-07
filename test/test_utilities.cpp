@@ -52,6 +52,7 @@ void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> 
     else if (name == kBufMatC) { buffers_host.c_mat = std::vector<T>(args.c_size, static_cast<T>(0)); buffers.c_mat.Read(queue, args.c_size, buffers_host.c_mat); }
     else if (name == kBufMatAP) { buffers_host.ap_mat = std::vector<T>(args.ap_size, static_cast<T>(0)); buffers.ap_mat.Read(queue, args.ap_size, buffers_host.ap_mat); }
     else if (name == kBufScalar) { buffers_host.scalar = std::vector<T>(args.scalar_size, static_cast<T>(0)); buffers.scalar.Read(queue, args.scalar_size, buffers_host.scalar); }
+    else if (name == kBufScalarUint) { buffers_host.scalar_uint = std::vector<unsigned int>(args.scalar_size, 0); buffers.scalar_uint.Read(queue, args.scalar_size, buffers_host.scalar_uint); }
     else { throw std::runtime_error("Invalid buffer name"); }
   }
 }
@@ -67,6 +68,7 @@ void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> 
     else if (name == kBufMatC) { buffers.c_mat.Write(queue, args.c_size, buffers_host.c_mat); }
     else if (name == kBufMatAP) { buffers.ap_mat.Write(queue, args.ap_size, buffers_host.ap_mat); }
     else if (name == kBufScalar) { buffers.scalar.Write(queue, args.scalar_size, buffers_host.scalar); }
+    else if (name == kBufScalarUint) { buffers.scalar_uint.Write(queue, args.scalar_size, buffers_host.scalar_uint); }
     else { throw std::runtime_error("Invalid buffer name"); }
   }
 }

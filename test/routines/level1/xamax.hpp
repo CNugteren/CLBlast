@@ -35,15 +35,15 @@ class TestXamax {
             kArgXInc,
             kArgXOffset, kArgImaxOffset};
   }
-  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufScalar}; }
-  static std::vector<std::string> BuffersOut() { return {kBufScalar}; }
+  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufScalarUint}; }
+  static std::vector<std::string> BuffersOut() { return {kBufScalarUint}; }
 
   // Describes how to obtain the sizes of the buffers
   static size_t GetSizeX(const Arguments<T> &args) {
     return args.n * args.x_inc + args.x_offset;
   }
   static size_t GetSizeImax(const Arguments<T> &args) {
-    return (1 + args.imax_offset) * 2; // always a 4-byte integer, this is a hack for FP16
+    return args.imax_offset + 1;
   }
 
   // Describes how to set the sizes of all the buffers
@@ -73,13 +73,13 @@ class TestXamax {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = Amax<T>(args.n,
-                            buffers.scalar(), args.imax_offset,
+                            buffers.scalar_uint(), args.imax_offset,
                             buffers.x_vec(), args.x_offset, args.x_inc,
                             &queue_plain, &event);
       if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
     #elif CUDA_API
       auto status = Amax<T>(args.n,
-                            buffers.scalar(), args.imax_offset,
+                            buffers.scalar_uint(), args.imax_offset,
                             buffers.x_vec(), args.x_offset, args.x_inc,
                             queue.GetContext()(), queue.GetDevice()());
       cuStreamSynchronize(queue());
@@ -93,7 +93,7 @@ class TestXamax {
       auto queue_plain = queue();
       auto event = cl_event{};
       auto status = clblasXamax<T>(args.n,
-                                   buffers.scalar, args.imax_offset,
+                                   buffers.scalar_uint, args.imax_offset,
                                    buffers.x_vec, args.x_offset, args.x_inc,
                                    1, &queue_plain, 0, nullptr, &event);
       clWaitForEvents(1, &event);
@@ -105,7 +105,7 @@ class TestXamax {
   #ifdef CLBLAST_REF_CBLAS
     static StatusCode RunReference2(const Arguments<T> &args, BuffersHost<T> &buffers_host, Queue &) {
       cblasXamax(args.n,
-                 buffers_host.scalar, args.imax_offset,
+                 buffers_host.scalar_uint, args.imax_offset,
                  buffers_host.x_vec, args.x_offset, args.x_inc);
       return StatusCode::kSuccess;
     }
@@ -115,7 +115,7 @@ class TestXamax {
   #ifdef CLBLAST_REF_CUBLAS
     static StatusCode RunReference3(const Arguments<T> &args, BuffersCUDA<T> &buffers, Queue &) {
       auto status = cublasXamax(reinterpret_cast<cublasHandle_t>(args.cublas_handle), args.n,
-                                buffers.scalar, args.imax_offset,
+                                buffers.scalar_uint, args.imax_offset,
                                 buffers.x_vec, args.x_offset, args.x_inc);
       if (status == CUBLAS_STATUS_SUCCESS) { return StatusCode::kSuccess; } else { return StatusCode::kUnknownError; }
     }
@@ -123,8 +123,15 @@ class TestXamax {
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    std::vector<T> result(args.scalar_size, static_cast<T>(0));
-    buffers.scalar.Read(queue, args.scalar_size, result);
+    std::vector<unsigned int> result_uint(args.scalar_size, 0);
+    buffers.scalar_uint.Read(queue, args.scalar_size, result_uint);
+    // The result is an integer. However, since the test infrastructure assumes results of
+    // type 'T' (float/double/float2/double2/half), we store the results into T instead.
+    // The values might then become meaningless, but a comparison for testing should still
+    // be valid to verify correctness.
+    auto result_as_T = static_cast<T>(result_uint[0]);
+    std::vector<T> result(args.scalar_size);
+    result[0] = result_as_T;
     return result;
   }
 

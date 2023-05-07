@@ -56,6 +56,7 @@ struct Buffers {
   Buffer<T> c_mat;
   Buffer<T> ap_mat;
   Buffer<T> scalar;
+  Buffer<unsigned int> scalar_uint;
 };
 template <typename T>
 struct BuffersHost {
@@ -66,6 +67,7 @@ struct BuffersHost {
   std::vector<T> c_mat;
   std::vector<T> ap_mat;
   std::vector<T> scalar;
+  std::vector<unsigned int> scalar_uint;
 };
 
 // =================================================================================================
