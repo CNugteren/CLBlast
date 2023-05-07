@@ -36,8 +36,9 @@ void Xtrmv<T>::DoTrmv(const Layout layout, const Triangle triangle,
                       const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
 
   // Creates a copy of X: a temporary scratch buffer
-  auto scratch_buffer = Buffer<T>(context_, n*x_inc + x_offset);
-  x_buffer.CopyTo(queue_, n*x_inc + x_offset, scratch_buffer);
+  const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
+  auto scratch_buffer = Buffer<T>(context_, x_size);
+  x_buffer.CopyTo(queue_, x_size, scratch_buffer);
 
   // The data is either in the upper or lower triangle
   size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
