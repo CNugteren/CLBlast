@@ -487,7 +487,8 @@ class Program {
 
   // Clean-up
   ~Program() {
-    #ifndef _MSC_VER // causes an access violation under Windows when the driver is already unloaded
+    // Causes an access violation under Windows or Android when the driver is already unloaded
+    #if !defined(__ANDROID__) && !defined(_MSC_VER)
       if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
     #endif
   }

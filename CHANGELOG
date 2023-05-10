@@ -8,6 +8,7 @@ Development version (next version)
 - Fixed a bug in XAMAX/XAMIN routines that would cause only the real part of a complex number to be taken into account
 - Fixed a bug that caused tests to not properly do integer-output testing (for XAMAX/XAMIN)
 - Fixes a minor issue with the expected input buffer size in the TRMV/TBMV/TPMV/TRSV routines
+- Fixes an issue with crashes on Android related to calling clReleaseProgram
 - Fixes two small issues in the plotting script
 - Fixed a documentation bug in the 'ld' requirements
 - Added tuned parameters for various devices (see doc/tuning.md)
