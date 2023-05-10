@@ -16,10 +16,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install requirements
+    - name: Install requirements for Ubuntu
       run: |
         sudo apt-get update
-        sudo apt-get install -yq cmake ninja-build ocl-icd-opencl-dev opencl-c-headers libopenblas-dev--no-install-recommends
+        sudo apt-get install -yq cmake ninja-build ocl-icd-opencl-dev opencl-c-headers libopenblas-dev --no-install-recommends
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
+
+    - name: Install requirements for macOS
+      run: brew install ninja
+      if: ${{ matrix.config.os == 'macos-latest' }}
 
     - name: Run CMake
       run: |
