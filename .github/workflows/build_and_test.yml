@@ -1,0 +1,43 @@
+name: CLBlast build
+
+on: [push]
+
+jobs:
+
+  build_and_test:
+    strategy:
+      matrix:
+        config: [
+          {os: ubuntu-latest, c_compiler: gcc, cpp_compiler: g++},
+          {os: ubuntu-latest, c_compiler: clang, cpp_compiler: clang++},
+          {os: macos-latest, c_compiler: clang, cpp_compiler: clang++},
+        ]
+    runs-on: ${{ matrix.config.os }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install requirements
+      run: |
+        sudo apt-get update
+        sudo apt-get install -yq cmake ninja-build ocl-icd-opencl-dev opencl-c-headers libopenblas-dev--no-install-recommends
+
+    - name: Run CMake
+      run: |
+        export CC=${{ matrix.config.c_compiler }}
+        export CXX=${{ matrix.config.cpp_compiler }}
+        cmake -S . -B build -G Ninja -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON
+
+    - name: Compile the code
+      run: cmake --build build
+
+    - name: Run the unittests
+      run: ctest --test-dir build
+
+    - name: Run an example client
+      run: ./build/clblast_client_xgemm
+
+    - name: Run an example sample program
+      run: ./build/clblast_sample_dgemv_c
+
+    - name: Run an example tuner
+      run: ./build/clblast_tuner_xdot
