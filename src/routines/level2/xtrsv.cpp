@@ -99,7 +99,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // TODO: Make x with 0 offset and unit increment by creating custom copy-to and copy-from kernels
   const auto x_offset = b_offset;
   const auto x_inc = b_inc;
-  const auto x_size = n*x_inc + x_offset;
+  const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
   auto x_buffer = Buffer<T>(context_, x_size);
   b_buffer.CopyTo(queue_, x_size, x_buffer);
 
