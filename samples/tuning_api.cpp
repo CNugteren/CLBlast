@@ -66,7 +66,7 @@ int main() {
 
   // Tuning completed. See "clblast.h" for status codes (0 -> success).
   printf("Completed TuneCopy with status %d (0 == OK), found parameters:\n", static_cast<int>(status));
-  for (const auto parameter: parameters) {
+  for (const auto &parameter: parameters) {
     printf(">  %s = %zu\n", parameter.first.c_str(), parameter.second);
   }
 
