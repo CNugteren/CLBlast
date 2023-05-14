@@ -38,6 +38,9 @@ jobs:
     - name: Compile the code
       run: cmake --build build
 
+    - name: Get the diagnostics info
+      run: ./build/clblast_test_diagnostics
+
     - name: Run the unittests
       run: ctest --test-dir build
 
