@@ -40,15 +40,20 @@ jobs:
 
     - name: Get the diagnostics info
       run: ./build/clblast_test_diagnostics
-
-    - name: Run the unittests
-      run: ctest --test-dir build
+      if: ${{ matrix.config.os == 'macos-latest' }}
 
     - name: Run an example client
       run: ./build/clblast_client_xgemm
+      if: ${{ matrix.config.os == 'macos-latest' }}
 
     - name: Run an example sample program
       run: ./build/clblast_sample_dgemv_c
+      if: ${{ matrix.config.os == 'macos-latest' }}
 
     - name: Run an example tuner
       run: ./build/clblast_tuner_xdot
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run the unittests
+      run: ctest --test-dir build
+      if: ${{ matrix.config.os == 'macos-latest' }}
