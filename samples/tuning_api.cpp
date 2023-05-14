@@ -21,8 +21,9 @@
 
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp
-#define CL_HPP_TARGET_OPENCL_VERSION 210
-#define CL_TARGET_OPENCL_VERSION 210
+#define CL_HPP_TARGET_OPENCL_VERSION 120
+#define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#define CL_TARGET_OPENCL_VERSION 120
 #include "opencl.hpp"
 
 // Includes the CLBlast library
@@ -66,7 +67,7 @@ int main() {
 
   // Tuning completed. See "clblast.h" for status codes (0 -> success).
   printf("Completed TuneCopy with status %d (0 == OK), found parameters:\n", static_cast<int>(status));
-  for (const auto parameter: parameters) {
+  for (const auto &parameter: parameters) {
     printf(">  %s = %zu\n", parameter.first.c_str(), parameter.second);
   }
 

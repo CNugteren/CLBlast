@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define CL_TARGET_OPENCL_VERSION 110
+#define CL_TARGET_OPENCL_VERSION 120
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
 
 // Includes the CLBlast library (C interface)
@@ -84,7 +84,7 @@ int main(void) {
   clEnqueueReadBuffer(queue, device_output, CL_TRUE, 0, 1*sizeof(unsigned int), host_output, 0, NULL, NULL);
 
   // Example completed. See "clblast_c.h" for status codes (0 -> success).
-  printf("Completed iSAMAX with status %d: array of %d values with staircases from 0..9 repeated, max at index %zu with value %.0lf\n",
+  printf("Completed iSAMAX with status %d: array of %zu values with staircases from 0..9 repeated, max at index %u with value %.0lf\n",
          status, n, host_output[0], host_input[host_output[0]]);
 
   // Clean-up

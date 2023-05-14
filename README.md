@@ -5,8 +5,8 @@ CLBlast: The tuned OpenCL BLAS library
 | Platform | Build status |
 |-----|-----|
 | Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
-| Linux | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
-| OS X | [![Build Status](https://travis-ci.org/CNugteren/CLBlast.svg?branch=master)](https://travis-ci.org/CNugteren/CLBlast/branches) |
+| Linux/macOS | ![Build Status](https://github.com/cnugteren/clblast/actions/workflows/build_and_test.yml/badge.svg?branch=master)
+ |
 
 | Test machine (thanks to [ArrayFire](https://ci.arrayfire.org:8010/#/builders)) | Test status |
 |-----|-----|

@@ -157,6 +157,15 @@ template <typename T, typename U> const std::vector<Triangle> TestBlas<T,U>::kTr
 template <typename T, typename U> const std::vector<Side> TestBlas<T,U>::kSides = {Side::kLeft, Side::kRight};
 template <typename T, typename U> const std::vector<Diagonal> TestBlas<T,U>::kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
 
+// The transpose configurations to test with: template parameter dependent, see .cpp file for implementation
+template <> const std::vector<Transpose> TestBlas<half,half>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<float,float>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<double,double>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<double2,double2>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<float2,float>::kTransposes;
+template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes;
+
 // =================================================================================================
 
 // Bogus reference function, in case a comparison library is not available

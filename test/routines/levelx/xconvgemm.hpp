@@ -230,7 +230,8 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto b_buffer2 = HalfToFloatBuffer(buffers_host.b_mat);
   auto c_buffer2 = HalfToFloatBuffer(buffers_host.c_mat);
   auto dummy = std::vector<float>(0);
-  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, c_buffer2, dummy, dummy};
+  auto dummy_uint = std::vector<unsigned int>(0);
+  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, c_buffer2, dummy, dummy, dummy_uint};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size; args2.c_size = args.c_size;
   args2.kernel_mode = args.kernel_mode;

@@ -39,7 +39,8 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto y_buffer2 = HalfToFloatBuffer(buffers_host.y_vec);
   auto c_buffer2 = HalfToFloatBuffer(buffers_host.c_mat);
   auto dummy = std::vector<float>(0);
-  auto buffers2 = BuffersHost<float>{x_buffer2, y_buffer2, dummy, dummy, c_buffer2, dummy, dummy};
+  auto dummy_uint = std::vector<unsigned int>(0);
+  auto buffers2 = BuffersHost<float>{x_buffer2, y_buffer2, dummy, dummy, c_buffer2, dummy, dummy, dummy_uint};
   auto args2 = Arguments<float>();
   args2.x_size = args.x_size; args2.y_size = args.y_size; args2.c_size = args.c_size;
   args2.x_inc = args.x_inc; args2.y_inc = args.y_inc; args2.n = args.n;
@@ -152,7 +153,7 @@ public:
   // Describes how to compute the indices of the result buffer
   static size_t ResultID1(const Arguments<T> &args) { return args.n; }
   static size_t ResultID2(const Arguments<T> &) { return 1; } // N/A for this routine
-  static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t) {
+  static size_t GetResultIndex(const Arguments<T> &, const size_t id1, const size_t) {
     return id1; // * args.z_inc + args.z_offset;
   }
 
