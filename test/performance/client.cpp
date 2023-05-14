@@ -279,7 +279,7 @@ void Client<T,U>::PerformanceTest(Arguments<U> &args, const SetMetric set_sizes)
       TimeResult time_cublas;
       try {
         time_cublas = TimedExecution(args.num_runs, args, buffers_cuda, queue, run_reference3_, "cuBLAS");
-      } catch (std::runtime_error e) { }
+      } catch (std::runtime_error &e) { }
       CUDAToHost(args, buffers_cuda, buffers_host, buffers_out_);
       HostToDevice(args, buffers, buffers_host, queue, buffers_out_);
       timings.push_back(std::pair<std::string, TimeResult>("cuBLAS", time_cublas));
