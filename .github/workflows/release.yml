@@ -89,10 +89,10 @@ jobs:
     - name: Package the code
       run: |
         cmake --build build --target install
-        zip -r ${{env.RELEASE_NAME}}.zip ${{env.RELEASE_NAME}}
+        7z a -r ${{env.RELEASE_NAME}}.7z ${{env.RELEASE_NAME}}
 
     - name: Upload the release
       uses: actions/upload-artifact@v3
       with:
         name: ${{env.RELEASE_NAME}}
-        path: ${{env.RELEASE_NAME}}.zip
+        path: ${{env.RELEASE_NAME}}.7z
