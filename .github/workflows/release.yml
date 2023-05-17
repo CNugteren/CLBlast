@@ -81,7 +81,7 @@ jobs:
     - name: Run CMake
       run: |
         mkdir ${{env.RELEASE_NAME}}
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${{env.RELEASE_NAME}}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${{env.RELEASE_NAME}} -DOPENCL_ROOT=C:/vcpkg/packages/opencl_x64-windows
 
     - name: Compile the code
       run: cmake --build build
