@@ -36,10 +36,10 @@ jobs:
 
     - name: Run CMake
       run: |
-        mkdir ${RELEASE_NAME}
+        mkdir ${{env.RELEASE_NAME}}
         export CC=${{ matrix.config.c_compiler }}
         export CXX=${{ matrix.config.cpp_compiler }}
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${RELEASE_NAME}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${{env.RELEASE_NAME}}
 
     - name: Compile the code
       run: cmake --build build
@@ -47,13 +47,13 @@ jobs:
     - name: Package the code
       run: |
         cmake --build build --target install
-        tar -cvf ${RELEASE_NAME}.tar.gz ${RELEASE_NAME}
+        tar -cvf ${{env.RELEASE_NAME}}.tar.gz ${{env.RELEASE_NAME}}
 
     - name: Upload the release
       uses: actions/upload-artifact@v3
       with:
-        name: ${RELEASE_NAME}
-        path: ${RELEASE_NAME}.tar.gz
+        name: ${{env.RELEASE_NAME}}
+        path: ${{env.RELEASE_NAME}}.tar.gz
 
 
   release_windows:
