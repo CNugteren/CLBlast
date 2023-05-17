@@ -16,7 +16,11 @@ const DatabaseEntry XconvgemmSingle = {
       kDeviceTypeGPU, "AMD", {
         { "default", {
           { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 1, 8, 16, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 32, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1010:xnack-", {
+          { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 1, 8, 8, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 8, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 1, 8, 16, 32, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },

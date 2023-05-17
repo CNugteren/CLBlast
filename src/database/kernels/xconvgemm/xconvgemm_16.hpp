@@ -15,7 +15,11 @@ const DatabaseEntry XconvgemmHalf = {
     { // AMD GPUs
       kDeviceTypeGPU, "AMD", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 8, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1010:xnack-", {
+          { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
@@ -34,7 +38,7 @@ const DatabaseEntry XconvgemmHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

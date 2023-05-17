@@ -48,6 +48,10 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 0, 0, 0, 0, 2, 2 } },
         } },
+        { "gfx1010:xnack-", {
+          { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+        } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 1, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 1, 2, 2 } },
