@@ -48,6 +48,10 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 0, 0, 0, 0, 2, 2 } },
         } },
+        { "gfx1010:xnack-", {
+          { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+        } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 1, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 1, 2, 2 } },
@@ -151,14 +155,19 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 1, 2, 1, 1, 16, 16, 32, 8, 8, 16, 0, 0, 0, 0, 2, 1 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"Quadro T2000                                      "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 2 } },
           { Name{"TITAN RTX                                         "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"Tesla T4                                          "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 2 } },
-          { kDeviceNameDefault                                        , Params{ 1, 2, 1, 1, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM8.0", {
           { Name{"A100-PCIE-40GB                                    "}, Params{ 0, 1, 16, 2, 8, 8, 16, 32, 16, 32, 1, 1, 1, 1, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 16, 32, 16, 32, 1, 1, 1, 1, 2, 1 } },
+        } },
+        { "SM8.6", {
+          { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
