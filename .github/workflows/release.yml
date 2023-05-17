@@ -1,0 +1,66 @@
+name: CLBlast release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of the form 1.5.3"
+        required: true
+
+jobs:
+
+  release:
+
+    strategy:
+      matrix:
+        config: [
+          {name: linux, os: ubuntu-20.04, arch: x86_64, c_compiler: gcc-9, cpp_compiler: g++-9},
+          {name: macos, os: macos-11, arch: x86_64, c_compiler: clang, cpp_compiler: clang++},
+          {name: windows, os: windows-2019, arch: x64, c_compiler: cl, cpp_compiler: cl},
+        ]
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      RELEASE_NAME: CLBlast-${{ github.event.inputs.version }}-${{ matrix.config.name }}-${{ matrix.config.arch }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install requirements for Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -yq ocl-icd-opencl-dev opencl-c-headers --no-install-recommends
+      if: ${{ matrix.config.name == 'linux' }}
+
+    - name: Set up MSVC for Windows
+      uses: ilammy/msvc-dev-cmd@v1
+      if: ${{ matrix.config.name == 'windows' }}
+
+    - name: Run CMake for Linux and macOS
+      run: |
+        mkdir ${RELEASE_NAME}
+        export CC=${{ matrix.config.c_compiler }}
+        export CXX=${{ matrix.config.cpp_compiler }}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${RELEASE_NAME}
+      if: ${{ matrix.config.name != 'windows' }}
+
+    - name: Run CMake for Windows
+      run: |
+        mkdir ${RELEASE_NAME}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${RELEASE_NAME}
+      if: ${{ matrix.config.name == 'windows' }}
+
+    - name: Compile the code
+      run: cmake --build build
+
+    - name: Package the code
+      run: |
+        cmake --build build --target install
+        tar -cvf ${RELEASE_NAME}.tar.gz ${RELEASE_NAME}
+
+    - name: Upload the release
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${RELEASE_NAME}
+        path: ${RELEASE_NAME}.tar.gz
