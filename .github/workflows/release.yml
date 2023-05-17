@@ -8,16 +8,16 @@ on:
         required: true
   pull_request: {}
 
+
 jobs:
 
-  release:
+  release_linux_and_macos:
 
     strategy:
       matrix:
         config: [
           {name: linux, os: ubuntu-20.04, arch: x86_64, c_compiler: gcc-9, cpp_compiler: g++-9},
           {name: macos, os: macos-11, arch: x86_64, c_compiler: clang, cpp_compiler: clang++},
-          {name: windows, os: windows-2019, arch: x64, c_compiler: cl, cpp_compiler: cl},
         ]
 
     runs-on: ${{ matrix.config.os }}
@@ -34,23 +34,12 @@ jobs:
         sudo apt-get install -yq ocl-icd-opencl-dev opencl-c-headers --no-install-recommends
       if: ${{ matrix.config.name == 'linux' }}
 
-    - name: Set up MSVC for Windows
-      uses: ilammy/msvc-dev-cmd@v1
-      if: ${{ matrix.config.name == 'windows' }}
-
-    - name: Run CMake for Linux and macOS
+    - name: Run CMake
       run: |
         mkdir ${RELEASE_NAME}
         export CC=${{ matrix.config.c_compiler }}
         export CXX=${{ matrix.config.cpp_compiler }}
         cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${RELEASE_NAME}
-      if: ${{ matrix.config.name != 'windows' }}
-
-    - name: Run CMake for Windows
-      run: |
-        mkdir ${RELEASE_NAME}
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${RELEASE_NAME}
-      if: ${{ matrix.config.name == 'windows' }}
 
     - name: Compile the code
       run: cmake --build build
@@ -65,3 +54,42 @@ jobs:
       with:
         name: ${RELEASE_NAME}
         path: ${RELEASE_NAME}.tar.gz
+
+
+  release_windows:
+
+    strategy:
+      matrix:
+        config: [
+          {name: windows, os: windows-2019, arch: x64},
+        ]
+
+    runs-on: ${{ matrix.config.os }}
+
+    env:
+      RELEASE_NAME: CLBlast-test-version-${{ matrix.config.name }}-${{ matrix.config.arch }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Run CMake
+      run: |
+        mkdir ${{env.RELEASE_NAME}}
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=${{env.RELEASE_NAME}}
+
+    - name: Compile the code
+      run: cmake --build build
+
+    - name: Package the code
+      run: |
+        cmake --build build --target install
+        zip -r ${{env.RELEASE_NAME}}.zip ${{env.RELEASE_NAME}}
+
+    - name: Upload the release
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{env.RELEASE_NAME}}
+        path: ${{env.RELEASE_NAME}}.zip
