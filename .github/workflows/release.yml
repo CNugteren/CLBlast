@@ -75,6 +75,9 @@ jobs:
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
+    - name: Install OpenCL
+      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
+
     - name: Run CMake
       run: |
         mkdir ${{env.RELEASE_NAME}}
