@@ -165,6 +165,10 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"A100-PCIE-40GB                                    "}, Params{ 0, 1, 16, 2, 8, 8, 16, 32, 16, 32, 1, 1, 1, 1, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 16, 32, 16, 32, 1, 1, 1, 1, 2, 1 } },
         } },
+        { "SM8.6", {
+          { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
+        } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
         } },
