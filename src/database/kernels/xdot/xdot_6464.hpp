@@ -144,6 +144,7 @@ const DatabaseEntry XdotComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 512, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Quadro T2000                                      "}, Params{ 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla T4                                          "}, Params{ 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

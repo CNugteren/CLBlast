@@ -160,10 +160,11 @@ const DatabaseEntry XaxpyComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 1, 256, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 1, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Quadro T2000                                      "}, Params{ 1, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 1, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla T4                                          "}, Params{ 1, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 1, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 256, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM8.0", {
           { Name{"A100-PCIE-40GB                                    "}, Params{ 1, 1024, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

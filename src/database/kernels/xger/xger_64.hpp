@@ -147,6 +147,7 @@ const DatabaseEntry XgerDouble = {
           { kDeviceNameDefault                                        , Params{ 64, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 4, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Quadro T2000                                      "}, Params{ 4, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 4, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla T4                                          "}, Params{ 4, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -157,7 +158,7 @@ const DatabaseEntry XgerDouble = {
           { kDeviceNameDefault                                        , Params{ 16, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 64, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

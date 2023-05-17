@@ -134,6 +134,7 @@ const DatabaseEntry XgemmDirectComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 16, 16, 16, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"Quadro T2000                                      "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla T4                                          "}, Params{ 2, 8, 8, 16, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },

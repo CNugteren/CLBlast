@@ -160,6 +160,7 @@ const DatabaseEntry CopyDouble = {
           { kDeviceNameDefault                                        , Params{ 32, 32, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 8, 16, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Quadro T2000                                      "}, Params{ 32, 32, 2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN RTX                                         "}, Params{ 8, 32, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Tesla T4                                          "}, Params{ 32, 32, 2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

@@ -156,6 +156,7 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 2, 4 } },
         } },
         { "SM7.5", {
+          { Name{"NVIDIA GeForce RTX 2080 Ti                        "}, Params{ 1, 1, 1, 1, 4, 4, 8, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"Quadro T2000                                      "}, Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 64, 0, 0, 1, 1, 4, 4 } },
           { Name{"TITAN RTX                                         "}, Params{ 1, 2, 1, 1, 16, 16, 32, 8, 8, 16, 0, 0, 0, 0, 2, 1 } },
           { Name{"Tesla T4                                          "}, Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 64, 0, 0, 1, 1, 4, 4 } },
