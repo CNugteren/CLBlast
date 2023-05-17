@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  build_and_test:
+  build_and_test_linux_and_macos:
     strategy:
       matrix:
         config: [
@@ -57,3 +57,31 @@ jobs:
     - name: Run the unittests
       run: ctest --test-dir build
       if: ${{ matrix.config.os == 'macos-latest' }}
+
+  build_windows:
+
+    strategy:
+      matrix:
+        config: [
+          {os: windows-2019, arch: x64},
+        ]
+
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install OpenBLAS
+      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install openblas
+
+    - name: Install OpenCL
+      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
+
+    - name: Run CMake
+      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON
+
+    - name: Compile the code
+      run: cmake --build build
