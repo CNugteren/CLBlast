@@ -6,7 +6,6 @@ on:
       version:
         description: "Version of the form 1.5.3"
         required: true
-  pull_request: {}
 
 
 jobs:
@@ -23,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     env:
-      RELEASE_NAME: CLBlast-test-version-${{ matrix.config.name }}-${{ matrix.config.arch }}
+      RELEASE_NAME: CLBlast-${{ github.event.inputs.version }}-${{ matrix.config.name }}-${{ matrix.config.arch }}
 
     steps:
     - uses: actions/checkout@v3
@@ -67,7 +66,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     env:
-      RELEASE_NAME: CLBlast-test-version-${{ matrix.config.name }}-${{ matrix.config.arch }}
+      RELEASE_NAME: CLBlast-${{ github.event.inputs.version }}-${{ matrix.config.name }}-${{ matrix.config.arch }}
 
     steps:
     - uses: actions/checkout@v3
