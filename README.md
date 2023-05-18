@@ -5,8 +5,8 @@ CLBlast: The tuned OpenCL BLAS library
 | Platform | Build status |
 |-----|-----|
 | Windows | [![Build Status](https://ci.appveyor.com/api/projects/status/github/cnugteren/clblast?branch=master&svg=true)](https://ci.appveyor.com/project/CNugteren/clblast) |
-| Linux/macOS | ![Build Status](https://github.com/cnugteren/clblast/actions/workflows/build_and_test.yml/badge.svg?branch=master)
- |
+| Linux/macOS | [![Build Status](https://github.com/cnugteren/clblast/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/CNugteren/CLBlast/actions/workflows/build_and_test.yml) |
+
 
 | Test machine (thanks to [ArrayFire](https://ci.arrayfire.org:8010/#/builders)) | Test status |
 |-----|-----|
@@ -18,9 +18,9 @@ CLBlast: The tuned OpenCL BLAS library
 | clblast-windows-amd-r9 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-windows-amd-r9.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-amd-r9) |
 | clblast-windows-nvidia-m6000 | [![Test Status](http://ci.arrayfire.org:8010/badges/clblast-windows-nvidia-m6000.svg)](http://ci.arrayfire.org:8010/#/builders/clblast-windows-nvidia-m6000) |
 
-CLBlast is a modern, lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on various devices as well as the latest CLBlast news.
+CLBlast is a lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on some devices.
 
-The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library. See also the [CLBlast feature roadmap](ROADMAP.md) to get an indication of the future of CLBlast.
+The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
@@ -121,21 +121,7 @@ Contributing
 
 Contributions are welcome in the form of tuning results for OpenCL devices previously untested or pull requests. See [the contributing guidelines](CONTRIBUTING.md) for more details.
 
-The main contributing authors (code, pull requests, testing) are:
-
-* [Cedric Nugteren](http://cnugteren.github.io) - main author
-* [Anton Lokhmotov](https://github.com/psyhtest)
-* [Dragan Djuric](https://github.com/blueberry)
-* [Marco Hutter](http://marco-hutter.de/)
-* [Hugh Perkins](https://github.com/hughperkins)
-* [Gian-Carlo Pascutto](https://github.com/gcp)
-* [Ivan Shapovalov](https://github.com/intelfx)
-* [Dimitri Van Assche](https://github.com/dvasschemacq)
-* [Shehzan Mohammed](https://shehzan10.github.io)
-* [Marco Cianfriglia](https://github.com/mcian)
-* [Kodonnell](https://github.com/kodonnell)
-* [Koichi Akabe](https://github.com/vbkaisetsu)
-* Everyone else listed as a [GitHub contributor](https://github.com/CNugteren/CLBlast/graphs/contributors)
+The main contributing authors (code, pull requests, testing) can be found in the list of[GitHub contributors](https://github.com/CNugteren/CLBlast/graphs/contributors).
 
 Tuning and testing on a variety of OpenCL devices was made possible by:
 
@@ -172,4 +158,4 @@ How to cite this work:
 Support us
 -------------
 
-This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. If you are in the position to support the project by OpenCL-hardware donations or otherwise, please find contact information on the [website of the main author](http://cnugteren.github.io).
+This project started in March 2015 as an evenings and weekends free-time project next to a full-time job for Cedric Nugteren. You can find contact information on the [website of the main author](http://cnugteren.github.io).
