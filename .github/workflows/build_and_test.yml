@@ -81,7 +81,7 @@ jobs:
       run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
 
     - name: Run CMake
-      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON
+      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:/vcpkg/packages/opencl_x64-windows -DCBLAS_ROOT=C:/vcpkg/packages/openblas_x64-windows
 
     - name: Compile the code
       run: cmake --build build
