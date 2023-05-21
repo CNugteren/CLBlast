@@ -74,14 +74,18 @@ jobs:
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Install MKL
-      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install intel-mkl
+    - name: Install OpenBLAS
+      run: |
+        mkdir openblas
+        cd openblas
+        C:\msys64\usr\bin\wget.exe https://github.com/xianyi/OpenBLAS/releases/download/v0.3.23/OpenBLAS-0.3.23-x64.zip
+        7z x OpenBLAS-0.3.23-x64.zip
 
     - name: Install OpenCL
       run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
 
     - name: Run CMake
-      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:/vcpkg/packages/opencl_x64-windows -DMKL_ROOT=C:/vcpkg/packages/intel-mkl_x64-windows
+      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${GITHUB_WORKSPACE}\openblas
 
     - name: Compile the code
       run: cmake --build build
