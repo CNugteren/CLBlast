@@ -55,8 +55,8 @@ build_script:
 
 after_build:
   - ps: pushd $env:CLBLAST_BUILD
-  - 7z a CLBlast-1.5.3-Windows-x64.zip .\install_dir\*
-  - ps: mv CLBlast-1.5.3-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
+  - 7z a CLBlast-1.6.0-Windows-x64.zip .\install_dir\*
+  - ps: mv CLBlast-1.6.0-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
 
 artifacts:
   - path: '*.zip'
