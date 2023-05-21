@@ -26,15 +26,19 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 1070 Ti
   - GeForce GTX 1080
   - GeForce GTX 1080 Ti
+  - GeForce GTX 2080 Ti
+  - GeForce GTX 3090
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
   - TITAN X (Pascal)
   - TITAN RTX
+  - Tesla A100
   - Tesla K20m
   - Tesla K40m
   - Tesla P100 16GB
   - Tesla T4
+  - Tesla T2000
   - Tesla V100
   - Quadro T2000
   - Quadro GV100
@@ -49,15 +53,19 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon R9 380
   - Radeon RX 480
   - Radeon R9 Fury X
+  - Radeon Pro 450
   - Radeon Pro 580
   - Radeon RX Vega
+  - Radeon RX 5700 XT
   - Radeon RX 6500 XT
+  - Radeon RX 6600 XT
   - Radeon RX 6800 XT
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
   - HD Graphics 6000 BroadWell U-Processor GT3
   - HD Graphics 630
+  - HD Graphics 770
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
