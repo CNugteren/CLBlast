@@ -80,12 +80,14 @@ jobs:
         cd openblas
         C:\msys64\usr\bin\wget.exe https://github.com/xianyi/OpenBLAS/releases/download/v0.3.23/OpenBLAS-0.3.23-x64.zip
         7z x OpenBLAS-0.3.23-x64.zip
+        pwd
+        ls
 
     - name: Install OpenCL
       run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
 
     - name: Run CMake
-      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${GITHUB_WORKSPACE}\openblas
+      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${{ github.workspace }}\openblas
 
     - name: Compile the code
       run: cmake --build build
