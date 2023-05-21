@@ -26,6 +26,9 @@ set(clblast_VERSION_PATCH 3)
 set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
 set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 
+# Policies
+cmake_policy(SET CMP0074 NEW)  # to make -DCBLAS_ROOT= work with newer CMake versions as well
+
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
 option(SAMPLES "Enable compilation of the examples" OFF)

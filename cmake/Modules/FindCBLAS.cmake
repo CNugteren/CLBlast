@@ -48,11 +48,11 @@ mark_as_advanced(CBLAS_INCLUDE_DIRS)
 
 # Finds the library
 find_library(CBLAS_LIBRARIES
-  NAMES cblas blas blis openblas accelerate
+  NAMES cblas blas blis openblas libopenblas accelerate
   HINTS ${CBLAS_HINTS}
   PATH_SUFFIXES
-    lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32 lib/import lib64/import
-    openblas/lib blis/lib lib/atlas-base
+    lib lib64 bin lib/x86_64 lib/x64 lib/x86 lib/Win32 lib/import lib64/import
+    openblas/bin openblas/lib blis/lib lib/atlas-base
   PATHS ${CBLAS_PATHS}
   DOC "Netlib BLAS library"
 )
