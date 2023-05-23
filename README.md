@@ -20,7 +20,7 @@ CLBlast: The tuned OpenCL BLAS library
 
 CLBlast is a lightweight, performant and tunable OpenCL BLAS library written in C++11. It is designed to leverage the full performance potential of a wide variety of OpenCL devices from different vendors, including desktop and laptop GPUs, embedded GPUs, and other accelerators. CLBlast implements BLAS routines: basic linear algebra subprograms operating on vectors and matrices. See [the CLBlast website](https://cnugteren.github.io/clblast) for performance reports on some devices.
 
-The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See below for a list of already tuned devices and instructions on how to tune yourself and contribute to future releases of the CLBlast library.
+The library is not tuned for all possible OpenCL devices: __if out-of-the-box performance is poor, please run the tuners first__. See [the docs for a list of already tuned devices](doc/tuning.md#already-tuned-for-devices) and [instructions on how to tune yourself](doc/tuning.md) and contribute to future releases of the CLBlast library.
 
 
 Why CLBlast and not clBLAS or cuBLAS?
