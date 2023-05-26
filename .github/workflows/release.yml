@@ -79,8 +79,8 @@ jobs:
 
     - name: Run CMake
       run: |
-        mkdir clblast_release_dir
-        cmake -S . -B build  -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX=clblast_release_dir -DOPENCL_ROOT=C:/vcpkg/packages/opencl_x64-windows
+        mkdir "${{env.RELEASE_NAME}}"
+        cmake -S . -B build  -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCLIENTS=OFF -DSAMPLES=ON -DCMAKE_INSTALL_PREFIX="${{env.RELEASE_NAME}}" -DOPENCL_ROOT=C:/vcpkg/packages/opencl_x64-windows
 
     - name: Compile the code
       run: cmake --build build --config Release
@@ -88,7 +88,7 @@ jobs:
     - name: Package the code
       run: |
         cmake --build build --target install
-        7z a -r ${{env.RELEASE_NAME}}.7z clblast_release_dir
+        7z a -r ${{env.RELEASE_NAME}}.7z "${{env.RELEASE_NAME}}"
 
     - name: Upload the release
       uses: actions/upload-artifact@v3
