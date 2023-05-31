@@ -11,6 +11,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 
 * NVIDIA GPUs:
   - GRID K520
+  - GeForce 920A
   - GeForce GT 650M
   - GeForce GTX 480
   - GeForce GTX 580
@@ -27,7 +28,11 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 1080
   - GeForce GTX 1080 Ti
   - GeForce GTX 2080 Ti
+  - GeForce GTX 3060 Laptop
+  - GeForce GTX 3080
+  - GeForce GTX 3080 Laptop
   - GeForce GTX 3090
+  - GeForce GTX 4090
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
   - GeForce GTX TITAN X
@@ -44,6 +49,9 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Quadro GV100
   - A100
 * AMD GPUs:
+  - Ryzen 4600G APU (gfx1035)
+  - Ryzen 5700G APU (gfx90c)
+  - Radeon 680M (gfx1035)
   - Radeon HD 6750M
   - Radeon HD 6770M
   - Radeon HD 7970
@@ -52,25 +60,30 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon R9 M370X
   - Radeon R9 380
   - Radeon RX 480
+  - Radeon RX 580 2048SP
   - Radeon R9 Fury X
   - Radeon Pro 450
   - Radeon Pro 580
   - Radeon RX Vega
+  - Radeon RX 5700
   - Radeon RX 5700 XT
   - Radeon RX 6500 XT
   - Radeon RX 6600 XT
   - Radeon RX 6800 XT
+  - Radeon RX 6900 XT
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
   - HD Graphics 6000 BroadWell U-Processor GT3
-  - HD Graphics 630
-  - HD Graphics 770
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
+  - UHD Graphics 620
+  - UHD Graphics 630
+  - UHD Graphics 770
   - Iris
   - Iris Pro
+  - Iris Xe Graphics
 * Intel CPUs:
   - Core i5-4570
   - Core i5-4590S
@@ -90,6 +103,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
   - Intel MIC
+  - Apple M1 GPU
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
 
