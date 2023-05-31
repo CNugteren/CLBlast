@@ -16,7 +16,8 @@ const DatabaseEntry XgemmSingle = {
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
+          { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 0, 1, 16, 2, 32, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
         } },
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
@@ -61,12 +62,14 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "gfx1010:xnack-", {
+          { Name{"AMD Radeon RX 5700                                "}, Params{ 0, 1, 32, 2, 16, 16, 128, 16, 8, 64, 1, 1, 1, 0, 4, 1 } },
           { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 0, 1, 16, 2, 16, 8, 64, 8, 8, 64, 1, 1, 0, 1, 2, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 8, 64, 8, 8, 64, 1, 1, 0, 1, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 0, 0, 0, 0, 4, 4 } },
         } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 0, 1, 16, 2, 8, 8, 128, 32, 8, 64, 1, 0, 1, 1, 4, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 128, 32, 8, 64, 1, 0, 1, 1, 4, 1 } },
+          { Name{"AMD Radeon RX 6900 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 128, 16, 8, 64, 1, 1, 1, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "gfx1032", {
           { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 128, 32, 16, 128, 1, 1, 1, 1, 4, 4 } },
@@ -76,6 +79,14 @@ const DatabaseEntry XgemmSingle = {
           { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 128, 16, 8, 64, 1, 1, 1, 0, 4, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 128, 16, 8, 64, 1, 1, 1, 0, 4, 1 } },
         } },
+        { "gfx1035", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 0, 1, 16, 2, 8, 16, 32, 32, 8, 128, 1, 1, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 16, 32, 32, 8, 128, 1, 1, 0, 0, 2, 1 } },
+        } },
+        { "gfx90c", {
+          { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 16, 2, 32, 16, 128, 8, 8, 128, 1, 1, 0, 1, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 32, 16, 128, 8, 8, 128, 1, 1, 0, 1, 2, 2 } },
+        } },
       }
     },
     { // ARM GPUs
@@ -84,6 +95,14 @@ const DatabaseEntry XgemmSingle = {
           { Name{"Mali-T628                                         "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+        } },
+      }
+    },
+    { // Apple GPUs
+      kDeviceTypeGPU, "Apple", {
+        { "default", {
+          { Name{"Apple M1                                          "}, Params{ 1, 8, 1, 1, 32, 32, 64, 8, 8, 128, 0, 0, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 1, 1, 32, 32, 64, 8, 8, 128, 0, 0, 0, 0, 2, 4 } },
         } },
       }
     },
@@ -116,6 +135,8 @@ const DatabaseEntry XgemmSingle = {
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 0, 1, 16, 2, 16, 8, 32, 8, 16, 128, 1, 1, 1, 1, 2, 4 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 1, 2, 1, 1, 4, 4, 32, 8, 8, 64, 0, 0, 0, 0, 2, 2 } },
+          { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 0, 1, 16, 2, 8, 8, 64, 16, 8, 64, 1, 1, 0, 1, 1, 2 } },
+          { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 1, 4, 1, 1, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 0, 1, 32, 2, 8, 16, 64, 8, 8, 128, 1, 1, 0, 1, 1, 8 } },
           { Name{"Iris                                              "}, Params{ 0, 1, 16, 8, 16, 8, 128, 32, 16, 64, 1, 1, 1, 1, 4, 1 } },
           { Name{"Iris Pro                                          "}, Params{ 0, 1, 16, 2, 16, 8, 64, 32, 32, 128, 1, 1, 1, 0, 4, 4 } },
@@ -148,11 +169,12 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 32, 32, 64, 1, 1, 0, 0, 4, 2 } },
         } },
         { "SM3.5", {
+          { Name{"GeForce 920A                                      "}, Params{ 0, 1, 16, 2, 16, 8, 128, 16, 32, 128, 1, 1, 1, 0, 4, 1 } },
           { Name{"GeForce GTX TITAN                                 "}, Params{ 0, 1, 16, 8, 32, 16, 64, 8, 8, 64, 1, 1, 1, 0, 2, 2 } },
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 0, 1, 16, 2, 16, 8, 64, 16, 16, 64, 1, 1, 1, 0, 4, 1 } },
           { Name{"Tesla K20m                                        "}, Params{ 0, 1, 16, 2, 32, 16, 64, 16, 8, 64, 1, 1, 1, 0, 2, 4 } },
           { Name{"Tesla K40m                                        "}, Params{ 0, 1, 16, 8, 16, 8, 64, 16, 16, 128, 1, 1, 1, 0, 2, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 8, 32, 16, 64, 32, 16, 64, 1, 0, 1, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
         { "SM5.0", {
           { Name{"GeForce 920MX                                     "}, Params{ 0, 1, 16, 2, 32, 8, 128, 8, 16, 128, 1, 1, 1, 0, 4, 1 } },
@@ -195,11 +217,18 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "SM8.6", {
+          { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
+          { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
+          { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 2, 2 } },
+        } },
+        { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4090                           "}, Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 64, 0, 1, 1, 1, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 64, 0, 1, 1, 1, 4, 4 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
         } },
       }
     },
@@ -222,7 +251,7 @@ const DatabaseEntry XgemmSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
         } },
       }
     },

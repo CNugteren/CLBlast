@@ -1,5 +1,5 @@
 Development version (next version)
--
+- Added tuned parameters for various devices (see doc/tuning.md)
 
 Version 1.6.0
 - Modifications to improve performance on Qualcomm Adreno GPUs:

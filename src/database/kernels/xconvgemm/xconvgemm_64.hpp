@@ -30,6 +30,10 @@ const DatabaseEntry XconvgemmDouble = {
           { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 1, 8, 16, 8, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1035", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Intel CPUs
@@ -44,7 +48,8 @@ const DatabaseEntry XconvgemmDouble = {
       kDeviceTypeGPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Gen9 HD Graphics NEO                     "}, Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 1, 8, 8, 32, 8, 0, 0, 4, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -77,7 +82,7 @@ const DatabaseEntry XconvgemmDouble = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 8, 16, 8, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
