@@ -69,6 +69,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon RX 5700 XT
   - Radeon RX 6500 XT
   - Radeon RX 6600 XT
+  - Radeon RX 6700 XT
   - Radeon RX 6800 XT
   - Radeon RX 6900 XT
 * Intel GPUs:

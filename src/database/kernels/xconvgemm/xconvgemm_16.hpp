@@ -25,6 +25,10 @@ const DatabaseEntry XconvgemmHalf = {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 16, 16, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1031", {
+          { Name{"AMD Radeon RX 6700 XT                             "}, Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1032", {
           { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 1, 8, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },

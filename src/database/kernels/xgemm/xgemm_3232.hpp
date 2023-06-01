@@ -67,6 +67,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"AMD Radeon RX 6900 XT                             "}, Params{ 0, 1, 32, 2, 16, 8, 32, 16, 16, 64, 1, 1, 1, 0, 2, 2 } },
           { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 8, 8, 32, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
+        { "gfx1031", {
+          { Name{"AMD Radeon RX 6700 XT                             "}, Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 64, 1, 0, 1, 1, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 64, 1, 0, 1, 1, 1, 2 } },
+        } },
         { "gfx1032", {
           { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 4 } },

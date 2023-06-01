@@ -32,6 +32,10 @@ const DatabaseEntry XgemmHalf = {
           { Name{"AMD Radeon RX 6900 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
+        { "gfx1031", {
+          { Name{"AMD Radeon RX 6700 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+        } },
         { "gfx1032", {
           { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 0, 1, 32, 2, 8, 16, 128, 16, 16, 128, 1, 1, 1, 0, 8, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 16, 128, 16, 16, 128, 1, 1, 1, 0, 8, 8 } },
