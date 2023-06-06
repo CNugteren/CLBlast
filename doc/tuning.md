@@ -12,6 +12,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 * NVIDIA GPUs:
   - GRID K520
   - GeForce 920A
+  - GeForce MX 150
   - GeForce GT 650M
   - GeForce GTX 480
   - GeForce GTX 580
@@ -27,11 +28,18 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - GeForce GTX 1070 Ti
   - GeForce GTX 1080
   - GeForce GTX 1080 Ti
+  - GeForce GTX 1650
+  - GeForce GTX 1650 Ti
+  - GeForce GTX 2060
+  - GeForce GTX 2070 with Max-Q
+  - GeForce GTX 2070 Super
+  - GeForce GTX 2080 with Max-Q
   - GeForce GTX 2080 Ti
   - GeForce GTX 3060 Laptop
   - GeForce GTX 3080
   - GeForce GTX 3080 Laptop
   - GeForce GTX 3090
+  - GeForce GTX 4080
   - GeForce GTX 4090
   - GeForce GTX TITAN
   - GeForce GTX TITAN Black
@@ -49,6 +57,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Quadro GV100
   - A100
 * AMD GPUs:
+  - FirePro W8100
   - Ryzen 4600G APU (gfx1035)
   - Ryzen 5700G APU (gfx90c)
   - Radeon 680M (gfx1035)
@@ -64,14 +73,16 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Radeon R9 Fury X
   - Radeon Pro 450
   - Radeon Pro 580
-  - Radeon RX Vega
-  - Radeon RX 5700
-  - Radeon RX 5700 XT
-  - Radeon RX 6500 XT
-  - Radeon RX 6600 XT
-  - Radeon RX 6700 XT
-  - Radeon RX 6800 XT
-  - Radeon RX 6900 XT
+  - Radeon RX Vega (gfx902)
+  - Radeon RX Vega 10 (gfx902)
+  - Radeon RX 5700 (gfx1010)
+  - Radeon RX 5700 XT (gfx1010)
+  - Radeon RX 6500 XT (gfx1034)
+  - Radeon RX 6600 XT (gfx1032)
+  - Radeon RX 6700 XT (gfx1031)
+  - Radeon RX 6800 XT (gfx1030)
+  - Radeon RX 6900 XT (gfx1030)
+  - Radeon VII (gfx906)
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -104,6 +115,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
   - Intel MIC
+  - Imagination PowerVR B-Series BXE-4-32
   - Apple M1 GPU
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
