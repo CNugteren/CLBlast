@@ -38,6 +38,10 @@ const DatabaseEntry XconvgemmDouble = {
           { Name{"AMD Radeon Graphics                               "}, Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx906:sramecc+:xnack-", {
+          { Name{"AMD Radeon VII                                    "}, Params{ 1, 16, 32, 8, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 32, 8, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Intel CPUs

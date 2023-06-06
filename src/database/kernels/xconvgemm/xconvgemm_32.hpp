@@ -47,6 +47,14 @@ const DatabaseEntry XconvgemmSingle = {
           { Name{"AMD Radeon Graphics                               "}, Params{ 1, 8, 8, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 8, 16, 8, 0, 0, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx902", {
+          { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 1, 8, 8, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 8, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx906:sramecc+:xnack-", {
+          { Name{"AMD Radeon VII                                    "}, Params{ 1, 16, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx90c", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 1, 8, 8, 16, 8, 0, 0, 4, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 8, 16, 8, 0, 0, 4, 1, 32, 0, 0, 0, 0, 0, 0 } },
@@ -58,6 +66,14 @@ const DatabaseEntry XconvgemmSingle = {
         { "default", {
           { Name{"Apple M1                                          "}, Params{ 1, 8, 8, 8, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 8, 8, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
+    { // Imagination Technologies GPUs
+      kDeviceTypeGPU, "Imagination Technologies", {
+        { "default", {
+          { Name{"PowerVR B-Series BXE-4-32                         "}, Params{ 1, 16, 16, 16, 16, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 16, 16, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -121,7 +137,7 @@ const DatabaseEntry XconvgemmSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
