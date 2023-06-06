@@ -15,6 +15,7 @@
 #include <vector>
 #include <unordered_map>
 #include <random>
+#include <iostream>
 
 #include "utilities/utilities.hpp"
 #include "test/routines/level3/xgemm.hpp"
@@ -27,18 +28,19 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto arguments = RetrieveCommandLineArguments(argc, argv);
   auto errors = size_t{0};
   auto passed = size_t{0};
-  auto example_routine = TestXgemm<T>();
+  auto example_routine = TestXgemm<0, T>();
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Determines the test settings
   const auto kernel_name = std::string{"Xgemm"};
   const auto precision = PrecisionValue<T>();
   const auto valid_settings = std::vector<std::unordered_map<std::string,size_t>>{
-    { {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
-    { {"KWG",32}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",32}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
+    { {"GEMMK",0}, {"KREG",1}, {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
+    { {"GEMMK",0}, {"KREG",1}, {"KWG",32}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",32}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
+    { {"GEMMK",0}, {"KREG",1}, {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
   };
   const auto invalid_settings = std::vector<std::unordered_map<std::string,size_t>>{
-    { {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0} },
+    { {"GEMMK",0}, {"KREG",1}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0} },
   };
 
   // Retrieves the arguments
@@ -58,6 +60,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   args.layout = GetArgument(arguments, help, kArgLayout, Layout::kRowMajor);
   args.a_transpose = GetArgument(arguments, help, kArgATransp, Transpose::kNo);
   args.b_transpose = GetArgument(arguments, help, kArgBTransp, Transpose::kNo);
+  args.kernel_mode = GetArgument(arguments, help, kArgKernelMode, KernelMode::kCrossCorrelation);
   args.alpha = GetArgument(arguments, help, kArgAlpha, GetScalar<T>());
   args.beta  = GetArgument(arguments, help, kArgBeta, GetScalar<T>());
 
@@ -84,11 +87,13 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto device_a = Buffer<T>(context, host_a.size());
   auto device_b = Buffer<T>(context, host_b.size());
   auto device_c = Buffer<T>(context, host_c.size());
+  auto device_temp = Buffer<T>(context, args.m * args.n * args.k); // just to be safe
   device_a.Write(queue, host_a.size(), host_a);
   device_b.Write(queue, host_b.size(), host_b);
   device_c.Write(queue, host_c.size(), host_c);
   auto dummy = Buffer<T>(context, 1);
-  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, dummy, dummy};
+  auto dummy_scalar = Buffer<unsigned int>(context, 1);
+  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, device_temp, dummy, dummy_scalar};
 
   // Loops over the valid combinations: run before and run afterwards
   fprintf(stdout, "* Testing OverrideParameters for '%s'\n", routine_name.c_str());
@@ -120,9 +125,9 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   }
 
   // Prints and returns the statistics
-  fprintf(stdout, "    %zu test(s) passed\n", passed);
-  fprintf(stdout, "    %zu test(s) failed\n", errors);
-  fprintf(stdout, "\n");
+  std::cout << "    " << passed << " test(s) passed" << std::endl;
+  std::cout << "    " << errors << " test(s) failed" << std::endl;
+  std::cout << std::endl;
   return errors;
 }
 

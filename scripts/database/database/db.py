@@ -8,8 +8,6 @@
 import itertools
 from operator import itemgetter
 
-import clblast
-
 
 def length(database):
     """Computes the total number of tuning entries"""

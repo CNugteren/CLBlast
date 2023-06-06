@@ -1,7 +1,6 @@
 environment:
   global:
     CLBLAST_BUILD: "C:\\clblast\\build"
-    OPENCL_REGISTRY: "https://www.khronos.org/registry/cl"
     OPENCL_ROOT: "C:\\dependencies\\opencl"
 
 platform:
@@ -18,26 +17,27 @@ init:
 install:
   - ps: mkdir $env:OPENCL_ROOT
   - ps: pushd $env:OPENCL_ROOT
-  - ps: $opencl_registry = $env:OPENCL_REGISTRY
   # This downloads the source to the Khronos ICD library
-  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+  - git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+  - ps: pushd OpenCL-ICD-Loader
+  - git checkout cb4acb9  # older version (pre 2.2 support)
+  - ps: popd
   - ps: mv ./OpenCL-ICD-Loader/* .
   # This downloads all the opencl header files
   # The cmake build files expect a directory called inc
   - ps: mkdir inc/CL
-  - git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
-  - ps: wget $opencl_registry/api/2.1/cl.hpp -OutFile inc/CL/cl.hpp
+  - git clone https://github.com/KhronosGroup/OpenCL-Headers.git inc/CL
+  - ps: wget https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp -OutFile inc/CL/cl.hpp
+  # Switch to OpenCL 2.1 headers
+  - ps: pushd inc/CL
+  - git checkout bf0f43b  # OpenCL 2.1
+  - ps: popd
   # - ps: dir; if( $lastexitcode -eq 0 ){ dir include/CL } else { Write-Output boom }
   # Create the static import lib in a directory called lib, so findopencl() will find it
   - ps: mkdir lib
   - ps: pushd lib
   - cmake -G "NMake Makefiles" ..
   - nmake
-  - ps: popd
-  # Switch to OpenCL 1.2 headers
-  - ps: pushd inc/CL
-  - git fetch origin opencl12:opencl12
-  - git checkout opencl12
   - ps: popd
   # Rename the inc directory to include, so FindOpencl() will find it
   - ps: ren inc include
@@ -55,8 +55,8 @@ build_script:
 
 after_build:
   - ps: pushd $env:CLBLAST_BUILD
-  - 7z a CLBlast-Windows-x64.zip .\install_dir\*
-  - ps: mv CLBlast-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
+  - 7z a CLBlast-1.6.0-Windows-x64.zip .\install_dir\*
+  - ps: mv CLBlast-1.6.0-Windows-x64.zip $env:APPVEYOR_BUILD_FOLDER
 
 artifacts:
   - path: '*.zip'

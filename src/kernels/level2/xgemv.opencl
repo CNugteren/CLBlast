@@ -36,9 +36,9 @@ R"(
 // =================================================================================================
 
 // Defines how to load the input matrix in the non-vectorized case
-inline real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
-                        const int a_ld, const int a_offset, const int parameter,
-                        const int kl, const int ku) {
+INLINE_FUNC real LoadMatrixA(const __global real* restrict agm, const int x, const int y,
+                             const int a_ld, const int a_offset, const int parameter,
+                             const int kl, const int ku) {
   real result;
 
   // For banded matrices
@@ -210,7 +210,11 @@ inline real LoadMatrixA(const __global real* restrict agm, const int x, const in
 // =================================================================================================
 
 // Full version of the kernel
-__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#endif
 void Xgemv(const int m, const int n,
                     const real_arg arg_alpha,
                     const real_arg arg_beta,
@@ -227,10 +231,11 @@ void Xgemv(const int m, const int n,
   __local real xlm[WGS1];
 
   // Initializes the accumulation register
-  real acc[WPT1];
+  #pragma promote_to_registers
+  real acc1[WPT1];
   #pragma unroll
-  for (int w=0; w<WPT1; ++w) {
-    SetToZero(acc[w]);
+  for (int _w = 0; _w < WPT1; _w += 1) {
+    SetToZero(acc1[_w]);
   }
 
   // Divides the work in a main and tail section
@@ -248,30 +253,31 @@ void Xgemv(const int m, const int n,
     barrier(CLK_LOCAL_MEM_FENCE);
 
     // Loops over the work per thread, and checks whether in bounds
-    for (int w=0; w<WPT1; ++w) {
-      const int gid = w*get_global_size(0) + get_global_id(0);
+    #pragma unroll
+    for (int _w = 0; _w < WPT1; _w += 1) {
+      const int gid = _w*get_global_size(0) + get_global_id(0);
       if (gid < m) {
 
         // The multiply-add function for the main part (divisable by WGS1)
         if (a_rotated == 0) { // Not rotated
           for (int kloop=0; kloop<WGS1; kloop+=UNROLL1) {
             #pragma unroll
-            for (int kunroll=0; kunroll<UNROLL1; ++kunroll) {
-              const int k = kwg + kloop + kunroll;
+            for (int _kunroll = 0; _kunroll < UNROLL1; _kunroll += 1) {
+              const int k = kwg + kloop + _kunroll;
               real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
               if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-              MultiplyAdd(acc[w], xlm[kloop + kunroll], value);
+              MultiplyAdd(acc1[_w], xlm[kloop + _kunroll], value);
             }
           }
         }
         else { // Transposed
           for (int kloop=0; kloop<WGS1; kloop+=UNROLL1) {
             #pragma unroll
-            for (int kunroll=0; kunroll<UNROLL1; ++kunroll) {
-              const int k = kwg + kloop + kunroll;
+            for (int _kunroll = 0; _kunroll < UNROLL1; _kunroll += 1) {
+              const int k = kwg + kloop + _kunroll;
               real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
               if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-              MultiplyAdd(acc[w], xlm[kloop + kunroll], value);
+              MultiplyAdd(acc1[_w], xlm[kloop + _kunroll], value);
             }
           }
         }
@@ -284,31 +290,29 @@ void Xgemv(const int m, const int n,
 
   // Loops over the work per thread, and checks whether in bounds
   #pragma unroll
-  for (int w=0; w<WPT1; ++w) {
-    const int gid = w*get_global_size(0) + get_global_id(0);
+  for (int _w = 0; _w < WPT1; _w += 1) {
+    const int gid = _w*get_global_size(0) + get_global_id(0);
     if (gid < m) {
 
       // The multiply-add function for the remainder part (not divisable by WGS1)
       if (a_rotated == 0) { // Not rotated
-        #pragma unroll
         for (int k=n_floor; k<n; ++k) {
           real value = LoadMatrixA(agm, gid, k, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-          MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
+          MultiplyAdd(acc1[_w], xgm[k*x_inc + x_offset], value);
         }
       }
       else { // Transposed
-        #pragma unroll
         for (int k=n_floor; k<n; ++k) {
           real value = LoadMatrixA(agm, k, gid, a_ld, a_offset, parameter, kl, ku);
           if (do_conjugate == 1) { COMPLEX_CONJUGATE(value); }
-          MultiplyAdd(acc[w], xgm[k*x_inc + x_offset], value);
+          MultiplyAdd(acc1[_w], xgm[k*x_inc + x_offset], value);
         }
       }
 
       // Stores the final result
       real yval = ygm[gid*y_inc + y_offset];
-      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc[w], beta, yval);
+      AXPBY(ygm[gid*y_inc + y_offset], alpha, acc1[_w], beta, yval);
     }
   }
 }

@@ -58,7 +58,7 @@ class TestXsyr2k {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
     args.c_size = GetSizeC(args);
@@ -81,15 +81,25 @@ class TestXsyr2k {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Syr2k(args.layout, args.triangle, args.a_transpose,
-                        args.n, args.k, args.alpha,
-                        buffers.a_mat(), args.a_offset, args.a_ld,
-                        buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
-                        buffers.c_mat(), args.c_offset, args.c_ld,
-                        &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Syr2k(args.layout, args.triangle, args.a_transpose,
+                          args.n, args.k, args.alpha,
+                          buffers.a_mat(), args.a_offset, args.a_ld,
+                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                          buffers.c_mat(), args.c_offset, args.c_ld,
+                          &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Syr2k(args.layout, args.triangle, args.a_transpose,
+                          args.n, args.k, args.alpha,
+                          buffers.a_mat(), args.a_offset, args.a_ld,
+                          buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                          buffers.c_mat(), args.c_offset, args.c_ld,
+                          queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

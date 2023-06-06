@@ -76,7 +76,7 @@ R"(
 // =================================================================================================
 #if defined(ROUTINE_INVERT) || defined(ROUTINE_TRSM)
 
-__kernel __attribute__((reqd_work_group_size(8, 8, 1)))
+__kernel
 void FillMatrix(const int m, const int n, const int ld, const int offset,
                 __global real* restrict dest, const real_arg arg_value) {
   const real value = GetRealArg(arg_value);

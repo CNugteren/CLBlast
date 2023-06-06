@@ -45,7 +45,9 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
       const auto b_two = (b_rotated) ? id1 : id2;
       const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
       const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
-      buffers_host.b_mat[b_index] = args.alpha * buffers_host.a_mat[a_index];
+      auto a_value = buffers_host.a_mat[a_index];
+      if (args.a_transpose == Transpose::kConjugate) { a_value = ComplexConjugate(a_value); }
+      buffers_host.b_mat[b_index] = args.alpha * a_value;
     }
   }
   return StatusCode::kSuccess;
@@ -57,7 +59,8 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto a_buffer2 = HalfToFloatBuffer(buffers_host.a_mat);
   auto b_buffer2 = HalfToFloatBuffer(buffers_host.b_mat);
   auto dummy = std::vector<float>(0);
-  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
+  auto dummy_uint = std::vector<unsigned int>(0);
+  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy, dummy_uint};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size;
   args2.a_ld = args.a_ld; args2.b_ld = args.b_ld; args2.m = args.m; args2.n = args.n;
@@ -65,7 +68,7 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   args2.layout = args.layout; args2.a_transpose = args.a_transpose;
   args2.alpha = HalfToFloat(args.alpha);
   auto status = RunReference(args2, buffers2);
-  FloatToHalfBuffer(buffers_host.b_mat, b_buffer2);
+  FloatToHalfBuffer(buffers_host.b_mat, buffers2.b_mat);
   return status;
 }
 
@@ -104,7 +107,7 @@ class TestXomatcopy {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
   }
@@ -114,7 +117,7 @@ class TestXomatcopy {
   static size_t DefaultLDB(const Arguments<T> &args) { return args.m; }
   static size_t DefaultLDC(const Arguments<T> &) { return 1; } // N/A for this routine
 
-  // Describes which omatcopyose options are relevant for this routine
+  // Describes which transpose options are relevant for this routine
   using Transposes = std::vector<Transpose>;
   static Transposes GetATransposes(const Transposes &all) { return all; }
   static Transposes GetBTransposes(const Transposes &) { return {}; } // N/A for this routine
@@ -126,14 +129,23 @@ class TestXomatcopy {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Omatcopy<T>(args.layout, args.a_transpose,
-                              args.m, args.n, args.alpha,
-                              buffers.a_mat(), args.a_offset, args.a_ld,
-                              buffers.b_mat(), args.b_offset, args.b_ld,
-                              &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Omatcopy<T>(args.layout, args.a_transpose,
+                                args.m, args.n, args.alpha,
+                                buffers.a_mat(), args.a_offset, args.a_ld,
+                                buffers.b_mat(), args.b_offset, args.b_ld,
+                                &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Omatcopy<T>(args.layout, args.a_transpose,
+                                args.m, args.n, args.alpha,
+                                buffers.a_mat(), args.a_offset, args.a_ld,
+                                buffers.b_mat(), args.b_offset, args.b_ld,
+                                queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

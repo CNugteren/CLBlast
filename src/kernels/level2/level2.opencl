@@ -33,9 +33,9 @@ R"(
 // =================================================================================================
 
 // Returns an element from a vector
-inline real LoadVector(const int id, const int max,
-                       __global real* gm, const int offset, const int inc,
-                       const int do_conjugate) {
+INLINE_FUNC real LoadVector(const int id, const int max,
+                            const __global real* gm, const int offset, const int inc,
+                            const int do_conjugate) {
   if (id < max) {
     real result = gm[id*inc + offset];
     if (do_conjugate) {
@@ -53,10 +53,10 @@ inline real LoadVector(const int id, const int max,
 }
 
 // Performs the rank-1 matrix update
-inline void MatrixUpdate(const int id1, const int id2, const int max1, const int max2,
-                         __global real* agm, const int a_offset, const int a_ld,
-                         const real alpha, const real xvalue, const real yvalue,
-                         const int is_upper) {
+INLINE_FUNC void MatrixUpdate(const int id1, const int id2, const int max1, const int max2,
+                              __global real* agm, const int a_offset, const int a_ld,
+                              const real alpha, const real xvalue, const real yvalue,
+                              const int is_upper) {
 
   // Bounds of a regular matrix
   if (id1 < max1 && id2 < max2) {
@@ -100,11 +100,11 @@ inline void MatrixUpdate(const int id1, const int id2, const int max1, const int
 }
 
 // Performs the rank-2 matrix update
-inline void MatrixUpdate2(const int id1, const int id2, const int max1, const int max2,
-                          __global real* agm, const int a_offset, const int a_ld,
-                          const real alpha1, const real xvalue, const real yvalue,
-                          const real alpha2, const real xtvalue, const real ytvalue,
-                          const int is_upper) {
+INLINE_FUNC void MatrixUpdate2(const int id1, const int id2, const int max1, const int max2,
+                               __global real* agm, const int a_offset, const int a_ld,
+                               const real alpha1, const real xvalue, const real yvalue,
+                               const real alpha2, const real xtvalue, const real ytvalue,
+                               const int is_upper) {
 
   // Bounds of a regular matrix
   if (id1 < max1 && id2 < max2) {

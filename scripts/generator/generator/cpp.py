@@ -36,38 +36,62 @@ HEADER = NL + SEPARATOR + """
 """ + SEPARATOR + NL
 
 
-def clblast_h(routine):
+def clblast_h(routine, cuda=False):
     """The C++ API header (.h)"""
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
-    result += routine.routine_header_cpp(12, " = nullptr") + ";" + NL
+    result += routine.routine_header_cpp(12, " = nullptr", cuda) + ";" + NL
     return result
 
 
-def clblast_cc(routine):
+def clblast_cc(routine, cuda=False):
     """The C++ API implementation (.cpp)"""
     indent1 = " " * (15 + routine.length())
     result = NL + "// " + routine.description + ": " + routine.short_names() + NL
     if routine.implemented:
-        result += routine.routine_header_cpp(12, "") + " {" + NL
+        result += routine.routine_header_cpp(12, "", cuda, implementation=True) + " {" + NL
         result += "  try {" + NL
-        result += "    auto queue_cpp = Queue(*queue);" + NL
-        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, event);" + NL
-        if routine.batched:
+        if cuda:
+            result += "    const auto context_cpp = Context(context);" + NL
+            result += "    const auto device_cpp = Device(device);" + NL
+            result += "    auto queue_cpp = Queue(context_cpp, device_cpp);" + NL
+        else:
+            result += "    auto queue_cpp = Queue(*queue);" + NL
+        event = "nullptr" if cuda else "event"
+        result += "    auto routine = X" + routine.plain_name() + "<" + routine.template.template + ">(queue_cpp, " + event + ");" + NL
+        if routine.batched == 1:
             result += "    " + (NL + "    ").join(routine.batched_transform_to_cpp()) + NL
+        if routine.temp_buffer:
+            null = "0" if cuda else "nullptr"
+            result += "    const auto temp_buffer_provided = temp_buffer != " + null + ";\n"
+            result += "    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(" + null + ");\n"
         result += "    routine.Do" + routine.capitalized_name() + "("
         result += ("," + NL + indent1).join([a for a in routine.arguments_clcudaapi()])
+        if routine.temp_buffer:
+            result += ",\n" + indent1 + "temp_buffer_cpp, temp_buffer_provided"
         result += ");" + NL
         result += "    return StatusCode::kSuccess;" + NL
         result += "  } catch (...) { return DispatchException(); }" + NL
     else:
-        result += routine.routine_header_type_cpp(12) + " {" + NL
+        result += routine.routine_header_type_cpp(12, cuda) + " {" + NL
         result += "  return StatusCode::kNotImplemented;" + NL
     result += "}" + NL
     for flavour in routine.flavours:
         indent2 = " " * (34 + routine.length() + len(flavour.template))
         result += "template StatusCode PUBLIC_API " + routine.capitalized_name() + "<" + flavour.template + ">("
-        result += ("," + NL + indent2).join([a for a in routine.arguments_type(flavour)])
-        result += "," + NL + indent2 + "cl_command_queue*, cl_event*);" + NL
+        arguments = routine.arguments_type(flavour)
+        if cuda:
+            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
+        result += ("," + NL + indent2).join([a for a in arguments])
+        result += "," + NL + indent2
+        if cuda:
+            result += "const CUcontext, const CUdevice"
+            if routine.temp_buffer:
+                result += ", CUdeviceptr"
+        else:
+            result += "cl_command_queue*, cl_event*"
+            if routine.temp_buffer:
+                result += ", cl_mem"
+        result += ");" + NL
     return result
 
 
@@ -86,7 +110,7 @@ def clblast_c_cc(routine):
         template = "<" + flavour.template + ">" if routine.no_scalars() else ""
         indent = " " * (16 + routine.length() + len(template))
         result += routine.routine_header_c(flavour, 27, "") + " {" + NL
-        if routine.batched:
+        if routine.batched == 1:
             result += "  " + (NL + "  ").join(routine.batched_transform_to_complex(flavour)) + NL
         result += "  try {" + NL
         result += "    return static_cast<CLBlastStatusCode>(" + NL
@@ -121,8 +145,8 @@ def clblast_netlib_c_cc(routine):
             result += routine.routine_header_netlib(flavour, 9, "") + " {" + NL
 
             # Initialize OpenCL
-            result += "  auto device = get_device();" + NL
-            result += "  auto context = clblast::Context(device);" + NL
+            result += "  OPTIONAL_STATIC auto device = get_device();" + NL
+            result += "  OPTIONAL_STATIC auto context = clblast::Context(device);" + NL
             result += "  auto queue = clblast::Queue(context, device);" + NL
 
             # Set alpha and beta
@@ -202,7 +226,10 @@ def wrapper_clblas(routine):
 
                 # Convert to float (note: also integer buffers are stored as half/float)
                 for buf in routine.inputs + routine.outputs:
-                    result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer, queues[0]);" + NL
+                    else:
+                        result += "  auto " + buf + "_buffer_bis = " + buf + "_buffer;" + NL
 
                 # Call the float routine
                 result += "  auto status = clblasX" + routine.name + "("
@@ -212,7 +239,8 @@ def wrapper_clblas(routine):
 
                 # Convert back to half
                 for buf in routine.outputs:
-                    result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis, queues[0]);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis, queues[0]);" + NL
                 result += "  return status;"
 
             # Complete
@@ -241,7 +269,7 @@ def wrapper_cblas(routine):
 
                 # Special case for scalar outputs
                 assignment = ""
-                postfix = ""
+                postfix, postpostfix = "", ""
                 end_of_line = ""
                 extra_argument = ""
                 for output_buffer in routine.outputs:
@@ -252,9 +280,6 @@ def wrapper_cblas(routine):
                             extra_argument += "," + NL + indent
                             extra_argument += "reinterpret_cast<return_pointer_" + flavour.buffer_type[:-1] + ">"
                             extra_argument += "(&" + output_buffer + "_buffer[" + output_buffer + "_offset])"
-                        elif output_buffer in routine.index_buffers():
-                            assignment = "((int*)&" + output_buffer + "_buffer[0])[" + output_buffer + "_offset] = "
-                            indent += " " * len(assignment)
                         else:
                             assignment = output_buffer + "_buffer[" + output_buffer + "_offset]"
                             if flavour.name in ["Sc", "Dz"]:
@@ -266,7 +291,7 @@ def wrapper_cblas(routine):
 
                 result += "  " + assignment + "cblas_" + flavour.name.lower() + routine.name + postfix + "("
                 result += ("," + NL + indent).join([a for a in arguments])
-                result += extra_argument + end_of_line + ");" + NL
+                result += extra_argument + end_of_line + ")" + postpostfix + ";" + NL
 
             # There is no CBLAS available, forward the call to one of the available functions
             else:  # Half-precision
@@ -274,7 +299,10 @@ def wrapper_cblas(routine):
 
                 # Convert to float (note: also integer buffers are stored as half/float)
                 for buf in routine.inputs + routine.outputs:
-                    result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  auto " + buf + "_buffer_bis = HalfToFloatBuffer(" + buf + "_buffer);" + NL
+                    else:
+                        result += "  auto " + buf + "_buffer_bis = " + buf + "_buffer;" + NL
 
                 # Call the float routine
                 result += "  cblasX" + routine.name + "("
@@ -283,7 +311,8 @@ def wrapper_cblas(routine):
 
                 # Convert back to half
                 for buf in routine.outputs:
-                    result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis);" + NL
+                    if buf not in routine.index_buffers():
+                        result += "  FloatToHalfBuffer(" + buf + "_buffer, " + buf + "_buffer_bis);" + NL
 
             # Complete
             result += "}" + NL
@@ -363,7 +392,9 @@ def performance_test(routine, level_string):
         found = False
         for flavour in routine.flavours:
             if flavour.precision_name == precision:
-                result += NL + "      clblast::RunClient<clblast::TestX" + routine.plain_name() + flavour.test_template()
+                extra_template_argument = "0, " if routine.name == "gemm" and routine.batched == 0 else ""
+                result += NL + "      clblast::RunClient<clblast::TestX" + routine.plain_name()
+                result += flavour.test_template(extra_template_argument)
                 result += ">(argc, argv); break;" + NL
                 found = True
         if not found:
@@ -383,10 +414,13 @@ def correctness_test(routine, level_string):
     result += "int main(int argc, char *argv[]) {" + NL
     result += "  auto errors = size_t{0};" + NL
     not_first = "false"
-    for flavour in routine.flavours:
-        result += "  errors += clblast::RunTests<clblast::TestX" + routine.plain_name() + flavour.test_template()
-        result += ">(argc, argv, " + not_first + ", \"" + flavour.name + routine.upper_name() + "\");" + NL
-        not_first = "true"
+    extra_template_arguments = ["1, ", "2, "] if routine.name == "gemm" and routine.batched == 0 else [""]
+    for extra_template_argument in extra_template_arguments:
+        for flavour in routine.flavours:
+            result += "  errors += clblast::RunTests<clblast::TestX" + routine.plain_name()
+            result += flavour.test_template(extra_template_argument)
+            result += ">(argc, argv, " + not_first + ", \"" + flavour.name + routine.upper_name() + "\");" + NL
+            not_first = "true"
     result += "  if (errors > 0) { return 1; } else { return 0; }" + NL
     result += "}" + NL
     return result

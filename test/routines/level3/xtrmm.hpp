@@ -52,7 +52,7 @@ class TestXtrmm {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
   }
@@ -74,14 +74,23 @@ class TestXtrmm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Trmm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
-                       args.m, args.n, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.b_mat(), args.b_offset, args.b_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Trmm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
+                         args.m, args.n, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld,
+                         &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Trmm(args.layout, args.side, args.triangle, args.a_transpose, args.diagonal,
+                         args.m, args.n, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld,
+                         queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 
@@ -153,7 +162,13 @@ class TestXtrmm {
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
     auto k = (args.side == Side::kLeft) ? args.m : args.n;
-    return args.m * args.n * k;
+    if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+      // complex flops
+      return 4 * args.m * args.n * k;
+    } else {
+      // scalar flops
+      return args.m * args.n * k;
+    }
   }
   static size_t GetBytes(const Arguments<T> &args) {
     auto k = (args.side == Side::kLeft) ? args.m : args.n;

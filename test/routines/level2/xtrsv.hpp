@@ -48,7 +48,7 @@ class TestXtrsv {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.x_size = GetSizeX(args);
   }
@@ -74,7 +74,8 @@ class TestXtrsv {
     // TODO: Improve this, currently loosely based on clBLAS's implementation
     for (auto i = size_t{0}; i < args.n; ++i) {
       auto diagonal = a_source[i*args.a_ld + i + args.a_offset];
-      diagonal = static_cast<T>(AbsoluteValue(diagonal)) + static_cast<T>(args.n / size_t{4});
+      diagonal = static_cast<T>(AbsoluteValue(diagonal)) +
+                 Constant<T>(static_cast<double>(args.n / size_t{4}));
       for (auto j = size_t{0}; j < args.n; ++j) {
         a_source[j*args.a_ld + i + args.a_offset] /= Constant<T>(2.0);
       }
@@ -85,14 +86,23 @@ class TestXtrsv {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Trsv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
-                          args.n,
-                          buffers.a_mat(), args.a_offset, args.a_ld,
-                          buffers.x_vec(), args.x_offset, args.x_inc,
-                          &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Trsv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
+                            args.n,
+                            buffers.a_mat(), args.a_offset, args.a_ld,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Trsv<T>(args.layout, args.triangle, args.a_transpose, args.diagonal,
+                            args.n,
+                            buffers.a_mat(), args.a_offset, args.a_ld,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

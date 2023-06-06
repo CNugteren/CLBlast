@@ -7,107 +7,11 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file uses the CLTune auto-tuner to tune the transpose OpenCL kernels.
+// This file uses the auto-tuner to tune the transpose OpenCL kernels.
 //
 // =================================================================================================
 
-#include <string>
-#include <vector>
-
-#include "utilities/utilities.hpp"
-#include "tuning/tuning.hpp"
-
-namespace clblast {
-// =================================================================================================
-
-// See comment at top of file for a description of the class
-template <typename T>
-class TuneTranspose {
- public:
-
-  // The representative kernel and the source code
-  static std::string KernelFamily() { return "transpose"; }
-  static std::string KernelName() { return "TransposeMatrixFast"; }
-  static std::string GetSources() {
-    return
-      #include "../src/kernels/common.opencl"
-      #include "../src/kernels/level3/level3.opencl"
-      #include "../src/kernels/level3/transpose_fast.opencl"
-    ;
-  }
-
-  // The list of arguments relevant for this routine
-  static std::vector<std::string> GetOptions() { return {kArgM, kArgN, kArgAlpha}; }
-
-  // Tests for valid arguments
-  static void TestValidArguments(const Arguments<T> &) { }
-
-  // Sets the default values for the arguments
-  static size_t DefaultM() { return 1024; }
-  static size_t DefaultN() { return 1024; }
-  static size_t DefaultK() { return 1; } // N/A for this kernel
-  static size_t DefaultBatchCount() { return 1; } // N/A for this kernel
-  static double DefaultFraction() { return 1.0; } // N/A for this kernel
-  static size_t DefaultNumRuns() { return 10; } // run every kernel this many times for averaging
-
-  // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeX(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeY(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeA(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeB(const Arguments<T> &args) { return args.m * args.n; }
-  static size_t GetSizeC(const Arguments<T> &) { return 1; } // N/A for this kernel
-  static size_t GetSizeTemp(const Arguments<T> &) { return 1; } // N/A for this kernel
-
-  // Sets the tuning parameters and their possible values
-  static void SetParameters(cltune::Tuner &tuner, const size_t id) {
-    tuner.AddParameter(id, "TRA_DIM", {4, 8, 16, 32, 64});
-    tuner.AddParameter(id, "TRA_WPT", {1, 2, 4, 8, 16});
-    tuner.AddParameter(id, "TRA_PAD", {0, 1});
-    tuner.AddParameter(id, "TRA_SHUFFLE", {0, 1});
-  }
-
-  // Sets the constraints and local memory size
-  static void SetConstraints(cltune::Tuner &, const size_t) { }
-  static void SetLocalMemorySize(cltune::Tuner &tuner, const size_t id, const Arguments<T> &args) {
-    auto LocalMemorySize = [args] (std::vector<size_t> v) {
-      return ((v[0]*v[1]*(v[0]*v[1]+v[2]))*GetBytes(args.precision));
-    };
-    tuner.SetLocalMemoryUsage(id, LocalMemorySize, {"TRA_DIM", "TRA_WPT", "TRA_PAD"});
-  }
-
-  // Sets the base thread configuration
-  static std::vector<size_t> GlobalSize(const Arguments<T> &args) { return {args.m, args.n}; }
-  static std::vector<size_t> GlobalSizeRef(const Arguments<T> &args) { return GlobalSize(args); }
-  static std::vector<size_t> LocalSize() { return {1, 1}; }
-  static std::vector<size_t> LocalSizeRef() { return {8, 8}; }
-
-  // Transforms the thread configuration based on the parameters
-  using TransformVector = std::vector<std::vector<std::string>>;
-  static TransformVector MulLocal() { return {{"TRA_DIM", "TRA_DIM"}}; }
-  static TransformVector DivLocal() { return {}; }
-  static TransformVector MulGlobal() { return {}; }
-  static TransformVector DivGlobal() { return {{"TRA_WPT", "TRA_WPT"}}; }
-
-  // Sets the kernel's arguments
-  static void SetArguments(cltune::Tuner &tuner, const Arguments<T> &args,
-                           std::vector<T> &, std::vector<T> &,
-                           std::vector<T> &a_mat, std::vector<T> &b_mat, std::vector<T> &,
-                           std::vector<T> &) {
-    tuner.AddArgumentScalar(static_cast<int>(args.m));
-    tuner.AddArgumentInput(a_mat);
-    tuner.AddArgumentOutput(b_mat);
-    tuner.AddArgumentScalar(GetRealArg(args.alpha));
-  }
-
-  // Describes how to compute the performance metrics
-  static size_t GetMetric(const Arguments<T> &args) {
-    return 2 * args.m * args.n * GetBytes(args.precision);
-  }
-  static std::string PerformanceUnit() { return "GB/s"; }
-};
-
-// =================================================================================================
-} // namespace clblast
+#include "tuning/kernels/transpose_fast.hpp"
 
 // Shortcuts to the clblast namespace
 using half = clblast::half;
@@ -116,15 +20,17 @@ using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
 int main(int argc, char *argv[]) {
-  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
-  switch(clblast::GetPrecision(command_line_args)) {
-    case clblast::Precision::kHalf: clblast::Tuner<clblast::TuneTranspose<half>, half>(argc, argv); break;
-    case clblast::Precision::kSingle: clblast::Tuner<clblast::TuneTranspose<float>, float>(argc, argv); break;
-    case clblast::Precision::kDouble: clblast::Tuner<clblast::TuneTranspose<double>, double>(argc, argv); break;
-    case clblast::Precision::kComplexSingle: clblast::Tuner<clblast::TuneTranspose<float2>, float2>(argc, argv); break;
-    case clblast::Precision::kComplexDouble: clblast::Tuner<clblast::TuneTranspose<double2>, double2>(argc, argv); break;
-  }
-  return 0;
+  try {
+    const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
+    switch(clblast::GetPrecision(command_line_args)) {
+      case clblast::Precision::kHalf: clblast::Tuner<half>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<half>, clblast::TransposeTestValidArguments<half>, clblast::TransposeSetConstraints, clblast::TransposeComputeLocalMemSize<half>, clblast::TransposeSetArguments<half>); break;
+      case clblast::Precision::kSingle: clblast::Tuner<float>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<float>, clblast::TransposeTestValidArguments<float>, clblast::TransposeSetConstraints, clblast::TransposeComputeLocalMemSize<float>, clblast::TransposeSetArguments<float>); break;
+      case clblast::Precision::kDouble: clblast::Tuner<double>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double>, clblast::TransposeTestValidArguments<double>, clblast::TransposeSetConstraints, clblast::TransposeComputeLocalMemSize<double>, clblast::TransposeSetArguments<double>); break;
+      case clblast::Precision::kComplexSingle: clblast::Tuner<float2>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<float2>, clblast::TransposeTestValidArguments<float2>, clblast::TransposeSetConstraints, clblast::TransposeComputeLocalMemSize<float2>, clblast::TransposeSetArguments<float2>); break;
+      case clblast::Precision::kComplexDouble: clblast::Tuner<double2>(argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double2>, clblast::TransposeTestValidArguments<double2>, clblast::TransposeSetConstraints, clblast::TransposeComputeLocalMemSize<double2>, clblast::TransposeSetArguments<double2>); break;
+    }
+    return 0;
+  } catch (...) { return static_cast<int>(clblast::DispatchException()); }
 }
 
 // =================================================================================================

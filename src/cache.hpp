@@ -66,10 +66,10 @@ private:
 
 // =================================================================================================
 
-// The key struct for the cache of compiled OpenCL binaries
+// The key struct for the cache of compiled OpenCL binaries (device name and platform-dependent)
 // Order of fields: precision, routine_name, device_name (smaller fields first)
-typedef std::tuple<Precision, std::string, std::string> BinaryKey;
-typedef std::tuple<const Precision &, const std::string &, const std::string &> BinaryKeyRef;
+typedef std::tuple<RawPlatformID, Precision, std::string, std::string> BinaryKey;
+typedef std::tuple<const RawPlatformID &, const Precision &, const std::string &, const std::string &> BinaryKeyRef;
 
 typedef Cache<BinaryKey, std::string> BinaryCache;
 
@@ -79,23 +79,23 @@ extern template std::string BinaryCache::Get(const BinaryKeyRef &, bool *) const
 // =================================================================================================
 
 // The key struct for the cache of compiled OpenCL programs (context-dependent)
-// Order of fields: context, precision, routine_name (smaller fields first)
-typedef std::tuple<cl_context, Precision, std::string> ProgramKey;
-typedef std::tuple<const cl_context &, const Precision &, const std::string &> ProgramKeyRef;
+// Order of fields: context, device_id, precision, routine_name (smaller fields first)
+typedef std::tuple<RawContext, RawDeviceID, Precision, std::string> ProgramKey;
+typedef std::tuple<const RawContext &, const RawDeviceID &, const Precision &, const std::string &> ProgramKeyRef;
 
-typedef Cache<ProgramKey, Program> ProgramCache;
+typedef Cache<ProgramKey, std::shared_ptr<Program>> ProgramCache;
 
-extern template class Cache<ProgramKey, Program>;
-extern template Program ProgramCache::Get(const ProgramKeyRef &, bool *) const;
+extern template class Cache<ProgramKey, std::shared_ptr<Program>>;
+extern template std::shared_ptr<Program> ProgramCache::Get(const ProgramKeyRef &, bool *) const;
 
 // =================================================================================================
 
 class Database;
 
 // The key struct for the cache of database maps.
-// Order of fields: precision, device_name, kernel_name (smaller fields first)
-typedef std::tuple<Precision, std::string, std::string> DatabaseKey;
-typedef std::tuple<const Precision &, const std::string &, const std::string &> DatabaseKeyRef;
+// Order of fields: platform_id, device_id, precision, kernel_name (smaller fields first)
+typedef std::tuple<RawPlatformID, RawDeviceID, Precision, std::string> DatabaseKey;
+typedef std::tuple<const RawPlatformID &, const RawDeviceID &, const Precision &, const std::string &> DatabaseKeyRef;
 
 typedef Cache<DatabaseKey, Database> DatabaseCache;
 

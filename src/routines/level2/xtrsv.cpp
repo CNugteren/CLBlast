@@ -33,7 +33,8 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
                             const size_t n,
                             const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                             const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc,
-                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
+                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                            EventPointer event) {
 
   if (n > db_["TRSV_BLOCK_SIZE"]) { throw BLASError(StatusCode::kUnexpectedError); };
 
@@ -68,10 +69,8 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
 
   // Launches the kernel
   const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};
-  const auto global = std::vector<size_t>{1};
-  auto event = Event();
-  RunKernel(kernel, queue_, device_, global, local, event.pointer());
-  event.WaitForCompletion();
+  const auto global = std::vector<size_t>{Ceil(n, db_["TRSV_BLOCK_SIZE"])};
+  RunKernel(kernel, queue_, device_, global, local, event);
 }
 
 // =================================================================================================
@@ -87,6 +86,11 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Makes sure all dimensions are larger than zero
   if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Tests the matrix and vector
   TestMatrixA(n, n, a_buffer, a_offset, a_ld);
   TestVectorX(n, b_buffer, b_offset, b_inc);
@@ -95,15 +99,15 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // TODO: Make x with 0 offset and unit increment by creating custom copy-to and copy-from kernels
   const auto x_offset = b_offset;
   const auto x_inc = b_inc;
-  const auto x_size = n*x_inc + x_offset;
+  const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
   auto x_buffer = Buffer<T>(context_, x_size);
   b_buffer.CopyTo(queue_, x_size, x_buffer);
 
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_vector_event = Event();
-  FillVector(queue_, device_, program_, db_, fill_vector_event.pointer(), eventWaitList,
-             n, x_inc, x_offset, x_buffer, ConstantZero<T>());
+  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList,
+             n, x_inc, x_offset, x_buffer, ConstantZero<T>(), 16);
   fill_vector_event.WaitForCompletion();
 
   // Derives properties based on the arguments
@@ -131,21 +135,26 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
     if (i > 0) {
       const auto gemv_m = (a_transpose == Transpose::kNo) ? block_size : i;
       const auto gemv_n = (a_transpose == Transpose::kNo) ? i : block_size;
-      DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
-             a_buffer, a_offset + extra_offset_a, a_ld,
-             x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
-             x_buffer, x_offset + extra_offset_b, x_inc );
+      auto gemv_event = Event();
+      auto gemv = Xgemv<T>(queue_, gemv_event.pointer());
+      gemv.DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
+                  a_buffer, a_offset + extra_offset_a, a_ld,
+                  x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
+                  x_buffer, x_offset + extra_offset_b, x_inc);
+      gemv_event.WaitForCompletion();
     }
 
     // Runs the triangular substitution for the block size
+    auto sub_event = Event();
     Substitution(layout, triangle, a_transpose, diagonal, block_size,
                  a_buffer, a_offset + col + col*a_ld, a_ld,
                  b_buffer, b_offset + col*b_inc, b_inc,
-                 x_buffer, x_offset + col*x_inc, x_inc);
+                 x_buffer, x_offset + col*x_inc, x_inc, sub_event.pointer());
+    sub_event.WaitForCompletion();
   }
 
   // Retrieves the results
-  x_buffer.CopyTo(queue_, x_size, b_buffer);
+  x_buffer.CopyToAsync(queue_, x_size, b_buffer, event_);
 }
 
 // =================================================================================================

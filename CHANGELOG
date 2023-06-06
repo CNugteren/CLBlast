@@ -1,7 +1,141 @@
+Development version (next version)
+- Added tuned parameters for various devices (see doc/tuning.md)
 
-Development (next version)
+Version 1.6.0
+- Modifications to improve performance on Qualcomm Adreno GPUs:
+  * Unique database entries for specific Adreno devices
+  * Toggle OpenCL kernel compilation options for Adreno
+  * New preprocessor directive RELAX_WORKGROUP_SIZE
+- Fixed a bug in handling of #undef in CLBlast loop unrolling and array-to-register mapping functions
+- Fixed a bug in XAMAX/XAMIN routines related to inadvertently including the increment and offset in the result
+- Fixed a bug in XAMAX/XAMIN routines that would cause only the real part of a complex number to be taken into account
+- Fixed a bug that caused tests to not properly do integer-output testing (for XAMAX/XAMIN)
+- Fixes a minor issue with the expected input buffer size in the TRMV/TBMV/TPMV/TRSV routines
+- Fixes an issue with crashes on Android related to calling clReleaseProgram
+- Fixes two small issues in the plotting script
+- Fixed a documentation bug in the 'ld' requirements
+- Enabled Github Actions CI builds for testing and releasing
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
+
+Version 1.5.3
+- Fix a correctness issue with DGEMM on SM 7.5 Turing GPUs
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
+- Update cl.hpp to the new opencl.hpp header in the samples
+- Changed the complex sum routine to return the complex sum instead of the absolute complex sum.
+
+Version 1.5.2
+- Changed XAMAX/XAMIN to more likely return first rather than last min/max index, updated API docs
+- Added batched routines to pyclblast
+- Added CLBLAST_VERSION_MAJOR/MINOR/PATCH defines in headers to store version numbering
+- Several small improvements to the benchmark script (thanks to 'baryluk')
+- Fixed a bug in the caching when using a context with multiple devices
+- Fixed a bug in the tuners related to global workgroup size not being a multiple of the local
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
+
+Version 1.5.1
+- Implemented single-kernel version of convolution as GEMM
+- Now catches all exceptions thrown by the tuners
+- Fixed a bug in ISAMIN kernel
+- Fixed an out-of-bounds read/write in the XHAD routine (thanks to etomzak)
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
+
+Version 1.5.0
+- Added support for shuffle instructions for NVIDIA GPUs (thanks to 'tyler-utah')
+- Added an option to compile the Netlib API with static OpenCL device and context (-DNETLIB_PERSISTENT_OPENCL=ON)
+- Added a FAQ page to the documentation
+- The tuners now check beforehand on invalid local thread sizes and skip those completely
+- Made the tuning API (OverrideParameters) more flexible, disregarding superfluous parameters
+- Fixed an issue with conjugate transpose not being executed in certain cases for a.o. XOMATCOPY
+- Fixed an issue with AMD GPUs and the new GEMMK == 1 kernel
+- Fixed an issue with the preprocessor and the new GEMMK == 1 kernel
+- Fixed an issue for unequal MWG and NWG and the new GEMMK == 1 kernel
+- Fixed an issue for certain parameters for AXPY's 'XaxpyFaster' kernel
+- Various minor fixes and enhancements
+- Added non-BLAS routines:
+  * SCONVGEMM/DCONVGEMM/HCONVGEMM (convolution as im2col followed by batched GEMM)
+  * SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM (col2im transform as used in machine learning)
+
+Version 1.4.1
+- Fixed an access violation under Windows upon releasing the OpenCL program when the driver is already unloaded
+- Fixed an issue with double cl_program release in the CLBlast caching system
+- Added tuned parameters for various devices (see doc/tuning.md)
+
+Version 1.4.0
+- Added Python interface to CLBlast 'PyCLBlast'
+- Added CLBlast to Ubuntu PPA and macOS Homebrew package managers
+- Added an API to run the tuners programmatically without any I/O
+- Improved the performance potential by adding a second tunable GEMM kernel with 2D register tiling
+- Added support for Intel specific subgroup shuffling extensions for faster GEMM on Intel GPUs
+- Re-added a local memory size constraint to the tuners
+- The routine tuners now automatically pick up tuning results from disk from the kernel tuners
+- Updated and reorganised the CLBlast documentation
+- Added a 'canary' region to check for overflows in the tuner and tests (inspired by clARMOR)
+- Added an option to test against and compare performance with Intel's MKL
+- Fixed an access violation when compiled with Visual Studio upon releasing the OpenCL program
+- Fixed incorrect releasing of the OpenCL program resulting in segfaults / access violations
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see doc/tuning.md)
+- Added non-BLAS level-1 routines:
+  * SHAD/DHAD/CHAD/ZHAD/HHAD (Hadamard element-wise vector-vector product)
+
+Version 1.3.0
+- Re-designed and integrated the auto-tuner, no more dependency on CLTune
+- Made it possible to override the tuning parameters in the clients straight from JSON tuning files
+- Added OpenCL pre-processor to unroll loops and perform array-to-register promotions for compilers
+  which don't do this themselves (ARM Mali) - greatly improves performance on these platforms
+- Added first tuners for the TRSV (block size) and TRSM (invert kernel) routines
+- Added an optional argument to the GEMM routine to provide a pre-allocated temporary buffer
+- Fixed an issue with a crashing/hanging AMD APP compiler with the TRSM routine (invert kernel)
+- Improved compilation time by splitting the tuning database into multiple compilation units
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+- Added the RetrieveParameters function to the API to be able to inspect the tuning parameters
+- Added a strided-batched (not part of the BLAS standard) routine, faster but less generic compared
+  to the existing xGEMMBATCHED routines:
+  * SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+
+Version 1.2.0
+- Fixed a bug in the TRSM/TRSV routines due to missing synchronisations after GEMM/GEMV calls
+- Fixed a bug in TRSM when using the a-offset argument
+- Added a CUDA API to CLBlast:
+  * The library and kernels can be compiled with the CUDA driver API and NVRTC (requires CUDA 7.5)
+  * Two CUDA API sample programs are added: SGEMM and DAXPY
+  * All correctness tests and performance clients work on CUDA like they did for OpenCL
+- Kernels are now cached based on their tuning parameters: fits the use-case of 'OverrideParameters'
+- Cross-compiling for Android is now supported using CMake; instructions are added to the README
+- Improved performance for small GEMM problems by going from 3 to 1 optional temporary buffers
+- GEMM kernel selection (direct vs in-direct) is now done automatically using a new tuner
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+
+Version 1.1.0
+- The tuning database now has defaults per architecture (e.g. NVIDIA Kepler SM3.5, AMD Fiji)
+- The tuning database now has a dictionary to translate vendor/device names to a common set
+- The tuners can now distinguish between different AMD GPU board names of the same architecture
+- The tuners can now use particle-swarm optimisation to search more efficiently (thanks to 'mcian')
+- Improved performance for small problems on NVIDIA hardware by caching the device name
+- Further improved compilation time of database.cpp
+- Added a small diagnostics helper executable
+- Various minor fixes and enhancements
+- Added tuned parameters for various devices (see README)
+- Added non-BLAS routines:
+  * SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL (im2col transform as used to express convolution as GEMM)
+
+Version 1.0.1
+- Fixed a bug in the direct version of the GEMM kernel
+
+Version 1.0.0
 - Fixed a bug in the TRSM routine for alpha != 1
+- Fixed a bug in the cache related to multi-device contexts (thanks to 'kpot')
+- Fixed a bug in the direct version of the GEMM kernel
+- Fixed several warnings for MSVC and Clang
+- Added support for Mesa Clover and AMD's ROCm by making the inline keyword optional in kernels
 - Performance reports are now external at https://cnugteren.github.io/clblast
+- Greatly improved compilation time of database.cpp
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
 - Added non-BLAS level-1 routines:
@@ -20,7 +154,7 @@ Version 0.11.0
 - Replaced the R graph scripts with Python/Matplotlib scripts
 - Various minor fixes and enhancements
 - Added tuned parameters for various devices (see README)
-- Added the OverrideParameters function to the API to be able to supply custom tuning parmeters
+- Added the OverrideParameters function to the API to be able to supply custom tuning parameters
 - Added triangular solver (level-2 & level-3) routines:
   * STRSV/DTRSV/CTRSV/ZTRSV (experimental, un-optimized)
   * STRSM/DTRSM/CTRSM/ZTRSM (experimental, un-optimized)

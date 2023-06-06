@@ -17,7 +17,11 @@
 
 extern "C"
 {
-  #include <cblas.h>
+  #ifdef CLBLAST_REF_CBLAS_MKL
+    #include <mkl_cblas.h>
+  #else
+    #include <cblas.h>
+  #endif
 }
 
 #include "utilities/utilities.hpp"
@@ -451,38 +455,37 @@ void cblasXasum(const size_t n,
 
 // Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 void cblasXamax(const size_t n,
-                std::vector<float>& imax_buffer, const size_t imax_offset,
+                std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_isamax(static_cast<int>(n),
-                                                     &x_buffer[x_offset], static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = cblas_isamax(static_cast<int>(n),
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
-                std::vector<double>& imax_buffer, const size_t imax_offset,
+                std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_idamax(static_cast<int>(n),
-                                                     &x_buffer[x_offset], static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = cblas_idamax(static_cast<int>(n),
+                                         &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
-                std::vector<float2>& imax_buffer, const size_t imax_offset,
+                std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_icamax(static_cast<int>(n),
-                                                     reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = cblas_icamax(static_cast<int>(n),
+                                         reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
-                std::vector<double2>& imax_buffer, const size_t imax_offset,
+                std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  ((int*)&imax_buffer[0])[imax_offset] = cblas_izamax(static_cast<int>(n),
-                                                     reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = cblas_izamax(static_cast<int>(n),
+                                         reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXamax(const size_t n,
-                std::vector<half>& imax_buffer, const size_t imax_offset,
+                std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {
   auto x_buffer_bis = HalfToFloatBuffer(x_buffer);
-  auto imax_buffer_bis = HalfToFloatBuffer(imax_buffer);
+  auto imax_buffer_bis = imax_buffer;
   cblasXamax(n,
              imax_buffer_bis, imax_offset,
              x_buffer_bis, x_offset, x_inc);
-  FloatToHalfBuffer(imax_buffer, imax_buffer_bis);
 }
 
 // =================================================================================================
@@ -500,7 +503,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_sgemv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -515,7 +518,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_dgemv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -532,7 +535,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_cgemv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -549,7 +552,7 @@ void cblasXgemv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_zgemv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -585,7 +588,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_sgbmv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -600,7 +603,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_dgbmv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -617,7 +620,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_cgbmv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -634,7 +637,7 @@ void cblasXgbmv(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose,
   cblas_zgbmv(layout, a_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(kl), static_cast<int>(ku),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -672,7 +675,7 @@ void cblasXhemv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_chemv(layout, triangle,
               static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -689,7 +692,7 @@ void cblasXhemv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_zhemv(layout, triangle,
               static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -708,7 +711,7 @@ void cblasXhbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_chbmv(layout, triangle,
               static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<float*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -725,7 +728,7 @@ void cblasXhbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_zhbmv(layout, triangle,
               static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               beta_array.data(),
               reinterpret_cast<double*>(&y_buffer[y_offset]), static_cast<int>(y_inc));
@@ -778,7 +781,7 @@ void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_ssymv(layout, triangle,
               static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -793,7 +796,7 @@ void cblasXsymv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_dsymv(layout, triangle,
               static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -829,7 +832,7 @@ void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_ssbmv(layout, triangle,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -844,7 +847,7 @@ void cblasXsbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
   cblas_dsbmv(layout, triangle,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc),
               beta,
               &y_buffer[y_offset], static_cast<int>(y_inc));
@@ -927,7 +930,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_strmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -936,7 +939,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtrmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -945,7 +948,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctrmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -954,7 +957,7 @@ void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztrmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtrmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -977,7 +980,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stbmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -986,7 +989,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtbmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -995,7 +998,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctbmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1004,7 +1007,7 @@ void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztbmv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtbmv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1077,7 +1080,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_strsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1086,7 +1089,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtrsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1095,7 +1098,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctrsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1104,7 +1107,7 @@ void cblasXtrsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztrsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 
@@ -1115,7 +1118,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_stbsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1124,7 +1127,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_dtbsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               &x_buffer[x_offset], static_cast<int>(x_inc));
 }
 void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1133,7 +1136,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ctbsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
@@ -1142,7 +1145,7 @@ void cblasXtbsv(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
                 std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
   cblas_ztbsv(layout, triangle, a_transpose, diagonal,
               static_cast<int>(n), static_cast<int>(k),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               reinterpret_cast<double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
 }
 
@@ -1196,7 +1199,7 @@ void cblasXger(const CBLAS_ORDER layout,
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
-             &a_buffer[a_offset], a_ld);
+             &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXger(const CBLAS_ORDER layout,
                const size_t m, const size_t n,
@@ -1209,7 +1212,7 @@ void cblasXger(const CBLAS_ORDER layout,
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
              &y_buffer[y_offset], static_cast<int>(y_inc),
-             &a_buffer[a_offset], a_ld);
+             &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXger(const CBLAS_ORDER layout,
                const size_t m, const size_t n,
@@ -1242,7 +1245,7 @@ void cblasXgeru(const CBLAS_ORDER layout,
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<float*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<float*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 void cblasXgeru(const CBLAS_ORDER layout,
                 const size_t m, const size_t n,
@@ -1256,7 +1259,7 @@ void cblasXgeru(const CBLAS_ORDER layout,
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<double*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<double*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 
 // Forwards the Netlib BLAS calls for CGERC/ZGERC
@@ -1272,7 +1275,7 @@ void cblasXgerc(const CBLAS_ORDER layout,
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<float*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<float*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 void cblasXgerc(const CBLAS_ORDER layout,
                 const size_t m, const size_t n,
@@ -1286,7 +1289,7 @@ void cblasXgerc(const CBLAS_ORDER layout,
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<double*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<double*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 
 // Forwards the Netlib BLAS calls for CHER/ZHER
@@ -1299,7 +1302,7 @@ void cblasXher(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              static_cast<int>(n),
              alpha,
              reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
-             reinterpret_cast<float*>(&a_buffer[a_offset]), a_ld);
+             reinterpret_cast<float*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 void cblasXher(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const size_t n,
@@ -1310,7 +1313,7 @@ void cblasXher(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              static_cast<int>(n),
              alpha,
              reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
-             reinterpret_cast<double*>(&a_buffer[a_offset]), a_ld);
+             reinterpret_cast<double*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 
 // Forwards the Netlib BLAS calls for CHPR/ZHPR
@@ -1350,7 +1353,7 @@ void cblasXher2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               alpha_array.data(),
               reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const float*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<float*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<float*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 void cblasXher2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const size_t n,
@@ -1364,7 +1367,7 @@ void cblasXher2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               alpha_array.data(),
               reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc),
               reinterpret_cast<const double*>(&y_buffer[y_offset]), static_cast<int>(y_inc),
-              reinterpret_cast<double*>(&a_buffer[a_offset]), a_ld);
+              reinterpret_cast<double*>(&a_buffer[a_offset]), static_cast<int>(a_ld));
 }
 
 // Forwards the Netlib BLAS calls for CHPR2/ZHPR2
@@ -1407,7 +1410,7 @@ void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
-             &a_buffer[a_offset], a_ld);
+             &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const size_t n,
@@ -1418,7 +1421,7 @@ void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
              static_cast<int>(n),
              alpha,
              &x_buffer[x_offset], static_cast<int>(x_inc),
-             &a_buffer[a_offset], a_ld);
+             &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXsyr(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                const size_t n,
@@ -1485,7 +1488,7 @@ void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
-              &a_buffer[a_offset], a_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const size_t n,
@@ -1498,7 +1501,7 @@ void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
               alpha,
               &x_buffer[x_offset], static_cast<int>(x_inc),
               &y_buffer[y_offset], static_cast<int>(y_inc),
-              &a_buffer[a_offset], a_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld));
 }
 void cblasXsyr2(const CBLAS_ORDER layout, const CBLAS_UPLO triangle,
                 const size_t n,
@@ -1578,10 +1581,10 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   cblas_sgemm(layout, a_transpose, b_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, const CBLAS_TRANSPOSE b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -1593,10 +1596,10 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   cblas_dgemm(layout, a_transpose, b_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, const CBLAS_TRANSPOSE b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -1610,10 +1613,10 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   cblas_cgemm(layout, a_transpose, b_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const float*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, const CBLAS_TRANSPOSE b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -1627,10 +1630,10 @@ void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, con
   cblas_zgemm(layout, a_transpose, b_transpose,
               static_cast<int>(m), static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const double*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXgemm(const CBLAS_ORDER layout, const CBLAS_TRANSPOSE a_transpose, const CBLAS_TRANSPOSE b_transpose,
                 const size_t m, const size_t n, const size_t k,
@@ -1663,10 +1666,10 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_ssymm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
                 const size_t m, const size_t n,
@@ -1678,10 +1681,10 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_dsymm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
                 const size_t m, const size_t n,
@@ -1695,10 +1698,10 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_csymm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const float*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
                 const size_t m, const size_t n,
@@ -1712,10 +1715,10 @@ void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_zsymm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const double*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsymm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
                 const size_t m, const size_t n,
@@ -1750,10 +1753,10 @@ void cblasXhemm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_chemm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const float*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXhemm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle,
                 const size_t m, const size_t n,
@@ -1767,10 +1770,10 @@ void cblasXhemm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_zhemm(layout, side, triangle,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<const double*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
               beta_array.data(),
-              reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 
 // Forwards the Netlib BLAS calls for SSYRK/DSYRK/CSYRK/ZSYRK
@@ -1783,9 +1786,9 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_ssyrk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
                 const size_t n, const size_t k,
@@ -1796,9 +1799,9 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_dsyrk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              &a_buffer[a_offset], a_ld,
+              &a_buffer[a_offset], static_cast<int>(a_ld),
               beta,
-              &c_buffer[c_offset], c_ld);
+              &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
                 const size_t n, const size_t k,
@@ -1811,9 +1814,9 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_csyrk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               beta_array.data(),
-              reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
                 const size_t n, const size_t k,
@@ -1826,9 +1829,9 @@ void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_zsyrk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               beta_array.data(),
-              reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsyrk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
                 const size_t n, const size_t k,
@@ -1857,9 +1860,9 @@ void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_cherk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               beta,
-              reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose,
                 const size_t n, const size_t k,
@@ -1870,9 +1873,9 @@ void cblasXherk(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS
   cblas_zherk(layout, triangle, a_transpose,
               static_cast<int>(n), static_cast<int>(k),
               alpha,
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
               beta,
-              reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+              reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 
 // Forwards the Netlib BLAS calls for SSYR2K/DSYR2K/CSYR2K/ZSYR2K
@@ -1886,10 +1889,10 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_ssyr2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha,
-               &a_buffer[a_offset], a_ld,
-               &b_buffer[b_offset], b_ld,
+               &a_buffer[a_offset], static_cast<int>(a_ld),
+               &b_buffer[b_offset], static_cast<int>(b_ld),
                beta,
-               &c_buffer[c_offset], c_ld);
+               &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
                  const size_t n, const size_t k,
@@ -1901,10 +1904,10 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_dsyr2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha,
-               &a_buffer[a_offset], a_ld,
-               &b_buffer[b_offset], b_ld,
+               &a_buffer[a_offset], static_cast<int>(a_ld),
+               &b_buffer[b_offset], static_cast<int>(b_ld),
                beta,
-               &c_buffer[c_offset], c_ld);
+               &c_buffer[c_offset], static_cast<int>(c_ld));
 }
 void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
                  const size_t n, const size_t k,
@@ -1918,10 +1921,10 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_csyr2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
-               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-               reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
+               reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+               reinterpret_cast<const float*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
                beta_array.data(),
-               reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+               reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
                  const size_t n, const size_t k,
@@ -1935,10 +1938,10 @@ void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_zsyr2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
-               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
+               reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+               reinterpret_cast<const double*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
                beta_array.data(),
-               reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+               reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXsyr2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
                  const size_t n, const size_t k,
@@ -1972,10 +1975,10 @@ void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_cher2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
-               reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-               reinterpret_cast<const float*>(&b_buffer[b_offset]), b_ld,
+               reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+               reinterpret_cast<const float*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
                beta,
-               reinterpret_cast<float*>(&c_buffer[c_offset]), c_ld);
+               reinterpret_cast<float*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE ab_transpose,
                  const size_t n, const size_t k,
@@ -1988,10 +1991,10 @@ void cblasXher2k(const CBLAS_ORDER layout, const CBLAS_UPLO triangle, const CBLA
   cblas_zher2k(layout, triangle, ab_transpose,
                static_cast<int>(n), static_cast<int>(k),
                alpha_array.data(),
-               reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-               reinterpret_cast<const double*>(&b_buffer[b_offset]), b_ld,
+               reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+               reinterpret_cast<const double*>(&b_buffer[b_offset]), static_cast<int>(b_ld),
                beta,
-               reinterpret_cast<double*>(&c_buffer[c_offset]), c_ld);
+               reinterpret_cast<double*>(&c_buffer[c_offset]), static_cast<int>(c_ld));
 }
 
 // Forwards the Netlib BLAS calls for STRMM/DTRMM/CTRMM/ZTRMM
@@ -2003,8 +2006,8 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_strmm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld));
 }
 void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2014,8 +2017,8 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_dtrmm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld));
 }
 void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2026,8 +2029,8 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_ctrmm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<float*>(&b_buffer[b_offset]), b_ld);
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<float*>(&b_buffer[b_offset]), static_cast<int>(b_ld));
 }
 void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2038,8 +2041,8 @@ void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_ztrmm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<double*>(&b_buffer[b_offset]), static_cast<int>(b_ld));
 }
 void cblasXtrmm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2065,8 +2068,8 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_strsm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld));
 }
 void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2076,8 +2079,8 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_dtrsm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha,
-              &a_buffer[a_offset], a_ld,
-              &b_buffer[b_offset], b_ld);
+              &a_buffer[a_offset], static_cast<int>(a_ld),
+              &b_buffer[b_offset], static_cast<int>(b_ld));
 }
 void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2088,8 +2091,8 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_ctrsm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const float*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<float*>(&b_buffer[b_offset]), b_ld);
+              reinterpret_cast<const float*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<float*>(&b_buffer[b_offset]), static_cast<int>(b_ld));
 }
 void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPLO triangle, const CBLAS_TRANSPOSE a_transpose, const CBLAS_DIAG diagonal,
                 const size_t m, const size_t n,
@@ -2100,8 +2103,8 @@ void cblasXtrsm(const CBLAS_ORDER layout, const CBLAS_SIDE side, const CBLAS_UPL
   cblas_ztrsm(layout, side, triangle, a_transpose, diagonal,
               static_cast<int>(m), static_cast<int>(n),
               alpha_array.data(),
-              reinterpret_cast<const double*>(&a_buffer[a_offset]), a_ld,
-              reinterpret_cast<double*>(&b_buffer[b_offset]), b_ld);
+              reinterpret_cast<const double*>(&a_buffer[a_offset]), static_cast<int>(a_ld),
+              reinterpret_cast<double*>(&b_buffer[b_offset]), static_cast<int>(b_ld));
 }
 
 // =================================================================================================

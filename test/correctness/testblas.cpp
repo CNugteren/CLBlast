@@ -21,27 +21,7 @@
 namespace clblast {
 // =================================================================================================
 
-template <typename T, typename U> const int TestBlas<T,U>::kSeed = 42; // fixed seed for reproducibility
-
-// Test settings for the regular test. Append to these lists in case more tests are required.
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVectorDims = { 7, 93, 144, 4096 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kIncrements = { 1, 2, 7 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixDims = { 7, 64 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatrixVectorDims = { 61, 256 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBandSizes = { 4, 19 };
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kBatchCounts = { 1, 3 };
-
-// Test settings for the invalid tests
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kInvalidIncrements = { 0, 1 };
-template <typename T, typename U> const size_t TestBlas<T,U>::kBufferSize = 64;
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kMatSizes = {0, kBufferSize*kBufferSize-1, kBufferSize*kBufferSize};
-template <typename T, typename U> const std::vector<size_t> TestBlas<T,U>::kVecSizes = {0, kBufferSize - 1, kBufferSize};
-
-// The layout/transpose/triangle options to test with
-template <typename T, typename U> const std::vector<Layout> TestBlas<T,U>::kLayouts = {Layout::kRowMajor, Layout::kColMajor};
-template <typename T, typename U> const std::vector<Triangle> TestBlas<T,U>::kTriangles = {Triangle::kUpper, Triangle::kLower};
-template <typename T, typename U> const std::vector<Side> TestBlas<T,U>::kSides = {Side::kLeft, Side::kRight};
-template <typename T, typename U> const std::vector<Diagonal> TestBlas<T,U>::kDiagonals = {Diagonal::kUnit, Diagonal::kNonUnit};
+// The transpose configurations to test with: template parameter dependent
 template <> const std::vector<Transpose> TestBlas<half,half>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<float,float>::kTransposes = {Transpose::kNo, Transpose::kYes};
 template <> const std::vector<Transpose> TestBlas<double,double>::kTransposes = {Transpose::kNo, Transpose::kYes};
@@ -49,8 +29,6 @@ template <> const std::vector<Transpose> TestBlas<float2,float2>::kTransposes = 
 template <> const std::vector<Transpose> TestBlas<double2,double2>::kTransposes = {Transpose::kNo, Transpose::kYes, Transpose::kConjugate};
 template <> const std::vector<Transpose> TestBlas<float2,float>::kTransposes = {Transpose::kNo, Transpose::kConjugate};
 template <> const std::vector<Transpose> TestBlas<double2,double>::kTransposes = {Transpose::kNo, Transpose::kConjugate};
-
-// =================================================================================================
 
 // Constructor, initializes the base class tester and input data
 template <typename T, typename U>
@@ -88,14 +66,14 @@ TestBlas<T,U>::TestBlas(const std::vector<std::string> &arguments, const bool si
   const auto max_offset = *std::max_element(kOffsets.begin(), kOffsets.end());
   const auto max_batch_count = *std::max_element(kBatchCounts.begin(), kBatchCounts.end());
 
-  // Creates test input data
-  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
-  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset);
-  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset);
-  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset);
-  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset);
+  // Creates test input data. Adds a 'canary' region to detect buffer overflows
+  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset + kCanarySize);
+  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec)*max_inc + max_offset + kCanarySize);
+  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_ld, max_matvec) + max_offset + kCanarySize);
+  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec)*std::max(max_mat, max_matvec) + max_offset + kCanarySize);
+  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset + kCanarySize);
   std::mt19937 mt(kSeed);
   std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
   PopulateVector(x_source_, mt, dist);
@@ -116,7 +94,16 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
   TestStart("regular behaviour", name);
 
   // Iterates over all the to-be-tested combinations of arguments
-  for (const auto &args: test_vector) {
+  for (auto &args: test_vector) {
+
+    // Adds a 'canary' region to detect buffer overflows
+    args.x_size += kCanarySize;
+    args.y_size += kCanarySize;
+    args.a_size += kCanarySize;
+    args.b_size += kCanarySize;
+    args.c_size += kCanarySize;
+    args.ap_size += kCanarySize;
+    args.scalar_size += kCanarySize;
 
     // Prints the current test configuration
     if (verbose_) {
@@ -137,6 +124,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat2 = Buffer<T>(context_, args.c_size);
     auto ap_mat2 = Buffer<T>(context_, args.ap_size);
     auto scalar2 = Buffer<T>(context_, args.scalar_size);
+    auto scalar_uint2 = Buffer<unsigned int>(context_, args.scalar_size);
     x_vec2.Write(queue_, args.x_size, x_source_);
     y_vec2.Write(queue_, args.y_size, y_source_);
     a_mat2.Write(queue_, args.a_size, a_source_);
@@ -144,7 +132,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     c_mat2.Write(queue_, args.c_size, c_source_);
     ap_mat2.Write(queue_, args.ap_size, ap_source_);
     scalar2.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2};
 
     // Runs CLBlast
     if (verbose_) {
@@ -171,6 +159,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     auto c_mat1 = Buffer<T>(context_, args.c_size);
     auto ap_mat1 = Buffer<T>(context_, args.ap_size);
     auto scalar1 = Buffer<T>(context_, args.scalar_size);
+    auto scalar_uint1 = Buffer<unsigned int>(context_, args.scalar_size);
     x_vec1.Write(queue_, args.x_size, x_source_);
     y_vec1.Write(queue_, args.y_size, y_source_);
     a_mat1.Write(queue_, args.a_size, a_source_);
@@ -178,7 +167,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     c_mat1.Write(queue_, args.c_size, c_source_);
     ap_mat1.Write(queue_, args.ap_size, ap_source_);
     scalar1.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1};
 
     // Runs the reference code
     if (verbose_) {
@@ -220,17 +209,34 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
         if (!TestSimilarity(result1[index], result2[index])) {
           if (l2error >= kErrorMarginL2) { errors++; }
           if (verbose_) {
-            if (get_id2_(args) == 1) { fprintf(stdout, "\n   Error at index %zu: ", id1); }
-            else { fprintf(stdout, "\n   Error at %zu,%zu: ", id1, id2); }
-            fprintf(stdout, " %s (reference) versus ", ToString(result1[index]).c_str());
-            fprintf(stdout, " %s (CLBlast)", ToString(result2[index]).c_str());
+            if (get_id2_(args) == 1) { std::cout << std::endl << "   Error at index " << id1 << ": "; }
+            else { std::cout << std::endl << "   Error at " << id1 << "," << id2 << ": "; }
+            std::cout << " " << ToString(result1[index]) << " (reference) versus ";
+            std::cout << " " << ToString(result2[index]) << " (CLBlast)";
             if (l2error < kErrorMarginL2) {
-              fprintf(stdout, " - error suppressed by a low total L2 error\n");
+              std::cout << " - error suppressed by a low total L2 error" << std::endl;
             }
           }
         }
       }
     }
+    // Checks for differences in the 'canary' region to detect buffer overflows
+    for (auto canary_id=size_t{0}; canary_id<kCanarySize; ++canary_id) {
+      auto index = get_index_(args, get_id1_(args) - 1, get_id2_(args) - 1) + canary_id;
+      if (index >= result1.size() || index >= result2.size()) {
+        continue;
+      }
+      if (!TestSimilarity(result1[index], result2[index])) {
+        errors++;
+        if (verbose_) {
+          if (get_id2_(args) == 1) { std::cout << std::endl << "   Buffer overflow index " << index << ": "; }
+          else { std::cout << std::endl << "   Buffer overflow " << index << ": "; }
+          std::cout << " " << ToString(result1[index]) << " (reference) versus ";
+          std::cout << " " << ToString(result2[index]) << " (CLBlast)";
+        }
+      }
+    }
+
 
     // Report the results
     if (verbose_ && errors > 0) {
@@ -238,7 +244,7 @@ void TestBlas<T,U>::TestRegular(std::vector<Arguments<U>> &test_vector, const st
     }
 
     // Tests the error count (should be zero)
-    TestErrorCount(errors, get_id1_(args)*get_id2_(args), args);
+    TestErrorCount(errors, get_id1_(args)*get_id2_(args) + kCanarySize, args);
   }
   TestEnd();
 }
@@ -263,38 +269,26 @@ void TestBlas<T,U>::TestInvalid(std::vector<Arguments<U>> &test_vector, const st
       std::cout << std::flush;
     }
 
-    // Creates the OpenCL buffers. Note: we are not using the C++ version since we explicitly
+    // Creates the buffers. Note: we are not using the cxpp11.h C++ version since we explicitly
     // want to be able to create invalid buffers (no error checking here).
-    auto x1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-    auto y1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-    auto a1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-    auto b1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-    auto c1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-    auto ap1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-    auto d1 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-    auto x_vec1 = Buffer<T>(x1);
-    auto y_vec1 = Buffer<T>(y1);
-    auto a_mat1 = Buffer<T>(a1);
-    auto b_mat1 = Buffer<T>(b1);
-    auto c_mat1 = Buffer<T>(c1);
-    auto ap_mat1 = Buffer<T>(ap1);
-    auto scalar1 = Buffer<T>(d1);
-    auto x2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.x_size*sizeof(T), nullptr,nullptr);
-    auto y2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.y_size*sizeof(T), nullptr,nullptr);
-    auto a2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.a_size*sizeof(T), nullptr,nullptr);
-    auto b2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.b_size*sizeof(T), nullptr,nullptr);
-    auto c2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.c_size*sizeof(T), nullptr,nullptr);
-    auto ap2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.ap_size*sizeof(T), nullptr,nullptr);
-    auto d2 = clCreateBuffer(context_(), CL_MEM_READ_WRITE, args.scalar_size*sizeof(T), nullptr,nullptr);
-    auto x_vec2 = Buffer<T>(x2);
-    auto y_vec2 = Buffer<T>(y2);
-    auto a_mat2 = Buffer<T>(a2);
-    auto b_mat2 = Buffer<T>(b2);
-    auto c_mat2 = Buffer<T>(c2);
-    auto ap_mat2 = Buffer<T>(ap2);
-    auto scalar2 = Buffer<T>(d2);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1};
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2};
+    auto x_vec1 = CreateInvalidBuffer<T>(context_, args.x_size);
+    auto y_vec1 = CreateInvalidBuffer<T>(context_, args.y_size);
+    auto a_mat1 = CreateInvalidBuffer<T>(context_, args.a_size);
+    auto b_mat1 = CreateInvalidBuffer<T>(context_, args.b_size);
+    auto c_mat1 = CreateInvalidBuffer<T>(context_, args.c_size);
+    auto ap_mat1 = CreateInvalidBuffer<T>(context_, args.ap_size);
+    auto scalar1 = CreateInvalidBuffer<T>(context_, args.scalar_size);
+    auto scalar_uint1 = CreateInvalidBuffer<unsigned int>(context_, args.scalar_size);
+    auto x_vec2 = CreateInvalidBuffer<T>(context_, args.x_size);
+    auto y_vec2 = CreateInvalidBuffer<T>(context_, args.y_size);
+    auto a_mat2 = CreateInvalidBuffer<T>(context_, args.a_size);
+    auto b_mat2 = CreateInvalidBuffer<T>(context_, args.b_size);
+    auto c_mat2 = CreateInvalidBuffer<T>(context_, args.c_size);
+    auto ap_mat2 = CreateInvalidBuffer<T>(context_, args.ap_size);
+    auto scalar2 = CreateInvalidBuffer<T>(context_, args.scalar_size);
+    auto scalar_uint2 = CreateInvalidBuffer<unsigned int>(context_, args.scalar_size);
+    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1};
+    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2};
 
     // Runs CLBlast
     if (verbose_) {

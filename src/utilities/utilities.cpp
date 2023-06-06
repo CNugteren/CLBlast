@@ -7,11 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the common (test) utility functions.
+// This file implements the common utility functions.
 //
 // =================================================================================================
-
-#include "utilities/utilities.hpp"
 
 #include <string>
 #include <vector>
@@ -19,6 +17,10 @@
 #include <random>
 #include <iomanip>
 #include <cmath>
+
+#include "utilities/utilities.hpp"
+
+#include "utilities/device_mapping.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -85,14 +87,6 @@ template <> double AbsoluteValue(const double2 value) {
   return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
 }
 
-// Returns whether a scalar is close to zero
-template <typename T> bool IsCloseToZero(const T value) { return (value > -SmallConstant<T>()) && (value < SmallConstant<T>()); }
-template bool IsCloseToZero<float>(const float);
-template bool IsCloseToZero<double>(const double);
-template <> bool IsCloseToZero(const half value) { return IsCloseToZero(HalfToFloat(value)); }
-template <> bool IsCloseToZero(const float2 value) { return IsCloseToZero(value.real()) || IsCloseToZero(value.imag()); }
-template <> bool IsCloseToZero(const double2 value) { return IsCloseToZero(value.real()) || IsCloseToZero(value.imag()); }
-
 // =================================================================================================
 
 // Implements the string conversion using std::to_string if possible
@@ -114,6 +108,7 @@ std::string ToString(double value) {
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
 }
+template <> std::string ToString<std::string>(std::string value) { return value; }
 
 // If not possible directly: special cases for complex data-types
 template <>
@@ -177,6 +172,13 @@ std::string ToString(Precision value) {
     case Precision::kComplexSingle: return ToString(static_cast<int>(value))+" (complex-single)";
     case Precision::kComplexDouble: return ToString(static_cast<int>(value))+" (complex-double)";
     case Precision::kAny: return ToString(static_cast<int>(value))+" (any)";
+  }
+}
+template <>
+std::string ToString(KernelMode value) {
+  switch(value) {
+    case KernelMode::kCrossCorrelation: return ToString(static_cast<int>(value))+" (cross-correlation)";
+    case KernelMode::kConvolution: return ToString(static_cast<int>(value))+" (convolution)";
   }
 }
 template <>
@@ -279,12 +281,14 @@ template float GetArgument<float>(const std::vector<std::string>&, std::string&,
 template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
 template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
 template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&, const std::string);
 template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
 template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&, const Transpose);
 template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);
 template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&, const Triangle);
 template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&, const Diagonal);
 template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&, const Precision);
+template KernelMode GetArgument<KernelMode>(const std::vector<std::string>&, std::string&, const std::string&, const KernelMode);
 
 // =================================================================================================
 
@@ -319,12 +323,6 @@ bool CheckArgument(const std::vector<std::string> &arguments, std::string &help,
 
 // =================================================================================================
 
-// Returns a random seed. This used to be implemented using 'std::random_device', but that doesn't
-// always work. The chrono-timers are more reliable in that sense, but perhaps less random.
-unsigned int GetRandomSeed() {
-  return static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
-}
-
 // Create a random number generator and populates a vector with samples from a random distribution
 template <typename T>
 void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist) {
@@ -354,87 +352,6 @@ void PopulateVector(std::vector<half> &vector, std::mt19937 &mt, std::uniform_re
 
 // =================================================================================================
 
-template <typename T, typename U>
-void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names) {
-  for (auto &name: names) {
-    if (name == kBufVecX) {buffers_host.x_vec = std::vector<T>(args.x_size, static_cast<T>(0)); buffers.x_vec.Read(queue, args.x_size, buffers_host.x_vec); }
-    else if (name == kBufVecY) { buffers_host.y_vec = std::vector<T>(args.y_size, static_cast<T>(0)); buffers.y_vec.Read(queue, args.y_size, buffers_host.y_vec); }
-    else if (name == kBufMatA) { buffers_host.a_mat = std::vector<T>(args.a_size, static_cast<T>(0)); buffers.a_mat.Read(queue, args.a_size, buffers_host.a_mat); }
-    else if (name == kBufMatB) { buffers_host.b_mat = std::vector<T>(args.b_size, static_cast<T>(0)); buffers.b_mat.Read(queue, args.b_size, buffers_host.b_mat); }
-    else if (name == kBufMatC) { buffers_host.c_mat = std::vector<T>(args.c_size, static_cast<T>(0)); buffers.c_mat.Read(queue, args.c_size, buffers_host.c_mat); }
-    else if (name == kBufMatAP) { buffers_host.ap_mat = std::vector<T>(args.ap_size, static_cast<T>(0)); buffers.ap_mat.Read(queue, args.ap_size, buffers_host.ap_mat); }
-    else if (name == kBufScalar) { buffers_host.scalar = std::vector<T>(args.scalar_size, static_cast<T>(0)); buffers.scalar.Read(queue, args.scalar_size, buffers_host.scalar); }
-    else { throw std::runtime_error("Invalid buffer name"); }
-  }
-}
-
-template <typename T, typename U>
-void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names) {
-  for (auto &name: names) {
-    if (name == kBufVecX) { buffers.x_vec.Write(queue, args.x_size, buffers_host.x_vec); }
-    else if (name == kBufVecY) { buffers.y_vec.Write(queue, args.y_size, buffers_host.y_vec); }
-    else if (name == kBufMatA) { buffers.a_mat.Write(queue, args.a_size, buffers_host.a_mat); }
-    else if (name == kBufMatB) { buffers.b_mat.Write(queue, args.b_size, buffers_host.b_mat); }
-    else if (name == kBufMatC) { buffers.c_mat.Write(queue, args.c_size, buffers_host.c_mat); }
-    else if (name == kBufMatAP) { buffers.ap_mat.Write(queue, args.ap_size, buffers_host.ap_mat); }
-    else if (name == kBufScalar) { buffers.scalar.Write(queue, args.scalar_size, buffers_host.scalar); }
-    else { throw std::runtime_error("Invalid buffer name"); }
-  }
-}
-
-// Compiles the above functions
-template void DeviceToHost(const Arguments<half>&, Buffers<half>&, BuffersHost<half>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<float>&, Buffers<float>&, BuffersHost<float>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<double>&, Buffers<double>&, BuffersHost<double>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<float>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<double>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<float2>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
-template void DeviceToHost(const Arguments<double2>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<half>&, Buffers<half>&, BuffersHost<half>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<float>&, Buffers<float>&, BuffersHost<float>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<double>&, Buffers<double>&, BuffersHost<double>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<float>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<double>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<float2>&, Buffers<float2>&, BuffersHost<float2>&, Queue&, const std::vector<std::string>&);
-template void HostToDevice(const Arguments<double2>&, Buffers<double2>&, BuffersHost<double2>&, Queue&, const std::vector<std::string>&);
-
-// =================================================================================================
-
-// Conversion between half and single-precision
-std::vector<float> HalfToFloatBuffer(const std::vector<half>& source) {
-  auto result = std::vector<float>(source.size());
-  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = HalfToFloat(source[i]); }
-  return result;
-}
-void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source) {
-  for (auto i = size_t(0); i < source.size(); ++i) { result[i] = FloatToHalf(source[i]); }
-}
-
-// As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw) {
-  const auto size = source.GetSize() / sizeof(half);
-  auto queue = Queue(queue_raw);
-  auto context = queue.GetContext();
-  auto source_cpu = std::vector<half>(size);
-  source.Read(queue, size, source_cpu);
-  auto result_cpu = HalfToFloatBuffer(source_cpu);
-  auto result = Buffer<float>(context, size);
-  result.Write(queue, size, result_cpu);
-  return result;
-}
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw) {
-  const auto size = source.GetSize() / sizeof(float);
-  auto queue = Queue(queue_raw);
-  auto context = queue.GetContext();
-  auto source_cpu = std::vector<float>(size);
-  source.Read(queue, size, source_cpu);
-  auto result_cpu = std::vector<half>(size);
-  FloatToHalfBuffer(result_cpu, source_cpu);
-  result.Write(queue, size, result_cpu);
-}
-
 // Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
 // no conversion, but half-precision is not supported as kernel argument so it is converted to float.
 template <> typename RealArg<half>::Type GetRealArg(const half value) { return HalfToFloat(value); }
@@ -456,7 +373,7 @@ size_t Ceil(const size_t x, const size_t y) {
 // Helper function to determine whether or not 'a' is a multiple of 'b'
 bool IsMultiple(const size_t a, const size_t b) {
   return ((a/b)*b == a) ? true : false;
-};
+}
 
 // =================================================================================================
 
@@ -484,18 +401,141 @@ template <> Precision PrecisionValue<double2>() { return Precision::kComplexDoub
 // Returns false is this precision is not supported by the device
 template <> bool PrecisionSupported<float>(const Device &) { return true; }
 template <> bool PrecisionSupported<float2>(const Device &) { return true; }
-template <> bool PrecisionSupported<double>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+template <> bool PrecisionSupported<double>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<double2>(const Device &device) { return device.SupportsFP64(); }
+template <> bool PrecisionSupported<half>(const Device &device) { return device.SupportsFP16(); }
+
+// =================================================================================================
+
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2) {
+  const auto difference = (val1 - val2);
+  return static_cast<double>(difference * difference);
 }
-template <> bool PrecisionSupported<double2>(const Device &device) {
-  auto extensions = device.Capabilities();
-  return (extensions.find(kKhronosDoublePrecision) == std::string::npos) ? false : true;
+
+// Compiles the default case for standard data-types
+template double SquaredDifference<float>(const float, const float);
+template double SquaredDifference<double>(const double, const double);
+
+// Specialisations for non-standard data-types
+template <>
+double SquaredDifference(const float2 val1, const float2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
 }
-template <> bool PrecisionSupported<half>(const Device &device) {
-  auto extensions = device.Capabilities();
-  if (device.Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
-  return (extensions.find(kKhronosHalfPrecision) == std::string::npos) ? false : true;
+template <>
+double SquaredDifference(const double2 val1, const double2 val2) {
+  const auto real = SquaredDifference(val1.real(), val2.real());
+  const auto imag = SquaredDifference(val1.imag(), val2.imag());
+  return real + imag;
+}
+template <>
+double SquaredDifference(const half val1, const half val2) {
+  return SquaredDifference(HalfToFloat(val1), HalfToFloat(val2));
+}
+
+// =================================================================================================
+
+// High-level info
+std::string GetDeviceType(const Device& device) {
+  return device.Type();
+}
+std::string GetDeviceVendor(const Device& device) {
+  auto device_vendor = device.Vendor();
+
+  for (auto &find_and_replace : device_mapping::kVendorNames) { // replacing to common names
+    if (device_vendor == find_and_replace.first) { device_vendor = find_and_replace.second; }
+  }
+  return device_vendor;
+}
+
+// Mid-level info
+std::string GetDeviceArchitecture(const Device& device) {
+  auto device_architecture = std::string{""};
+  #ifdef CUDA_API
+    device_architecture = device.NVIDIAComputeCapability();
+  #else
+    if (device.HasExtension(kKhronosAttributesNVIDIA)) {
+      device_architecture = device.NVIDIAComputeCapability();
+    }
+    else if (device.HasExtension(kKhronosAttributesAMD)) {
+      device_architecture = device.Name(); // Name is architecture for AMD APP and AMD ROCm
+    }
+    else if ((device.IsQualcomm() && device.IsGPU())) { // queries the Adreno GPU architecture version
+      device_architecture = device.AdrenoVersion();
+    }
+    // Note: no else - 'device_architecture' might be the empty string
+  #endif
+
+  for (auto &find_and_replace : device_mapping::kArchitectureNames) { // replacing to common names
+    if (device_architecture == find_and_replace.first) { device_architecture = find_and_replace.second; }
+  }
+  return device_architecture;
+}
+
+// Lowest-level
+std::string GetDeviceName(const Device& device) {
+  auto device_name = std::string{""};
+  if (device.HasExtension(kKhronosAttributesAMD)) {
+    device_name = device.AMDBoardName();
+  }
+  else {
+    device_name = device.Name();
+  }
+
+  for (auto &find_and_replace : device_mapping::kDeviceNames) { // replacing to common names
+    if (device_name == find_and_replace.first) { device_name = find_and_replace.second; }
+  }
+
+  for (auto &removal : device_mapping::kDeviceRemovals) { // removing certain things
+    if (device_name.find(removal) != std::string::npos) {
+      auto start_position_to_erase = device_name.find(removal);
+      device_name.erase(start_position_to_erase, removal.length());
+    }
+  }
+
+  return device_name;
+}
+
+// =================================================================================================
+
+void SetOpenCLKernelStandard(const Device &device, std::vector<std::string> &options) {
+  // Inclusion of one of the following extensions needs OpenCL 1.2 kernels
+  if (device.HasExtension(kKhronosIntelSubgroups)) {
+    options.push_back("-cl-std=CL1.2");
+  }
+    // Otherwise we fall-back to the default CLBlast OpenCL 1.1
+  else {
+    options.push_back("-cl-std=CL1.1");
+  }
+}
+
+// =================================================================================================
+
+// Solve Bezout's identity
+// a * p + b * q = r = GCD(a, b)
+void EuclidGCD(int a, int b, int &p, int &q, int &r) {
+  p = 0;
+  q = 1;
+  int p_1 = 1;
+  int q_1 = 0;
+  for (;;) {
+    const int c = a % b;
+    if (c == 0) {
+      break;
+    }
+    const int p_2 = p_1;
+    const int q_2 = q_1;
+    p_1 = p;
+    q_1 = q;
+    p = p_2 - p_1 * (a / b);
+    q = q_2 - q_1 * (a / b);
+    a = b;
+    b = c;
+  }
+  r = b;
 }
 
 // =================================================================================================

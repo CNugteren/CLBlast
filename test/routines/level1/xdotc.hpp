@@ -50,7 +50,7 @@ class TestXdotc {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
     args.scalar_size = GetSizeDot(args);
@@ -73,14 +73,23 @@ class TestXdotc {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Dotc<T>(args.n,
-                          buffers.scalar(), args.dot_offset,
-                          buffers.x_vec(), args.x_offset, args.x_inc,
-                          buffers.y_vec(), args.y_offset, args.y_inc,
-                          &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Dotc<T>(args.n,
+                            buffers.scalar(), args.dot_offset,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            buffers.y_vec(), args.y_offset, args.y_inc,
+                            &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Dotc<T>(args.n,
+                            buffers.scalar(), args.dot_offset,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            buffers.y_vec(), args.y_offset, args.y_inc,
+                            queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

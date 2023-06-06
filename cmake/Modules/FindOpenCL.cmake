@@ -25,6 +25,7 @@
 set(OPENCL_HINTS
   ${OPENCL_ROOT}
   $ENV{OPENCL_ROOT}
+  $ENV{OCL_ROOT}
   $ENV{AMDAPPSDKROOT}
   $ENV{CUDA_PATH}
   $ENV{INTELOCLSDKROOT}
@@ -37,6 +38,7 @@ set(OPENCL_PATHS
   /opt/intel/opencl
   /usr
   /usr/local
+  /opt/rocm/opencl
 )
 
 # Finds the include directories

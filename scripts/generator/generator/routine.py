@@ -12,12 +12,13 @@ import generator.convert as convert
 
 class Routine:
     """Class holding routine-specific information (e.g. name, which arguments, which precisions)"""
-    def __init__(self, implemented, has_tests, batched, level, name, template, flavours, sizes, options,
+    def __init__(self, implemented, has_tests, batched_strided, temp_buffer, level, name, template, flavours, sizes, options,
                  inputs, outputs, buffer_sizes, scalars, scratch,
                  description, details, requirements):
         self.implemented = implemented
         self.has_tests = has_tests
-        self.batched = batched
+        self.batched = batched_strided
+        self.temp_buffer = temp_buffer
         self.level = level
         self.name = name
         self.template = template
@@ -34,38 +35,42 @@ class Routine:
         self.requirements = requirements
 
     def lowercase_name(self):
-        postfix = "batched" if self.batched else ""
+        postfix = "strided" if self.batched == 2 else ""
+        postfix += "batched" if self.batched != 0 else ""
         return self.name + postfix
 
     def plain_name(self):
-        postfix = "Batched" if self.batched else ""
+        postfix = "Strided" if self.batched == 2 else ""
+        postfix += "Batched" if self.batched != 0 else ""
         return self.name + postfix
 
     def capitalized_name(self):
-        postfix = "Batched" if self.batched else ""
+        postfix = "Strided" if self.batched == 2 else ""
+        postfix += "Batched" if self.batched != 0 else ""
         return self.name.capitalize() + postfix
 
     def upper_name(self):
-        postfix = "BATCHED" if self.batched else ""
+        postfix = "STRIDED" if self.batched == 2 else ""
+        postfix += "BATCHED" if self.batched != 0 else ""
         return self.name.upper() + postfix
 
     def b_star(self):
-        return "*" if self.batched else ""
+        return "*" if self.batched == 1 else ""
 
     def b_s(self):
-        return "s" if self.batched else ""
+        return "s" if self.batched == 1 else ""
 
     def batch_count_def(self):
-        return ["const size_t batch_count"] if self.batched else []
+        return ["const size_t batch_count"] if self.batched != 0 else []
 
     def batch_count_list(self):
-        return ["batch_count"] if self.batched else []
+        return ["batch_count"] if self.batched != 0 else []
 
     def batch_count_type(self):
-        return ["const size_t"] if self.batched else []
+        return ["const size_t"] if self.batched != 0 else []
 
     def batch_count_doc(self):
-        return ["`const size_t batch_count`: Number of batches. This value must be positive."] if self.batched else []
+        return ["`const size_t batch_count`: Number of batches. This value must be positive."] if self.batched != 0 else []
 
     def batched_transform_to_cpp(self):
         result = []
@@ -124,17 +129,22 @@ class Routine:
     @staticmethod
     def postfix(name):
         """Retrieves the postfix for a buffer"""
-        return "inc" if (name in ["x", "y"]) else "ld"
+        return "inc" if (name in ["x", "y", "z"]) else "ld"
 
     @staticmethod
     def buffers_vector():
         """Distinguish between vectors and matrices"""
-        return ["x", "y"]
+        return ["x", "y", "z"]
 
     @staticmethod
     def buffers_matrix():
         """Distinguish between vectors and matrices"""
         return ["a", "b", "c", "ap"]
+
+    @staticmethod
+    def buffers_tensor():
+        """Distinguish between vectors and matrices and tensors"""
+        return ["im", "col", "kernel", "result"]
 
     @staticmethod
     def routines_scalar_no_return():
@@ -182,7 +192,7 @@ class Routine:
 
     def buffers_without_ld_inc(self):
         """List of buffers without 'inc' or 'ld'"""
-        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap"]
+        return self.scalar_buffers_first() + self.scalar_buffers_second() + ["ap", "im", "col", "kernel", "result"]
 
     def get_buffer_type(self, name, flavour):
         if name in self.index_buffers():
@@ -195,7 +205,7 @@ class Routine:
 
     def no_scalars(self):
         """Determines whether or not this routine has scalar arguments (alpha/beta)"""
-        return self.scalars == []
+        return self.scalars == [] or self.name in ["im2col", "col2im", "convgemm"]
 
     def has_layout(self):
         """Determines whether the layout is an argument"""
@@ -214,14 +224,16 @@ class Routine:
 
     def buffers_first(self):
         """Determines which buffers go first (between alpha and beta) and which ones go after"""
-        if self.level == "2b":
+        if self.level == "2b" or self.name == "had":
             return ["x", "y"]
-        return ["ap", "a", "b", "x"]
+        extra_buffer = "col" if self.name == "col2im" else "im"
+        return ["ap", "a", "b", "x", extra_buffer, "kernel"]
 
     def buffers_second(self):
-        if self.level == "2b":
-            return ["ap", "a", "b", "c"]
-        return ["y", "c"]
+        if self.level == "2b" or self.name == "had":
+            return ["z", "ap", "a", "b", "c"]
+        extra_buffer = "im" if self.name == "col2im" else "col"
+        return ["y", "c", extra_buffer, "result"]
 
     def buffer(self, name):
         """Retrieves a variable name for a specific input/output vector/matrix (e.g. 'x')"""
@@ -229,6 +241,8 @@ class Routine:
             a = [name + "_buffer"]
             b = [name + "_offset" + self.b_s()]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
+            if self.batched == 2:
+                c += [name + "_stride"]
             return [", ".join(a + b + c)]
         return []
 
@@ -238,6 +252,8 @@ class Routine:
             a = [name + "_buffer_bis"]
             b = [name + "_offset"]
             c = [name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
+            if self.batched == 2:
+                c += [name + "_stride"]
             return [", ".join(a + b + c)]
         return []
 
@@ -257,6 +273,8 @@ class Routine:
             a = [prefix + "cl_mem " + name + "_buffer"]
             b = ["const size_t " + self.b_star() + name + "_offset" + self.b_s()]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
+            if self.batched == 2:
+                c += ["const size_t " + name + "_stride"]
             return [", ".join(a + b + c)]
         return []
 
@@ -264,7 +282,10 @@ class Routine:
         """As above but for OpenCL"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = [prefix + "Buffer<" + flavour.buffer_type + ">& " + name + "_buffer"]
+            if name == "imax":
+                a = [prefix + "Buffer<unsigned int>& " + name + "_buffer"]
+            else:
+                a = [prefix + "Buffer<" + flavour.buffer_type + ">& " + name + "_buffer"]
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
@@ -274,7 +295,10 @@ class Routine:
         """As above but for CUDA"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = [prefix + flavour.buffer_type + "* " + name + "_buffer"]
+            if name == "imax":
+                a = [prefix + "unsigned int * " + name + "_buffer"]
+            else:
+                a = [prefix + flavour.buffer_type + "* " + name + "_buffer"]
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
@@ -284,7 +308,10 @@ class Routine:
         """As above but as vectors"""
         prefix = "const " if name in self.inputs else ""
         if name in self.inputs or name in self.outputs:
-            a = [prefix + "std::vector<" + flavour.buffer_type + ">& " + name + "_buffer"]
+            if name == "imax":
+                a = [prefix + "std::vector<unsigned int>& " + name + "_buffer"]
+            else:
+                a = [prefix + "std::vector<" + flavour.buffer_type + ">& " + name + "_buffer"]
             b = ["const size_t " + name + "_offset"]
             c = ["const size_t " + name + "_" + self.postfix(name)] if name not in self.buffers_without_ld_inc() else []
             return [", ".join(a + b + c)]
@@ -306,8 +333,10 @@ class Routine:
         if name in self.inputs or name in self.outputs:
             buffer_type = "unsigned int" if (name in self.index_buffers()) else self.template.buffer_type
             a = ["Buffer<" + buffer_type + ">(" + name + "_buffer)"]
-            b = [name + "_offsets_cpp"] if self.batched else [name + "_offset"]
+            b = [name + "_offsets_cpp"] if self.batched == 1 else [name + "_offset"]
             c = [name + "_" + self.postfix(name)] if (name not in self.buffers_without_ld_inc()) else []
+            if self.batched == 2:
+                c += [name + "_stride"]
             return [", ".join(a + b + c)]
         return []
 
@@ -317,7 +346,7 @@ class Routine:
             a = [name + "_buffer()"]
             b = [name + "_offset"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
@@ -336,10 +365,8 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z", "a", "b", "c"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
-            elif name in ["a", "b", "c"]:
-                c = [name + "_" + self.postfix(name)]
             return [", ".join(a + c)]
         return []
 
@@ -359,7 +386,7 @@ class Routine:
             else:
                 a = ["&" + name + "_buffer[" + name + "_offset]"]
             c = []
-            if name in ["x", "y"]:
+            if name in ["x", "y", "z"]:
                 c = ["static_cast<int>(" + name + "_" + self.postfix(name) + ")"]
             elif name in ["a", "b", "c"]:
                 c = [name + "_" + self.postfix(name)]
@@ -376,6 +403,8 @@ class Routine:
             a = [prefix + "cl_mem"]
             b = ["const size_t" + self.b_star()]
             c = ["const size_t"] if (name not in self.buffers_without_ld_inc()) else []
+            if self.batched == 2:
+                c += ["const size_t"]
             return [", ".join(a + b + c)]
         return []
 
@@ -384,7 +413,7 @@ class Routine:
         prefix = "const " if (name in self.inputs) else ""
         inout = "input" if (name in self.inputs) else "output"
         if (name in self.inputs) or (name in self.outputs):
-            math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " vector"
+            math_name = name.upper() + " matrix" if (name in self.buffers_matrix()) else name + " tensor" if (name in self.buffers_tensor()) else name + " vector"
             inc_ld_description = "Leading dimension " if (name in self.buffers_matrix()) else "Stride/increment "
             a = ["`" + prefix + "cl_mem " + name + "_buffer`: OpenCL buffer to store the " + inout + " " + math_name + "."]
             b = ["`const size_t " + self.b_star() + name + "_offset" + self.b_s() + "`: The offset" + self.b_s() + " in elements from the start of the " + inout + " " + math_name + "."]
@@ -392,13 +421,15 @@ class Routine:
             if name not in self.buffers_without_ld_inc():
                 c = ["`const size_t " + name + "_" + self.postfix(name) + "`: " +
                      inc_ld_description + "of the " + inout + " " + math_name + ". This value must be greater than 0."]
+            if self.batched == 2:
+                c += ["`const size_t " + name + "_stride`: The (fixed) stride between two batches of the " + name.upper() + " matrix."]
             return a + b + c
         return []
 
     def scalar(self, name):
         """Retrieves the name of a scalar (alpha/beta)"""
         if name in self.scalars:
-            if self.batched:
+            if self.batched == 1:
                 return [name + "s_cpp"]
             return [name]
         return []
@@ -419,11 +450,11 @@ class Routine:
         """Retrieves the use of a scalar (alpha/beta)"""
         if name in self.scalars:
             if name == "alpha":
-                if self.batched:
+                if self.batched == 1:
                     return ["alphas_cpp.data()"]
                 return [flavour.use_alpha()]
             elif name == "beta":
-                if self.batched:
+                if self.batched == 1:
                     return ["betas_cpp.data()"]
                 return [flavour.use_beta()]
             return [name]
@@ -791,7 +822,6 @@ class Routine:
         """Retrieves a combination of all the argument types"""
         return (self.options_doc() + self.sizes_doc() +
                 list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
-                list(chain(*[self.buffer_doc(b) for b in self.scalar_buffers_first()])) +
                 self.scalar_doc("alpha") +
                 list(chain(*[self.buffer_doc(b) for b in self.buffers_first()])) +
                 self.scalar_doc("beta") +
@@ -800,26 +830,101 @@ class Routine:
                 list(chain(*[self.scalar_doc(s) for s in self.other_scalars()])) +
                 self.batch_count_doc())
 
+    def arguments_python(self):
+        """Arguments for the Python wrapper pyclblast"""
+        result = list()
+        result.extend(self.sizes)
+        if self.batched == 2:  # strided batched
+            result.append("batch_count")
+        buffers = self.inputs + self.outputs
+        result.extend(buffers[:])
+        if self.batched != 1:  # regular or strided-batched
+            for buf in buffers:
+                if buf in self.buffers_matrix():
+                    result.append(buf + "_ld")
+            for buf in buffers:
+                if buf in self.buffers_vector():
+                    result.append(buf + "_inc = 1")
+            if self.batched == 2:  # strided batched
+                for buf in buffers:
+                    if buf in self.buffers_matrix():
+                        result.append(buf + "_stride")
+            for scalar in self.scalars:
+                if scalar != "":
+                    default = "1.0" if scalar == "alpha" else "0.0"
+                    result.append(scalar + " = " + default)
+        else:  # batched but not strided-batched
+            for scalar in self.scalars:
+                result.append(scalar + "s")
+            for buf in buffers:
+                if buf in self.buffers_matrix():
+                    result.append(buf + "_ld")
+            for buf in buffers:
+                if buf in self.buffers_vector() + self.buffers_matrix():
+                    result.append(buf + "_offsets")
+            for buf in buffers:
+                if buf in self.buffers_vector():
+                    result.append(buf + "_inc = 1")
+        for option in self.options:
+            if option == "a_transpose":
+                result.append("a_transp = False")
+            if option == "b_transpose":
+                result.append("b_transp = False")
+            if option == "ab_transpose":
+                result.append("ab_transp = False")
+            if option == "side":
+                result.append("right_side = False")
+            if option == "triangle":
+                result.append("lower_triangle = False")
+            if option == "diagonal":
+                result.append("unit_diagonal = False")
+        if self.batched != 1:
+            for buf in buffers:
+                result.append(buf + "_offset = 0")
+        return result
+
     def requirements_doc(self):
         """Retrieves a list of routine requirements for documentation"""
         return self.requirements
 
-    def routine_header_cpp(self, spaces, default_event):
+    def routine_header_cpp(self, spaces, default_event, cuda=False, implementation=False):
         """Retrieves the C++ templated definition for a routine"""
         indent = " " * (spaces + self.length())
+        arguments = self.arguments_def(self.template)
+        mem_type = "cl_mem"
+        if cuda:
+            arguments = [a.replace(mem_type, "CUdeviceptr") for a in arguments]
+            mem_type = "CUdeviceptr"
         result = "template <" + self.template.name + ">\n"
         result += "StatusCode " + self.capitalized_name() + "("
-        result += (",\n" + indent).join([a for a in self.arguments_def(self.template)])
-        result += ",\n" + indent + "cl_command_queue* queue, cl_event* event" + default_event + ")"
+        result += (",\n" + indent).join([a for a in arguments])
+        result += ",\n" + indent
+        if cuda:
+            result += "const CUcontext context, const CUdevice device"
+        else:
+            result += "cl_command_queue* queue, cl_event* event" + default_event
+        if self.temp_buffer:
+            result += ",\n" + indent + mem_type + " temp_buffer"
+            if not implementation:
+                result += " = 0" if cuda else " = nullptr"
+        result += ")"
         return result
 
-    def routine_header_type_cpp(self, spaces):
+    def routine_header_type_cpp(self, spaces, cuda=False):
         """As above, but now without variable names"""
         indent = " " * (spaces + self.length())
+        arguments = self.arguments_type(self.template)
+        if cuda:
+            arguments = [a.replace("cl_mem", "CUdeviceptr") for a in arguments]
         result = "template <" + self.template.name + ">\n"
         result += "StatusCode " + self.capitalized_name() + "("
-        result += (",\n" + indent).join([a for a in self.arguments_type(self.template)])
-        result += ",\n" + indent + "cl_command_queue*, cl_event*)"
+        result += (",\n" + indent).join([a for a in arguments])
+        result += ",\n" + indent
+        if cuda:
+            result += "const CUcontext, const CUdevice"
+        else:
+            result += "cl_command_queue*, cl_event*"
+        result += ")"
         return result
 
     def routine_header_c(self, flavour, spaces, extra_qualifier):
@@ -845,7 +950,7 @@ class Routine:
         if self.name in self.routines_scalar_no_return():
             routine_name += "_sub"
             indent += "    "
-        if self.batched:
+        if self.batched != 0:
             routine_name += "batched"
         result = return_type + extra_qualifier + " cblas_" + flavour.name.lower() + routine_name + "("
         result += (",\n" + indent).join([a for a in self.arguments_def_netlib(flavour)]) + ")"

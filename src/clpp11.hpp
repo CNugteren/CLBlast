@@ -18,13 +18,13 @@
 // =================================================================================================
 //
 // Copyright 2015 SURFsara
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //  http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,13 +43,23 @@
 #include <memory>    // std::shared_ptr
 #include <numeric>   // std::accumulate
 #include <cstring>   // std::strlen
+#include <cstdio>    // fprintf, stderr
+#include <assert.h>
 
 // OpenCL
+#define CL_TARGET_OPENCL_VERSION 110
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS // to disable deprecation warnings
 #if defined(__APPLE__) || defined(__MACOSX)
   #include <OpenCL/opencl.h>
 #else
   #include <CL/opencl.h>
+#endif
+
+// Android support (missing C++11 functions to_string, stod, and stoi)
+#ifdef __ANDROID__
+  #include "utilities/android.hpp"
 #endif
 
 // Exception classes
@@ -59,34 +69,36 @@ namespace clblast {
 // =================================================================================================
 
 // Represents a runtime error returned by an OpenCL API function
-class CLError : public ErrorCode<DeviceError, cl_int> {
+class CLCudaAPIError : public ErrorCode<DeviceError, cl_int> {
  public:
-  explicit CLError(cl_int status, const std::string &where):
-      ErrorCode(status,
-                where,
-                "OpenCL error: " + where + ": " + std::to_string(static_cast<int>(status))) {
+  explicit CLCudaAPIError(cl_int status, const std::string &where):
+          ErrorCode(status, where, "OpenCL error: " + where + ": " +
+                                   std::to_string(static_cast<int>(status))) {
   }
 
   static void Check(const cl_int status, const std::string &where) {
     if (status != CL_SUCCESS) {
-      throw CLError(status, where);
+      throw CLCudaAPIError(status, where);
     }
   }
 
   static void CheckDtor(const cl_int status, const std::string &where) {
     if (status != CL_SUCCESS) {
-      fprintf(stderr, "CLBlast: %s (ignoring)\n", CLError(status, where).what());
+      fprintf(stderr, "CLBlast: %s (ignoring)\n", CLCudaAPIError(status, where).what());
     }
   }
 };
 
+// Exception returned when building a program
+using CLCudaAPIBuildError = CLCudaAPIError;
+
 // =================================================================================================
 
 // Error occurred in OpenCL
-#define CheckError(call) CLError::Check(call, CLError::TrimCallString(#call))
+#define CheckError(call) CLCudaAPIError::Check(call, CLCudaAPIError::TrimCallString(#call))
 
-// Error occured in OpenCL (no-exception version for destructors)
-#define CheckErrorDtor(call) CLError::CheckDtor(call, CLError::TrimCallString(#call))
+// Error occurred in OpenCL (no-exception version for destructors)
+#define CheckErrorDtor(call) CLCudaAPIError::CheckDtor(call, CLCudaAPIError::TrimCallString(#call))
 
 // =================================================================================================
 
@@ -142,6 +154,9 @@ using EventPointer = cl_event*;
 
 // =================================================================================================
 
+// Raw platform ID type
+using RawPlatformID = cl_platform_id;
+
 // C++11 version of 'cl_platform_id'
 class Platform {
  public:
@@ -167,6 +182,7 @@ class Platform {
   // Methods to retrieve platform information
   std::string Name() const { return GetInfoString(CL_PLATFORM_NAME); }
   std::string Vendor() const { return GetInfoString(CL_PLATFORM_VENDOR); }
+  std::string Version() const { return GetInfoString(CL_PLATFORM_VERSION); }
 
   // Returns the number of devices on this platform
   size_t NumDevices() const {
@@ -176,7 +192,7 @@ class Platform {
   }
 
   // Accessor to the private data-member
-  const cl_platform_id& operator()() const { return platform_; }
+  const RawPlatformID& operator()() const { return platform_; }
  private:
   cl_platform_id platform_;
 
@@ -205,6 +221,9 @@ inline std::vector<Platform> GetAllPlatforms() {
 
 // =================================================================================================
 
+// Raw device ID type
+using RawDeviceID = cl_device_id;
+
 // C++11 version of 'cl_device_id'
 class Device {
  public:
@@ -229,6 +248,7 @@ class Device {
   }
 
   // Methods to retrieve device information
+  RawPlatformID PlatformID() const { return GetInfo<cl_platform_id>(CL_DEVICE_PLATFORM); }
   std::string Version() const { return GetInfoString(CL_DEVICE_VERSION); }
   size_t VersionNumber() const
   {
@@ -260,7 +280,20 @@ class Device {
   unsigned long LocalMemSize() const {
     return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_LOCAL_MEM_SIZE));
   }
+
   std::string Capabilities() const { return GetInfoString(CL_DEVICE_EXTENSIONS); }
+  bool HasExtension(const std::string &extension) const {
+    const auto extensions = Capabilities();
+    return extensions.find(extension) != std::string::npos;
+  }
+  bool SupportsFP64() const {
+    return HasExtension("cl_khr_fp64");
+  }
+  bool SupportsFP16() const {
+    if (Name() == "Mali-T628") { return true; } // supports fp16 but not cl_khr_fp16 officially
+    return HasExtension("cl_khr_fp16");
+  }
+
   size_t CoreClock() const {
     return static_cast<size_t>(GetInfo<cl_uint>(CL_DEVICE_MAX_CLOCK_FREQUENCY));
   }
@@ -294,15 +327,61 @@ class Device {
   // Query for a specific type of device or brand
   bool IsCPU() const { return Type() == "CPU"; }
   bool IsGPU() const { return Type() == "GPU"; }
-  bool IsAMD() const { return Vendor() == "AMD" || Vendor() == "Advanced Micro Devices, Inc." ||
-                              Vendor() == "AuthenticAMD";; }
-  bool IsNVIDIA() const { return Vendor() == "NVIDIA" || Vendor() == "NVIDIA Corporation"; }
-  bool IsIntel() const { return Vendor() == "INTEL" || Vendor() == "Intel" ||
-                                Vendor() == "GenuineIntel"; }
+  bool IsAMD() const { return Vendor() == "AMD" ||
+                              Vendor() == "Advanced Micro Devices, Inc." ||
+                              Vendor() == "AuthenticAMD"; }
+  bool IsNVIDIA() const { return Vendor() == "NVIDIA" ||
+                                 Vendor() == "NVIDIA Corporation"; }
+  bool IsIntel() const { return Vendor() == "INTEL" ||
+                                Vendor() == "Intel" ||
+                                Vendor() == "GenuineIntel" ||
+                                Vendor() == "Intel(R) Corporation"; }
   bool IsARM() const { return Vendor() == "ARM"; }
+  bool IsQualcomm() const { return Vendor() == "QUALCOMM"; }
+
+  // Platform specific extensions
+  std::string AMDBoardName() const { // check for 'cl_amd_device_attribute_query' first
+    #ifndef CL_DEVICE_BOARD_NAME_AMD
+      #define CL_DEVICE_BOARD_NAME_AMD 0x4038
+    #endif
+    return GetInfoString(CL_DEVICE_BOARD_NAME_AMD);
+  }
+  std::string NVIDIAComputeCapability() const { // check for 'cl_nv_device_attribute_query' first
+    #ifndef CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV
+       #define CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV 0x4000
+    #endif
+    #ifndef CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV
+      #define CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV 0x4001
+    #endif
+    return std::string{"SM"} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV)) +
+           std::string{"."} + std::to_string(GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MINOR_NV));
+  }
+
+  // Returns if the Nvidia chip is a Volta or later archicture (sm_70 or higher)
+  bool IsPostNVIDIAVolta() const {
+    if(HasExtension("cl_nv_device_attribute_query")) {
+      return GetInfo<cl_uint>(CL_DEVICE_COMPUTE_CAPABILITY_MAJOR_NV) >= 7;
+    }
+    return false;
+  }
+
+  // Returns the Qualcomm Adreno GPU version (i.e. a650, a730, a740, etc.)
+  std::string AdrenoVersion() const {
+    if (IsQualcomm()) {
+      return GetInfoString(CL_DEVICE_OPENCL_C_VERSION);
+    }
+    else { return std::string{""}; }
+  }
+
+  // Retrieves the above extra information (if present)
+  std::string GetExtraInfo() const {
+    if (HasExtension("cl_amd_device_attribute_query")) { return AMDBoardName(); }
+    if (HasExtension("cl_nv_device_attribute_query")) { return NVIDIAComputeCapability(); }
+    else { return std::string{""}; }
+  }
 
   // Accessor to the private data-member
-  const cl_device_id& operator()() const { return device_; }
+  const RawDeviceID& operator()() const { return device_; }
  private:
   cl_device_id device_;
 
@@ -336,6 +415,9 @@ class Device {
 
 // =================================================================================================
 
+// Raw context type
+using RawContext = cl_context;
+
 // C++11 version of 'cl_context'
 class Context {
  public:
@@ -355,12 +437,12 @@ class Context {
     auto status = CL_SUCCESS;
     const cl_device_id dev = device();
     *context_ = clCreateContext(nullptr, 1, &dev, nullptr, nullptr, &status);
-    CLError::Check(status, "clCreateContext");
+    CLCudaAPIError::Check(status, "clCreateContext");
   }
 
   // Accessor to the private data-member
-  const cl_context& operator()() const { return *context_; }
-  cl_context* pointer() const { return &(*context_); }
+  const RawContext& operator()() const { return *context_; }
+  RawContext* pointer() const { return &(*context_); }
  private:
   std::shared_ptr<cl_context> context_;
 };
@@ -370,82 +452,114 @@ using ContextPointer = cl_context*;
 
 // =================================================================================================
 
-// Enumeration of build statuses of the run-time compilation process
-enum class BuildStatus { kSuccess, kError, kInvalid };
-
 // C++11 version of 'cl_program'.
 class Program {
  public:
-  Program() = default;
 
   // Source-based constructor with memory management
-  explicit Program(const Context &context, const std::string &source):
-      program_(new cl_program, [](cl_program* p) {
-        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
-        delete p;
-      }) {
-    const char *source_ptr = &source[0];
-    size_t length = source.length();
+  explicit Program(const Context &context, const std::string &source) {
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      const std::string source_null_kernel = source + "\n__kernel void null_kernel() {}\n";
+      const char *source_ptr = &source_null_kernel[0];
+      const auto length = source_null_kernel.length();
+    #else
+      const char *source_ptr = &source[0];
+      const auto length = source.length();
+    #endif
     auto status = CL_SUCCESS;
-    *program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
-    CLError::Check(status, "clCreateProgramWithSource");
+    program_ = clCreateProgramWithSource(context(), 1, &source_ptr, &length, &status);
+    CLCudaAPIError::Check(status, "clCreateProgramWithSource");
   }
 
   // Binary-based constructor with memory management
-  explicit Program(const Device &device, const Context &context, const std::string &binary):
-      program_(new cl_program, [](cl_program* p) {
-        if (*p) { CheckErrorDtor(clReleaseProgram(*p)); }
-        delete p;
-      }) {
+  explicit Program(const Device &device, const Context &context, const std::string &binary) {
     const char *binary_ptr = &binary[0];
-    size_t length = binary.length();
+    const auto length = binary.length();
     auto status1 = CL_SUCCESS;
     auto status2 = CL_SUCCESS;
-    const cl_device_id dev = device();
-    *program_ = clCreateProgramWithBinary(context(), 1, &dev, &length,
+    const auto dev = device();
+    program_ = clCreateProgramWithBinary(context(), 1, &dev, &length,
                                           reinterpret_cast<const unsigned char**>(&binary_ptr),
                                           &status1, &status2);
-    CLError::Check(status1, "clCreateProgramWithBinary (binary status)");
-    CLError::Check(status2, "clCreateProgramWithBinary");
+    CLCudaAPIError::Check(status1, "clCreateProgramWithBinary (binary status)");
+    CLCudaAPIError::Check(status2, "clCreateProgramWithBinary");
   }
 
-  // Compiles the device program and returns whether or not there where any warnings/errors
+  // Clean-up
+  ~Program() {
+    // Causes an access violation under Windows or Android when the driver is already unloaded
+    #if !defined(__ANDROID__) && !defined(_MSC_VER)
+      if (program_) { CheckErrorDtor(clReleaseProgram(program_)); }
+    #endif
+  }
+
+  // Compiles the device program and checks whether or not there are any warnings/errors
   void Build(const Device &device, std::vector<std::string> &options) {
-    options.push_back("-cl-std=CL1.1");
     auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
-    CheckError(clBuildProgram(*program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
+    CheckError(clBuildProgram(program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
+  }
+
+  // Confirms whether a certain status code is an actual compilation error or warning
+  bool StatusIsCompilationWarningOrError(const cl_int status) const {
+    return (status == CL_BUILD_PROGRAM_FAILURE);
   }
 
   // Retrieves the warning/error message from the compiler (if any)
   std::string GetBuildInfo(const Device &device) const {
     auto bytes = size_t{0};
     auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, 0, nullptr, &bytes));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, 0, nullptr, &bytes));
     auto result = std::string{};
     result.resize(bytes);
-    CheckError(clGetProgramBuildInfo(*program_, device(), query, bytes, &result[0], nullptr));
+    CheckError(clGetProgramBuildInfo(program_, device(), query, bytes, &result[0], nullptr));
     return result;
   }
 
   // Retrieves a binary or an intermediate representation of the compiled program
   std::string GetIR() const {
-    auto bytes = size_t{0};
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &bytes, nullptr));
+    cl_uint num_devices = 0;
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_NUM_DEVICES,
+                sizeof(cl_uint), &num_devices, nullptr));
+
+    std::vector<size_t> binSizesInBytes(num_devices, 0);
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARY_SIZES,
+                num_devices * sizeof(size_t), binSizesInBytes.data(), nullptr));
+
+    auto bytes       = size_t{0};
+    auto binSizeIter = size_t{0};
+    // Loop over the program binary sizes to find a binary whose size is > 0.
+    // The current logic assumes that there ever is only one valid program binary
+    // in a given cl_program. This should be the case unless the cl_program
+    // is built for all or a subset of devices associated to a given cl_program
+    for (; binSizeIter < binSizesInBytes.size(); ++binSizeIter) {
+        if (binSizesInBytes[binSizeIter] > 0) {
+            bytes = binSizesInBytes[binSizeIter];
+            break;
+        }
+    }
     auto result = std::string{};
     result.resize(bytes);
-    auto result_ptr = result.data();
-    CheckError(clGetProgramInfo(*program_, CL_PROGRAM_BINARIES, sizeof(char*), &result_ptr, nullptr));
+
+    std::vector<char*> out(num_devices, nullptr);
+    out[binSizeIter] = const_cast<char*>(result.data());
+
+    CheckError(clGetProgramInfo(program_, CL_PROGRAM_BINARIES,
+                                num_devices * sizeof(char*),
+                                out.data(), nullptr));
     return result;
   }
 
   // Accessor to the private data-member
-  const cl_program& operator()() const { return *program_; }
+  const cl_program& operator()() const { return program_; }
  private:
-  std::shared_ptr<cl_program> program_;
+  cl_program program_ = nullptr;
 };
 
 // =================================================================================================
+
+// Raw command-queue type
+using RawCommandQueue = cl_command_queue;
 
 // C++11 version of 'cl_command_queue'
 class Queue {
@@ -465,7 +579,7 @@ class Queue {
       }) {
     auto status = CL_SUCCESS;
     *queue_ = clCreateCommandQueue(context(), device(), CL_QUEUE_PROFILING_ENABLE, &status);
-    CLError::Check(status, "clCreateCommandQueue");
+    CLCudaAPIError::Check(status, "clCreateCommandQueue");
   }
 
   // Synchronizes the queue
@@ -493,7 +607,7 @@ class Queue {
   }
 
   // Accessor to the private data-member
-  const cl_command_queue& operator()() const { return *queue_; }
+  const RawCommandQueue& operator()() const { return *queue_; }
  private:
   std::shared_ptr<cl_command_queue> queue_;
 };
@@ -545,10 +659,11 @@ class Buffer {
   }
 
   // Regular constructor with memory management. If this class does not own the buffer object, then
-  // the memory will not be freed automatically afterwards.
+  // the memory will not be freed automatically afterwards. If the size is set to 0, this will
+  // become a stub containing a nullptr
   explicit Buffer(const Context &context, const BufferAccess access, const size_t size):
-      buffer_(new cl_mem, [access](cl_mem* m) {
-        if (access != BufferAccess::kNotOwned) { CheckError(clReleaseMemObject(*m)); }
+      buffer_(new cl_mem, [access, size](cl_mem* m) {
+        if (access != BufferAccess::kNotOwned && size > 0) { CheckError(clReleaseMemObject(*m)); }
         delete m;
       }),
       access_(access) {
@@ -556,8 +671,8 @@ class Buffer {
     if (access_ == BufferAccess::kReadOnly) { flags = CL_MEM_READ_ONLY; }
     if (access_ == BufferAccess::kWriteOnly) { flags = CL_MEM_WRITE_ONLY; }
     auto status = CL_SUCCESS;
-    *buffer_ = clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status);
-    CLError::Check(status, "clCreateBuffer");
+    *buffer_ = (size > 0) ? clCreateBuffer(context(), flags, size*sizeof(T), nullptr, &status) : nullptr;
+    CLCudaAPIError::Check(status, "clCreateBuffer");
   }
 
   // As above, but now with read/write access as a default
@@ -615,6 +730,9 @@ class Buffer {
 
   // Copies from host to device: writing the device buffer a-synchronously
   void WriteAsync(const Queue &queue, const size_t size, const T* host, const size_t offset = 0) {
+    if (access_ == BufferAccess::kReadOnly) {
+      throw LogicError("Buffer: writing to a read-only buffer");
+    }
     if (GetSize() < (offset+size)*sizeof(T)) {
       throw LogicError("Buffer: target device buffer is too small");
     }
@@ -645,9 +763,10 @@ class Buffer {
   }
 
   // Copies the contents of this buffer into another device buffer
-  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
+  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination,
+                   EventPointer event = nullptr) const {
     CheckError(clEnqueueCopyBuffer(queue(), *buffer_, destination(), 0, 0, size*sizeof(T), 0,
-                                   nullptr, nullptr));
+                                   nullptr, event));
   }
   void CopyTo(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
     CopyToAsync(queue, size, destination);
@@ -666,7 +785,7 @@ class Buffer {
   const cl_mem& operator()() const { return *buffer_; }
  private:
   std::shared_ptr<cl_mem> buffer_;
-  const BufferAccess access_;
+  BufferAccess access_;
 };
 
 // =================================================================================================
@@ -682,14 +801,25 @@ class Kernel {
   }
 
   // Regular constructor with memory management
-  explicit Kernel(const Program &program, const std::string &name):
+  explicit Kernel(const std::shared_ptr<Program> program, const std::string &name):
       kernel_(new cl_kernel, [](cl_kernel* k) {
         if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
         delete k;
-      }) {
+      })
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      , null_kernel_(new cl_kernel, [](cl_kernel* k) {
+        if (*k) { CheckErrorDtor(clReleaseKernel(*k)); }
+        delete k;
+      })
+    #endif
+  {
     auto status = CL_SUCCESS;
-    *kernel_ = clCreateKernel(program(), name.c_str(), &status);
-    CLError::Check(status, "clCreateKernel");
+    *kernel_ = clCreateKernel(program->operator()(), name.c_str(), &status);
+    CLCudaAPIError::Check(status, "clCreateKernel");
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      *null_kernel_ = clCreateKernel(program->operator()(), "null_kernel", &status);
+      CLCudaAPIError::Check(status, "clCreateKernel");
+    #endif
   }
 
   // Sets a kernel argument at the indicated position
@@ -753,12 +883,21 @@ class Kernel {
                                       static_cast<cl_uint>(waitForEventsPlain.size()),
                                       !waitForEventsPlain.empty() ? waitForEventsPlain.data() : nullptr,
                                       event));
+    #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+      const std::vector<size_t> nullRange = {1};
+      CheckError(clEnqueueNDRangeKernel(queue(), *null_kernel_, static_cast<cl_uint>(nullRange.size()),
+                                        nullptr, nullRange.data(), nullptr,
+                                        0, nullptr, nullptr));
+    #endif
   }
 
   // Accessor to the private data-member
   const cl_kernel& operator()() const { return *kernel_; }
  private:
   std::shared_ptr<cl_kernel> kernel_;
+  #ifdef AMD_SI_EMPTY_KERNEL_WORKAROUND
+    std::shared_ptr<cl_kernel> null_kernel_;
+  #endif
 
   // Internal implementation for the recursive SetArguments function.
   template <typename T>

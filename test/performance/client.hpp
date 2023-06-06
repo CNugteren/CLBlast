@@ -25,14 +25,14 @@
 #include <vector>
 #include <utility>
 
-#include "utilities/utilities.hpp"
+#include "test/test_utilities.hpp"
 
 // The libraries to test
 #ifdef CLBLAST_REF_CLBLAS
   #include <clBLAS.h>
 #endif
 #include "test/wrapper_cuda.hpp"
-#include "clblast.h"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -42,13 +42,14 @@ template <typename T, typename U>
 class Client {
  public:
   static const int kSeed;
+  struct TimeResult { double minimum; double maximum; double mean; double standard_deviation; };
 
   // Shorthand for the routine-specific functions passed to the tester
   using Routine = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using Reference1 = std::function<StatusCode(const Arguments<U>&, Buffers<T>&, Queue&)>;
   using Reference2 = std::function<StatusCode(const Arguments<U>&, BuffersHost<T>&, Queue&)>;
   using Reference3 = std::function<StatusCode(const Arguments<U>&, BuffersCUDA<T>&, Queue&)>;
-  using SetMetric = std::function<void(Arguments<U>&)>;
+  using SetMetric = std::function<void(Arguments<U>&, Queue&)>;
   using GetMetric = std::function<size_t(const Arguments<U>&)>;
 
   // The constructor
@@ -72,15 +73,15 @@ class Client {
 
   // Runs a function a given number of times and returns the execution time of the shortest instance
   template <typename BufferType, typename RoutineType>
-  double TimedExecution(const size_t num_runs, const Arguments<U> &args, BufferType &buffers,
-                        Queue &queue, RoutineType run_blas, const std::string &library_name);
+  TimeResult TimedExecution(const size_t num_runs, const Arguments<U> &args, BufferType &buffers,
+                            Queue &queue, RoutineType run_blas, const std::string &library_name);
 
   // Prints the header of a performance-data table
   void PrintTableHeader(const Arguments<U>& args);
 
   // Prints a row of performance data, including results of two libraries
   void PrintTableRow(const Arguments<U>& args,
-                     const std::vector<std::pair<std::string, double>>& timings);
+                     const std::vector<std::pair<std::string, TimeResult>>& timings);
 
   // The routine-specific functions passed to the tester
   const Routine run_routine_;

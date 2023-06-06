@@ -26,14 +26,53 @@ def load_database(filename):
     """Loads a database from disk"""
     print("[database] Loading database from '" + filename + "'")
     with open(filename) as f:
-        return json.load(f)
+        database = json.load(f)
+    return decompress_database(database)
 
 
 def save_database(database, filename):
     """Saves a database to disk"""
+    compressed_db = compress_database(database)
     print("[database] Saving database to '" + filename + "'")
-    with open(filename, "wb") as f:
-        json.dump(database, f, sort_keys=True, indent=4)
+    with open(filename, "w") as f:
+        json.dump(compressed_db, f, sort_keys=True, indent=2, separators=(',', ': '))
+
+
+def compress_database(database):
+    """Moves certain common fields up in the hierarchy, transforms dicts into lists"""
+    new_sections = []
+    for section in database["sections"]:
+        new_section = {}
+        for field in section:
+            if field == "results":
+                parameter_names = [sorted(result["parameters"].keys()) for result in section["results"]]
+                assert len(list(set([" ".join(p) for p in parameter_names]))) == 1
+                new_section["parameter_names"] = parameter_names[0]  # they are all the same
+                new_results = [[",".join([str(result["parameters"][p]) for p in new_section["parameter_names"]]),
+                                result["time"]]
+                               for result in section["results"]]
+                new_section[field] = new_results
+            elif field != "parameter_names":
+                new_section[field] = section[field]
+        new_sections.append(new_section)
+    return {"sections": new_sections}
+
+
+def decompress_database(database):
+    """Undo the above compression"""
+    for section in database["sections"]:
+        new_results = []
+        for result in section["results"]:
+            parameters = {}
+            for name, value in zip(section["parameter_names"], result[0].split(",")):
+                parameters[name] = int(value)
+            new_result = {
+                "parameters": parameters,
+                "time": result[1]
+            }
+            new_results.append(new_result)
+        section["results"] = new_results
+    return database
 
 
 def load_tuning_results(filename):
@@ -43,6 +82,14 @@ def load_tuning_results(filename):
 
     # Removes the numbering following the kernel family name
     json_data["kernel_family"] = re.sub(r'_\d+', '', json_data["kernel_family"])
+
+    # Removes unnecessary data
+    if json_data["best_kernel"]:
+        del json_data["best_kernel"]
+    if json_data["best_time"]:
+        del json_data["best_time"]
+    if json_data["best_parameters"]:
+        del json_data["best_parameters"]
 
     # Adds the kernel name to the section instead of to the individual results
     assert len(json_data["results"]) > 0

@@ -1,0 +1,93 @@
+name: CLBlast build
+
+on:
+  pull_request: {}
+  push:
+    branches: ['master']
+
+jobs:
+
+  build_and_test_linux_and_macos:
+    strategy:
+      matrix:
+        config: [
+          {os: ubuntu-latest, c_compiler: gcc, cpp_compiler: g++},
+          {os: ubuntu-latest, c_compiler: clang, cpp_compiler: clang++},
+          {os: macos-latest, c_compiler: clang, cpp_compiler: clang++},
+        ]
+    runs-on: ${{ matrix.config.os }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install requirements for Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -yq ninja-build ocl-icd-opencl-dev opencl-c-headers libopenblas-dev --no-install-recommends
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
+
+    - name: Install requirements for macOS
+      run: brew install ninja
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run CMake
+      run: |
+        export CC=${{ matrix.config.c_compiler }}
+        export CXX=${{ matrix.config.cpp_compiler }}
+        cmake -S . -B build -G Ninja -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON
+
+    - name: Compile the code
+      run: cmake --build build
+
+    - name: Get the diagnostics info
+      run: ./build/clblast_test_diagnostics
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run an example client
+      run: ./build/clblast_client_xgemm
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run an example sample program
+      run: ./build/clblast_sample_dgemv_c
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run an example tuner
+      run: ./build/clblast_tuner_xdot
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+    - name: Run the unittests
+      run: ctest --test-dir build
+      if: ${{ matrix.config.os == 'macos-latest' }}
+
+  build_windows:
+
+    strategy:
+      matrix:
+        config: [
+          {os: windows-2019, arch: x64},
+        ]
+
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install OpenBLAS
+      run: |
+        mkdir openblas
+        cd openblas
+        C:\msys64\usr\bin\wget.exe https://github.com/xianyi/OpenBLAS/releases/download/v0.3.23/OpenBLAS-0.3.23-x64.zip
+        7z x OpenBLAS-0.3.23-x64.zip
+        pwd
+        ls
+
+    - name: Install OpenCL
+      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl
+
+    - name: Run CMake
+      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${{ github.workspace }}\openblas
+
+    - name: Compile the code
+      run: cmake --build build

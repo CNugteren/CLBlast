@@ -15,6 +15,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 
 #include "test/correctness/tester.hpp"
@@ -69,28 +70,6 @@ template <typename T>
 T getAlmostInfNumber() {
   return static_cast<T>(1e35); // used for correctness testing of TRSV and TRSM routines
 }
-
-// Maximum number of test results printed on a single line
-template <typename T, typename U> const size_t Tester<T,U>::kResultsPerLine = size_t{64};
-
-// Error percentage is not applicable: error was caused by an incorrect status
-template <typename T, typename U> const float Tester<T,U>::kStatusError = -1.0f;
-
-// Constants holding start and end strings for terminal-output in colour
-template <typename T, typename U> const std::string Tester<T,U>::kPrintError = "\x1b[31m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintSuccess = "\x1b[32m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintWarning = "\x1b[35m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintMessage = "\x1b[1m";
-template <typename T, typename U> const std::string Tester<T,U>::kPrintEnd = "\x1b[0m";
-
-// Sets the output error coding
-template <typename T, typename U> const std::string Tester<T,U>::kSuccessData = kPrintSuccess + ":" + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kSuccessStatus = kPrintSuccess + "." + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kErrorData = kPrintError + "X" + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kErrorStatus = kPrintError + "/" + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kSkippedCompilation = kPrintWarning + "\\" + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedPrecision = kPrintWarning + "o" + kPrintEnd;
-template <typename T, typename U> const std::string Tester<T,U>::kUnsupportedReference = kPrintWarning + "-" + kPrintEnd;
 
 // =================================================================================================
 
@@ -163,7 +142,7 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
   }
 
   // Prints the header
-  fprintf(stdout, "* Running on OpenCL device '%s'.\n", device_.Name().c_str());
+  fprintf(stdout, "* Running on OpenCL device '%s'.\n", GetDeviceName(device_).c_str());
   fprintf(stdout, "* Starting tests for the %s'%s'%s routine.",
           kPrintMessage.c_str(), name.c_str(), kPrintEnd.c_str());
 
@@ -207,14 +186,14 @@ Tester<T,U>::Tester(const std::vector<std::string> &arguments, const bool silent
 template <typename T, typename U>
 Tester<T,U>::~Tester() {
   if (PrecisionSupported<T>(device_)) {
-    fprintf(stdout, "* Completed all test-cases for this routine. Results:\n");
-    fprintf(stdout, "   %zu test(s) passed\n", tests_passed_);
-    if (tests_skipped_ > 0) { fprintf(stdout, "%s", kPrintWarning.c_str()); }
-    fprintf(stdout, "   %zu test(s) skipped%s\n", tests_skipped_, kPrintEnd.c_str());
-    if (tests_failed_ > 0) { fprintf(stdout, "%s", kPrintError.c_str()); }
-    fprintf(stdout, "   %zu test(s) failed%s\n", tests_failed_, kPrintEnd.c_str());
+    std::cout << "* Completed all test-cases for this routine. Results:" << std::endl;
+    std::cout << "   " << tests_passed_ << " test(s) passed" << std::endl;
+    if (tests_skipped_ > 0) { std::cout << kPrintWarning; }
+    std::cout << "   " << tests_skipped_ << " test(s) skipped" << kPrintEnd << std::endl;
+    if (tests_failed_ > 0) { std::cout << kPrintError; }
+    std::cout << "   " << tests_failed_ << " test(s) failed" << kPrintEnd << std::endl;
   }
-  fprintf(stdout, "\n");
+  std::cout << std::endl;
 
   // Cleans-up clBLAS
   #ifdef CLBLAST_REF_CLBLAS
@@ -260,18 +239,18 @@ void Tester<T,U>::TestEnd() {
   // Prints a test summary
   auto pass_rate = 100*num_passed_ / static_cast<float>(num_passed_ + num_skipped_ + num_failed_);
   fprintf(stdout, "   Pass rate %s%5.1lf%%%s:", kPrintMessage.c_str(), pass_rate, kPrintEnd.c_str());
-  fprintf(stdout, " %zu passed /", num_passed_);
+  std::cout << " " << num_passed_ << " passed /";
   if (num_skipped_ != 0) {
-    fprintf(stdout, " %s%zu skipped%s /", kPrintWarning.c_str(), num_skipped_, kPrintEnd.c_str());
+    std::cout << " " << kPrintWarning << num_skipped_ << " skipped" << kPrintEnd << " /";
   }
   else {
-    fprintf(stdout, " %zu skipped /", num_skipped_);
+    std::cout << " " << num_skipped_ << " skipped /";
   }
   if (num_failed_ != 0) {
-    fprintf(stdout, " %s%zu failed%s\n", kPrintError.c_str(), num_failed_, kPrintEnd.c_str());
+    std::cout << " " << kPrintError << num_failed_ << " failed" << kPrintEnd << std::endl;
   }
   else {
-    fprintf(stdout, " %zu failed\n", num_failed_);
+    std::cout << " " << num_failed_ << " failed" << std::endl;
   }
 }
 
@@ -388,6 +367,19 @@ std::string Tester<T,U>::GetOptionsString(const Arguments<U> &args) {
     if (o == kArgAlpha)    { result += kArgAlpha + equals + ToString(args.alpha) + " "; }
     if (o == kArgBeta)     { result += kArgBeta + equals + ToString(args.beta) + " "; }
     if (o == kArgBatchCount){result += kArgBatchCount + equals + ToString(args.batch_count) + " "; }
+    if (o == kArgKernelMode){result += kArgKernelMode + equals + ToString(args.kernel_mode) + " "; }
+    if (o == kArgChannels) { result += kArgChannels + equals + ToString(args.channels) + " "; }
+    if (o == kArgHeight)   { result += kArgHeight + equals + ToString(args.height) + " "; }
+    if (o == kArgWidth)    { result += kArgWidth + equals + ToString(args.width) + " "; }
+    if (o == kArgNumKernels){result += kArgNumKernels + equals + ToString(args.num_kernels) + " "; }
+    if (o == kArgKernelH)  { result += kArgKernelH + equals + ToString(args.kernel_h) + " "; }
+    if (o == kArgKernelW)  { result += kArgKernelW + equals + ToString(args.kernel_w) + " "; }
+    if (o == kArgPadH)     { result += kArgPadH + equals + ToString(args.pad_h) + " "; }
+    if (o == kArgPadW)     { result += kArgPadW + equals + ToString(args.pad_w) + " "; }
+    if (o == kArgStrideH)  { result += kArgStrideH + equals + ToString(args.stride_h) + " "; }
+    if (o == kArgStrideW)  { result += kArgStrideW + equals + ToString(args.stride_w) + " "; }
+    if (o == kArgDilationH){ result += kArgDilationH + equals + ToString(args.dilation_h) + " "; }
+    if (o == kArgDilationW){ result += kArgDilationW + equals + ToString(args.dilation_w) + " "; }
   }
   return result;
 }
@@ -545,37 +537,6 @@ bool TestSimilarity(const half val1, const half val2) {
   const auto kErrorMarginAbsolute = getAbsoluteErrorMargin<half>();
   return TestSimilarityNear(HalfToFloat(val1), HalfToFloat(val2),
                             kErrorMarginAbsolute, kErrorMarginRelative);
-}
-
-// =================================================================================================
-
-// Retrieves the squared difference, used for example for computing the L2 error
-template <typename T>
-double SquaredDifference(const T val1, const T val2) {
-  const auto difference = (val1 - val2);
-  return static_cast<double>(difference * difference);
-}
-
-// Compiles the default case for standard data-types
-template double SquaredDifference<float>(const float, const float);
-template double SquaredDifference<double>(const double, const double);
-
-// Specialisations for non-standard data-types
-template <>
-double SquaredDifference(const float2 val1, const float2 val2) {
-  const auto real = SquaredDifference(val1.real(), val2.real());
-  const auto imag = SquaredDifference(val1.imag(), val2.imag());
-  return real + imag;
-}
-template <>
-double SquaredDifference(const double2 val1, const double2 val2) {
-  const auto real = SquaredDifference(val1.real(), val2.real());
-  const auto imag = SquaredDifference(val1.imag(), val2.imag());
-  return real + imag;
-}
-template <>
-double SquaredDifference(const half val1, const half val2) {
-  return SquaredDifference(HalfToFloat(val1), HalfToFloat(val2));
 }
 
 // =================================================================================================

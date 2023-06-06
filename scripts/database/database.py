@@ -20,14 +20,6 @@ import database.defaults as defaults
 # Server storing a copy of the database
 DATABASE_SERVER_URL = "https://raw.githubusercontent.com/CNugteren/CLBlast-database/master/database.json"
 
-# OpenCL vendor names and their short name
-VENDOR_TRANSLATION_TABLE = {
-  "GenuineIntel": "Intel",
-  "Intel(R) Corporation": "Intel",
-  "Advanced Micro Devices, Inc.": "AMD",
-  "NVIDIA Corporation": "NVIDIA",
-}
-
 
 def remove_mismatched_arguments(database):
     """Checks for tuning results with mis-matched entries and removes them according to user preferences"""
@@ -44,12 +36,14 @@ def remove_mismatched_arguments(database):
     for kernel_group_name, kernel_group in db.group_by(database["sections"], kernel_attributes):
         group_by_arguments = db.group_by(kernel_group, clblast.ARGUMENT_ATTRIBUTES)
         if len(group_by_arguments) != 1:
-            print("[database] WARNING: entries for a single kernel with multiple argument values " + str(kernel_group_name))
-            print("[database] Either quit now, or remove all but one of the argument combinations below:")
+            print("[database] WARNING: entries for a single kernel with multiple argument values " +
+                  str(kernel_group_name))
+            print("[database] Either quit or remove all but one of the argument combinations below:")
             for index, (attribute_group_name, mismatching_entries) in enumerate(group_by_arguments):
                 print("[database]     %d: %s" % (index, attribute_group_name))
             for attribute_group_name, mismatching_entries in group_by_arguments:
-                response = user_input("[database] Remove entries corresponding to %s, [y/n]? " % str(attribute_group_name))
+                response = user_input("[database] Remove entries corresponding to %s, [y/n]? " %
+                                      str(attribute_group_name))
                 if response == "y":
                     for entry in mismatching_entries:
                         database["sections"].remove(entry)
@@ -59,7 +53,8 @@ def remove_mismatched_arguments(database):
     for kernel_group_name, kernel_group in db.group_by(database["sections"], kernel_attributes):
         group_by_arguments = db.group_by(kernel_group, clblast.ARGUMENT_ATTRIBUTES)
         if len(group_by_arguments) != 1:
-            print("[database] ERROR: entries for a single kernel with multiple argument values " + str(kernel_group_name))
+            print("[database] ERROR: entries for a single kernel with multiple argument values " +
+                  str(kernel_group_name))
         assert len(group_by_arguments) == 1
 
 
@@ -78,6 +73,18 @@ def remove_database_entries(database, remove_if_matches_fields):
     print("[database] Removed %d entries from the database" % (old_length - new_length))
 
 
+def add_tuning_parameter(database, parameter_name, kernel, value):
+    num_changes = 0
+    for section in database["sections"]:
+        if section["kernel"] == kernel:
+            for result in section["results"]:
+                if parameter_name not in result["parameters"]:
+                    result["parameters"][parameter_name] = value
+            section["parameter_names"].append(parameter_name)
+            num_changes += 1
+    print("[database] Made %d addition(s) of %s" % (num_changes, parameter_name))
+
+
 def main(argv):
 
     # Parses the command-line arguments
@@ -85,6 +92,9 @@ def main(argv):
     parser.add_argument("source_folder", help="The folder with JSON files to parse to add to the database")
     parser.add_argument("clblast_root", help="Root of the CLBlast sources")
     parser.add_argument("-r", "--remove_device", type=str, default=None, help="Removes all entries for a specific device")
+    parser.add_argument("--add_tuning_parameter", type=str, default=None, help="Adds this parameter to existing entries")
+    parser.add_argument("--add_tuning_parameter_for_kernel", type=str, default=None, help="Adds the above parameter for this kernel")
+    parser.add_argument("--add_tuning_parameter_value", type=int, default=0, help="Set this value as the default for the above parameter")
     parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity of the script")
     cl_args = parser.parse_args(argv)
 
@@ -97,7 +107,8 @@ def main(argv):
     # Checks whether the command-line arguments are valid
     clblast_header = os.path.join(cl_args.clblast_root, "include", "clblast.h")  # Not used but just for validation
     if not os.path.isfile(clblast_header):
-        raise RuntimeError("The path '" + cl_args.clblast_root + "' does not point to the root of the CLBlast library")
+        raise RuntimeError("The path '" + cl_args.clblast_root +
+                           "' does not point to the root of the CLBlast library")
     if len(glob.glob(json_files)) < 1:
         print("[database] The path '" + cl_args.source_folder + "' does not contain any JSON files")
 
@@ -110,21 +121,20 @@ def main(argv):
 
     # Loops over all JSON files in the supplied folder
     for file_json in glob.glob(json_files):
-
-        # Loads the newly imported data
         sys.stdout.write("[database] Processing '" + file_json + "' ")  # No newline printed
-        imported_data = io.load_tuning_results(file_json)
 
-        # Fixes the problem that some vendors use multiple different names
-        for target in VENDOR_TRANSLATION_TABLE:
-            if imported_data["device_vendor"] == target:
-                imported_data["device_vendor"] = VENDOR_TRANSLATION_TABLE[target]
+        try:
+            # Loads the newly imported data
+            imported_data = io.load_tuning_results(file_json)
 
-        # Adds the new data to the database
-        old_size = db.length(database)
-        database = db.add_section(database, imported_data)
-        new_size = db.length(database)
-        print("with " + str(new_size - old_size) + " new items")  # Newline printed here
+            # Adds the new data to the database
+            old_size = db.length(database)
+            database = db.add_section(database, imported_data)
+            new_size = db.length(database)
+            print("with " + str(new_size - old_size) + " new items")  # Newline printed here
+
+        except ValueError:
+            print("--- WARNING: invalid file, skipping")
 
     # Checks for tuning results with mis-matched entries
     remove_mismatched_arguments(database)
@@ -136,7 +146,19 @@ def main(argv):
     # Removes database entries before continuing
     if cl_args.remove_device is not None:
         print("[database] Removing all results for device '%s'" % cl_args.remove_device)
-        remove_database_entries(database, {"device": cl_args.remove_device})
+        remove_database_entries(database, {"clblast_device_name": cl_args.remove_device})
+                                           #, "kernel_family": "xgemm"})
+        io.save_database(database, database_filename)
+
+    # Adds new tuning parameters to existing database entries
+    if cl_args.add_tuning_parameter is not None and\
+       cl_args.add_tuning_parameter_for_kernel is not None:
+        print("[database] Adding tuning parameter: '%s' for kernel '%s' with default %d" %
+              (cl_args.add_tuning_parameter, cl_args.add_tuning_parameter_for_kernel,
+               cl_args.add_tuning_parameter_value))
+        add_tuning_parameter(database, cl_args.add_tuning_parameter,
+                             cl_args.add_tuning_parameter_for_kernel,
+                             cl_args.add_tuning_parameter_value)
         io.save_database(database, database_filename)
 
     # Retrieves the best performing results

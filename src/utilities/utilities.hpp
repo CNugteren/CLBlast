@@ -7,10 +7,9 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file provides declarations for the common (test) utility functions such as a command-line
+// This file provides declarations for the common utility functions such as a command-line
 // argument parser. On top of this, it serves as the 'common' header, including the C++ OpenCL
-// wrapper. These utilities are not only used for CLBlast, but also included as part of the tuners,
-// the performance client and the correctness testers.
+// wrapper.
 //
 // =================================================================================================
 
@@ -21,9 +20,16 @@
 #include <functional>
 #include <complex>
 #include <random>
+#include <algorithm>
+#include <iterator>
 
-#include "clpp11.hpp"
-#include "clblast.h"
+#ifdef OPENCL_API
+  #include "clpp11.hpp"
+  #include "clblast.h"
+#elif CUDA_API
+  #include "cupp11.hpp"
+  #include "clblast_cuda.h"
+#endif
 #include "clblast_half.h"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/msvc.hpp"
@@ -32,18 +38,22 @@ namespace clblast {
 // =================================================================================================
 
 // Shorthands for half-precision
-using half = cl_half; // based on the OpenCL type, which is actually an 'unsigned short'
+using half = unsigned short; // the 'cl_half' OpenCL type is actually an 'unsigned short'
 
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
 using double2 = std::complex<double>;
 
 // Khronos OpenCL extensions
-const std::string kKhronosHalfPrecision = "cl_khr_fp16";
-const std::string kKhronosDoublePrecision = "cl_khr_fp64";
+const std::string kKhronosAttributesAMD = "cl_amd_device_attribute_query";
+const std::string kKhronosAttributesNVIDIA = "cl_nv_device_attribute_query";
+const std::string kKhronosIntelSubgroups = "cl_intel_subgroups";
 
 // Catched an unknown error
 constexpr auto kUnknownError = -999;
+
+// Canary size to add to buffers to check for buffer overflows
+constexpr auto kCanarySize = 127;
 
 // =================================================================================================
 
@@ -59,6 +69,7 @@ constexpr auto kArgBTransp = "transB";
 constexpr auto kArgSide = "side";
 constexpr auto kArgTriangle = "triangle";
 constexpr auto kArgDiagonal = "diagonal";
+constexpr auto kArgKernelMode = "kernel_mode";
 constexpr auto kArgXInc = "incx";
 constexpr auto kArgYInc = "incy";
 constexpr auto kArgXOffset = "offx";
@@ -77,22 +88,32 @@ constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 constexpr auto kArgBatchCount = "batch_num";
+constexpr auto kArgNumKernels = "num_kernels";
+
+// Constants for im2col
+constexpr auto kArgChannels = "channels";
+constexpr auto kArgHeight = "height";
+constexpr auto kArgWidth = "width";
+constexpr auto kArgKernelH = "kernelh";
+constexpr auto kArgKernelW = "kernelw";
+constexpr auto kArgPadH = "padh";
+constexpr auto kArgPadW = "padw";
+constexpr auto kArgStrideH = "strideh";
+constexpr auto kArgStrideW = "stridew";
+constexpr auto kArgDilationH = "dilationh";
+constexpr auto kArgDilationW = "dilationw";
 
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
-
-// The client-specific arguments in string form
-constexpr auto kArgCompareclblas = "clblas";
-constexpr auto kArgComparecblas = "cblas";
-constexpr auto kArgComparecublas = "cublas";
-constexpr auto kArgStepSize = "step";
-constexpr auto kArgNumSteps = "num_steps";
-constexpr auto kArgNumRuns = "runs";
-constexpr auto kArgWarmUp = "warm_up";
-
-// The test-specific arguments in string form
-constexpr auto kArgFullTest = "full_test";
-constexpr auto kArgVerbose = "verbose";
+constexpr auto kArgHeuristicSelection = "heuristic";
+constexpr auto kArgMaxL2Norm = "max_l2_norm";
+// PSO tuner-specific arguments in string form
+constexpr auto kArgPsoSwarmSize = "pso_swarm_size";
+constexpr auto kArgPsoInfGlobal = "pso_inf_global";
+constexpr auto kArgPsoInfLocal = "pso_inf_local";
+constexpr auto kArgPsoInfRandom = "pso_inf_random";
+// Annealing tuner-specific arguments in string form
+constexpr auto kArgAnnMaxTemp = "ann_max_temperature";
 
 // The common arguments in string form
 constexpr auto kArgPlatform = "platform";
@@ -101,6 +122,8 @@ constexpr auto kArgPrecision = "precision";
 constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
+constexpr auto kArgNumRuns = "runs";
+constexpr auto kArgFullStatistics = "full_statistics";
 
 // The buffer names
 constexpr auto kBufVecX = "X";
@@ -110,6 +133,18 @@ constexpr auto kBufMatB = "B";
 constexpr auto kBufMatC = "C";
 constexpr auto kBufMatAP = "AP";
 constexpr auto kBufScalar = "Scalar";
+constexpr auto kBufScalarUint = "ScalarUint";
+
+// =================================================================================================
+
+#ifdef VERBOSE
+inline void log_debug(const std::string &log_string) {
+  printf("[DEBUG] %s\n", log_string.c_str());
+}
+#else
+inline void log_debug(const std::string&) { }
+#endif
+
 
 // =================================================================================================
 
@@ -133,9 +168,6 @@ template <typename T> T SmallConstant();
 // Returns the absolute value of a scalar (modulus in case of complex numbers)
 template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value);
 
-// Returns whether a scalar is close to zero
-template <typename T> bool IsCloseToZero(const T value);
-
 // =================================================================================================
 
 // Structure containing all possible arguments for test clients, including their default values
@@ -153,6 +185,7 @@ struct Arguments {
   Side side = Side::kLeft;
   Triangle triangle = Triangle::kUpper;
   Diagonal diagonal = Diagonal::kUnit;
+  KernelMode kernel_mode = KernelMode::kCrossCorrelation;
   size_t x_inc = 1;
   size_t y_inc = 1;
   size_t x_offset = 0;
@@ -170,15 +203,28 @@ struct Arguments {
   size_t imax_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
+  // Arguments for im2col and convgemm
+  size_t channels = 1;
+  size_t height = 1;
+  size_t width = 1;
+  size_t kernel_h = 3;
+  size_t kernel_w = 3;
+  size_t pad_h = 0;
+  size_t pad_w = 0;
+  size_t stride_h = 1;
+  size_t stride_w = 1;
+  size_t dilation_h = 1;
+  size_t dilation_w = 1;
+  size_t num_kernels = 1;
   // Batch-specific arguments
   size_t batch_count = 1;
-  std::vector<size_t> x_offsets = {0};
-  std::vector<size_t> y_offsets = {0};
-  std::vector<size_t> a_offsets = {0};
-  std::vector<size_t> b_offsets = {0};
-  std::vector<size_t> c_offsets = {0};
-  std::vector<T> alphas = {ConstantOne<T>()};
-  std::vector<T> betas = {ConstantOne<T>()};
+  std::vector<size_t> x_offsets; // = {0};
+  std::vector<size_t> y_offsets; // = {0};
+  std::vector<size_t> a_offsets; // = {0};
+  std::vector<size_t> b_offsets; // = {0};
+  std::vector<size_t> c_offsets; // = {0};
+  std::vector<T> alphas; // = {ConstantOne<T>()};
+  std::vector<T> betas; // = {ConstantOne<T>()};
   // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
@@ -188,7 +234,13 @@ struct Arguments {
   size_t ap_size = 1;
   size_t scalar_size = 1;
   // Tuner-specific arguments
+  size_t heuristic_selection = 0;
   double fraction = 1.0;
+  size_t pso_swarm_size = 8; 
+  double pso_inf_global = 0.3;
+  double pso_inf_local = 0.6;
+  double pso_inf_random = 0.1;
+  double ann_max_temperature = 1.0; // Is it a valid default value? 
   // Client-specific arguments
   int compare_clblas = 1;
   int compare_cblas = 1;
@@ -196,6 +248,8 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
+  std::vector<std::string> tuner_files = {};
+  bool full_statistics = false;
   #ifdef CLBLAST_REF_CUBLAS
     void* cublas_handle; // cublasHandle_t
   #endif
@@ -208,34 +262,36 @@ struct Arguments {
   bool no_abbrv = false;
 };
 
-// Structure containing all possible buffers for test clients
-template <typename T>
-struct Buffers {
-  Buffer<T> x_vec;
-  Buffer<T> y_vec;
-  Buffer<T> a_mat;
-  Buffer<T> b_mat;
-  Buffer<T> c_mat;
-  Buffer<T> ap_mat;
-  Buffer<T> scalar;
-};
-template <typename T>
-struct BuffersHost {
-  std::vector<T> x_vec;
-  std::vector<T> y_vec;
-  std::vector<T> a_mat;
-  std::vector<T> b_mat;
-  std::vector<T> c_mat;
-  std::vector<T> ap_mat;
-  std::vector<T> scalar;
-};
-
 // =================================================================================================
 
 // Converts a value (e.g. an integer) to a string. This also covers special cases for CLBlast
 // data-types such as the Layout and Transpose data-types.
 template <typename T>
 std::string ToString(T value);
+
+// =================================================================================================
+
+// String splitting by a delimiter
+template<typename Out>
+void split(const std::string &s, char delimiter, Out result) {
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delimiter)) {
+    *(result++) = item;
+  }
+}
+
+// See above
+inline std::vector<std::string> split(const std::string &s, char delimiter) {
+  std::vector<std::string> elements;
+  split(s, delimiter, std::back_inserter(elements));
+  return elements;
+}
+
+// String character removal
+inline void remove_character(std::string &str, char to_be_removed) {
+  str.erase(std::remove(str.begin(), str.end(), to_be_removed), str.end());
+}
 
 // =================================================================================================
 
@@ -264,9 +320,6 @@ bool CheckArgument(const std::vector<std::string> &arguments, std::string &help,
 
 // =================================================================================================
 
-// Returns a random number to be used as a seed
-unsigned int GetRandomSeed();
-
 // Test/example data lower and upper limit
 constexpr auto kTestDataLowerLimit = -2.0;
 constexpr auto kTestDataUpperLimit = 2.0;
@@ -276,26 +329,6 @@ template <typename T>
 void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
 
 // =================================================================================================
-
-// Copies buffers from the OpenCL device to the host
-template <typename T, typename U>
-void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
-
-// Copies buffers from the host to the OpenCL device
-template <typename T, typename U>
-void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
-
-// =================================================================================================
-
-// Conversion between half and single-precision
-std::vector<float> HalfToFloatBuffer(const std::vector<half>& source);
-void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source);
-
-// As above, but now for OpenCL data-types instead of std::vectors
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, cl_command_queue queue_raw);
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, cl_command_queue queue_raw);
 
 // Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
 // no conversion, but half-precision is not supported as kernel argument so it is converted to float.
@@ -326,6 +359,30 @@ Precision PrecisionValue();
 // Returns false is this precision is not supported by the device
 template <typename T>
 bool PrecisionSupported(const Device &device);
+
+// =================================================================================================
+
+// Retrieves the squared difference, used for example for computing the L2 error
+template <typename T>
+double SquaredDifference(const T val1, const T val2);
+
+// =================================================================================================
+
+// Device information in a specific CLBlast form
+std::string GetDeviceType(const Device& device);
+std::string GetDeviceVendor(const Device& device);
+std::string GetDeviceArchitecture(const Device& device);
+std::string GetDeviceName(const Device& device);
+
+// =================================================================================================
+
+void SetOpenCLKernelStandard(const Device &device, std::vector<std::string> &options);
+
+// =================================================================================================
+
+// Solve Bezout's identity
+// a * p + b * q = r = GCD(a, b)
+void EuclidGCD(int a, int b, int &p, int &q, int &r);
 
 // =================================================================================================
 } // namespace clblast

@@ -24,14 +24,16 @@ R"(
 
 // =================================================================================================
 
-// Enable support for double-precision
-#if PRECISION == 16
-  #pragma OPENCL EXTENSION cl_khr_fp16: enable
-#endif
+#ifndef CUDA
+  // Enable support for half-precision
+  #if PRECISION == 16
+    #pragma OPENCL EXTENSION cl_khr_fp16: enable
+  #endif
 
-// Enable support for double-precision
-#if PRECISION == 64 || PRECISION == 6464
-   #pragma OPENCL EXTENSION cl_khr_fp64: enable
+  // Enable support for double-precision
+  #if PRECISION == 64 || PRECISION == 6464
+    #pragma OPENCL EXTENSION cl_khr_fp64: enable
+  #endif
 #endif
 
 // Half-precision
@@ -117,12 +119,23 @@ R"(
   #define GetRealArg(x) x
 #endif
 
+// Pointers to local memory objects (using a define because CUDA doesn't need them)
+#ifndef LOCAL_PTR
+  #define LOCAL_PTR __local
+#endif
+
 // =================================================================================================
 
 // Don't use the non-IEEE754 compliant OpenCL built-in mad() instruction per default. For specific
-// devices, this is enabled (see src/routine.cc).
+// devices, this is enabled (see src/routine.cpp).
 #ifndef USE_CL_MAD
   #define USE_CL_MAD 0
+#endif
+
+// By default the workgroup size requirement is enabled. For Qualcomm devices the workgroup size 
+// requirement results in worse performance and is disabled (src/utilities/compile.cpp)
+#ifndef RELAX_WORKGROUP_SIZE
+  #define RELAX_WORKGROUP_SIZE 0
 #endif
 
 // Sets a variable to zero
@@ -169,61 +182,61 @@ R"(
 
 // Adds two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Add(c, a, b) c.x = a.x + b.x; c.y = a.y + b.y
+  #define Add(c,a,b) c.x = a.x + b.x; c.y = a.y + b.y
 #else
-  #define Add(c, a, b) c = a + b
+  #define Add(c,a,b) c = a + b
 #endif
 
 // Subtracts two complex variables
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Subtract(c, a, b) c.x = a.x - b.x; c.y = a.y - b.y
+  #define Subtract(c,a,b) c.x = a.x - b.x; c.y = a.y - b.y
 #else
-  #define Subtract(c, a, b) c = a - b
+  #define Subtract(c,a,b) c = a - b
 #endif
 
 // Multiply two complex variables (used in the defines below)
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MulReal(a, b) a.x*b.x - a.y*b.y
-  #define MulImag(a, b) a.x*b.y + a.y*b.x
+  #define MulReal(a,b) a.x*b.x - a.y*b.y
+  #define MulImag(a,b) a.x*b.y + a.y*b.x
 #endif
 
 // The scalar multiply function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define Multiply(c, a, b) c.x = MulReal(a,b); c.y = MulImag(a,b)
+  #define Multiply(c,a,b) c.x = MulReal(a,b); c.y = MulImag(a,b)
 #else
-  #define Multiply(c, a, b) c = a * b
+  #define Multiply(c,a,b) c = a * b
 #endif
 
 // The scalar multiply-add function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MultiplyAdd(c, a, b) c.x += MulReal(a,b); c.y += MulImag(a,b)
+  #define MultiplyAdd(c,a,b) c.x += MulReal(a,b); c.y += MulImag(a,b)
 #else
   #if USE_CL_MAD == 1
-    #define MultiplyAdd(c, a, b) c = mad(a, b, c)
+    #define MultiplyAdd(c,a,b) c = mad(a, b, c)
   #else
-    #define MultiplyAdd(c, a, b) c += a * b
+    #define MultiplyAdd(c,a,b) c += a * b
   #endif
 #endif
 
 // The scalar multiply-subtract function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define MultiplySubtract(c, a, b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
+  #define MultiplySubtract(c,a,b) c.x -= MulReal(a,b); c.y -= MulImag(a,b)
 #else
-  #define MultiplySubtract(c, a, b) c -= a * b
+  #define MultiplySubtract(c,a,b) c -= a * b
 #endif
 
 // The scalar division function: full division
 #if PRECISION == 3232 || PRECISION == 6464
-  #define DivideFull(c, a, b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom
+  #define DivideFull(c,a,b) singlereal num_x = (a.x * b.x) + (a.y * b.y); singlereal num_y = (a.y * b.x) - (a.x * b.y); singlereal denom = (b.x * b.x) + (b.y * b.y); c.x = num_x / denom; c.y = num_y / denom
 #else
-  #define DivideFull(c, a, b) c = a / b
+  #define DivideFull(c,a,b) c = a / b
 #endif
 
 // The scalar AXPBY function
 #if PRECISION == 3232 || PRECISION == 6464
-  #define AXPBY(e, a, b, c, d) e.x = MulReal(a,b) + MulReal(c,d); e.y = MulImag(a,b) + MulImag(c,d)
+  #define AXPBY(e,a,b,c,d) e.x = MulReal(a,b) + MulReal(c,d); e.y = MulImag(a,b) + MulImag(c,d)
 #else
-  #define AXPBY(e, a, b, c, d) e = a*b + c*d
+  #define AXPBY(e,a,b,c,d) e = a*b + c*d
 #endif
 
 // The complex conjugate operation for complex transforms
@@ -231,6 +244,15 @@ R"(
   #define COMPLEX_CONJUGATE(value) value.x = value.x; value.y = -value.y
 #else
   #define COMPLEX_CONJUGATE(value) 
+#endif
+
+// =================================================================================================
+
+// Force inlining functions or not: some compilers don't support the inline keyword
+#ifdef USE_INLINE_KEYWORD
+  #define INLINE_FUNC inline
+#else
+  #define INLINE_FUNC
 #endif
 
 // =================================================================================================
@@ -244,19 +266,19 @@ R"(
 // Staggered/shuffled group indices to avoid partition camping (AMD GPUs). Formula's are taken from:
 // http://docs.nvidia.com/cuda/samples/6_Advanced/transpose/doc/MatrixTranspose.pdf
 // More details: https://github.com/CNugteren/CLBlast/issues/53
-#if USE_STAGGERED_INDICES == 1
-  inline size_t GetGroupIDFlat() {
+#if USE_STAGGERED_INDICES == 1 && GEMMK == 0
+  INLINE_FUNC int GetGroupIDFlat() {
     return get_group_id(0) + get_num_groups(0) * get_group_id(1);
   }
-  inline size_t GetGroupID1() {
+  INLINE_FUNC int GetGroupID1() {
     return (GetGroupIDFlat()) % get_num_groups(1);
   }
-  inline size_t GetGroupID0() {
+  INLINE_FUNC int GetGroupID0() {
     return ((GetGroupIDFlat() / get_num_groups(1)) + GetGroupID1()) % get_num_groups(0);
   }
 #else
-  inline size_t GetGroupID1() { return get_group_id(1); }
-  inline size_t GetGroupID0() { return get_group_id(0); }
+  INLINE_FUNC int GetGroupID1() { return get_group_id(1); }
+  INLINE_FUNC int GetGroupID0() { return get_group_id(0); }
 #endif
 
 // =================================================================================================

@@ -7,6 +7,8 @@
 
 import sys
 
+import database.clblast as clblast
+
 
 def get_best_results(database):
     """Retrieves the results with the lowest execution times"""
@@ -18,6 +20,8 @@ def get_best_results(database):
         for attribute in section.keys():
             if attribute != "results":
                 section_best[attribute] = section[attribute]
+        if section_best["clblast_device_architecture"] == "" and section_best["clblast_device_vendor"] in clblast.VENDORS_WITH_ARCHITECTURE:
+            section_best["clblast_device_architecture"] = clblast.DEVICE_ARCHITECTURE_DEFAULT
 
         # Find the best result
         parameters_best = None
@@ -38,17 +42,17 @@ def get_relative_bests(name, common_results, common_parameters, verbose=False):
     """Retrieves the parameters with the relative best execution time over different devices"""
 
     # Helper function
-    def argmax(iterable):
-        return max(enumerate(iterable), key=lambda x: x[1])[0]
+    def argmin(iterable):
+        return min(enumerate(iterable), key=lambda x: x[1])[0]
 
     # Computes the sum of the execution times over the different devices
     performance_sums = []
     for parameters in common_parameters:
-        performance_sum = sum([r["relative_performance"] for r in common_results if r["parameters"] == parameters])
+        performance_sum = sum([r["relative_time"] for r in common_results if r["parameters"] == parameters])
         performance_sums.append(performance_sum)
 
-    # Retrieves the entry with the highest performance
-    best_index = argmax(performance_sums)
+    # Retrieves the entry with the lowest time
+    best_index = argmin(performance_sums)
     best_performance = performance_sums[best_index]
     best_parameters = common_parameters[best_index]
 

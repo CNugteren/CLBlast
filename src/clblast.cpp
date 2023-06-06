@@ -15,65 +15,8 @@
 
 #include <string>
 
-#include "cache.hpp"
+#include "routines/routines.hpp"
 #include "clblast.h"
-
-// BLAS level-1 includes
-#include "routines/level1/xswap.hpp"
-#include "routines/level1/xscal.hpp"
-#include "routines/level1/xcopy.hpp"
-#include "routines/level1/xaxpy.hpp"
-#include "routines/level1/xdot.hpp"
-#include "routines/level1/xdotu.hpp"
-#include "routines/level1/xdotc.hpp"
-#include "routines/level1/xnrm2.hpp"
-#include "routines/level1/xasum.hpp"
-#include "routines/level1/xsum.hpp" // non-BLAS routine
-#include "routines/level1/xamax.hpp"
-#include "routines/level1/xamin.hpp" // non-BLAS routine
-#include "routines/level1/xmax.hpp" // non-BLAS routine
-#include "routines/level1/xmin.hpp" // non-BLAS routine
-
-// BLAS level-2 includes
-#include "routines/level2/xgemv.hpp"
-#include "routines/level2/xgbmv.hpp"
-#include "routines/level2/xhemv.hpp"
-#include "routines/level2/xhbmv.hpp"
-#include "routines/level2/xhpmv.hpp"
-#include "routines/level2/xsymv.hpp"
-#include "routines/level2/xsbmv.hpp"
-#include "routines/level2/xspmv.hpp"
-#include "routines/level2/xtrmv.hpp"
-#include "routines/level2/xtbmv.hpp"
-#include "routines/level2/xtpmv.hpp"
-#include "routines/level2/xtrsv.hpp"
-#include "routines/level2/xger.hpp"
-#include "routines/level2/xgeru.hpp"
-#include "routines/level2/xgerc.hpp"
-#include "routines/level2/xher.hpp"
-#include "routines/level2/xhpr.hpp"
-#include "routines/level2/xher2.hpp"
-#include "routines/level2/xhpr2.hpp"
-#include "routines/level2/xsyr.hpp"
-#include "routines/level2/xspr.hpp"
-#include "routines/level2/xsyr2.hpp"
-#include "routines/level2/xspr2.hpp"
-
-// BLAS level-3 includes
-#include "routines/level3/xgemm.hpp"
-#include "routines/level3/xsymm.hpp"
-#include "routines/level3/xhemm.hpp"
-#include "routines/level3/xsyrk.hpp"
-#include "routines/level3/xherk.hpp"
-#include "routines/level3/xsyr2k.hpp"
-#include "routines/level3/xher2k.hpp"
-#include "routines/level3/xtrmm.hpp"
-#include "routines/level3/xtrsm.hpp"
-
-// Level-x includes (non-BLAS)
-#include "routines/levelx/xomatcopy.hpp"
-#include "routines/levelx/xaxpybatched.hpp"
-#include "routines/levelx/xgemmbatched.hpp"
 
 namespace clblast {
 
@@ -1708,17 +1651,21 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 const T beta,
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event,
+                cl_mem temp_buffer) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xgemm<T>(queue_cpp, event);
+    const auto temp_buffer_provided = temp_buffer != nullptr;
+    auto temp_buffer_cpp = temp_buffer_provided ? Buffer<T>(temp_buffer) : Buffer<T>(nullptr);
     routine.DoGemm(layout, a_transpose, b_transpose,
                    m, n, k,
                    alpha,
                    Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(b_buffer), b_offset, b_ld,
                    beta,
-                   Buffer<T>(c_buffer), c_offset, c_ld);
+                   Buffer<T>(c_buffer), c_offset, c_ld,
+                   temp_buffer_cpp, temp_buffer_provided);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -1729,7 +1676,7 @@ template StatusCode PUBLIC_API Gemm<float>(const Layout, const Transpose, const 
                                            const cl_mem, const size_t, const size_t,
                                            const float,
                                            cl_mem, const size_t, const size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<double>(const Layout, const Transpose, const Transpose,
                                             const size_t, const size_t, const size_t,
                                             const double,
@@ -1737,7 +1684,7 @@ template StatusCode PUBLIC_API Gemm<double>(const Layout, const Transpose, const
                                             const cl_mem, const size_t, const size_t,
                                             const double,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<float2>(const Layout, const Transpose, const Transpose,
                                             const size_t, const size_t, const size_t,
                                             const float2,
@@ -1745,7 +1692,7 @@ template StatusCode PUBLIC_API Gemm<float2>(const Layout, const Transpose, const
                                             const cl_mem, const size_t, const size_t,
                                             const float2,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<double2>(const Layout, const Transpose, const Transpose,
                                              const size_t, const size_t, const size_t,
                                              const double2,
@@ -1753,7 +1700,7 @@ template StatusCode PUBLIC_API Gemm<double2>(const Layout, const Transpose, cons
                                              const cl_mem, const size_t, const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
-                                             cl_command_queue*, cl_event*);
+                                             cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<half>(const Layout, const Transpose, const Transpose,
                                           const size_t, const size_t, const size_t,
                                           const half,
@@ -1761,7 +1708,7 @@ template StatusCode PUBLIC_API Gemm<half>(const Layout, const Transpose, const T
                                           const cl_mem, const size_t, const size_t,
                                           const half,
                                           cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
+                                          cl_command_queue*, cl_event*, cl_mem);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -2162,6 +2109,63 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
+template <typename T>
+StatusCode Had(const size_t n,
+               const T alpha,
+               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+               const T beta,
+               cl_mem z_buffer, const size_t z_offset, const size_t z_inc,
+               cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xhad<T>(queue_cpp, event);
+    routine.DoHad(n,
+                  alpha,
+                  Buffer<T>(x_buffer), x_offset, x_inc,
+                  Buffer<T>(y_buffer), y_offset, y_inc,
+                  beta,
+                  Buffer<T>(z_buffer), z_offset, z_inc);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Had<float>(const size_t,
+                                          const float,
+                                          const cl_mem, const size_t, const size_t,
+                                          const cl_mem, const size_t, const size_t,
+                                          const float,
+                                          cl_mem, const size_t, const size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double>(const size_t,
+                                           const double,
+                                           const cl_mem, const size_t, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           const double,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<float2>(const size_t,
+                                           const float2,
+                                           const cl_mem, const size_t, const size_t,
+                                           const cl_mem, const size_t, const size_t,
+                                           const float2,
+                                           cl_mem, const size_t, const size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double2>(const size_t,
+                                            const double2,
+                                            const cl_mem, const size_t, const size_t,
+                                            const cl_mem, const size_t, const size_t,
+                                            const double2,
+                                            cl_mem, const size_t, const size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<half>(const size_t,
+                                         const half,
+                                         const cl_mem, const size_t, const size_t,
+                                         const cl_mem, const size_t, const size_t,
+                                         const half,
+                                         cl_mem, const size_t, const size_t,
+                                         cl_command_queue*, cl_event*);
+
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
 StatusCode Omatcopy(const Layout layout, const Transpose a_transpose,
@@ -2210,6 +2214,130 @@ template StatusCode PUBLIC_API Omatcopy<half>(const Layout, const Transpose,
                                               const half,
                                               const cl_mem, const size_t, const size_t,
                                               cl_mem, const size_t, const size_t,
+                                              cl_command_queue*, cl_event*);
+
+// Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
+template <typename T>
+StatusCode Im2col(const KernelMode kernel_mode,
+                  const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem im_buffer, const size_t im_offset,
+                  cl_mem col_buffer, const size_t col_offset,
+                  cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xim2col<T>(queue_cpp, event);
+    routine.DoIm2col(kernel_mode,
+                     channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                     Buffer<T>(im_buffer), im_offset,
+                     Buffer<T>(col_buffer), col_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Im2col<float>(const KernelMode,
+                                             const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                             const cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Im2col<double>(const KernelMode,
+                                              const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Im2col<float2>(const KernelMode,
+                                              const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Im2col<double2>(const KernelMode,
+                                               const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                               const cl_mem, const size_t,
+                                               cl_mem, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Im2col<half>(const KernelMode,
+                                            const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                            const cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
+
+// Col2im function (non-BLAS function): SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM
+template <typename T>
+StatusCode Col2im(const KernelMode kernel_mode,
+                  const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                  const cl_mem col_buffer, const size_t col_offset,
+                  cl_mem im_buffer, const size_t im_offset,
+                  cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xcol2im<T>(queue_cpp, event);
+    routine.DoCol2im(kernel_mode,
+                     channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                     Buffer<T>(col_buffer), col_offset,
+                     Buffer<T>(im_buffer), im_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Col2im<float>(const KernelMode,
+                                             const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                             const cl_mem, const size_t,
+                                             cl_mem, const size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<double>(const KernelMode,
+                                              const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<float2>(const KernelMode,
+                                              const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
+                                              cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<double2>(const KernelMode,
+                                               const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                               const cl_mem, const size_t,
+                                               cl_mem, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Col2im<half>(const KernelMode,
+                                            const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                            const cl_mem, const size_t,
+                                            cl_mem, const size_t,
+                                            cl_command_queue*, cl_event*);
+
+// Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
+template <typename T>
+StatusCode Convgemm(const KernelMode kernel_mode,
+                    const size_t channels, const size_t height, const size_t width, const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w, const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w, const size_t num_kernels, const size_t batch_count,
+                    const cl_mem im_buffer, const size_t im_offset,
+                    const cl_mem kernel_buffer, const size_t kernel_offset,
+                    cl_mem result_buffer, const size_t result_offset,
+                    cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xconvgemm<T>(queue_cpp, event);
+    routine.DoConvgemm(kernel_mode,
+                       channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, num_kernels, batch_count,
+                       Buffer<T>(im_buffer), im_offset,
+                       Buffer<T>(kernel_buffer), kernel_offset,
+                       Buffer<T>(result_buffer), result_offset);
+    return StatusCode::kSuccess;
+  } catch (...) { return DispatchException(); }
+}
+template StatusCode PUBLIC_API Convgemm<float>(const KernelMode,
+                                               const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                               const cl_mem, const size_t,
+                                               const cl_mem, const size_t,
+                                               cl_mem, const size_t,
+                                               cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<double>(const KernelMode,
+                                                const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                                const cl_mem, const size_t,
+                                                const cl_mem, const size_t,
+                                                cl_mem, const size_t,
+                                                cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Convgemm<half>(const KernelMode,
+                                              const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const size_t,
+                                              const cl_mem, const size_t,
+                                              const cl_mem, const size_t,
+                                              cl_mem, const size_t,
                                               cl_command_queue*, cl_event*);
 
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
@@ -2352,142 +2480,131 @@ template StatusCode PUBLIC_API GemmBatched<half>(const Layout, const Transpose, 
                                                  cl_mem, const size_t*, const size_t,
                                                  const size_t,
                                                  cl_command_queue*, cl_event*);
-// =================================================================================================
 
-// Clears the cache of stored binaries
-StatusCode ClearCache() {
+// StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
+template <typename T>
+StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const T alpha,
+                              const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, const size_t a_stride,
+                              const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const size_t b_stride,
+                              const T beta,
+                              cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
+                              const size_t batch_count,
+                              cl_command_queue* queue, cl_event* event) {
   try {
-    ProgramCache::Instance().Invalidate();
-    BinaryCache::Instance().Invalidate();
+    auto queue_cpp = Queue(*queue);
+    auto routine = XgemmStridedBatched<T>(queue_cpp, event);
+    routine.DoGemmStridedBatched(layout, a_transpose, b_transpose,
+                                 m, n, k,
+                                 alpha,
+                                 Buffer<T>(a_buffer), a_offset, a_ld, a_stride,
+                                 Buffer<T>(b_buffer), b_offset, b_ld, b_stride,
+                                 beta,
+                                 Buffer<T>(c_buffer), c_offset, c_ld, c_stride,
+                                 batch_count);
+    return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
-  return StatusCode::kSuccess;
 }
-
-template <typename Real, typename Complex>
-void FillCacheForPrecision(Queue &queue) {
-  try {
-
-    // Runs all the level 1 set-up functions
-    Xswap<Real>(queue, nullptr); Xswap<Complex>(queue, nullptr);
-    Xswap<Real>(queue, nullptr); Xswap<Complex>(queue, nullptr);
-    Xscal<Real>(queue, nullptr); Xscal<Complex>(queue, nullptr);
-    Xcopy<Real>(queue, nullptr); Xcopy<Complex>(queue, nullptr);
-    Xaxpy<Real>(queue, nullptr); Xaxpy<Complex>(queue, nullptr);
-    Xdot<Real>(queue, nullptr);
-    Xdotu<Complex>(queue, nullptr);
-    Xdotc<Complex>(queue, nullptr);
-    Xnrm2<Real>(queue, nullptr); Xnrm2<Complex>(queue, nullptr);
-    Xasum<Real>(queue, nullptr); Xasum<Complex>(queue, nullptr);
-    Xsum<Real>(queue, nullptr); Xsum<Complex>(queue, nullptr);
-    Xamax<Real>(queue, nullptr); Xamax<Complex>(queue, nullptr);
-    Xmax<Real>(queue, nullptr); Xmax<Complex>(queue, nullptr);
-    Xmin<Real>(queue, nullptr); Xmin<Complex>(queue, nullptr);
-
-    // Runs all the level 2 set-up functions
-    Xgemv<Real>(queue, nullptr); Xgemv<Complex>(queue, nullptr);
-    Xgbmv<Real>(queue, nullptr); Xgbmv<Complex>(queue, nullptr);
-    Xhemv<Complex>(queue, nullptr);
-    Xhbmv<Complex>(queue, nullptr);
-    Xhpmv<Complex>(queue, nullptr);
-    Xsymv<Real>(queue, nullptr);
-    Xsbmv<Real>(queue, nullptr);
-    Xspmv<Real>(queue, nullptr);
-    Xtrmv<Real>(queue, nullptr); Xtrmv<Complex>(queue, nullptr);
-    Xtbmv<Real>(queue, nullptr); Xtbmv<Complex>(queue, nullptr);
-    Xtpmv<Real>(queue, nullptr); Xtpmv<Complex>(queue, nullptr);
-    Xger<Real>(queue, nullptr);
-    Xgeru<Complex>(queue, nullptr);
-    Xgerc<Complex>(queue, nullptr);
-    Xher<Complex,Real>(queue, nullptr);
-    Xhpr<Complex,Real>(queue, nullptr);
-    Xher2<Complex>(queue, nullptr);
-    Xhpr2<Complex>(queue, nullptr);
-    Xsyr<Real>(queue, nullptr);
-    Xspr<Real>(queue, nullptr);
-    Xsyr2<Real>(queue, nullptr);
-    Xspr2<Real>(queue, nullptr);
-
-    // Runs all the level 3 set-up functions
-    Xgemm<Real>(queue, nullptr); Xgemm<Complex>(queue, nullptr);
-    Xsymm<Real>(queue, nullptr); Xsymm<Complex>(queue, nullptr);
-    Xhemm<Complex>(queue, nullptr);
-    Xsyrk<Real>(queue, nullptr); Xsyrk<Complex>(queue, nullptr);
-    Xherk<Complex,Real>(queue, nullptr);
-    Xsyr2k<Real>(queue, nullptr); Xsyr2k<Complex>(queue, nullptr);
-    Xher2k<Complex,Real>(queue, nullptr);
-    Xtrmm<Real>(queue, nullptr); Xtrmm<Complex>(queue, nullptr);
-
-    // Runs all the non-BLAS set-up functions
-    Xomatcopy<Real>(queue, nullptr); Xomatcopy<Complex>(queue, nullptr);
-
-  } catch(const RuntimeErrorCode &e) {
-    if (e.status() != StatusCode::kNoDoublePrecision &&
-        e.status() != StatusCode::kNoHalfPrecision) {
-      throw;
-    }
-  }
-}
-
-// Fills the cache with all binaries for a specific device
-// TODO: Add half-precision FP16 set-up calls
-StatusCode FillCache(const cl_device_id device) {
-  try {
-
-    // Creates a sample context and queue to match the normal routine calling conventions
-    auto device_cpp = Device(device);
-    auto context = Context(device_cpp);
-    auto queue = Queue(context, device_cpp);
-
-    FillCacheForPrecision<float, float2>(queue);
-    FillCacheForPrecision<double, double2>(queue);
-
-  } catch (...) { return DispatchException(); }
-  return StatusCode::kSuccess;
-}
+template StatusCode PUBLIC_API GemmStridedBatched<float>(const Layout, const Transpose, const Transpose,
+                                                         const size_t, const size_t, const size_t,
+                                                         const float,
+                                                         const cl_mem, const size_t, const size_t, const size_t,
+                                                         const cl_mem, const size_t, const size_t, const size_t,
+                                                         const float,
+                                                         cl_mem, const size_t, const size_t, const size_t,
+                                                         const size_t,
+                                                         cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<double>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const double,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const double,
+                                                          cl_mem, const size_t, const size_t, const size_t,
+                                                          const size_t,
+                                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<float2>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const float2,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const cl_mem, const size_t, const size_t, const size_t,
+                                                          const float2,
+                                                          cl_mem, const size_t, const size_t, const size_t,
+                                                          const size_t,
+                                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<double2>(const Layout, const Transpose, const Transpose,
+                                                           const size_t, const size_t, const size_t,
+                                                           const double2,
+                                                           const cl_mem, const size_t, const size_t, const size_t,
+                                                           const cl_mem, const size_t, const size_t, const size_t,
+                                                           const double2,
+                                                           cl_mem, const size_t, const size_t, const size_t,
+                                                           const size_t,
+                                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmStridedBatched<half>(const Layout, const Transpose, const Transpose,
+                                                        const size_t, const size_t, const size_t,
+                                                        const half,
+                                                        const cl_mem, const size_t, const size_t, const size_t,
+                                                        const cl_mem, const size_t, const size_t, const size_t,
+                                                        const half,
+                                                        cl_mem, const size_t, const size_t, const size_t,
+                                                        const size_t,
+                                                        cl_command_queue*, cl_event*);
 
 // =================================================================================================
 
-// Overrides the tuning parameters for this device-precision-kernel combination
-StatusCode OverrideParameters(const cl_device_id device, const std::string &kernel_name,
-                              const Precision precision,
-                              const std::unordered_map<std::string,size_t> &parameters) {
+// Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
+template <typename T>
+StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                              const size_t m, const size_t n, const size_t k,
+                              const size_t a_offset, const size_t a_ld,
+                              const size_t b_offset, const size_t b_ld,
+                              const size_t c_offset, const size_t c_ld,
+                              cl_command_queue* queue, size_t& temp_buffer_size) {
   try {
 
-    // Retrieves the device name
-    const auto device_cpp = Device(device);
-    const auto device_name = device_cpp.Name();
+    // Retrieves the tuning database
+    const auto queue_cpp = Queue(*queue);
+    const auto device = queue_cpp.GetDevice();
+    const auto kernel_names = std::vector<std::string>{"Xgemm", "GemmRoutine"};
+    Databases db(kernel_names);
+    Routine::InitDatabase(device, kernel_names, PrecisionValue<T>(), {}, db);
 
-    // Retrieves the current database values to verify whether the new ones are complete
-    auto in_cache = false;
-    const auto current_database = DatabaseCache::Instance().Get(DatabaseKeyRef{ precision, device_name, kernel_name }, &in_cache);
-    if (!in_cache) { return StatusCode::kInvalidOverrideKernel; }
-    for (const auto &current_param : current_database.GetParameterNames()) {
-      if (parameters.find(current_param) == parameters.end()) {
-        return StatusCode::kMissingOverrideParameter;
-      }
+    // Computes the buffer size
+    if (Xgemm<T>::UseDirectKernel(m, n, k, db["XGEMM_MIN_INDIRECT_SIZE"])) {
+      temp_buffer_size = 0;
     }
-
-    // Clears the existing program & binary cache for routines with the target kernel
-    const auto routine_names = Routine::routines_by_kernel.at(kernel_name);
-    for (const auto &routine_name : routine_names) {
-      ProgramCache::Instance().RemoveBySubset<1, 2>(ProgramKey{nullptr, precision, routine_name});
-      BinaryCache::Instance().Remove(BinaryKey{precision, routine_name, device_name});
+    else {
+      temp_buffer_size = Xgemm<T>::GetTempSize(layout, a_transpose, b_transpose, m, n, k,
+                                               a_offset, a_ld, b_offset, b_ld, c_offset, c_ld,
+                                               db["MWG"], db["NWG"], db["KWG"] * db["KREG"],
+                                               db["GEMMK"]);
     }
-
-    // Creates a small custom database based on the provided parameters
-    const auto database_device = Database::DatabaseDevice{"default", parameters};
-    const auto database_vendor = Database::DatabaseVendor{database::kDeviceTypeAll, "default", {database_device}};
-    const auto database_entry = Database::DatabaseEntry{kernel_name, precision, {database_vendor}};
-    const auto database_entries = std::vector<Database::DatabaseEntry>{database_entry};
-    const auto database = Database(device_cpp, kernel_name, precision, database_entries);
-
-    // Removes the old database entry and stores the new one in the cache
-    DatabaseCache::Instance().Remove(DatabaseKey{ precision, device_name, kernel_name });
-    DatabaseCache::Instance().Store(DatabaseKey{ precision, device_name, kernel_name }, Database(database));
-
+    temp_buffer_size *= sizeof(T); // translate from num-elements to bytes
+    return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
-  return StatusCode::kSuccess;
 }
+template StatusCode PUBLIC_API GemmTempBufferSize<float>(const Layout, const Transpose, const Transpose,
+                                                         const size_t, const size_t, const size_t,
+                                                         const size_t, const size_t, const size_t, const size_t,
+                                                         const size_t, const size_t, cl_command_queue*, size_t&);
+template StatusCode PUBLIC_API GemmTempBufferSize<double>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const size_t, const size_t, const size_t, const size_t,
+                                                          const size_t, const size_t, cl_command_queue*, size_t&);
+template StatusCode PUBLIC_API GemmTempBufferSize<float2>(const Layout, const Transpose, const Transpose,
+                                                          const size_t, const size_t, const size_t,
+                                                          const size_t, const size_t, const size_t, const size_t,
+                                                          const size_t, const size_t, cl_command_queue*, size_t&);
+template StatusCode PUBLIC_API GemmTempBufferSize<double2>(const Layout, const Transpose, const Transpose,
+                                                           const size_t, const size_t, const size_t,
+                                                           const size_t, const size_t, const size_t, const size_t,
+                                                           const size_t, const size_t, cl_command_queue*, size_t&);
+template StatusCode PUBLIC_API GemmTempBufferSize<half>(const Layout, const Transpose, const Transpose,
+                                                        const size_t, const size_t, const size_t,
+                                                        const size_t, const size_t, const size_t, const size_t,
+                                                        const size_t, const size_t, cl_command_queue*, size_t&);
 
 // =================================================================================================
 } // namespace clblast

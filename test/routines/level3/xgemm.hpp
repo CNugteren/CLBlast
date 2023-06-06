@@ -22,7 +22,7 @@ namespace clblast {
 // =================================================================================================
 
 // See comment at top of file for a description of the class
-template <typename T>
+template <int V, typename T> // 'V' is the version of the kernel (0 for default, 1 for 'in-direct', 2 for 'direct')
 class TestXgemm {
  public:
 
@@ -37,7 +37,8 @@ class TestXgemm {
             kArgAOffset, kArgBOffset, kArgCOffset,
             kArgAlpha, kArgBeta};
   }
-  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB, kBufMatC}; }
+  static std::vector<std::string> BuffersIn() { return {kBufMatA, kBufMatB, kBufMatC,
+                                                        kBufMatAP}; } // used as temp buffer
   static std::vector<std::string> BuffersOut() { return {kBufMatC}; }
 
   // Describes how to obtain the sizes of the buffers
@@ -60,10 +61,33 @@ class TestXgemm {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue &queue) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
     args.c_size = GetSizeC(args);
+
+    // Optionally (V != 0) enforces indirect (V == 1) or direct (V == 2) kernels
+    if (V != 0) {
+      const auto device = queue.GetDevice();
+      const auto switch_threshold = (V == 1) ? size_t{0} : size_t{4096}; // large enough for tests
+      const auto override_status = OverrideParameters(device(), "GemmRoutine", PrecisionValue<T>(),
+                                                      {{"XGEMM_MIN_INDIRECT_SIZE", switch_threshold}});
+      if (override_status != StatusCode::kSuccess) { }
+    }
+
+    // Sets the size of the temporary buffer (optional argument to GEMM)
+    auto temp_buffer_size = size_t{0};
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      GemmTempBufferSize<T>(args.layout, args.a_transpose, args.b_transpose, args.m, args.n, args.k,
+                            args.a_offset, args.a_ld, args.b_offset, args.b_ld, args.c_offset, args.c_ld,
+                            &queue_plain, temp_buffer_size);
+    #elif CUDA_API
+      GemmTempBufferSize<T>(args.layout, args.a_transpose, args.b_transpose, args.m, args.n, args.k,
+                            args.a_offset, args.a_ld, args.b_offset, args.b_ld, args.c_offset, args.c_ld,
+                            queue.GetDevice()(), temp_buffer_size);
+    #endif
+    args.ap_size = (temp_buffer_size + sizeof(T)) / sizeof(T);  // + sizeof(T) to prevent zero
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
@@ -83,15 +107,25 @@ class TestXgemm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                       args.m, args.n, args.k, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
-                       buffers.c_mat(), args.c_offset, args.c_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
+                         args.m, args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         &queue_plain, &event, buffers.ap_mat()); // temp buffer
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
+                         args.m, args.n, args.k, args.alpha,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
+                         buffers.c_mat(), args.c_offset, args.c_ld,
+                         queue.GetContext()(), queue.GetDevice()(), buffers.ap_mat()); // temp buffer
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 
@@ -159,7 +193,13 @@ class TestXgemm {
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T> &args) {
-    return 2 * args.m * args.n * args.k;
+    if((args.precision == Precision::kComplexSingle) || (args.precision == Precision::kComplexDouble)) {
+      // complex flops
+      return args.m * args.n * (8 * args.k - 2);
+    } else {
+      // scalar flops
+      return args.m * args.n * (2 * args.k - 1);
+    }
   }
   static size_t GetBytes(const Arguments<T> &args) {
     return (args.m*args.k + args.k*args.n + 2*args.m*args.n) * sizeof(T);

@@ -18,7 +18,11 @@ R"(
 // =================================================================================================
 
 // Symmetric version of the rank-1 matrix update kernel (HER, HPR, SYR, SPR)
-__kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS1, WGS2, 1)))
+#endif
 void Xher(const int n,
           const real_arg arg_alpha,
           const __global real* restrict xgm, const int x_offset, const int x_inc,
@@ -27,32 +31,34 @@ void Xher(const int n,
   const real alpha = GetRealArg(arg_alpha);
 
   // Register storage for X and XT
+  #pragma promote_to_registers
   real xvalues[WPT];
+  #pragma promote_to_registers
   real xtvalues[WPT];
 
   // Loads the X-vector
   #pragma unroll
-  for (int w=0; w<WPT; ++w) {
-    const int id2 = w*get_global_size(1) + get_global_id(1);
-    xvalues[w] = LoadVector(id2, n, xgm, x_offset, x_inc, !is_rowmajor);
+  for (int _w = 0; _w < WPT; _w += 1) {
+    const int id2 = _w*get_global_size(1) + get_global_id(1);
+    xvalues[_w] = LoadVector(id2, n, xgm, x_offset, x_inc, !is_rowmajor);
   }
 
   // Loads the X-transposed-vector
   #pragma unroll
-  for (int w=0; w<WPT; ++w) {
-    const int id1 = w*get_global_size(0) + get_global_id(0);
-    xtvalues[w] = LoadVector(id1, n, xgm, x_offset, x_inc, is_rowmajor);
+  for (int _w = 0; _w < WPT; _w += 1) {
+    const int id1 = _w*get_global_size(0) + get_global_id(0);
+    xtvalues[_w] = LoadVector(id1, n, xgm, x_offset, x_inc, is_rowmajor);
   }
 
   // Loops over the work per thread twice
   #pragma unroll
-  for (int w1=0; w1<WPT; ++w1) {
+  for (int _w1 = 0; _w1 < WPT; _w1 += 1) {
     #pragma unroll
-    for (int w2=0; w2<WPT; ++w2) {
+    for (int _w2 = 0; _w2 < WPT; _w2 += 1) {
 
       // Global thread IDs
-      const int id1 = w1*get_global_size(0) + get_global_id(0);
-      const int id2 = w2*get_global_size(1) + get_global_id(1);
+      const int id1 = _w1*get_global_size(0) + get_global_id(0);
+      const int id2 = _w2*get_global_size(1) + get_global_id(1);
 
       // Skip these threads if they do not contain threads contributing to the matrix-triangle
       if ((is_upper && (id1 > id2)) || (!is_upper && (id2 > id1))) {
@@ -61,7 +67,7 @@ void Xher(const int n,
 
       // Loads A, performs the operation, and stores the result into A
       else {
-        MatrixUpdate(id1, id2, n, n, agm, a_offset, a_ld, alpha, xvalues[w2], xtvalues[w1], is_upper);
+        MatrixUpdate(id1, id2, n, n, agm, a_offset, a_ld, alpha, xvalues[_w2], xtvalues[_w1], is_upper);
       }
     }
   }

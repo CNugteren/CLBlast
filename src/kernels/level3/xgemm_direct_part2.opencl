@@ -19,9 +19,9 @@ R"(
 
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix.
-inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local real* alm,
-                                 const int a_ld, const int a_offset, const int kwg,
-                                 const int a_transpose, const int a_conjugate) {
+INLINE_FUNC void GlobalToLocalDirectA(const __global realMD* restrict agm, LOCAL_PTR real* alm,
+                                      const int a_ld, const int a_offset, const int kwg,
+                                      const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -31,13 +31,13 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD/VWMD; ++mia) {
+  for (int _mia = 0; _mia < MWAD/VWMD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*(MWAD/VWMD);
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*(MWAD/VWMD);
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg/VWMD : mg + GetGroupID0()*(WGD/VWMD);
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
@@ -90,9 +90,9 @@ inline void GlobalToLocalDirectA(const __global realMD* restrict agm, __local re
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local real* blm,
-                                 const int b_ld, const int b_offset, const int kwg,
-                                 const int b_transpose, const int b_conjugate) {
+INLINE_FUNC void GlobalToLocalDirectB(const __global realND* restrict bgm, LOCAL_PTR real* blm,
+                                      const int b_ld, const int b_offset, const int kwg,
+                                      const int b_transpose, const int b_conjugate) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);
@@ -102,13 +102,13 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD/VWND; ++nib) {
+    for (int _nib = 0; _nib < NWBD/VWND; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*(NWBD/VWND);
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*(NWBD/VWND);
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg/VWND : ng + GetGroupID1()*(WGD/VWND);
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
@@ -152,8 +152,9 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
          blm[kg*(WGD + PADB) + ng*VWND + 15] = bvec.sF;
       #endif
       if (b_conjugate) {
-        for (int vn=0; vn<VWND; ++vn) {
-          COMPLEX_CONJUGATE(blm[kg*(WGD + PADB) + ng*VWND + vn]);
+        #pragma unroll
+        for (int _vn = 0; _vn < VWND; _vn += 1) {
+          COMPLEX_CONJUGATE(blm[kg*(WGD + PADB) + ng*VWND + _vn]);
         }
       }
     }
@@ -165,9 +166,9 @@ inline void GlobalToLocalDirectB(const __global realND* restrict bgm, __local re
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs doesn't
 // use the vector data-types.
-inline void GlobalToLocalScalarA(const __global real* restrict agms, __local real* alm,
-                                 const int a_ld, const int a_offset, const int kwg,
-                                 const int a_transpose, const int a_conjugate) {
+INLINE_FUNC void GlobalToLocalScalarA(const __global real* restrict agms, LOCAL_PTR real* alm,
+                                      const int a_ld, const int a_offset, const int kwg,
+                                      const int a_transpose, const int a_conjugate) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -177,13 +178,13 @@ inline void GlobalToLocalScalarA(const __global real* restrict agms, __local rea
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD; ++mia) {
+  for (int _mia = 0; _mia < MWAD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*MWAD;
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*MWAD;
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg : mg + GetGroupID0()*WGD;
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
@@ -196,9 +197,9 @@ inline void GlobalToLocalScalarA(const __global real* restrict agms, __local rea
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local real* blm,
-                                 const int b_ld, const int b_offset, const int kwg,
-                                 const int b_transpose, const int b_conjugate) {
+INLINE_FUNC void GlobalToLocalScalarB(const __global real* restrict bgms, LOCAL_PTR real* blm,
+                                      const int b_ld, const int b_offset, const int kwg,
+                                      const int b_transpose, const int b_conjugate) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);
@@ -208,13 +209,13 @@ inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local rea
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD; ++nib) {
+    for (int _nib = 0; _nib < NWBD; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*NWBD;
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*NWBD;
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg : ng + GetGroupID1()*WGD;
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
@@ -231,10 +232,10 @@ inline void GlobalToLocalScalarB(const __global real* restrict bgms, __local rea
 // Caches global off-chip memory into local (shared) memory on-chip. This function is specific for
 // caching the A input matrix. In contrast to the functions above, this function performs bounds
 // checks and doesn't use the vector data-types.
-inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local real* alm,
-                                  const int a_ld, const int a_offset, const int kwg,
-                                  const int a_transpose, const int a_conjugate,
-                                  const int kSizeM, const int kSizeK) {
+INLINE_FUNC void GlobalToLocalCheckedA(const __global real* restrict agms, LOCAL_PTR real* alm,
+                                       const int a_ld, const int a_offset, const int kwg,
+                                       const int a_transpose, const int a_conjugate,
+                                       const int kSizeM, const int kSizeK) {
   #if MDIMCD == MDIMAD
     const int la0 = get_local_id(0);
     const int la1 = get_local_id(1);
@@ -244,18 +245,19 @@ inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local re
     const int la1 = tid / MDIMAD;
   #endif
   #pragma unroll
-  for (int mia=0; mia<MWAD; ++mia) {
+  for (int _mia = 0; _mia < MWAD; _mia += 1) {
     #pragma unroll
-    for (int kia=0; kia<KWAD; ++kia) {
+    for (int _kia = 0; _kia < KWAD; _kia += 1) {
 
       // Computes the indices for the global memory
-      int mg = mia + la0*MWAD;
-      int kg = kia + la1*KWAD;
+      int mg = _mia + la0*MWAD;
+      int kg = _kia + la1*KWAD;
       int idm = (a_transpose) ? mg + kwg : mg + GetGroupID0()*WGD;
       int idk = (a_transpose) ? kg + GetGroupID0()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      int condition = (a_transpose) ? idm < kSizeK : idm < kSizeM;
+      int condition = (a_transpose) ? (idm < kSizeK) && (idk < kSizeM) :
+                                      (idm < kSizeM) && (idk < kSizeK);
       if (condition) {
         real result = agms[idk*a_ld + idm + a_offset];
         if (a_conjugate) { COMPLEX_CONJUGATE(result); }
@@ -269,10 +271,10 @@ inline void GlobalToLocalCheckedA(const __global real* restrict agms, __local re
 }
 
 // Same as above, but now for the B input matrix
-inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local real* blm,
-                                  const int b_ld, const int b_offset, const int kwg,
-                                  const int b_transpose, const int b_conjugate,
-                                  const int kSizeN, const int kSizeK) {
+INLINE_FUNC void GlobalToLocalCheckedB(const __global real* restrict bgms, LOCAL_PTR real* blm,
+                                       const int b_ld, const int b_offset, const int kwg,
+                                       const int b_transpose, const int b_conjugate,
+                                       const int kSizeN, const int kSizeK) {
   #if MDIMCD == NDIMBD
     const int lb0 = get_local_id(0);
     const int lb1 = get_local_id(1);
@@ -282,18 +284,19 @@ inline void GlobalToLocalCheckedB(const __global real* restrict bgms, __local re
     const int lb1 = tid / NDIMBD;
   #endif
   #pragma unroll
-  for (int kib=0; kib<KWBD; ++kib) {
+  for (int _kib = 0; _kib < KWBD; _kib += 1) {
     #pragma unroll
-    for (int nib=0; nib<NWBD; ++nib) {
+    for (int _nib = 0; _nib < NWBD; _nib += 1) {
 
       // Computes the indices for the global memory
-      int ng = nib + lb0*NWBD;
-      int kg = kib + lb1*KWBD;
+      int ng = _nib + lb0*NWBD;
+      int kg = _kib + lb1*KWBD;
       int idn = (b_transpose) ? ng + kwg : ng + GetGroupID1()*WGD;
       int idk = (b_transpose) ? kg + GetGroupID1()*WGD : kg + kwg;
 
       // Loads the data from global memory into the local memory
-      int condition = (b_transpose) ? idn < kSizeK : idn < kSizeN;
+      int condition = (b_transpose) ? (idn < kSizeK) && (idk < kSizeN) :
+                                      (idn < kSizeN) && (idk < kSizeK);
       if (condition) {
         real result = bgms[idk*b_ld + idn + b_offset];
         if (b_conjugate) { COMPLEX_CONJUGATE(result); }

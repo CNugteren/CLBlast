@@ -15,7 +15,10 @@
 #ifndef CLBLAST_BUFFER_TEST_H_
 #define CLBLAST_BUFFER_TEST_H_
 
-#include "clblast.h"
+#include <algorithm>
+#include <vector>
+
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -23,8 +26,8 @@ namespace clblast {
 // Tests matrix 'A' for validity
 template <typename T>
 void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
-                 const size_t offset, const size_t ld) {
-  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
+                 const size_t offset, const size_t ld, const bool test_lead_dim = true) {
+  if (test_lead_dim && ld < one) { throw BLASError(StatusCode::kInvalidLeadDimA); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryA); }
@@ -34,8 +37,8 @@ void TestMatrixA(const size_t one, const size_t two, const Buffer<T> &buffer,
 // Tests matrix 'B' for validity
 template <typename T>
 void TestMatrixB(const size_t one, const size_t two, const Buffer<T> &buffer,
-                 const size_t offset, const size_t ld) {
-  if (ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
+                 const size_t offset, const size_t ld, const bool test_lead_dim = true) {
+  if (test_lead_dim && ld < one) { throw BLASError(StatusCode::kInvalidLeadDimB); }
   try {
     const auto required_size = (ld * (two - 1) + one + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryB); }
@@ -102,6 +105,61 @@ void TestVectorIndex(const size_t n, const Buffer<T> &buffer, const size_t offse
     const auto required_size = (n + offset) * sizeof(T);
     if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryScalar); }
   } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidVectorScalar, e.what()); }
+}
+
+// =================================================================================================
+
+// Tests matrix 'A' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixA(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t> &offsets, const size_t ld, const bool test_lead_dim = true) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixA(one, two, buffer, max_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'B' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixB(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t>& offsets, const size_t ld, const bool test_lead_dim = true) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixB(one, two, buffer, max_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'C' for validity in a batched setting
+template <typename T>
+void TestBatchedMatrixC(const size_t one, const size_t two, const Buffer<T>& buffer,
+                        const std::vector<size_t>& offsets, const size_t ld) {
+  const auto max_offset = *std::max_element(offsets.begin(), offsets.end());
+  TestMatrixC(one, two, buffer, max_offset, ld);
+}
+
+// =================================================================================================
+
+// Tests matrix 'A' for validity in a strided batched setting
+template <typename T>
+void TestStridedBatchedMatrixA(const size_t one, const size_t two, const Buffer<T>& buffer,
+                               const size_t offset, const size_t stride, const size_t batch_count,
+                               const size_t ld, const bool test_lead_dim = true) {
+  const auto last_batch_offset = (batch_count - 1) * stride;
+  TestMatrixA(one, two, buffer, offset + last_batch_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'B' for validity in a strided batched setting
+template <typename T>
+void TestStridedBatchedMatrixB(const size_t one, const size_t two, const Buffer<T>& buffer,
+                               const size_t offset, const size_t stride, const size_t batch_count,
+                               const size_t ld, const bool test_lead_dim = true) {
+  const auto last_batch_offset = (batch_count - 1) * stride;
+  TestMatrixB(one, two, buffer, offset + last_batch_offset, ld, test_lead_dim);
+}
+
+// Tests matrix 'C' for validity in a strided batched setting
+template <typename T>
+void TestStridedBatchedMatrixC(const size_t one, const size_t two, const Buffer<T>& buffer,
+                               const size_t offset, const size_t stride, const size_t batch_count,
+                               const size_t ld) {
+  const auto last_batch_offset = (batch_count - 1) * stride;
+  TestMatrixC(one, two, buffer, offset + last_batch_offset, ld);
 }
 
 // =================================================================================================

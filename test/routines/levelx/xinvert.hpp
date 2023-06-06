@@ -17,6 +17,7 @@
 #define CLBLAST_TEST_ROUTINES_XINVERT_H_
 
 #include "test/routines/common.hpp"
+#include "src/routines/levelx/xinvert.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -38,6 +39,13 @@ StatusCode RunReference(const Arguments<T> &args, BuffersHost<T> &buffers_host) 
   }
   if ((block_size % 16 != 0) || (block_size > 128)) {
     return StatusCode::kUnknownError;
+  }
+
+  // Start at zero
+  for (size_t i =0; i < args.m; ++i) {
+    for (size_t j = 0; j < args.n; ++j) {
+      buffers_host.b_mat[j * args.m + i] = T{0.0};
+    }
   }
 
   // Loops over the amount of diagonal blocks of size args.m by args.m each
@@ -100,7 +108,8 @@ StatusCode RunReference<half>(const Arguments<half> &args, BuffersHost<half> &bu
   auto a_buffer2 = HalfToFloatBuffer(buffers_host.a_mat);
   auto b_buffer2 = HalfToFloatBuffer(buffers_host.b_mat);
   auto dummy = std::vector<float>(0);
-  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy};
+  auto dummy_uint = std::vector<unsigned int>(0);
+  auto buffers2 = BuffersHost<float>{dummy, dummy, a_buffer2, b_buffer2, dummy, dummy, dummy, dummy_uint};
   auto args2 = Arguments<float>();
   args2.a_size = args.a_size; args2.b_size = args.b_size;
   args2.a_ld = args.a_ld; args2.m = args.m; args2.n = args.n;
@@ -141,7 +150,7 @@ class TestXinvert {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
   }
@@ -164,14 +173,23 @@ class TestXinvert {
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
     try {
-      auto event = cl_event{};
-      auto inverter = Xinvert<T>(queue, &event);
-      inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
-                                          args.n, args.m,
-                                          buffers.a_mat, args.a_offset, args.a_ld,
-                                          buffers.b_mat);
-      clWaitForEvents(1, &event);
-      clReleaseEvent(event);
+      #ifdef OPENCL_API
+        auto event = cl_event{};
+        auto inverter = Xinvert<T>(queue, &event);
+        inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
+                                            args.n, args.m,
+                                            buffers.a_mat, args.a_offset, args.a_ld,
+                                            buffers.b_mat);
+        clWaitForEvents(1, &event);
+        clReleaseEvent(event);
+      #elif CUDA_API
+        auto inverter = Xinvert<T>(queue, nullptr);
+        inverter.InvertMatrixDiagonalBlocks(args.layout, args.triangle, args.diagonal,
+                                            args.n, args.m,
+                                            buffers.a_mat, args.a_offset, args.a_ld,
+                                            buffers.b_mat);
+        cuStreamSynchronize(queue());
+      #endif
     } catch (...) { return DispatchException(); }
     return StatusCode::kSuccess;
   }

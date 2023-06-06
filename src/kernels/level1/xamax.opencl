@@ -30,7 +30,11 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the loading and the majority of the operation
-__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#endif
 void Xamax(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global singlereal* maxgm, __global unsigned int* imaxgm) {
@@ -41,7 +45,7 @@ void Xamax(const int n,
   const int num_groups = get_num_groups(0);
 
   // Performs loading and the first steps of the reduction
-  #if defined(ROUTINE_MAX) || defined(ROUTINE_MIN) // non-absolute version
+  #if defined(ROUTINE_MAX) || defined(ROUTINE_MIN) || defined(ROUTINE_AMIN)
     singlereal max = SMALLEST;
   #else
     singlereal max = ZERO;
@@ -51,7 +55,7 @@ void Xamax(const int n,
   while (id < n) {
     const int x_index = id*x_inc + x_offset;
     #if PRECISION == 3232 || PRECISION == 6464
-      singlereal x = xgm[x_index].x;
+      singlereal x = fabs(xgm[x_index].x) + fabs(xgm[x_index].y);
     #else
       singlereal x = xgm[x_index];
     #endif
@@ -64,9 +68,9 @@ void Xamax(const int n,
     #else
       x = fabs(x);
     #endif
-    if (x >= max) {
+    if (x > max) {
       max = x;
-      imax = id*x_inc + x_offset;
+      imax = id;
     }
     id += WGS1*num_groups;
   }
@@ -75,10 +79,9 @@ void Xamax(const int n,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS1/2; s>0; s=s>>1) {
     if (lid < s) {
-      if (maxlm[lid + s] >= maxlm[lid]) {
+      if (maxlm[lid + s] > maxlm[lid]) {
         maxlm[lid] = maxlm[lid + s];
         imaxlm[lid] = imaxlm[lid + s];
       }
@@ -97,7 +100,11 @@ void Xamax(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
-__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#endif
 void XamaxEpilogue(const __global singlereal* restrict maxgm,
                    const __global unsigned int* restrict imaxgm,
                    __global unsigned int* imax, const int imax_offset) {
@@ -106,7 +113,7 @@ void XamaxEpilogue(const __global singlereal* restrict maxgm,
   const int lid = get_local_id(0);
 
   // Performs the first step of the reduction while loading the data
-  if (maxgm[lid + WGS2] >= maxgm[lid]) {
+  if (maxgm[lid + WGS2] > maxgm[lid]) {
     maxlm[lid] = maxgm[lid + WGS2];
     imaxlm[lid] = imaxgm[lid + WGS2];
   }
@@ -117,10 +124,9 @@ void XamaxEpilogue(const __global singlereal* restrict maxgm,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS2/2; s>0; s=s>>1) {
     if (lid < s) {
-      if (maxlm[lid + s] >= maxlm[lid]) {
+      if (maxlm[lid + s] > maxlm[lid]) {
         maxlm[lid] = maxlm[lid + s];
         imaxlm[lid] = imaxlm[lid + s];
       }

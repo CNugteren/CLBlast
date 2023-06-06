@@ -53,11 +53,15 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T> &alphas
   }
 
   // Upload the arguments to the device
-  std::vector<int> x_offsets_int(x_offsets.begin(), x_offsets.end());
-  std::vector<int> y_offsets_int(y_offsets.begin(), y_offsets.end());
-  auto x_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
-  auto y_offsets_device = Buffer<int>(context_, BufferAccess::kReadOnly, batch_count);
-  auto alphas_device = Buffer<T>(context_, BufferAccess::kReadOnly, batch_count);
+  auto x_offsets_int = std::vector<int>(batch_count);
+  auto y_offsets_int = std::vector<int>(batch_count);
+  for (auto batch = size_t{ 0 }; batch < batch_count; ++batch) {
+    x_offsets_int[batch] = static_cast<int>(x_offsets[batch]);
+    y_offsets_int[batch] = static_cast<int>(y_offsets[batch]);
+  }
+  auto x_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
+  auto y_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
+  auto alphas_device = Buffer<T>(context_, BufferAccess::kReadWrite, batch_count);
   x_offsets_device.Write(queue_, batch_count, x_offsets_int);
   y_offsets_device.Write(queue_, batch_count, y_offsets_int);
   alphas_device.Write(queue_, batch_count, alphas);

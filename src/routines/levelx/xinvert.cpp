@@ -27,8 +27,11 @@ namespace clblast {
 template <typename T>
 Xinvert<T>::Xinvert(Queue &queue, EventPointer event, const std::string &name):
     Routine(queue, event, name, {"Invert"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level3/level3.opencl"
-    #include "../../kernels/level3/invert_diagonal_blocks.opencl"
+      #include "../../kernels/level3/level3.opencl"
+      , // separated in multiple parts to prevent C1091 in MSVC 2013
+      #include "../../kernels/level3/invert_diagonal_blocks_part1.opencl"
+      , // separated in multiple parts to prevent C1091 in MSVC 2013
+      #include "../../kernels/level3/invert_diagonal_blocks_part2.opencl"
     }) {
 }
 
@@ -46,9 +49,16 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     throw BLASError(StatusCode::kInvalidDimension);
   }
 
+  // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+    throw RuntimeErrorCode(StatusCode::kNotImplemented);
+  }
+
   // Helper variables
   const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
-  assert(internal_block_size == 16);
+  if (internal_block_size != 16) {
+    throw RuntimeErrorCode(StatusCode::kNotImplemented); // e.g. Apple CPU OpenCL with a WGS of 1
+  }                                                      // when barriers are present
   const auto num_blocks = CeilDiv(n, block_size);
   const auto num_internal_blocks = CeilDiv(n, internal_block_size);
   const auto unit_diagonal = (diag == Diagonal::kUnit) ? true : false;
@@ -72,8 +82,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // Fills the output buffer with zeros
   auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, db_, fill_matrix_event.pointer(), event_wait_list,
-             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>());
+  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list,
+             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(),
+             16);
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
@@ -86,11 +97,11 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   kernel.SetArgument(5, static_cast<int>(block_size));
   kernel.SetArgument(6, static_cast<int>(unit_diagonal));
   kernel.SetArgument(7, static_cast<int>(is_upper));
-  const auto local = std::vector<size_t>{internal_block_size};
-  const auto global = std::vector<size_t>{num_internal_blocks * internal_block_size};
+  const auto local_invert = std::vector<size_t>{internal_block_size};
+  const auto global_invert = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
   auto base_kernel_event_pointer = (internal_block_size == block_size) ? event_ : base_kernel_event.pointer();
-  RunKernel(kernel, queue_, device_, global, local, base_kernel_event_pointer, event_wait_list);
+  RunKernel(kernel, queue_, device_, global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
   if (internal_block_size == block_size) { event_wait_list.push_back(base_kernel_event); }
 
   // Builds up block_size x block_size blocks. For example, internal_block_size=16:
@@ -104,7 +115,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     const auto npages = CeilDiv(n, current_size*2);
     const auto local0 = (current_size <= 32) ? current_size/4 : 16;
     const auto local = std::vector<size_t>{local0, 4};
-    const auto global = std::vector<size_t>{(current_size/local[1]), npages*(current_size/16)*local[1]};
+    const auto global = std::vector<size_t>{Ceil(current_size/local[1], local[0]),
+                                            Ceil(npages*(current_size/16)*local[1], local[1])};
 
     // Part 1
     auto kernel1 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);

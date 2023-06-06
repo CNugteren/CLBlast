@@ -49,7 +49,7 @@ class TestXspr {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.ap_size = GetSizeAP(args);
     args.x_size = GetSizeX(args);
   }
@@ -71,14 +71,23 @@ class TestXspr {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Spr(args.layout, args.triangle,
-                      args.n, args.alpha,
-                      buffers.x_vec(), args.x_offset, args.x_inc,
-                      buffers.ap_mat(), args.ap_offset,
-                      &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Spr(args.layout, args.triangle,
+                        args.n, args.alpha,
+                        buffers.x_vec(), args.x_offset, args.x_inc,
+                        buffers.ap_mat(), args.ap_offset,
+                        &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Spr(args.layout, args.triangle,
+                        args.n, args.alpha,
+                        buffers.x_vec(), args.x_offset, args.x_inc,
+                        buffers.ap_mat(), args.ap_offset,
+                        queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 
@@ -130,7 +139,7 @@ class TestXspr {
   }
 
   // Describes how to compute the indices of the result buffer
-  static size_t ResultID1(const Arguments<T> &args) { return args.ap_size - args.ap_offset; }
+  static size_t ResultID1(const Arguments<T> &args) { return GetSizeAP(args) - args.ap_offset; }
   static size_t ResultID2(const Arguments<T> &) { return 1; } // N/A for this routine
   static size_t GetResultIndex(const Arguments<T> &args, const size_t id1, const size_t) {
     return id1 + args.ap_offset;

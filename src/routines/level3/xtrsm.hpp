@@ -31,6 +31,7 @@ class Xtrsm: public Xgemm<T> {
   using Xgemm<T>::device_;
   using Xgemm<T>::db_;
   using Xgemm<T>::program_;
+  using Xgemm<T>::event_;
   using Xgemm<T>::DoGemm;
 
   // Constructor

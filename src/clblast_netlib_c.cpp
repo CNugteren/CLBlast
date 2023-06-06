@@ -23,6 +23,14 @@
 using float2 = clblast::float2;
 using double2 = clblast::double2;
 
+// Option to make OpenCL device and context static to avoid re-creation upon multiple calls to the
+// Netlib API. Disadvantage is that they are not cleaned-up until program termination.
+#ifdef NETLIB_PERSISTENT_OPENCL
+  #define OPTIONAL_STATIC static
+#else
+  #define OPTIONAL_STATIC
+#endif
+
 // Helper function to get a default OpenCL platform and device
 clblast::Device get_device() {
   auto platform_id = clblast::ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0});
@@ -40,8 +48,8 @@ void cblas_srotg(float* sa,
                  float* sb,
                  float* sc,
                  float* ss) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto sa_size = 1;
   const auto sb_size = 1;
@@ -73,8 +81,8 @@ void cblas_drotg(double* sa,
                  double* sb,
                  double* sc,
                  double* ss) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto sa_size = 1;
   const auto sb_size = 1;
@@ -109,8 +117,8 @@ void cblas_srotmg(float* sd1,
                   float* sx1,
                   const float sy1,
                   float* sparam) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto sy1_size = 1;
   const auto sd1_size = 1;
@@ -148,8 +156,8 @@ void cblas_drotmg(double* sd1,
                   double* sx1,
                   const double sy1,
                   double* sparam) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto sy1_size = 1;
   const auto sd1_size = 1;
@@ -189,8 +197,8 @@ void cblas_srot(const int n,
                 float* y, const int y_inc,
                 const float cos,
                 const float sin) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -216,8 +224,8 @@ void cblas_drot(const int n,
                 double* y, const int y_inc,
                 const double cos,
                 const double sin) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -244,8 +252,8 @@ void cblas_srotm(const int n,
                  float* x, const int x_inc,
                  float* y, const int y_inc,
                  float* sparam) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -273,8 +281,8 @@ void cblas_drotm(const int n,
                  double* x, const int x_inc,
                  double* y, const int y_inc,
                  double* sparam) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -303,8 +311,8 @@ void cblas_drotm(const int n,
 void cblas_sswap(const int n,
                  float* x, const int x_inc,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -326,8 +334,8 @@ void cblas_sswap(const int n,
 void cblas_dswap(const int n,
                  double* x, const int x_inc,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -349,8 +357,8 @@ void cblas_dswap(const int n,
 void cblas_cswap(const int n,
                  void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -372,8 +380,8 @@ void cblas_cswap(const int n,
 void cblas_zswap(const int n,
                  void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -397,8 +405,8 @@ void cblas_zswap(const int n,
 void cblas_sscal(const int n,
                  const float alpha,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -417,8 +425,8 @@ void cblas_sscal(const int n,
 void cblas_dscal(const int n,
                  const double alpha,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -437,8 +445,8 @@ void cblas_dscal(const int n,
 void cblas_cscal(const int n,
                  const void* alpha,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -457,8 +465,8 @@ void cblas_cscal(const int n,
 void cblas_zscal(const int n,
                  const void* alpha,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -479,8 +487,8 @@ void cblas_zscal(const int n,
 void cblas_scopy(const int n,
                  const float* x, const int x_inc,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -501,8 +509,8 @@ void cblas_scopy(const int n,
 void cblas_dcopy(const int n,
                  const double* x, const int x_inc,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -523,8 +531,8 @@ void cblas_dcopy(const int n,
 void cblas_ccopy(const int n,
                  const void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -545,8 +553,8 @@ void cblas_ccopy(const int n,
 void cblas_zcopy(const int n,
                  const void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -570,8 +578,8 @@ void cblas_saxpy(const int n,
                  const float alpha,
                  const float* x, const int x_inc,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -595,8 +603,8 @@ void cblas_daxpy(const int n,
                  const double alpha,
                  const double* x, const int x_inc,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -620,8 +628,8 @@ void cblas_caxpy(const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -645,8 +653,8 @@ void cblas_zaxpy(const int n,
                  const void* alpha,
                  const void* x, const int x_inc,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -671,8 +679,8 @@ void cblas_zaxpy(const int n,
 float cblas_sdot(const int n,
                  const float* x, const int x_inc,
                  const float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -698,8 +706,8 @@ float cblas_sdot(const int n,
 double cblas_ddot(const int n,
                   const double* x, const int x_inc,
                   const double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -728,8 +736,8 @@ void cblas_cdotu_sub(const int n,
                      const void* x, const int x_inc,
                      const void* y, const int y_inc,
                      void* dot) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -754,8 +762,8 @@ void cblas_zdotu_sub(const int n,
                      const void* x, const int x_inc,
                      const void* y, const int y_inc,
                      void* dot) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -782,8 +790,8 @@ void cblas_cdotc_sub(const int n,
                      const void* x, const int x_inc,
                      const void* y, const int y_inc,
                      void* dot) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -808,8 +816,8 @@ void cblas_zdotc_sub(const int n,
                      const void* x, const int x_inc,
                      const void* y, const int y_inc,
                      void* dot) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto y_size = n * y_inc;
@@ -834,8 +842,8 @@ void cblas_zdotc_sub(const int n,
 // NRM2
 float cblas_snrm2(const int n,
                   const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
@@ -856,8 +864,8 @@ float cblas_snrm2(const int n,
 }
 double cblas_dnrm2(const int n,
                    const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
@@ -878,8 +886,8 @@ double cblas_dnrm2(const int n,
 }
 float cblas_scnrm2(const int n,
                   const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
@@ -900,8 +908,8 @@ float cblas_scnrm2(const int n,
 }
 double cblas_dznrm2(const int n,
                    const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto nrm2_size = 1;
@@ -924,8 +932,8 @@ double cblas_dznrm2(const int n,
 // ASUM
 float cblas_sasum(const int n,
                   const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto asum_size = 1;
@@ -946,8 +954,8 @@ float cblas_sasum(const int n,
 }
 double cblas_dasum(const int n,
                    const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto asum_size = 1;
@@ -968,8 +976,8 @@ double cblas_dasum(const int n,
 }
 float cblas_scasum(const int n,
                   const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto asum_size = 1;
@@ -990,8 +998,8 @@ float cblas_scasum(const int n,
 }
 double cblas_dzasum(const int n,
                    const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto asum_size = 1;
@@ -1014,8 +1022,8 @@ double cblas_dzasum(const int n,
 // SUM
 float cblas_ssum(const int n,
                  const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto sum_size = 1;
@@ -1036,8 +1044,8 @@ float cblas_ssum(const int n,
 }
 double cblas_dsum(const int n,
                   const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto sum_size = 1;
@@ -1058,8 +1066,8 @@ double cblas_dsum(const int n,
 }
 float cblas_scsum(const int n,
                  const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto sum_size = 1;
@@ -1080,8 +1088,8 @@ float cblas_scsum(const int n,
 }
 double cblas_dzsum(const int n,
                   const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto sum_size = 1;
@@ -1104,8 +1112,8 @@ double cblas_dzsum(const int n,
 // AMAX
 int cblas_isamax(const int n,
                 const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1126,8 +1134,8 @@ int cblas_isamax(const int n,
 }
 int cblas_idamax(const int n,
                 const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1148,8 +1156,8 @@ int cblas_idamax(const int n,
 }
 int cblas_icamax(const int n,
                 const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1170,8 +1178,8 @@ int cblas_icamax(const int n,
 }
 int cblas_izamax(const int n,
                 const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1194,8 +1202,8 @@ int cblas_izamax(const int n,
 // AMIN
 int cblas_isamin(const int n,
                 const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1216,8 +1224,8 @@ int cblas_isamin(const int n,
 }
 int cblas_idamin(const int n,
                 const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1238,8 +1246,8 @@ int cblas_idamin(const int n,
 }
 int cblas_icamin(const int n,
                 const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1260,8 +1268,8 @@ int cblas_icamin(const int n,
 }
 int cblas_izamin(const int n,
                 const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1284,8 +1292,8 @@ int cblas_izamin(const int n,
 // MAX
 int cblas_ismax(const int n,
                const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1306,8 +1314,8 @@ int cblas_ismax(const int n,
 }
 int cblas_idmax(const int n,
                const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1328,8 +1336,8 @@ int cblas_idmax(const int n,
 }
 int cblas_icmax(const int n,
                const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1350,8 +1358,8 @@ int cblas_icmax(const int n,
 }
 int cblas_izmax(const int n,
                const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imax_size = 1;
@@ -1374,8 +1382,8 @@ int cblas_izmax(const int n,
 // MIN
 int cblas_ismin(const int n,
                const float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1396,8 +1404,8 @@ int cblas_ismin(const int n,
 }
 int cblas_idmin(const int n,
                const double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1418,8 +1426,8 @@ int cblas_idmin(const int n,
 }
 int cblas_icmin(const int n,
                const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1440,8 +1448,8 @@ int cblas_icmin(const int n,
 }
 int cblas_izmin(const int n,
                const void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto x_size = n * x_inc;
   const auto imin_size = 1;
@@ -1473,8 +1481,8 @@ void cblas_sgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const float* x, const int x_inc,
                  const float beta,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -1509,8 +1517,8 @@ void cblas_dgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const double* x, const int x_inc,
                  const double beta,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -1545,8 +1553,8 @@ void cblas_cgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -1581,8 +1589,8 @@ void cblas_zgemv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -1619,8 +1627,8 @@ void cblas_sgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const float* x, const int x_inc,
                  const float beta,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -1655,8 +1663,8 @@ void cblas_dgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const double* x, const int x_inc,
                  const double beta,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -1691,8 +1699,8 @@ void cblas_cgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -1727,8 +1735,8 @@ void cblas_zgbmv(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -1765,8 +1773,8 @@ void cblas_chemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -1801,8 +1809,8 @@ void cblas_zhemv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -1839,8 +1847,8 @@ void cblas_chbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -1875,8 +1883,8 @@ void cblas_zhbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -1913,8 +1921,8 @@ void cblas_chpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -1949,8 +1957,8 @@ void cblas_zhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* beta,
                  void* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -1987,8 +1995,8 @@ void cblas_ssymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const float* x, const int x_inc,
                  const float beta,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2023,8 +2031,8 @@ void cblas_dsymv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const double* x, const int x_inc,
                  const double beta,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2061,8 +2069,8 @@ void cblas_ssbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const float* x, const int x_inc,
                  const float beta,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2097,8 +2105,8 @@ void cblas_dsbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const double* x, const int x_inc,
                  const double beta,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2135,8 +2143,8 @@ void cblas_sspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const float* x, const int x_inc,
                  const float beta,
                  float* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2171,8 +2179,8 @@ void cblas_dspmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const double* x, const int x_inc,
                  const double beta,
                  double* y, const int y_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -2206,8 +2214,8 @@ void cblas_strmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2233,8 +2241,8 @@ void cblas_dtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2260,8 +2268,8 @@ void cblas_ctrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2287,8 +2295,8 @@ void cblas_ztrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2316,8 +2324,8 @@ void cblas_stbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2343,8 +2351,8 @@ void cblas_dtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2370,8 +2378,8 @@ void cblas_ctbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2397,8 +2405,8 @@ void cblas_ztbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2426,8 +2434,8 @@ void cblas_stpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const float* ap,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2453,8 +2461,8 @@ void cblas_dtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const double* ap,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2480,8 +2488,8 @@ void cblas_ctpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2507,8 +2515,8 @@ void cblas_ztpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2536,8 +2544,8 @@ void cblas_strsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2563,8 +2571,8 @@ void cblas_dtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2590,8 +2598,8 @@ void cblas_ctrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2617,8 +2625,8 @@ void cblas_ztrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2646,8 +2654,8 @@ void cblas_stbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const float* a, const int a_ld,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2673,8 +2681,8 @@ void cblas_dtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const double* a, const int a_ld,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2700,8 +2708,8 @@ void cblas_ctbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2727,8 +2735,8 @@ void cblas_ztbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n, const int k,
                  const void* a, const int a_ld,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto a_size = n * a_ld;
   const auto x_size = n * x_inc;
@@ -2756,8 +2764,8 @@ void cblas_stpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const float* ap,
                  float* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2783,8 +2791,8 @@ void cblas_dtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const double* ap,
                  double* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2810,8 +2818,8 @@ void cblas_ctpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2837,8 +2845,8 @@ void cblas_ztpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const int n,
                  const void* ap,
                  void* x, const int x_inc) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto ap_size = ((n*(n+1)) / 2);
   const auto x_size = n * x_inc;
@@ -2868,8 +2876,8 @@ void cblas_sger(const CLBlastLayout layout,
                 const float* x, const int x_inc,
                 const float* y, const int y_inc,
                 float* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = m * x_inc;
@@ -2900,8 +2908,8 @@ void cblas_dger(const CLBlastLayout layout,
                 const double* x, const int x_inc,
                 const double* y, const int y_inc,
                 double* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = m * x_inc;
@@ -2934,8 +2942,8 @@ void cblas_cgeru(const CLBlastLayout layout,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = m * x_inc;
@@ -2966,8 +2974,8 @@ void cblas_zgeru(const CLBlastLayout layout,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = m * x_inc;
@@ -3000,8 +3008,8 @@ void cblas_cgerc(const CLBlastLayout layout,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = m * x_inc;
@@ -3032,8 +3040,8 @@ void cblas_zgerc(const CLBlastLayout layout,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = m * x_inc;
@@ -3065,8 +3073,8 @@ void cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const float alpha,
                 const void* x, const int x_inc,
                 void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3093,8 +3101,8 @@ void cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const double alpha,
                 const void* x, const int x_inc,
                 void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3123,8 +3131,8 @@ void cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const float alpha,
                 const void* x, const int x_inc,
                 void* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3151,8 +3159,8 @@ void cblas_zhpr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const double alpha,
                 const void* x, const int x_inc,
                 void* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3182,8 +3190,8 @@ void cblas_cher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -3215,8 +3223,8 @@ void cblas_zher2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -3250,8 +3258,8 @@ void cblas_chpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -3283,8 +3291,8 @@ void cblas_zhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const void* x, const int x_inc,
                  const void* y, const int y_inc,
                  void* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto x_size = n * x_inc;
@@ -3317,8 +3325,8 @@ void cblas_ssyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const float alpha,
                 const float* x, const int x_inc,
                 float* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3345,8 +3353,8 @@ void cblas_dsyr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const double alpha,
                 const double* x, const int x_inc,
                 double* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3375,8 +3383,8 @@ void cblas_sspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const float alpha,
                 const float* x, const int x_inc,
                 float* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3403,8 +3411,8 @@ void cblas_dspr(const CLBlastLayout layout, const CLBlastTriangle triangle,
                 const double alpha,
                 const double* x, const int x_inc,
                 double* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3434,8 +3442,8 @@ void cblas_ssyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const float* x, const int x_inc,
                  const float* y, const int y_inc,
                  float* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3467,8 +3475,8 @@ void cblas_dsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const double* x, const int x_inc,
                  const double* y, const int y_inc,
                  double* a, const int a_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3502,8 +3510,8 @@ void cblas_sspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const float* x, const int x_inc,
                  const float* y, const int y_inc,
                  float* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3535,8 +3543,8 @@ void cblas_dspr2(const CLBlastLayout layout, const CLBlastTriangle triangle,
                  const double* x, const int x_inc,
                  const double* y, const int y_inc,
                  double* ap) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto x_size = n * x_inc;
@@ -3575,8 +3583,8 @@ void cblas_sgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const float* b, const int b_ld,
                  const float beta,
                  float* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -3612,8 +3620,8 @@ void cblas_dgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const double* b, const int b_ld,
                  const double beta,
                  double* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -3649,8 +3657,8 @@ void cblas_cgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -3686,8 +3694,8 @@ void cblas_zgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -3725,8 +3733,8 @@ void cblas_ssymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const float* b, const int b_ld,
                  const float beta,
                  float* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -3762,8 +3770,8 @@ void cblas_dsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const double* b, const int b_ld,
                  const double beta,
                  double* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -3799,8 +3807,8 @@ void cblas_csymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -3836,8 +3844,8 @@ void cblas_zsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -3875,8 +3883,8 @@ void cblas_chemm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -3912,8 +3920,8 @@ void cblas_zhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* b, const int b_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -3950,8 +3958,8 @@ void cblas_ssyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const float* a, const int a_ld,
                  const float beta,
                  float* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -3982,8 +3990,8 @@ void cblas_dsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const double* a, const int a_ld,
                  const double beta,
                  double* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -4014,8 +4022,8 @@ void cblas_csyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const void* a, const int a_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -4046,8 +4054,8 @@ void cblas_zsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const void* a, const int a_ld,
                  const void* beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -4080,8 +4088,8 @@ void cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const void* a, const int a_ld,
                  const float beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -4112,8 +4120,8 @@ void cblas_zherk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
                  const void* a, const int a_ld,
                  const double beta,
                  void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -4147,8 +4155,8 @@ void cblas_ssyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const float* b, const int b_ld,
                   const float beta,
                   float* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -4184,8 +4192,8 @@ void cblas_dsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const double* b, const int b_ld,
                   const double beta,
                   double* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto beta_cpp = beta;
@@ -4221,8 +4229,8 @@ void cblas_csyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* b, const int b_ld,
                   const void* beta,
                   void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
@@ -4258,8 +4266,8 @@ void cblas_zsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* b, const int b_ld,
                   const void* beta,
                   void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
@@ -4297,8 +4305,8 @@ void cblas_cher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* b, const int b_ld,
                   const float beta,
                   void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto beta_cpp = beta;
@@ -4334,8 +4342,8 @@ void cblas_zher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
                   const void* b, const int b_ld,
                   const double beta,
                   void* c, const int c_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto beta_cpp = beta;
@@ -4371,8 +4379,8 @@ void cblas_strmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const float alpha,
                  const float* a, const int a_ld,
                  float* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4402,8 +4410,8 @@ void cblas_dtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const double alpha,
                  const double* a, const int a_ld,
                  double* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4433,8 +4441,8 @@ void cblas_ctrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* alpha,
                  const void* a, const int a_ld,
                  void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4464,8 +4472,8 @@ void cblas_ztrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* alpha,
                  const void* a, const int a_ld,
                  void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4497,8 +4505,8 @@ void cblas_strsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const float alpha,
                  const float* a, const int a_ld,
                  float* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4528,8 +4536,8 @@ void cblas_dtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const double alpha,
                  const double* a, const int a_ld,
                  double* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4559,8 +4567,8 @@ void cblas_ctrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* alpha,
                  const void* a, const int a_ld,
                  void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4590,8 +4598,8 @@ void cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
                  const void* alpha,
                  const void* a, const int a_ld,
                  void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto a_size = (side == CLBlastSideLeft) ? m * a_ld : n * a_ld;
@@ -4621,14 +4629,148 @@ void cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
 // Extra non-BLAS routines (level-X)
 // =================================================================================================
 
+// HAD
+void cblas_shad(const int n,
+                const float alpha,
+                const float* x, const int x_inc,
+                const float* y, const int y_inc,
+                const float beta,
+                float* z, const int z_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = alpha;
+  const auto beta_cpp = beta;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<float>(context, x_size);
+  auto y_buffer = clblast::Buffer<float>(context, y_size);
+  auto z_buffer = clblast::Buffer<float>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<float*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<float*>(z));
+}
+void cblas_dhad(const int n,
+                const double alpha,
+                const double* x, const int x_inc,
+                const double* y, const int y_inc,
+                const double beta,
+                double* z, const int z_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = alpha;
+  const auto beta_cpp = beta;
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<double>(context, x_size);
+  auto y_buffer = clblast::Buffer<double>(context, y_size);
+  auto z_buffer = clblast::Buffer<double>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<double*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<double*>(z));
+}
+void cblas_chad(const int n,
+                const void* alpha,
+                const void* x, const int x_inc,
+                const void* y, const int y_inc,
+                const void* beta,
+                void* z, const int z_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
+  const auto beta_cpp = float2{reinterpret_cast<const float*>(beta)[0], reinterpret_cast<const float*>(beta)[1]};
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<float2>(context, x_size);
+  auto y_buffer = clblast::Buffer<float2>(context, y_size);
+  auto z_buffer = clblast::Buffer<float2>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<float2*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<float2*>(z));
+}
+void cblas_zhad(const int n,
+                const void* alpha,
+                const void* x, const int x_inc,
+                const void* y, const int y_inc,
+                const void* beta,
+                void* z, const int z_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
+  const auto beta_cpp = double2{reinterpret_cast<const double*>(beta)[0], reinterpret_cast<const double*>(beta)[1]};
+  const auto x_size = n * x_inc;
+  const auto y_size = n * y_inc;
+  const auto z_size = n * z_inc;
+  auto x_buffer = clblast::Buffer<double2>(context, x_size);
+  auto y_buffer = clblast::Buffer<double2>(context, y_size);
+  auto z_buffer = clblast::Buffer<double2>(context, z_size);
+  x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
+  y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
+  z_buffer.Write(queue, z_size, reinterpret_cast<double2*>(z));
+  auto queue_cl = queue();
+  auto s = clblast::Had(n,
+                        alpha_cpp,
+                        x_buffer(), 0, x_inc,
+                        y_buffer(), 0, y_inc,
+                        beta_cpp,
+                        z_buffer(), 0, z_inc,
+                        &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  z_buffer.Read(queue, z_size, reinterpret_cast<double2*>(z));
+}
+
 // OMATCOPY
 void cblas_somatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                      const int m, const int n,
                      const float alpha,
                      const float* a, const int a_ld,
                      float* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
@@ -4655,8 +4797,8 @@ void cblas_domatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
                      const double alpha,
                      const double* a, const int a_ld,
                      double* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = alpha;
   const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
@@ -4683,8 +4825,8 @@ void cblas_comatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
                      const void* alpha,
                      const void* a, const int a_ld,
                      void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = float2{reinterpret_cast<const float*>(alpha)[0], reinterpret_cast<const float*>(alpha)[1]};
   const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
@@ -4711,8 +4853,8 @@ void cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
                      const void* alpha,
                      const void* a, const int a_ld,
                      void* b, const int b_ld) {
-  auto device = get_device();
-  auto context = clblast::Context(device);
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
   const auto alpha_cpp = double2{reinterpret_cast<const double*>(alpha)[0], reinterpret_cast<const double*>(alpha)[1]};
   const auto a_size = (layout == CLBlastLayoutRowMajor) ? m * a_ld : n * a_ld;
@@ -4733,6 +4875,202 @@ void cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
   b_buffer.Read(queue, b_size, reinterpret_cast<double2*>(b));
+}
+
+// IM2COL
+void cblas_sim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const float* im,
+                   float* col) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto im_size = height * width * channels;
+  const auto col_size = height * width * channels;
+  auto im_buffer = clblast::Buffer<float>(context, im_size);
+  auto col_buffer = clblast::Buffer<float>(context, col_size);
+  im_buffer.Write(queue, im_size, reinterpret_cast<const float*>(im));
+  col_buffer.Write(queue, col_size, reinterpret_cast<float*>(col));
+  auto queue_cl = queue();
+  auto s = clblast::Im2col<float>(static_cast<clblast::KernelMode>(kernel_mode),
+                                  channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                  im_buffer(), 0,
+                                  col_buffer(), 0,
+                                  &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  col_buffer.Read(queue, col_size, reinterpret_cast<float*>(col));
+}
+void cblas_dim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const double* im,
+                   double* col) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto im_size = height * width * channels;
+  const auto col_size = height * width * channels;
+  auto im_buffer = clblast::Buffer<double>(context, im_size);
+  auto col_buffer = clblast::Buffer<double>(context, col_size);
+  im_buffer.Write(queue, im_size, reinterpret_cast<const double*>(im));
+  col_buffer.Write(queue, col_size, reinterpret_cast<double*>(col));
+  auto queue_cl = queue();
+  auto s = clblast::Im2col<double>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   im_buffer(), 0,
+                                   col_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  col_buffer.Read(queue, col_size, reinterpret_cast<double*>(col));
+}
+void cblas_cim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* im,
+                   void* col) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto im_size = height * width * channels;
+  const auto col_size = height * width * channels;
+  auto im_buffer = clblast::Buffer<float2>(context, im_size);
+  auto col_buffer = clblast::Buffer<float2>(context, col_size);
+  im_buffer.Write(queue, im_size, reinterpret_cast<const float2*>(im));
+  col_buffer.Write(queue, col_size, reinterpret_cast<float2*>(col));
+  auto queue_cl = queue();
+  auto s = clblast::Im2col<float2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   im_buffer(), 0,
+                                   col_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  col_buffer.Read(queue, col_size, reinterpret_cast<float2*>(col));
+}
+void cblas_zim2col(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* im,
+                   void* col) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto im_size = height * width * channels;
+  const auto col_size = height * width * channels;
+  auto im_buffer = clblast::Buffer<double2>(context, im_size);
+  auto col_buffer = clblast::Buffer<double2>(context, col_size);
+  im_buffer.Write(queue, im_size, reinterpret_cast<const double2*>(im));
+  col_buffer.Write(queue, col_size, reinterpret_cast<double2*>(col));
+  auto queue_cl = queue();
+  auto s = clblast::Im2col<double2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                    channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                    im_buffer(), 0,
+                                    col_buffer(), 0,
+                                    &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  col_buffer.Read(queue, col_size, reinterpret_cast<double2*>(col));
+}
+
+// COL2IM
+void cblas_scol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const float* col,
+                   float* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<float>(context, col_size);
+  auto im_buffer = clblast::Buffer<float>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const float*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<float*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<float>(static_cast<clblast::KernelMode>(kernel_mode),
+                                  channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                  col_buffer(), 0,
+                                  im_buffer(), 0,
+                                  &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<float*>(im));
+}
+void cblas_dcol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const double* col,
+                   double* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<double>(context, col_size);
+  auto im_buffer = clblast::Buffer<double>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const double*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<double*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<double>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   col_buffer(), 0,
+                                   im_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<double*>(im));
+}
+void cblas_ccol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* col,
+                   void* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<float2>(context, col_size);
+  auto im_buffer = clblast::Buffer<float2>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const float2*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<float2*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<float2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                   channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                   col_buffer(), 0,
+                                   im_buffer(), 0,
+                                   &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<float2*>(im));
+}
+void cblas_zcol2im(const CLBlastKernelMode kernel_mode,
+                   const int channels, const int height, const int width, const int kernel_h, const int kernel_w, const int pad_h, const int pad_w, const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
+                   const void* col,
+                   void* im) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+  const auto col_size = height * width * channels;
+  const auto im_size = height * width * channels;
+  auto col_buffer = clblast::Buffer<double2>(context, col_size);
+  auto im_buffer = clblast::Buffer<double2>(context, im_size);
+  col_buffer.Write(queue, col_size, reinterpret_cast<const double2*>(col));
+  im_buffer.Write(queue, im_size, reinterpret_cast<double2*>(im));
+  auto queue_cl = queue();
+  auto s = clblast::Col2im<double2>(static_cast<clblast::KernelMode>(kernel_mode),
+                                    channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                    col_buffer(), 0,
+                                    im_buffer(), 0,
+                                    &queue_cl);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+  im_buffer.Read(queue, im_size, reinterpret_cast<double2*>(im));
 }
 
 // =================================================================================================

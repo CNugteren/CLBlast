@@ -8,16 +8,8 @@
 import ast
 from collections import defaultdict
 
-import clblast
-import bests
-
-
-def set_default_device(section):
-    """Sets the device name and parameters to some default values"""
-    section["device"] = clblast.DEVICE_NAME_DEFAULT
-    section["device_compute_units"] = 0
-    section["device_core_clock"] = 0
-    return section
+import database.bests as bests
+import database.clblast as clblast
 
 
 def set_identifiers(database, group_by_attributes, identifier_name):
@@ -55,32 +47,56 @@ def get_groups_by_identifier(database, group_identifiers, identifier_name):
     return groups
 
 
-def calculate_defaults(database, verbose):
-    """Sets defaults for devices of the same type/vendor"""
+def add_default_sections(database, grouping, verbose, values_dict, condition, enable_warning):
+    default_sections = []
 
-    # Groups the database by kernel, vendor and device type (e.g. AMD GPU)
-    group_identifiers = set_identifiers(database, clblast.GROUP_ATTRIBUTES, "group_identifier")
+    # Groups the database by a certain grouping
+    group_identifiers = set_identifiers(database, grouping, "group_identifier")
     groups = get_groups_by_identifier(database, group_identifiers, "group_identifier")
 
     # Loops over all groups
-    default_sections = {"sections": []}
     for group, group_identifier in groups:
 
         # Computes the best parameters
-        default_parameters = get_common_best_parameters(group, group_identifier, verbose)
-
-        # Stores all the section's data
+        default_parameters = get_common_best_parameters(group, group_identifier, verbose, enable_warning)
         assert len(group) > 0
-        default_section = {}
-        for attribute in group[0].keys():
-            if attribute != "results" and attribute != "group_identifier":
-                default_section[attribute] = group[0][attribute]
-        default_section = set_default_device(default_section)
-        default_section["results"] = [{"time": 0.0, "parameters": default_parameters}]
-        default_sections["sections"].append(default_section)
+        if condition(group[0]):
 
-    # Groups the database by kernel, vendor and device type (e.g. AMD GPU) - but not by arguments! This is to check for
-    # mis-matched arguments.
+            # Stores all the section's data
+            default_section = {}
+            for attribute in group[0].keys():
+                if attribute != "results" and attribute != "group_identifier":
+                    default_section[attribute] = group[0][attribute]
+            default_section["clblast_device_compute_units"] = 0
+            default_section["clblast_device_core_clock"] = 0
+            for key in values_dict.keys():
+                default_section[key] = values_dict[key]
+            default_section["results"] = [{"time": 0.0, "parameters": default_parameters}]
+            default_sections.append(default_section)
+    return default_sections
+
+
+def calculate_defaults(database, verbose):
+    """Sets defaults for devices of the same type/vendor"""
+    default_sections = {"sections": []}
+
+    # Groups the database by kernel, vendor and device architecture (e.g. AMD GPU "Fiji")
+    architecture_group = clblast.GROUP_ATTRIBUTES + ["clblast_device_architecture"]
+    architecture_defaults = add_default_sections(database, architecture_group, verbose,
+                                                 {"clblast_device_name": clblast.DEVICE_NAME_DEFAULT},
+                                                 lambda entry: True, enable_warning=False)
+
+    # Groups the database by kernel, vendor and device type (e.g. AMD GPU)
+    device_defaults = add_default_sections(database, clblast.GROUP_ATTRIBUTES, verbose,
+                                           {"clblast_device_name": clblast.DEVICE_NAME_DEFAULT,
+                                            "clblast_device_architecture": clblast.DEVICE_ARCHITECTURE_DEFAULT},
+                                           lambda entry: entry["clblast_device_architecture"] != "",
+                                           enable_warning=True)
+    default_sections["sections"].extend(device_defaults)
+
+    # Groups the database by kernel, vendor and device type (e.g. AMD GPU) - but not by arguments!
+    # This is to check for mis-matched arguments in the database. Note: this is not a check on the
+    # architecture defaults
     attributes = clblast.DEVICE_TYPE_ATTRIBUTES + clblast.KERNEL_ATTRIBUTES + ["kernel"]
     group_identifiers = set_identifiers(default_sections, attributes, "temp_identifier")
     groups = get_groups_by_identifier(default_sections, group_identifiers, "temp_identifier")
@@ -90,6 +106,9 @@ def calculate_defaults(database, verbose):
         assert len(group) == 1
     remove_identifiers(default_sections, "temp_identifier")
 
+    # Adds the architecture defaults only after running the above check
+    default_sections["sections"].extend(architecture_defaults)
+
     # Groups the database by kernel only
     group_identifiers = set_identifiers(database, clblast.KERNEL_ATTRIBUTES + ["kernel"], "group_identifier")
     groups = get_groups_by_identifier(database, group_identifiers, "group_identifier")
@@ -98,7 +117,8 @@ def calculate_defaults(database, verbose):
     for group, group_identifier in groups:
 
         # Computes the best parameters
-        default_parameters = get_common_best_parameters(group, group_identifier, verbose)
+        default_parameters = get_common_best_parameters(group, group_identifier, verbose,
+                                                        enable_warning=True)
 
         # Stores all the section's data
         assert len(group) > 0
@@ -106,9 +126,12 @@ def calculate_defaults(database, verbose):
         for attribute in group[0].keys():
             if attribute != "results" and attribute != "group_identifier":
                 default_section[attribute] = group[0][attribute]
-        default_section = set_default_device(default_section)
-        default_section["device_vendor"] = clblast.VENDOR_DEFAULT
-        default_section["device_type"] = clblast.DEVICE_TYPE_DEFAULT
+        default_section["clblast_device_name"] = clblast.DEVICE_NAME_DEFAULT
+        default_section["clblast_device_architecture"] = clblast.DEVICE_ARCHITECTURE_DEFAULT
+        default_section["clblast_device_vendor"] = clblast.VENDOR_DEFAULT
+        default_section["clblast_device_type"] = clblast.DEVICE_TYPE_DEFAULT
+        default_section["clblast_device_compute_units"] = 0
+        default_section["clblast_device_core_clock"] = 0
         default_section["results"] = [{"time": 0.0, "parameters": default_parameters}]
         default_sections["sections"].append(default_section)
 
@@ -143,7 +166,7 @@ def get_parameter_names(section):
     return [result["parameters"] for result in section["results"]]
 
 
-def get_common_best_parameters(group, group_identifier, verbose):
+def get_common_best_parameters(group, group_identifier, verbose, enable_warning):
     """Sets defaults based on the best values of entries supported by all devices. This might cause a problem in case
     not every device was tuned with the same parameters. In that case it falls back to the above method to retrieve
     the smallest best execution time"""
@@ -157,7 +180,8 @@ def get_common_best_parameters(group, group_identifier, verbose):
         assert len(section["results"]) > 0
         minimum_time = min([result["time"] for result in section["results"]])
         for result in section["results"]:
-            result["relative_performance"] = minimum_time / result["time"]
+            base_line = minimum_time if section["kernel"] != "gemm_kernel_selection" else 1.0
+            result["relative_time"] = result["time"] / base_line
 
     # Determine which parameters are available for all devices
     common_parameters = get_parameter_names(group[0])  # Parameters of the first section
@@ -179,7 +203,8 @@ def get_common_best_parameters(group, group_identifier, verbose):
 
         # Fall back method in case there are no shared entries at all across devices
         if num_devices_common == 1:
-            print("[database] Warning: No common kernels for: " + str(group_identifier) + " at all")
+            if enable_warning:
+                print("[database] Warning: No common kernels for: " + str(group_identifier) + " at all")
             smallest_best_parameters = get_smallest_best_parameters(group)
             if verbose:
                 print("[database] " + str(group_identifier))

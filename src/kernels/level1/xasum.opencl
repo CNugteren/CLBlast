@@ -30,7 +30,11 @@ R"(
 // =================================================================================================
 
 // The main reduction kernel, performing the loading and the majority of the operation
-__kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS1, 1, 1)))
+#endif
 void Xasum(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global real* output) {
@@ -56,7 +60,6 @@ void Xasum(const int n,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS1/2; s>0; s=s>>1) {
     if (lid < s) {
       Add(lm[lid], lm[lid], lm[lid + s]);
@@ -74,7 +77,11 @@ void Xasum(const int n,
 
 // The epilogue reduction kernel, performing the final bit of the operation. This kernel has to
 // be launched with a single workgroup only.
-__kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#if RELAX_WORKGROUP_SIZE == 1
+  __kernel
+#else
+  __kernel __attribute__((reqd_work_group_size(WGS2, 1, 1)))
+#endif
 void XasumEpilogue(const __global real* restrict input,
                    __global real* asum, const int asum_offset) {
   __local real lm[WGS2];
@@ -85,7 +92,6 @@ void XasumEpilogue(const __global real* restrict input,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  #pragma unroll
   for (int s=WGS2/2; s>0; s=s>>1) {
     if (lid < s) {
       Add(lm[lid], lm[lid], lm[lid + s]);
@@ -95,7 +101,7 @@ void XasumEpilogue(const __global real* restrict input,
 
   // Computes the absolute value and stores the final result
   if (lid == 0) {
-    #if PRECISION == 3232 || PRECISION == 6464
+    #if (PRECISION == 3232 || PRECISION == 6464) && defined(ROUTINE_ASUM)
       asum[asum_offset].x = lm[0].x + lm[0].y; // the result is a non-complex number
     #else
       asum[asum_offset] = lm[0];

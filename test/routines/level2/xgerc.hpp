@@ -54,7 +54,7 @@ class TestXgerc {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.a_size = GetSizeA(args);
     args.x_size = GetSizeX(args);
     args.y_size = GetSizeY(args);
@@ -77,15 +77,25 @@ class TestXgerc {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Gerc(args.layout,
-                       args.m, args.n, args.alpha,
-                       buffers.x_vec(), args.x_offset, args.x_inc,
-                       buffers.y_vec(), args.y_offset, args.y_inc,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #ifdef OPENCL_API
+      auto queue_plain = queue();
+      auto event = cl_event{};
+      auto status = Gerc(args.layout,
+                         args.m, args.n, args.alpha,
+                         buffers.x_vec(), args.x_offset, args.x_inc,
+                         buffers.y_vec(), args.y_offset, args.y_inc,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Gerc(args.layout,
+                         args.m, args.n, args.alpha,
+                         buffers.x_vec(), args.x_offset, args.x_inc,
+                         buffers.y_vec(), args.y_offset, args.y_inc,
+                         buffers.a_mat(), args.a_offset, args.a_ld,
+                         queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

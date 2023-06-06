@@ -47,7 +47,7 @@ class TestXasum {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T> &args) {
+  static void SetSizes(Arguments<T> &args, Queue&) {
     args.x_size = GetSizeX(args);
     args.scalar_size = GetSizeAsum(args);
   }
@@ -69,13 +69,21 @@ class TestXasum {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
+    #ifdef OPENCL_API
     auto queue_plain = queue();
     auto event = cl_event{};
-    auto status = Asum<T>(args.n,
-                          buffers.scalar(), args.asum_offset,
-                          buffers.x_vec(), args.x_offset, args.x_inc,
-                          &queue_plain, &event);
-    if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+      auto status = Asum<T>(args.n,
+                            buffers.scalar(), args.asum_offset,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            &queue_plain, &event);
+      if (status == StatusCode::kSuccess) { clWaitForEvents(1, &event); clReleaseEvent(event); }
+    #elif CUDA_API
+      auto status = Asum<T>(args.n,
+                            buffers.scalar(), args.asum_offset,
+                            buffers.x_vec(), args.x_offset, args.x_inc,
+                            queue.GetContext()(), queue.GetDevice()());
+      cuStreamSynchronize(queue());
+    #endif
     return status;
   }
 

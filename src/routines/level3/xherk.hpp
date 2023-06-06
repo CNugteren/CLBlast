@@ -36,6 +36,16 @@ class Xherk: public Routine {
               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
               const U beta,
               const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
+
+  // Helper function to be reused for HER2K
+  void HerkAB(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Transpose b_transpose,
+              const size_t n, const size_t k,
+              const T complex_alpha,
+              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+              const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+              const T complex_beta,
+              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld,
+              EventPointer final_event, const bool diagonal_to_zero);
 };
 
 // =================================================================================================

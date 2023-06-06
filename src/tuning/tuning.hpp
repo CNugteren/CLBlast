@@ -7,165 +7,143 @@
 // Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
-// This file implements the interface to the CLTune auto-tuner. This is only used for the optional
-// and stand-alone tuner binaries and not part of the core of CLBlast.
+// This file implements the generic CLBlast auto-tuner (inspired by CLTune). This is only used for
+//  the optional and stand-alone tuner binaries and not part of the core of CLBlast.
 //
 // =================================================================================================
 
-#ifndef CLBLAST_TUNING_H_
-#define CLBLAST_TUNING_H_
+#ifndef CLBLAST_TUNING_TUNING_H_
+#define CLBLAST_TUNING_TUNING_H_
 
 #include <vector>
 #include <string>
 #include <random>
-
-#include <cltune.h>
+#include <utility>
+#include <algorithm>
+#include <chrono>
+#include <functional>
 
 #include "utilities/utilities.hpp"
+#include "utilities/compile.hpp"
+#include "utilities/timing.hpp"
+#include "tuning/configurations.hpp"
 
 namespace clblast {
 // =================================================================================================
 
+// Structures for the tuners with all the default settings
+struct TunerDefaults {
+
+  // The list of arguments relevant for this routine
+  std::vector<std::string> options = {};
+
+  // Default sizes
+  size_t default_m = 1;
+  size_t default_n = 1;
+  size_t default_k = 1;
+  size_t channels = 1;
+  size_t height = 1;
+  size_t width = 1;
+  size_t kernel_h = 3;
+  size_t kernel_w = 3;
+  size_t num_kernels = 1;
+  size_t batch_count = 1;
+
+  // Other defaults
+  size_t default_batch_count = 1;
+  size_t default_num_runs = 10; // run every kernel this many times for averaging
+  double default_fraction = 1.0;
+};
+
+// Structures for the tuners with the remaining settings
+struct TunerSettings {
+
+  // The representative kernel and the source code
+  std::string kernel_family;
+  std::string kernel_name;
+  std::string sources;
+
+  // Describes how to obtain the sizes of the buffers
+  size_t size_x = 1;
+  size_t size_y = 1;
+  size_t size_a = 1;
+  size_t size_b = 1;
+  size_t size_c = 1;
+  size_t size_temp = 1;
+
+  // Inputs and outputs (X:0, Y:1, A:2, B:3, C:4, temp:5)
+  std::vector<size_t> inputs = {};
+  std::vector<size_t> outputs = {};
+
+  // Sets the base thread configuration
+  std::vector<size_t> global_size = {};
+  std::vector<size_t> global_size_ref = {};
+  std::vector<size_t> local_size = {};
+  std::vector<size_t> local_size_ref = {};
+
+  // Transforms the thread configuration based on the parameters
+  TransformVector mul_local = {};
+  TransformVector div_local = {};
+  TransformVector mul_global = {};
+  TransformVector div_global = {};
+
+  // Sets the tuning parameters and their possible values
+  std::vector<Parameter> parameters;
+
+  // Describes how to compute the performance metrics
+  size_t metric_amount = 0;
+  std::string performance_unit = "N/A";
+};
+
+// =================================================================================================
+
+struct TuningResult { std::string name; double score; Configuration config; };
+
+void PrintTimingsToFileAsJSON(const std::string &filename,
+                              const Device& device, const Platform& platform,
+                              const std::vector<std::pair<std::string,std::string>> &metadata,
+                              const std::vector<TuningResult>& tuning_results);
+
+void print_separator(const size_t parameters_size);
+
+// =================================================================================================
+
+using GetTunerDefaultsFunc = std::function<TunerDefaults(const int V)>;
+template <typename T>
+using GetTunerSettingsFunc = std::function<TunerSettings(const int V, const Arguments<T> &args)>;
+template <typename T>
+using TestValidArgumentsFunc = std::function<void(const int V, const Arguments<T> &args)>;
+using SetConstraintsFunc = std::function<std::vector<Constraint>(const int V)>;
+template <typename T>
+using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(const int V)>;
+template <typename T>
+using SetArgumentsFunc = std::function<void(const int V, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers)>;
+
 // Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
 // the results. Used for all types of kernel families. Note that this is a header-only function so
 // that it is automatically compiled for the various kernels (given as the 'C' template argument).
-template <typename C, typename T>
-void Tuner(int argc, char* argv[]) {
-  constexpr auto kSeed = 42; // fixed seed for reproducibility
+template <typename T>
+void Tuner(int argc, char* argv[], const int V,
+           GetTunerDefaultsFunc GetTunerDefaults,
+           GetTunerSettingsFunc<T> GetTunerSettings,
+           TestValidArgumentsFunc<T> TestValidArguments,
+           SetConstraintsFunc SetConstraints,
+           ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
+           SetArgumentsFunc<T> SetArguments);
 
-  // Sets the parameters and platform/device for which to tune (command-line options)
-  auto command_line_args = RetrieveCommandLineArguments(argc, argv);
-  auto help = std::string{"* Options given/available:\n"};
-  auto args = Arguments<T>{};
-  args.platform_id = GetArgument(command_line_args, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
-  args.device_id   = GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
-  args.precision   = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
-  for (auto &o: C::GetOptions()) {
-    if (o == kArgM)        { args.m        = GetArgument(command_line_args, help, kArgM, C::DefaultM()); }
-    if (o == kArgN)        { args.n        = GetArgument(command_line_args, help, kArgN, C::DefaultN()); }
-    if (o == kArgK)        { args.k        = GetArgument(command_line_args, help, kArgK, C::DefaultK()); }
-    if (o == kArgAlpha)    { args.alpha    = GetArgument(command_line_args, help, kArgAlpha, GetScalar<T>()); }
-    if (o == kArgBeta)     { args.beta     = GetArgument(command_line_args, help, kArgBeta, GetScalar<T>()); }
-    if (o == kArgFraction) { args.fraction = GetArgument(command_line_args, help, kArgFraction, C::DefaultFraction()); }
-    if (o == kArgBatchCount) { args.batch_count = GetArgument(command_line_args, help, kArgBatchCount, C::DefaultBatchCount()); }
-  }
-  const auto num_runs = GetArgument(command_line_args, help, kArgNumRuns, C::DefaultNumRuns());
-
-  fprintf(stdout, "%s\n", help.c_str());
-
-  // Tests validity of the given arguments
-  C::TestValidArguments(args);
-
-  // Tests for validity of the precision and retrieves properties
-  auto isAMD = false;
-  auto isARM = false;
-  auto isGPU = false;
-  {
-    const auto platform = Platform(args.platform_id);
-    const auto device = Device(platform, args.device_id);
-    if (!PrecisionSupported<T>(device)) {
-      printf("* Unsupported precision, skipping this tuning run\n\n");
-      return;
-    }
-    isAMD = device.IsAMD();
-    isARM = device.IsARM();
-    isGPU = device.IsGPU();
-  }
-
-  // Creates input buffers with random data
-  auto x_vec = std::vector<T>(C::GetSizeX(args));
-  auto y_vec = std::vector<T>(C::GetSizeY(args));
-  auto a_mat = std::vector<T>(C::GetSizeA(args));
-  auto b_mat = std::vector<T>(C::GetSizeB(args));
-  auto c_mat = std::vector<T>(C::GetSizeC(args));
-  auto temp = std::vector<T>(C::GetSizeTemp(args));
-  std::mt19937 mt(kSeed);
-  std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
-  PopulateVector(x_vec, mt, dist);
-  PopulateVector(y_vec, mt, dist);
-  PopulateVector(a_mat, mt, dist);
-  PopulateVector(b_mat, mt, dist);
-  PopulateVector(c_mat, mt, dist);
-  PopulateVector(temp, mt, dist);
-
-  // Initializes the tuner for the chosen device
-  cltune::Tuner tuner(args.platform_id, args.device_id);
-
-  // Use full-search to explore all parameter combinations or random-search to search only a part of
-  // the parameter values. The fraction is set as a command-line argument.
-  if (args.fraction == 1.0 || args.fraction == 0.0) {
-    tuner.UseFullSearch();
-  }
-  else {
-    tuner.UseRandomSearch(1.0/args.fraction);
-  }
-
-  // Set extra settings for specific defines. This mimics src/routine.cc.
-  auto defines = std::string{""};
-  if (isAMD && isGPU) {
-    defines += "#define USE_CL_MAD 1\n";
-    defines += "#define USE_STAGGERED_INDICES 1\n";
-  }
-  if (isARM && isGPU) {
-    defines += "#define GLOBAL_MEM_FENCE 1\n";
-  }
-
-  // Loads the kernel sources and defines the kernel to tune
-  auto sources = defines + C::GetSources();
-  auto id = tuner.AddKernelFromString(sources, C::KernelName(), C::GlobalSize(args), C::LocalSize());
-  tuner.SetReferenceFromString(sources, C::KernelName(), C::GlobalSizeRef(args), C::LocalSizeRef());
-
-  // Sets the tunable parameters and their possible values
-  C::SetParameters(tuner, id);
-  C::SetConstraints(tuner, id);
-  C::SetLocalMemorySize(tuner, id, args);
-
-  // Tests for a specific precision
-  tuner.AddParameter(id, "PRECISION", {static_cast<size_t>(args.precision)});
-  tuner.AddParameterReference("PRECISION", static_cast<size_t>(args.precision));
-
-  // Modifies the thread-sizes (both global and local) based on the parameters
-  for (auto &parameters: C::MulLocal()) { tuner.MulLocalSize(id, parameters); }
-  for (auto &parameters: C::DivLocal()) { tuner.DivLocalSize(id, parameters); }
-  for (auto &parameters: C::MulGlobal()) { tuner.MulGlobalSize(id, parameters); }
-  for (auto &parameters: C::DivGlobal()) { tuner.DivGlobalSize(id, parameters); }
-
-  // Sets the function's arguments
-  C::SetArguments(tuner, args, x_vec, y_vec, a_mat, b_mat, c_mat, temp);
-
-  // Starts the tuning process
-  tuner.SetNumRuns(num_runs);
-  tuner.Tune();
-
-  // Prints the results to screen
-  auto time_ms = tuner.PrintToScreen();
-  tuner.PrintFormatted();
-
-  // Also prints the performance of the best-case in terms of GB/s or GFLOPS
-  if (time_ms != 0.0) {
-    printf("[ -------> ] %.2lf ms", time_ms);
-    printf(" or %.1lf %s\n", C::GetMetric(args)/(time_ms*1.0e6), C::PerformanceUnit().c_str());
-  }
-
-  // Outputs the results as JSON to disk, including some meta-data
-  auto precision_string = std::to_string(static_cast<size_t>(args.precision));
-  auto metadata = std::vector<std::pair<std::string,std::string>>{
-    {"kernel_family", C::KernelFamily()},
-    {"precision", precision_string}
-  };
-  for (auto &o: C::GetOptions()) {
-    if (o == kArgM)     { metadata.push_back({"arg_m", std::to_string(args.m)}); }
-    if (o == kArgN)     { metadata.push_back({"arg_n", std::to_string(args.n)}); }
-    if (o == kArgK)     { metadata.push_back({"arg_k", std::to_string(args.k)}); }
-    if (o == kArgAlpha) { metadata.push_back({"arg_alpha", ToString(args.alpha)}); }
-    if (o == kArgBeta)  { metadata.push_back({"arg_beta", ToString(args.beta)}); }
-    if (o == kArgBatchCount) { metadata.push_back({"arg_batch_count", ToString(args.batch_count)}); }
-  }
-  tuner.PrintJSON("clblast_"+C::KernelFamily()+"_"+precision_string+".json", metadata);
-}
+// Function to run the tuners through the CLBlast API, no I/O
+template <typename T>
+StatusCode TunerAPI(Queue &queue, const Arguments<T> &args, const int V,
+                    const GetTunerDefaultsFunc GetTunerDefaults,
+                    const GetTunerSettingsFunc<T> GetTunerSettings,
+                    const TestValidArgumentsFunc<T> TestValidArguments,
+                    const SetConstraintsFunc SetConstraints,
+                    const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
+                    const SetArgumentsFunc<T> SetArguments,
+                    std::unordered_map<std::string,size_t> &parameters);
 
 // =================================================================================================
 } // namespace clblast
 
-// CLBLAST_TUNING_H_
+// CLBLAST_TUNING_TUNING_H_
 #endif
