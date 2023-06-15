@@ -345,10 +345,10 @@ def swap(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -367,7 +367,7 @@ def swap(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXswap' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
@@ -388,9 +388,9 @@ def scal(queue, n, x, x_inc = 1, alpha = 1.0, x_offset = 0):
     dtype = check_dtype([x], ["float32", "float64", "complex64", "complex128", "float16"])
     check_vector(x, "x")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -409,7 +409,7 @@ def scal(queue, n, x, x_inc = 1, alpha = 1.0, x_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXscal' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
@@ -431,10 +431,10 @@ def copy(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -453,7 +453,7 @@ def copy(queue, n, x, y, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXcopy' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
@@ -475,10 +475,10 @@ def axpy(queue, n, x, y, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offs
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -497,7 +497,7 @@ def axpy(queue, n, x, y, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset = 0, y_offs
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXaxpy' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Dot product of two vectors: SDOT/DDOT/HDOT
@@ -518,11 +518,11 @@ def dot(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, d
     check_vector(y, "y")
     check_matrix(dot, "dot")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><ptrdiff_t>dot.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -537,7 +537,7 @@ def dot(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, d
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXdot' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Dot product of two complex vectors: CDOTU/ZDOTU
@@ -557,11 +557,11 @@ def dotu(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, 
     check_vector(y, "y")
     check_matrix(dot, "dot")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><ptrdiff_t>dot.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -574,7 +574,7 @@ def dotu(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXdotu' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
@@ -594,11 +594,11 @@ def dotc(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, 
     check_vector(y, "y")
     check_matrix(dot, "dot")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem dot_buffer = <cl_mem><size_t>dot.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem dot_buffer = <cl_mem><ptrdiff_t>dot.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -611,7 +611,7 @@ def dotc(queue, n, x, y, dot, x_inc = 1, y_inc = 1, x_offset = 0, y_offset = 0, 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXdotc' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
@@ -633,10 +633,10 @@ def nrm2(queue, n, x, nrm2, x_inc = 1, x_offset = 0, nrm2_offset = 0):
     check_vector(x, "x")
     check_matrix(nrm2, "nrm2")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem nrm2_buffer = <cl_mem><size_t>nrm2.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem nrm2_buffer = <cl_mem><ptrdiff_t>nrm2.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -655,7 +655,7 @@ def nrm2(queue, n, x, nrm2, x_inc = 1, x_offset = 0, nrm2_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXnrm2' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
@@ -677,10 +677,10 @@ def asum(queue, n, x, asum, x_inc = 1, x_offset = 0, asum_offset = 0):
     check_vector(x, "x")
     check_matrix(asum, "asum")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem asum_buffer = <cl_mem><size_t>asum.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem asum_buffer = <cl_mem><ptrdiff_t>asum.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -699,7 +699,7 @@ def asum(queue, n, x, asum, x_inc = 1, x_offset = 0, asum_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXasum' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
@@ -721,10 +721,10 @@ def sum(queue, n, x, sum, x_inc = 1, x_offset = 0, sum_offset = 0):
     check_vector(x, "x")
     check_matrix(sum, "sum")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem sum_buffer = <cl_mem><size_t>sum.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem sum_buffer = <cl_mem><ptrdiff_t>sum.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -743,7 +743,7 @@ def sum(queue, n, x, sum, x_inc = 1, x_offset = 0, sum_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsum' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
@@ -765,10 +765,10 @@ def amax(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
     check_vector(x, "x")
     check_matrix(imax, "imax")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem imax_buffer = <cl_mem><size_t>imax.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem imax_buffer = <cl_mem><ptrdiff_t>imax.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -787,7 +787,7 @@ def amax(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXamax' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
@@ -809,10 +809,10 @@ def amin(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
     check_vector(x, "x")
     check_matrix(imin, "imin")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem imin_buffer = <cl_mem><size_t>imin.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem imin_buffer = <cl_mem><ptrdiff_t>imin.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -831,7 +831,7 @@ def amin(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXamin' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
@@ -853,10 +853,10 @@ def max(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
     check_vector(x, "x")
     check_matrix(imax, "imax")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem imax_buffer = <cl_mem><size_t>imax.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem imax_buffer = <cl_mem><ptrdiff_t>imax.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -875,7 +875,7 @@ def max(queue, n, x, imax, x_inc = 1, x_offset = 0, imax_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXmax' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
@@ -897,10 +897,10 @@ def min(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
     check_vector(x, "x")
     check_matrix(imin, "imin")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem imin_buffer = <cl_mem><size_t>imin.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem imin_buffer = <cl_mem><ptrdiff_t>imin.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -919,7 +919,7 @@ def min(queue, n, x, imin, x_inc = 1, x_offset = 0, imin_offset = 0):
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXmin' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General matrix-vector multiplication: SGEMV/DGEMV/CGEMV/ZGEMV/HGEMV
@@ -942,11 +942,11 @@ def gemv(queue, m, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
 
@@ -966,7 +966,7 @@ def gemv(queue, m, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgemv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
@@ -989,11 +989,11 @@ def gbmv(queue, m, n, kl, ku, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, 
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
 
@@ -1013,7 +1013,7 @@ def gbmv(queue, m, n, kl, ku, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgbmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian matrix-vector multiplication: CHEMV/ZHEMV
@@ -1033,11 +1033,11 @@ def hemv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0,
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1051,7 +1051,7 @@ def hemv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0,
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhemv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian banded matrix-vector multiplication: CHBMV/ZHBMV
@@ -1071,11 +1071,11 @@ def hbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1089,7 +1089,7 @@ def hbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhbmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
@@ -1109,11 +1109,11 @@ def hpmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1127,7 +1127,7 @@ def hpmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhpmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
@@ -1148,11 +1148,11 @@ def symv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0,
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1168,7 +1168,7 @@ def symv(queue, n, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.0,
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsymv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric banded matrix-vector multiplication: SSBMV/DSBMV/HSBMV
@@ -1189,11 +1189,11 @@ def sbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1209,7 +1209,7 @@ def sbmv(queue, n, k, a, x, y, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsbmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
@@ -1230,11 +1230,11 @@ def spmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.
     check_vector(x, "x")
     check_vector(y, "y")
 
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1250,7 +1250,7 @@ def spmv(queue, n, ap, x, y, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, beta = 0.
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXspmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
@@ -1272,10 +1272,10 @@ def trmv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = Fal
     check_matrix(a, "a")
     check_vector(x, "x")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -1297,7 +1297,7 @@ def trmv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = Fal
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtrmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
@@ -1319,10 +1319,10 @@ def tbmv(queue, n, k, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = 
     check_matrix(a, "a")
     check_vector(x, "x")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -1344,7 +1344,7 @@ def tbmv(queue, n, k, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtbmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
@@ -1366,10 +1366,10 @@ def tpmv(queue, n, ap, x, ap_ld, x_inc = 1, lower_triangle = False, a_transp = F
     check_matrix(ap, "ap")
     check_vector(x, "x")
 
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -1391,7 +1391,7 @@ def tpmv(queue, n, ap, x, ap_ld, x_inc = 1, lower_triangle = False, a_transp = F
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtpmv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
@@ -1412,10 +1412,10 @@ def trsv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = Fal
     check_matrix(a, "a")
     check_vector(x, "x")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -1435,7 +1435,7 @@ def trsv(queue, n, a, x, a_ld, x_inc = 1, lower_triangle = False, a_transp = Fal
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtrsv' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General rank-1 matrix update: SGER/DGER/HGER
@@ -1456,11 +1456,11 @@ def ger(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset 
     check_vector(y, "y")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -1475,7 +1475,7 @@ def ger(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXger' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General rank-1 complex matrix update: CGERU/ZGERU
@@ -1495,11 +1495,11 @@ def geru(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset
     check_vector(y, "y")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -1512,7 +1512,7 @@ def geru(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgeru' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General rank-1 complex conjugated matrix update: CGERC/ZGERC
@@ -1532,11 +1532,11 @@ def gerc(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset
     check_vector(y, "y")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -1549,7 +1549,7 @@ def gerc(queue, m, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, x_offset
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgerc' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian rank-1 matrix update: CHER/ZHER
@@ -1568,10 +1568,10 @@ def her(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_
     check_vector(x, "x")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1585,7 +1585,7 @@ def her(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXher' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian packed rank-1 matrix update: CHPR/ZHPR
@@ -1604,10 +1604,10 @@ def hpr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, 
     check_vector(x, "x")
     check_matrix(ap, "ap")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1621,7 +1621,7 @@ def hpr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhpr' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian rank-2 matrix update: CHER2/ZHER2
@@ -1641,11 +1641,11 @@ def her2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_trian
     check_vector(y, "y")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1659,7 +1659,7 @@ def her2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_trian
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXher2' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
@@ -1679,11 +1679,11 @@ def hpr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_tri
     check_vector(y, "y")
     check_matrix(ap, "ap")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1697,7 +1697,7 @@ def hpr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_tri
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhpr2' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
@@ -1717,10 +1717,10 @@ def syr(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_
     check_vector(x, "x")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1736,7 +1736,7 @@ def syr(queue, n, x, a, a_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, x_
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsyr' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
@@ -1756,10 +1756,10 @@ def spr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, 
     check_vector(x, "x")
     check_matrix(ap, "ap")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1775,7 +1775,7 @@ def spr(queue, n, x, ap, ap_ld, x_inc = 1, alpha = 1.0, lower_triangle = False, 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXspr' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
@@ -1796,11 +1796,11 @@ def syr2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_trian
     check_vector(y, "y")
     check_matrix(a, "a")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1816,7 +1816,7 @@ def syr2(queue, n, x, y, a, a_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_trian
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsyr2' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
@@ -1837,11 +1837,11 @@ def spr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_tri
     check_vector(y, "y")
     check_matrix(ap, "ap")
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
-    cdef cl_mem ap_buffer = <cl_mem><size_t>ap.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
+    cdef cl_mem ap_buffer = <cl_mem><ptrdiff_t>ap.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
 
@@ -1857,7 +1857,7 @@ def spr2(queue, n, x, y, ap, ap_ld, x_inc = 1, y_inc = 1, alpha = 1.0, lower_tri
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXspr2' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # General matrix-matrix multiplication: SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
@@ -1880,11 +1880,11 @@ def gemm(queue, m, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, a_t
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
     b_transpose = CLBlastTransposeYes if b_transp else CLBlastTransposeNo
@@ -1905,7 +1905,7 @@ def gemm(queue, m, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, a_t
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgemm' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
@@ -1928,11 +1928,11 @@ def symm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     side = CLBlastSideRight if right_side else CLBlastSideLeft
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
@@ -1953,7 +1953,7 @@ def symm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsymm' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
@@ -1973,11 +1973,11 @@ def hemm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     side = CLBlastSideRight if right_side else CLBlastSideLeft
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
@@ -1992,7 +1992,7 @@ def hemm(queue, m, n, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, right_
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXhemm' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
@@ -2014,10 +2014,10 @@ def syrk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle 
     check_matrix(a, "a")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -2038,7 +2038,7 @@ def syrk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsyrk' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Rank-K update of a hermitian matrix: CHERK/ZHERK
@@ -2057,10 +2057,10 @@ def herk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle 
     check_matrix(a, "a")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
@@ -2075,7 +2075,7 @@ def herk(queue, n, k, a, c, a_ld, c_ld, alpha = 1.0, beta = 0.0, lower_triangle 
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXherk' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
@@ -2098,11 +2098,11 @@ def syr2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     ab_transpose = CLBlastTransposeYes if ab_transp else CLBlastTransposeNo
@@ -2123,7 +2123,7 @@ def syr2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXsyr2k' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
@@ -2143,11 +2143,11 @@ def her2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
     ab_transpose = CLBlastTransposeYes if ab_transp else CLBlastTransposeNo
@@ -2162,7 +2162,7 @@ def her2k(queue, n, k, a, b, c, a_ld, b_ld, c_ld, alpha = 1.0, beta = 0.0, lower
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXher2k' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
@@ -2184,10 +2184,10 @@ def trmm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_t
     check_matrix(a, "a")
     check_matrix(b, "b")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     side = CLBlastSideRight if right_side else CLBlastSideLeft
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
@@ -2210,7 +2210,7 @@ def trmm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_t
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtrmm' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
@@ -2231,10 +2231,10 @@ def trsm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_t
     check_matrix(a, "a")
     check_matrix(b, "b")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     side = CLBlastSideRight if right_side else CLBlastSideLeft
     triangle = CLBlastTriangleLower if lower_triangle else CLBlastTriangleUpper
@@ -2255,7 +2255,7 @@ def trsm(queue, m, n, a, b, a_ld, b_ld, alpha = 1.0, right_side = False, lower_t
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXtrsm' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
@@ -2300,10 +2300,10 @@ def axpyBatched(queue, n, x, y, alphas, x_offsets, y_offsets, x_inc = 1, y_inc =
         elif dtype == np.dtype("float16"):
             (<cl_half*>alphas_c)[i] = <cl_half>alphas[i]
 
-    cdef cl_mem x_buffer = <cl_mem><size_t>x.base_data.int_ptr
-    cdef cl_mem y_buffer = <cl_mem><size_t>y.base_data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+    cdef cl_mem y_buffer = <cl_mem><ptrdiff_t>y.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
 
     cdef CLBlastStatusCode err
@@ -2326,7 +2326,7 @@ def axpyBatched(queue, n, x, y, alphas, x_offsets, y_offsets, x_inc = 1, y_inc =
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXaxpyBatched' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
@@ -2387,11 +2387,11 @@ def gemmBatched(queue, m, n, k, a, b, c, alphas, betas, a_ld, b_ld, c_ld, a_offs
         elif dtype == np.dtype("float16"):
             (<cl_half*>betas_c)[i] = <cl_half>betas[i]
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
     b_transpose = CLBlastTransposeYes if b_transp else CLBlastTransposeNo
@@ -2418,7 +2418,7 @@ def gemmBatched(queue, m, n, k, a, b, c, alphas, betas, a_ld, b_ld, c_ld, a_offs
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgemmBatched' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # StridedBatched version of GEMM: SGEMMSTRIDEDBATCHED/DGEMMSTRIDEDBATCHED/CGEMMSTRIDEDBATCHED/ZGEMMSTRIDEDBATCHED/HGEMMSTRIDEDBATCHED
@@ -2441,11 +2441,11 @@ def gemmStridedBatched(queue, m, n, k, batch_count, a, b, c, a_ld, b_ld, c_ld, a
     check_matrix(b, "b")
     check_matrix(c, "c")
 
-    cdef cl_mem a_buffer = <cl_mem><size_t>a.base_data.int_ptr
-    cdef cl_mem b_buffer = <cl_mem><size_t>b.base_data.int_ptr
-    cdef cl_mem c_buffer = <cl_mem><size_t>c.base_data.int_ptr
+    cdef cl_mem a_buffer = <cl_mem><ptrdiff_t>a.base_data.int_ptr
+    cdef cl_mem b_buffer = <cl_mem><ptrdiff_t>b.base_data.int_ptr
+    cdef cl_mem c_buffer = <cl_mem><ptrdiff_t>c.base_data.int_ptr
 
-    cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
     cdef cl_event event = NULL
     a_transpose = CLBlastTransposeYes if a_transp else CLBlastTransposeNo
     b_transpose = CLBlastTransposeYes if b_transp else CLBlastTransposeNo
@@ -2466,7 +2466,7 @@ def gemmStridedBatched(queue, m, n, k, batch_count, a, b, c, a_ld, b_ld, c_ld, a
 
     if err != CLBlastSuccess:
         raise RuntimeError("PyCLBlast: 'CLBlastXgemmStridedBatched' failed: %s" % get_status_message(err))
-    return cl.Event.from_int_ptr(<size_t>event)
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
 # Overrides the parameters
@@ -2483,7 +2483,7 @@ def override_parameters(device, kernel_name, precision, parameters):
     Override the current parameters for the given kernel, on this device, with this precision.
     """
 
-    cdef cl_device_id device_id = <cl_device_id><size_t>device.int_ptr
+    cdef cl_device_id device_id = <cl_device_id><ptrdiff_t>device.int_ptr
 
     # read the parameters dictionary into names/values arrays, for use in CLBlastOverrideParameters
     cdef size_t n = len(parameters)
