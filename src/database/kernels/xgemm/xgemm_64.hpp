@@ -17,7 +17,8 @@ const DatabaseEntry XgemmDouble = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 0, 1, 16, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 1, 2, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
@@ -75,6 +76,14 @@ const DatabaseEntry XgemmDouble = {
         { "gfx1035", {
           { Name{"AMD Radeon Graphics                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+        } },
+        { "gfx1100", {
+          { Name{"Radeon RX 7900 XTX                                "}, Params{ 0, 1, 32, 2, 16, 8, 32, 8, 8, 16, 0, 1, 0, 1, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 32, 8, 8, 16, 0, 1, 0, 1, 1, 2 } },
+        } },
+        { "gfx1102", {
+          { Name{"AMD Radeon RX 7600                                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 2 } },
         } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 16, 2, 16, 16, 32, 32, 16, 128, 1, 1, 1, 1, 1, 4 } },
@@ -206,7 +215,9 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 32, 1, 1, 0, 0, 2, 2 } },
         } },
         { "SM8.6", {
+          { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 32, 32, 64, 16, 16, 64, 0, 1, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 1, 8, 1, 1, 32, 32, 32, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
+          { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 1, 16, 1, 1, 16, 16, 32, 8, 8, 8, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 0, 1, 16, 2, 16, 16, 16, 8, 8, 64, 1, 0, 0, 0, 1, 4 } },
           { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
