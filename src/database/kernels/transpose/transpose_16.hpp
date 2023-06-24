@@ -17,6 +17,7 @@ const DatabaseEntry TransposeHalf = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 4, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 8, 1, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 8, 1, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Vega", {
@@ -51,6 +52,14 @@ const DatabaseEntry TransposeHalf = {
         { "gfx1035", {
           { Name{"AMD Radeon Graphics                               "}, Params{ 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1100", {
+          { Name{"Radeon RX 7900 XTX                                "}, Params{ 16, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "gfx1102", {
+          { Name{"AMD Radeon RX 7600                                "}, Params{ 16, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -102,6 +111,10 @@ const DatabaseEntry TransposeHalf = {
         { "default", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 16, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "OpenCL C 2.0 Adreno(TM) 640", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 32, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

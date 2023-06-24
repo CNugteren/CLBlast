@@ -37,6 +37,10 @@ const DatabaseEntry XconvgemmHalf = {
           { Name{"AMD Radeon Graphics                               "}, Params{ 1, 8, 16, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 16, 16, 8, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1100", {
+          { Name{"Radeon RX 7900 XTX                                "}, Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 1, 8, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 16, 8, 8, 0, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },

@@ -17,7 +17,8 @@ const DatabaseEntry XgemmSingle = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 0, 1, 16, 2, 32, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 2 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 32, 16, 128, 1, 1, 0, 1, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "Fiji", {
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
@@ -87,6 +88,14 @@ const DatabaseEntry XgemmSingle = {
         { "gfx1035", {
           { Name{"AMD Radeon Graphics                               "}, Params{ 0, 1, 16, 2, 8, 16, 32, 32, 8, 128, 1, 1, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 16, 32, 32, 8, 128, 1, 1, 0, 0, 2, 1 } },
+        } },
+        { "gfx1100", {
+          { Name{"Radeon RX 7900 XTX                                "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 1, 1, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 1, 1, 0, 4, 4 } },
+        } },
+        { "gfx1102", {
+          { Name{"AMD Radeon RX 7600                                "}, Params{ 0, 1, 32, 2, 16, 16, 64, 32, 8, 128, 0, 1, 1, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 32, 8, 128, 0, 1, 1, 0, 1, 2 } },
         } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 16, 2, 32, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 4 } },
@@ -247,7 +256,9 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "SM8.6", {
+          { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
+          { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
@@ -268,6 +279,10 @@ const DatabaseEntry XgemmSingle = {
         { "default", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
+        } },
+        { "OpenCL C 2.0 Adreno(TM) 640", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
         { "OpenCL C 3.0 Adreno(TM) 730", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 128, 0, 0, 1, 0, 2, 4 } },

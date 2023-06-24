@@ -1,6 +1,6 @@
 Development version (next version)
-- Added tuned parameters for various devices (see doc/tuning.md)
 - Fix pointer error in pyclblast on ARM
+- Added tuned parameters for many devices (see doc/tuning.md)
 
 Version 1.6.0
 - Modifications to improve performance on Qualcomm Adreno GPUs:
