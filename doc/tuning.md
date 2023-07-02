@@ -48,6 +48,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - SM 7.5:
     - GeForce GTX 1650
     - GeForce GTX 1650 Ti
+    - GeForce GTX 1650 Super
     - GeForce GTX 2060
     - GeForce GTX 2070 with Max-Q
     - GeForce GTX 2070 Super
@@ -61,11 +62,15 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - SM 8.6:
     - GeForce GTX 3050 Ti Laptop
     - GeForce GTX 3060 Laptop
+    - GeForce GTX 3070
     - GeForce GTX 3070 Ti Laptop
     - GeForce GTX 3080
     - GeForce GTX 3080 Laptop
+    - GeForce GTX 3080 Ti
     - GeForce GTX 3090
   - SM 8.9:
+    - GeForce GTX 4070 Laptop
+    - GeForce GTX 4070 Ti
     - GeForce GTX 4080
     - GeForce GTX 4090
 * AMD GPUs:
@@ -135,6 +140,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris
   - Iris Pro
   - Iris Xe Graphics
+  - RaptorLake-S Mobile Graphics
 * Intel CPUs:
   - Core i5-4570
   - Core i5-4590S
@@ -159,6 +165,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Intel MIC
   - Imagination PowerVR B-Series BXE-4-32
   - Apple M1 GPU
+  - Apple M2 Max GPU
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
 
