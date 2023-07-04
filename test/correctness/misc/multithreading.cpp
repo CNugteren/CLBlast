@@ -30,7 +30,7 @@ template <typename T>
 std::vector<StatusCode> RunExampleRoutine(const Arguments<T> args, const bool verbose,
                                           const size_t platform_id, const size_t device_id,
                                           const int num_runs) {
-  auto example_routine = TestXgemm<T>();
+  auto example_routine = TestXgemm<0, T>();
   constexpr auto kSeed = 42; // fixed seed for reproducibility
 
   // Initializes OpenCL
@@ -59,7 +59,8 @@ std::vector<StatusCode> RunExampleRoutine(const Arguments<T> args, const bool ve
   device_b.Write(queue, host_b.size(), host_b);
   device_c.Write(queue, host_c.size(), host_c);
   auto dummy = Buffer<T>(context, 1);
-  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, dummy, dummy};
+  auto dummy_scalar = Buffer<unsigned int>(context, 1);
+  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, dummy, dummy, dummy_scalar};
 
   // Runs a number of times
   auto statuses = std::vector<StatusCode>();
