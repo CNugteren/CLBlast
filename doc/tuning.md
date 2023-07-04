@@ -10,68 +10,123 @@ Already tuned-for devices
 The CLBlast library is already tuned for the most commonly used OpenCL devices and it's gradually being extended to other devices as well. For unseen devices CLBlast will make use of common-best tuning values for similar architectures (e.g. AMD Fiji) or in general similar devices (e.g. AMD GPUs), so performance might still be decent. The current release of CLBlast is tuned for the following devices:
 
 * NVIDIA GPUs:
-  - GRID K520
-  - GeForce 920A
-  - GeForce GT 650M
-  - GeForce GTX 480
-  - GeForce GTX 580
-  - GeForce GTX 670
-  - GeForce GTX 680
-  - GeForce GTX 750
-  - GeForce GTX 750 Ti
-  - GeForce GTX 760 Ti
-  - GeForce GTX 920MX
-  - GeForce GTX 970
-  - GeForce GTX 980
-  - GeForce GTX 1070
-  - GeForce GTX 1070 Ti
-  - GeForce GTX 1080
-  - GeForce GTX 1080 Ti
-  - GeForce GTX 2080 Ti
-  - GeForce GTX 3060 Laptop
-  - GeForce GTX 3080
-  - GeForce GTX 3080 Laptop
-  - GeForce GTX 3090
-  - GeForce GTX 4090
-  - GeForce GTX TITAN
-  - GeForce GTX TITAN Black
-  - GeForce GTX TITAN X
-  - TITAN X (Pascal)
-  - TITAN RTX
-  - Tesla A100
-  - Tesla K20m
-  - Tesla K40m
-  - Tesla P100 16GB
-  - Tesla T4
-  - Tesla T2000
-  - Tesla V100
-  - Quadro T2000
-  - Quadro GV100
-  - A100
+  - SM 2.0:
+    - GeForce GTX 480
+    - GeForce GTX 580
+  - SM 3.0:
+    - GRID K520
+    - GeForce GT 650M
+    - GeForce GTX 670
+    - GeForce GTX 680
+    - GeForce GTX 760 Ti
+  - SM 3.5:
+    - GeForce 920A
+    - GeForce GTX TITAN
+    - GeForce GTX TITAN Black
+    - Tesla K20m
+    - Tesla K40m
+  - SM 5.0:
+    - GeForce GTX 920MX
+    - GeForce GTX 750
+    - GeForce GTX 750 Ti
+  - SM 5.2:
+    - GeForce GTX 970
+    - GeForce GTX 980
+    - GeForce GTX TITAN X
+  - SM 6.0:
+    - Tesla P100 16GB
+  - SM 6.1:
+    - GeForce MX 150
+    - GeForce GTX 1070
+    - GeForce GTX 1070 Ti
+    - GeForce GTX 1080
+    - GeForce GTX 1080 Ti
+    - TITAN X (Pascal)
+  - SM 7.0:
+    - Quadro GV100
+    - Tesla V100
+  - SM 7.5:
+    - GeForce GTX 1650
+    - GeForce GTX 1650 Ti
+    - GeForce GTX 1650 Super
+    - GeForce GTX 2060
+    - GeForce GTX 2070 with Max-Q
+    - GeForce GTX 2070 Super
+    - GeForce GTX 2080 with Max-Q
+    - GeForce GTX 2080 Ti
+    - Quadro T2000
+    - TITAN RTX
+    - Tesla T4
+  - SM 8.0:
+    - Tesla A100 40GB
+  - SM 8.6:
+    - GeForce GTX 3050 Ti Laptop
+    - GeForce GTX 3060 Laptop
+    - GeForce GTX 3070
+    - GeForce GTX 3070 Ti Laptop
+    - GeForce GTX 3080
+    - GeForce GTX 3080 Laptop
+    - GeForce GTX 3080 Ti
+    - GeForce GTX 3090
+  - SM 8.9:
+    - GeForce GTX 4070 Laptop
+    - GeForce GTX 4070 Ti
+    - GeForce GTX 4080
+    - GeForce GTX 4090
 * AMD GPUs:
-  - Ryzen 4600G APU (gfx1035)
-  - Ryzen 5700G APU (gfx90c)
-  - Radeon 680M (gfx1035)
-  - Radeon HD 6750M
-  - Radeon HD 6770M
-  - Radeon HD 7970
-  - Radeon R9 270X
-  - Radeon R9 290X
-  - Radeon R9 M370X
-  - Radeon R9 380
-  - Radeon RX 480
-  - Radeon RX 580 2048SP
-  - Radeon R9 Fury X
-  - Radeon Pro 450
-  - Radeon Pro 580
-  - Radeon RX Vega
-  - Radeon RX 5700
-  - Radeon RX 5700 XT
-  - Radeon RX 6500 XT
-  - Radeon RX 6600 XT
-  - Radeon RX 6700 XT
-  - Radeon RX 6800 XT
-  - Radeon RX 6900 XT
+  - Turks:
+    - Radeon HD 6770M
+  - Vancouver:
+    - Radeon HD 6750M
+  - Tahiti:
+    - Radeon HD 7970
+  - Oland:
+    - Radeon R7 250
+  - Pitcairn:
+    - Radeon R9 270X
+  - Hawaii:
+    - FirePro W8100
+    - Radeon R9 290X
+  - Tonga:
+    - Radeon R9 380
+  - Fiji:
+    - Radeon R9 Fury X
+    - Radeon R9 M370X
+  - Ellesmere:
+    - Radeon RX 480
+    - Radeon RX 580 2048SP
+    - Radeon RX 590 GME
+  - Vega:
+    - Radeon RX Vega
+  - gfx902:
+    - Radeon RX Vega
+    - Radeon RX Vega 10
+  - gfx906:
+    - Radeon VII
+  - gfx90c:
+    - Ryzen 5700G APU
+  - gfx1010:
+    - Radeon RX 5700
+    - Radeon RX 5700 XT
+  - gfx1030:
+    - Radeon RX 6800 XT
+    - Radeon RX 6900 XT
+  - gfx1031:
+    - Radeon RX 6700 XT
+  - gfx1032:
+    - Radeon RX 6600 XT
+  - gfx1034:
+    - Radeon RX 6500 XT
+  - gfx1035:
+    - Radeon 680M
+    - Ryzen 4600G APU
+  - gfx1100:
+    - Radeon RX 7900 XTX 
+  - gfx1102:
+    - Radeon RX 7600
+  - Other:
+    - Radeon Pro 450
+    - Radeon Pro 580
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -85,6 +140,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris
   - Iris Pro
   - Iris Xe Graphics
+  - RaptorLake-S Mobile Graphics
 * Intel CPUs:
   - Core i5-4570
   - Core i5-4590S
@@ -103,8 +159,13 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - ARM Mali-T760 GPU
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
+  - Qualcomm Adreno 640 GPU
+  - Qualcomm Adreno 730 GPU
+  - Qualcomm Adreno 740 GPU
   - Intel MIC
+  - Imagination PowerVR B-Series BXE-4-32
   - Apple M1 GPU
+  - Apple M2 Max GPU
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
 

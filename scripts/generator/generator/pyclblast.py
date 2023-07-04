@@ -121,10 +121,10 @@ def generate_pyx(routine):
 
         # Buffer transformation
         for buf in buffers:
-            result += indent + "cdef cl_mem " + buf + "_buffer = <cl_mem><size_t>" + buf + ".base_data.int_ptr" + NL
+            result += indent + "cdef cl_mem " + buf + "_buffer = <cl_mem><ptrdiff_t>" + buf + ".base_data.int_ptr" + NL
         result += NL
 
-        result += indent + "cdef cl_command_queue command_queue = <cl_command_queue><size_t>queue.int_ptr" + NL
+        result += indent + "cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr" + NL
         result += indent + "cdef cl_event event = NULL" + NL
 
         for option in routine.options:
@@ -180,7 +180,7 @@ def generate_pyx(routine):
 
         result += indent + "if err != CLBlastSuccess:" + NL
         result += indent + indent + "raise RuntimeError(\"PyCLBlast: 'CLBlastX" + routine.plain_name() + "' failed: %s\" % get_status_message(err))" + NL
-        result += indent + "return cl.Event.from_int_ptr(<size_t>event)" + NL
+        result += indent + "return cl.Event.from_int_ptr(<ptrdiff_t>event)" + NL
         result += NL
 
     return result
