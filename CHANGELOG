@@ -1,5 +1,6 @@
 Development version (next version)
 - Fix pointer error in pyclblast on ARM
+- Fix a multithreading bug related to storing objects in the cache
 - Added tuned parameters for many devices (see doc/tuning.md)
 
 Version 1.6.0

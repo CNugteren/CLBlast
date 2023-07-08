@@ -56,7 +56,12 @@ void Cache<Key, Value>::Store(Key &&key, Value &&value) {
   // emplace() into a map
   auto r = cache_.emplace(std::move(key), std::move(value));
   if (!r.second) {
-    throw LogicError("Cache::Store: object already in cache");
+    // The object is already in cache. This can happen if two threads both
+    // checked the cache for an object, both found that it isn't there, then
+    // both produced the object (e.g. a compiled binary) and try to store it
+    // in the cache. The first one will succeed normally, the second one will
+    // hit this point. We simply return in this case.
+    return;
   }
 #else
   // emplace_back() into a vector
