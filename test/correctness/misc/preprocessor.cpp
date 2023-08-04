@@ -29,36 +29,57 @@ bool TestDefines() {
   R"(
   #define VAR1
   #define VAR2 32
+  #define VAR3
   #if VAR2 == 32
     #ifndef VAR1
-      #define ERROR
+      #define ERROR1
       #ifdef VAR1
-        #define ERROR
+        #define ERROR2
       #endif
     #else
       #if VAR2 == 32 || VAR3 == 4
-        #define SUCCESS
+        #define SUCCESS1
       #else
-        #define ERROR
+        #define ERROR3
       #endif
-      #define SUCCESS
+      #define SUCCESS2
     #endif
   #endif
-  #ifndef VAR3
-    #define SUCCESS
+  #ifndef VAR4
+    #define SUCCESS3
   #else
-    #define ERROR
+    #define ERROR4
+  #endif
+  #if defined(VAR1) && !defined(VAR3)
+    #define ERROR5
+  #endif
+  #if defined(VAR1) && defined(VAR3)
+    #define SUCCESS4
+  #endif
+  #if defined(VAR1) && !defined(VAR4)
+    #define SUCCESS5
+  #endif
+  #if defined(VAR1) && defined(VAR4)
+    #define ERROR6
   #endif
   )";
   const auto expected1 =
   "  #define VAR1\n"
   "  #define VAR2 32\n"
-  "        #define SUCCESS\n"
-  "      #define SUCCESS\n"
-  "    #define SUCCESS\n"
+  "  #define VAR3\n"
+  "        #define SUCCESS1\n"
+  "      #define SUCCESS2\n"
+  "    #define SUCCESS3\n"
+  "    #define SUCCESS4\n"
+  "    #define SUCCESS5\n"
   "  \n";
   const auto result1 = PreprocessKernelSource(source1);
-  return result1 == expected1;
+  if (result1 == expected1) { return true; }
+  else {
+    fprintf(stdout, "* ERROR: Pre-processor TestDefines error, got:");
+    fprintf(stdout, result1.c_str());
+    return false;
+  }
 }
 // =================================================================================================
 
@@ -106,7 +127,11 @@ __kernel void ExampleKernel() {
 }
 )";
   const auto result1 = PreprocessKernelSource(source1);
-  return result1 == expected1;
+  if (result1 == expected1) { return true; }
+  else {
+    fprintf(stdout, "* ERROR: Pre-processor TestArrayToRegisterPromotion error");
+    return false;
+  }
 }
 
 // =================================================================================================
