@@ -166,6 +166,15 @@ bool EvaluateCondition(std::string condition,
         EvaluateCondition(right, defines, defines_string);
   }
 
+  // Process the !defined() construct
+  const auto not_defined_pos = condition.find("!defined(");
+  if (not_defined_pos != std::string::npos) {
+    const auto contents = condition.substr(not_defined_pos + 9);
+    const auto not_defined_split = split(contents, ')');
+    const auto not_defined_val = not_defined_split[0];
+    return (defines_string.find(not_defined_val) == defines_string.end());
+  }
+
   // Process the defined() construct
   const auto defined_pos = condition.find("defined(");
   if (defined_pos != std::string::npos) {
