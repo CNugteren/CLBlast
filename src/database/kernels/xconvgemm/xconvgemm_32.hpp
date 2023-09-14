@@ -92,6 +92,7 @@ const DatabaseEntry XconvgemmSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 8, 8, 16, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Gen9 HD Graphics NEO                     "}, Params{ 1, 16, 32, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 1, 16, 8, 8, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 1, 16, 8, 16, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
@@ -113,6 +114,10 @@ const DatabaseEntry XconvgemmSingle = {
         { "SM3.5", {
           { Name{"GeForce 920A                                      "}, Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "SM6.1", {
+          { Name{"Tesla P4                                          "}, Params{ 1, 16, 16, 32, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 32, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.0", {
           { Name{"Quadro GV100                                      "}, Params{ 1, 8, 32, 16, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },

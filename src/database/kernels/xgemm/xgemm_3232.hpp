@@ -21,9 +21,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "Fiji", {
+          { Name{"AMD Radeon 500 Series                             "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"AMD Radeon R9 Fury X                              "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
           { Name{"AMD Radeon R9 M370X Compute Engine                "}, Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 64, 0, 0, 1, 1, 2, 8 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 64, 1, 1, 0, 0, 2, 1 } },
         } },
         { "Hawaii", {
           { Name{"AMD FirePro W8100                                 "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 1 } },
@@ -155,6 +156,7 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 4, 1, 1, 8, 8, 32, 2, 2, 8, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 0, 1, 16, 8, 8, 16, 64, 32, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 0, 1, 16, 8, 8, 8, 32, 16, 16, 64, 1, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 16, 2, 16, 8, 32, 8, 8, 32, 0, 0, 1, 0, 1, 1 } },
@@ -167,7 +169,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 1, 2, 1, 1, 4, 4, 16, 8, 8, 64, 0, 0, 0, 0, 2, 2 } },
           { Name{"Iris                                              "}, Params{ 0, 1, 32, 8, 32, 16, 64, 8, 16, 64, 1, 0, 1, 0, 1, 1 } },
           { Name{"Iris Pro                                          "}, Params{ 0, 1, 16, 2, 8, 8, 32, 32, 8, 32, 1, 1, 1, 1, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
@@ -198,9 +200,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"GeForce 920A                                      "}, Params{ 0, 1, 32, 2, 8, 32, 128, 32, 8, 64, 0, 1, 0, 0, 4, 1 } },
           { Name{"GeForce GTX TITAN                                 "}, Params{ 0, 1, 16, 8, 16, 16, 64, 32, 16, 64, 1, 1, 1, 0, 1, 1 } },
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 0, 1, 16, 2, 8, 16, 64, 8, 8, 32, 0, 1, 1, 0, 1, 2 } },
+          { Name{"NVIDIA GeForce GT 730                             "}, Params{ 0, 1, 16, 2, 16, 16, 64, 32, 8, 64, 0, 1, 1, 1, 4, 1 } },
           { Name{"Tesla K20m                                        "}, Params{ 0, 1, 32, 2, 8, 16, 64, 8, 16, 64, 1, 0, 0, 0, 1, 4 } },
           { Name{"Tesla K40m                                        "}, Params{ 0, 1, 16, 2, 32, 32, 32, 32, 8, 64, 0, 1, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM5.0", {
           { Name{"GeForce 920MX                                     "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 32, 128, 0, 0, 1, 0, 2, 2 } },
@@ -225,6 +228,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 16, 2, 8, 16, 32, 16, 8, 64, 1, 1, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce MX150                              "}, Params{ 0, 1, 16, 2, 32, 16, 64, 8, 8, 64, 1, 1, 1, 0, 1, 1 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
+          { Name{"Tesla P4                                          "}, Params{ 0, 1, 32, 2, 32, 32, 64, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 64, 1, 1, 0, 0, 1, 1 } },
         } },
         { "SM7.0", {
@@ -263,6 +267,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 1, 2 } },
         } },
         { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4060 Ti                        "}, Params{ 0, 1, 16, 2, 8, 8, 128, 16, 16, 64, 1, 0, 1, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4070 Laptop GPU                "}, Params{ 1, 16, 1, 1, 16, 16, 64, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
           { Name{"NVIDIA GeForce RTX 4070 Ti                        "}, Params{ 0, 1, 16, 2, 16, 8, 64, 8, 16, 64, 1, 1, 1, 1, 1, 4 } },
           { Name{"NVIDIA GeForce RTX 4080                           "}, Params{ 1, 16, 1, 1, 16, 16, 64, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
