@@ -161,6 +161,7 @@ const DatabaseEntry XgemmComplexDouble = {
         { "SM3.5", {
           { Name{"GeForce 920A                                      "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 32, 0, 0, 0, 0, 4, 1 } },
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 0, 1, 16, 2, 16, 16, 32, 16, 8, 32, 0, 1, 1, 1, 1, 1 } },
+          { Name{"NVIDIA GeForce GT 730                             "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 2, 4 } },
           { Name{"Tesla K20m                                        "}, Params{ 0, 1, 32, 2, 32, 8, 32, 16, 16, 64, 0, 0, 1, 0, 1, 1 } },
           { Name{"Tesla K40m                                        "}, Params{ 0, 1, 16, 8, 8, 8, 32, 32, 16, 32, 0, 0, 1, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
@@ -188,6 +189,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce MX150                              "}, Params{ 1, 2, 1, 1, 8, 8, 32, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { Name{"Tesla P4                                          "}, Params{ 1, 4, 1, 1, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 32, 32, 64, 0, 0, 0, 0, 1, 2 } },
         } },
         { "SM7.0", {
@@ -226,6 +228,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 1, 1, 1, 1, 8, 8, 32, 32, 32, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4060 Ti                        "}, Params{ 1, 2, 1, 1, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4070 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4070 Ti                        "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4080                           "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 0, 2, 2 } },

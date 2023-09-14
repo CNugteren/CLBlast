@@ -141,6 +141,7 @@ const DatabaseEntry XgemmDirectSingle = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 8, 16, 16, 16, 16, 1, 0, 2, 2, 64, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics 6000 BroadWell U-Processor GT"}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 8, 16, 32, 16, 8, 1, 0, 1, 1, 64, 0, 0, 0, 0, 0, 0 } },
@@ -176,6 +177,7 @@ const DatabaseEntry XgemmDirectSingle = {
         { "SM3.5", {
           { Name{"GeForce 920A                                      "}, Params{ 16, 32, 8, 32, 16, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"GeForce GTX TITAN Black                           "}, Params{ 2, 8, 8, 16, 16, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce GT 730                             "}, Params{ 16, 8, 16, 32, 8, 1, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 16, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM5.0", {
@@ -197,6 +199,7 @@ const DatabaseEntry XgemmDirectSingle = {
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 16, 8, 8, 16, 16, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce MX150                              "}, Params{ 8, 32, 8, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 8, 32, 8, 8, 16, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Tesla P4                                          "}, Params{ 8, 16, 8, 16, 8, 1, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM7.0", {
@@ -235,6 +238,7 @@ const DatabaseEntry XgemmDirectSingle = {
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4060 Ti                        "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 4070 Laptop GPU                "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 4070 Ti                        "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 4080                           "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
@@ -269,7 +273,7 @@ const DatabaseEntry XgemmDirectSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 2, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 1, 2, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

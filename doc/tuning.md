@@ -20,6 +20,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 680
     - GeForce GTX 760 Ti
   - SM 3.5:
+    - GeForce GT 730
     - GeForce 920A
     - GeForce GTX TITAN
     - GeForce GTX TITAN Black
@@ -42,6 +43,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 1080
     - GeForce GTX 1080 Ti
     - TITAN X (Pascal)
+    - Tesla P4
   - SM 7.0:
     - Quadro GV100
     - Tesla V100
@@ -69,6 +71,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 3080 Ti
     - GeForce GTX 3090
   - SM 8.9:
+    - GeForce GTX 4060 Ti
     - GeForce GTX 4070 Laptop
     - GeForce GTX 4070 Ti
     - GeForce GTX 4080
@@ -90,6 +93,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Tonga:
     - Radeon R9 380
   - Fiji:
+    - Radeon 500
     - Radeon R9 Fury X
     - Radeon R9 M370X
   - Ellesmere:
@@ -141,6 +145,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris Pro
   - Iris Xe Graphics
   - RaptorLake-S Mobile Graphics
+  - Arc A770
 * Intel CPUs:
   - Core i5-4570
   - Core i5-4590S
