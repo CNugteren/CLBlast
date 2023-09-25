@@ -370,7 +370,7 @@ endif()
 install(EXPORT CLBlast DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CLBlast FILE CLBlastConfig.cmake)
 
 # Install pkg-config file on Linux
-if(UNIX)
+if(UNIX OR MINGW)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/clblast.pc.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/clblast.pc" @ONLY IMMEDIATE)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/clblast.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
