@@ -46,7 +46,7 @@ jobs:
     - name: Package the code
       run: |
         cmake --build build --target install
-        tar -cvf ${{env.RELEASE_NAME}}.tar.gz ${{env.RELEASE_NAME}}
+        tar -cvzf ${{env.RELEASE_NAME}}.tar.gz ${{env.RELEASE_NAME}}
 
     - name: Upload the release
       uses: actions/upload-artifact@v3
