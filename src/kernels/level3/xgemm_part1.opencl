@@ -138,6 +138,10 @@ R"(
   #endif
 #endif
 
+#if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_GCN == 1
+  #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 4 on AMD GCN GPUs
+#endif
+
 #if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
   #undef USE_SUBGROUP_SHUFFLING
   #define USE_SUBGROUP_SHUFFLING 0     // Disables subgroups in case the assumptions don't hold
