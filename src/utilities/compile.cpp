@@ -78,7 +78,7 @@ std::shared_ptr<Program> CompileFromSource(
     }
   }
 
-  if (device.IsGPU() && device.IsAMD()) {
+  if (device.IsGPU() && device.IsAMD() && device.Name().find("gfx1") != std::string::npos) {
     header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
     header_string += "#define SUBGROUP_SHUFFLING_GCN 1\n";
   }
