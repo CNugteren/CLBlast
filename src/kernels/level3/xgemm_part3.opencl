@@ -32,7 +32,8 @@ INLINE_FUNC int clblast_get_sub_group_local_id() {
   return ret;
   #elif SUBGROUP_SHUFFLING_GCN == 1
     if (get_work_dim() == 3) {
-      (get_local_size(0) * get_local_size(1) * get_local_id(2) + get_local_size(0) * get_local_id(1) + get_local_id(0)) % SUBGROUP_SIZE;
+      return (get_local_size(0) * get_local_size(1) * get_local_id(2) +
+        get_local_size(0) * get_local_id(1) + get_local_id(0)) % SUBGROUP_SIZE;
     } else if (get_work_dim() == 2) {
       return (get_local_size(0) * get_local_id(1) + get_local_id(0)) % SUBGROUP_SIZE;
     } else {
@@ -61,12 +62,12 @@ INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
   #define NAVI_SHFL(s0, l)  \
     { \
 		__asm ( \
-		  "ds_bpermute_b32  %[os0], %[ol0], %[os0]\n" \
-          "s_waitcnt lgkmcnt(0)\n" \
-		  : [os0] "=&v" (s0) \
+		  "ds_bpermute_b32  %[dos0], %[ol0], %[os0]\n" \
+       "s_waitcnt lgkmcnt(0)\n" \
+		  : [dos0] "=&v" (s0) \
 		  : [ol0] "v" (l), \
             [os0] "0" (s0)); \
-	}
+	 }
 
   realN ret = reg;
   uint lane_src = (src) << 2;
