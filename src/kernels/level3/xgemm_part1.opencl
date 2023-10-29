@@ -149,6 +149,12 @@ R"(
 		  : [ol0] "v" (l), \
             [os0] "0" (s0)); \
 	 }
+   #define NAVI_LID() \
+     if (get_work_dim() == 2) { \
+      return (get_local_size(0) * get_local_id(1) + get_local_id(0)) % SUBGROUP_SIZE; \
+    } else { \
+      return (get_local_id(0)) % SUBGROUP_SIZE; \
+    }
 #endif
 
 #if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
