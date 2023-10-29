@@ -140,6 +140,15 @@ R"(
 
 #if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_GCN == 1
   #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 4 on AMD GCN GPUs
+    #define NAVI_SHFL(s0, l)  \
+    { \
+		__asm ( \
+		  "ds_bpermute_b32  %[dos0], %[ol0], %[os0]\n" \
+       "s_waitcnt lgkmcnt(0)\n" \
+		  : [dos0] "=&v" (s0) \
+		  : [ol0] "v" (l), \
+            [os0] "0" (s0)); \
+	 }
 #endif
 
 #if NWI != SUBGROUP_SIZE || MDIMC < SUBGROUP_SIZE
