@@ -139,15 +139,15 @@ R"(
 #endif
 
 #if USE_SUBGROUP_SHUFFLING == 1 && SUBGROUP_SHUFFLING_GCN == 1
-  #define SUBGROUP_SIZE 32              // Assumes subgroup size is always 4 on AMD GCN GPUs
+  #define SUBGROUP_SIZE 32    // Assumes subgroup size is always 32 on AMD Navi GPUs
     #define NAVI_SHFL(s0, l)  \
     { \
 		__asm ( \
-		  "ds_bpermute_b32  %[dos0], %[ol0], %[os0]\n" \
+		  "ds_bpermute_b32  %[d], %[l], %[s]\n" \
        "s_waitcnt lgkmcnt(0)\n" \
-		  : [dos0] "=&v" (s0) \
-		  : [ol0] "v" (l), \
-            [os0] "0" (s0)); \
+		  : [d] "=&v" (s0) \
+		  : [l] "v" (l), \
+            [s] "0" (s0)); \
 	 }
    #define NAVI_LID() \
      if (get_work_dim() == 2) { \

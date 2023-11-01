@@ -78,7 +78,8 @@ std::shared_ptr<Program> CompileFromSource(
     }
   }
 
-  if (device.IsGPU() && device.IsAMD() && device.Name().find("gfx1") != std::string::npos) {
+  if (device.IsGPU() && device.IsAMD() && device.Name().find("gfx1") != std::string::npos &&
+      precision == Precision::kSingle) { // only for Navi cards (gfx1XXX)
     header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
     header_string += "#define SUBGROUP_SHUFFLING_GCN 1\n";
   }
