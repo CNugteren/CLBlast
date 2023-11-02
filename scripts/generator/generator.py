@@ -215,7 +215,7 @@ def main(argv):
         file_footer = original[-FOOTER_LINES[i]:]
 
         # Re-writes the body of the file
-        with open(library_root + FILES[i], "w") as f:
+        with open(library_root + FILES[i], "w", newline="\n") as f:
             body = ""
             levels = [1, 2, 3] if (i == 4 or i == 5 or i == 6) else [1, 2, 3, 4]
             for level in levels:
@@ -261,14 +261,14 @@ def main(argv):
 
                 # Correctness tests
                 filename = library_root + "/test/correctness/routines/" + routine_suffix
-                with open(filename, "w") as f:
+                with open(filename, "w", newline="\n") as f:
                     f.write(cpp.HEADER + "\n")
                     f.write(cpp.correctness_test(routine, level_string))
                     f.write(cpp.FOOTER)
 
                 # Performance tests
                 filename = library_root + "/test/performance/routines/" + routine_suffix
-                with open(filename, "w") as f:
+                with open(filename, "w", newline="\n") as f:
                     f.write(cpp.HEADER + "\n")
                     f.write(cpp.performance_test(routine, level_string))
                     f.write(cpp.FOOTER)
@@ -283,7 +283,7 @@ def main(argv):
     file_footer = original[-FOOTER_LINES_DOC:]
 
     # Outputs the API documentation
-    with open(filename, "w") as f:
+    with open(filename, "w", newline="\n") as f:
 
         # Outputs the header
         f.write("".join(file_header))
