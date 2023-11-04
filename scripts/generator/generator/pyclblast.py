@@ -82,8 +82,18 @@ def generate_pyx(routine):
         result += NL
 
         # Data types and checks
-        result += indent + "dtype = check_dtype([" + ", ".join(buffers) + "], "
+        int_buff = []
+        other_buff = []
+        for buf in buffers:
+            if buf in routine.index_buffers():
+                int_buff.append(buf)
+            else:
+                other_buff.append(buf)
+        result += indent + "dtype = check_dtype([" + ", ".join(other_buff) + "], "
         result += "[" + ", ".join(['"%s"' % d for d in np_dtypes]) + "])" + NL
+        if int_buff:
+            result += indent + "check_dtype([" + ", ".join(int_buff) + "], "
+            result += "[" + ", ".join(['"uint16", "uint32", "uint64"']) + "])" + NL
         for buf in buffers:
             if buf in routine.buffers_vector():
                 result += indent + "check_vector("
