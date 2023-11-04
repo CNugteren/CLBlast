@@ -43,7 +43,7 @@ def scalar_cython_conversion(scalar, flavour):
     if scalar_type in ["cl_double2", "double2"]:
         return "<cl_double2>cl_double2(x=" + scalar + ".real,y=" + scalar + ".imag)"
     if scalar_type in ["cl_half", "half"]:
-        return "<cl_half>" + scalar
+        return "<cl_half>val_to_half(" + scalar + ")"
     raise RuntimeError("Could not convert flavour '%s:%s'" % (flavour.precision_name, scalar_type))
 
 

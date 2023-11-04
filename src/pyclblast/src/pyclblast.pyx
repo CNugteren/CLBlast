@@ -19,6 +19,7 @@ from pyopencl.array import Array
 from libcpp cimport bool
 from cpython.mem cimport PyMem_Malloc, PyMem_Free
 from libc.string cimport strdup
+from libc.stdint cimport uint16_t
 
 ####################################################################################################
 # CLBlast and OpenCL data-types
@@ -293,6 +294,19 @@ def check_vector(a, name):
 ####################################################################################################
 # Half-precision utility functions
 ####################################################################################################
+
+cdef extern from "numpy/halffloat.h":
+    ctypedef uint16_t npy_half
+
+    # conversion functions
+    npy_half npy_float_to_half(float f)
+    npy_half npy_double_to_half(double d)
+
+cdef npy_half val_to_half(object val):
+    if isinstance(val, (np.float32, np.float16)):
+        return npy_float_to_half(val)
+    else:
+        return npy_double_to_half(val)
 
 def float32_to_float16(float32):
     # Taken from https://gamedev.stackexchange.com/a/28756
