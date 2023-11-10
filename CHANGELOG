@@ -2,6 +2,10 @@ Development version (next version)
 - Fix a bug in the pre-processor that would cause issues on Arm GPUs
 - Fix DLL install directory in mingw
 - Added tuned parameters for various devices (see doc/tuning.md)
+- Modifications to the python bindings (pyclblast)
+  * Convert float scalar values to cl_half for fp16 routines
+  * Amax/amin, max/min routines accept unsigned integer buffers for index
+  * Generator script always use LF endings, independent of the platform
 
 Version 1.6.1
 - Fix pointer error in pyclblast on Arm
