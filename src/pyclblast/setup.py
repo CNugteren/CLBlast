@@ -10,6 +10,11 @@ from setuptools import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import platform
+import numpy
+import os
+
+np_incdir = numpy.get_include()
+np_libdir = os.path.join(np_incdir, '..', 'lib', '')
 
 runtime_library_dirs = list()
 if platform.system() == "Linux":
@@ -23,15 +28,17 @@ ext_modules.append(
     Extension(
         "pyclblast",
         ["src/pyclblast.pyx"],
-        libraries=["clblast"],
+        libraries=["clblast", "npymath"],
         runtime_library_dirs=runtime_library_dirs,
+        library_dirs=[np_libdir],
+        include_dirs=[np_incdir],
         language="c++"
     )
 )
 
 setup(
     name="pyclblast",
-    version="1.3.2",
+    version="1.4.0",
     author="Cedric Nugteren",
     author_email="web@cedricnugteren.nl",
     url="https://github.com/CNugteren/CLBlast/blob/master/src/pyclblast",
