@@ -5,7 +5,7 @@ Development version (next version)
 - Modifications to the python bindings (pyclblast)
   * Convert float scalar values to cl_half for fp16 routines
   * Amax/amin, max/min routines accept unsigned integer buffers for index
-  * Generator script always use LF endings, independent of the platform
+- Generator script now always use LF endings, independent of the platform
 
 Version 1.6.1
 - Fix pointer error in pyclblast on Arm
