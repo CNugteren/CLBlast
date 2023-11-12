@@ -38,6 +38,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Tesla P100 16GB
   - SM 6.1:
     - GeForce MX 150
+    - GeForce GTX 1060 6GB
     - GeForce GTX 1070
     - GeForce GTX 1070 Ti
     - GeForce GTX 1080
@@ -71,6 +72,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 3080 Ti
     - GeForce GTX 3090
   - SM 8.9:
+    - GeForce RTX 4060
     - GeForce GTX 4060 Ti
     - GeForce GTX 4070 Laptop
     - GeForce GTX 4070 Ti
@@ -108,6 +110,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - gfx906:
     - Radeon VII
   - gfx90c:
+    - Ryzen 5600G APU
     - Ryzen 5700G APU
   - gfx1010:
     - Radeon RX 5700
@@ -125,7 +128,9 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Radeon 680M
     - Ryzen 4600G APU
   - gfx1100:
-    - Radeon RX 7900 XTX 
+    - Radeon RX 7900 XTX
+  - gfx1101:
+    - Radeon RX 7800 XT
   - gfx1102:
     - Radeon RX 7600
   - Other:

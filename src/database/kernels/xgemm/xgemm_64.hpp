@@ -82,6 +82,10 @@ const DatabaseEntry XgemmDouble = {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 0, 1, 32, 2, 16, 8, 32, 8, 8, 16, 0, 1, 0, 1, 1, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 32, 8, 8, 16, 0, 1, 0, 1, 1, 2 } },
         } },
+        { "gfx1101", {
+          { Name{"AMD Radeon RX 7800 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 16, 1, 1, 0, 0, 2, 2 } },
+        } },
         { "gfx1102", {
           { Name{"AMD Radeon RX 7600                                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 2 } },
@@ -189,10 +193,11 @@ const DatabaseEntry XgemmDouble = {
           { Name{"GeForce GTX 1070 Ti                               "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 32, 0, 0, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 1080                                  "}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 4 } },
           { Name{"GeForce GTX 1080 Ti                               "}, Params{ 0, 1, 16, 2, 16, 16, 16, 16, 16, 64, 0, 0, 1, 0, 1, 4 } },
+          { Name{"NVIDIA GeForce GTX 1060 6GB                       "}, Params{ 1, 16, 1, 1, 8, 8, 16, 4, 4, 16, 0, 0, 0, 0, 2, 4 } },
           { Name{"NVIDIA GeForce MX150                              "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"TITAN X (Pascal)                                  "}, Params{ 0, 1, 32, 2, 32, 32, 32, 16, 16, 32, 0, 0, 0, 0, 1, 2 } },
           { Name{"Tesla P4                                          "}, Params{ 1, 2, 1, 1, 16, 16, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 64, 0, 0, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 32, 32, 64, 0, 0, 0, 0, 2, 2 } },
         } },
         { "SM7.0", {
           { Name{"Quadro GV100                                      "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 2, 4 } },
@@ -230,12 +235,13 @@ const DatabaseEntry XgemmDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
         } },
         { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4060                           "}, Params{ 1, 8, 1, 1, 8, 8, 16, 32, 32, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4060 Ti                        "}, Params{ 1, 16, 1, 1, 16, 16, 32, 8, 8, 8, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4070 Laptop GPU                "}, Params{ 1, 16, 1, 1, 16, 16, 32, 8, 8, 8, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 4070 Ti                        "}, Params{ 1, 16, 1, 1, 8, 8, 16, 4, 4, 16, 0, 0, 0, 0, 2, 4 } },
           { Name{"NVIDIA GeForce RTX 4080                           "}, Params{ 1, 16, 1, 1, 8, 8, 16, 4, 4, 16, 0, 0, 0, 0, 2, 4 } },
           { Name{"NVIDIA GeForce RTX 4090                           "}, Params{ 1, 4, 1, 1, 32, 32, 128, 16, 16, 64, 0, 0, 0, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 1, 1, 1, 1, 16, 16, 128, 16, 16, 16, 0, 0, 0, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 1, 1, 32, 32, 32, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 2, 2 } },
