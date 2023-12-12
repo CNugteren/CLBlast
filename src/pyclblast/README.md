@@ -53,6 +53,6 @@ How to release a new version on PyPi
 
 Following [the guide](https://packaging.python.org/tutorials/packaging-projects/), in essence doing (after changing the version number in `setup.py`):
 
-    python3 setup.py sdist bdist_wheel
+    python3 -m build
     python3 -m twine upload --repository pypi dist/pyclblast-1.4.0.tar.gz
     # use '__token__' as username and supply the token from your PyPi account
