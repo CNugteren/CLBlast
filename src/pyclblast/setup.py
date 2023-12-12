@@ -5,40 +5,84 @@
 # Author(s):
 #   Cedric Nugteren <www.cedricnugteren.nl>
 
-from setuptools import setup
-
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
 import platform
-import numpy
 import os
+import subprocess
+import sys
 
-np_incdir = numpy.get_include()
-np_libdir = os.path.join(np_incdir, '..', 'lib', '')
 
-runtime_library_dirs = list()
-if platform.system() == "Linux":
-    runtime_library_dirs.append("/usr/local/lib")
-elif platform.system() == "Windows":
-    runtime_library_dirs.append("C:/Program Files/clblast/lib")
-    runtime_library_dirs.append("C:/Program Files (x86)/clblast/lib")
+# Command line flags forwarded to CMake
+cmake_cmd_args = []
+for arg in sys.argv:
+    if arg.startswith('-D'):
+        cmake_cmd_args.append(arg)
 
-ext_modules = list()
-ext_modules.append(
-    Extension(
-        "pyclblast",
-        ["src/pyclblast.pyx"],
-        libraries=["clblast", "npymath"],
-        runtime_library_dirs=runtime_library_dirs,
-        library_dirs=[np_libdir],
-        include_dirs=[np_incdir],
-        language="c++"
-    )
-)
+for arg in cmake_cmd_args:
+    sys.argv.remove(arg)
+
+
+# For setup.py with Cmake extensions, see
+# https://martinopilia.com/posts/2018/09/15/building-python-extension.html
+class CMakeExtension(Extension):
+    def __init__(self, name, cmake_lists_dir='.', **kwargs):
+        Extension.__init__(self, name, sources=[], **kwargs)
+        self.cmake_lists_dir = os.path.abspath(cmake_lists_dir)
+
+
+class CMakeBuildExt(build_ext):
+    def build_extensions(self):
+        # Ensure that CMake is present and working
+        try:
+            subprocess.check_output(['cmake', '--version'])
+        except OSError:
+            raise RuntimeError('Cannot find CMake executable')
+
+        for ext in self.extensions:
+            extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+
+            cmake_args = [
+                '-DCMAKE_BUILD_TYPE=Release',
+                '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={}'.format(extdir),
+                '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE={}'.format(self.build_temp)
+            ]
+
+            # We can handle some platform-specific settings at our discretion
+            if platform.system() == 'Windows':
+                plat = ('x64' if platform.architecture()[0] == '64bit' else 'Win32')
+                cmake_args += [
+                    # These options are likely to be needed under Windows
+                    '-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE',
+                    '-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE={}'.format(extdir),
+                ]
+                # Assuming that Visual Studio and MinGW are supported compilers
+                if self.compiler.compiler_type == 'msvc':
+                    cmake_args += [
+                        '-DCMAKE_GENERATOR_PLATFORM=%s' % plat,
+                    ]
+                else:
+                    cmake_args += [
+                        '-G', 'MinGW Makefiles',
+                    ]
+
+            cmake_args += cmake_cmd_args
+
+            if not os.path.exists(self.build_temp):
+                os.makedirs(self.build_temp)
+
+            # Config
+            subprocess.check_call(['cmake', ext.cmake_lists_dir] + cmake_args,
+                                  cwd=self.build_temp)
+
+            # Build
+            subprocess.check_call(['cmake', '--build', '.', '--config', 'Release'],
+                                  cwd=self.build_temp)
+
 
 setup(
     name="pyclblast",
     scripts=[],
-    ext_modules=ext_modules,
-    cmdclass={"build_ext": build_ext}
+    ext_modules=[CMakeExtension("pyclblast")],
+    cmdclass={"build_ext": CMakeBuildExt}
 )
