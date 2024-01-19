@@ -1,24 +1,28 @@
 cmake_minimum_required(VERSION 3.20)
-project(pyclblast)
+project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
 # Find python and numpy
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
+find_package(
+  Python3
+  REQUIRED
+  COMPONENTS Interpreter Development.Module NumPy
+)
 
 # Run the cython compiler
 cmake_path(APPEND CMAKE_CURRENT_SOURCE_DIR "./src"
   OUTPUT_VARIABLE Cython_SOURCE_DIR)
-execute_process(COMMAND ${Python3_EXECUTABLE}
-  "-m" "cython" "-3" "-o" "pyclblast.cpp" "pyclblast.pyx"
-  WORKING_DIRECTORY "${Cython_SOURCE_DIR}"
-  RESULT_VARIABLE Cython_RUN)
-if (Cython_RUN)
-  message("Cython run returned ${Cython_RUN}")
-  message(FATAL_ERROR "Cython compiler failed")
-endif()
+find_program(CYTHON "cython")
+add_custom_command(
+  OUTPUT "${Cython_SOURCE_DIR}/pyclblast.cpp"
+  DEPENDS "${Cython_SOURCE_DIR}/pyclblast.pyx"
+  VERBATIM
+  COMMAND "${CYTHON}" -3 "${Cython_SOURCE_DIR}/pyclblast.pyx"
+          --output-file "${Cython_SOURCE_DIR}/pyclblast.cpp")
 
 
 # Add module target
-Python3_add_library(pyclblast MODULE WITH_SOABI ./src/pyclblast.cpp)
+Python3_add_library(pyclblast MODULE WITH_SOABI
+                    "${Cython_SOURCE_DIR}/pyclblast.cpp")
 
 # Numpy libraries - NOTE: clean NPY_LIBRARIES cache (may fail for venv)
 cmake_path(GET Python3_NumPy_INCLUDE_DIRS PARENT_PATH Python3_NumPy_CORE_DIR)
@@ -41,6 +45,8 @@ set(CLBLAST_HINTS
 find_package(CLBlast CONFIG REQUIRED HINTS ${CLBLAST_HINTS})
 target_link_libraries(pyclblast PRIVATE clblast)
 
+install(TARGETS pyclblast DESTINATION .)
+
 # In windows pyclblast cannot find the dll, even on path.
 # Probably related to change in 3.8, that loads dll only for trusted location
 # see https://stackoverflow.com/questions/41365446/how-to-resolve-importerror-dll-load-failed-on-python
@@ -57,8 +63,5 @@ if (WIN32)
     REQUIRED)
 
   # copy dll to build
-  add_custom_command(TARGET pyclblast POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    ${CLBlast_SHARED_LIBPATH}
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  install(FILES ${CLBlast_SHARED_LIBPATH} DESTINATION .)
 endif()

@@ -1,12 +1,6 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel",
-    "cython",
-    "numpy",
-    "cmake>=3.20"
-]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core", "cython", "numpy"]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "pyclblast"
