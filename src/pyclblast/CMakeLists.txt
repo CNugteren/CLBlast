@@ -34,8 +34,11 @@ target_link_libraries(pyclblast PRIVATE ${NPY_LIBRARIES})
 target_include_directories(pyclblast PRIVATE ${Python3_NumPy_INCLUDE_DIRS})
 
 # CLBlast library
-# TODO: Add hints for CLBlast package discovery
-find_package(CLBlast CONFIG REQUIRED)
+set(CLBLAST_HINTS
+  ${CLBLAST_ROOT}
+  $ENV{CLBLAST_ROOT}
+)
+find_package(CLBlast CONFIG REQUIRED HINTS ${CLBLAST_HINTS})
 target_link_libraries(pyclblast PRIVATE clblast)
 
 # In windows pyclblast cannot find the dll, even on path.
