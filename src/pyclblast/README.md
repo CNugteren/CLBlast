@@ -15,29 +15,39 @@ Non-Python requirements:
 * OpenCL
 * [CLBlast](https://github.com/CNugteren/CLBlast)
 
-Python requirements:
-
-* Cython
-* [PyOpenCL](https://github.com/pyopencl/pyopencl/)
-
 
 Getting started
 -------------
 
-After installation OpenCL and CLBlast, simply use pip to install PyCLBlast, e.g.:
+After installing OpenCL and CLBlast, simply use pip to install PyCLBlast, e.g.:
 
     pip install --user pyclblast
 
-To start using the library, browse the [CLBlast](https://github.com/CNugteren/CLBlast) documentation or check out the PyCLBlast samples provides in the `samples` subfolder.
+To start using the library, browse the [CLBlast](https://github.com/CNugteren/CLBlast) documentation or check out the PyCLBlast samples provided in the `samples` subfolder.
 
-For developers, first install CLBlast, followed by the Python requirements (e.g. in a Python3 virtualenv):
+For developers, install CLBlast and [cython](https://cython.org/) (e.g. in a Python3 virtualenv):
 
-    pip install Cython numpy pybind11
-    pip install pyopencl
+    pip install Cython
 
-And then compile the library from this location using the `setup.py` file:
+And then compile the bindings from this location using pip:
 
-    python setup.py install
+    pip install .
+
+
+Detecting CLBlast
+-------------
+
+The CLBlast library should be present and detectable to your system, to successfully install the PyCLBlast bindings. In some systems, this is done automatically. But if the CLBlast library cannot be detected, the PyCLBlast installation will fail. To ensure detection, one can apply either of the following:
+
+* Add the CLBLast root directory to the environment path.
+* Create the environment variable `CLBLAST_ROOT` that holds the path to the CLBLast root directory.
+* Define the `cmake` variables `CMAKE_PREFIX_PATH` or the `CLBLAST_ROOT` variable that point to the CLBlast root directory, as: 
+
+        pip install . -C skbuild.cmake.args="-DCMAKE_PREFIX_PATH=/root/path/to/clblast"
+
+* Create the environment variable `CLBlast_DIR` that holds the path to the directory where either of the `CLBlastConfig.cmake` or `clblast-config.cmake` files reside.
+
+Note that the aforementioned environment variables should be set only during the installation of PyCLBlast and can be unset during normal use.
 
 
 Testing PyCLBlast
@@ -53,6 +63,6 @@ How to release a new version on PyPi
 
 Following [the guide](https://packaging.python.org/tutorials/packaging-projects/), in essence doing (after changing the version number in `setup.py`):
 
-    python3 setup.py sdist bdist_wheel
+    python3 -m build
     python3 -m twine upload --repository pypi dist/pyclblast-1.4.0.tar.gz
     # use '__token__' as username and supply the token from your PyPi account

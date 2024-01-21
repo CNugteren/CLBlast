@@ -1,2 +1,3 @@
-include README.md setup.py src/*.pyx
+include README.md src/*.pyx
 include samples/*.py
+include CMakeLists.txt
