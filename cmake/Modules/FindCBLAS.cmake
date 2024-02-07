@@ -39,7 +39,7 @@ find_path(CBLAS_INCLUDE_DIRS
   HINTS ${CBLAS_HINTS}
   PATH_SUFFIXES
     include inc include/x86_64 include/x64
-    openblas/include include/blis blis/include blis/include/blis
+    openblas openblas/include include/blis blis/include blis/include/blis
     Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Versions/Current/Headers
   PATHS ${CBLAS_PATHS}
   DOC "Netlib BLAS include header cblas.h"
