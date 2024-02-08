@@ -61,6 +61,10 @@ const DatabaseEntry XgemvFastHalf = {
           { Name{"AMD Radeon RX 7600                                "}, Params{ 1, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1103", {
+          { Name{"AMD Radeon 780M Graphics                          "}, Params{ 4, 64, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 64, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 4, 32, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 2, 256, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -76,6 +80,14 @@ const DatabaseEntry XgemvFastHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-G57 MC2 r0p1                                 "}, Params{ 4, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Imagination Technologies GPUs
       kDeviceTypeGPU, "Imagination Technologies", {
         { "default", {
@@ -87,6 +99,7 @@ const DatabaseEntry XgemvFastHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 1, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 1, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 4, 64, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

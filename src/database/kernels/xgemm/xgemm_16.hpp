@@ -61,6 +61,10 @@ const DatabaseEntry XgemmHalf = {
           { Name{"AMD Radeon RX 7600                                "}, Params{ 0, 1, 32, 2, 16, 8, 64, 16, 8, 128, 1, 1, 0, 1, 4, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 64, 16, 8, 128, 1, 1, 0, 1, 4, 8 } },
         } },
+        { "gfx1103", {
+          { Name{"AMD Radeon 780M Graphics                          "}, Params{ 0, 1, 32, 2, 8, 8, 128, 8, 16, 128, 1, 1, 1, 0, 8, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 128, 8, 16, 128, 1, 1, 1, 0, 8, 1 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 0, 1, 32, 2, 8, 8, 128, 16, 32, 128, 1, 1, 1, 1, 4, 2 } },
@@ -96,6 +100,7 @@ const DatabaseEntry XgemmHalf = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 4, 1, 1, 8, 8, 32, 2, 2, 8, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 0, 1, 16, 2, 8, 8, 32, 16, 16, 128, 0, 1, 1, 0, 4, 8 } },
@@ -103,7 +108,7 @@ const DatabaseEntry XgemmHalf = {
           { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 0, 1, 16, 2, 16, 16, 64, 16, 8, 128, 1, 1, 0, 1, 1, 8 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 0, 1, 32, 2, 8, 16, 64, 8, 8, 128, 1, 1, 0, 1, 1, 8 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 2, 2 } },
         } },
       }
     },

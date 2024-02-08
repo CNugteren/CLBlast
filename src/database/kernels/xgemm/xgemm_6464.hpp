@@ -89,6 +89,10 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"AMD Radeon RX 7600                                "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 1, 4, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 8, 32, 1, 1, 0, 1, 4, 1 } },
         } },
+        { "gfx1103", {
+          { Name{"AMD Radeon 780M Graphics                          "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 1, 4 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
@@ -174,7 +178,8 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"GeForce 920MX                                     "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 32, 0, 0, 0, 0, 1, 2 } },
           { Name{"GeForce GTX 750                                   "}, Params{ 0, 1, 32, 2, 8, 32, 32, 8, 8, 64, 0, 0, 1, 0, 1, 4 } },
           { Name{"GeForce GTX 750 Ti                                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
+          { Name{"Quadro M2000M                                     "}, Params{ 1, 1, 1, 1, 8, 8, 32, 32, 32, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM5.2", {
           { Name{"GeForce GTX 970                                   "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 32, 0, 0, 0, 0, 1, 1 } },
@@ -230,6 +235,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 3080 Ti                        "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
+          { Name{"NVIDIA RTX A6000                                  "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 1, 1, 1, 1, 8, 8, 32, 32, 32, 32, 0, 0, 0, 0, 1, 1 } },
         } },
         { "SM8.9", {
@@ -242,7 +248,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 2, 1 } },
         } },
       }
     },

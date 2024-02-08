@@ -30,6 +30,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 920MX
     - GeForce GTX 750
     - GeForce GTX 750 Ti
+    - Quadro M2000M
   - SM 5.2:
     - GeForce GTX 970
     - GeForce GTX 980
@@ -71,6 +72,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 3080 Laptop
     - GeForce GTX 3080 Ti
     - GeForce GTX 3090
+    - RTX A6000
   - SM 8.9:
     - GeForce RTX 4060
     - GeForce GTX 4060 Ti
@@ -133,6 +135,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Radeon RX 7800 XT
   - gfx1102:
     - Radeon RX 7600
+  - gfx1103:
+    - Radeon 780M
   - Other:
     - Radeon Pro 450
     - Radeon Pro 580
@@ -150,6 +154,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Iris Pro
   - Iris Xe Graphics
   - RaptorLake-S Mobile Graphics
+  - Arc A750
   - Arc A770
 * Intel CPUs:
   - Core i5-4570
@@ -167,6 +172,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
 * Other devices:
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
+  - ARM Mali-G57 MC2 GPU
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
   - Qualcomm Adreno 640 GPU
