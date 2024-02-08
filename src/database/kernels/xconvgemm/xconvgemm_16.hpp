@@ -51,6 +51,14 @@ const DatabaseEntry XconvgemmHalf = {
         } },
       }
     },
+    { // ARM GPUs
+      kDeviceTypeGPU, "ARM", {
+        { "default", {
+          { Name{"Mali-G57 MC2 r0p1                                 "}, Params{ 1, 8, 8, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 8, 8, 8, 0, 0, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {

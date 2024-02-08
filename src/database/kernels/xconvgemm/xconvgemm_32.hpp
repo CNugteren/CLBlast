@@ -115,6 +115,10 @@ const DatabaseEntry XconvgemmSingle = {
           { Name{"GeForce 920A                                      "}, Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 8, 32, 32, 8, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "SM5.0", {
+          { Name{"Quadro M2000M                                     "}, Params{ 1, 16, 16, 32, 16, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 16, 16, 32, 16, 0, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "SM6.1", {
           { Name{"Tesla P4                                          "}, Params{ 1, 16, 16, 32, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 16, 16, 32, 16, 0, 0, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
