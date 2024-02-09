@@ -1,4 +1,7 @@
 Development version (next version)
+- (no changes yet since last release)
+
+Version 1.6.2
 - Fix a bug in the pre-processor that would cause issues on Arm GPUs
 - Fix DLL install directory in mingw
 - Modifications to the Python bindings (pyclblast)
