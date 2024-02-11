@@ -77,7 +77,7 @@ bool TestDefines() {
   if (result1 == expected1) { return true; }
   else {
     fprintf(stdout, "* ERROR: Pre-processor TestDefines error, got:");
-    fprintf(stdout, result1.c_str());
+    fprintf(stdout, "%s", result1.c_str());
     return false;
   }
 }
