@@ -18,7 +18,7 @@ REDISH = [c / 255.0 for c in [214, 117, 104]]  # #d67568
 PURPLISH = [c / 255.0 for c in [85, 0, 119]]  # #550077
 GREEN = [c / 255.0 for c in [144, 224, 98]] # #90e062
 COLORS = [BLUEISH, REDISH, PURPLISH, GREEN]
-MARKERS = ["o-", "x-", ".-"]
+MARKERS = ["o-", "x-", ".-",  "--"]
 
 
 def plot_graphs(results, file_name, num_rows, num_cols,
