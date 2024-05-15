@@ -151,6 +151,7 @@ const DatabaseEntry XgemmSingle = {
       kDeviceTypeCPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Core(TM) i7-2670QM CPU @ 2.20GHz         "}, Params{ 0, 1, 16, 2, 8, 8, 128, 16, 8, 128, 0, 1, 1, 1, 1, 8 } },
+          { Name{"12th Gen Intel(R) Core(TM) i7-12700H              "}, Params{ 1, 4, 1, 1, 32, 32, 128, 4, 4, 128, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz           "}, Params{ 0, 1, 32, 2, 32, 16, 64, 32, 8, 64, 0, 1, 1, 0, 1, 1 } },
           { Name{"Intel(R) Core(TM) i5-4590S CPU @ 3.00GHz          "}, Params{ 1, 16, 1, 1, 2, 2, 64, 2, 2, 128, 0, 0, 0, 0, 8, 2 } },
           { Name{"Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz          "}, Params{ 0, 1, 32, 8, 32, 32, 64, 32, 16, 64, 1, 1, 1, 0, 2, 2 } },
@@ -257,6 +258,7 @@ const DatabaseEntry XgemmSingle = {
           { Name{"GeForce GTX 1650                                  "}, Params{ 0, 1, 16, 2, 32, 8, 128, 32, 16, 128, 1, 1, 1, 0, 4, 1 } },
           { Name{"NVIDIA GeForce GTX 1650 SUPER                     "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
           { Name{"NVIDIA GeForce GTX 1650 Ti                        "}, Params{ 0, 1, 16, 2, 32, 8, 128, 32, 16, 128, 1, 1, 1, 0, 4, 1 } },
+          { Name{"NVIDIA GeForce MX450                              "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
           { Name{"NVIDIA GeForce RTX 2060                           "}, Params{ 1, 8, 1, 1, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 2070 SUPER                     "}, Params{ 0, 1, 16, 2, 8, 8, 32, 32, 16, 128, 0, 1, 1, 1, 2, 2 } },
           { Name{"NVIDIA GeForce RTX 2070 Super                     "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
@@ -285,13 +287,14 @@ const DatabaseEntry XgemmSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 2, 2 } },
         } },
         { "SM8.9", {
+          { Name{"NVIDIA GeForce RTX 4050 Laptop GPU                "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"NVIDIA GeForce RTX 4060                           "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"NVIDIA GeForce RTX 4060 Ti                        "}, Params{ 0, 1, 32, 2, 32, 16, 128, 8, 8, 64, 0, 0, 0, 0, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 4070 Laptop GPU                "}, Params{ 1, 8, 1, 1, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 4070 Ti                        "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 4080                           "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
           { Name{"NVIDIA GeForce RTX 4090                           "}, Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 64, 0, 1, 1, 1, 4, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 128, 1, 0, 1, 1, 4, 8 } },
+          { kDeviceNameDefault                                        , Params{ 1, 8, 1, 1, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 8 } },
         } },
         { "default", {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
