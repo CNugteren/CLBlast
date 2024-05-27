@@ -120,8 +120,10 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
                             const Buffer<T> &temp_buffer, const bool temp_buffer_provided) {
 
   // Calculates the ceiled versions of m, n, and k
-  const auto m_ceiled = Ceil(m, db_["MWG"]);
-  const auto n_ceiled = Ceil(n, db_["NWG"]);
+  const auto global_divider_one = c_want_rotated_(db_["GEMMK"]) ? db_["NWG"] : db_["MWG"];
+  const auto global_divider_two = c_want_rotated_(db_["GEMMK"]) ? db_["MWG"] : db_["NWG"];
+  const auto m_ceiled = Ceil(m, global_divider_one);
+  const auto n_ceiled = Ceil(n, global_divider_two);
   const auto k_ceiled = Ceil(k, db_["KWG"] * db_["KREG"]);
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
@@ -216,11 +218,9 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k,
   kernel.SetArgument(9, static_cast<int>(c_temp_offset / db_["VWM"]));
 
   // Computes the global and local thread sizes
-  const auto global_divider_one = c_want_rotated_(db_["GEMMK"]) ? db_["NWG"] : db_["MWG"];
-  const auto global_divider_two = c_want_rotated_(db_["GEMMK"]) ? db_["MWG"] : db_["NWG"];
   const auto global = std::vector<size_t>{
-    (c_one_i * db_["MDIMC"]) / global_divider_one,
-    (c_two_i * db_["NDIMC"]) / global_divider_two
+    (c_one_i * db_["MDIMC"]) / db_["MWG"],
+    (c_two_i * db_["NDIMC"]) / db_["NWG"]
   };
   const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
 
