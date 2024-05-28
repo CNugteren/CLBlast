@@ -166,6 +166,7 @@ const DatabaseEntry XgemmComplexSingle = {
       kDeviceTypeGPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 1, 4, 1, 1, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
+          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 4, 1, 1, 4, 4, 16, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 0, 1, 16, 8, 8, 16, 64, 32, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 0, 1, 16, 8, 8, 8, 32, 16, 16, 64, 1, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 16, 2, 16, 8, 32, 8, 8, 32, 0, 0, 1, 0, 1, 1 } },
