@@ -99,7 +99,7 @@ Known issues
 
 Known issues:
 
-* Correctness issues on Intel Arc A770 with version 1.6.2. Either downgrade to an older version or upgrade to a newer version.
+* Correctness issues on Intel Arc A770 and several other devices with version 1.6.2 or lower (depends on the device). Upgrade to version 1.6.3 or newer.
 
 * Routines returning an integer are currently not properly tested for half-precision FP16: IHAMAX/IHAMIN/IHMAX/IHMIN
 
