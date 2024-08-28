@@ -39,7 +39,7 @@ void Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
                       const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                       const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                       const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
+                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc, const bool do_test_matrix_a) {
 
   // Performs the matrix-vector multiplication
   MatVec(layout, a_transpose,
@@ -48,7 +48,7 @@ void Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
          x_buffer, x_offset, x_inc, beta,
          y_buffer, y_offset, y_inc,
          true, true,
-         0, false, 0, 0); // N/A for this routine
+         0, false, 0, 0,do_test_matrix_a); // N/A for this routine
 }
 
 // =================================================================================================
@@ -64,7 +64,7 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
                       const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
                       bool fast_kernel, bool fast_kernel_rot,
                       const size_t parameter, const bool packed,
-                      const size_t kl, const size_t ku) {
+                      const size_t kl, const size_t ku,const bool do_test_matrix_a) {
 
   // Makes sure all dimensions are larger than zero
   if (m == 0 || n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
@@ -92,7 +92,8 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 
   // Tests the matrix and the vectors for validity
   if (packed) { TestMatrixAP(n, a_buffer, a_offset); }
-  else { TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld); }
+  else if (do_test_matrix_a) { TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld); }
+
   TestVectorX(n_real, x_buffer, x_offset, x_inc);
   TestVectorY(m_real, y_buffer, y_offset, y_inc);
 

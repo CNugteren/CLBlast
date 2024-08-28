@@ -33,7 +33,7 @@ void Xtbmv<T>::DoTbmv(const Layout layout, const Triangle triangle,
                       const Transpose a_transpose, const Diagonal diagonal,
                       const size_t n, const size_t k,
                       const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
+                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,const bool do_test_matrix_a ) {
 
   // Creates a copy of X: a temporary scratch buffer
   const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
@@ -58,7 +58,7 @@ void Xtbmv<T>::DoTbmv(const Layout layout, const Triangle triangle,
            scratch_buffer, x_offset, x_inc, ConstantZero<T>(),
            x_buffer, x_offset, x_inc,
            fast_kernels, fast_kernels,
-           parameter, false, k, 0);
+           parameter, false, k, 0,do_test_matrix_a);
   } catch (BLASError &e) {
     // Returns the proper error code (renames vector Y to X)
     switch (e.status()) {

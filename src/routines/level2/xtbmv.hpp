@@ -39,7 +39,7 @@ class Xtbmv: public Xgemv<T> {
               const Transpose a_transpose, const Diagonal diagonal,
               const size_t n, const size_t k,
               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc, const bool do_test_matrix_a = true);
 };
 
 // =================================================================================================

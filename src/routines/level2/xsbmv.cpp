@@ -35,7 +35,7 @@ void Xsbmv<T>::DoSbmv(const Layout layout, const Triangle triangle,
                       const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                       const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                       const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
+                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,const bool do_test_matrix_a) {
 
   // The data is either in the upper or lower triangle
   size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
@@ -51,7 +51,7 @@ void Xsbmv<T>::DoSbmv(const Layout layout, const Triangle triangle,
          x_buffer, x_offset, x_inc, beta,
          y_buffer, y_offset, y_inc,
          fast_kernels, fast_kernels,
-         is_upper, false, k, 0);
+         is_upper, false, k, 0,do_test_matrix_a);
 }
 
 // =================================================================================================

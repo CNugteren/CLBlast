@@ -615,7 +615,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event,const bool do_test_matrix_a) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xgemv<T>(queue_cpp, event);
@@ -625,7 +625,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                    Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(x_buffer), x_offset, x_inc,
                    beta,
-                   Buffer<T>(y_buffer), y_offset, y_inc);
+                   Buffer<T>(y_buffer), y_offset, y_inc, do_test_matrix_a);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -636,7 +636,7 @@ template StatusCode PUBLIC_API Gemv<float>(const Layout, const Transpose,
                                            const cl_mem, const size_t, const size_t,
                                            const float,
                                            cl_mem, const size_t, const size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_command_queue*, cl_event*,const bool);
 template StatusCode PUBLIC_API Gemv<double>(const Layout, const Transpose,
                                             const size_t, const size_t,
                                             const double,
@@ -644,7 +644,7 @@ template StatusCode PUBLIC_API Gemv<double>(const Layout, const Transpose,
                                             const cl_mem, const size_t, const size_t,
                                             const double,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*,const bool);
 template StatusCode PUBLIC_API Gemv<float2>(const Layout, const Transpose,
                                             const size_t, const size_t,
                                             const float2,
@@ -652,7 +652,7 @@ template StatusCode PUBLIC_API Gemv<float2>(const Layout, const Transpose,
                                             const cl_mem, const size_t, const size_t,
                                             const float2,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*,const bool);
 template StatusCode PUBLIC_API Gemv<double2>(const Layout, const Transpose,
                                              const size_t, const size_t,
                                              const double2,
@@ -660,7 +660,7 @@ template StatusCode PUBLIC_API Gemv<double2>(const Layout, const Transpose,
                                              const cl_mem, const size_t, const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
-                                             cl_command_queue*, cl_event*);
+                                             cl_command_queue*, cl_event*,const bool);
 template StatusCode PUBLIC_API Gemv<half>(const Layout, const Transpose,
                                           const size_t, const size_t,
                                           const half,
@@ -668,7 +668,7 @@ template StatusCode PUBLIC_API Gemv<half>(const Layout, const Transpose,
                                           const cl_mem, const size_t, const size_t,
                                           const half,
                                           cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
+                                          cl_command_queue*, cl_event*, const bool);
 
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
@@ -679,7 +679,7 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event,const bool do_test_matrix_a) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xgbmv<T>(queue_cpp, event);
@@ -689,7 +689,7 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                    Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(x_buffer), x_offset, x_inc,
                    beta,
-                   Buffer<T>(y_buffer), y_offset, y_inc);
+                   Buffer<T>(y_buffer), y_offset, y_inc,do_test_matrix_a);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -700,7 +700,7 @@ template StatusCode PUBLIC_API Gbmv<float>(const Layout, const Transpose,
                                            const cl_mem, const size_t, const size_t,
                                            const float,
                                            cl_mem, const size_t, const size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Gbmv<double>(const Layout, const Transpose,
                                             const size_t, const size_t, const size_t, const size_t,
                                             const double,
@@ -708,7 +708,7 @@ template StatusCode PUBLIC_API Gbmv<double>(const Layout, const Transpose,
                                             const cl_mem, const size_t, const size_t,
                                             const double,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Gbmv<float2>(const Layout, const Transpose,
                                             const size_t, const size_t, const size_t, const size_t,
                                             const float2,
@@ -716,7 +716,7 @@ template StatusCode PUBLIC_API Gbmv<float2>(const Layout, const Transpose,
                                             const cl_mem, const size_t, const size_t,
                                             const float2,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Gbmv<double2>(const Layout, const Transpose,
                                              const size_t, const size_t, const size_t, const size_t,
                                              const double2,
@@ -724,7 +724,7 @@ template StatusCode PUBLIC_API Gbmv<double2>(const Layout, const Transpose,
                                              const cl_mem, const size_t, const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
-                                             cl_command_queue*, cl_event*);
+                                             cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Gbmv<half>(const Layout, const Transpose,
                                           const size_t, const size_t, const size_t, const size_t,
                                           const half,
@@ -732,7 +732,7 @@ template StatusCode PUBLIC_API Gbmv<half>(const Layout, const Transpose,
                                           const cl_mem, const size_t, const size_t,
                                           const half,
                                           cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
+                                          cl_command_queue*, cl_event*, const bool);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -783,7 +783,7 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xhbmv<T>(queue_cpp, event);
@@ -793,7 +793,7 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                    Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(x_buffer), x_offset, x_inc,
                    beta,
-                   Buffer<T>(y_buffer), y_offset, y_inc);
+                   Buffer<T>(y_buffer), y_offset, y_inc,do_test_matrix_a);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -804,7 +804,7 @@ template StatusCode PUBLIC_API Hbmv<float2>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             const float2,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Hbmv<double2>(const Layout, const Triangle,
                                              const size_t, const size_t,
                                              const double2,
@@ -812,7 +812,7 @@ template StatusCode PUBLIC_API Hbmv<double2>(const Layout, const Triangle,
                                              const cl_mem, const size_t, const size_t,
                                              const double2,
                                              cl_mem, const size_t, const size_t,
-                                             cl_command_queue*, cl_event*);
+                                             cl_command_queue*, cl_event*, const bool);
 
 // Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
 template <typename T>
@@ -911,7 +911,7 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event,const bool do_test_matrix_a) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xsbmv<T>(queue_cpp, event);
@@ -921,7 +921,7 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                    Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(x_buffer), x_offset, x_inc,
                    beta,
-                   Buffer<T>(y_buffer), y_offset, y_inc);
+                   Buffer<T>(y_buffer), y_offset, y_inc,do_test_matrix_a);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -932,7 +932,7 @@ template StatusCode PUBLIC_API Sbmv<float>(const Layout, const Triangle,
                                            const cl_mem, const size_t, const size_t,
                                            const float,
                                            cl_mem, const size_t, const size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Sbmv<double>(const Layout, const Triangle,
                                             const size_t, const size_t,
                                             const double,
@@ -940,7 +940,7 @@ template StatusCode PUBLIC_API Sbmv<double>(const Layout, const Triangle,
                                             const cl_mem, const size_t, const size_t,
                                             const double,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Sbmv<half>(const Layout, const Triangle,
                                           const size_t, const size_t,
                                           const half,
@@ -948,7 +948,7 @@ template StatusCode PUBLIC_API Sbmv<half>(const Layout, const Triangle,
                                           const cl_mem, const size_t, const size_t,
                                           const half,
                                           cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
+                                          cl_command_queue*, cl_event*, const bool);
 
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
@@ -1047,14 +1047,14 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n, const size_t k,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event) {
+                cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     auto queue_cpp = Queue(*queue);
     auto routine = Xtbmv<T>(queue_cpp, event);
     routine.DoTbmv(layout, triangle, a_transpose, diagonal,
                    n, k,
                    Buffer<T>(a_buffer), a_offset, a_ld,
-                   Buffer<T>(x_buffer), x_offset, x_inc);
+                   Buffer<T>(x_buffer), x_offset, x_inc,do_test_matrix_a);
     return StatusCode::kSuccess;
   } catch (...) { return DispatchException(); }
 }
@@ -1062,27 +1062,27 @@ template StatusCode PUBLIC_API Tbmv<float>(const Layout, const Triangle, const T
                                            const size_t, const size_t,
                                            const cl_mem, const size_t, const size_t,
                                            cl_mem, const size_t, const size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Tbmv<double>(const Layout, const Triangle, const Transpose, const Diagonal,
                                             const size_t, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Tbmv<float2>(const Layout, const Triangle, const Transpose, const Diagonal,
                                             const size_t, const size_t,
                                             const cl_mem, const size_t, const size_t,
                                             cl_mem, const size_t, const size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Tbmv<double2>(const Layout, const Triangle, const Transpose, const Diagonal,
                                              const size_t, const size_t,
                                              const cl_mem, const size_t, const size_t,
                                              cl_mem, const size_t, const size_t,
-                                             cl_command_queue*, cl_event*);
+                                             cl_command_queue*, cl_event*, const bool);
 template StatusCode PUBLIC_API Tbmv<half>(const Layout, const Triangle, const Transpose, const Diagonal,
                                           const size_t, const size_t,
                                           const cl_mem, const size_t, const size_t,
                                           cl_mem, const size_t, const size_t,
-                                          cl_command_queue*, cl_event*);
+                                          cl_command_queue*, cl_event*, const bool);
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
