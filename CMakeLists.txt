@@ -22,12 +22,14 @@ endif()
 project("clblast" C CXX)
 set(clblast_VERSION_MAJOR 1)
 set(clblast_VERSION_MINOR 6)
-set(clblast_VERSION_PATCH 2)
+set(clblast_VERSION_PATCH 3)
 set(clblast_VERSION "${clblast_VERSION_MAJOR}.${clblast_VERSION_MINOR}.${clblast_VERSION_PATCH}")
 set(clblast_SOVERSION ${clblast_VERSION_MAJOR})
 
 # Policies
-cmake_policy(SET CMP0074 NEW)  # to make -DCBLAS_ROOT= work with newer CMake versions as well
+IF(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0")
+  cmake_policy(SET CMP0074 NEW)  # to make -DCBLAS_ROOT= work with newer CMake versions as well
+ENDIF(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0")
 
 # Options and their default values
 option(BUILD_SHARED_LIBS "Build a shared (ON) or static library (OFF)" ON)
@@ -518,7 +520,7 @@ if(CLIENTS OR TESTS)
     endif()
   endif()
   if(CUBLAS_FOUND)
-    set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS})
+    set(REF_INCLUDES ${REF_INCLUDES} ${CUDA_INCLUDE_DIRS} ${CUBLAS_INCLUDE_DIRS})
     set(REF_LIBRARIES ${REF_LIBRARIES} ${CUDA_LIBRARIES} ${CUBLAS_LIBRARIES})
     set(WRAPPERS ${WRAPPERS} test/wrapper_cuda.hpp test/wrapper_cublas.hpp)
     if(MSVC)

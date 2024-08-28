@@ -101,7 +101,7 @@ const DatabaseEntry XgemmHalf = {
       kDeviceTypeGPU, "Intel", {
         { "default", {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
-          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 4, 1, 1, 8, 8, 32, 2, 2, 8, 0, 0, 0, 0, 2, 2 } },
+          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 0, 1, 16, 2, 8, 8, 32, 16, 16, 128, 0, 1, 1, 0, 4, 8 } },
           { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 0, 1, 16, 2, 16, 16, 64, 16, 8, 128, 1, 1, 0, 1, 1, 8 } },

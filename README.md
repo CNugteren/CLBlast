@@ -97,11 +97,9 @@ More detailed documentation is available in separate files:
 Known issues
 -------------
 
-Known performance related issues:
+Known issues:
 
-* Severe performance issues with Beignet v1.3.0 due to missing support for local memory. Please downgrade to v1.2.1 or upgrade to v1.3.1 or newer.
-
-Other known issues:
+* Correctness issues on Intel Arc A770 and several other devices with version 1.6.2 or lower (depends on the device). Upgrade to version 1.6.3 or newer.
 
 * Routines returning an integer are currently not properly tested for half-precision FP16: IHAMAX/IHAMIN/IHMAX/IHMIN
 

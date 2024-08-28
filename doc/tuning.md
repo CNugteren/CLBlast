@@ -50,6 +50,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Quadro GV100
     - Tesla V100
   - SM 7.5:
+    - GeForce MX 450
     - GeForce GTX 1650
     - GeForce GTX 1650 Ti
     - GeForce GTX 1650 Super
@@ -74,6 +75,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 3090
     - RTX A6000
   - SM 8.9:
+    - GeForce GTX 4050 Laptop
     - GeForce RTX 4060
     - GeForce GTX 4060 Ti
     - GeForce GTX 4070 Laptop
@@ -166,6 +168,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-4790K
   - Core i7-5930K
   - Core i7-6770HQ
+  - Core i7-12700H
   - Core i9-9980HK
   - Xeon E5-2630 v3
   - Xeon E5-2630 v4

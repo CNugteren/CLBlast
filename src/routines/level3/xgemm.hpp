@@ -142,8 +142,10 @@ class Xgemm: public Routine {
                                           size_t& a_one_i, size_t& a_two_i, size_t& b_one_i,
                                           size_t& b_two_i, size_t& c_one_i, size_t& c_two_i,
                                           const size_t gemm_kernel_id) {
-    const auto m_ceiled = Ceil(m, mwg);
-    const auto n_ceiled = Ceil(n, nwg);
+    const auto global_divider_one = c_want_rotated_(gemm_kernel_id) ? nwg : mwg;
+    const auto global_divider_two = c_want_rotated_(gemm_kernel_id) ? mwg : nwg;
+    const auto m_ceiled = Ceil(m, global_divider_one);
+    const auto n_ceiled = Ceil(n, global_divider_two);
     const auto k_ceiled = Ceil(k, kwg);
     a_one_i = (a_want_rotated_(gemm_kernel_id)) ? k_ceiled : m_ceiled;
     a_two_i = (a_want_rotated_(gemm_kernel_id)) ? m_ceiled : k_ceiled;
