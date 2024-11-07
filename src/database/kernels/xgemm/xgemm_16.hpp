@@ -76,7 +76,7 @@ const DatabaseEntry XgemmHalf = {
         } },
         { "gfx90c", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 16, 2, 8, 8, 64, 8, 16, 128, 1, 1, 0, 1, 8, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 64, 8, 16, 128, 1, 1, 0, 1, 8, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 32, 32, 128, 16, 8, 128, 1, 1, 1, 1, 2, 4 } },
         } },
       }
     },
@@ -135,7 +135,7 @@ const DatabaseEntry XgemmHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 0, 0, 0, 0, 4, 4 } },
         } },
       }
     },
