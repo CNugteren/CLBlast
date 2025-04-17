@@ -94,14 +94,19 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"AMD Radeon 780M Graphics                          "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 4 } },
         } },
+        { "gfx1201", {
+          { Name{"AMD Radeon RX 9070 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 16, 16, 16, 1, 1, 0, 0, 1, 1 } },
         } },
         { "gfx906:sramecc+:xnack-", {
+          { Name{"AMD Instinct MI50/MI60                            "}, Params{ 0, 1, 32, 2, 32, 32, 32, 8, 8, 32, 1, 1, 0, 0, 1, 4 } },
           { Name{"AMD Radeon VII                                    "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 32, 128, 0, 0, 0, 1, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 32, 128, 0, 0, 0, 1, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
         { "gfx90c", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 32, 2, 32, 16, 64, 8, 16, 32, 1, 0, 1, 1, 2, 2 } },
@@ -156,6 +161,10 @@ const DatabaseEntry XgemmComplexDouble = {
     },
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
+        { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+        } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 0, 1, 16, 2, 32, 32, 32, 32, 8, 32, 0, 0, 1, 0, 1, 1 } },
           { Name{"GeForce GTX 580                                   "}, Params{ 0, 1, 32, 2, 32, 32, 32, 8, 8, 64, 0, 0, 0, 0, 1, 2 } },
@@ -234,6 +243,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { Name{"NVIDIA GeForce RTX 2050                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 32, 32, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 3050 Laptop GPU                "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
+          { Name{"NVIDIA GeForce RTX 3060                           "}, Params{ 1, 16, 1, 1, 8, 8, 16, 4, 4, 16, 0, 0, 0, 0, 2, 4 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 1, 1, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 3070                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 1, 1, 0, 0, 1, 2 } },
           { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 1, 16, 1, 1, 16, 16, 32, 8, 8, 8, 0, 0, 0, 0, 1, 1 } },
@@ -256,7 +266,7 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 16, 1, 1, 0, 0, 1, 1 } },
         } },
       }
     },

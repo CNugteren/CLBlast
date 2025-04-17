@@ -65,12 +65,17 @@ const DatabaseEntry XgemmHalf = {
           { Name{"AMD Radeon 780M Graphics                          "}, Params{ 0, 1, 32, 2, 8, 8, 128, 8, 16, 128, 1, 1, 1, 0, 8, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 128, 8, 16, 128, 1, 1, 1, 0, 8, 1 } },
         } },
+        { "gfx1201", {
+          { Name{"AMD Radeon RX 9070 XT                             "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 2, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 1, 1, 0, 0, 2, 4 } },
+        } },
         { "gfx902", {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 0, 1, 32, 2, 8, 8, 128, 16, 32, 128, 1, 1, 1, 1, 4, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
         { "gfx906:sramecc+:xnack-", {
+          { Name{"AMD Instinct MI50/MI60                            "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
           { Name{"AMD Radeon VII                                    "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
         } },
@@ -122,6 +127,10 @@ const DatabaseEntry XgemmHalf = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
+        { "OpenCL C 2.0 Adreno(TM) 650", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
+        } },
         { "OpenCL C 3.0 Adreno(TM) 730", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 128, 0, 0, 0, 1, 2, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 128, 0, 0, 0, 1, 2, 8 } },
@@ -135,7 +144,7 @@ const DatabaseEntry XgemmHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
         } },
       }
     },

@@ -55,37 +55,40 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 1650
     - GeForce GTX 1650 Ti
     - GeForce GTX 1650 Super
-    - GeForce GTX 2060
-    - GeForce GTX 2070 with Max-Q
-    - GeForce GTX 2070 Super
-    - GeForce GTX 2080 with Max-Q
-    - GeForce GTX 2080 Ti
+    - GeForce RTX 2060
+    - GeForce RTX 2070 with Max-Q
+    - GeForce RTX 2070 Super
+    - GeForce RTX 2080 with Max-Q
+    - GeForce RTX 2080 Ti
     - Quadro T2000
     - TITAN RTX
     - Tesla T4
   - SM 8.0:
     - Tesla A100 40GB
   - SM 8.6:
-    - GeForce GTX 2050
-    - GeForce GTX 3050 Laptop
-    - GeForce GTX 3050 Ti Laptop
-    - GeForce GTX 3060 Laptop
-    - GeForce GTX 3070
-    - GeForce GTX 3070 Ti Laptop
-    - GeForce GTX 3080
-    - GeForce GTX 3080 Laptop
-    - GeForce GTX 3080 Ti
-    - GeForce GTX 3090
+    - GeForce RTX 2050
+    - GeForce RTX 3050 Laptop
+    - GeForce RTX 3050 Ti Laptop
+    - GeForce RTX 3060
+    - GeForce RTX 3060 Laptop
+    - GeForce RTX 3070
+    - GeForce RTX 3070 Ti Laptop
+    - GeForce RTX 3080
+    - GeForce RTX 3080 Laptop
+    - GeForce RTX 3080 Ti
+    - GeForce RTX 3090
     - RTX A6000
   - SM 8.9:
-    - GeForce GTX 4050 Laptop
+    - GeForce RTX 4050 Laptop
     - GeForce RTX 4060
-    - GeForce GTX 4060 Laptop
-    - GeForce GTX 4060 Ti
-    - GeForce GTX 4070 Laptop
-    - GeForce GTX 4070 Ti
-    - GeForce GTX 4080
-    - GeForce GTX 4090
+    - GeForce RTX 4060 Laptop
+    - GeForce RTX 4060 Ti
+    - GeForce RTX 4070 Laptop
+    - GeForce RTX 4070 Ti
+    - GeForce RTX 4080
+    - GeForce RTX 4090
+  - SM 12.0:
+    - GeForce RTX 5080
 * AMD GPUs:
   - Turks:
     - Radeon HD 6770M
@@ -117,6 +120,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Radeon RX Vega 10
   - gfx906:
     - Radeon VII
+    - Instinct MI50/MI60
   - gfx90c:
     - Ryzen 5600G APU
     - Ryzen 5700G APU
@@ -143,6 +147,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Radeon RX 7600
   - gfx1103:
     - Radeon 780M
+  - gfx1201:
+    - Radeon RX 9070 XT
   - Other:
     - Radeon Pro 450
     - Radeon Pro 580
@@ -184,6 +190,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
   - Qualcomm Adreno 640 GPU
+  - Qualcomm Adreno 650 GPU
   - Qualcomm Adreno 730 GPU
   - Qualcomm Adreno 740 GPU
   - Intel MIC
