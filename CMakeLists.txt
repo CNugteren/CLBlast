@@ -385,7 +385,7 @@ if(SAMPLES)
 
   # Downloads the opencl.hpp file from Khronos
   if(OPENCL)
-    file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/refs/tags/v2024.10.24/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/opencl.hpp)
+    file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/refs/tags/v2024.05.08/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/opencl.hpp)
   endif()
 
   # Adds sample programs (C++)
