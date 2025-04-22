@@ -1,0 +1,6 @@
+{
+    "dependencies": [ "opencl" ],
+    "overrides": [
+        { "name": "opencl", "version": "vv2024.05.08" }
+    ]
+}

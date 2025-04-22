@@ -386,9 +386,6 @@ if(SAMPLES)
   # Downloads the opencl.hpp file from Khronos
   if(OPENCL)
     set(CLHPP_VERSION v2024.05.08)
-    if(MSVC)
-      set(CLHPP_VERSION 2024.10.24)
-    endif()
     file(DOWNLOAD https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/refs/tags/${CLHPP_VERSION}/include/CL/opencl.hpp ${clblast_SOURCE_DIR}/samples/opencl.hpp)
   endif()
 
