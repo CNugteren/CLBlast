@@ -1,5 +1,6 @@
 {
     "dependencies": [ "opencl" ],
+    "builtin-baseline": "752799690be680e3b16ceb8e5a4db2f683af6ae3",
     "overrides": [
         { "name": "opencl", "version": "vv2024.05.08" }
     ]
