@@ -281,7 +281,7 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr, const bool do_test_matrix_a=true);
 
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
@@ -292,7 +292,7 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr, const bool do_test_matrix_a=true);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -314,7 +314,7 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr, const bool do_test_matrix_a=true);
 
 // Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
 template <typename T>
@@ -347,7 +347,7 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle,
                 const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                 const T beta,
                 cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr, const bool do_test_matrix_a=true);
 
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
@@ -374,7 +374,7 @@ StatusCode Tbmv(const Layout layout, const Triangle triangle, const Transpose a_
                 const size_t n, const size_t k,
                 const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                 cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                cl_command_queue* queue, cl_event* event = nullptr, const bool do_test_matrix_a=true);
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>

@@ -1145,7 +1145,7 @@ CLBlastStatusCode CLBlastSgbmv(const CLBlastLayout layout, const CLBlastTranspos
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const float beta,
                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               cl_command_queue* queue, cl_event* event) {
+                               cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gbmv(static_cast<clblast::Layout>(layout),
@@ -1156,7 +1156,7 @@ CLBlastStatusCode CLBlastSgbmv(const CLBlastLayout layout, const CLBlastTranspos
                     x_buffer, x_offset, x_inc,
                     beta,
                     y_buffer, y_offset, y_inc,
-                    queue, event)
+                    queue, event, do_test_matrix_a)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -1167,7 +1167,7 @@ CLBlastStatusCode CLBlastDgbmv(const CLBlastLayout layout, const CLBlastTranspos
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const double beta,
                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               cl_command_queue* queue, cl_event* event) {
+                               cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gbmv(static_cast<clblast::Layout>(layout),
@@ -1178,7 +1178,7 @@ CLBlastStatusCode CLBlastDgbmv(const CLBlastLayout layout, const CLBlastTranspos
                     x_buffer, x_offset, x_inc,
                     beta,
                     y_buffer, y_offset, y_inc,
-                    queue, event)
+                    queue, event, do_test_matrix_a)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -1189,7 +1189,7 @@ CLBlastStatusCode CLBlastCgbmv(const CLBlastLayout layout, const CLBlastTranspos
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const cl_float2 beta,
                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               cl_command_queue* queue, cl_event* event) {
+                               cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gbmv(static_cast<clblast::Layout>(layout),
@@ -1200,7 +1200,7 @@ CLBlastStatusCode CLBlastCgbmv(const CLBlastLayout layout, const CLBlastTranspos
                     x_buffer, x_offset, x_inc,
                     float2{beta.s[0], beta.s[1]},
                     y_buffer, y_offset, y_inc,
-                    queue, event)
+                    queue, event, do_test_matrix_a)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -1211,7 +1211,7 @@ CLBlastStatusCode CLBlastZgbmv(const CLBlastLayout layout, const CLBlastTranspos
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const cl_double2 beta,
                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               cl_command_queue* queue, cl_event* event) {
+                               cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gbmv(static_cast<clblast::Layout>(layout),
@@ -1222,7 +1222,7 @@ CLBlastStatusCode CLBlastZgbmv(const CLBlastLayout layout, const CLBlastTranspos
                     x_buffer, x_offset, x_inc,
                     double2{beta.s[0], beta.s[1]},
                     y_buffer, y_offset, y_inc,
-                    queue, event)
+                    queue, event, do_test_matrix_a)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }
@@ -1233,7 +1233,7 @@ CLBlastStatusCode CLBlastHgbmv(const CLBlastLayout layout, const CLBlastTranspos
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const cl_half beta,
                                cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               cl_command_queue* queue, cl_event* event) {
+                               cl_command_queue* queue, cl_event* event, const bool do_test_matrix_a) {
   try {
     return static_cast<CLBlastStatusCode>(
       clblast::Gbmv(static_cast<clblast::Layout>(layout),
@@ -1243,8 +1243,8 @@ CLBlastStatusCode CLBlastHgbmv(const CLBlastLayout layout, const CLBlastTranspos
                     a_buffer, a_offset, a_ld,
                     x_buffer, x_offset, x_inc,
                     beta,
-                    y_buffer, y_offset, y_inc,
-                    queue, event)
+                    y_buffer, y_offset, y_inc, 
+                    queue, event, do_test_matrix_a)
     );
   } catch (...) { return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC()); }
 }

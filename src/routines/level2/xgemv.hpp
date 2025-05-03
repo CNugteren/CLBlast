@@ -34,7 +34,7 @@ class Xgemv: public Routine {
               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
               const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
               const T beta,
-              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
+              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc, const bool do_test_matrix_a=true);
 
   // Generic version used also for other matrix-vector multiplications
   void MatVec(const Layout layout, const Transpose a_transpose,
@@ -46,7 +46,7 @@ class Xgemv: public Routine {
               const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
               bool fast_kernel, bool fast_kernel_rot,
               const size_t parameter, const bool packed,
-              const size_t kl, const size_t ku);
+              const size_t kl, const size_t ku, const bool do_test_matrix_a = true);
 };
 
 // =================================================================================================

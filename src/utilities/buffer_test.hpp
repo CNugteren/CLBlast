@@ -22,6 +22,16 @@
 
 namespace clblast {
 // =================================================================================================
+// Tests matrix 'A' (for banded matrix-vector computations) for validity
+template <typename T>
+void TestMatrixBanded(const size_t n, const size_t kl, const size_t ku, const Buffer<T> &buffer,
+                      const size_t offset, const size_t ld, const bool test_lead_dim = true) {
+  if (test_lead_dim && ld < kl + ku) { throw BLASError(StatusCode::kInvalidLeadDimA); }
+  try {
+    const auto required_size = (ld * n + offset) * sizeof(T);
+    if (buffer.GetSize() < required_size) { throw BLASError(StatusCode::kInsufficientMemoryA); }
+  } catch (const Error<std::runtime_error> &e) { throw BLASError(StatusCode::kInvalidMatrixA, e.what()); }
+}
 
 // Tests matrix 'A' for validity
 template <typename T>
