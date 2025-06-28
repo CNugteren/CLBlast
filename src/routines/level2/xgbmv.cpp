@@ -35,12 +35,15 @@ void Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
                       const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
                       const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
                       const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
+                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc, const bool do_test_matrix_a) {
 
   // Reverses the upper and lower band count
   auto rotated = (layout == Layout::kRowMajor);
   auto kl_real = (rotated) ? ku : kl;
   auto ku_real = (rotated) ? kl : ku;
+
+  // The matrix A has different constraints compared to what is normally tested in MatVec below
+  TestMatrixBanded(n, kl, ku, a_buffer, a_offset, a_ld);
 
   // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
   // The specific hermitian matrix-accesses are implemented in the kernel guarded by the
@@ -52,7 +55,7 @@ void Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose,
          x_buffer, x_offset, x_inc, beta,
          y_buffer, y_offset, y_inc,
          fast_kernels, fast_kernels,
-         0, false, kl_real, ku_real);
+         0, false, kl_real, ku_real,/*do_test_matrix_a=*/do_test_matrix_a);
 }
 
 // =================================================================================================
