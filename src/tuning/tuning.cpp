@@ -428,7 +428,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
       }
 
       {
-        std::unique_lock lock(mtx);
+        std::unique_lock<std::mutex> lock(mtx);
         cv.wait(lock, [&compileInfos, &config_id] {
           return compileInfos[config_id].initialized || !compileInfos[config_id].success;
         });
