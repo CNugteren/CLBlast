@@ -27,8 +27,9 @@
 #include <utility>
 #include <vector>
 
-#include "clblast_c.h"
+#include "clblast.h"
 #include "tuning/configurations.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -106,19 +107,20 @@ void print_separator(const size_t parameters_size) {
 // =================================================================================================
 
 struct CompileInfo {
-  Kernel kernel;
-  std::string print_info;
-  std::vector<size_t> global;
-  std::vector<size_t> local;
-  bool initialized;
-  CLBlastStatusCode status;
+  Kernel kernel = Kernel(nullptr);
+  std::string print_info = "";
+  std::vector<size_t> global = {};
+  std::vector<size_t> local = {};
+  bool initialized = false;
+  bool success = true;
 };
 
 template <typename T>
 void compileThreadFunc(const std::vector<Configuration>& configurations,
                        const TunerSettings& settings, const Arguments<T>& args,
-                       const Context& context, const Device& device, CompileInfo* compileInfos,
-                       std::mutex& mtx, std::condition_variable& cv) {
+                       const Context& context, const Device& device,
+                       std::unique_ptr<CompileInfo[]>& compileInfos, std::mutex& mtx,
+                       std::condition_variable& cv) {
 #if defined(_WIN32)
   const std::string kPrintError = "";
   const std::string kPrintSuccess = "";
@@ -131,58 +133,72 @@ void compileThreadFunc(const std::vector<Configuration>& configurations,
   const std::string kPrintEnd = "\x1b[0m";
 #endif
   for (size_t config_id = 0; config_id < configurations.size(); ++config_id) {
-    auto configuration = configurations[config_id];
-
     std::ostringstream oss;
-    oss << "| " << std::setw(4) << config_id + 1 << " | " << std::setw(5) << configurations.size()
-        << " |";
-    for (const auto& parameter : settings.parameters) {
-      oss << std::setw(5) << configuration.at(parameter.first);
-    }
-    oss << " |";
+    try {
+      auto configuration = configurations[config_id];
 
-    // Sets the thread configuration
-    auto global = SetThreadConfiguration(configuration, settings.global_size, settings.mul_global,
-                                         settings.div_global);
-    auto local = SetThreadConfiguration(configuration, settings.local_size, settings.mul_local,
-                                        settings.div_local);
-
-    // Make sure that the global worksize is a multiple of the local
-    for (auto i = size_t{0}; i < global.size(); ++i) {
-      while ((global[i] / local[i]) * local[i] != global[i]) {
-        global[i]++;
+      oss << "| " << std::setw(4) << config_id + 1 << " | " << std::setw(5) << configurations.size()
+          << " |";
+      for (const auto& parameter : settings.parameters) {
+        oss << std::setw(5) << configuration.at(parameter.first);
       }
-    }
-    if (local.size() > 1 && global.size() > 1) {
-      oss << std::setw(8) << local[0] << std::setw(8) << local[1] << " |" << std::setw(8)
-          << global[0] << std::setw(8) << global[1] << " |";
-    } else {
-      oss << std::setw(8) << local[0] << std::setw(8) << 1 << " |" << std::setw(8) << global[0]
-          << std::setw(8) << 1 << " |";
-    }
+      oss << " |";
 
-    // Sets the parameters for this configuration
-    auto kernel_source = std::string{""};
-    for (const auto& parameter : configuration) {
-      kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
+      // Sets the thread configuration
+      auto global = SetThreadConfiguration(configuration, settings.global_size, settings.mul_global,
+                                           settings.div_global);
+      auto local = SetThreadConfiguration(configuration, settings.local_size, settings.mul_local,
+                                          settings.div_local);
+
+      // Make sure that the global worksize is a multiple of the local
+      for (auto i = size_t{0}; i < global.size(); ++i) {
+        while ((global[i] / local[i]) * local[i] != global[i]) {
+          global[i]++;
+        }
+      }
+      if (local.size() > 1 && global.size() > 1) {
+        oss << std::setw(8) << local[0] << std::setw(8) << local[1] << " |" << std::setw(8)
+            << global[0] << std::setw(8) << global[1] << " |";
+      } else {
+        oss << std::setw(8) << local[0] << std::setw(8) << 1 << " |" << std::setw(8) << global[0]
+            << std::setw(8) << 1 << " |";
+      }
+
+      // Sets the parameters for this configuration
+      auto kernel_source = std::string{""};
+      for (const auto& parameter : configuration) {
+        kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
+      }
+      kernel_source += settings.sources;
+
+      // Compiles the kernel
+      const auto start_time = std::chrono::steady_clock::now();
+      auto compiler_options = std::vector<std::string>();
+      mtx.lock();
+      const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name,
+                                             device, context, compiler_options, 0, true);
+      mtx.unlock();
+      auto kernel = Kernel(program, settings.kernel_name);
+      const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+      const auto timing = std::chrono::duration<double, std::milli>(elapsed_time).count();
+      oss << "   " << kPrintSuccess << "OK" << kPrintEnd << "  " << std::fixed
+          << std::setprecision(0) << std::setw(5) << timing << " ms |";
+
+      compileInfos[config_id] = {kernel, oss.str(), global, local, true};
+      cv.notify_one();
+    } catch (CLCudaAPIBuildError&) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      printf("%s  %scompilation error: %5d%s     |", oss.str().c_str(), kPrintError.c_str(),
+             static_cast<int>(status_code), kPrintEnd.c_str());
+      printf("      - |                 - | <-- skipping\n");
+    } catch (...) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      if (status_code != StatusCode::kUnknownError) {
+        printf("%s   %serror code %d%s |", oss.str().c_str(), kPrintError.c_str(),
+               static_cast<int>(status_code), kPrintEnd.c_str());
+      }
+      printf("%s <-- skipping\n", oss.str().c_str());
     }
-    kernel_source += settings.sources;
-
-    // Compiles the kernel
-    const auto start_time = std::chrono::steady_clock::now();
-    auto compiler_options = std::vector<std::string>();
-    mtx.lock();
-    const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name,
-                                           device, context, compiler_options, 0, true);
-    mtx.unlock();
-    auto kernel = Kernel(program, settings.kernel_name);
-    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-    const auto timing = std::chrono::duration<double, std::milli>(elapsed_time).count();
-    oss << "   " << kPrintSuccess << "OK" << kPrintEnd << "  " << std::fixed << std::setprecision(0)
-        << std::setw(5) << timing << " ms |";
-
-    compileInfos[config_id] = {kernel, oss.str(), global, local, true};
-    cv.notify_one();
   }
 }
 
@@ -336,14 +352,6 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
       settings.performance_unit.c_str());
   print_separator(settings.parameters.size());
 
-  CompileInfo* compileInfos =
-      static_cast<CompileInfo*>(malloc(sizeof(CompileInfo) * configurations.size()));
-  std::mutex mtx;
-  std::condition_variable cv;
-  auto compileThread = std::thread(
-      compileThreadFunc<T>, std::cref(configurations), std::cref(settings), std::cref(args),
-      std::cref(context), std::cref(device), std::ref(compileInfos), std::ref(mtx), std::ref(cv));
-
   // First runs a reference example to compare against
   try {
     printf("|  ref |     - |");
@@ -375,10 +383,8 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
     // Compiles the kernel
     auto compiler_options = std::vector<std::string>();
-    mtx.lock();
     const auto program = CompileFromSource(settings.sources, args.precision, settings.kernel_name,
                                            device, context, compiler_options, 0);
-    mtx.unlock();
     auto kernel = Kernel(program, settings.kernel_name);
     SetArguments(V, kernel, args, device_buffers);
     printf("             %sOK%s |", kPrintSuccess.c_str(), kPrintEnd.c_str());
@@ -399,12 +405,18 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     const auto status_code = DispatchExceptionCatchAll(true);
     printf("* Exception caught with status %d while running the reference, aborting\n",
            static_cast<int>(status_code));
-    compileThread.join();
     return;
   }
   print_separator(settings.parameters.size());
 
   // Starts the tuning process
+  std::unique_ptr<CompileInfo[]> compileInfos =
+      std::make_unique<CompileInfo[]>(configurations.size());
+  std::mutex mtx;
+  std::condition_variable cv;
+  auto compileThread = std::thread(
+      compileThreadFunc<T>, std::cref(configurations), std::cref(settings), std::cref(args),
+      std::cref(context), std::cref(device), std::ref(compileInfos), std::ref(mtx), std::ref(cv));
   auto results = std::vector<TuningResult>();
   for (auto config_id = size_t{0}; config_id < configurations.size(); ++config_id) {
     try {
@@ -417,9 +429,14 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
       {
         std::unique_lock lock(mtx);
-        cv.wait(lock, [&compileInfos, &config_id] { return compileInfos[config_id].initialized; });
+        cv.wait(lock, [&compileInfos, &config_id] {
+          return compileInfos[config_id].initialized || !compileInfos[config_id].success;
+        });
       }
       CompileInfo& compileInfo = compileInfos[config_id];
+      if (!compileInfo.success) {
+        continue;
+      }
 
       printf("%s", compileInfo.print_info.c_str());
 
@@ -474,7 +491,6 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   }
 
   compileThread.join();
-  free(compileInfos);
 
   // Completed the tuning process
   print_separator(settings.parameters.size());
