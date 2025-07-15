@@ -184,7 +184,12 @@ void compileThreadFunc(const std::vector<Configuration>& configurations,
       oss << "   " << kPrintSuccess << "OK" << kPrintEnd << "  " << std::fixed
           << std::setprecision(0) << std::setw(5) << timing << " ms |";
 
-      compileInfos[config_id] = {kernel, oss.str(), global, local, true};
+      compileInfos[config_id] = CompileInfo{.kernel = kernel,
+                                            .print_info = oss.str(),
+                                            .global = global,
+                                            .local = local,
+                                            .initialized = true,
+                                            .success = true};
       cv.notify_one();
     } catch (CLCudaAPIBuildError&) {
       const auto status_code = DispatchExceptionCatchAll(true);
