@@ -17,24 +17,24 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xdot<T>::Xdot(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level1/xdot.opencl"
-    }) {
+Xdot<T>::Xdot(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {},
+              {
+#include "../../kernels/level1/xdot.opencl"
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xdot<T>::DoDot(const size_t n,
-                    const Buffer<T> &dot_buffer, const size_t dot_offset,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                    const bool do_conjugate) {
-
+void Xdot<T>::DoDot(const size_t n, const Buffer<T>& dot_buffer, const size_t dot_offset, const Buffer<T>& x_buffer,
+                    const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
+                    const size_t y_inc, const bool do_conjugate) {
   // Makes sure all dimensions are larger than zero
-  if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Tests the vectors for validity
   TestVectorX(n, x_buffer, x_offset, x_inc);
@@ -46,7 +46,7 @@ void Xdot<T>::DoDot(const size_t n,
   auto kernel2 = Kernel(program_, "XdotEpilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2*db_["WGS2"];
+  auto temp_size = 2 * db_["WGS2"];
   auto temp_buffer = Buffer<T>(context_, temp_size);
 
   // Sets the kernel arguments
@@ -64,7 +64,7 @@ void Xdot<T>::DoDot(const size_t n,
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"]*temp_size};
+  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
   auto local1 = std::vector<size_t>{db_["WGS1"]};
   auto kernelEvent = Event();
   RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
@@ -91,4 +91,4 @@ template class Xdot<float2>;
 template class Xdot<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

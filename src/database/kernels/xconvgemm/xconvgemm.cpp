@@ -8,6 +8,7 @@
 // =================================================================================================
 
 #include "database/kernels/xconvgemm/xconvgemm.hpp"
+
 #include "database/kernels/xconvgemm/xconvgemm_16.hpp"
 #include "database/kernels/xconvgemm/xconvgemm_32.hpp"
 #include "database/kernels/xconvgemm/xconvgemm_3232.hpp"

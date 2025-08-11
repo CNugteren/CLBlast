@@ -20,28 +20,24 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T, typename U>
-class Xher2k: public Xherk<T, U> {
-public:
-
+class Xher2k : public Xherk<T, U> {
+ public:
   // Uses methods and variables the regular Xherk routine
   using Xherk<T, U>::event_;
   using Xherk<T, U>::HerkAB;
 
   // Constructor
-  Xher2k(Queue &queue, EventPointer event, const std::string &name = "HER2K");
+  Xher2k(Queue& queue, EventPointer event, const std::string& name = "HER2K");
 
   // Templated-precision implementation of the routine
-  void DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose,
-               const size_t n, const size_t k,
-               const T alpha,
-               const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-               const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-               const U beta,
-               const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose, const size_t n,
+               const size_t k, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
+               const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const U beta,
+               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_ROUTINES_XHER2K_H_
 #endif

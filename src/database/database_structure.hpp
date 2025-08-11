@@ -10,17 +10,17 @@
 #ifndef CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 #define CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 
-#include <string>
 #include <array>
-#include <vector>
 #include <map>
+#include <string>
+#include <vector>
 
 // Just needed for 'Precision'
 #ifdef OPENCL_API
-  #define CL_TARGET_OPENCL_VERSION 110
-  #include "clblast.h"
+#define CL_TARGET_OPENCL_VERSION 110
+#include "clblast.h"
 #elif CUDA_API
-  #include "clblast_cuda.h"
+#include "clblast_cuda.h"
 #endif
 
 namespace clblast {
@@ -30,11 +30,11 @@ namespace database {
 // =================================================================================================
 
 // Type alias for the database storage (arrays for fast compilation/efficiency)
-using Name = std::array<char, 51>; // name as stored in database (50 chars + string terminator)
-using Params = std::array<size_t, 16>; // parameters as stored in database
+using Name = std::array<char, 51>;      // name as stored in database (50 chars + string terminator)
+using Params = std::array<size_t, 16>;  // parameters as stored in database
 
 // Type alias after extracting from the database (sorted map for improved code readability)
-using Parameters = std::map<std::string, size_t>; // parameters after reading from DB
+using Parameters = std::map<std::string, size_t>;  // parameters after reading from DB
 
 // The OpenCL device types
 const std::string kDeviceTypeCPU = "CPU";
@@ -45,8 +45,7 @@ const Name kDeviceNameDefault = {"default                                       
 
 struct DatabaseDevice {
   Name name;
-  Params parameters; // parameter values
-
+  Params parameters;  // parameter values
 };
 struct DatabaseArchitecture {
   std::string name;
@@ -65,8 +64,8 @@ struct DatabaseEntry {
 };
 
 // =================================================================================================
-} // namespace database
-} // namespace clblast
+}  // namespace database
+}  // namespace clblast
 
 // CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 #endif

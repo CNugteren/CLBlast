@@ -17,24 +17,20 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xhemm<T>::Xhemm(Queue &queue, EventPointer event, const std::string &name):
-    Xgemm<T>(queue, event, name) {
-}
+Xhemm<T>::Xhemm(Queue& queue, EventPointer event, const std::string& name) : Xgemm<T>(queue, event, name) {}
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle triangle,
-                            const size_t m, const size_t n,
-                            const T alpha,
-                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
-                            const T beta,
-                            const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld) {
-
+void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle triangle, const size_t m, const size_t n,
+                      const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
+                      const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
+                      const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld) {
   // Makes sure all dimensions are larger than zero
-  if ((m == 0) || (n == 0) ) { throw BLASError(StatusCode::kInvalidDimension); }
+  if ((m == 0) || (n == 0)) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Computes the k dimension. This is based on whether or not the hermitian matrix is A (on the
   // left) or B (on the right) in the Xgemm routine.
@@ -50,7 +46,7 @@ void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle trian
   auto kernel_name = (is_upper) ? "HermUpperToSquared" : "HermLowerToSquared";
 
   // Temporary buffer for a copy of the hermitian matrix
-  auto temp_herm = Buffer<T>(context_, k*k);
+  auto temp_herm = Buffer<T>(context_, k * k);
 
   // Creates a general matrix from the hermitian matrix to be able to run the regular Xgemm
   // routine afterwards
@@ -79,35 +75,32 @@ void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle trian
 
   // Runs the regular Xgemm code with either "C := AB+C" or ...
   if (side == Side::kLeft) {
-    DoGemm(layout, Transpose::kNo, Transpose::kNo,
-           m, n, k,
-           alpha,
-           temp_herm, 0, k,
-           b_buffer, b_offset, b_ld,
-           beta,
+    DoGemm(layout, Transpose::kNo, Transpose::kNo, m, n, k, alpha, temp_herm, 0, k, b_buffer, b_offset, b_ld, beta,
            c_buffer, c_offset, c_ld);
   }
 
   // ... with "C := BA+C". Note that A and B are now reversed.
   else {
     try {
-      DoGemm(layout, Transpose::kNo, Transpose::kNo,
-             m, n, k,
-             alpha,
-             b_buffer, b_offset, b_ld,
-             temp_herm, 0, k,
-             beta,
+      DoGemm(layout, Transpose::kNo, Transpose::kNo, m, n, k, alpha, b_buffer, b_offset, b_ld, temp_herm, 0, k, beta,
              c_buffer, c_offset, c_ld);
-    } catch (BLASError &e) {
+    } catch (BLASError& e) {
       // A and B are now reversed, so also reverse the error codes returned from the Xgemm routine
-      switch(e.status()) {
-        case StatusCode::kInvalidMatrixA:      throw BLASError(StatusCode::kInvalidMatrixB, e.details());
-        case StatusCode::kInvalidMatrixB:      throw BLASError(StatusCode::kInvalidMatrixA, e.details());
-        case StatusCode::kInvalidLeadDimA:     throw BLASError(StatusCode::kInvalidLeadDimB, e.details());
-        case StatusCode::kInvalidLeadDimB:     throw BLASError(StatusCode::kInvalidLeadDimA, e.details());
-        case StatusCode::kInsufficientMemoryA: throw BLASError(StatusCode::kInsufficientMemoryB, e.details());
-        case StatusCode::kInsufficientMemoryB: throw BLASError(StatusCode::kInsufficientMemoryA, e.details());
-        default:                               throw;
+      switch (e.status()) {
+        case StatusCode::kInvalidMatrixA:
+          throw BLASError(StatusCode::kInvalidMatrixB, e.details());
+        case StatusCode::kInvalidMatrixB:
+          throw BLASError(StatusCode::kInvalidMatrixA, e.details());
+        case StatusCode::kInvalidLeadDimA:
+          throw BLASError(StatusCode::kInvalidLeadDimB, e.details());
+        case StatusCode::kInvalidLeadDimB:
+          throw BLASError(StatusCode::kInvalidLeadDimA, e.details());
+        case StatusCode::kInsufficientMemoryA:
+          throw BLASError(StatusCode::kInsufficientMemoryB, e.details());
+        case StatusCode::kInsufficientMemoryB:
+          throw BLASError(StatusCode::kInsufficientMemoryA, e.details());
+        default:
+          throw;
       }
     }
   }
@@ -120,4 +113,4 @@ template class Xhemm<float2>;
 template class Xhemm<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

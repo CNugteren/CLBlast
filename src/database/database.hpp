@@ -14,11 +14,11 @@
 #define CLBLAST_DATABASE_H_
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "utilities/utilities.hpp"
 #include "database/database_structure.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -26,7 +26,6 @@ namespace clblast {
 // See comment at top of file for a description of the class
 class Database {
  public:
-
   // The OpenCL device vendors
   static const std::string kDeviceVendorAll;
 
@@ -39,12 +38,12 @@ class Database {
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
-  explicit Database(const Device &device, const std::string &kernel_name,
-                    const Precision precision, const std::vector<database::DatabaseEntry> &overlay);
+  explicit Database(const Device& device, const std::string& kernel_name, const Precision precision,
+                    const std::vector<database::DatabaseEntry>& overlay);
 
   // Accessor of values by key
-  size_t operator[](const std::string &key) const { return parameters_->find(key)->second; }
-  bool exists(const std::string &key) const { return (parameters_->count(key) == 1); }
+  size_t operator[](const std::string& key) const { return parameters_->find(key)->second; }
+  bool exists(const std::string& key) const { return (parameters_->count(key) == 1); }
 
   // Obtain a list of OpenCL pre-processor defines based on the parameters
   std::string GetDefines() const;
@@ -56,23 +55,20 @@ class Database {
 
  private:
   // Search method functions, returning a set of parameters (possibly empty)
-  database::Parameters Search(const std::string &this_kernel,
-                              const std::string &this_vendor, const std::string &this_type,
-                              const std::string &this_device, const std::string &this_architecture,
-                              const Precision this_precision,
-                              const std::vector<database::DatabaseEntry> &db) const;
-  database::Parameters SearchDevice(const std::string &target_device,
-                        const std::vector<database::DatabaseDevice> &devices,
-                        const std::vector<std::string> &parameter_names) const;
-  database::Parameters SearchArchitecture(const std::string &target_architecture,
-                                          const std::string &this_device,
-                                          const std::vector<database::DatabaseArchitecture> &architectures,
-                                          const std::vector<std::string> &parameter_names) const;
-  database::Parameters SearchVendorAndType(const std::string &target_vendor,
-                                           const std::string &target_type,
-                                           const std::string &this_device, const std::string &this_architecture,
-                                           const std::vector<database::DatabaseVendor> &vendors,
-                                           const std::vector<std::string> &parameter_names) const;
+  database::Parameters Search(const std::string& this_kernel, const std::string& this_vendor,
+                              const std::string& this_type, const std::string& this_device,
+                              const std::string& this_architecture, const Precision this_precision,
+                              const std::vector<database::DatabaseEntry>& db) const;
+  database::Parameters SearchDevice(const std::string& target_device,
+                                    const std::vector<database::DatabaseDevice>& devices,
+                                    const std::vector<std::string>& parameter_names) const;
+  database::Parameters SearchArchitecture(const std::string& target_architecture, const std::string& this_device,
+                                          const std::vector<database::DatabaseArchitecture>& architectures,
+                                          const std::vector<std::string>& parameter_names) const;
+  database::Parameters SearchVendorAndType(const std::string& target_vendor, const std::string& target_type,
+                                           const std::string& this_device, const std::string& this_architecture,
+                                           const std::vector<database::DatabaseVendor>& vendors,
+                                           const std::vector<std::string>& parameter_names) const;
 
   // Helper to convert from database format to proper types
   std::string CharArrayToString(const database::Name char_array) const;
@@ -86,17 +82,18 @@ class Database {
 // Multiple databases together in a map
 class Databases {
  public:
-
-  explicit Databases(const std::vector<std::string> &kernel_names): kernel_names_(kernel_names) { }
+  explicit Databases(const std::vector<std::string>& kernel_names) : kernel_names_(kernel_names) {}
 
   // Database accessor
-  Database& operator()(const std::string &kernel_name) { return databases_[kernel_name]; }
+  Database& operator()(const std::string& kernel_name) { return databases_[kernel_name]; }
 
   // Retrieves a parameter from the database
-  size_t operator[](const std::string &key) const {
-    for (const auto &kernel_name : kernel_names_) {
-      const auto &kernel_db = databases_.find(kernel_name)->second;
-      if (kernel_db.exists(key)) { return kernel_db[key]; }
+  size_t operator[](const std::string& key) const {
+    for (const auto& kernel_name : kernel_names_) {
+      const auto& kernel_db = databases_.find(kernel_name)->second;
+      if (kernel_db.exists(key)) {
+        return kernel_db[key];
+      }
     }
     throw RuntimeErrorCode(StatusCode::kDatabaseError);
   }
@@ -107,7 +104,7 @@ class Databases {
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_DATABASE_H_
 #endif

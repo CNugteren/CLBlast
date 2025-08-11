@@ -17,22 +17,16 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsymv<T>::Xsymv(Queue &queue, EventPointer event, const std::string &name):
-    Xgemv<T>(queue, event, name) {
-}
+Xsymv<T>::Xsymv(Queue& queue, EventPointer event, const std::string& name) : Xgemv<T>(queue, event, name) {}
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xsymv<T>::DoSymv(const Layout layout, const Triangle triangle,
-                      const size_t n,
-                      const T alpha,
-                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                      const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
-
+void Xsymv<T>::DoSymv(const Layout layout, const Triangle triangle, const size_t n, const T alpha,
+                      const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const Buffer<T>& x_buffer,
+                      const size_t x_offset, const size_t x_inc, const T beta, const Buffer<T>& y_buffer,
+                      const size_t y_offset, const size_t y_inc) {
   // The data is either in the upper or lower triangle
   size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                      (triangle == Triangle::kLower && layout == Layout::kRowMajor));
@@ -41,13 +35,8 @@ void Xsymv<T>::DoSymv(const Layout layout, const Triangle triangle,
   // The specific symmetric matrix-accesses are implemented in the kernel guarded by the
   // ROUTINE_SYMV define.
   bool fast_kernels = false;
-  MatVec(layout, Transpose::kNo,
-         n, n, alpha,
-         a_buffer, a_offset, a_ld,
-         x_buffer, x_offset, x_inc, beta,
-         y_buffer, y_offset, y_inc,
-         fast_kernels, fast_kernels,
-         is_upper, false, 0, 0);
+  MatVec(layout, Transpose::kNo, n, n, alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, beta, y_buffer,
+         y_offset, y_inc, fast_kernels, fast_kernels, is_upper, false, 0, 0);
 }
 
 // =================================================================================================
@@ -58,4 +47,4 @@ template class Xsymv<float>;
 template class Xsymv<double>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

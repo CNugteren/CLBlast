@@ -33,16 +33,16 @@
 #define CLBLAST_CUPP11_H_
 
 // C++
-#include <algorithm> // std::copy
-#include <string>    // std::string
-#include <vector>    // std::vector
-#include <memory>    // std::shared_ptr
-#include <cstring>   // std::strlen
+#include <algorithm>  // std::copy
+#include <cstring>    // std::strlen
+#include <memory>     // std::shared_ptr
+#include <string>     // std::string
+#include <vector>     // std::vector
 
 // CUDA
-#define CUDA_NO_HALF // Incompatible with CLBlast's definition; TODO: resolve this
-#include <cuda.h>    // CUDA driver API
-#include <nvrtc.h>   // NVIDIA runtime compilation API
+#define CUDA_NO_HALF  // Incompatible with CLBlast's definition; TODO: resolve this
+#include <cuda.h>     // CUDA driver API
+#include <nvrtc.h>    // NVIDIA runtime compilation API
 
 // Exception classes
 #include "cxpp11_common.hpp"
@@ -57,25 +57,24 @@ constexpr auto kStringLength = 256;
 
 // Represents a runtime error returned by a CUDA driver API function
 class CLCudaAPIError : public ErrorCode<DeviceError, CUresult> {
-public:
-  explicit CLCudaAPIError(CUresult status, const std::string &where):
-      ErrorCode(status, where, "CUDA error: " + where + ": " +
-                               GetErrorName(status) + " --> " + GetErrorString(status)) {
-  }
+ public:
+  explicit CLCudaAPIError(CUresult status, const std::string& where)
+      : ErrorCode(status, where,
+                  "CUDA error: " + where + ": " + GetErrorName(status) + " --> " + GetErrorString(status)) {}
 
-  static void Check(const CUresult status, const std::string &where) {
+  static void Check(const CUresult status, const std::string& where) {
     if (status != CUDA_SUCCESS) {
       throw CLCudaAPIError(status, where);
     }
   }
 
-  static void CheckDtor(const CUresult status, const std::string &where) {
+  static void CheckDtor(const CUresult status, const std::string& where) {
     if (status != CUDA_SUCCESS) {
       fprintf(stderr, "CLCudaAPI: %s (ignoring)\n", CLCudaAPIError(status, where).what());
     }
   }
 
-private:
+ private:
   std::string GetErrorName(CUresult status) const {
     const char* status_code;
     cuGetErrorName(status, &status_code);
@@ -90,24 +89,23 @@ private:
 
 // Represents a runtime error returned by a CUDA runtime compilation API function
 class CLCudaAPINVRTCError : public ErrorCode<DeviceError, nvrtcResult> {
-public:
-  explicit CLCudaAPINVRTCError(nvrtcResult status, const std::string &where):
-      ErrorCode(status, where, "CUDA NVRTC error: " + where + ": " + GetErrorString(status)) {
-  }
+ public:
+  explicit CLCudaAPINVRTCError(nvrtcResult status, const std::string& where)
+      : ErrorCode(status, where, "CUDA NVRTC error: " + where + ": " + GetErrorString(status)) {}
 
-  static void Check(const nvrtcResult status, const std::string &where) {
+  static void Check(const nvrtcResult status, const std::string& where) {
     if (status != NVRTC_SUCCESS) {
       throw CLCudaAPINVRTCError(status, where);
     }
   }
 
-  static void CheckDtor(const nvrtcResult status, const std::string &where) {
+  static void CheckDtor(const nvrtcResult status, const std::string& where) {
     if (status != NVRTC_SUCCESS) {
       fprintf(stderr, "CLCudaAPI: %s (ignoring)\n", CLCudaAPINVRTCError(status, where).what());
     }
   }
 
-private:
+ private:
   std::string GetErrorString(nvrtcResult status) const {
     const char* status_string = nvrtcGetErrorString(status);
     return std::string(status_string);
@@ -131,19 +129,26 @@ using CLCudaAPIBuildError = CLCudaAPINVRTCError;
 
 // C++11 version of two 'CUevent' pointers
 class Event {
-public:
+ public:
   // Note that there is no constructor based on the regular CUDA data-type because of extra state
 
   // Regular constructor with memory management
-  explicit Event():
-      start_(new CUevent, [](CUevent* e) { CheckErrorDtor(cuEventDestroy(*e)); delete e; }),
-      end_(new CUevent, [](CUevent* e) { CheckErrorDtor(cuEventDestroy(*e)); delete e; }) {
+  explicit Event()
+      : start_(new CUevent,
+               [](CUevent* e) {
+                 CheckErrorDtor(cuEventDestroy(*e));
+                 delete e;
+               }),
+        end_(new CUevent, [](CUevent* e) {
+          CheckErrorDtor(cuEventDestroy(*e));
+          delete e;
+        }) {
     CheckError(cuEventCreate(start_.get(), CU_EVENT_DEFAULT));
     CheckError(cuEventCreate(end_.get(), CU_EVENT_DEFAULT));
   }
 
   // Waits for completion of this event (not implemented for CUDA)
-  void WaitForCompletion() const { }   // not needed due to cuStreamSynchronize call after each kernel launch
+  void WaitForCompletion() const {}  // not needed due to cuStreamSynchronize call after each kernel launch
 
   // Retrieves the elapsed time of the last recorded event
   float GetElapsedTime() const {
@@ -156,7 +161,8 @@ public:
   const CUevent& start() const { return *start_; }
   const CUevent& end() const { return *end_; }
   Event* pointer() { return this; }
-private:
+
+ private:
   std::shared_ptr<CUevent> start_;
   std::shared_ptr<CUevent> end_;
 };
@@ -171,11 +177,12 @@ using RawPlatformID = size_t;
 
 // The CUDA platform: initializes the CUDA driver API
 class Platform {
-public:
-
+ public:
   // Initializes the platform. Note that the platform ID variable is not actually used for CUDA.
   explicit Platform(const size_t platform_id) : platform_id_(0) {
-    if (platform_id != 0) { throw LogicError("CUDA back-end requires a platform ID of 0"); }
+    if (platform_id != 0) {
+      throw LogicError("CUDA back-end requires a platform ID of 0");
+    }
     CheckError(cuInit(0));
   }
 
@@ -185,7 +192,7 @@ public:
   std::string Version() const {
     auto result = 0;
     CheckError(cuDriverGetVersion(&result));
-    return "CUDA driver "+std::to_string(result);
+    return "CUDA driver " + std::to_string(result);
   }
 
   // Returns the number of devices on this platform
@@ -197,13 +204,14 @@ public:
 
   // Accessor to the raw ID (which doesn't exist in the CUDA back-end, this is always just 0)
   const RawPlatformID& operator()() const { return platform_id_; }
-private:
+
+ private:
   const size_t platform_id_;
 };
 
 // Retrieves a vector with all platforms. Note that there is just one platform in CUDA.
 inline std::vector<Platform> GetAllPlatforms() {
-  auto all_platforms = std::vector<Platform>{ Platform(size_t{0}) };
+  auto all_platforms = std::vector<Platform>{Platform(size_t{0})};
   return all_platforms;
 }
 
@@ -214,19 +222,18 @@ using RawDeviceID = CUdevice;
 
 // C++11 version of 'CUdevice'
 class Device {
-public:
-
+ public:
   // Constructor based on the regular CUDA data-type
-  explicit Device(const CUdevice device): device_(device) { }
+  explicit Device(const CUdevice device) : device_(device) {}
 
   // Initialization
-  explicit Device(const Platform &platform, const size_t device_id) {
+  explicit Device(const Platform& platform, const size_t device_id) {
     auto num_devices = platform.NumDevices();
     if (num_devices == 0) {
       throw RuntimeError("Device: no devices found");
     }
     if (device_id >= num_devices) {
-      throw RuntimeError("Device: invalid device ID "+std::to_string(device_id));
+      throw RuntimeError("Device: invalid device ID " + std::to_string(device_id));
     }
 
     CheckError(cuDeviceGet(&device_, device_id));
@@ -237,7 +244,7 @@ public:
   std::string Version() const {
     auto result = 0;
     CheckError(cuDriverGetVersion(&result));
-    return "CUDA driver "+std::to_string(result);
+    return "CUDA driver " + std::to_string(result);
   }
   size_t VersionNumber() const {
     auto result = 0;
@@ -249,11 +256,11 @@ public:
     auto result = std::string{};
     result.resize(kStringLength);
     CheckError(cuDeviceGetName(&result[0], result.size(), device_));
-    result.resize(strlen(result.c_str())); // Removes any trailing '\0'-characters
+    result.resize(strlen(result.c_str()));  // Removes any trailing '\0'-characters
     return result;
   }
   std::string Type() const { return "GPU"; }
-  size_t MaxWorkGroupSize() const {return GetInfo(CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK); }
+  size_t MaxWorkGroupSize() const { return GetInfo(CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK); }
   size_t MaxWorkItemDimensions() const { return size_t{3}; }
   std::vector<size_t> MaxWorkItemSizes() const {
     return std::vector<size_t>{GetInfo(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X),
@@ -267,24 +274,28 @@ public:
   std::string Capabilities() const {
     const auto major = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR);
     const auto minor = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR);
-    return "SM"+std::to_string(major)+"."+std::to_string(minor);
+    return "SM" + std::to_string(major) + "." + std::to_string(minor);
   }
   std::string ComputeArch() const {
     const auto major = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR);
     const auto minor = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR);
-    return "compute_"+std::to_string(major)+std::to_string(minor);
+    return "compute_" + std::to_string(major) + std::to_string(minor);
   }
-  bool HasExtension(const std::string &extension) const { return false; }
+  bool HasExtension(const std::string& extension) const { return false; }
   bool SupportsFP64() const { return true; }
   bool SupportsFP16() const {
     const auto major = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR);
     const auto minor = GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR);
-    if (major > 5) { return true; } // SM 6.x, 7.x and higher
-    if (major == 5 && minor == 3) { return true; } // SM 5.3
+    if (major > 5) {
+      return true;
+    }  // SM 6.x, 7.x and higher
+    if (major == 5 && minor == 3) {
+      return true;
+    }  // SM 5.3
     return false;
   }
 
-  size_t CoreClock() const { return 1e-3*GetInfo(CU_DEVICE_ATTRIBUTE_CLOCK_RATE); }
+  size_t CoreClock() const { return 1e-3 * GetInfo(CU_DEVICE_ATTRIBUTE_CLOCK_RATE); }
   size_t ComputeUnits() const { return GetInfo(CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT); }
   unsigned long MemorySize() const {
     auto result = size_t{0};
@@ -292,21 +303,27 @@ public:
     return static_cast<unsigned long>(result);
   }
   unsigned long MaxAllocSize() const { return MemorySize(); }
-  size_t MemoryClock() const { return 1e-3*GetInfo(CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE); }
+  size_t MemoryClock() const { return 1e-3 * GetInfo(CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE); }
   size_t MemoryBusWidth() const { return GetInfo(CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH); }
 
   // Configuration-validity checks
-  bool IsLocalMemoryValid(const size_t local_mem_usage) const {
-    return (local_mem_usage <= LocalMemSize());
-  }
-  bool IsThreadConfigValid(const std::vector<size_t> &local) const {
+  bool IsLocalMemoryValid(const size_t local_mem_usage) const { return (local_mem_usage <= LocalMemSize()); }
+  bool IsThreadConfigValid(const std::vector<size_t>& local) const {
     auto local_size = size_t{1};
-    for (const auto &item: local) { local_size *= item; }
-    for (auto i=size_t{0}; i<local.size(); ++i) {
-      if (local[i] > MaxWorkItemSizes()[i]) { return false; }
+    for (const auto& item : local) {
+      local_size *= item;
     }
-    if (local_size > MaxWorkGroupSize()) { return false; }
-    if (local.size() > MaxWorkItemDimensions()) { return false; }
+    for (auto i = size_t{0}; i < local.size(); ++i) {
+      if (local[i] > MaxWorkItemSizes()[i]) {
+        return false;
+      }
+    }
+    if (local_size > MaxWorkGroupSize()) {
+      return false;
+    }
+    if (local.size() > MaxWorkItemDimensions()) {
+      return false;
+    }
     return true;
   }
 
@@ -324,16 +341,15 @@ public:
   std::string NVIDIAComputeCapability() const { return Capabilities(); }
 
   // Returns if the Nvidia chip is a Volta or later archicture (major version  7 or higher)
-  bool IsPostNVIDIAVolta() const {
-    return GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR) >= 7;
-  }
+  bool IsPostNVIDIAVolta() const { return GetInfo(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR) >= 7; }
 
   // Retrieves the above extra information
   std::string GetExtraInfo() const { return NVIDIAComputeCapability(); }
 
   // Accessor to the private data-member
   const RawDeviceID& operator()() const { return device_; }
-private:
+
+ private:
   CUdevice device_;
 
   // Private helper function
@@ -351,27 +367,26 @@ using RawContext = CUcontext;
 
 // C++11 version of 'CUcontext'
 class Context {
-public:
-
+ public:
   // Constructor based on the regular CUDA data-type: memory management is handled elsewhere
-  explicit Context(const CUcontext context):
-      context_(new CUcontext) {
-    *context_ = context;
-  }
+  explicit Context(const CUcontext context) : context_(new CUcontext) { *context_ = context; }
 
   // Regular constructor with memory management
-  explicit Context(const Device &device):
-      context_(new CUcontext, [](CUcontext* c) {
-          if (*c) { CheckErrorDtor(cuCtxDestroy(*c)); }
+  explicit Context(const Device& device)
+      : context_(new CUcontext, [](CUcontext* c) {
+          if (*c) {
+            CheckErrorDtor(cuCtxDestroy(*c));
+          }
           delete c;
-      }) {
+        }) {
     CheckError(cuCtxCreate(context_.get(), 0, device()));
   }
 
   // Accessor to the private data-member
   const RawContext& operator()() const { return *context_; }
   RawContext* pointer() const { return &(*context_); }
-private:
+
+ private:
   std::shared_ptr<CUcontext> context_;
 };
 
@@ -382,36 +397,40 @@ using ContextPointer = CUcontext*;
 
 // C++11 version of 'nvrtcProgram'. Additionally holds the program's source code.
 class Program {
-public:
+ public:
   Program() = default;
 
   // Note that there is no constructor based on the regular CUDA data-type because of extra state
 
   // Source-based constructor with memory management
-  explicit Program(const Context &, std::string source):
-      program_(new nvrtcProgram, [](nvrtcProgram* p) {
-          if (*p) { CheckErrorDtorNVRTC(nvrtcDestroyProgram(p)); }
-          delete p;
-      }),
-      source_(std::move(source)),
-      from_binary_(false) {
+  explicit Program(const Context&, std::string source)
+      : program_(new nvrtcProgram,
+                 [](nvrtcProgram* p) {
+                   if (*p) {
+                     CheckErrorDtorNVRTC(nvrtcDestroyProgram(p));
+                   }
+                   delete p;
+                 }),
+        source_(std::move(source)),
+        from_binary_(false) {
     const auto source_ptr = &source_[0];
     CheckErrorNVRTC(nvrtcCreateProgram(program_.get(), source_ptr, nullptr, 0, nullptr, nullptr));
   }
 
   // PTX-based constructor
-  explicit Program(const Device &device, const Context &context, const std::string &binary):
-      program_(nullptr), // not used
-      source_(binary),
-      from_binary_(true) {
-  }
+  explicit Program(const Device& device, const Context& context, const std::string& binary)
+      : program_(nullptr),  // not used
+        source_(binary),
+        from_binary_(true) {}
 
   // Compiles the device program and checks whether or not there are any warnings/errors
-  void Build(const Device &device, std::vector<std::string> &options) {
+  void Build(const Device& device, std::vector<std::string>& options) {
     options.push_back("-arch=" + device.ComputeArch());
-    if (from_binary_) { return; }
+    if (from_binary_) {
+      return;
+    }
     auto raw_options = std::vector<const char*>();
-    for (const auto &option: options) {
+    for (const auto& option : options) {
       raw_options.push_back(option.c_str());
     }
     auto status = nvrtcCompileProgram(*program_, raw_options.size(), raw_options.data());
@@ -420,13 +439,13 @@ public:
   }
 
   // Confirms whether a certain status code is an actual compilation error or warning
-  bool StatusIsCompilationWarningOrError(const nvrtcResult status) const {
-    return (status == NVRTC_ERROR_COMPILATION);
-  }
+  bool StatusIsCompilationWarningOrError(const nvrtcResult status) const { return (status == NVRTC_ERROR_COMPILATION); }
 
   // Retrieves the warning/error message from the compiler (if any)
-  std::string GetBuildInfo(const Device &) const {
-    if (from_binary_) { return std::string{}; }
+  std::string GetBuildInfo(const Device&) const {
+    if (from_binary_) {
+      return std::string{};
+    }
     auto bytes = size_t{0};
     CheckErrorNVRTC(nvrtcGetProgramLogSize(*program_, &bytes));
     auto result = std::string{};
@@ -437,7 +456,9 @@ public:
 
   // Retrieves an intermediate representation of the compiled program (i.e. PTX)
   std::string GetIR() const {
-    if (from_binary_) { return source_; } // holds the PTX
+    if (from_binary_) {
+      return source_;
+    }  // holds the PTX
     auto bytes = size_t{0};
     CheckErrorNVRTC(nvrtcGetPTXSize(*program_, &bytes));
     auto result = std::string{};
@@ -449,7 +470,8 @@ public:
   // Accessor to the private data-members
   const CUmodule GetModule() const { return module_; }
   const nvrtcProgram& operator()() const { return *program_; }
-private:
+
+ private:
   std::shared_ptr<nvrtcProgram> program_;
   CUmodule module_;
   std::string source_;
@@ -463,28 +485,29 @@ using RawCommandQueue = CUstream;
 
 // C++11 version of 'CUstream'
 class Queue {
-public:
+ public:
   // Note that there is no constructor based on the regular CUDA data-type because of extra state
 
   // Regular constructor with memory management
-  explicit Queue(const Context &context, const Device &device):
-      queue_(new CUstream, [](CUstream* s) {
-          if (*s) { CheckErrorDtor(cuStreamDestroy(*s)); }
-          delete s;
-      }),
-      context_(context),
-      device_(device) {
+  explicit Queue(const Context& context, const Device& device)
+      : queue_(new CUstream,
+               [](CUstream* s) {
+                 if (*s) {
+                   CheckErrorDtor(cuStreamDestroy(*s));
+                 }
+                 delete s;
+               }),
+        context_(context),
+        device_(device) {
     CheckError(cuStreamCreate(queue_.get(), CU_STREAM_NON_BLOCKING));
   }
 
   // Synchronizes the queue and optionally also an event
-  void Finish(Event &event) const {
+  void Finish(Event& event) const {
     CheckError(cuEventSynchronize(event.end()));
     Finish();
   }
-  void Finish() const {
-    CheckError(cuStreamSynchronize(*queue_));
-  }
+  void Finish() const { CheckError(cuStreamSynchronize(*queue_)); }
 
   // Retrieves the corresponding context or device
   Context GetContext() const { return context_; }
@@ -492,7 +515,8 @@ public:
 
   // Accessor to the private data-member
   const RawCommandQueue& operator()() const { return *queue_; }
-private:
+
+ private:
   std::shared_ptr<CUstream> queue_;
   const Context context_;
   const Device device_;
@@ -503,29 +527,30 @@ private:
 // C++11 version of page-locked host memory
 template <typename T>
 class BufferHost {
-public:
-
+ public:
   // Regular constructor with memory management
-  explicit BufferHost(const Context &, const size_t size):
-      buffer_(new void*, [](void** m) { CheckError(cuMemFreeHost(*m)); delete m; }),
-      size_(size) {
-    CheckError(cuMemAllocHost(buffer_.get(), size*sizeof(T)));
+  explicit BufferHost(const Context&, const size_t size)
+      : buffer_(new void*,
+                [](void** m) {
+                  CheckError(cuMemFreeHost(*m));
+                  delete m;
+                }),
+        size_(size) {
+    CheckError(cuMemAllocHost(buffer_.get(), size * sizeof(T)));
   }
 
   // Retrieves the actual allocated size in bytes
-  size_t GetSize() const {
-    return size_*sizeof(T);
-  }
+  size_t GetSize() const { return size_ * sizeof(T); }
 
   // Compatibility with std::vector
   size_t size() const { return size_; }
   T* begin() { return &static_cast<T*>(*buffer_)[0]; }
-  T* end() { return &static_cast<T*>(*buffer_)[size_-1]; }
+  T* end() { return &static_cast<T*>(*buffer_)[size_ - 1]; }
   T& operator[](const size_t i) { return static_cast<T*>(*buffer_)[i]; }
   T* data() { return static_cast<T*>(*buffer_); }
   const T* data() const { return static_cast<T*>(*buffer_); }
 
-private:
+ private:
   std::shared_ptr<void*> buffer_;
   const size_t size_;
 };
@@ -538,57 +563,55 @@ enum class BufferAccess { kReadOnly, kWriteOnly, kReadWrite, kNotOwned };
 // C++11 version of 'CUdeviceptr'
 template <typename T>
 class Buffer {
-public:
-
+ public:
   // Constructor based on the regular CUDA data-type: memory management is handled elsewhere
-  explicit Buffer(const CUdeviceptr buffer):
-      buffer_(new CUdeviceptr),
-      access_(BufferAccess::kNotOwned) {
+  explicit Buffer(const CUdeviceptr buffer) : buffer_(new CUdeviceptr), access_(BufferAccess::kNotOwned) {
     *buffer_ = buffer;
   }
 
   // Regular constructor with memory management. If this class does not own the buffer object, then
   // the memory will not be freed automatically afterwards.
-  explicit Buffer(const Context &, const BufferAccess access, const size_t size):
-      buffer_(new CUdeviceptr, [access, size](CUdeviceptr* m) {
-          if (access != BufferAccess::kNotOwned && size > 0) { CheckError(cuMemFree(*m)); }
-          delete m;
-      }),
-      access_(access) {
-    if (size > 0) { CheckError(cuMemAlloc(buffer_.get(), size*sizeof(T))); }
+  explicit Buffer(const Context&, const BufferAccess access, const size_t size)
+      : buffer_(new CUdeviceptr,
+                [access, size](CUdeviceptr* m) {
+                  if (access != BufferAccess::kNotOwned && size > 0) {
+                    CheckError(cuMemFree(*m));
+                  }
+                  delete m;
+                }),
+        access_(access) {
+    if (size > 0) {
+      CheckError(cuMemAlloc(buffer_.get(), size * sizeof(T)));
+    }
   }
 
   // As above, but now with read/write access as a default
-  explicit Buffer(const Context &context, const size_t size):
-      Buffer<T>(context, BufferAccess::kReadWrite, size) {
-  }
+  explicit Buffer(const Context& context, const size_t size) : Buffer<T>(context, BufferAccess::kReadWrite, size) {}
 
   // Constructs a new buffer based on an existing host-container
   template <typename Iterator>
-  explicit Buffer(const Context &context, const Queue &queue, Iterator start, Iterator end):
-      Buffer(context, BufferAccess::kReadWrite, static_cast<size_t>(end - start)) {
+  explicit Buffer(const Context& context, const Queue& queue, Iterator start, Iterator end)
+      : Buffer(context, BufferAccess::kReadWrite, static_cast<size_t>(end - start)) {
     auto size = static_cast<size_t>(end - start);
     auto pointer = &*start;
-    CheckError(cuMemcpyHtoDAsync(*buffer_, pointer, size*sizeof(T), queue()));
+    CheckError(cuMemcpyHtoDAsync(*buffer_, pointer, size * sizeof(T), queue()));
     queue.Finish();
   }
 
   // Copies from device to host: reading the device buffer a-synchronously
-  void ReadAsync(const Queue &queue, const size_t size, T* host, const size_t offset = 0) const {
+  void ReadAsync(const Queue& queue, const size_t size, T* host, const size_t offset = 0) const {
     if (access_ == BufferAccess::kWriteOnly) {
       throw LogicError("Buffer: reading from a write-only buffer");
     }
-    CheckError(cuMemcpyDtoHAsync(host, *buffer_ + offset*sizeof(T), size*sizeof(T), queue()));
+    CheckError(cuMemcpyDtoHAsync(host, *buffer_ + offset * sizeof(T), size * sizeof(T), queue()));
   }
-  void ReadAsync(const Queue &queue, const size_t size, std::vector<T> &host,
-                 const size_t offset = 0) const {
+  void ReadAsync(const Queue& queue, const size_t size, std::vector<T>& host, const size_t offset = 0) const {
     if (host.size() < size) {
       throw LogicError("Buffer: target host buffer is too small");
     }
     ReadAsync(queue, size, host.data(), offset);
   }
-  void ReadAsync(const Queue &queue, const size_t size, BufferHost<T> &host,
-                 const size_t offset = 0) const {
+  void ReadAsync(const Queue& queue, const size_t size, BufferHost<T>& host, const size_t offset = 0) const {
     if (host.size() < size) {
       throw LogicError("Buffer: target host buffer is too small");
     }
@@ -596,58 +619,52 @@ public:
   }
 
   // Copies from device to host: reading the device buffer
-  void Read(const Queue &queue, const size_t size, T* host, const size_t offset = 0) const {
+  void Read(const Queue& queue, const size_t size, T* host, const size_t offset = 0) const {
     ReadAsync(queue, size, host, offset);
     queue.Finish();
   }
-  void Read(const Queue &queue, const size_t size, std::vector<T> &host,
-            const size_t offset = 0) const {
+  void Read(const Queue& queue, const size_t size, std::vector<T>& host, const size_t offset = 0) const {
     Read(queue, size, host.data(), offset);
   }
-  void Read(const Queue &queue, const size_t size, BufferHost<T> &host,
-            const size_t offset = 0) const {
+  void Read(const Queue& queue, const size_t size, BufferHost<T>& host, const size_t offset = 0) const {
     Read(queue, size, host.data(), offset);
   }
 
   // Copies from host to device: writing the device buffer a-synchronously
-  void WriteAsync(const Queue &queue, const size_t size, const T* host, const size_t offset = 0) {
+  void WriteAsync(const Queue& queue, const size_t size, const T* host, const size_t offset = 0) {
     if (access_ == BufferAccess::kReadOnly) {
       throw LogicError("Buffer: writing to a read-only buffer");
     }
-    if (GetSize() < (offset+size)*sizeof(T)) {
+    if (GetSize() < (offset + size) * sizeof(T)) {
       throw LogicError("Buffer: target device buffer is too small");
     }
-    CheckError(cuMemcpyHtoDAsync(*buffer_ + offset*sizeof(T), host, size*sizeof(T), queue()));
+    CheckError(cuMemcpyHtoDAsync(*buffer_ + offset * sizeof(T), host, size * sizeof(T), queue()));
   }
-  void WriteAsync(const Queue &queue, const size_t size, const std::vector<T> &host,
-                  const size_t offset = 0) {
+  void WriteAsync(const Queue& queue, const size_t size, const std::vector<T>& host, const size_t offset = 0) {
     WriteAsync(queue, size, host.data(), offset);
   }
-  void WriteAsync(const Queue &queue, const size_t size, const BufferHost<T> &host,
-                  const size_t offset = 0) {
+  void WriteAsync(const Queue& queue, const size_t size, const BufferHost<T>& host, const size_t offset = 0) {
     WriteAsync(queue, size, host.data(), offset);
   }
 
   // Copies from host to device: writing the device buffer
-  void Write(const Queue &queue, const size_t size, const T* host, const size_t offset = 0) {
+  void Write(const Queue& queue, const size_t size, const T* host, const size_t offset = 0) {
     WriteAsync(queue, size, host, offset);
     queue.Finish();
   }
-  void Write(const Queue &queue, const size_t size, const std::vector<T> &host,
-             const size_t offset = 0) {
+  void Write(const Queue& queue, const size_t size, const std::vector<T>& host, const size_t offset = 0) {
     Write(queue, size, host.data(), offset);
   }
-  void Write(const Queue &queue, const size_t size, const BufferHost<T> &host,
-             const size_t offset = 0) {
+  void Write(const Queue& queue, const size_t size, const BufferHost<T>& host, const size_t offset = 0) {
     Write(queue, size, host.data(), offset);
   }
 
   // Copies the contents of this buffer into another device buffer
-  void CopyToAsync(const Queue &queue, const size_t size, const Buffer<T> &destination,
+  void CopyToAsync(const Queue& queue, const size_t size, const Buffer<T>& destination,
                    EventPointer event = nullptr) const {
-    CheckError(cuMemcpyDtoDAsync(destination(), *buffer_, size*sizeof(T), queue()));
+    CheckError(cuMemcpyDtoDAsync(destination(), *buffer_, size * sizeof(T), queue()));
   }
-  void CopyTo(const Queue &queue, const size_t size, const Buffer<T> &destination) const {
+  void CopyTo(const Queue& queue, const size_t size, const Buffer<T>& destination) const {
     CopyToAsync(queue, size, destination);
     queue.Finish();
   }
@@ -662,7 +679,8 @@ public:
   // Accessors to the private data-members
   CUdeviceptr operator()() const { return *buffer_; }
   CUdeviceptr& operator()() { return *buffer_; }
-private:
+
+ private:
   std::shared_ptr<CUdeviceptr> buffer_;
   BufferAccess access_;
 };
@@ -671,31 +689,29 @@ private:
 
 // C++11 version of 'CUfunction'
 class Kernel {
-public:
-
+ public:
   // Constructor based on the regular CUDA data-type: memory management is handled elsewhere
-  explicit Kernel(const CUfunction kernel):
-      name_("unknown"),
-      kernel_(kernel) {
-  }
+  explicit Kernel(const CUfunction kernel) : name_("unknown"), kernel_(kernel) {}
 
   // Regular constructor with memory management
-  explicit Kernel(const std::shared_ptr<Program> program, const std::string &name): name_(name) {
+  explicit Kernel(const std::shared_ptr<Program> program, const std::string& name) : name_(name) {
     CheckError(cuModuleGetFunction(&kernel_, program->GetModule(), name.c_str()));
   }
 
   // Sets a kernel argument at the indicated position. This stores both the value of the argument
   // (as raw bytes) and the index indicating where this value can be found.
   template <typename T>
-  void SetArgument(const size_t index, const T &value) {
-    if (index >= arguments_indices_.size()) { arguments_indices_.resize(index+1); }
+  void SetArgument(const size_t index, const T& value) {
+    if (index >= arguments_indices_.size()) {
+      arguments_indices_.resize(index + 1);
+    }
     arguments_indices_[index] = arguments_data_.size();
-    for (auto j=size_t(0); j<sizeof(T); ++j) {
+    for (auto j = size_t(0); j < sizeof(T); ++j) {
       arguments_data_.push_back(reinterpret_cast<const char*>(&value)[j]);
     }
   }
   template <typename T>
-  void SetArgument(const size_t index, Buffer<T> &value) {
+  void SetArgument(const size_t index, Buffer<T>& value) {
     SetArgument(index, value());
   }
 
@@ -710,20 +726,18 @@ public:
 
   // Retrieves the amount of local memory used per work-group for this kernel. Note that this the
   // shared memory in CUDA terminology.
-  unsigned long LocalMemUsage(const Device &) const {
+  unsigned long LocalMemUsage(const Device&) const {
     auto result = 0;
     CheckError(cuFuncGetAttribute(&result, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel_));
     return static_cast<unsigned long>(result);
   }
 
   // Retrieves the name of the kernel
-  std::string GetFunctionName() const {
-    return name_;
-  }
+  std::string GetFunctionName() const { return name_; }
 
   // Launches a kernel onto the specified queue
-  void Launch(const Queue &queue, const std::vector<size_t> &global,
-              const std::vector<size_t> &local, EventPointer event) {
+  void Launch(const Queue& queue, const std::vector<size_t>& global, const std::vector<size_t>& local,
+              EventPointer event) {
     // TODO: Currently this CUDA launch is always synchronous due to a cuStreamSynchronize call
     if (local.size() == 0) {
       throw LogicError("Kernel: launching with a default workgroup size is not implemented for the CUDA back-end");
@@ -732,30 +746,39 @@ public:
     // Creates the grid (number of threadblocks) and sets the block sizes (threads per block)
     auto grid = std::vector<size_t>{1, 1, 1};
     auto block = std::vector<size_t>{1, 1, 1};
-    if (global.size() != local.size()) { throw LogicError("invalid thread/workgroup dimensions"); }
-    for (auto i=size_t{0}; i<local.size(); ++i) { grid[i] = global[i]/local[i]; }
-    for (auto i=size_t{0}; i<local.size(); ++i) { block[i] = local[i]; }
+    if (global.size() != local.size()) {
+      throw LogicError("invalid thread/workgroup dimensions");
+    }
+    for (auto i = size_t{0}; i < local.size(); ++i) {
+      grid[i] = global[i] / local[i];
+    }
+    for (auto i = size_t{0}; i < local.size(); ++i) {
+      block[i] = local[i];
+    }
 
     // Creates the array of pointers from the arrays of indices & data
     std::vector<void*> pointers;
-    for (auto &index: arguments_indices_) {
+    for (auto& index : arguments_indices_) {
       pointers.push_back(&arguments_data_[index]);
     }
 
     // Launches the kernel, its execution time is recorded by events
-    if (event) { CheckError(cuEventRecord(event->start(), queue())); }
-    CheckError(cuLaunchKernel(kernel_, grid[0], grid[1], grid[2], block[0], block[1], block[2],
-                              0, queue(), pointers.data(), nullptr));
+    if (event) {
+      CheckError(cuEventRecord(event->start(), queue()));
+    }
+    CheckError(cuLaunchKernel(kernel_, grid[0], grid[1], grid[2], block[0], block[1], block[2], 0, queue(),
+                              pointers.data(), nullptr));
     cuStreamSynchronize(queue());
-    if (event) { CheckError(cuEventRecord(event->end(), queue())); }
+    if (event) {
+      CheckError(cuEventRecord(event->end(), queue()));
+    }
   }
 
   // As above, but with an event waiting list
-  void Launch(const Queue &queue, const std::vector<size_t> &global,
-              const std::vector<size_t> &local, EventPointer event,
-              const std::vector<Event>& waitForEvents) {
-    for (auto &waitEvent : waitForEvents) {
-      waitEvent.WaitForCompletion(); // note: doesn't do anything, every kernel call is synchronous
+  void Launch(const Queue& queue, const std::vector<size_t>& global, const std::vector<size_t>& local,
+              EventPointer event, const std::vector<Event>& waitForEvents) {
+    for (auto& waitEvent : waitForEvents) {
+      waitEvent.WaitForCompletion();  // note: doesn't do anything, every kernel call is synchronous
     }
     return Launch(queue, global, local, event);
   }
@@ -763,26 +786,27 @@ public:
   // Accessors to the private data-members
   const CUfunction& operator()() const { return kernel_; }
   CUfunction operator()() { return kernel_; }
-private:
+
+ private:
   const std::string name_;
   CUfunction kernel_;
-  std::vector<size_t> arguments_indices_; // Indices of the arguments
-  std::vector<char> arguments_data_; // The arguments data as raw bytes
+  std::vector<size_t> arguments_indices_;  // Indices of the arguments
+  std::vector<char> arguments_data_;       // The arguments data as raw bytes
 
   // Internal implementation for the recursive SetArguments function.
   template <typename T>
-  void SetArgumentsRecursive(const size_t index, T &first) {
+  void SetArgumentsRecursive(const size_t index, T& first) {
     SetArgument(index, first);
   }
   template <typename T, typename... Args>
-  void SetArgumentsRecursive(const size_t index, T &first, Args&... args) {
+  void SetArgumentsRecursive(const size_t index, T& first, Args&... args) {
     SetArgument(index, first);
-    SetArgumentsRecursive(index+1, args...);
+    SetArgumentsRecursive(index + 1, args...);
   }
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_CUPP11_H_
 #endif

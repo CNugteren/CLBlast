@@ -17,22 +17,23 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xasum<T>::Xasum(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level1/xasum.opencl"
-    }) {
+Xasum<T>::Xasum(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {},
+              {
+#include "../../kernels/level1/xasum.opencl"
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xasum<T>::DoAsum(const size_t n,
-                      const Buffer<T> &asum_buffer, const size_t asum_offset,
-                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
-
+void Xasum<T>::DoAsum(const size_t n, const Buffer<T>& asum_buffer, const size_t asum_offset, const Buffer<T>& x_buffer,
+                      const size_t x_offset, const size_t x_inc) {
   // Makes sure all dimensions are larger than zero
-  if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Tests the vectors for validity
   TestVectorX(n, x_buffer, x_offset, x_inc);
@@ -43,7 +44,7 @@ void Xasum<T>::DoAsum(const size_t n,
   auto kernel2 = Kernel(program_, "XasumEpilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2*db_["WGS2"];
+  auto temp_size = 2 * db_["WGS2"];
   auto temp_buffer = Buffer<T>(context_, temp_size);
 
   // Sets the kernel arguments
@@ -57,7 +58,7 @@ void Xasum<T>::DoAsum(const size_t n,
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"]*temp_size};
+  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
   auto local1 = std::vector<size_t>{db_["WGS1"]};
   auto kernelEvent = Event();
   RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
@@ -84,4 +85,4 @@ template class Xasum<float2>;
 template class Xasum<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

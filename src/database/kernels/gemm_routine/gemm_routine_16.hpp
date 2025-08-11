@@ -11,147 +11,217 @@ namespace clblast {
 namespace database {
 
 const DatabaseEntry GemmRoutineHalf = {
-  "GemmRoutine", Precision::kHalf, {"XGEMM_MIN_INDIRECT_SIZE"}, {
-    { // AMD GPUs
-      kDeviceTypeGPU, "AMD", {
-        { "Ellesmere", {
-          { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 704, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 704, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "Fiji", {
-          { Name{"AMD Radeon 500 Series                             "}, Params{ 640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "default", {
-          { kDeviceNameDefault                                        , Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1010:xnack-", {
-          { Name{"AMD Radeon RX 5700                                "}, Params{ 512, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1030", {
-          { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX 6900 XT                             "}, Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1031", {
-          { Name{"AMD Radeon RX 6700 XT                             "}, Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1032", {
-          { Name{"AMD Radeon RX 6600 XT                             "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1034", {
-          { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1035", {
-          { Name{"AMD Radeon Graphics                               "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1100", {
-          { Name{"Radeon RX 7900 XTX                                "}, Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1101", {
-          { Name{"AMD Radeon RX 7800 XT                             "}, Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1102", {
-          { Name{"AMD Radeon RX 7600                                "}, Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1103", {
-          { Name{"AMD Radeon 780M Graphics                          "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx1201", {
-          { Name{"AMD Radeon RX 9070 XT                             "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx902", {
-          { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon(TM) RX Vega 10 Graphics                "}, Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx906:sramecc+:xnack-", {
-          { Name{"AMD Instinct MI50/MI60                            "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon VII                                    "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "gfx90c", {
-          { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // ARM GPUs
-      kDeviceTypeGPU, "ARM", {
-        { "default", {
-          { Name{"Mali-G57 MC2 r0p1                                 "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Mali-T628                                         "}, Params{ 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // Imagination Technologies GPUs
-      kDeviceTypeGPU, "Imagination Technologies", {
-        { "default", {
-          { Name{"PowerVR B-Series BXE-4-32                         "}, Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // Intel GPUs
-      kDeviceTypeGPU, "Intel", {
-        { "default", {
-          { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 896, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1024, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 512, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // QUALCOMM GPUs
-      kDeviceTypeGPU, "QUALCOMM", {
-        { "default", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "OpenCL C 2.0 Adreno(TM) 640", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "OpenCL C 2.0 Adreno(TM) 650", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "OpenCL C 3.0 Adreno(TM) 730", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-        { "OpenCL C 3.0 Adreno(TM) 740", {
-          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-    { // Default
-      kDeviceTypeAll, "default", {
-        { "default", {
-          { kDeviceNameDefault                                        , Params{ 384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-        } },
-      }
-    },
-  }
-};
+    "GemmRoutine",
+    Precision::kHalf,
+    {"XGEMM_MIN_INDIRECT_SIZE"},
+    {
+        {// AMD GPUs
+         kDeviceTypeGPU,
+         "AMD",
+         {
+             {"Ellesmere",
+              {
+                  {Name{"AMD Radeon RX 580 2048SP                          "},
+                   Params{704, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"AMD Radeon RX590 GME                              "},
+                   Params{768, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{704, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"Fiji",
+              {
+                  {Name{"AMD Radeon 500 Series                             "},
+                   Params{640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"default",
+              {
+                  {kDeviceNameDefault, Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1010:xnack-",
+              {
+                  {Name{"AMD Radeon RX 5700                                "},
+                   Params{512, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"AMD Radeon RX 5700 XT                             "},
+                   Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1030",
+              {
+                  {Name{"AMD Radeon RX 6800 XT                             "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"AMD Radeon RX 6900 XT                             "},
+                   Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1031",
+              {
+                  {Name{"AMD Radeon RX 6700 XT                             "},
+                   Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1032",
+              {
+                  {Name{"AMD Radeon RX 6600 XT                             "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1034",
+              {
+                  {Name{"AMD Radeon RX 6500 XT                             "},
+                   Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1035",
+              {
+                  {Name{"AMD Radeon Graphics                               "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1100",
+              {
+                  {Name{"Radeon RX 7900 XTX                                "},
+                   Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1101",
+              {
+                  {Name{"AMD Radeon RX 7800 XT                             "},
+                   Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1102",
+              {
+                  {Name{"AMD Radeon RX 7600                                "},
+                   Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1103",
+              {
+                  {Name{"AMD Radeon 780M Graphics                          "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx1201",
+              {
+                  {Name{"AMD Radeon RX 9070 XT                             "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx902",
+              {
+                  {Name{"AMD Radeon(TM) Graphics                           "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"AMD Radeon(TM) RX Vega 10 Graphics                "},
+                   Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx906:sramecc+:xnack-",
+              {
+                  {Name{"AMD Instinct MI50/MI60                            "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"AMD Radeon VII                                    "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"gfx90c",
+              {
+                  {Name{"AMD Radeon(TM) Graphics                           "},
+                   Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{448, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+        {// ARM GPUs
+         kDeviceTypeGPU,
+         "ARM",
+         {
+             {"default",
+              {
+                  {Name{"Mali-G57 MC2 r0p1                                 "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Mali-T628                                         "},
+                   Params{128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+        {// Imagination Technologies GPUs
+         kDeviceTypeGPU,
+         "Imagination Technologies",
+         {
+             {"default",
+              {
+                  {Name{"PowerVR B-Series BXE-4-32                         "},
+                   Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+        {// Intel GPUs
+         kDeviceTypeGPU,
+         "Intel",
+         {
+             {"default",
+              {
+                  {Name{"Intel(R) Arc(TM) A750 Graphics                    "},
+                   Params{896, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) Arc(TM) A770 Graphics                    "},
+                   Params{1024, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) HD Graphics Skylake ULT GT2              "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) Iris(R) Xe Graphics                      "},
+                   Params{640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) UHD Graphics 620                         "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {Name{"Intel(R) UHD Graphics 770                         "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{512, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+        {// QUALCOMM GPUs
+         kDeviceTypeGPU,
+         "QUALCOMM",
+         {
+             {"default",
+              {
+                  {Name{"QUALCOMM Adreno(TM)                               "},
+                   Params{64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"OpenCL C 2.0 Adreno(TM) 640",
+              {
+                  {Name{"QUALCOMM Adreno(TM)                               "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"OpenCL C 2.0 Adreno(TM) 650",
+              {
+                  {Name{"QUALCOMM Adreno(TM)                               "},
+                   Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"OpenCL C 3.0 Adreno(TM) 730",
+              {
+                  {Name{"QUALCOMM Adreno(TM)                               "},
+                   Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+             {"OpenCL C 3.0 Adreno(TM) 740",
+              {
+                  {Name{"QUALCOMM Adreno(TM)                               "},
+                   Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+                  {kDeviceNameDefault, Params{320, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+        {// Default
+         kDeviceTypeAll,
+         "default",
+         {
+             {"default",
+              {
+                  {kDeviceNameDefault, Params{384, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+              }},
+         }},
+    }};
 
-} // namespace database
-} // namespace clblast
+}  // namespace database
+}  // namespace clblast

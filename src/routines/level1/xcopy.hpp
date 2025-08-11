@@ -17,20 +17,18 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xcopy: public Routine {
+class Xcopy : public Routine {
  public:
-
   // Constructor
-  Xcopy(Queue &queue, EventPointer event, const std::string &name = "COPY");
+  Xcopy(Queue& queue, EventPointer event, const std::string& name = "COPY");
 
   // Templated-precision implementation of the routine
-  void DoCopy(const size_t n,
-              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoCopy(const size_t n, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
+              const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_ROUTINES_XCOPY_H_
 #endif

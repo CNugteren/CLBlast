@@ -18,25 +18,21 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xcol2im: public Routine {
+class Xcol2im : public Routine {
  public:
-
   // Constructor
-  Xcol2im(Queue &queue, EventPointer event, const std::string &name = "COL2IM");
+  Xcol2im(Queue& queue, EventPointer event, const std::string& name = "COL2IM");
 
   // Templated-precision implementation of the routine
-  void DoCol2im(const KernelMode kernel_mode,
-                const size_t channels, const size_t height, const size_t width,
-                const size_t kernel_h, const size_t kernel_w,
-                const size_t pad_h, const size_t pad_w,
-                const size_t stride_h, const size_t stride_w,
-                const size_t dilation_h, const size_t dilation_w,
-                const Buffer<T> &col_buffer, const size_t col_offset,
-                const Buffer<T> &im_buffer, const size_t im_offset);
+  void DoCol2im(const KernelMode kernel_mode, const size_t channels, const size_t height, const size_t width,
+                const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w,
+                const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
+                const Buffer<T>& col_buffer, const size_t col_offset, const Buffer<T>& im_buffer,
+                const size_t im_offset);
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_ROUTINES_XCOL2IM_H_
 #endif
