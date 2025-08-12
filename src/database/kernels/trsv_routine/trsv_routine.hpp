@@ -18,5 +18,5 @@ extern const DatabaseEntry TrsvRoutineComplexSingle;
 extern const DatabaseEntry TrsvRoutineDouble;
 extern const DatabaseEntry TrsvRoutineComplexDouble;
 
-}  // namespace database
-}  // namespace clblast
+} // namespace database
+} // namespace clblast

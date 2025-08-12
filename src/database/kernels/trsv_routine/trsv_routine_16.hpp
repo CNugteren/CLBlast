@@ -11,20 +11,16 @@ namespace clblast {
 namespace database {
 
 const DatabaseEntry TrsvRoutineHalf = {
-    "TrsvRoutine",
-    Precision::kHalf,
-    {"TRSV_BLOCK_SIZE"},
-    {
-        {// Default
-         kDeviceTypeAll,
-         "default",
-         {
-             {"default",
-              {
-                  {kDeviceNameDefault, Params{24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-              }},
-         }},
-    }};
+  "TrsvRoutine", Precision::kHalf, {"TRSV_BLOCK_SIZE"}, {
+    { // Default
+      kDeviceTypeAll, "default", {
+        { "default", {
+          { kDeviceNameDefault                                        , Params{ 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
+  }
+};
 
-}  // namespace database
-}  // namespace clblast
+} // namespace database
+} // namespace clblast

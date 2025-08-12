@@ -13,14 +13,14 @@
 #define CLBLAST_ROUTINE_H_
 
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
 
+#include "utilities/utilities.hpp"
 #include "cache.hpp"
+#include "utilities/buffer_test.hpp"
 #include "database/database.hpp"
 #include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
-#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -28,19 +28,19 @@ namespace clblast {
 // See comment at top of file for a description of the class
 class Routine {
  public:
+
   // Initializes db_, fetching cached database or building one
-  static void InitDatabase(const Device& device, const std::vector<std::string>& kernel_names,
-                           const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
-                           Databases& db) {
+  static void InitDatabase(const Device &device, const std::vector<std::string> &kernel_names,
+                           const Precision precision, const std::vector<database::DatabaseEntry> &userDatabase,
+                           Databases &db) {
     const auto platform_id = device.PlatformID();
-    for (const auto& kernel_name : kernel_names) {
+    for (const auto &kernel_name : kernel_names) {
+
       // Queries the cache to see whether or not the kernel parameter database is already there
       bool has_db;
-      db(kernel_name) =
-          DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device(), precision, kernel_name}, &has_db);
-      if (has_db) {
-        continue;
-      }
+      db(kernel_name) = DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device(), precision, kernel_name},
+                                                       &has_db);
+      if (has_db) { continue; }
 
       // Builds the parameter database for this device and routine set and stores it in the cache
       log_debug("Searching database for kernel '" + kernel_name + "'");
@@ -55,9 +55,10 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   // NOTE: the caller must provide the same userDatabase for each combination of device, precision
   // and routine list, otherwise the caching logic will break.
-  explicit Routine(Queue& queue, EventPointer event, const std::string& name, const std::vector<std::string>& routines,
-                   const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
-                   std::initializer_list<const char*> source);
+  explicit Routine(Queue &queue, EventPointer event, const std::string &name,
+                   const std::vector<std::string> &routines, const Precision precision,
+                   const std::vector<database::DatabaseEntry> &userDatabase,
+                   std::initializer_list<const char *> source);
 
   // List of kernel-routine look-ups
   static const std::vector<std::string> routines_axpy;
@@ -70,10 +71,12 @@ class Routine {
   static const std::unordered_map<std::string, const std::vector<std::string>> routines_by_kernel;
 
  private:
+
   // Initializes program_, fetching cached program or building one
-  void InitProgram(std::initializer_list<const char*> source);
+  void InitProgram(std::initializer_list<const char *> source);
 
  protected:
+
   // Non-static variable for the precision
   const Precision precision_;
 
@@ -95,7 +98,7 @@ class Routine {
 };
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
 
 // CLBLAST_ROUTINE_H_
 #endif

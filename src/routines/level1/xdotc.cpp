@@ -17,16 +17,22 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xdotc<T>::Xdotc(Queue& queue, EventPointer event, const std::string& name) : Xdot<T>(queue, event, name) {}
+Xdotc<T>::Xdotc(Queue &queue, EventPointer event, const std::string &name):
+    Xdot<T>(queue, event, name) {
+}
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xdotc<T>::DoDotc(const size_t n, const Buffer<T>& dot_buffer, const size_t dot_offset, const Buffer<T>& x_buffer,
-                      const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
-                      const size_t y_inc) {
-  DoDot(n, dot_buffer, dot_offset, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, true);
+void Xdotc<T>::DoDotc(const size_t n,
+                      const Buffer<T> &dot_buffer, const size_t dot_offset,
+                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
+  DoDot(n, dot_buffer, dot_offset,
+        x_buffer, x_offset, x_inc,
+        y_buffer, y_offset, y_inc,
+        true);
 }
 
 // =================================================================================================
@@ -36,4 +42,4 @@ template class Xdotc<float2>;
 template class Xdotc<double2>;
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

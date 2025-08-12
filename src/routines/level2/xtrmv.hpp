@@ -19,24 +19,27 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xtrmv : public Xgemv<T> {
+class Xtrmv: public Xgemv<T> {
  public:
+
   // Uses the generic matrix-vector routine
   using Xgemv<T>::queue_;
   using Xgemv<T>::context_;
   using Xgemv<T>::MatVec;
 
   // Constructor
-  Xtrmv(Queue& queue, EventPointer event, const std::string& name = "TRMV");
+  Xtrmv(Queue &queue, EventPointer event, const std::string &name = "TRMV");
 
   // Templated-precision implementation of the routine
-  void DoTrmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-              const size_t n, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoTrmv(const Layout layout, const Triangle triangle,
+              const Transpose a_transpose, const Diagonal diagonal,
+              const size_t n,
+              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc);
 };
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
 
 // CLBLAST_ROUTINES_XTRMV_H_
 #endif

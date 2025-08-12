@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/gemm_routine/gemm_routine.hpp"
-
 #include "database/kernels/gemm_routine/gemm_routine_16.hpp"
 #include "database/kernels/gemm_routine/gemm_routine_32.hpp"
 #include "database/kernels/gemm_routine/gemm_routine_3232.hpp"

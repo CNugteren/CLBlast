@@ -16,17 +16,24 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xsyr<T>::Xsyr(Queue& queue, EventPointer event, const std::string& name) : Xher<T, T>(queue, event, name) {}
+Xsyr<T>::Xsyr(Queue &queue, EventPointer event, const std::string &name):
+    Xher<T,T>(queue, event, name) {
+}
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xsyr<T>::DoSyr(const Layout layout, const Triangle triangle, const size_t n, const T alpha,
-                    const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc, const Buffer<T>& a_buffer,
-                    const size_t a_offset, const size_t a_ld) {
+void Xsyr<T>::DoSyr(const Layout layout, const Triangle triangle,
+                    const size_t n,
+                    const T alpha,
+                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
+                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
+
   // Specific Xsyr functionality is implemented in the kernel using defines
-  DoHer(layout, triangle, n, alpha, x_buffer, x_offset, x_inc, a_buffer, a_offset, a_ld);
+  DoHer(layout, triangle, n, alpha,
+        x_buffer, x_offset, x_inc,
+        a_buffer, a_offset, a_ld);
 }
 
 // =================================================================================================
@@ -37,4 +44,4 @@ template class Xsyr<float>;
 template class Xsyr<double>;
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

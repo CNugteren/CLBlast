@@ -12,37 +12,33 @@
 #include <string>
 #include <vector>
 
-#include "tuning/tuning.hpp"
 #include "utilities/utilities.hpp"
+#include "tuning/tuning.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 // Helper functions
 template <typename T>
-size_t OutputHeight(const Arguments<T>& args) {
+size_t OutputHeight(const Arguments<T> &args) {
   const auto size = args.height + 2 * args.pad_h;
   const auto padding = args.dilation_h * (args.kernel_h - 1) + 1;
-  if (size >= padding) {
-    return (size - padding) / args.stride_h + 1;
-  }
+  if (size >= padding) { return (size - padding) / args.stride_h + 1; }
   return 1;
 }
 template <typename T>
-size_t OutputWidth(const Arguments<T>& args) {
+size_t OutputWidth(const Arguments<T> &args) {
   const auto size = args.width + 2 * args.pad_w;
   const auto padding = args.dilation_w * (args.kernel_w - 1) + 1;
-  if (size >= padding) {
-    return (size - padding) / args.stride_w + 1;
-  }
+  if (size >= padding) { return (size - padding) / args.stride_w + 1; }
   return 1;
 }
 
 // Settings for this kernel (default command-line arguments)
 TunerDefaults XConvGemmGetTunerDefaults(const int) {
   auto settings = TunerDefaults();
-  settings.options = {kArgChannels, kArgHeight,     kArgWidth,      kArgKernelH,
-                      kArgKernelW,  kArgNumKernels, kArgBatchCount, kArgFraction};
+  settings.options = {kArgChannels, kArgHeight, kArgWidth, kArgKernelH, kArgKernelW,
+                      kArgNumKernels, kArgBatchCount, kArgFraction};
   settings.channels = 32;
   settings.height = 66;
   settings.width = 66;  // num_patches = 64x64 = 4096
@@ -57,19 +53,20 @@ TunerDefaults XConvGemmGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
   settings.kernel_family = "xconvgemm";
   settings.kernel_name = "XconvgemmNormal";
-  settings.sources = "#define ROUTINE_CONVGEMM"
+  settings.sources =
+"#define ROUTINE_CONVGEMM"
 #include "../src/kernels/level3/xgemm_direct_part1.opencl"
 #include "../src/kernels/level3/xgemm_direct_part2.opencl"
 #include "../src/kernels/level3/xgemm_direct_part3.opencl"
 #include "../src/kernels/levelx/xconvgemm_part1.opencl"
 #include "../src/kernels/levelx/xconvgemm_part2.opencl"
-      ;
+  ;
 
   // Helper variables
   const auto patch_size = args.kernel_h * args.kernel_w * args.channels;
@@ -97,9 +94,16 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T>& args) {
 
   // Sets the tuning parameters and their possible values
   settings.parameters = {
-      {"WGD", {8, 16, 32}},    {"MDIMCD", {8, 16, 32}}, {"NDIMCD", {8, 16, 32}}, {"MDIMAD", {8, 16, 32}},
-      {"NDIMBD", {8, 16, 32}}, {"KWID", {1}},           {"VWMD", {1, 2, 4, 8}},  {"VWND", {1, 2, 4, 8}},
-      {"PADA", {0}},           {"PADB", {0}},
+    {"WGD", {8, 16, 32}},
+    {"MDIMCD", {8, 16, 32}},
+    {"NDIMCD", {8, 16, 32}},
+    {"MDIMAD", {8, 16, 32}},
+    {"NDIMBD", {8, 16, 32}},
+    {"KWID", {1}},
+    {"VWMD", {1, 2, 4, 8}},
+    {"VWND", {1, 2, 4, 8}},
+    {"PADA", {0}},
+    {"PADB", {0}},
   };
 
   // Describes how to compute the performance metrics
@@ -111,12 +115,12 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XConvGemmTestValidArguments(const int, const Arguments<T>&) {}
+void XConvGemmTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XConvGemmSetConstraints(const int) {
   auto constraints = std::vector<Constraint>();
-  auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-  auto MultipleOfXMulY = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1] * v[2]); };
-  auto MultipleOfXMulYDivZ = [](std::vector<size_t> v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
+  auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
+  auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
+  auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
   // Requirement for unrolling the WGD loop
   constraints.push_back({MultipleOfX, {"WGD", "KWID"}});
   // Required for integer MWID and NWID
@@ -133,15 +137,17 @@ std::vector<Constraint> XConvGemmSetConstraints(const int) {
 }
 template <typename T>
 LocalMemSizeInfo XConvGemmComputeLocalMemSize(const int) {
-  return {[](std::vector<size_t> v) -> size_t {
-            return GetBytes(PrecisionValue<T>()) * ((v[0] * (v[0] + v[1]) + v[0] * (v[0] + v[2])));
-          },
-          {"WGD", "PADA", "PADB"}};
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * ((v[0]*(v[0] + v[1]) + v[0]*(v[0] + v[2])));
+      },
+      {"WGD", "PADA", "PADB"}
+  };
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void XConvGemmSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XConvGemmSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   const auto output_h = OutputHeight(args);
   const auto output_w = OutputWidth(args);
   const auto patch_size = args.kernel_h * args.kernel_w * args.channels;
@@ -150,27 +156,27 @@ void XConvGemmSetArguments(const int, Kernel& kernel, const Arguments<T>& args, 
   kernel.SetArgument(0, static_cast<int>(num_patches));
   kernel.SetArgument(1, static_cast<int>(args.num_kernels));
   kernel.SetArgument(2, static_cast<int>(patch_size));
-  kernel.SetArgument(3, buffers[3]());  // 3 == B matrix ==> kernel buffer
-  kernel.SetArgument(4, 0);             // kernel offset
-  kernel.SetArgument(5, buffers[4]());  // 4 == C matrix ==> result buffer
-  kernel.SetArgument(6, 0);             // result offset
+  kernel.SetArgument(3, buffers[3]()); // 3 == B matrix ==> kernel buffer
+  kernel.SetArgument(4, 0); // kernel offset
+  kernel.SetArgument(5, buffers[4]()); // 4 == C matrix ==> result buffer
+  kernel.SetArgument(6, 0); // result offset
   kernel.SetArgument(7, static_cast<int>(result_stride));
-  kernel.SetArgument(8, buffers[2]());  // 2 == A matrix ==> image buffer
-  kernel.SetArgument(9, 0);             // image offset
+  kernel.SetArgument(8, buffers[2]()); // 2 == A matrix ==> image buffer
+  kernel.SetArgument(9, 0); // image offset
   kernel.SetArgument(10, static_cast<int>(args.height));
   kernel.SetArgument(11, static_cast<int>(args.width));
   kernel.SetArgument(12, static_cast<int>(args.channels));
   kernel.SetArgument(13, static_cast<int>(args.kernel_h));
   kernel.SetArgument(14, static_cast<int>(args.kernel_w));
-  kernel.SetArgument(15, 0);  // pad_h
-  kernel.SetArgument(16, 0);  // pad_w
-  kernel.SetArgument(17, 1);  // stride_h
-  kernel.SetArgument(18, 1);  // stride_w
-  kernel.SetArgument(19, 1);  // dilation_h
-  kernel.SetArgument(20, 1);  // dilation_w
+  kernel.SetArgument(15, 0); // pad_h
+  kernel.SetArgument(16, 0); // pad_w
+  kernel.SetArgument(17, 1); // stride_h
+  kernel.SetArgument(18, 1); // stride_w
+  kernel.SetArgument(19, 1); // dilation_h
+  kernel.SetArgument(20, 1); // dilation_w
   kernel.SetArgument(21, static_cast<int>(output_h));
   kernel.SetArgument(22, static_cast<int>(output_w));
 }
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

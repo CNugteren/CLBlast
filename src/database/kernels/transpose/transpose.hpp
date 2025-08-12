@@ -18,5 +18,5 @@ extern const DatabaseEntry TransposeComplexSingle;
 extern const DatabaseEntry TransposeDouble;
 extern const DatabaseEntry TransposeComplexDouble;
 
-}  // namespace database
-}  // namespace clblast
+} // namespace database
+} // namespace clblast

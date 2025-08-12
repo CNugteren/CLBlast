@@ -29,7 +29,7 @@ namespace clblast {
 // _MSC_VER
 #endif
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
 
 // CLBLAST_MSVC_HPP_
 #endif

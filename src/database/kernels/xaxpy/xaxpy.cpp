@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/xaxpy/xaxpy.hpp"
-
 #include "database/kernels/xaxpy/xaxpy_16.hpp"
 #include "database/kernels/xaxpy/xaxpy_32.hpp"
 #include "database/kernels/xaxpy/xaxpy_3232.hpp"

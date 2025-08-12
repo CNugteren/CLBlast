@@ -18,5 +18,5 @@ extern const DatabaseEntry CopyComplexSingle;
 extern const DatabaseEntry CopyDouble;
 extern const DatabaseEntry CopyComplexDouble;
 
-}  // namespace database
-}  // namespace clblast
+} // namespace database
+} // namespace clblast

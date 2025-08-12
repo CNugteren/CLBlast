@@ -19,27 +19,32 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xconvgemm : public Routine {
+class Xconvgemm: public Routine {
  public:
+
   // Constructor
-  enum class ConvGemmMethod { kWithIm2Col, kSingleKernel };
-  Xconvgemm(Queue& queue, EventPointer event, const std::string& name = "CONVGEMM",
+  enum class ConvGemmMethod {kWithIm2Col, kSingleKernel};
+  Xconvgemm(Queue &queue, EventPointer event, const std::string &name = "CONVGEMM",
             const ConvGemmMethod method = ConvGemmMethod::kSingleKernel);
 
   // Templated-precision implementation of the routine
-  void DoConvgemm(const KernelMode kernel_mode, const size_t channels, const size_t height, const size_t width,
-                  const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w,
-                  const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
-                  const size_t num_kernels, const size_t batch_count, const Buffer<T>& im_buffer,
-                  const size_t im_offset, const Buffer<T>& kernel_buffer, const size_t kernel_offset,
-                  const Buffer<T>& result_buffer, const size_t result_offset);
+  void DoConvgemm(const KernelMode kernel_mode,
+                  const size_t channels, const size_t height, const size_t width,
+                  const size_t kernel_h, const size_t kernel_w,
+                  const size_t pad_h, const size_t pad_w,
+                  const size_t stride_h, const size_t stride_w,
+                  const size_t dilation_h, const size_t dilation_w,
+                  const size_t num_kernels, const size_t batch_count,
+                  const Buffer<T> &im_buffer, const size_t im_offset,
+                  const Buffer<T> &kernel_buffer, const size_t kernel_offset,
+                  const Buffer<T> &result_buffer, const size_t result_offset);
 
  private:
   const ConvGemmMethod method_;
 };
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
 
 // CLBLAST_ROUTINES_XCONVGEMM_H_
 #endif

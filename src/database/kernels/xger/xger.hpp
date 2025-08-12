@@ -18,5 +18,5 @@ extern const DatabaseEntry XgerComplexSingle;
 extern const DatabaseEntry XgerDouble;
 extern const DatabaseEntry XgerComplexDouble;
 
-}  // namespace database
-}  // namespace clblast
+} // namespace database
+} // namespace clblast

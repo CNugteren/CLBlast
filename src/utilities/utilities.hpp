@@ -12,19 +12,19 @@
 #ifndef CLBLAST_UTILITIES_H_
 #define CLBLAST_UTILITIES_H_
 
-#include <algorithm>
-#include <complex>
-#include <functional>
-#include <iterator>
-#include <random>
 #include <string>
+#include <functional>
+#include <complex>
+#include <random>
+#include <algorithm>
+#include <iterator>
 
 #ifdef OPENCL_API
-#include "clblast.h"
-#include "clpp11.hpp"
+  #include "clpp11.hpp"
+  #include "clblast.h"
 #elif CUDA_API
-#include "clblast_cuda.h"
-#include "cupp11.hpp"
+  #include "cupp11.hpp"
+  #include "clblast_cuda.h"
 #endif
 #include "clblast_half.h"
 #include "utilities/clblast_exceptions.hpp"
@@ -34,7 +34,7 @@ namespace clblast {
 // =================================================================================================
 
 // Shorthands for half-precision
-using half = unsigned short;  // the 'cl_half' OpenCL type is actually an 'unsigned short'
+using half = unsigned short; // the 'cl_half' OpenCL type is actually an 'unsigned short'
 
 // Shorthands for complex data-types
 using float2 = std::complex<float>;
@@ -134,48 +134,35 @@ constexpr auto kBufScalarUint = "ScalarUint";
 // =================================================================================================
 
 #ifdef VERBOSE
-inline void log_debug(const std::string& log_string) { printf("[DEBUG] %s\n", log_string.c_str()); }
+inline void log_debug(const std::string &log_string) {
+  printf("[DEBUG] %s\n", log_string.c_str());
+}
 #else
-inline void log_debug(const std::string&) {}
+inline void log_debug(const std::string&) { }
 #endif
+
 
 // =================================================================================================
 
 // Converts a regular or complex type to it's base type (e.g. float2 to float)
-template <typename T>
-struct BaseType {
-  using Type = T;
-};
-template <>
-struct BaseType<float2> {
-  using Type = float;
-};
-template <>
-struct BaseType<double2> {
-  using Type = double;
-};
+template <typename T> struct BaseType { using Type = T; };
+template <> struct BaseType<float2> { using Type = float; };
+template <> struct BaseType<double2> { using Type = double; };
 
 // =================================================================================================
 
 // Returns a scalar with a default value
-template <typename T>
-T GetScalar();
+template <typename T> T GetScalar();
 
 // Fixed value scalars
-template <typename T>
-T ConstantZero();
-template <typename T>
-T ConstantOne();
-template <typename T>
-T ConstantNegOne();
-template <typename T>
-T Constant(const double val);
-template <typename T>
-T SmallConstant();
+template <typename T> T ConstantZero();
+template <typename T> T ConstantOne();
+template <typename T> T ConstantNegOne();
+template <typename T> T Constant(const double val);
+template <typename T> T SmallConstant();
 
 // Returns the absolute value of a scalar (modulus in case of complex numbers)
-template <typename T>
-typename BaseType<T>::Type AbsoluteValue(const T value);
+template <typename T> typename BaseType<T>::Type AbsoluteValue(const T value);
 
 // =================================================================================================
 
@@ -227,13 +214,13 @@ struct Arguments {
   size_t num_kernels = 1;
   // Batch-specific arguments
   size_t batch_count = 1;
-  std::vector<size_t> x_offsets;  // = {0};
-  std::vector<size_t> y_offsets;  // = {0};
-  std::vector<size_t> a_offsets;  // = {0};
-  std::vector<size_t> b_offsets;  // = {0};
-  std::vector<size_t> c_offsets;  // = {0};
-  std::vector<T> alphas;          // = {ConstantOne<T>()};
-  std::vector<T> betas;           // = {ConstantOne<T>()};
+  std::vector<size_t> x_offsets; // = {0};
+  std::vector<size_t> y_offsets; // = {0};
+  std::vector<size_t> a_offsets; // = {0};
+  std::vector<size_t> b_offsets; // = {0};
+  std::vector<size_t> c_offsets; // = {0};
+  std::vector<T> alphas; // = {ConstantOne<T>()};
+  std::vector<T> betas; // = {ConstantOne<T>()};
   // Sizes
   size_t x_size = 1;
   size_t y_size = 1;
@@ -245,11 +232,11 @@ struct Arguments {
   // Tuner-specific arguments
   size_t heuristic_selection = 0;
   double fraction = 1.0;
-  size_t pso_swarm_size = 8;
+  size_t pso_swarm_size = 8; 
   double pso_inf_global = 0.3;
   double pso_inf_local = 0.6;
   double pso_inf_random = 0.1;
-  double ann_max_temperature = 1.0;  // Is it a valid default value?
+  double ann_max_temperature = 1.0; // Is it a valid default value? 
   // Client-specific arguments
   int compare_clblas = 1;
   int compare_cblas = 1;
@@ -259,9 +246,9 @@ struct Arguments {
   size_t num_runs = 10;
   std::vector<std::string> tuner_files = {};
   bool full_statistics = false;
-#ifdef CLBLAST_REF_CUBLAS
-  void* cublas_handle;  // cublasHandle_t
-#endif
+  #ifdef CLBLAST_REF_CUBLAS
+    void* cublas_handle; // cublasHandle_t
+  #endif
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
@@ -281,8 +268,8 @@ std::string ToString(T value);
 // =================================================================================================
 
 // String splitting by a delimiter
-template <typename Out>
-void split(const std::string& s, char delimiter, Out result) {
+template<typename Out>
+void split(const std::string &s, char delimiter, Out result) {
   std::stringstream ss(s);
   std::string item;
   while (std::getline(ss, item, delimiter)) {
@@ -291,21 +278,21 @@ void split(const std::string& s, char delimiter, Out result) {
 }
 
 // See above
-inline std::vector<std::string> split(const std::string& s, char delimiter) {
+inline std::vector<std::string> split(const std::string &s, char delimiter) {
   std::vector<std::string> elements;
   split(s, delimiter, std::back_inserter(elements));
   return elements;
 }
 
 // String character removal
-inline void remove_character(std::string& str, char to_be_removed) {
+inline void remove_character(std::string &str, char to_be_removed) {
   str.erase(std::remove(str.begin(), str.end(), to_be_removed), str.end());
 }
 
 // =================================================================================================
 
 // Parses command-line and environmental-variable arguments into a std::vector of strings
-std::vector<std::string> RetrieveCommandLineArguments(int argc, char* argv[]);
+std::vector<std::string> RetrieveCommandLineArguments(int argc, char *argv[]);
 
 // Helper for the function "GetArgument"
 template <typename T>
@@ -317,15 +304,15 @@ T ConvertArgument(const char* value, T default_value);
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
-T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value);
+T GetArgument(const std::vector<std::string> &arguments, std::string &help,
+              const std::string &option, const T default_value);
 
 // Returns the precision only
-Precision GetPrecision(const std::vector<std::string>& arguments,
+Precision GetPrecision(const std::vector<std::string> &arguments,
                        const Precision default_precision = Precision::kSingle);
 
 // As in "GetArgument", but now only checks whether an argument is given or not
-bool CheckArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option);
+bool CheckArgument(const std::vector<std::string> &arguments, std::string &help, const std::string &option);
 
 // =================================================================================================
 
@@ -335,22 +322,15 @@ constexpr auto kTestDataUpperLimit = 2.0;
 
 // Populates a vector with random data
 template <typename T>
-void PopulateVector(std::vector<T>& vector, std::mt19937& mt, std::uniform_real_distribution<double>& dist);
+void PopulateVector(std::vector<T> &vector, std::mt19937 &mt, std::uniform_real_distribution<double> &dist);
 
 // =================================================================================================
 
 // Converts a 'real' value to a 'real argument' value to be passed to a kernel. Normally there is
 // no conversion, but half-precision is not supported as kernel argument so it is converted to float.
-template <typename T>
-struct RealArg {
-  using Type = T;
-};
-template <>
-struct RealArg<half> {
-  using Type = float;
-};
-template <typename T>
-typename RealArg<T>::Type GetRealArg(const T value);
+template <typename T> struct RealArg { using Type = T; };
+template <> struct RealArg<half> { using Type = float; };
+template <typename T> typename RealArg<T>::Type GetRealArg(const T value);
 
 // =================================================================================================
 
@@ -374,7 +354,7 @@ Precision PrecisionValue();
 
 // Returns false is this precision is not supported by the device
 template <typename T>
-bool PrecisionSupported(const Device& device);
+bool PrecisionSupported(const Device &device);
 
 // =================================================================================================
 
@@ -392,16 +372,16 @@ std::string GetDeviceName(const Device& device);
 
 // =================================================================================================
 
-void SetOpenCLKernelStandard(const Device& device, std::vector<std::string>& options);
+void SetOpenCLKernelStandard(const Device &device, std::vector<std::string> &options);
 
 // =================================================================================================
 
 // Solve Bezout's identity
 // a * p + b * q = r = GCD(a, b)
-void EuclidGCD(int a, int b, int& p, int& q, int& r);
+void EuclidGCD(int a, int b, int &p, int &q, int &r);
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
 
 // CLBLAST_UTILITIES_H_
 #endif

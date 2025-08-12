@@ -10,32 +10,34 @@
 
 #ifndef CLBLAST_ANDROID_HPP_
 #define CLBLAST_ANDROID_HPP_
-#ifndef __clang__  // not to include custom impl to avoid ambiguous definition
+#ifndef __clang__ // not to include custom impl to avoid ambiguous definition
 // =================================================================================================
 
 #include <cstdlib>
-#include <sstream>
 #include <string>
+#include <sstream>
 
 namespace std {
 
 // No support for these standard library functions when compiling with the GNU C++ STL
-template <typename T>
+template<typename T>
 std::string to_string(T value) {
   std::ostringstream os;
   os << value;
   return os.str();
 }
-inline double stod(const std::string& value) { return std::atof(value.c_str()); }
-inline int stoi(const std::string& str, std::size_t* pos = 0, int base = 10) {
-  char* p_end;
+inline double stod(const std::string& value) {
+  return std::atof(value.c_str());
+}
+inline int stoi( const std::string& str, std::size_t* pos = 0, int base = 10) {
+  char * p_end;
   const auto result = std::strtol(str.c_str(), &p_end, base);
   return result;
 }
 
-}  // namespace std
+}
 
 // =================================================================================================
-#endif  // clang header guard
+#endif // clang header guard
 // CLBLAST_ANDROID_HPP_
 #endif

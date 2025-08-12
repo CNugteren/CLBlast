@@ -12,25 +12,23 @@
 
 #include "routines/levelx/xinvert.hpp"
 
-#include <assert.h>
-
 #include <string>
 #include <vector>
+#include <assert.h>
 
 namespace clblast {
 // =================================================================================================
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xinvert<T>::Xinvert(Queue& queue, EventPointer event, const std::string& name)
-    : Routine(queue, event, name, {"Invert"}, PrecisionValue<T>(), {},
-              {
-#include "../../kernels/level3/level3.opencl"
-                  ,  // separated in multiple parts to prevent C1091 in MSVC 2013
-#include "../../kernels/level3/invert_diagonal_blocks_part1.opencl"
-                  ,  // separated in multiple parts to prevent C1091 in MSVC 2013
-#include "../../kernels/level3/invert_diagonal_blocks_part2.opencl"
-              }) {
+Xinvert<T>::Xinvert(Queue &queue, EventPointer event, const std::string &name):
+    Routine(queue, event, name, {"Invert"}, PrecisionValue<T>(), {}, {
+      #include "../../kernels/level3/level3.opencl"
+      , // separated in multiple parts to prevent C1091 in MSVC 2013
+      #include "../../kernels/level3/invert_diagonal_blocks_part1.opencl"
+      , // separated in multiple parts to prevent C1091 in MSVC 2013
+      #include "../../kernels/level3/invert_diagonal_blocks_part2.opencl"
+    }) {
 }
 
 // =================================================================================================
@@ -38,23 +36,25 @@ Xinvert<T>::Xinvert(Queue& queue, EventPointer event, const std::string& name)
 // Inverts diagonal square blocks of a matrix
 template <typename T>
 void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle triangle, const Diagonal diag,
-                                            const size_t n, const size_t block_size, const Buffer<T>& src,
-                                            const size_t offset, const size_t ld_src, Buffer<T>& dest) {
+                                            const size_t n, const size_t block_size,
+                                            const Buffer<T> &src, const size_t offset, const size_t ld_src,
+                                            Buffer<T> &dest) {
+
   // Makes sure all dimensions are larger than zero
   if ((block_size == 0) || (n == 0)) {
     throw BLASError(StatusCode::kInvalidDimension);
   }
 
   // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
-  if (device_.MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
+  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
     throw RuntimeErrorCode(StatusCode::kNotImplemented);
   }
 
   // Helper variables
   const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
   if (internal_block_size != 16) {
-    throw RuntimeErrorCode(StatusCode::kNotImplemented);  // e.g. Apple CPU OpenCL with a WGS of 1
-  }  // when barriers are present
+    throw RuntimeErrorCode(StatusCode::kNotImplemented); // e.g. Apple CPU OpenCL with a WGS of 1
+  }                                                      // when barriers are present
   const auto num_blocks = CeilDiv(n, block_size);
   const auto num_internal_blocks = CeilDiv(n, internal_block_size);
   const auto unit_diagonal = (diag == Diagonal::kUnit) ? true : false;
@@ -78,8 +78,9 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // Fills the output buffer with zeros
   auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list, block_size,
-             num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(), 16);
+  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list,
+             block_size, num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(),
+             16);
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
@@ -97,9 +98,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   auto base_kernel_event = Event();
   auto base_kernel_event_pointer = (internal_block_size == block_size) ? event_ : base_kernel_event.pointer();
   RunKernel(kernel, queue_, device_, global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
-  if (internal_block_size == block_size) {
-    event_wait_list.push_back(base_kernel_event);
-  }
+  if (internal_block_size == block_size) { event_wait_list.push_back(base_kernel_event); }
 
   // Builds up block_size x block_size blocks. For example, internal_block_size=16:
   // use   16 x 16  blocks to build  32 x 32  blocks,  1 x (1 x npages) grid,  4 x 4 threads;
@@ -109,11 +108,11 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     assert(current_size == 16 || current_size == 32 || current_size == 64);
 
     // Emulates a 3D grid: NX * (NY * npages)
-    const auto npages = CeilDiv(n, current_size * 2);
-    const auto local0 = (current_size <= 32) ? current_size / 4 : 16;
+    const auto npages = CeilDiv(n, current_size*2);
+    const auto local0 = (current_size <= 32) ? current_size/4 : 16;
     const auto local = std::vector<size_t>{local0, 4};
-    const auto global = std::vector<size_t>{Ceil(current_size / local[1], local[0]),
-                                            Ceil(npages * (current_size / 16) * local[1], local[1])};
+    const auto global = std::vector<size_t>{Ceil(current_size/local[1], local[0]),
+                                            Ceil(npages*(current_size/16)*local[1], local[1])};
 
     // Part 1
     auto kernel1 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
@@ -140,14 +139,10 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     auto kernel2_event = Event();
     auto kernel2_event_pointer = (is_last_kernel) ? event_ : kernel2_event.pointer();
     RunKernel(kernel2, queue_, device_, global, local, kernel2_event_pointer, event_wait_list);
-    if (!is_last_kernel) {
-      event_wait_list.push_back(kernel2_event);
-    }
+    if (!is_last_kernel) { event_wait_list.push_back(kernel2_event); }
 
     // Exit in case we reach beyond the bounds of the input matrix
-    if (current_size * 2 >= n) {
-      break;
-    }
+    if (current_size*2 >= n) { break; }
   }
 }
 
@@ -161,4 +156,4 @@ template class Xinvert<float2>;
 template class Xinvert<double2>;
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

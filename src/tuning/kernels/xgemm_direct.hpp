@@ -12,8 +12,8 @@
 #include <string>
 #include <vector>
 
-#include "tuning/tuning.hpp"
 #include "utilities/utilities.hpp"
+#include "tuning/tuning.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -21,38 +21,30 @@ namespace clblast {
 // Settings for this kernel (default command-line arguments)
 TunerDefaults XgemmDirectGetTunerDefaults(const int V) {
   auto settings = TunerDefaults();
-  settings.options = {kArgM,
-                      kArgN,
-                      kArgK,
-                      kArgAlpha,
-                      kArgBeta,
-                      kArgFraction,
-                      kArgHeuristicSelection,
-                      kArgPsoSwarmSize,
-                      kArgPsoInfGlobal,
-                      kArgPsoInfLocal,
-                      kArgPsoInfRandom};
+  settings.options = {kArgM, kArgN, kArgK, kArgAlpha, kArgBeta, kArgFraction,
+                      kArgHeuristicSelection, kArgPsoSwarmSize,
+                      kArgPsoInfGlobal, kArgPsoInfLocal, kArgPsoInfRandom};
   settings.default_m = 256;
   settings.default_n = 256;
   settings.default_k = 256;
-  settings.default_fraction = (V == 1) ? 1.0 : 64.0;  // test all or sample randomly
+  settings.default_fraction = (V==1) ? 1.0 : 64.0; // test all or sample randomly
   settings.default_num_runs = 4;
   return settings;
 }
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T>& args) {
+TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
-  settings.kernel_family = (V == 1) ? "xgemm_direct_1" : "xgemm_direct_2";
+  settings.kernel_family = (V==1) ? "xgemm_direct_1" : "xgemm_direct_2";
   settings.kernel_name = "XgemmDirectTN";
   settings.sources =
 #include "../src/kernels/level3/xgemm_direct_part1.opencl"
 #include "../src/kernels/level3/xgemm_direct_part2.opencl"
 #include "../src/kernels/level3/xgemm_direct_part3.opencl"
-      ;
+  ;
 
   // Buffer sizes
   settings.size_a = args.m * args.k;
@@ -75,17 +67,32 @@ TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T>& args)
   settings.div_global = {{"WGD", "WGD"}};
 
   // Sets the tuning parameters and their possible values
-  if (V == 1) {  // limited subset of tuning parameters - but explorable exhaustively
+  if (V==1) { // limited subset of tuning parameters - but explorable exhaustively
     settings.parameters = {
-        {"WGD", {8, 16, 32}},    {"MDIMCD", {8, 16, 32}}, {"NDIMCD", {8, 16, 32}}, {"MDIMAD", {8, 16, 32}},
-        {"NDIMBD", {8, 16, 32}}, {"KWID", {2}},           {"VWMD", {1, 2, 4, 8}},  {"VWND", {1, 2, 4, 8}},
-        {"PADA", {1}},           {"PADB", {1}},
+      {"WGD", {8, 16, 32}},
+      {"MDIMCD", {8, 16, 32}},
+      {"NDIMCD", {8, 16, 32}},
+      {"MDIMAD", {8, 16, 32}},
+      {"NDIMBD", {8, 16, 32}},
+      {"KWID", {2}},
+      {"VWMD", {1, 2, 4, 8}},
+      {"VWND", {1, 2, 4, 8}},
+      {"PADA", {1}},
+      {"PADB", {1}},
     };
-  } else {  // a lot more tuning parameters - has to be sampled randomly, too much to test all
+  }
+  else { // a lot more tuning parameters - has to be sampled randomly, too much to test all
     settings.parameters = {
-        {"WGD", {8, 16, 32, 64}}, {"MDIMCD", {8, 16, 32}}, {"NDIMCD", {8, 16, 32}}, {"MDIMAD", {8, 16, 32}},
-        {"NDIMBD", {8, 16, 32}},  {"KWID", {2, 8, 16}},    {"VWMD", {1, 2, 4, 8}},  {"VWND", {1, 2, 4, 8}},
-        {"PADA", {0, 1}},         {"PADB", {0, 1}},
+      {"WGD", {8, 16, 32, 64}},
+      {"MDIMCD", {8, 16, 32}},
+      {"NDIMCD", {8, 16, 32}},
+      {"MDIMAD", {8, 16, 32}},
+      {"NDIMBD", {8, 16, 32}},
+      {"KWID", {2, 8, 16}},
+      {"VWMD", {1, 2, 4, 8}},
+      {"VWND", {1, 2, 4, 8}},
+      {"PADA", {0, 1}},
+      {"PADB", {0, 1}},
     };
   }
 
@@ -98,12 +105,12 @@ TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T>& args)
 
 // Tests for valid arguments
 template <typename T>
-void XgemmDirectTestValidArguments(const int, const Arguments<T>&) {}
+void XgemmDirectTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
-  auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-  auto MultipleOfXMulY = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1] * v[2]); };
-  auto MultipleOfXMulYDivZ = [](std::vector<size_t> v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
+  auto MultipleOfX = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
+  auto MultipleOfXMulY = [] (std::vector<size_t> v) { return IsMultiple(v[0], v[1]*v[2]); };
+  auto MultipleOfXMulYDivZ = [] (std::vector<size_t> v) { return IsMultiple(v[0], (v[1]*v[2])/v[3]); };
   // Requirement for unrolling the WGD loop
   constraints.push_back({MultipleOfX, {"WGD", "KWID"}});
   // Required for integer MWID and NWID
@@ -117,8 +124,8 @@ std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   constraints.push_back({MultipleOfXMulYDivZ, {"WGD", "MDIMCD", "NDIMCD", "NDIMBD"}});
 
   // Extra constraints for variation 1 to limit the set of options significantly
-  if (V == 1) {
-    auto IsEqual = [](std::vector<size_t> v) { return v[0] == v[1]; };
+  if (V==1) {
+    auto IsEqual = [] (std::vector<size_t> v) { return v[0] == v[1]; };
     constraints.push_back({IsEqual, {"MDIMCD", "MDIMAD"}});
     constraints.push_back({IsEqual, {"NDIMCD", "NDIMBD"}});
   }
@@ -126,33 +133,35 @@ std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
 }
 template <typename T>
 LocalMemSizeInfo XgemmDirectComputeLocalMemSize(const int) {
-  return {[](std::vector<size_t> v) -> size_t {
-            return GetBytes(PrecisionValue<T>()) * ((v[0] * (v[0] + v[1]) + v[0] * (v[0] + v[2])));
-          },
-          {"WGD", "PADA", "PADB"}};
+  return {
+      [] (std::vector<size_t> v) -> size_t {
+          return GetBytes(PrecisionValue<T>()) * ((v[0]*(v[0] + v[1]) + v[0]*(v[0] + v[2])));
+      },
+      {"WGD", "PADA", "PADB"}
+  };
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void XgemmDirectSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgemmDirectSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.k));
   kernel.SetArgument(3, GetRealArg(args.alpha));
   kernel.SetArgument(4, GetRealArg(args.beta));
-  kernel.SetArgument(5, buffers[2]());               // 2 == A matrix
-  kernel.SetArgument(6, 0);                          // a_offset
-  kernel.SetArgument(7, static_cast<int>(args.k));   // a_ld
-  kernel.SetArgument(8, buffers[3]());               // 3 == B matrix
-  kernel.SetArgument(9, 0);                          // b_offset
-  kernel.SetArgument(10, static_cast<int>(args.n));  // b_ld
-  kernel.SetArgument(11, buffers[4]());              // 4 == C matrix
-  kernel.SetArgument(12, 0);                         // c_offset
-  kernel.SetArgument(13, static_cast<int>(args.n));  // c_ld
-  kernel.SetArgument(14, 1);                         // c_do_transpose
-  kernel.SetArgument(15, 0);                         // a_conjugate
-  kernel.SetArgument(16, 0);                         // b_conjugate
+  kernel.SetArgument(5, buffers[2]()); // 2 == A matrix
+  kernel.SetArgument(6, 0); // a_offset
+  kernel.SetArgument(7, static_cast<int>(args.k)); // a_ld
+  kernel.SetArgument(8, buffers[3]()); // 3 == B matrix
+  kernel.SetArgument(9, 0); // b_offset
+  kernel.SetArgument(10, static_cast<int>(args.n)); // b_ld
+  kernel.SetArgument(11, buffers[4]()); // 4 == C matrix
+  kernel.SetArgument(12, 0); // c_offset
+  kernel.SetArgument(13, static_cast<int>(args.n)); // c_ld
+  kernel.SetArgument(14, 1); // c_do_transpose
+  kernel.SetArgument(15, 0); // a_conjugate
+  kernel.SetArgument(16, 0); // b_conjugate
 }
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

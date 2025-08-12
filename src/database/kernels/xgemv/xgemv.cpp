@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/xgemv/xgemv.hpp"
-
 #include "database/kernels/xgemv/xgemv_16.hpp"
 #include "database/kernels/xgemv/xgemv_32.hpp"
 #include "database/kernels/xgemv/xgemv_3232.hpp"

@@ -7,21 +7,23 @@
 //
 // =================================================================================================
 
-#include <chrono>
 #include <vector>
+#include <chrono>
 
-#include "kernel_preprocessor.hpp"
 #include "routines/common.hpp"
+#include "kernel_preprocessor.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 // Compiles a program from source code
-std::shared_ptr<Program> CompileFromSource(const std::string& source_string, const Precision precision,
-                                           const std::string& routine_name, const Device& device,
-                                           const Context& context, std::vector<std::string>& options,
-                                           const size_t run_preprocessor,  // 0: platform dependent, 1: always, 2: never
-                                           const bool silent) {
+std::shared_ptr<Program> CompileFromSource(
+                          const std::string &source_string, const Precision precision,
+                          const std::string &routine_name,
+                          const Device& device, const Context& context,
+                          std::vector<std::string>& options,
+                          const size_t run_preprocessor, // 0: platform dependent, 1: always, 2: never
+                          const bool silent) {
   auto header_string = std::string{""};
 
   header_string += "#define PRECISION " + ToString(static_cast<int>(precision)) + "\n";
@@ -66,7 +68,8 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
     // Nvidia needs to check pre or post volta due to new shuffle commands
     if (device.IsPostNVIDIAVolta()) {
       header_string += "#define SUBGROUP_SHUFFLING_NVIDIA_POST_VOLTA 1\n";
-    } else {
+    }
+    else {
       header_string += "#define SUBGROUP_SHUFFLING_NVIDIA_PRE_VOLTA 1\n";
     }
   }
@@ -76,34 +79,31 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
   if (device.IsQualcomm()) {
     header_string += "#define RELAX_WORKGROUP_SIZE 1\n";
   }
-
-// Optionally adds a translation header from OpenCL kernels to CUDA kernels
-#ifdef CUDA_API
-  header_string +=
-#include "kernels/opencl_to_cuda.h"
-      ;
-#endif
+  
+  // Optionally adds a translation header from OpenCL kernels to CUDA kernels
+  #ifdef CUDA_API
+    header_string +=
+      #include "kernels/opencl_to_cuda.h"
+    ;
+  #endif
 
   // Loads the common header (typedefs and defines and such)
   header_string +=
-#include "kernels/common.opencl"
-      ;
+    #include "kernels/common.opencl"
+  ;
 
-// Prints details of the routine to compile in case of debugging in verbose mode
-#ifdef VERBOSE
-  printf("[DEBUG] Compiling routine '%s-%s'\n", routine_name.c_str(), ToString(precision).c_str());
-  const auto start_time = std::chrono::steady_clock::now();
-#endif
+  // Prints details of the routine to compile in case of debugging in verbose mode
+  #ifdef VERBOSE
+    printf("[DEBUG] Compiling routine '%s-%s'\n",
+           routine_name.c_str(), ToString(precision).c_str());
+    const auto start_time = std::chrono::steady_clock::now();
+  #endif
 
   // Runs a pre-processor to unroll loops and perform array-to-register promotion. Most OpenCL
   // compilers do this, but some don't.
   auto do_run_preprocessor = false;
-  if (run_preprocessor == 0) {
-    do_run_preprocessor = (device.IsARM() && device.IsGPU());
-  }
-  if (run_preprocessor == 1) {
-    do_run_preprocessor = true;
-  }
+  if (run_preprocessor == 0) { do_run_preprocessor = (device.IsARM() && device.IsGPU()); }
+  if (run_preprocessor == 1) { do_run_preprocessor = true; }
   auto kernel_string = header_string + source_string;
   if (do_run_preprocessor) {
     log_debug("Running built-in pre-processor");
@@ -115,22 +115,23 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
   try {
     SetOpenCLKernelStandard(device, options);
     program->Build(device, options);
-  } catch (const CLCudaAPIBuildError& e) {
+  } catch (const CLCudaAPIBuildError &e) {
     if (program->StatusIsCompilationWarningOrError(e.status()) && !silent) {
-      fprintf(stdout, "OpenCL compiler error/warning:\n%s\n", program->GetBuildInfo(device).c_str());
+      fprintf(stdout, "OpenCL compiler error/warning:\n%s\n",
+              program->GetBuildInfo(device).c_str());
     }
     throw;
   }
 
-// Prints the elapsed compilation time in case of debugging in verbose mode
-#ifdef VERBOSE
-  const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-  const auto timing = std::chrono::duration<double, std::milli>(elapsed_time).count();
-  printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
-#endif
+  // Prints the elapsed compilation time in case of debugging in verbose mode
+  #ifdef VERBOSE
+    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+    const auto timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
+    printf("[DEBUG] Completed compilation in %.2lf ms\n", timing);
+  #endif
 
   return program;
 }
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast

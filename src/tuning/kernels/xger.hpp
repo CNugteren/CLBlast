@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "tuning/tuning.hpp"
 #include "utilities/utilities.hpp"
+#include "tuning/tuning.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -27,7 +27,7 @@ TunerDefaults XgerGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings XgerGetTunerSettings(const int, const Arguments<T> &args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -36,7 +36,7 @@ TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
   settings.sources =
 #include "../src/kernels/level2/level2.opencl"
 #include "../src/kernels/level2/xger.opencl"
-      ;
+  ;
 
   // Buffer sizes
   settings.size_x = args.m;
@@ -59,13 +59,13 @@ TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
 
   // Sets the tuning parameters and their possible values
   settings.parameters = {
-      {"WGS1", {4, 8, 16, 32, 64, 128, 256, 512}},
-      {"WGS2", {1, 2, 4, 8, 16, 32, 64, 128, 256}},
-      {"WPT", {1, 2, 4}},
+    {"WGS1", {4, 8, 16, 32, 64, 128, 256, 512}},
+    {"WGS2", {1, 2, 4, 8, 16, 32, 64, 128, 256}},
+    {"WPT", {1, 2, 4}},
   };
 
   // Describes how to compute the performance metrics
-  settings.metric_amount = (2 * args.m * args.n + args.m + args.n) * GetBytes(args.precision);
+  settings.metric_amount = (2*args.m*args.n + args.m + args.n) * GetBytes(args.precision);
   settings.performance_unit = "GB/s";
 
   return settings;
@@ -73,30 +73,30 @@ TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XgerTestValidArguments(const int, const Arguments<T>&) {}
+void XgerTestValidArguments(const int, const Arguments<T> &) { }
 std::vector<Constraint> XgerSetConstraints(const int) { return {}; }
 template <typename T>
 LocalMemSizeInfo XgerComputeLocalMemSize(const int) {
-  return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
+  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void XgerSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgerSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, GetRealArg(args.alpha));
-  kernel.SetArgument(3, buffers[0]());               // 0 == X vector
-  kernel.SetArgument(4, 0);                          // x_offset
-  kernel.SetArgument(5, 1);                          // x_increment
-  kernel.SetArgument(6, buffers[1]());               // 1 == Y vector
-  kernel.SetArgument(7, 0);                          // y_offset
-  kernel.SetArgument(8, 1);                          // y_increment
-  kernel.SetArgument(9, buffers[2]());               // 2 == A matrix
-  kernel.SetArgument(10, 0);                         // a_offset
-  kernel.SetArgument(11, static_cast<int>(args.m));  // a_ld
-  kernel.SetArgument(12, 0);                         // a_is_rowmajor
+  kernel.SetArgument(3, buffers[0]()); // 0 == X vector
+  kernel.SetArgument(4, 0); // x_offset
+  kernel.SetArgument(5, 1); // x_increment
+  kernel.SetArgument(6, buffers[1]()); // 1 == Y vector
+  kernel.SetArgument(7, 0); // y_offset
+  kernel.SetArgument(8, 1); // y_increment
+  kernel.SetArgument(9, buffers[2]()); // 2 == A matrix
+  kernel.SetArgument(10, 0); // a_offset
+  kernel.SetArgument(11, static_cast<int>(args.m)); // a_ld
+  kernel.SetArgument(12, 0); // a_is_rowmajor
 }
 
 // =================================================================================================
-}  // namespace clblast
+} // namespace clblast
