@@ -11,22 +11,23 @@
 #ifndef CLBLAST_TUNING_ROUTINES_ROUTINE_TUNER_H_
 #define CLBLAST_TUNING_ROUTINES_ROUTINE_TUNER_H_
 
+#include <assert.h>
+
 #include <exception>
 #include <string>
 #include <vector>
-#include <assert.h>
 
-#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 template <typename T>
-void ForceSelectIndirectFrom(const size_t minimum_size, const Device &device,
-                             const std::string &tuner_name, const std::string& parameter_name) {
-  const auto override_status = OverrideParameters(device(), tuner_name, PrecisionValue<T>(),
-                                                  {{parameter_name, minimum_size}});
+void ForceSelectIndirectFrom(const size_t minimum_size, const Device& device, const std::string& tuner_name,
+                             const std::string& parameter_name) {
+  const auto override_status =
+      OverrideParameters(device(), tuner_name, PrecisionValue<T>(), {{parameter_name, minimum_size}});
   if (override_status != StatusCode::kSuccess) {
     throw RuntimeError("OverrideParameters failed with status " + ToString(override_status));
   }
@@ -41,18 +42,15 @@ TuningResult GetBestResult(const std::vector<TuningResult>& scores) {
 
 // Tunes at kernel-level
 template <typename T, typename F>
-void TuneKernelSelection(const Platform& platform, const Device& device, const Context& context,
-                         Queue& queue, const Precision precision, F const &routine,
-                         const size_t from, const size_t to, const size_t step, const size_t batch_count,
-                         const size_t num_runs, const std::string &name, const std::string &tuner_name,
-                         const std::string &family_name, const std::string& parameter_name) {
-
+void TuneKernelSelection(const Platform& platform, const Device& device, const Context& context, Queue& queue,
+                         const Precision precision, F const& routine, const size_t from, const size_t to,
+                         const size_t step, const size_t batch_count, const size_t num_runs, const std::string& name,
+                         const std::string& tuner_name, const std::string& family_name,
+                         const std::string& parameter_name) {
   // Buffers
-  auto buffers = std::vector<Buffer<T>>{
-      Buffer<T>(context, to * to * batch_count),
-      Buffer<T>(context, to * to * batch_count),
-      Buffer<T>(context, to * to * batch_count)
-  };
+  auto buffers =
+      std::vector<Buffer<T>>{Buffer<T>(context, to * to * batch_count), Buffer<T>(context, to * to * batch_count),
+                             Buffer<T>(context, to * to * batch_count)};
 
   // In-direct version
   printf("\n* Testing the in-direct %s routine for m=n=k\n", name.c_str());
@@ -74,23 +72,28 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
   auto scores = std::vector<TuningResult>(ratios.size());
   for (auto i = size_t{0}; i < scores.size(); ++i) {
     auto score = 0;
-    for (auto j = size_t{0}; j < i; ++j) { score += (ratios[j] <= 1.0); }
-    for (auto j = i + 1; j < ratios.size(); ++j) { score += (ratios[j] > 1.0); }
-    const auto epsilon = (scores.size() - i) / 1e3; // favour later results over earlier ones
+    for (auto j = size_t{0}; j < i; ++j) {
+      score += (ratios[j] <= 1.0);
+    }
+    for (auto j = i + 1; j < ratios.size(); ++j) {
+      score += (ratios[j] > 1.0);
+    }
+    const auto epsilon = (scores.size() - i) / 1e3;  // favour later results over earlier ones
     const auto relative_score = static_cast<double>(score) / static_cast<double>(scores.size() - 1);
     auto tuning_results = Configuration();
     tuning_results[parameter_name] = indirect[i].first;
     tuning_results["PRECISION"] = static_cast<size_t>(precision);
-    scores[i] = TuningResult{
-        name + "_kernel_selection",
-        (relative_score * relative_score) * 100 + epsilon,  // squared for proper default computation
-        tuning_results
-    };
+    scores[i] =
+        TuningResult{name + "_kernel_selection",
+                     (relative_score * relative_score) * 100 + epsilon,  // squared for proper default computation
+                     tuning_results};
   }
 
   // Displaying results
   printf("|         || %12s indirect || %12s direct ||          |\n", name.c_str(), name.c_str());
-  printf("|   m=n=k ||    ms    |   GFLOPS   ||    ms    |  GFLOPS  ||  score   | (lowest score == best switching point)\n");
+  printf(
+      "|   m=n=k ||    ms    |   GFLOPS   ||    ms    |  GFLOPS  ||  score   | (lowest score == best switching "
+      "point)\n");
   printf("x---------xx----------x------------xx----------x----------xx----------x\n");
   for (auto i = size_t{0}; i < indirect.size(); ++i) {
     assert(indirect[i].first == direct[i].first);
@@ -98,8 +101,8 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
     if (indirect[i].second != -1 && direct[i].second != -1) {
       const auto gflops_indirect = (2 * value * value * value) / (indirect[i].second * 1.0e6);
       const auto gflops_direct = (2 * value * value * value) / (direct[i].second * 1.0e6);
-      printf("| %7zu || %8.2lf | %10.1lf || %8.2lf | %8.1lf || %8.3lf |\n",
-             value, indirect[i].second, gflops_indirect, direct[i].second, gflops_direct, scores[i].score);
+      printf("| %7zu || %8.2lf | %10.1lf || %8.2lf | %8.1lf || %8.3lf |\n", value, indirect[i].second, gflops_indirect,
+             direct[i].second, gflops_direct, scores[i].score);
     }
   }
   printf("x---------xx----------x------------xx----------x----------xx----------x\n");
@@ -111,22 +114,20 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
 
   // Outputs the results as JSON to disk, including some meta-data
   const auto precision_string = std::to_string(static_cast<size_t>(precision));
-  auto metadata = std::vector<std::pair<std::string,std::string>>{
-      {"kernel_family", family_name},
-      {"precision", precision_string},
-      {"arg_from", ToString(from)},
-      {"arg_to", ToString(to)},
-      {"arg_step", ToString(step)},
-      {"best_kernel", best_result.name},
-      {"best_time", ToString(best_result.score)},
-      {"best_parameters", best_string}
-  };
-  PrintTimingsToFileAsJSON("clblast_" + family_name + "_" + precision_string + ".json",
-                           device, platform, metadata, scores);
+  auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", family_name},
+                                                                   {"precision", precision_string},
+                                                                   {"arg_from", ToString(from)},
+                                                                   {"arg_to", ToString(to)},
+                                                                   {"arg_step", ToString(step)},
+                                                                   {"best_kernel", best_result.name},
+                                                                   {"best_time", ToString(best_result.score)},
+                                                                   {"best_parameters", best_string}};
+  PrintTimingsToFileAsJSON("clblast_" + family_name + "_" + precision_string + ".json", device, platform, metadata,
+                           scores);
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_TUNING_ROUTINES_ROUTINE_TUNER_H_
 #endif

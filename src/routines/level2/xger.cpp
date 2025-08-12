@@ -17,26 +17,25 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xger<T>::Xger(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level2/level2.opencl"
-    #include "../../kernels/level2/xger.opencl"
-    }) {
+Xger<T>::Xger(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {},
+              {
+#include "../../kernels/level2/level2.opencl"
+#include "../../kernels/level2/xger.opencl"
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xger<T>::DoGer(const Layout layout,
-                    const size_t m, const size_t n,
-                    const T alpha,
-                    const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                    const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                    const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld) {
-
+void Xger<T>::DoGer(const Layout layout, const size_t m, const size_t n, const T alpha, const Buffer<T>& x_buffer,
+                    const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
+                    const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld) {
   // Makes sure all dimensions are larger than zero
-  if (m == 0 || n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (m == 0 || n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Computes whether or not the matrix has an alternative layout (row or column-major).
   const auto a_is_rowmajor = (layout == Layout::kRowMajor);
@@ -84,4 +83,4 @@ template class Xger<float2>;
 template class Xger<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

@@ -7,9 +7,9 @@
 //
 // =================================================================================================
 
-#include <cstdio>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
+#include <cstdio>
 
 #include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
@@ -17,13 +17,15 @@
 namespace clblast {
 // =================================================================================================
 
-void OpenCLDiagnostics(int argc, char *argv[]) {
+void OpenCLDiagnostics(int argc, char* argv[]) {
   auto arguments = RetrieveCommandLineArguments(argc, argv);
 
   // Retrieves the arguments
   auto help = std::string{"Options given/available:\n"};
-  const auto platform_id = GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
-  const auto device_id = GetArgument(arguments, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
+  const auto platform_id =
+      GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
+  const auto device_id =
+      GetArgument(arguments, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   fprintf(stdout, "\n* %s\n", help.c_str());
 
   // Initializes OpenCL
@@ -64,22 +66,22 @@ void OpenCLDiagnostics(int argc, char *argv[]) {
   // Simple OpenCL benchmarking
   constexpr auto kNumRuns = 20;
   printf("\n --- Some OpenCL library benchmarks (functions from clpp11.h):\n");
-  printf("* queue.GetContext()            %.4lf ms\n", TimeFunction(kNumRuns, [&](){queue.GetContext();} ));
-  printf("* queue.GetDevice()             %.4lf ms\n", TimeFunction(kNumRuns, [&](){queue.GetDevice();} ));
-  printf("* device.Name()                 %.4lf ms\n", TimeFunction(kNumRuns, [&](){device.Name();} ));
-  printf("* device.Vendor()               %.4lf ms\n", TimeFunction(kNumRuns, [&](){device.Vendor();} ));
-  printf("* device.Version()              %.4lf ms\n", TimeFunction(kNumRuns, [&](){device.Version();} ));
-  printf("* device.Platform()             %.4lf ms\n", TimeFunction(kNumRuns, [&](){ device.PlatformID();} ));
-  printf("* Buffer<float>(context, 1024)  %.4lf ms\n", TimeFunction(kNumRuns, [&](){Buffer<float>(context, 1024);} ));
+  printf("* queue.GetContext()            %.4lf ms\n", TimeFunction(kNumRuns, [&]() { queue.GetContext(); }));
+  printf("* queue.GetDevice()             %.4lf ms\n", TimeFunction(kNumRuns, [&]() { queue.GetDevice(); }));
+  printf("* device.Name()                 %.4lf ms\n", TimeFunction(kNumRuns, [&]() { device.Name(); }));
+  printf("* device.Vendor()               %.4lf ms\n", TimeFunction(kNumRuns, [&]() { device.Vendor(); }));
+  printf("* device.Version()              %.4lf ms\n", TimeFunction(kNumRuns, [&]() { device.Version(); }));
+  printf("* device.Platform()             %.4lf ms\n", TimeFunction(kNumRuns, [&]() { device.PlatformID(); }));
+  printf("* Buffer<float>(context, 1024)  %.4lf ms\n", TimeFunction(kNumRuns, [&]() { Buffer<float>(context, 1024); }));
 
   printf("\n");
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // Main function (not within the clblast namespace)
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   clblast::OpenCLDiagnostics(argc, argv);
   return 0;
 }

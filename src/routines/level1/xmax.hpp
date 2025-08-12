@@ -18,28 +18,24 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xmax: public Xamax<T> {
+class Xmax : public Xamax<T> {
  public:
-
   // Members and methods from the base class
   using Xamax<T>::DoAmax;
 
   // Constructor
-  Xmax(Queue &queue, EventPointer event, const std::string &name = "MAX"):
-    Xamax<T>(queue, event, name) {
-  }
+  Xmax(Queue& queue, EventPointer event, const std::string& name = "MAX") : Xamax<T>(queue, event, name) {}
 
   // Forwards to the regular absolute version. The implementation difference is realised in the
   // kernel through a pre-processor macro based on the name of the routine.
-  void DoMax(const size_t n,
-             const Buffer<unsigned int> &imax_buffer, const size_t imax_offset,
-             const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc) {
+  void DoMax(const size_t n, const Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
+             const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc) {
     DoAmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc);
   }
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_ROUTINES_XMAX_H_
 #endif

@@ -17,30 +17,32 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XaxpyBatched<T>::XaxpyBatched(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level1/level1.opencl"
-    #include "../../kernels/level1/xaxpy.opencl"
-    }) {
+XaxpyBatched<T>::XaxpyBatched(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
+              {
+#include "../../kernels/level1/level1.opencl"
+#include "../../kernels/level1/xaxpy.opencl"
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T> &alphas,
-                                    const Buffer<T> &x_buffer, const std::vector<size_t> &x_offsets, const size_t x_inc,
-                                    const Buffer<T> &y_buffer, const std::vector<size_t> &y_offsets, const size_t y_inc,
+void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T>& alphas, const Buffer<T>& x_buffer,
+                                    const std::vector<size_t>& x_offsets, const size_t x_inc, const Buffer<T>& y_buffer,
+                                    const std::vector<size_t>& y_offsets, const size_t y_inc,
                                     const size_t batch_count) {
-
   // Tests for a valid batch count
-  if ((batch_count < 1) || (alphas.size() != batch_count) ||
-      (x_offsets.size() != batch_count) || (y_offsets.size() != batch_count)) {
+  if ((batch_count < 1) || (alphas.size() != batch_count) || (x_offsets.size() != batch_count) ||
+      (y_offsets.size() != batch_count)) {
     throw BLASError(StatusCode::kInvalidBatchCount);
   }
 
   // Makes sure all dimensions are larger than zero
-  if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Tests the vectors for validity
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
@@ -51,7 +53,7 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T> &alphas
   // Upload the arguments to the device
   auto x_offsets_int = std::vector<int>(batch_count);
   auto y_offsets_int = std::vector<int>(batch_count);
-  for (auto batch = size_t{ 0 }; batch < batch_count; ++batch) {
+  for (auto batch = size_t{0}; batch < batch_count; ++batch) {
     x_offsets_int[batch] = static_cast<int>(x_offsets[batch]);
     y_offsets_int[batch] = static_cast<int>(y_offsets[batch]);
   }
@@ -76,8 +78,8 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T> &alphas
   kernel.SetArgument(7, static_cast<int>(y_inc));
 
   // Launches the kernel
-  auto n_ceiled = Ceil(n, db_["WGS"]*db_["WPT"]);
-  auto global = std::vector<size_t>{n_ceiled/db_["WPT"], batch_count};
+  auto n_ceiled = Ceil(n, db_["WGS"] * db_["WPT"]);
+  auto global = std::vector<size_t>{n_ceiled / db_["WPT"], batch_count};
   auto local = std::vector<size_t>{db_["WGS"], 1};
   RunKernel(kernel, queue_, device_, global, local, event_);
 }
@@ -92,4 +94,4 @@ template class XaxpyBatched<float2>;
 template class XaxpyBatched<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

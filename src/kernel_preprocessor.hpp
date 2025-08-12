@@ -22,7 +22,7 @@ namespace clblast {
 std::string PreprocessKernelSource(const std::string& kernel_source);
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_KERNEL_PREPROCESSOR_H_
 #endif

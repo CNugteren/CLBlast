@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -27,7 +27,7 @@ TunerDefaults TransposeGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings TransposeGetTunerSettings(const int, const Arguments<T> &args) {
+TunerSettings TransposeGetTunerSettings(const int, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -36,7 +36,7 @@ TunerSettings TransposeGetTunerSettings(const int, const Arguments<T> &args) {
   settings.sources =
 #include "../src/kernels/level3/level3.opencl"
 #include "../src/kernels/level3/transpose_fast.opencl"
-  ;
+      ;
 
   // Buffer sizes
   settings.size_a = args.m * args.n;
@@ -58,10 +58,10 @@ TunerSettings TransposeGetTunerSettings(const int, const Arguments<T> &args) {
 
   // Sets the tuning parameters and their possible values
   settings.parameters = {
-    {"TRA_DIM", {4, 8, 16, 32, 64}},
-    {"TRA_WPT", {1, 2, 4, 8, 16}},
-    {"TRA_PAD", {0, 1}},
-    {"TRA_SHUFFLE", {0, 1}},
+      {"TRA_DIM", {4, 8, 16, 32, 64}},
+      {"TRA_WPT", {1, 2, 4, 8, 16}},
+      {"TRA_PAD", {0, 1}},
+      {"TRA_SHUFFLE", {0, 1}},
   };
 
   // Describes how to compute the performance metrics
@@ -73,26 +73,24 @@ TunerSettings TransposeGetTunerSettings(const int, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void TransposeTestValidArguments(const int, const Arguments<T> &) { }
+void TransposeTestValidArguments(const int, const Arguments<T>&) {}
 std::vector<Constraint> TransposeSetConstraints(const int) { return {}; }
 template <typename T>
 LocalMemSizeInfo TransposeComputeLocalMemSize(const int) {
-  return {
-      [] (std::vector<size_t> v) -> size_t {
-          return GetBytes(PrecisionValue<T>()) * v[1] * (v[1] * v[0]) * (v[0] + v[2]);
-      },
-      {"TRA_DIM", "TRA_WPT", "TRA_PAD"}
-  };
+  return {[](std::vector<size_t> v) -> size_t {
+            return GetBytes(PrecisionValue<T>()) * v[1] * (v[1] * v[0]) * (v[0] + v[2]);
+          },
+          {"TRA_DIM", "TRA_WPT", "TRA_PAD"}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void TransposeSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void TransposeSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
-  kernel.SetArgument(1, buffers[2]()); // 2 == A matrix
-  kernel.SetArgument(2, buffers[3]()); // 3 == B matrix
+  kernel.SetArgument(1, buffers[2]());  // 2 == A matrix
+  kernel.SetArgument(2, buffers[3]());  // 3 == B matrix
   kernel.SetArgument(3, GetRealArg(args.alpha));
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

@@ -12,10 +12,10 @@
 #define CLBLAST_TEST_UTILITIES_H_
 
 #include <cstdlib>
-#include <string>
 #include <fstream>
-#include <sstream>
 #include <iterator>
+#include <sstream>
+#include <string>
 
 #include "utilities/utilities.hpp"
 
@@ -38,7 +38,8 @@ constexpr auto kArgVerbose = "verbose";
 // =================================================================================================
 
 // Returns whether a scalar is close to zero
-template <typename T> bool IsCloseToZero(const T value);
+template <typename T>
+bool IsCloseToZero(const T value);
 
 // =================================================================================================
 
@@ -68,7 +69,8 @@ struct BuffersHost {
 
 // =================================================================================================
 
-template <typename T> T ComplexConjugate(const T value);
+template <typename T>
+T ComplexConjugate(const T value);
 
 // =================================================================================================
 
@@ -81,13 +83,13 @@ std::string ToString(T value);
 
 // Copies buffers from the OpenCL device to the host
 template <typename T, typename U>
-void DeviceToHost(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
+void DeviceToHost(const Arguments<U>& args, Buffers<T>& buffers, BuffersHost<T>& buffers_host, Queue& queue,
+                  const std::vector<std::string>& names);
 
 // Copies buffers from the host to the OpenCL device
 template <typename T, typename U>
-void HostToDevice(const Arguments<U> &args, Buffers<T> &buffers, BuffersHost<T> &buffers_host,
-                  Queue &queue, const std::vector<std::string> &names);
+void HostToDevice(const Arguments<U>& args, Buffers<T>& buffers, BuffersHost<T>& buffers_host, Queue& queue,
+                  const std::vector<std::string>& names);
 
 // =================================================================================================
 
@@ -97,8 +99,8 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 
 // As above, but now for OpenCL data-types instead of std::vectors
 #ifdef OPENCL_API
-  Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw);
-  void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw);
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw);
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw);
 #endif
 
 // =================================================================================================
@@ -107,28 +109,27 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 // cupp11.h interface.
 template <typename T>
 Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
-  #ifdef OPENCL_API
-    auto raw_buffer = clCreateBuffer(context(), CL_MEM_READ_WRITE, size * sizeof(T), nullptr, nullptr);
-  #elif CUDA_API
-    CUdeviceptr raw_buffer;
-    cuMemAlloc(&raw_buffer, size * sizeof(T));
-  #endif
+#ifdef OPENCL_API
+  auto raw_buffer = clCreateBuffer(context(), CL_MEM_READ_WRITE, size * sizeof(T), nullptr, nullptr);
+#elif CUDA_API
+  CUdeviceptr raw_buffer;
+  cuMemAlloc(&raw_buffer, size * sizeof(T));
+#endif
   return Buffer<T>(raw_buffer);
 }
 
 // =================================================================================================
 
-using BestParameters = std::unordered_map<std::string,size_t>;
+using BestParameters = std::unordered_map<std::string, size_t>;
 using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
 
-void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names,
-                                     const RawDeviceID device, const Precision precision);
-void GetBestParametersFromJSONFile(const std::string& file_name,
-                                   BestParametersCollection& all_parameters,
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names, const RawDeviceID device,
+                                     const Precision precision);
+void GetBestParametersFromJSONFile(const std::string& file_name, BestParametersCollection& all_parameters,
                                    const Precision precision);
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_TEST_UTILITIES_H_
 #endif

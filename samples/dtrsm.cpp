@@ -15,8 +15,8 @@
 #include <cstdio>
 #include <vector>
 
-#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // to disable deprecation warnings
-#define CL_USE_DEPRECATED_OPENCL_1_2_APIS // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS  // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS  // to disable deprecation warnings
 
 // Includes the C++ OpenCL API. If not yet available, it can be found here:
 // https://raw.githubusercontent.com/KhronosGroup/OpenCL-CLHPP/main/include/CL/opencl.hpp
@@ -33,7 +33,6 @@
 // Example use of the double-precision Xtrsm routine DTRSM, solving A*X = alpha*B, storing the
 // result in the memory of matrix B. Uses row-major storage (C-style).
 int main() {
-
   // OpenCL platform/device settings
   const auto platform_id = 0;
   const auto device_id = 0;
@@ -48,13 +47,17 @@ int main() {
   // Initializes the OpenCL platform
   auto platforms = std::vector<cl::Platform>();
   cl::Platform::get(&platforms);
-  if (platforms.size() == 0 || platform_id >= platforms.size()) { return 1; }
+  if (platforms.size() == 0 || platform_id >= platforms.size()) {
+    return 1;
+  }
   auto platform = platforms[platform_id];
 
   // Initializes the OpenCL device
   auto devices = std::vector<cl::Device>();
   platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-  if (devices.size() == 0 || device_id >= devices.size()) { return 1; }
+  if (devices.size() == 0 || device_id >= devices.size()) {
+    return 1;
+  }
   auto device = devices[device_id];
 
   // Creates the OpenCL context, queue, and an event
@@ -64,14 +67,9 @@ int main() {
   auto event = cl_event{nullptr};
 
   // Populate host matrices with some example data
-  auto host_a = std::vector<double>({1.0,  2.0,  1.0, -2.0,
-                                    0.0, -1.0, -2.0,  0.0,
-                                    0.0,  0.0,  1.0,  1.0,
-                                    0.0,  0.0,  0.0, -1.0});
-  auto host_b = std::vector<double>({-1.0, -1.0,  3.0,
-                                     1.0, -3.0,  2.0,
-                                     1.0,  1.0, -1.0,
-                                     4.0, -1.0, -2.0});
+  auto host_a =
+      std::vector<double>({1.0, 2.0, 1.0, -2.0, 0.0, -1.0, -2.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -1.0});
+  auto host_b = std::vector<double>({-1.0, -1.0, 3.0, 1.0, -3.0, 2.0, 1.0, 1.0, -1.0, 4.0, -1.0, -2.0});
   // Expected result:
   //   8 -5  2
   // -11  3  4
@@ -79,28 +77,23 @@ int main() {
   //  -4  1  2
 
   // Copy the matrices to the device
-  auto device_a = cl::Buffer(context, CL_MEM_READ_WRITE, host_a.size()*sizeof(double));
-  auto device_b = cl::Buffer(context, CL_MEM_READ_WRITE, host_b.size()*sizeof(double));
-  queue.enqueueWriteBuffer(device_a, CL_TRUE, 0, host_a.size()*sizeof(double), host_a.data());
-  queue.enqueueWriteBuffer(device_b, CL_TRUE, 0, host_b.size()*sizeof(double), host_b.data());
+  auto device_a = cl::Buffer(context, CL_MEM_READ_WRITE, host_a.size() * sizeof(double));
+  auto device_b = cl::Buffer(context, CL_MEM_READ_WRITE, host_b.size() * sizeof(double));
+  queue.enqueueWriteBuffer(device_a, CL_TRUE, 0, host_a.size() * sizeof(double), host_a.data());
+  queue.enqueueWriteBuffer(device_b, CL_TRUE, 0, host_b.size() * sizeof(double), host_b.data());
 
   // Call the DTRSM routine. Note that the type of alpha and beta (double) determine the precision.
   auto queue_plain = queue();
-  auto status = clblast::Trsm(clblast::Layout::kRowMajor, clblast::Side::kLeft,
-                              clblast::Triangle::kUpper, clblast::Transpose::kNo,
-                              clblast::Diagonal::kNonUnit,
-                              m, n,
-                              alpha,
-                              device_a(), 0, a_ld,
-                              device_b(), 0, b_ld,
-                              &queue_plain, &event);
+  auto status = clblast::Trsm(clblast::Layout::kRowMajor, clblast::Side::kLeft, clblast::Triangle::kUpper,
+                              clblast::Transpose::kNo, clblast::Diagonal::kNonUnit, m, n, alpha, device_a(), 0, a_ld,
+                              device_b(), 0, b_ld, &queue_plain, &event);
 
   // Retrieves the results
   if (status == clblast::StatusCode::kSuccess) {
     clWaitForEvents(1, &event);
     clReleaseEvent(event);
   }
-  queue.enqueueReadBuffer(device_b, CL_TRUE, 0, host_b.size()*sizeof(double), host_b.data());
+  queue.enqueueReadBuffer(device_b, CL_TRUE, 0, host_b.size() * sizeof(double), host_b.data());
 
   // Example completed. See "clblast.h" for status codes (0 -> success).
   printf("Completed TRSM with status %d and results:\n", static_cast<int>(status));

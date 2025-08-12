@@ -17,53 +17,41 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {}, {
-    #include "../../kernels/level2/xgemv.opencl"
-    #include "../../kernels/level2/xgemv_fast.opencl"
-    #include "../../kernels/level2/xtrsv.opencl"
-    }) {
+Xgemv<T>::Xgemv(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {},
+              {
+#include "../../kernels/level2/xgemv.opencl"
+#include "../../kernels/level2/xgemv_fast.opencl"
+#include "../../kernels/level2/xtrsv.opencl"
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose,
-                      const size_t m, const size_t n,
-                      const T alpha,
-                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                      const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc) {
-
+void Xgemv<T>::DoGemv(const Layout layout, const Transpose a_transpose, const size_t m, const size_t n, const T alpha,
+                      const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const Buffer<T>& x_buffer,
+                      const size_t x_offset, const size_t x_inc, const T beta, const Buffer<T>& y_buffer,
+                      const size_t y_offset, const size_t y_inc) {
   // Performs the matrix-vector multiplication
-  MatVec(layout, a_transpose,
-         m, n, alpha,
-         a_buffer, a_offset, a_ld,
-         x_buffer, x_offset, x_inc, beta,
-         y_buffer, y_offset, y_inc,
-         true, true,
-         0, false, 0, 0); // N/A for this routine
+  MatVec(layout, a_transpose, m, n, alpha, a_buffer, a_offset, a_ld, x_buffer, x_offset, x_inc, beta, y_buffer,
+         y_offset, y_inc, true, true, 0, false, 0, 0);  // N/A for this routine
 }
 
 // =================================================================================================
 
 // The generic implementation, also suited for other (non general) matrix-vector multiplications
 template <typename T>
-void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
-                      const size_t m, const size_t n,
-                      const T alpha,
-                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                      const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                      const T beta,
-                      const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-                      bool fast_kernel, bool fast_kernel_rot,
-                      const size_t parameter, const bool packed,
-                      const size_t kl, const size_t ku) {
-
+void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose, const size_t m, const size_t n, const T alpha,
+                      const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const Buffer<T>& x_buffer,
+                      const size_t x_offset, const size_t x_inc, const T beta, const Buffer<T>& y_buffer,
+                      const size_t y_offset, const size_t y_inc, bool fast_kernel, bool fast_kernel_rot,
+                      const size_t parameter, const bool packed, const size_t kl, const size_t ku) {
   // Makes sure all dimensions are larger than zero
-  if (m == 0 || n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (m == 0 || n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Computes whether or not the matrix has an alternative layout (row or column-major).
   const auto a_altlayout = (layout == Layout::kRowMajor);
@@ -77,7 +65,7 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
 
   // Special adjustments for banded matrices
   if (kl != 0 || ku != 0) {
-    a_one = kl+ku+1;
+    a_one = kl + ku + 1;
   }
 
   // Determines whether the kernel needs to perform rotated access ('^' is the XOR operator)
@@ -87,24 +75,24 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   const auto a_conjugate = (a_transpose == Transpose::kConjugate);
 
   // Tests the matrix and the vectors for validity
-  if (packed) { TestMatrixAP(n, a_buffer, a_offset); }
-  else { TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld); }
+  if (packed) {
+    TestMatrixAP(n, a_buffer, a_offset);
+  } else {
+    TestMatrixA(a_one, a_two, a_buffer, a_offset, a_ld);
+  }
   TestVectorX(n_real, x_buffer, x_offset, x_inc);
   TestVectorY(m_real, y_buffer, y_offset, y_inc);
 
   // Determines whether or not the fast-version can be used
   fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
-                IsMultiple(m, db_["WGS2"]*db_["WPT2"]) &&
-                IsMultiple(n, db_["WGS2"]) &&
-                IsMultiple(a_ld, db_["VW2"]);
+                IsMultiple(m, db_["WGS2"] * db_["WPT2"]) && IsMultiple(n, db_["WGS2"]) && IsMultiple(a_ld, db_["VW2"]);
   fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
-                    IsMultiple(m, db_["WGS3"]*db_["WPT3"]) &&
-                    IsMultiple(n, db_["WGS3"]) &&
+                    IsMultiple(m, db_["WGS3"] * db_["WPT3"]) && IsMultiple(n, db_["WGS3"]) &&
                     IsMultiple(a_ld, db_["VW3"]);
 
   // If possible, run the fast-version (rotated or non-rotated) of the kernel
   auto kernel_name = std::string{"Xgemv"};
-  const auto m_ceiled = Ceil(m_real, db_["WGS1"]*db_["WPT1"]);
+  const auto m_ceiled = Ceil(m_real, db_["WGS1"] * db_["WPT1"]);
   auto global_size = m_ceiled / db_["WPT1"];
   auto local_size = db_["WGS1"];
   if (fast_kernel) {
@@ -137,9 +125,9 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose,
   kernel.SetArgument(12, static_cast<int>(y_offset));
   kernel.SetArgument(13, static_cast<int>(y_inc));
   kernel.SetArgument(14, static_cast<int>(a_conjugate));
-  kernel.SetArgument(15, static_cast<int>(parameter)); // extra parameter used for symm/herm
-  kernel.SetArgument(16, static_cast<int>(kl)); // only used for banded matrices
-  kernel.SetArgument(17, static_cast<int>(ku)); // only used for banded matrices
+  kernel.SetArgument(15, static_cast<int>(parameter));  // extra parameter used for symm/herm
+  kernel.SetArgument(16, static_cast<int>(kl));         // only used for banded matrices
+  kernel.SetArgument(17, static_cast<int>(ku));         // only used for banded matrices
 
   // Launches the kernel
   auto global = std::vector<size_t>{global_size};
@@ -157,4 +145,4 @@ template class Xgemv<float2>;
 template class Xgemv<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "utilities/utilities.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -27,16 +27,16 @@ TunerDefaults PadGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings PadGetTunerSettings(const int, const Arguments<T> &args) {
+TunerSettings PadGetTunerSettings(const int, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
   settings.kernel_family = "pad";
   settings.kernel_name = "CopyPadMatrix";
   settings.sources =
-#include "../src/kernels/level3/level3.opencl"
 #include "../src/kernels/level3/copy_pad.opencl"
-  ;
+#include "../src/kernels/level3/level3.opencl"
+      ;
 
   // Buffer sizes
   settings.size_a = args.m * args.n;
@@ -58,10 +58,10 @@ TunerSettings PadGetTunerSettings(const int, const Arguments<T> &args) {
 
   // Sets the tuning parameters and their possible values
   settings.parameters = {
-    {"PAD_DIMX", {8, 16, 32}},
-    {"PAD_DIMY", {8, 16, 32}},
-    {"PAD_WPTX", {1, 2, 4}},
-    {"PAD_WPTY", {1, 2, 4}},
+      {"PAD_DIMX", {8, 16, 32}},
+      {"PAD_DIMY", {8, 16, 32}},
+      {"PAD_WPTX", {1, 2, 4}},
+      {"PAD_WPTY", {1, 2, 4}},
   };
 
   // Describes how to compute the performance metrics
@@ -73,29 +73,29 @@ TunerSettings PadGetTunerSettings(const int, const Arguments<T> &args) {
 
 // Tests for valid arguments
 template <typename T>
-void PadTestValidArguments(const int, const Arguments<T> &) { }
+void PadTestValidArguments(const int, const Arguments<T>&) {}
 std::vector<Constraint> PadSetConstraints(const int) { return {}; }
 template <typename T>
 LocalMemSizeInfo PadComputeLocalMemSize(const int) {
-  return { [] (std::vector<size_t>) -> size_t { return 0; }, {} };
+  return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void PadSetArguments(const int, Kernel &kernel, const Arguments<T> &args, std::vector<Buffer<T>>& buffers) {
+void PadSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.m));
   kernel.SetArgument(3, 0);
-  kernel.SetArgument(4, buffers[2]()); // 2 == A matrix
+  kernel.SetArgument(4, buffers[2]());  // 2 == A matrix
   kernel.SetArgument(5, static_cast<int>(args.m));
   kernel.SetArgument(6, static_cast<int>(args.n));
   kernel.SetArgument(7, static_cast<int>(args.m));
   kernel.SetArgument(8, 0);
-  kernel.SetArgument(9, buffers[3]()); // 3 == B matrix
+  kernel.SetArgument(9, buffers[3]());  // 3 == B matrix
   kernel.SetArgument(10, GetRealArg(args.alpha));
   kernel.SetArgument(11, 0);
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

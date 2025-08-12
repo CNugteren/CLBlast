@@ -17,27 +17,25 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xtrsv<T>::Xtrsv(Queue &queue, EventPointer event, const std::string &name):
-    Xgemv<T>(queue, event, name) {
-}
+Xtrsv<T>::Xtrsv(Queue& queue, EventPointer event, const std::string& name) : Xgemv<T>(queue, event, name) {}
 
 // =================================================================================================
 
 template <typename T>
-void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
-                            const Transpose a_transpose, const Diagonal diagonal,
-                            const size_t n,
-                            const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                            const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc,
-                            const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-                            EventPointer event) {
-
-  if (n > db_["TRSV_BLOCK_SIZE"]) { throw BLASError(StatusCode::kUnexpectedError); };
+void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                            const Diagonal diagonal, const size_t n, const Buffer<T>& a_buffer, const size_t a_offset,
+                            const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_inc,
+                            const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc, EventPointer event) {
+  if (n > db_["TRSV_BLOCK_SIZE"]) {
+    throw BLASError(StatusCode::kUnexpectedError);
+  };
 
   // Translates CLBlast arguments to 0/1 integers for the OpenCL kernel
   const auto is_unit_diagonal = (diagonal == Diagonal::kNonUnit) ? 0 : 1;
   const auto is_transposed = ((a_transpose == Transpose::kNo && layout == Layout::kColMajor) ||
-                              (a_transpose != Transpose::kNo && layout != Layout::kColMajor)) ? 0 : 1;
+                              (a_transpose != Transpose::kNo && layout != Layout::kColMajor))
+                                 ? 0
+                                 : 1;
   const auto do_conjugate = (a_transpose == Transpose::kConjugate) ? 1 : 0;
 
   // The data is either in the upper or lower triangle
@@ -73,17 +71,16 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle,
 
 // The main routine
 template <typename T>
-void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
-                      const Transpose a_transpose, const Diagonal diagonal,
-                      const size_t n,
-                      const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
-                      const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_inc) {
-
+void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose,
+                      const Diagonal diagonal, const size_t n, const Buffer<T>& a_buffer, const size_t a_offset,
+                      const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_inc) {
   // Makes sure all dimensions are larger than zero
-  if (n == 0) { throw BLASError(StatusCode::kInvalidDimension); }
+  if (n == 0) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
-  if (device_.MaxWorkGroupSize() < 16) { // minimum of total local work size of 16
+  if (device_.MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
     throw RuntimeErrorCode(StatusCode::kNotImplemented);
   }
 
@@ -102,8 +99,8 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_vector_event = Event();
-  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList,
-             n, x_inc, x_offset, x_buffer, ConstantZero<T>(), 16);
+  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList, n, x_inc, x_offset, x_buffer,
+             ConstantZero<T>(), 16);
   fill_vector_event.WaitForCompletion();
 
   // Derives properties based on the arguments
@@ -113,7 +110,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
                               (layout != Layout::kColMajor && a_transpose != Transpose::kNo));
 
   // Loops over the blocks
-  auto col = n; // the initial column position
+  auto col = n;  // the initial column position
   for (auto i = size_t{0}; i < n; i += db_["TRSV_BLOCK_SIZE"]) {
     const auto block_size = std::min(db_["TRSV_BLOCK_SIZE"], n - i);
 
@@ -121,11 +118,10 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
     col = (is_upper) ? col - block_size : i;
 
     // Sets the offsets for upper or lower triangular
-    const auto extra_offset_a = (is_transposed) ?
-                                (is_upper ? col + (col+block_size)*a_ld : col) :
-                                (is_upper ? col+block_size + col*a_ld : col*a_ld);
-    const auto extra_offset_x = (is_upper) ? (col+block_size)*x_inc : 0;
-    const auto extra_offset_b = col*x_inc;
+    const auto extra_offset_a = (is_transposed) ? (is_upper ? col + (col + block_size) * a_ld : col)
+                                                : (is_upper ? col + block_size + col * a_ld : col * a_ld);
+    const auto extra_offset_x = (is_upper) ? (col + block_size) * x_inc : 0;
+    const auto extra_offset_b = col * x_inc;
 
     // Runs the GEMV routine to compute x' = A * x
     if (i > 0) {
@@ -133,19 +129,16 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle,
       const auto gemv_n = (a_transpose == Transpose::kNo) ? i : block_size;
       auto gemv_event = Event();
       auto gemv = Xgemv<T>(queue_, gemv_event.pointer());
-      gemv.DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(),
-                  a_buffer, a_offset + extra_offset_a, a_ld,
-                  x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(),
-                  x_buffer, x_offset + extra_offset_b, x_inc);
+      gemv.DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(), a_buffer, a_offset + extra_offset_a, a_ld,
+                  x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(), x_buffer, x_offset + extra_offset_b,
+                  x_inc);
       gemv_event.WaitForCompletion();
     }
 
     // Runs the triangular substitution for the block size
     auto sub_event = Event();
-    Substitution(layout, triangle, a_transpose, diagonal, block_size,
-                 a_buffer, a_offset + col + col*a_ld, a_ld,
-                 b_buffer, b_offset + col*b_inc, b_inc,
-                 x_buffer, x_offset + col*x_inc, x_inc, sub_event.pointer());
+    Substitution(layout, triangle, a_transpose, diagonal, block_size, a_buffer, a_offset + col + col * a_ld, a_ld,
+                 b_buffer, b_offset + col * b_inc, b_inc, x_buffer, x_offset + col * x_inc, x_inc, sub_event.pointer());
     sub_event.WaitForCompletion();
   }
 
@@ -163,4 +156,4 @@ template class Xtrsv<float2>;
 template class Xtrsv<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast

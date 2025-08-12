@@ -11,9 +11,9 @@
 #ifndef CLBLAST_CXPP11_COMMON_H_
 #define CLBLAST_CXPP11_COMMON_H_
 
-#include <cstring>   // strchr
-#include <string>    // std::string
-#include <stdexcept> // std::runtime_error
+#include <cstring>    // strchr
+#include <stdexcept>  // std::runtime_error
+#include <string>     // std::string
 
 namespace clblast {
 // =================================================================================================
@@ -25,9 +25,7 @@ class Error : public Base {
  public:
   // Perfect forwarding of the constructor since "using Base::Base" is not supported by VS 2013
   template <typename... Args>
-  Error(Args&&... args):
-      Base(std::forward<Args>(args)...) {
-  }
+  Error(Args&&... args) : Base(std::forward<Args>(args)...) {}
 };
 
 // =================================================================================================
@@ -35,15 +33,13 @@ class Error : public Base {
 // Represents a generic device-specific runtime error (returned by an OpenCL or CUDA API function)
 class DeviceError : public Error<std::runtime_error> {
  public:
-   // Perfect forwarding of the constructor since "using Error<std::runtime_error>::Error" is not
-   // supported by VS 2013
-   template <typename... Args>
-   DeviceError(Args&&... args):
-       Error<std::runtime_error>(std::forward<Args>(args)...) {
-   }
+  // Perfect forwarding of the constructor since "using Error<std::runtime_error>::Error" is not
+  // supported by VS 2013
+  template <typename... Args>
+  DeviceError(Args&&... args) : Error<std::runtime_error>(std::forward<Args>(args)...) {}
 
-  static std::string TrimCallString(const char *where) {
-    const char *paren = strchr(where, '(');
+  static std::string TrimCallString(const char* where) {
+    const char* paren = strchr(where, '(');
     if (paren) {
       return std::string(where, paren);
     } else {
@@ -57,9 +53,7 @@ class DeviceError : public Error<std::runtime_error> {
 // Represents a generic runtime error (aka environmental problem)
 class RuntimeError : public Error<std::runtime_error> {
  public:
-  explicit RuntimeError(const std::string &reason):
-      Error("Run-time error: " + reason) {
-  }
+  explicit RuntimeError(const std::string& reason) : Error("Run-time error: " + reason) {}
 };
 
 // =================================================================================================
@@ -67,9 +61,7 @@ class RuntimeError : public Error<std::runtime_error> {
 // Represents a generic logic error (aka failed assertion)
 class LogicError : public Error<std::logic_error> {
  public:
-  explicit LogicError(const std::string &reason):
-      Error("Internal logic error: " + reason) {
-  }
+  explicit LogicError(const std::string& reason) : Error("Internal logic error: " + reason) {}
 };
 
 // =================================================================================================
@@ -79,19 +71,12 @@ class LogicError : public Error<std::logic_error> {
 template <typename Base, typename Status>
 class ErrorCode : public Base {
  public:
-  ErrorCode(Status status, const std::string &details, const std::string &reason):
-      Base(reason),
-      status_(status),
-      details_(details) {
-  }
+  ErrorCode(Status status, const std::string& details, const std::string& reason)
+      : Base(reason), status_(status), details_(details) {}
 
-  Status status() const {
-    return status_;
-  }
+  Status status() const { return status_; }
 
-  const std::string& details() const {
-    return details_;
-  }
+  const std::string& details() const { return details_; }
 
  private:
   const Status status_;
@@ -100,7 +85,7 @@ class ErrorCode : public Base {
 
 // =================================================================================================
 
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_CXPP11_COMMON_H_
 #endif

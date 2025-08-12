@@ -7,42 +7,98 @@
 //
 // =================================================================================================
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <random>
 #include <iostream>
+#include <random>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "utilities/utilities.hpp"
 #include "test/routines/level3/xgemm.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 template <typename T>
-size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::string &routine_name) {
+size_t RunOverrideTests(int argc, char* argv[], const bool silent, const std::string& routine_name) {
   auto arguments = RetrieveCommandLineArguments(argc, argv);
   auto errors = size_t{0};
   auto passed = size_t{0};
   auto example_routine = TestXgemm<0, T>();
-  constexpr auto kSeed = 42; // fixed seed for reproducibility
+  constexpr auto kSeed = 42;  // fixed seed for reproducibility
 
   // Determines the test settings
   const auto kernel_name = std::string{"Xgemm"};
   const auto precision = PrecisionValue<T>();
-  const auto valid_settings = std::vector<std::unordered_map<std::string,size_t>>{
-    { {"GEMMK",0}, {"KREG",1}, {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
-    { {"GEMMK",0}, {"KREG",1}, {"KWG",32}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",32}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",32}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
-    { {"GEMMK",0}, {"KREG",1}, {"KWG",16}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0}, {"SB",0}, {"STRM",0}, {"STRN",0}, {"VWM",1}, {"VWN",1} },
+  const auto valid_settings = std::vector<std::unordered_map<std::string, size_t>>{
+      {{"GEMMK", 0},
+       {"KREG", 1},
+       {"KWG", 16},
+       {"KWI", 2},
+       {"MDIMA", 4},
+       {"MDIMC", 4},
+       {"MWG", 16},
+       {"NDIMB", 4},
+       {"NDIMC", 4},
+       {"NWG", 16},
+       {"SA", 0},
+       {"SB", 0},
+       {"STRM", 0},
+       {"STRN", 0},
+       {"VWM", 1},
+       {"VWN", 1}},
+      {{"GEMMK", 0},
+       {"KREG", 1},
+       {"KWG", 32},
+       {"KWI", 2},
+       {"MDIMA", 4},
+       {"MDIMC", 4},
+       {"MWG", 32},
+       {"NDIMB", 4},
+       {"NDIMC", 4},
+       {"NWG", 32},
+       {"SA", 0},
+       {"SB", 0},
+       {"STRM", 0},
+       {"STRN", 0},
+       {"VWM", 1},
+       {"VWN", 1}},
+      {{"GEMMK", 0},
+       {"KREG", 1},
+       {"KWG", 16},
+       {"KWI", 2},
+       {"MDIMA", 4},
+       {"MDIMC", 4},
+       {"MWG", 16},
+       {"NDIMB", 4},
+       {"NDIMC", 4},
+       {"NWG", 16},
+       {"SA", 0},
+       {"SB", 0},
+       {"STRM", 0},
+       {"STRN", 0},
+       {"VWM", 1},
+       {"VWN", 1}},
   };
-  const auto invalid_settings = std::vector<std::unordered_map<std::string,size_t>>{
-    { {"GEMMK",0}, {"KREG",1}, {"KWI",2}, {"MDIMA",4}, {"MDIMC",4}, {"MWG",16}, {"NDIMB",4}, {"NDIMC",4}, {"NWG",16}, {"SA",0} },
+  const auto invalid_settings = std::vector<std::unordered_map<std::string, size_t>>{
+      {{"GEMMK", 0},
+       {"KREG", 1},
+       {"KWI", 2},
+       {"MDIMA", 4},
+       {"MDIMC", 4},
+       {"MWG", 16},
+       {"NDIMB", 4},
+       {"NDIMC", 4},
+       {"NWG", 16},
+       {"SA", 0}},
   };
 
   // Retrieves the arguments
   auto help = std::string{"Options given/available:\n"};
-  const auto platform_id = GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
-  const auto device_id = GetArgument(arguments, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
+  const auto platform_id =
+      GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
+  const auto device_id =
+      GetArgument(arguments, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   auto args = Arguments<T>{};
   args.m = GetArgument(arguments, help, kArgM, size_t{256});
   args.n = GetArgument(arguments, help, kArgN, size_t{256});
@@ -58,10 +114,12 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   args.b_transpose = GetArgument(arguments, help, kArgBTransp, Transpose::kNo);
   args.kernel_mode = GetArgument(arguments, help, kArgKernelMode, KernelMode::kCrossCorrelation);
   args.alpha = GetArgument(arguments, help, kArgAlpha, GetScalar<T>());
-  args.beta  = GetArgument(arguments, help, kArgBeta, GetScalar<T>());
+  args.beta = GetArgument(arguments, help, kArgBeta, GetScalar<T>());
 
   // Prints the help message (command-line arguments)
-  if (!silent) { fprintf(stdout, "\n* %s\n", help.c_str()); }
+  if (!silent) {
+    fprintf(stdout, "\n* %s\n", help.c_str());
+  }
 
   // Initializes OpenCL
   const auto platform = Platform(platform_id);
@@ -83,7 +141,7 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
   auto device_a = Buffer<T>(context, host_a.size());
   auto device_b = Buffer<T>(context, host_b.size());
   auto device_c = Buffer<T>(context, host_c.size());
-  auto device_temp = Buffer<T>(context, args.m * args.n * args.k); // just to be safe
+  auto device_temp = Buffer<T>(context, args.m * args.n * args.k);  // just to be safe
   device_a.Write(queue, host_a.size(), host_a);
   device_b.Write(queue, host_b.size(), host_b);
   device_c.Write(queue, host_c.size(), host_c);
@@ -93,30 +151,48 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
 
   // Loops over the valid combinations: run before and run afterwards
   fprintf(stdout, "* Testing OverrideParameters for '%s'\n", routine_name.c_str());
-  for (const auto &override_setting : valid_settings) {
+  for (const auto& override_setting : valid_settings) {
     const auto status_before = example_routine.RunRoutine(args, buffers, queue);
-    if (status_before != StatusCode::kSuccess) { errors++; continue; }
+    if (status_before != StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }
 
     // Overrides the parameters
     const auto status = OverrideParameters(device(), kernel_name, precision, override_setting);
-    if (status != StatusCode::kSuccess) { errors++; continue; } // error shouldn't occur
+    if (status != StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }  // error shouldn't occur
 
     const auto status_after = example_routine.RunRoutine(args, buffers, queue);
-    if (status_after != StatusCode::kSuccess) { errors++; continue; }
+    if (status_after != StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }
     passed++;
   }
 
   // Loops over the invalid combinations: run before and run afterwards
-  for (const auto &override_setting : invalid_settings) {
+  for (const auto& override_setting : invalid_settings) {
     const auto status_before = example_routine.RunRoutine(args, buffers, queue);
-    if (status_before != StatusCode::kSuccess) { errors++; continue; }
+    if (status_before != StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }
 
     // Overrides the parameters
     const auto status = OverrideParameters(device(), kernel_name, precision, override_setting);
-    if (status == StatusCode::kSuccess) { errors++; continue; } // error should occur
+    if (status == StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }  // error should occur
 
     const auto status_after = example_routine.RunRoutine(args, buffers, queue);
-    if (status_after != StatusCode::kSuccess) { errors++; continue; }
+    if (status_after != StatusCode::kSuccess) {
+      errors++;
+      continue;
+    }
     passed++;
   }
 
@@ -128,14 +204,18 @@ size_t RunOverrideTests(int argc, char *argv[], const bool silent, const std::st
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // Main function (not within the clblast namespace)
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunOverrideTests<float>(argc, argv, false, "SGEMM");
   errors += clblast::RunOverrideTests<clblast::float2>(argc, argv, true, "CGEMM");
-  if (errors > 0) { return 1; } else { return 0; }
+  if (errors > 0) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 // =================================================================================================
