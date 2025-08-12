@@ -1,5 +1,6 @@
 Development version (next version)
 - Fixed compatibility with CMake 4.0
+- Applied clang-format code style formatting
 - Added tuned parameters for many devices (see doc/tuning.md)
 
 Version 1.6.3
