@@ -12,8 +12,8 @@
 //
 // =================================================================================================
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Includes the CLBlast library (Netlib CBLAS interface)
@@ -23,7 +23,6 @@
 
 // Example use of the single-precision routine SGEMM
 int main(void) {
-
   // Example SGEMM arguments
   const int m = 128;
   const int n = 64;
@@ -35,22 +34,22 @@ int main(void) {
   const int c_ld = n;
 
   // Populate host matrices with some example data
-  float* host_a = (float*)malloc(sizeof(float)*m*k);
-  float* host_b = (float*)malloc(sizeof(float)*n*k);
-  float* host_c = (float*)malloc(sizeof(float)*m*n);
-  for (int i=0; i<m*k; ++i) { host_a[i] = 12.193f; }
-  for (int i=0; i<n*k; ++i) { host_b[i] = -8.199f; }
-  for (int i=0; i<m*n; ++i) { host_c[i] = 0.0f; }
+  float* host_a = (float*)malloc(sizeof(float) * m * k);
+  float* host_b = (float*)malloc(sizeof(float) * n * k);
+  float* host_c = (float*)malloc(sizeof(float) * m * n);
+  for (int i = 0; i < m * k; ++i) {
+    host_a[i] = 12.193f;
+  }
+  for (int i = 0; i < n * k; ++i) {
+    host_b[i] = -8.199f;
+  }
+  for (int i = 0; i < m * n; ++i) {
+    host_c[i] = 0.0f;
+  }
 
   // Call the SGEMM routine.
-  cblas_sgemm(CLBlastLayoutRowMajor,
-              CLBlastTransposeNo, CLBlastTransposeNo,
-              m, n, k,
-              alpha,
-              host_a, a_ld,
-              host_b, b_ld,
-              beta,
-              host_c, c_ld);
+  cblas_sgemm(CLBlastLayoutRowMajor, CLBlastTransposeNo, CLBlastTransposeNo, m, n, k, alpha, host_a, a_ld, host_b, b_ld,
+              beta, host_c, c_ld);
 
   // Example completed
   printf("Completed SGEMM\n");
