@@ -376,13 +376,13 @@ def wrapper_cublas(routine):
 def performance_test(routine, level_string):
     """Generates the body of a performance test for a specific routine"""
     result = ""
-    result += "#include \"test/performance/client.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
+    result += "#include \"test/performance/client.hpp\"" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
-    result += "int main(int argc, char *argv[]) {" + NL
+    result += "int main(int argc, char* argv[]) {" + NL
     result += "  const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);" + NL
     default = convert.precision_to_full_name(routine.flavours[0].precision_name)
-    result += "  switch(clblast::GetPrecision(command_line_args, clblast::Precision::k" + default + ")) {" + NL
+    result += "  switch (clblast::GetPrecision(command_line_args, clblast::Precision::k" + default + ")) {" + NL
     for precision in ["H", "S", "D", "C", "Z"]:
         result += "    case clblast::Precision::k" + convert.precision_to_full_name(precision) + ":"
         found = False
@@ -391,10 +391,10 @@ def performance_test(routine, level_string):
                 extra_template_argument = "0, " if routine.name == "gemm" and routine.batched == 0 else ""
                 result += NL + "      clblast::RunClient<clblast::TestX" + routine.plain_name()
                 result += flavour.test_template(extra_template_argument)
-                result += ">(argc, argv); break;" + NL
+                result += ">(argc, argv);" + NL + "      break;" + NL
                 found = True
         if not found:
-            result += " throw std::runtime_error(\"Unsupported precision mode\");" + NL
+            result += NL + "      throw std::runtime_error(\"Unsupported precision mode\");" + NL
     result += "  }" + NL
     result += "  return 0;" + NL
     result += "}" + NL
@@ -404,10 +404,10 @@ def performance_test(routine, level_string):
 def correctness_test(routine, level_string):
     """Generates the body of a correctness test for a specific routine"""
     result = ""
-    result += "#include \"test/correctness/testblas.hpp\"" + NL
     result += "#include \"test/routines/level" + level_string + "/x" + routine.lowercase_name() + ".hpp\"" + NL + NL
+    result += "#include \"test/correctness/testblas.hpp\"" + NL + NL
     result += "// Main function (not within the clblast namespace)" + NL
-    result += "int main(int argc, char *argv[]) {" + NL
+    result += "int main(int argc, char* argv[]) {" + NL
     result += "  auto errors = size_t{0};" + NL
     not_first = "false"
     extra_template_arguments = ["1, ", "2, "] if routine.name == "gemm" and routine.batched == 0 else [""]
@@ -417,6 +417,10 @@ def correctness_test(routine, level_string):
             result += flavour.test_template(extra_template_argument)
             result += ">(argc, argv, " + not_first + ", \"" + flavour.name + routine.upper_name() + "\");" + NL
             not_first = "true"
-    result += "  if (errors > 0) { return 1; } else { return 0; }" + NL
+    result += "  if (errors > 0) {" + NL
+    result += "    return 1;" + NL
+    result += "  } else {" + NL
+    result += "    return 0;" + NL
+    result += "  }" + NL
     result += "}" + NL
     return result
