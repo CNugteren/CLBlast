@@ -92,7 +92,7 @@ void Xnrm2Epilogue(const __global real* restrict input,
   Add(lm[lid], input[lid], input[lid + WGS2]);
   barrier(CLK_LOCAL_MEM_FENCE);
 
-  // Performs reduction in local memory and stores the final result
+  // Performs reduction in local memory and stores the per work group result
   #if defined(cl_khr_work_group_uniform_arithmetic) || defined(__opencl_c_work_group_collective_functions)
     real result = work_group_reduce_add(lm[lid])
 
@@ -119,6 +119,15 @@ void Xnrm2Epilogue(const __global real* restrict input,
       #endif
     }
   #endif
+
+  // Computes the square root and stores the final result
+  if (lid == 0) {
+    #if PRECISION == 3232 || PRECISION == 6464
+      nrm2[nrm2_offset].x = sqrt(lm[0].x); // the result is a non-complex number
+    #else
+      nrm2[nrm2_offset] = sqrt(lm[0]);
+    #endif
+  }
 }
 
 // =================================================================================================
