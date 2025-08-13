@@ -34,8 +34,9 @@ TunerSettings CopyGetTunerSettings(const int, const Arguments<T>& args) {
   settings.kernel_family = "copy";
   settings.kernel_name = "CopyMatrixFast";
   settings.sources =
-#include "../src/kernels/level3/copy_fast.opencl"
 #include "../src/kernels/level3/level3.opencl"
+  // Comment to prevent reordering of includes
+#include "../src/kernels/level3/copy_fast.opencl"
       ;
 
   // Buffer sizes
