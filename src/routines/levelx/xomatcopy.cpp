@@ -20,9 +20,10 @@ template <typename T>
 Xomatcopy<T>::Xomatcopy(Queue& queue, EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose"}, PrecisionValue<T>(), {},
               {
+#include "../../kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../../kernels/level3/copy_fast.opencl"
 #include "../../kernels/level3/copy_pad.opencl"
-#include "../../kernels/level3/level3.opencl"
 #include "../../kernels/level3/transpose_fast.opencl"
 #include "../../kernels/level3/transpose_pad.opencl"
               }) {

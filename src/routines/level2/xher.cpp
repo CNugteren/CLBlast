@@ -20,6 +20,7 @@ Xher<T, U>::Xher(Queue& queue, EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level2/level2.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../../kernels/level2/xher.opencl"
               }) {
 }

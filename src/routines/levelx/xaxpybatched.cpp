@@ -21,6 +21,7 @@ XaxpyBatched<T>::XaxpyBatched(Queue& queue, EventPointer event, const std::strin
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../../kernels/level1/xaxpy.opencl"
               }) {
 }

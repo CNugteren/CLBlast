@@ -194,6 +194,7 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   // XAXPY
   const auto xaxpy_sources = "#define WPT 2\n"
 #include "../src/kernels/level1/level1.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../src/kernels/level1/xaxpy.opencl"
       ;
   if (TestKernel(device, context, "XaxpyFastest", xaxpy_sources, precision)) {
@@ -205,6 +206,7 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   // XGER
   const auto xger_sources = "#define WPT 2\n"
 #include "../src/kernels/level2/level2.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../src/kernels/level2/xger.opencl"
       ;
   if (TestKernel(device, context, "Xger", xger_sources, precision)) {
@@ -231,8 +233,9 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
 
   // CopyFast
   const auto copy_fast_sources = "#define COPY_WPT 2\n"
-#include "../src/kernels/level3/copy_fast.opencl"
 #include "../src/kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
+#include "../src/kernels/level3/copy_fast.opencl"
       ;
   if (TestKernel(device, context, "CopyMatrixFast", copy_fast_sources, precision)) {
     passed++;
@@ -244,8 +247,9 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   const auto copy_pad_sources =
       "#define PAD_WPTX 2\n"
       "#define PAD_WPTY 2\n"
-#include "../src/kernels/level3/copy_pad.opencl"
 #include "../src/kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
+#include "../src/kernels/level3/copy_pad.opencl"
       ;
   if (TestKernel(device, context, "CopyPadMatrix", copy_pad_sources, precision)) {
     passed++;
@@ -256,6 +260,7 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   // TransposeFast
   const auto transpose_fast_sources = "#define TRA_WPT 2\n"
 #include "../src/kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../src/kernels/level3/transpose_fast.opencl"
       ;
   if (TestKernel(device, context, "TransposeMatrixFast", transpose_fast_sources, precision)) {
@@ -267,6 +272,7 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   // TransposePad
   const auto transpose_pad_sources = "#define PADTRA_WPT 2\n"
 #include "../src/kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../src/kernels/level3/transpose_pad.opencl"
       ;
   if (TestKernel(device, context, "TransposePadMatrix", transpose_pad_sources, precision)) {
@@ -325,8 +331,9 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
   // HEMM
   if (precision == Precision::kComplexSingle || precision == Precision::kComplexDouble) {
     const auto herm_sources = "#define ROUTINE_HEMM\n"
-#include "../src/kernels/level3/convert_hermitian.opencl"
 #include "../src/kernels/level3/level3.opencl"
+// (comment to prevent auto-re-ordering)
+#include "../src/kernels/level3/convert_hermitian.opencl"
         ;
     if (TestKernel(device, context, "HermLowerToSquared", herm_sources, precision)) {
       passed++;

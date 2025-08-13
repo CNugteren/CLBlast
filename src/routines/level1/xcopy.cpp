@@ -21,6 +21,7 @@ Xcopy<T>::Xcopy(Queue& queue, EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
+// (comment to prevent auto-re-ordering)
 #include "../../kernels/level1/xcopy.opencl"
               }) {
 }
