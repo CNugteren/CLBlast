@@ -66,7 +66,7 @@ bld_m = "The value of `b_ld` must be at least `m`."
 bld_n = "The value of `b_ld` must be at least `n`."
 bld_transb_k_n = "When `(transpose_b == Transpose::kNo && layout == Layout::kColMajor) || (transpose_b == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `k`, otherwise `b_ld` must be at least `n`."
 bld_trans_n_k = "When `(transpose == Transpose::kNo && layout == Layout::kColMajor) || (transpose == Transpose::kYes && layout == Layout::kRowMajor)`, then `b_ld` must be at least `n`, otherwise `b_ld` must be at least `k`."
-cld_m = "The value of `c_ld` must be at least `m`."
+cld_m = "When `layout == Layout::kColMajor`, then `c_ld` must be at least `m`, otherwise `c_ld` must be at least `n`"
 cld_n = "The value of `c_ld` must be at least `n`."
 
 
