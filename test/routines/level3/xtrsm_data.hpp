@@ -1,10 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
-// project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
-// width of 100 characters per line.
-//
-// Author(s):
+// This file is part of the CLBlast project. Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file implements data-prepration routines for proper input for the TRSM routine. Note: The
@@ -15,9 +11,9 @@
 #ifndef CLBLAST_TEST_ROUTINES_XTRSM_DATA_H_
 #define CLBLAST_TEST_ROUTINES_XTRSM_DATA_H_
 
-#include <vector>
-#include <string>
 #include <random>
+#include <string>
+#include <vector>
 
 #include "utilities/utilities.hpp"
 
@@ -25,44 +21,71 @@ namespace clblast {
 // =================================================================================================
 
 // Limits to prepare proper input data
-template <typename T> double TrsmLimitMatA();
-template <> double TrsmLimitMatA<float>() { return pow(2.0, 7); }
-template <> double TrsmLimitMatA<double>() { return pow(2.0, 5); }
-template <> double TrsmLimitMatA<float2>() { return TrsmLimitMatA<float>(); }
-template <> double TrsmLimitMatA<double2>() { return TrsmLimitMatA<double>(); }
-template <typename T> double TrsmLimitMatB();
-template <> double TrsmLimitMatB<float>() { return pow(2.0, 16); }
-template <> double TrsmLimitMatB<double>() { return pow(2.0, 47); }
-template <> double TrsmLimitMatB<float2>() { return TrsmLimitMatB<float>(); }
-template <> double TrsmLimitMatB<double2>() { return TrsmLimitMatB<double>(); }
+template <typename T>
+double TrsmLimitMatA();
+template <>
+double TrsmLimitMatA<float>() {
+  return pow(2.0, 7);
+}
+template <>
+double TrsmLimitMatA<double>() {
+  return pow(2.0, 5);
+}
+template <>
+double TrsmLimitMatA<float2>() {
+  return TrsmLimitMatA<float>();
+}
+template <>
+double TrsmLimitMatA<double2>() {
+  return TrsmLimitMatA<double>();
+}
+template <typename T>
+double TrsmLimitMatB();
+template <>
+double TrsmLimitMatB<float>() {
+  return pow(2.0, 16);
+}
+template <>
+double TrsmLimitMatB<double>() {
+  return pow(2.0, 47);
+}
+template <>
+double TrsmLimitMatB<float2>() {
+  return TrsmLimitMatB<float>();
+}
+template <>
+double TrsmLimitMatB<double2>() {
+  return TrsmLimitMatB<double>();
+}
 
 // Matrix element setter
 template <typename T>
-void SetElement(const clblast::Layout layout,
-                const size_t row, const size_t column, T *mat, const size_t ld, const T value)
-{
-  if (layout == clblast::Layout::kRowMajor) { mat[column + ld * row] = value; }
-  else { mat[row + ld * column] = value; }
+void SetElement(const clblast::Layout layout, const size_t row, const size_t column, T* mat, const size_t ld,
+                const T value) {
+  if (layout == clblast::Layout::kRowMajor) {
+    mat[column + ld * row] = value;
+  } else {
+    mat[row + ld * column] = value;
+  }
 }
 
 // Matrix element getter
 template <typename T>
-T GetElement(const clblast::Layout layout,
-             const size_t row, const size_t column, const T *mat, const size_t ld)
-{
-  if (layout == clblast::Layout::kRowMajor) { return mat[column + ld * row]; }
-  else { return mat[row + ld * column]; }
+T GetElement(const clblast::Layout layout, const size_t row, const size_t column, const T* mat, const size_t ld) {
+  if (layout == clblast::Layout::kRowMajor) {
+    return mat[column + ld * row];
+  } else {
+    return mat[row + ld * column];
+  }
 }
 
 // Bounds a value between 'left' and 'right'. The random value is assumed to be between -1 and +1.
-template<typename T>
-T BoundRandom(const double rand_val, const double left, const double right)
-{
+template <typename T>
+T BoundRandom(const double rand_val, const double left, const double right) {
   const auto value = Constant<T>(rand_val * (right - left));
   if (AbsoluteValue<T>(value) < 0.0) {
     return value - Constant<T>(left);
-  }
-  else {
+  } else {
     return value + Constant<T>(left);
   }
 }
@@ -71,8 +94,7 @@ T BoundRandom(const double rand_val, const double left, const double right)
 // should remain deterministic. Random values are therefore taken from the existing input, which
 // is scaled between -1 and +1.
 template <typename T>
-void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat_a, T *mat_b)
-{
+void GenerateProperTrsmMatrices(const Arguments<T>& args, const int seed, T* mat_a, T* mat_b) {
   // Random number generator
   std::mt19937 mt(seed);
   std::uniform_real_distribution<double> dist(-1.0, 1.0);
@@ -82,14 +104,15 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
   // Determines: max(|a_{ii}|) and  min(|a_{ii}|)
   // Generates: a_{ii} which are constrainted by min/max
   auto min = ConstantZero<T>();
-  if (args.diagonal ==  clblast::Diagonal::kUnit) {
+  if (args.diagonal == clblast::Diagonal::kUnit) {
     for (auto i = size_t{0}; i < k; ++i) {
-      SetElement<T>(args.layout, i, i, mat_a, args.a_ld, ConstantOne<T>()); // must not be accessed
+      SetElement<T>(args.layout, i, i, mat_a, args.a_ld, ConstantOne<T>());  // must not be accessed
     }
-  }
-  else {
+  } else {
     auto max = Constant<T>(dist(mt) * TrsmLimitMatA<T>());
-    if (AbsoluteValue(max) < 1.0) { max += Constant<T>(3.0); } // no zero's on the diagonal
+    if (AbsoluteValue(max) < 1.0) {
+      max += Constant<T>(3.0);
+    }  // no zero's on the diagonal
     min = max / Constant<T>(100.0);
     SetElement<T>(args.layout, 0, 0, mat_a, args.a_ld, max);
     for (auto i = size_t{1}; i < k; ++i) {
@@ -103,11 +126,13 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
 
   // Generates a_{ij} for all j <> i.
   for (auto i = size_t{0}; i < k; ++i) {
-    auto sum = (args.diagonal == clblast::Diagonal::kUnit) ?
-                                 AbsoluteValue(ConstantOne<T>()) :
-                                 AbsoluteValue(GetElement<T>(args.layout, i, i, mat_a, args.a_ld));
+    auto sum = (args.diagonal == clblast::Diagonal::kUnit)
+                   ? AbsoluteValue(ConstantOne<T>())
+                   : AbsoluteValue(GetElement<T>(args.layout, i, i, mat_a, args.a_ld));
     for (auto j = size_t{0}; j < k; ++j) {
-      if (j == i) { continue; }
+      if (j == i) {
+        continue;
+      }
       auto value = ConstantZero<T>();
       if (((args.triangle == clblast::Triangle::kUpper) && (j > i)) ||
           ((args.triangle == clblast::Triangle::kLower) && (j < i))) {
@@ -129,7 +154,8 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
         const auto a_value = GetElement<T>(args.layout, i, i, mat_a, args.a_ld);
         auto value = ConstantZero<T>();
         if (sum >= 0.0) {
-          const auto limit = sum * AbsoluteValue(a_value) / std::sqrt(static_cast<double>(args.m) - static_cast<double>(i));
+          const auto limit =
+              sum * AbsoluteValue(a_value) / std::sqrt(static_cast<double>(args.m) - static_cast<double>(i));
           value = Constant<T>(dist(mt) * limit);
           sum -= AbsoluteValue(value) / AbsoluteValue(a_value);
         }
@@ -139,15 +165,15 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
         }
       }
     }
-  }
-  else {
+  } else {
     for (auto i = size_t{0}; i < args.m; ++i) {
       auto sum = TrsmLimitMatB<T>();
       for (auto j = size_t{0}; j < args.n; ++j) {
         const auto a_value = GetElement<T>(args.layout, j, j, mat_a, args.a_ld);
         auto value = ConstantZero<T>();
         if (sum >= 0.0) {
-          const auto limit = sum * AbsoluteValue(a_value) / std::sqrt(static_cast<double>(args.n) - static_cast<double>(j));
+          const auto limit =
+              sum * AbsoluteValue(a_value) / std::sqrt(static_cast<double>(args.n) - static_cast<double>(j));
           value = Constant<T>(dist(mt) * limit);
           sum -= AbsoluteValue(value) / AbsoluteValue(a_value);
         }
@@ -160,7 +186,7 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
   }
   if (args.diagonal == clblast::Diagonal::kUnit) {
     for (auto i = size_t{0}; i < k; ++i) {
-      SetElement<T>(args.layout, i, i, mat_a, args.a_ld, ConstantOne<T>()); // must not be accessed
+      SetElement<T>(args.layout, i, i, mat_a, args.a_ld, ConstantOne<T>());  // must not be accessed
     }
   }
 
@@ -182,7 +208,7 @@ void GenerateProperTrsmMatrices(const Arguments<T> &args, const int seed, T *mat
 }
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_TEST_ROUTINES_XTRSM_DATA_H_
 #endif

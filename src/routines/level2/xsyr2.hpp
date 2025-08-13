@@ -1,10 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
-// project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
-// width of 100 characters per line.
-//
-// Author(s):
+// This file is part of the CLBlast project. Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file implements the Xsyr2 routine. The precision is implemented using a template argument.
@@ -21,26 +17,22 @@ namespace clblast {
 
 // See comment at top of file for a description of the class
 template <typename T>
-class Xsyr2: public Xher2<T> {
+class Xsyr2 : public Xher2<T> {
  public:
-
   // Uses the regular Xher2 routine
   using Xher2<T>::DoHer2;
 
   // Constructor
-  Xsyr2(Queue &queue, EventPointer event, const std::string &name = "SYR2");
+  Xsyr2(Queue& queue, EventPointer event, const std::string& name = "SYR2");
 
   // Templated-precision implementation of the routine
-  void DoSyr2(const Layout layout, const Triangle triangle,
-              const size_t n,
-              const T alpha,
-              const Buffer<T> &x_buffer, const size_t x_offset, const size_t x_inc,
-              const Buffer<T> &y_buffer, const size_t y_offset, const size_t y_inc,
-              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld);
+  void DoSyr2(const Layout layout, const Triangle triangle, const size_t n, const T alpha, const Buffer<T>& x_buffer,
+              const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
+              const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld);
 };
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
 
 // CLBLAST_ROUTINES_XSYR2_H_
 #endif

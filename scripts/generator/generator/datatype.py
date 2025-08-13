@@ -75,7 +75,7 @@ class DataType:
         buffer_type = "clblast::" + self.buffer_type if self.is_non_standard() else self.buffer_type
         beta_cpp = "clblast::" + self.beta_cpp if self.beta_cpp in [D_HALF, D_FLOAT2, D_DOUBLE2] else self.beta_cpp
         if self.buffer_type != self.beta_cpp:
-            return "<" + extra_template_argument + buffer_type + "," + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
+            return "<" + extra_template_argument + buffer_type + ", " + self.beta_cpp + ">, " + buffer_type + ", " + beta_cpp
         return "<" + extra_template_argument + buffer_type + ">, " + buffer_type + ", " + beta_cpp
 
     def is_complex(self, scalar):
