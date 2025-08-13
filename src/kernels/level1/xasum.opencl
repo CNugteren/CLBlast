@@ -140,11 +140,13 @@ void XasumEpilogue(const __global real* restrict input,
     #endif
 
     if (lid == 0) {
-      #if (PRECISION == 3232 || PRECISION == 6464) && defined(ROUTINE_ASUM)
-        asum[asum_offset].x = lm[0].x + lm[0].y; // the result is a non-complex number
-      #else
-        asum[asum_offset] = lm[0];
-      #endif
+      if (lid == 0) {
+        #if (PRECISION == 3232 || PRECISION == 6464) && defined(ROUTINE_ASUM)
+          asum[asum_offset].x = lm[0].x + lm[0].y; // the result is a non-complex number
+        #else
+          asum[asum_offset] = lm[0];
+        #endif
+      }
     }
   #endif
 
