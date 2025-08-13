@@ -14,10 +14,8 @@
 // literal). Comment-out this line for syntax-highlighting when developing.
 R"(
 
-#if defined(cl_khr_work_group_uniform_arithmetic)
+#ifdef cl_khr_work_group_uniform_arithmetic
 #pragma OPENCL EXTENSION cl_khr_work_group_uniform_arithmetic : enable
-#elif defined(cl_khr_subgroups)
-#pragma OPENCL EXTENSION cl_khr_subgroups : enable
 #endif
 
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
@@ -68,22 +66,12 @@ void Xdot(const int n,
       output[wgid] = result;
     }
   #else
-    #if defined(cl_khr_subgroups) || defined(__opencl_c_subgroups)
-      lm[get_sub_group_local_id()] = sub_group_reduce_add(lm[lid]);
+    for (int s=WGS1/2; s>0; s=s>>1) {
+      if (lid < s) {
+        Add(lm[lid], lm[lid], lm[lid + s]);
+      }
       barrier(CLK_LOCAL_MEM_FENCE);
-      for (int s = get_num_sub_groups() >> 1; s > 0; s >>= 1) {
-        if (lid < s) {
-          Add(lm[lid], lm[lid], lm[lid + s]);
-        }
-      }
-    #else
-      for (int s=WGS1/2; s>0; s=s>>1) {
-        if (lid < s) {
-          Add(lm[lid], lm[lid], lm[lid + s]);
-        }
-        barrier(CLK_LOCAL_MEM_FENCE);
-      }
-    #endif
+    }
 
     if (lid == 0) {
       output[wgid] = lm[0];
@@ -109,7 +97,7 @@ void XdotEpilogue(const __global real* restrict input,
   Add(lm[lid], input[lid], input[lid + WGS2]);
   barrier(CLK_LOCAL_MEM_FENCE);
 
-  // Performs reduction in local memory and stores final result
+  // Performs reduction in local memory and stores the per work group result
   #if defined(cl_khr_work_group_uniform_arithmetic) || defined(__opencl_c_work_group_collective_functions)
     real result = work_group_reduce_add(lm[lid])
 
@@ -117,25 +105,15 @@ void XdotEpilogue(const __global real* restrict input,
       dot[dot_offset] = result;
     }
   #else
-    #if defined(cl_khr_subgroups) || defined(__opencl_c_subgroups)
-      lm[get_sub_group_local_id()] = sub_group_reduce_add(lm[lid]);
+    for (int s=WGS1/2; s>0; s=s>>1) {
+      if (lid < s) {
+        Add(lm[lid], lm[lid], lm[lid + s]);
+      }
       barrier(CLK_LOCAL_MEM_FENCE);
-      for (int s = get_num_sub_groups() >> 1; s > 0; s >>= 1) {
-        if (lid < s) {
-          Add(lm[lid], lm[lid], lm[lid + s]);
-        }
-      }
-    #else
-      for (int s=WGS1/2; s>0; s=s>>1) {
-        if (lid < s) {
-          Add(lm[lid], lm[lid], lm[lid + s]);
-        }
-        barrier(CLK_LOCAL_MEM_FENCE);
-      }
-    #endif
+    }
 
     if (lid == 0) {
-      dot[dot_offset] = lm[lid];
+      dot[dot_offset] = lm[0];
     }
   #endif
 }
