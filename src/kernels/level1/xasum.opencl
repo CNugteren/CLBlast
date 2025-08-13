@@ -147,6 +147,8 @@ void XasumEpilogue(const __global real* restrict input,
       #endif
     }
   #endif
+
+  // Computes the absolute value and stores the final result
 }
 
 // =================================================================================================
