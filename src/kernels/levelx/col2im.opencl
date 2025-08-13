@@ -1,10 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
-// project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
-// width of 100 characters per line.
-//
-// This file contains the col2im kernel, taken from:
+// This file is part of the CLBlast project. This file contains the col2im kernel, taken from:
 // https://gist.github.com/vbkaisetsu/a98299df827f9a5245635f646c1d94be
 // Credits go to https://github.com/vbkaisetsu
 //

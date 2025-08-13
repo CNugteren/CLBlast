@@ -1,10 +1,6 @@
 
 // =================================================================================================
-// This file is part of the CLBlast project. The project is licensed under Apache Version 2.0. This
-// project loosely follows the Google C++ styleguide and uses a tab-size of two spaces and a max-
-// width of 100 characters per line.
-//
-// Author(s):
+// This file is part of the CLBlast project. Author(s):
 //   Cedric Nugteren <www.cedricnugteren.nl>
 //
 // This file implements the Xcol2im class (see the header for information about the class).
@@ -21,29 +17,29 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xcol2im<T>::Xcol2im(Queue &queue, EventPointer event, const std::string &name):
-    Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {}, {
+Xcol2im<T>::Xcol2im(Queue& queue, EventPointer event, const std::string& name)
+    : Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {},
+              {
 #include "../../kernels/levelx/col2im.opencl"
-    }) {
+              }) {
 }
 
 // =================================================================================================
 
 // The main routine
 template <typename T>
-void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode,
-                          const size_t channels, const size_t height, const size_t width,
-                          const size_t kernel_h, const size_t kernel_w, const size_t pad_h,
-                          const size_t pad_w, const size_t stride_h, const size_t stride_w,
-                          const size_t dilation_h, const size_t dilation_w,
-                          const Buffer<T> &col_buffer, const size_t col_offset,
-                          const Buffer<T> &im_buffer, const size_t im_offset) {
-
+void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, const size_t height, const size_t width,
+                          const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w,
+                          const size_t stride_h, const size_t stride_w, const size_t dilation_h,
+                          const size_t dilation_w, const Buffer<T>& col_buffer, const size_t col_offset,
+                          const Buffer<T>& im_buffer, const size_t im_offset) {
   // Flip the output along kernel_h and kernel_w, or not.
   const auto kernel_name = (kernel_mode == KernelMode::kConvolution) ? "Xcol2imKernelFlip" : "Xcol2imKernelNormal";
 
   // Makes sure all dimensions are larger than zero
-  if ((channels == 0) || (height == 0) || (width == 0)) { throw BLASError(StatusCode::kInvalidDimension); }
+  if ((channels == 0) || (height == 0) || (width == 0)) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
 
   // Sets the output height and width
   const auto size_h = height + 2 * pad_h;
@@ -108,4 +104,4 @@ template class Xcol2im<float2>;
 template class Xcol2im<double2>;
 
 // =================================================================================================
-} // namespace clblast
+}  // namespace clblast
