@@ -34,8 +34,9 @@ TunerSettings PadGetTunerSettings(const int, const Arguments<T>& args) {
   settings.kernel_family = "pad";
   settings.kernel_name = "CopyPadMatrix";
   settings.sources =
-#include "../src/kernels/level3/copy_pad.opencl"
 #include "../src/kernels/level3/level3.opencl"
+// Comment to prevent reordering of includes
+#include "../src/kernels/level3/copy_pad.opencl"
       ;
 
   // Buffer sizes
