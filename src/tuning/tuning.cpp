@@ -110,9 +110,9 @@ inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
 }
 
 template <typename T>
-void tuningThread(ThreadInfo& info, const std::vector<clblast::Configuration>& configurations, const size_t config_id,
-                  const TunerSettings& settings, const Arguments<T>& args, const Device& device,
-                  const Context& context) {
+void tuningThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations, size_t id,
+                  const TunerSettings& settings, const Arguments<T>& args, const Device& device, const Context& context,
+                  const size_t num_threads) {
 #if defined(_WIN32)
   const std::string kPrintError = "";
   const std::string kPrintSuccess = "";
@@ -124,66 +124,70 @@ void tuningThread(ThreadInfo& info, const std::vector<clblast::Configuration>& c
   const std::string kPrintMessage = "\x1b[1m";
   const std::string kPrintEnd = "\x1b[0m";
 #endif
-  info.mtx.lock();
-  try {
-    auto configuration = configurations[config_id];
-    addPrintInfo(info.print_info, "| %4zu | %5zu |", config_id + 1, configurations.size());
+  for (size_t config_id = id; config_id < configurations.size(); config_id += num_threads) {
+    auto& info = infos[config_id];
+    info.mtx.lock();
+    try {
+      auto configuration = configurations[config_id];
+      addPrintInfo(info.print_info, "| %4zu | %5zu |", config_id + 1, configurations.size());
 
-    for (const auto& parameter : settings.parameters) {
-      addPrintInfo(info.print_info, "%5zu", configuration.at(parameter.first));
-    }
-    addPrintInfo(info.print_info, " |");
-
-    // Sets the thread configuration
-    auto global = SetThreadConfiguration(configuration, settings.global_size, settings.mul_global, settings.div_global);
-    auto local = SetThreadConfiguration(configuration, settings.local_size, settings.mul_local, settings.div_local);
-
-    // Make sure that the global worksize is a multiple of the local
-    for (auto i = size_t{0}; i < global.size(); ++i) {
-      while ((global[i] / local[i]) * local[i] != global[i]) {
-        global[i]++;
+      for (const auto& parameter : settings.parameters) {
+        addPrintInfo(info.print_info, "%5zu", configuration.at(parameter.first));
       }
-    }
-    if (local.size() > 1 && global.size() > 1) {
-      addPrintInfo(info.print_info, "%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
-    } else {
-      addPrintInfo(info.print_info, "%8zu%8d |%8zu%8d |", local[0], 1, global[0], 1);
-    }
-    info.global = std::move(global);
-    info.local = std::move(local);
+      addPrintInfo(info.print_info, " |");
 
-    // Sets the parameters for this configuration
-    auto kernel_source = std::string{""};
-    for (const auto& parameter : configuration) {
-      kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
-    }
-    kernel_source += settings.sources;
+      // Sets the thread configuration
+      auto global =
+          SetThreadConfiguration(configuration, settings.global_size, settings.mul_global, settings.div_global);
+      auto local = SetThreadConfiguration(configuration, settings.local_size, settings.mul_local, settings.div_local);
 
-    // Compiles the kernel
-    const auto start_time = std::chrono::steady_clock::now();
-    auto compiler_options = std::vector<std::string>();
-    const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name, device, context,
-                                           compiler_options, 0, true);
-    info.kernel = Kernel(program, settings.kernel_name);
-    const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-    const auto timing = std::chrono::duration<double, std::milli>(elapsed_time).count();
-    addPrintInfo(info.print_info, "   %sOK%s  %5.0lf ms |", kPrintSuccess.c_str(), kPrintEnd.c_str(), timing);
-  } catch (CLCudaAPIBuildError&) {
-    const auto status_code = DispatchExceptionCatchAll(true);
-    addPrintInfo(info.print_info, "  %scompilation error: %5d%s     |", kPrintError.c_str(),
-                 static_cast<int>(status_code), kPrintEnd.c_str());
-    addPrintInfo(info.print_info, "      - |                 - | <-- skipping\n");
-  } catch (...) {
-    const auto status_code = DispatchExceptionCatchAll(true);
-    if (status_code != StatusCode::kUnknownError) {
-      addPrintInfo(info.print_info, "   %serror code %d%s |", kPrintError.c_str(), static_cast<int>(status_code),
-                   kPrintEnd.c_str());
+      // Make sure that the global worksize is a multiple of the local
+      for (auto i = size_t{0}; i < global.size(); ++i) {
+        while ((global[i] / local[i]) * local[i] != global[i]) {
+          global[i]++;
+        }
+      }
+      if (local.size() > 1 && global.size() > 1) {
+        addPrintInfo(info.print_info, "%8zu%8zu |%8zu%8zu |", local[0], local[1], global[0], global[1]);
+      } else {
+        addPrintInfo(info.print_info, "%8zu%8d |%8zu%8d |", local[0], 1, global[0], 1);
+      }
+      info.global = std::move(global);
+      info.local = std::move(local);
+
+      // Sets the parameters for this configuration
+      auto kernel_source = std::string{""};
+      for (const auto& parameter : configuration) {
+        kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
+      }
+      kernel_source += settings.sources;
+
+      // Compiles the kernel
+      const auto start_time = std::chrono::steady_clock::now();
+      auto compiler_options = std::vector<std::string>();
+      const auto program = CompileFromSource(kernel_source, args.precision, settings.kernel_name, device, context,
+                                             compiler_options, 0, true);
+      info.kernel = Kernel(program, settings.kernel_name);
+      const auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+      const auto timing = std::chrono::duration<double, std::milli>(elapsed_time).count();
+      addPrintInfo(info.print_info, "   %sOK%s  %5.0lf ms |", kPrintSuccess.c_str(), kPrintEnd.c_str(), timing);
+    } catch (CLCudaAPIBuildError&) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      addPrintInfo(info.print_info, "  %scompilation error: %5d%s     |", kPrintError.c_str(),
+                   static_cast<int>(status_code), kPrintEnd.c_str());
+      addPrintInfo(info.print_info, "      - |                 - | <-- skipping\n");
+    } catch (...) {
+      const auto status_code = DispatchExceptionCatchAll(true);
+      if (status_code != StatusCode::kUnknownError) {
+        addPrintInfo(info.print_info, "   %serror code %d%s |", kPrintError.c_str(), static_cast<int>(status_code),
+                     kPrintEnd.c_str());
+      }
+      addPrintInfo(info.print_info, " <-- skipping\n");
     }
-    addPrintInfo(info.print_info, " <-- skipping\n");
+    info.ready = true;
+    info.mtx.unlock();
+    info.cv.notify_one();
   }
-  info.ready = true;
-  info.mtx.unlock();
-  info.cv.notify_one();
 }
 
 template <typename T>
@@ -216,6 +220,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   args.device_id =
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
+  args.threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1});
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
@@ -389,9 +394,10 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
   threads.reserve(thread_infos.size());
-  for (size_t i = 0; i < configurations.size(); ++i) {
-    threads.push_back(std::thread(&tuningThread<T>, std::ref(thread_infos[i]), std::cref(configurations), i,
-                                  std::cref(settings), std::cref(args), std::cref(device), std::cref(context)));
+  for (size_t i = 0; i < args.threads; ++i) {
+    threads.push_back(std::thread(&tuningThread<T>, std::ref(thread_infos), std::cref(configurations), i,
+                                  std::cref(settings), std::cref(args), std::cref(device), std::cref(context),
+                                  args.threads));
   }
 
   // Starts the tuning process
