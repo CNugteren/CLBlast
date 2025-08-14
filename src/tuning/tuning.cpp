@@ -395,7 +395,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
   threads.reserve(thread_infos.size());
-  for (size_t i = 0; i < args.threads; ++i) {
+  for (size_t i = 0; i < std::max(size_t{args.threads}, configurations.size()); ++i) {
     threads.push_back(std::thread(&tuningThread<T>, std::ref(thread_infos), std::cref(configurations), i,
                                   std::cref(settings), std::cref(args), std::cref(device), std::cref(context),
                                   args.threads));
