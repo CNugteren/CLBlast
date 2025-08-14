@@ -8,6 +8,8 @@
 //
 // =================================================================================================
 
+#include "tuning/tuning.hpp"
+
 #include <algorithm>
 #include <condition_variable>
 #include <cstdio>
@@ -17,7 +19,6 @@
 #include <utility>
 #include <vector>
 
-#include "tuning/tuning.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
