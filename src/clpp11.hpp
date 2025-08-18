@@ -44,10 +44,19 @@
 #include <vector>     // std::vector
 
 // OpenCL
+#ifndef CL_TARGET_OPENCL_VERSION
 #define CL_TARGET_OPENCL_VERSION 110
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS  // to disable deprecation warnings
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS  // to disable deprecation warnings
 #define CL_USE_DEPRECATED_OPENCL_2_0_APIS  // to disable deprecation warnings
+#elif defined(CL_TARGET_OPENCL_VERSION) && CL_TARGET_OPENCL_VERSION < 110
+#pragma warning "OpenCL Version must be at least 1.1 (110) to use CLBlast, redefining"
+#undef CL_TARGET_OPENCL_VERSION
+#define CL_TARGET_OPENCL_VERSION 110
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS  // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS  // to disable deprecation warnings
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS  // to disable deprecation warnings
+#endif
 #if defined(__APPLE__) || defined(__MACOSX)
 #include <OpenCL/opencl.h>
 #else
