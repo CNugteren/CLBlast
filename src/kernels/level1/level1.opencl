@@ -13,6 +13,12 @@ R"(
 
 // =================================================================================================
 
+#if defined(cl_khr_work_group_uniform_arithmetic)
+#pragma OPENCL EXTENSION cl_khr_work_group_uniform_arithmetic : enable
+#elif defined(cl_khr_subgroups)
+#pragma OPENCL EXTENSION cl_khr_subgroups : enable
+#endif
+
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this kernel file is used outside of the CLBlast library.
 #ifndef WGS
