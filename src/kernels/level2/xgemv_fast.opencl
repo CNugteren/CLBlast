@@ -98,6 +98,14 @@ void XgemvFast(const int m, const int n,
                __global real* ygm, const int y_offset, const int y_inc,
                const int do_conjugate, const int parameter,
                const int kl_unused, const int ku_unused) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(m % WGS2 == 0);
+  __builtin_assume(n % WGS2 == 0);
+  __builtin_assume(a_ld % VW2 == 0);
+  __builtin_assume(a == 0);
+  __builtin_assume(a_rotated == 0);
+  __builtin_assume(do_conjugate == 0);
+#endif
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -205,6 +213,15 @@ void XgemvFastRot(const int m, const int n,
                   __global real* ygm, const int y_offset, const int y_inc,
                   const int do_conjugate, const int parameter,
                   const int kl_unused, const int ku_unused) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(m % WGS3 == 0);
+  __builtin_assume(n % WGS3 == 0);
+  __builtin_assume(a_ld % VW3 == 0);
+  __builtin_assume(a == 0);
+  __builtin_assume(a_rotated == 1);
+  __builtin_assume(do_conjugate == 0);
+#endif
+
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
