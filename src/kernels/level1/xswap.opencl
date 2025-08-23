@@ -47,6 +47,11 @@ void Xswap(const int n,
 void XswapFast(const int n,
                __global realV* xgm,
                __global realV* ygm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+  __builtin_assume(n % WGS == 0);
+#endif
   #pragma unroll
   for (int _w = 0; _w < WPT; _w += 1) {
     const int id = _w*get_global_size(0) + get_global_id(0);

@@ -12,6 +12,14 @@
 R"(
 // =================================================================================================
 
+#if defined(cl_khr_expect_assume)
+#pragma OPENCL EXTENSION cl_khr_expect_assume : enable
+#endif
+
+#if !defined(__has_builtin)
+#define __has_builtin(x) 0
+#endif
+
 // Parameters set by the tuner or by the database. Here they are given a basic default value in case
 // this file is used outside of the CLBlast library.
 #ifndef PRECISION

@@ -47,6 +47,11 @@ void Xscal(const int n, const real_arg arg_alpha,
 #endif
 void XscalFast(const int n, const real_arg arg_alpha,
                __global realV* xgm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+  __builtin_assume(n % WGS == 0);
+#endif
   const real alpha = GetRealArg(arg_alpha);
 
   #pragma unroll

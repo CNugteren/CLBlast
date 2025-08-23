@@ -45,6 +45,11 @@ void Xaxpy(const int n, const real_arg arg_alpha,
 void XaxpyFaster(const int n, const real_arg arg_alpha,
                  const __global realV* restrict xgm,
                  __global realV* ygm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+#endif
+
   const real alpha = GetRealArg(arg_alpha);
 
   const int num_usefull_threads = n / (VW * WPT);
@@ -69,6 +74,12 @@ void XaxpyFaster(const int n, const real_arg arg_alpha,
 void XaxpyFastest(const int n, const real_arg arg_alpha,
                   const __global realV* restrict xgm,
                   __global realV* ygm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+  __builtin_assume(n % WGS == 0);
+#endif
+
   const real alpha = GetRealArg(arg_alpha);
 
   #pragma unroll
