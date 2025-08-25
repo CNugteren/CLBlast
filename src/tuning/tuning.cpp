@@ -137,7 +137,7 @@ void tuningThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Con
       }
       addPrintInfo(info.print_info, " |");
 
-      // Sets the thread configuration
+      // Sets the OpenCL thread configuration
       auto global =
           SetThreadConfiguration(configuration, settings.global_size, settings.mul_global, settings.div_global);
       auto local = SetThreadConfiguration(configuration, settings.local_size, settings.mul_local, settings.div_local);
