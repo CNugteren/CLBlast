@@ -220,7 +220,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   args.device_id =
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
-  args.threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1});
+  args.threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1}) - 1;
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
@@ -393,7 +393,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
-  threads.reserve(thread_infos.size());
+  threads.reserve(args.threads);
   for (size_t i = 0; i < std::min(size_t{args.threads}, configurations.size()); ++i) {
     threads.push_back(std::thread(&tuningThread<T>, std::ref(thread_infos), std::cref(configurations), i,
                                   std::cref(settings), std::cref(args), std::cref(device), std::cref(context),
@@ -413,6 +413,10 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
       std::vector<size_t> global;
       std::vector<size_t> local;
       {
+        if (args.threads == 0) {
+          tuningThread<T>(thread_infos, configurations, config_id, settings, args, device, context,
+                          configurations.size());
+        }
         std::unique_lock<std::mutex> lock(thread_infos[config_id].mtx);
         thread_infos[config_id].cv.wait(lock, [&] { return thread_infos[config_id].ready; });
         kernel = std::move(thread_infos[config_id].kernel);
