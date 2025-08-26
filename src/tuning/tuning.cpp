@@ -391,6 +391,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   }
   print_separator(settings.parameters.size());
 
+  // Perform the OpenCL kernel compilation in parallel
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
   threads.reserve(args.threads);
