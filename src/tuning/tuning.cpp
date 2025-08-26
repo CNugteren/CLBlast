@@ -110,9 +110,9 @@ inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
 }
 
 template <typename T>
-void tuningThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations, size_t id,
-                  const TunerSettings& settings, const Arguments<T>& args, const Device& device, const Context& context,
-                  const size_t num_threads) {
+void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations,
+                             size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
+                             const Context& context, const size_t num_threads) {
 #if defined(_WIN32)
   const std::string kPrintError = "";
   const std::string kPrintSuccess = "";
@@ -220,7 +220,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   args.device_id =
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
-  args.threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1}) - 1;
+  args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1}) - 1;
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
@@ -394,11 +394,11 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   // Perform the OpenCL kernel compilation in parallel
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
-  threads.reserve(args.threads);
-  for (size_t i = 0; i < std::min(size_t{args.threads}, configurations.size()); ++i) {
-    threads.push_back(std::thread(&tuningThread<T>, std::ref(thread_infos), std::cref(configurations), i,
+  threads.reserve(args.extra_threads);
+  for (size_t i = 0; i < std::min(size_t{args.extra_threads}, configurations.size()); ++i) {
+    threads.push_back(std::thread(&kernelCompilationThread<T>, std::ref(thread_infos), std::cref(configurations), i,
                                   std::cref(settings), std::cref(args), std::cref(device), std::cref(context),
-                                  args.threads));
+                                  args.extra_threads));
   }
 
   // Starts the tuning process
@@ -414,9 +414,9 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
       std::vector<size_t> global;
       std::vector<size_t> local;
       {
-        if (args.threads == 0) {
-          tuningThread<T>(thread_infos, configurations, config_id, settings, args, device, context,
-                          configurations.size());
+        if (args.extra_threads == 0) {
+          kernelCompilationThread<T>(thread_infos, configurations, config_id, settings, args, device, context,
+                                     configurations.size());
         }
         std::unique_lock<std::mutex> lock(thread_infos[config_id].mtx);
         thread_infos[config_id].cv.wait(lock, [&] { return thread_infos[config_id].ready; });
