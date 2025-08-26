@@ -103,8 +103,8 @@ struct ThreadInfo {
 
 template <typename... Args>
 inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
-  auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
-  auto original_size = str.size();
+  const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
+  const auto original_size = str.size();
   str.resize(original_size + size);
   std::snprintf(&str[original_size], size + 1, format, std::forward<Args>(args)...);
 }
