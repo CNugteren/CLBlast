@@ -260,6 +260,12 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     }
   }
   args.fraction = GetArgument(command_line_args, help, kArgFraction, defaults.default_fraction);
+
+  if (args.fraction < 1) {
+    printf("The fraction parameter passed must be greater than 1. Qutting...\n");
+    return;
+  }
+
   args.num_runs = GetArgument(command_line_args, help, kArgNumRuns, defaults.default_num_runs);
   const auto max_l2_norm = GetArgument(command_line_args, help, kArgMaxL2Norm, 1.0e-4);
   printf("%s\n", help.c_str());
