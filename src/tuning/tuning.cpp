@@ -220,7 +220,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   args.device_id =
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
-  args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, size_t{1}) - 1;
+  args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, int{1}) - 1;
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
