@@ -266,7 +266,7 @@ struct Arguments {
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
-  int extra_threads = 1;
+  long long extra_threads = 1;
   Precision precision = Precision::kSingle;
   bool print_help = false;
   bool silent = false;

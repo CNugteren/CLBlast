@@ -220,7 +220,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   args.device_id =
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
-  args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, int{1}) - 1;
+  args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, 1) - 1;
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
@@ -267,7 +267,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
   // Tests validity of the given arguments
   if (args.extra_threads < 0) {
-    printf("Tuners cannot run without threads or negative threads. Provided %i threads. Exiting...\n",
+    printf("Tuners cannot run without threads or negative threads. Provided %lli threads. Exiting...\n",
            args.extra_threads);
     return;
   }
@@ -401,7 +401,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   std::vector<ThreadInfo> thread_infos(configurations.size());
   std::vector<std::thread> threads;
   threads.reserve(args.extra_threads);
-  for (size_t i = 0; i < std::min(size_t{args.extra_threads}, configurations.size()); ++i) {
+  for (size_t i = 0; i < std::min(static_cast<size_t>(args.extra_threads), configurations.size()); ++i) {
     threads.push_back(std::thread(&kernelCompilationThread<T>, std::ref(thread_infos), std::cref(configurations), i,
                                   std::cref(settings), std::cref(args), std::cref(device), std::cref(context),
                                   args.extra_threads));
