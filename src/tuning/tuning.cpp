@@ -266,6 +266,12 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   const TunerSettings settings = GetTunerSettings(V, args);
 
   // Tests validity of the given arguments
+  if (args.extra_threads < 0) {
+    printf("Tuners cannot run without threads or negative threads. Provided %i threads. Exiting...\n",
+           args.extra_threads);
+    return;
+  }
+
   TestValidArguments(V, args);
 
   // Initializes OpenCL
