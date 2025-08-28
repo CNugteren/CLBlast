@@ -216,6 +216,8 @@ The kernels `gemm` and `gemm_direct` have too many parameters to explore. Theref
 
 There are also several routine-level tuners. They tune inter-kernel parameters and should only be run after the kernels are tuned. However, they do automatically pick up kernel tuning results from the current folder if there are any. An example is the GEMM routine tuner, which determines when to use the direct or the in-direct GEMM kernel.
 
+The tuners also proivide a `-threads` option allowing you to control how many threads are used for OpenCL kernel compilation (not for actually executing the kernels). It defaults to running the single threaded version with 1 thread but more can be specified via the parameter. It is recommended to use the same amount of threads as CPU cores to maximize performance. More threads may hurt or improve performance. It is also the safest option to use the default of 1 thread.
+
 Here are all the tuners included in the `make alltuners` target (in the same order) with all their precision arguments:
 
     ./clblast_tuner_copy_fast -precision 32
