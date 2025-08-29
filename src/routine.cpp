@@ -9,10 +9,12 @@
 
 #include "routine.hpp"
 
-#include <chrono>
 #include <cstdlib>
 #include <string>
 #include <vector>
+
+#include "utilities/compile.hpp"
+
 
 namespace clblast {
 // =================================================================================================
@@ -73,7 +75,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   log_debug(routine_info);
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  bool has_program;
+  bool has_program = false;
   program_ = ProgramCache::Instance().Get(ProgramKeyRef{context_(), device_(), precision_, routine_info}, &has_program);
   if (has_program) {
     return;
@@ -81,7 +83,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
 
   // Sets the build options from an environmental variable (if set)
   auto options = std::vector<std::string>();
-  const auto environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
+  auto* const environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
   if (environment_variable != nullptr) {
     options.push_back(std::string(environment_variable));
   }
@@ -89,8 +91,8 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
   const auto device_name = GetDeviceName(device_);
-  const auto platform_id = device_.PlatformID();
-  bool has_binary;
+  auto* const platform_id = device_.PlatformID();
+  bool has_binary = false;
   auto binary =
       BinaryCache::Instance().Get(BinaryKeyRef{platform_id, precision_, routine_info, device_name}, &has_binary);
   if (has_binary) {
@@ -117,7 +119,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   }
 
   // Collects the parameters for this device in the form of defines
-  auto source_string = std::string{""};
+  std::string source_string;
   for (const auto& kernel_name : kernel_names_) {
     source_string += db_(kernel_name).GetDefines();
   }

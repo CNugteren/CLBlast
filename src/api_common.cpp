@@ -26,6 +26,7 @@ StatusCode ClearCache() {
   return StatusCode::kSuccess;
 }
 
+// NOLINTBEGIN(bugprone-unused-raii)
 template <typename Real, typename Complex>
 void FillCacheForPrecision(Queue& queue) {
   try {
@@ -110,6 +111,7 @@ void FillCacheForPrecision(Queue& queue) {
     }
   }
 }
+// NOLINTEND(bugprone-unused-raii)
 
 // Fills the cache with all binaries for a specific device
 // TODO: Add half-precision FP16 set-up calls

@@ -7,7 +7,6 @@
 //
 // =================================================================================================
 
-#include <chrono>
 #include <vector>
 
 #include "kernel_preprocessor.hpp"
@@ -22,7 +21,7 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
                                            const Context& context, std::vector<std::string>& options,
                                            const size_t run_preprocessor,  // 0: platform dependent, 1: always, 2: never
                                            const bool silent) {
-  auto header_string = std::string{""};
+  std::string header_string;
 
   header_string += "#define PRECISION " + ToString(static_cast<int>(precision)) + "\n";
 
