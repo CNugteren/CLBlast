@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "database/database_structure.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

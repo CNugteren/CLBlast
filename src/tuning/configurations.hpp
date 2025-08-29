@@ -11,6 +11,7 @@
 #ifndef CLBLAST_TUNING_CONFIGURATIONS_H_
 #define CLBLAST_TUNING_CONFIGURATIONS_H_
 
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>

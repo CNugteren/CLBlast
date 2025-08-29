@@ -13,6 +13,7 @@
 #include <unordered_map>
 
 #include "clblast.h"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace

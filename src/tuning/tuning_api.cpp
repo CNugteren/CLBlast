@@ -26,6 +26,7 @@
 #include "tuning/kernels/xgemv.hpp"
 #include "tuning/kernels/xger.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================

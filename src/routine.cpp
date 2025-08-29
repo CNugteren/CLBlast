@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/compile.hpp"
-
 
 namespace clblast {
 // =================================================================================================

@@ -14,7 +14,10 @@
 #include <string>
 #include <vector>
 
+#include "routines/common.hpp"
 #include "routines/levelx/xim2col.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

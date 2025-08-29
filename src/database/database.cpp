@@ -28,6 +28,7 @@
 #include "database/kernels/xgemv_fast/xgemv_fast.hpp"
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot.hpp"
 #include "database/kernels/xger/xger.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
