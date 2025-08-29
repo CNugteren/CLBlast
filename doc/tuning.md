@@ -216,7 +216,23 @@ The kernels `gemm` and `gemm_direct` have too many parameters to explore. Theref
 
 There are also several routine-level tuners. They tune inter-kernel parameters and should only be run after the kernels are tuned. However, they do automatically pick up kernel tuning results from the current folder if there are any. An example is the GEMM routine tuner, which determines when to use the direct or the in-direct GEMM kernel.
 
-The tuners also proivide a `-threads` option allowing you to control how many threads are used for OpenCL kernel compilation (not for actually executing the kernels). It defaults to running the single threaded version with 1 thread but more can be specified via the parameter. It is recommended to use the same amount of threads as CPU cores to maximize performance. More threads may hurt or improve performance. It is also the safest option to use the default of 1 thread.
+Common Tuning Parameters
+-------------
+
+The tuners provide a few common parameters that are shared by each tuner:
+1. **Precision** -- This is the precision type to train for, valid options are:
+    * 16 for real 16 bit loating point numbers
+    * 32 for real 32 bit loating point numbers
+    * 64 for real 64 bit floating point numbers
+    * 3232 for complex 32 bit floating point numbers
+    * 6464 for complex 64 bit floating point numbers
+2. **Platform** -- The OpenCL platform to use
+3. **Device** -- The OpenCL device to use
+4. **Fraction** -- The fraction of a larger search space to explore when running the tuners. A value of 100 is equal to 1% and so 10000 is equal to the whole search space (100%)
+5. **Threads** -- The number of threads that the tuner should use for compiling the OpenCL kernels. This does NOT run the OpenCL kernels with multithreading, it only compiles them with multithreading. 1 is the minimum and the recommended amount is the number of cores present in the CPU (with hyperthreading) and more may hurt prformance. It is safer to use 1 thread, espescially for tuning CPUs. If you specify more threads than there are kernels, it will simply use the number of kernels as the number of threads.
+
+Running All Tuners For All Precisions
+-------------
 
 Here are all the tuners included in the `make alltuners` target (in the same order) with all their precision arguments:
 
