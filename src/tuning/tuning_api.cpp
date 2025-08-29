@@ -27,6 +27,8 @@
 #include "tuning/kernels/xger.hpp"
 #include "tuning/tuning.hpp"
 #include "utilities/clblast_exceptions.hpp"
+#include "utilities/compile.hpp"
+#include "utilities/timing.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -329,12 +331,6 @@ StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const G
   if (PrecisionValue<T>() == Precision::kHalf && !PrecisionSupported<half>(device)) {
     return StatusCode::kNoHalfPrecision;
   }
-
-  // Retrieves properties
-  const auto device_type = GetDeviceType(device);
-  const auto device_vendor = GetDeviceVendor(device);
-  const auto device_architecture = GetDeviceArchitecture(device);
-  const auto device_name = GetDeviceName(device);
 
   // Creates input buffers with random data. Adds a 'canary' region to detect buffer overflows.
   const auto buffer_sizes = std::vector<size_t>{settings.size_x + kCanarySize, settings.size_y + kCanarySize,

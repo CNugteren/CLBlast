@@ -7,12 +7,13 @@
 //
 // =================================================================================================
 
-#include <exception>
 #include <limits>
 #include <string>
 #include <vector>
 
 #include "tuning/tuning.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
