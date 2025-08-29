@@ -16,6 +16,7 @@
 #include <utility>
 #include <vector>
 
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
