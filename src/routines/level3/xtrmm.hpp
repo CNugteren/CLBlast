@@ -34,10 +34,9 @@ class Xtrmm : public Xgemm<T> {
   Xtrmm(Queue& queue, EventPointer event, const std::string& name = "TRMM");
 
   // Templated-precision implementation of the routine
-  void DoTrmm(const Layout layout, const Side side, const Triangle triangle, const Transpose a_transpose,
-              const Diagonal diagonal, const size_t m, const size_t n, const T alpha, const Buffer<T>& a_buffer,
-              const size_t a_offset, const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset,
-              const size_t b_ld);
+  void DoTrmm(Layout layout, Side side, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t m, size_t n,
+              T alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer,
+              size_t b_offset, size_t b_ld);
 };
 
 // =================================================================================================

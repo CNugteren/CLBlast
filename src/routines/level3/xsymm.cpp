@@ -63,7 +63,7 @@ void Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle trian
   kernel.SetArgument(3, a_buffer());
   kernel.SetArgument(4, static_cast<int>(k));
   kernel.SetArgument(5, static_cast<int>(k));
-  kernel.SetArgument(6, static_cast<int>(0));
+  kernel.SetArgument(6, 0);
   kernel.SetArgument(7, temp_symm());
 
   // Uses the common padding kernel's thread configuration. This is allowed, since the

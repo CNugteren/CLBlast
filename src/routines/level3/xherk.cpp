@@ -49,7 +49,7 @@ void Xherk<T, U>::DoHerk(const Layout layout, const Triangle triangle, const Tra
                          const size_t a_ld, const U beta, const Buffer<T>& c_buffer, const size_t c_offset,
                          const size_t c_ld) {
   const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
-  const auto b_buffer = a_buffer;
+  const auto& b_buffer = a_buffer;
   const auto b_offset = a_offset;
   const auto b_ld = a_ld;
   const auto complex_alpha = T{alpha, static_cast<U>(0.0)};
@@ -66,8 +66,17 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
                          const size_t c_offset, const size_t c_ld, EventPointer final_event,
                          const bool diagonal_to_zero) {
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
-  bool a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2;
-  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  bool a_do_transpose = false;
+  bool b_do_transpose = false;
+  bool c_do_transpose = false;
+  bool dummy1 = false;
+  bool dummy2 = false;
+  size_t a_one = 0;
+  size_t a_two = 0;
+  size_t b_one = 0;
+  size_t b_two = 0;
+  size_t c_one = 0;
+  size_t c_two = 0;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, n, n, k, a_one, a_two, b_one, b_two, c_one, c_two,
                              a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2, db_["GEMMK"]);
 
