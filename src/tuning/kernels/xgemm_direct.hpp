@@ -98,7 +98,7 @@ TunerSettings XgemmDirectGetTunerSettings(const int V, const Arguments<T>& args)
 
 // Tests for valid arguments
 template <typename T>
-void XgemmDirectTestValidArguments(const int, const Arguments<T>&) {}
+void XgemmDirectTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
 std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
@@ -125,7 +125,7 @@ std::vector<Constraint> XgemmDirectSetConstraints(const int V) {
   return constraints;
 }
 template <typename T>
-LocalMemSizeInfo XgemmDirectComputeLocalMemSize(const int) {
+LocalMemSizeInfo XgemmDirectComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t> v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * ((v[0] * (v[0] + v[1]) + v[0] * (v[0] + v[2])));
           },
@@ -134,7 +134,8 @@ LocalMemSizeInfo XgemmDirectComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void XgemmDirectSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgemmDirectSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                             std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.k));

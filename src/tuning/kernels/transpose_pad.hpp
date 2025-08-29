@@ -17,7 +17,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults PadtransposeGetTunerDefaults(const int) {
+TunerDefaults PadtransposeGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -27,7 +27,7 @@ TunerDefaults PadtransposeGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings PadtransposeGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings PadtransposeGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -72,10 +72,10 @@ TunerSettings PadtransposeGetTunerSettings(const int, const Arguments<T>& args) 
 
 // Tests for valid arguments
 template <typename T>
-void PadtransposeTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> PadtransposeSetConstraints(const int) { return {}; }
+void PadtransposeTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> PadtransposeSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo PadtransposeComputeLocalMemSize(const int) {
+LocalMemSizeInfo PadtransposeComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t> v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * (v[1] * v[0]) * (v[1] * v[0] + v[2]);
           },
@@ -84,7 +84,8 @@ LocalMemSizeInfo PadtransposeComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void PadtransposeSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void PadtransposeSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                              std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.m));

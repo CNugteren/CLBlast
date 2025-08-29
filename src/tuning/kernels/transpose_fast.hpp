@@ -17,7 +17,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults TransposeGetTunerDefaults(const int) {
+TunerDefaults TransposeGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -27,7 +27,7 @@ TunerDefaults TransposeGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings TransposeGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings TransposeGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -73,10 +73,10 @@ TunerSettings TransposeGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void TransposeTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> TransposeSetConstraints(const int) { return {}; }
+void TransposeTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> TransposeSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo TransposeComputeLocalMemSize(const int) {
+LocalMemSizeInfo TransposeComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t> v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * v[1] * (v[1] * v[0]) * (v[0] + v[2]);
           },
@@ -85,7 +85,8 @@ LocalMemSizeInfo TransposeComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void TransposeSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void TransposeSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                           std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, buffers[2]());  // 2 == A matrix
   kernel.SetArgument(2, buffers[3]());  // 3 == B matrix

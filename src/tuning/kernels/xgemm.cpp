@@ -9,6 +9,8 @@
 
 #include "tuning/kernels/xgemm.hpp"
 
+#include "utilities/clblast_exceptions.hpp"
+
 // Shortcuts to the clblast namespace
 using half = clblast::half;
 using float2 = clblast::float2;

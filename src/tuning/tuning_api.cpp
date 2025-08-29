@@ -416,7 +416,7 @@ StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const G
           SetThreadConfiguration(configuration, settings.local_size, settings.mul_local, settings.div_local);
 
       // Sets the parameters for this configuration
-      auto kernel_source = std::string{""};
+      std::string kernel_source;
       for (const auto& parameter : configuration) {
         kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
       }
