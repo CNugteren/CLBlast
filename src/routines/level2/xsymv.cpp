@@ -10,7 +10,6 @@
 #include "routines/level2/xsymv.hpp"
 
 #include <string>
-#include <vector>
 
 namespace clblast {
 // =================================================================================================
@@ -28,8 +27,8 @@ void Xsymv<T>::DoSymv(const Layout layout, const Triangle triangle, const size_t
                       const size_t x_offset, const size_t x_inc, const T beta, const Buffer<T>& y_buffer,
                       const size_t y_offset, const size_t y_inc) {
   // The data is either in the upper or lower triangle
-  size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                     (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+  size_t is_upper = static_cast<size_t>((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
+                                        (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Runs the generic matrix-vector multiplication, disabling the use of fast vectorized kernels.
   // The specific symmetric matrix-accesses are implemented in the kernel guarded by the

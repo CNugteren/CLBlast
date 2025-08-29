@@ -122,8 +122,8 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
     col = (is_upper) ? col - block_size : i;
 
     // Sets the offsets for upper or lower triangular
-    const auto extra_offset_a = (is_transposed) ? (is_upper ? col + (col + block_size) * a_ld : col)
-                                                : (is_upper ? col + block_size + col * a_ld : col * a_ld);
+    const auto extra_offset_a = (is_transposed) ? (is_upper ? col + ((col + block_size) * a_ld) : col)
+                                                : (is_upper ? col + block_size + (col * a_ld) : col * a_ld);
     const auto extra_offset_x = (is_upper) ? (col + block_size) * x_inc : 0;
     const auto extra_offset_b = col * x_inc;
 
@@ -141,8 +141,9 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
 
     // Runs the triangular substitution for the block size
     auto sub_event = Event();
-    Substitution(layout, triangle, a_transpose, diagonal, block_size, a_buffer, a_offset + col + col * a_ld, a_ld,
-                 b_buffer, b_offset + col * b_inc, b_inc, x_buffer, x_offset + col * x_inc, x_inc, sub_event.pointer());
+    Substitution(layout, triangle, a_transpose, diagonal, block_size, a_buffer, a_offset + col + (col * a_ld), a_ld,
+                 b_buffer, b_offset + (col * b_inc), b_inc, x_buffer, x_offset + (col * x_inc), x_inc,
+                 sub_event.pointer());
     sub_event.WaitForCompletion();
   }
 
