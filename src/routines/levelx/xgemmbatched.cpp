@@ -69,8 +69,17 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
-  bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
-  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  bool a_do_transpose = false;
+  bool b_do_transpose = false;
+  bool c_do_transpose = false;
+  bool a_conjugate = false;
+  bool b_conjugate = false;
+  size_t a_one = 0;
+  size_t a_two = 0;
+  size_t b_one = 0;
+  size_t b_two = 0;
+  size_t c_one = 0;
+  size_t c_two = 0;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, m, n, k, a_one, a_two, b_one, b_two, c_one, c_two,
                              a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate, gemm_kernel_id);
 
@@ -127,7 +136,12 @@ void XgemmBatched<T>::BatchedGemmIndirect(
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
   // whether the matrices need to be rotated or not for the kernel.
-  size_t a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i;
+  size_t a_one_i = 0;
+  size_t a_two_i = 0;
+  size_t b_one_i = 0;
+  size_t b_two_i = 0;
+  size_t c_one_i = 0;
+  size_t c_two_i = 0;
   Xgemm<T>::CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"], a_one_i, a_two_i, b_one_i, b_two_i,
                                         c_one_i, c_two_i, db_["GEMMK"]);
 

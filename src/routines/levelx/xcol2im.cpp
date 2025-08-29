@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -46,12 +45,12 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   }
 
   // Sets the output height and width
-  const auto size_h = height + 2 * pad_h;
-  const auto padding_h = dilation_h * (kernel_h - 1) + 1;
-  const auto col_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
-  const auto size_w = width + 2 * pad_w;
-  const auto padding_w = dilation_w * (kernel_w - 1) + 1;
-  const auto col_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
+  const auto size_h = height + (2 * pad_h);
+  const auto padding_h = (dilation_h * (kernel_h - 1)) + 1;
+  const auto col_h = (size_h >= padding_h) ? ((size_h - padding_h) / stride_h) + 1 : 1;
+  const auto size_w = width + (2 * pad_w);
+  const auto padding_w = (dilation_w * (kernel_w - 1)) + 1;
+  const auto col_w = (size_w >= padding_w) ? ((size_w - padding_w) / stride_w) + 1 : 1;
 
   int stride_bez_h = 0;
   int stride_bez_w = 0;
@@ -91,8 +90,8 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   kernel.SetArgument(22, static_cast<int>(im_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil((width - 1) / gcd_w + 1, db_["COPY_DIMX"]);
-  const auto h_ceiled = Ceil((height - 1) / gcd_h + 1, db_["COPY_DIMY"]);
+  const auto w_ceiled = Ceil(((width - 1) / gcd_w) + 1, db_["COPY_DIMX"]);
+  const auto h_ceiled = Ceil(((height - 1) / gcd_h) + 1, db_["COPY_DIMY"]);
   const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
   const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
   RunKernel(kernel, queue_, device_, global, local, event_);

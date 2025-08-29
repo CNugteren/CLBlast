@@ -25,31 +25,28 @@ class XgemmBatched : public Routine {
   XgemmBatched(Queue& queue, EventPointer event, const std::string& name = "GEMMBATCHED");
 
   // Templated-precision implementation of the routine
-  void DoGemmBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose, const size_t m,
-                     const size_t n, const size_t k, const std::vector<T>& alphas, const Buffer<T>& a_buffer,
-                     const std::vector<size_t>& a_offsets, const size_t a_ld, const Buffer<T>& b_buffer,
-                     const std::vector<size_t>& b_offsets, const size_t b_ld, const std::vector<T>& betas,
-                     const Buffer<T>& c_buffer, const std::vector<size_t>& c_offsets, const size_t c_ld,
-                     const size_t batch_count);
+  void DoGemmBatched(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k,
+                     const std::vector<T>& alphas, const Buffer<T>& a_buffer, const std::vector<size_t>& a_offsets,
+                     size_t a_ld, const Buffer<T>& b_buffer, const std::vector<size_t>& b_offsets, size_t b_ld,
+                     const std::vector<T>& betas, const Buffer<T>& c_buffer, const std::vector<size_t>& c_offsets,
+                     size_t c_ld, size_t batch_count);
 
   // Indirect version of batched GEMM (with pre and post-processing kernels)
-  void BatchedGemmIndirect(const size_t m, const size_t n, const size_t k, const Buffer<T>& alphas,
-                           const Buffer<T>& a_buffer, const std::vector<int>& a_offsets, const size_t a_ld,
-                           const Buffer<T>& b_buffer, const std::vector<int>& b_offsets, const size_t b_ld,
-                           const Buffer<T>& betas, const Buffer<T>& c_buffer, const std::vector<int>& c_offsets,
-                           const size_t c_ld, const bool a_do_transpose, const bool b_do_transpose,
-                           const bool c_do_transpose, const bool a_conjugate, const bool b_conjugate,
-                           const size_t a_one, const size_t a_two, const size_t b_one, const size_t b_two,
-                           const size_t c_one, const size_t c_two, const size_t batch_count);
+  void BatchedGemmIndirect(size_t m, size_t n, size_t k, const Buffer<T>& alphas, const Buffer<T>& a_buffer,
+                           const std::vector<int>& a_offsets, size_t a_ld, const Buffer<T>& b_buffer,
+                           const std::vector<int>& b_offsets, size_t b_ld, const Buffer<T>& betas,
+                           const Buffer<T>& c_buffer, const std::vector<int>& c_offsets, size_t c_ld,
+                           bool a_do_transpose, bool b_do_transpose, bool c_do_transpose, bool a_conjugate,
+                           bool b_conjugate, size_t a_one, size_t a_two, size_t b_one, size_t b_two, size_t c_one,
+                           size_t c_two, size_t batch_count);
 
   // Direct version of batched GEMM (no pre and post-processing kernels)
-  void BatchedGemmDirect(const size_t m, const size_t n, const size_t k, const Buffer<T>& alphas,
-                         const Buffer<T>& a_buffer, const std::vector<int>& a_offsets, const size_t a_ld,
-                         const Buffer<T>& b_buffer, const std::vector<int>& b_offsets, const size_t b_ld,
-                         const Buffer<T>& betas, const Buffer<T>& c_buffer, const std::vector<int>& c_offsets,
-                         const size_t c_ld, const bool a_do_transpose, const bool b_do_transpose,
-                         const bool c_do_transpose, const bool a_conjugate, const bool b_conjugate,
-                         const size_t batch_count);
+  void BatchedGemmDirect(size_t m, size_t n, size_t k, const Buffer<T>& alphas, const Buffer<T>& a_buffer,
+                         const std::vector<int>& a_offsets, size_t a_ld, const Buffer<T>& b_buffer,
+                         const std::vector<int>& b_offsets, size_t b_ld, const Buffer<T>& betas,
+                         const Buffer<T>& c_buffer, const std::vector<int>& c_offsets, size_t c_ld, bool a_do_transpose,
+                         bool b_do_transpose, bool c_do_transpose, bool a_conjugate, bool b_conjugate,
+                         size_t batch_count);
 };
 
 // =================================================================================================

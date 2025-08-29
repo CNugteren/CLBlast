@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -46,12 +45,12 @@ void Xim2col<T>::DoIm2col(const KernelMode kernel_mode, const size_t channels, c
   }
 
   // Sets the height and width of the 'col' result
-  const auto size_h = height + 2 * pad_h;
-  const auto padding_h = dilation_h * (kernel_h - 1) + 1;
-  const auto col_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
-  const auto size_w = width + 2 * pad_w;
-  const auto padding_w = dilation_w * (kernel_w - 1) + 1;
-  const auto col_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
+  const auto size_h = height + (2 * pad_h);
+  const auto padding_h = (dilation_h * (kernel_h - 1)) + 1;
+  const auto col_h = (size_h >= padding_h) ? ((size_h - padding_h) / stride_h) + 1 : 1;
+  const auto size_w = width + (2 * pad_w);
+  const auto padding_w = (dilation_w * (kernel_w - 1)) + 1;
+  const auto col_w = (size_w >= padding_w) ? ((size_w - padding_w) / stride_w) + 1 : 1;
 
   // Retrieves the kernel from the compiled binary
   auto kernel = Kernel(program_, kernel_name);

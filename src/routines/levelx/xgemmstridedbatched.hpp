@@ -10,8 +10,6 @@
 #ifndef CLBLAST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 #define CLBLAST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 
-#include <vector>
-
 #include "routine.hpp"
 
 namespace clblast {
@@ -25,30 +23,26 @@ class XgemmStridedBatched : public Routine {
   XgemmStridedBatched(Queue& queue, EventPointer event, const std::string& name = "GEMMSTRIDEDBATCHED");
 
   // Templated-precision implementation of the routine
-  void DoGemmStridedBatched(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
-                            const size_t m, const size_t n, const size_t k, const T alpha, const Buffer<T>& a_buffer,
-                            const size_t a_offset, const size_t a_ld, const size_t a_stride, const Buffer<T>& b_buffer,
-                            const size_t b_offset, const size_t b_ld, const size_t b_stride, const T beta,
-                            const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
-                            const size_t batch_count);
+  void DoGemmStridedBatched(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k,
+                            T alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, size_t a_stride,
+                            const Buffer<T>& b_buffer, size_t b_offset, size_t b_ld, size_t b_stride, T beta,
+                            const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld, size_t c_stride,
+                            size_t batch_count);
 
   // Indirect version of strided batched GEMM (with pre and post-processing kernels)
-  void BatchedGemmIndirect(const size_t m, const size_t n, const size_t k, const T alpha, const Buffer<T>& a_buffer,
-                           const size_t a_offset, const size_t a_ld, const size_t a_stride, const Buffer<T>& b_buffer,
-                           const size_t b_offset, const size_t b_ld, const size_t b_stride, const T beta,
-                           const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
-                           const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                           const bool a_conjugate, const bool b_conjugate, const size_t a_one, const size_t a_two,
-                           const size_t b_one, const size_t b_two, const size_t c_one, const size_t c_two,
-                           const size_t batch_count);
+  void BatchedGemmIndirect(size_t m, size_t n, size_t k, T alpha, const Buffer<T>& a_buffer, size_t a_offset,
+                           size_t a_ld, size_t a_stride, const Buffer<T>& b_buffer, size_t b_offset, size_t b_ld,
+                           size_t b_stride, T beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld,
+                           size_t c_stride, bool a_do_transpose, bool b_do_transpose, bool c_do_transpose,
+                           bool a_conjugate, bool b_conjugate, size_t a_one, size_t a_two, size_t b_one, size_t b_two,
+                           size_t c_one, size_t c_two, size_t batch_count);
 
   // Direct version of strided batched GEMM (no pre and post-processing kernels)
-  void BatchedGemmDirect(const size_t m, const size_t n, const size_t k, const T alpha, const Buffer<T>& a_buffer,
-                         const size_t a_offset, const size_t a_ld, const size_t a_stride, const Buffer<T>& b_buffer,
-                         const size_t b_offset, const size_t b_ld, const size_t b_stride, const T beta,
-                         const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
-                         const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
-                         const bool a_conjugate, const bool b_conjugate, const size_t batch_count);
+  void BatchedGemmDirect(size_t m, size_t n, size_t k, T alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld,
+                         size_t a_stride, const Buffer<T>& b_buffer, size_t b_offset, size_t b_ld, size_t b_stride,
+                         T beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld, size_t c_stride,
+                         bool a_do_transpose, bool b_do_transpose, bool c_do_transpose, bool a_conjugate,
+                         bool b_conjugate, size_t batch_count);
 };
 
 // =================================================================================================
