@@ -229,7 +229,7 @@ The tuners provide a few common parameters that are shared by each tuner:
 2. **Platform** -- The OpenCL platform to use
 3. **Device** -- The OpenCL device to use
 4. **Fraction** -- The fraction of a larger search space to explore when running the tuners. A value of 100 is equal to 1% and so 10000 is equal to the whole search space (100%)
-5. **Threads** -- The number of threads that the tuner should use. 1 is the minimum and the recommended amount is the number of cores present in the CPU (with hyperthreading) and more may hurt prformance. It is safer to use 1 thread, espescially for tuning CPUs.
+5. **Threads** -- The number of threads that the tuner should use for compiling the OpenCL kernels. This does NOT run the OpenCL kernels with multithreading, it only compiles them with multithreading. 1 is the minimum and the recommended amount is the number of cores present in the CPU (with hyperthreading) and more may hurt prformance. It is safer to use 1 thread, espescially for tuning CPUs. If you specify more threads than there are kernels, it will simply use the number of kernels as the number of threads.
 
 Running All Tuners For All Precisions
 -------------
