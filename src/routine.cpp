@@ -48,6 +48,27 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
 };
 // =================================================================================================
 
+void Routine::InitDatabase(const Device& device, const std::vector<std::string>& kernel_names,
+                           const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
+                           Databases& db) {
+  const auto platform_id = device.PlatformID();
+  for (const auto& kernel_name : kernel_names) {
+    // Queries the cache to see whether or not the kernel parameter database is already there
+    bool has_db;
+    db(kernel_name) =
+        DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device(), precision, kernel_name}, &has_db);
+    if (has_db) {
+      continue;
+    }
+
+    // Builds the parameter database for this device and routine set and stores it in the cache
+    log_debug("Searching database for kernel '" + kernel_name + "'");
+    db(kernel_name) = Database(device, kernel_name, precision, userDatabase);
+    DatabaseCache::Instance().Store(DatabaseKey{platform_id, device(), precision, kernel_name},
+                                    Database{db(kernel_name)});
+  }
+}
+
 // The constructor does all heavy work, errors are returned as exceptions
 Routine::Routine(Queue& queue, EventPointer event, const std::string& name,
                  const std::vector<std::string>& kernel_names, const Precision precision,
