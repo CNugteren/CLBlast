@@ -10,7 +10,6 @@
 #ifndef CLBLAST_ROUTINES_XMIN_H_
 #define CLBLAST_ROUTINES_XMIN_H_
 
-#include "routine.hpp"
 #include "routines/level1/xamax.hpp"
 
 namespace clblast {
