@@ -249,6 +249,7 @@ endif()
 set(SOURCES
   src/database/database.cpp
   src/routines/common.cpp
+  src/utilities/buffer_test.cpp
   src/utilities/compile.cpp
   src/utilities/clblast_exceptions.cpp
   src/utilities/timing.cpp
