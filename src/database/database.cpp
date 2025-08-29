@@ -215,7 +215,7 @@ database::Parameters Database::Search(const std::string& this_kernel, const std:
   for (auto& db : this_database) {
     if ((db.kernel == this_kernel) && (db.precision == this_precision || db.precision == Precision::kAny)) {
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters =
+      auto parameters =
           SearchVendorAndType(this_vendor, this_type, this_device, this_architecture, db.vendors, db.parameter_names);
       if (parameters.size() != 0) {
         return parameters;
@@ -292,7 +292,7 @@ database::Parameters Database::SearchDevice(const std::string& target_device,
 }
 
 // Helper to convert from database format to proper types
-std::string Database::CharArrayToString(const database::Name char_array) const {
+std::string Database::CharArrayToString(const database::Name char_array) {
   auto result = std::string(char_array.data());
   result.erase(result.find_last_not_of(" \t\n\r\f\v") + 1);
   return result;
