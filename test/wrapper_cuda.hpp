@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "clblast_half.h"
 #include "utilities/utilities.hpp"
 
 #ifdef CLBLAST_REF_CUBLAS

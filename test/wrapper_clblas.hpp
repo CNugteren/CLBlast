@@ -14,6 +14,7 @@
 #include <clBLAS.h>
 
 #include "utilities/utilities.hpp"
+#include "clblast_half.h"
 
 namespace clblast {
 

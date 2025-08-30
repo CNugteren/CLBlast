@@ -8,6 +8,7 @@
 // =================================================================================================
 
 #include "test/correctness/tester.hpp"
+#include "clblast_half.h"
 
 #include <cmath>
 #include <cstdio>

@@ -19,6 +19,7 @@ extern "C" {
 #endif
 }
 
+#include "clblast_half.h"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
