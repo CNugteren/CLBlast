@@ -19,6 +19,9 @@
 #include <utility>
 #include <vector>
 
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/compile.hpp"
+#include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -114,10 +117,10 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
                              size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
                              const Context& context, const size_t num_threads) {
 #if defined(_WIN32)
-  const std::string kPrintError = "";
-  const std::string kPrintSuccess = "";
-  const std::string kPrintMessage = "";
-  const std::string kPrintEnd = "";
+  const std::string kPrintError;
+  const std::string kPrintSuccess;
+  const std::string kPrintMessage;
+  const std::string kPrintEnd;
 #else
   const std::string kPrintError = "\x1b[31m";
   const std::string kPrintSuccess = "\x1b[32m";
@@ -156,7 +159,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
       info.local = std::move(local);
 
       // Sets the parameters for this configuration
-      auto kernel_source = std::string{""};
+      std::string kernel_source;
       for (const auto& parameter : configuration) {
         kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
       }
@@ -199,10 +202,10 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
 // Constants holding start and end strings for terminal-output in colour
 #if defined(_WIN32)
-  const std::string kPrintError = "";
-  const std::string kPrintSuccess = "";
-  const std::string kPrintMessage = "";
-  const std::string kPrintEnd = "";
+  const std::string kPrintError;
+  const std::string kPrintSuccess;
+  const std::string kPrintMessage;
+  const std::string kPrintEnd;
 #else
   const std::string kPrintError = "\x1b[31m";
   const std::string kPrintSuccess = "\x1b[32m";
@@ -291,10 +294,6 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     printf("* Unsupported precision, skipping this tuning run\n\n");
     return;
   }
-  const auto device_type = GetDeviceType(device);
-  const auto device_vendor = GetDeviceVendor(device);
-  const auto device_architecture = GetDeviceArchitecture(device);
-  const auto device_name = GetDeviceName(device);
 
   // Creates input buffers with random data. Adds a 'canary' region to detect buffer overflows.
   const auto buffer_sizes = std::vector<size_t>{settings.size_x + kCanarySize, settings.size_y + kCanarySize,
@@ -519,7 +518,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   printf("* Found best result %.2lf ms", best_time_ms);
   printf(": %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6), settings.performance_unit.c_str());
   printf("* Best parameters: ");
-  auto best_string = std::string{""};
+  std::string best_string;
   auto i = size_t{0};
   for (const auto& config : best_configuration->config) {
     best_string += "" + config.first + "=" + ToString(config.second);

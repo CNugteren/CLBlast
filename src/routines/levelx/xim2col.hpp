@@ -24,11 +24,9 @@ class Xim2col : public Routine {
   Xim2col(Queue& queue, EventPointer event, const std::string& name = "IM2COL");
 
   // Templated-precision implementation of the routine
-  void DoIm2col(const KernelMode kernel_mode, const size_t channels, const size_t height, const size_t width,
-                const size_t kernel_h, const size_t kernel_w, const size_t pad_h, const size_t pad_w,
-                const size_t stride_h, const size_t stride_w, const size_t dilation_h, const size_t dilation_w,
-                const Buffer<T>& im_buffer, const size_t im_offset, const Buffer<T>& col_buffer,
-                const size_t col_offset);
+  void DoIm2col(KernelMode kernel_mode, size_t channels, size_t height, size_t width, size_t kernel_h, size_t kernel_w,
+                size_t pad_h, size_t pad_w, size_t stride_h, size_t stride_w, size_t dilation_h, size_t dilation_w,
+                const Buffer<T>& im_buffer, size_t im_offset, const Buffer<T>& col_buffer, size_t col_offset);
 };
 
 // =================================================================================================

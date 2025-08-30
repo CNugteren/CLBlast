@@ -9,13 +9,13 @@
 
 #include "utilities/utilities.hpp"
 
-#include <chrono>
 #include <cmath>
 #include <iomanip>
 #include <random>
 #include <string>
 #include <vector>
 
+#include "clblast_half.h"
 #include "utilities/device_mapping.hpp"
 
 namespace clblast {
@@ -30,11 +30,11 @@ template float GetScalar<float>();
 template double GetScalar<double>();
 template <>
 half GetScalar() {
-  return FloatToHalf(2.0f);
+  return FloatToHalf(2.0F);
 }
 template <>
 float2 GetScalar() {
-  return {2.0f, 0.5f};
+  return {2.0F, 0.5F};
 }
 template <>
 double2 GetScalar() {
@@ -50,11 +50,11 @@ template float ConstantZero<float>();
 template double ConstantZero<double>();
 template <>
 half ConstantZero() {
-  return FloatToHalf(0.0f);
+  return FloatToHalf(0.0F);
 }
 template <>
 float2 ConstantZero() {
-  return {0.0f, 0.0f};
+  return {0.0F, 0.0F};
 }
 template <>
 double2 ConstantZero() {
@@ -70,11 +70,11 @@ template float ConstantOne<float>();
 template double ConstantOne<double>();
 template <>
 half ConstantOne() {
-  return FloatToHalf(1.0f);
+  return FloatToHalf(1.0F);
 }
 template <>
 float2 ConstantOne() {
-  return {1.0f, 0.0f};
+  return {1.0F, 0.0F};
 }
 template <>
 double2 ConstantOne() {
@@ -90,11 +90,11 @@ template float ConstantNegOne<float>();
 template double ConstantNegOne<double>();
 template <>
 half ConstantNegOne() {
-  return FloatToHalf(-1.0f);
+  return FloatToHalf(-1.0F);
 }
 template <>
 float2 ConstantNegOne() {
-  return {-1.0f, 0.0f};
+  return {-1.0F, 0.0F};
 }
 template <>
 double2 ConstantNegOne() {
@@ -114,7 +114,7 @@ half Constant(const double val) {
 }
 template <>
 float2 Constant(const double val) {
-  return {static_cast<float>(val), 0.0f};
+  return {static_cast<float>(val), 0.0F};
 }
 template <>
 double2 Constant(const double val) {
@@ -130,11 +130,11 @@ template float SmallConstant<float>();
 template double SmallConstant<double>();
 template <>
 half SmallConstant() {
-  return FloatToHalf(1e-4f);
+  return FloatToHalf(1e-4F);
 }
 template <>
 float2 SmallConstant() {
-  return {1e-4f, 0.0f};
+  return {1e-4F, 0.0F};
 }
 template <>
 double2 SmallConstant() {
@@ -154,17 +154,17 @@ half AbsoluteValue(const half value) {
 }
 template <>
 float AbsoluteValue(const float2 value) {
-  if (value.real() == 0.0f && value.imag() == 0.0f) {
-    return 0.0f;
+  if (value.real() == 0.0F && value.imag() == 0.0F) {
+    return 0.0F;
   }
-  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+  return std::sqrt((value.real() * value.real()) + (value.imag() * value.imag()));
 }
 template <>
 double AbsoluteValue(const double2 value) {
   if (value.real() == 0.0 && value.imag() == 0.0) {
     return 0.0;
   }
-  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+  return std::sqrt((value.real() * value.real()) + (value.imag() * value.imag()));
 }
 
 // =================================================================================================
@@ -333,7 +333,7 @@ float ConvertArgument(const char* value) {
 }
 template <>
 double ConvertArgument(const char* value) {
-  return static_cast<double>(std::stod(value));
+  return std::stod(value);
 }
 template <>
 float2 ConvertArgument(const char* value) {
@@ -342,7 +342,7 @@ float2 ConvertArgument(const char* value) {
 }
 template <>
 double2 ConvertArgument(const char* value) {
-  auto val = static_cast<double>(std::stod(value));
+  auto val = std::stod(value);
   return double2{val, val};
 }
 
@@ -361,13 +361,13 @@ template std::string ConvertArgument(const char* value, std::string default_valu
 // default value in case the option is not found in the argument string.
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value) {
+              const T default_value) {  // NOLINT
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = static_cast<T>(default_value);
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto item = arguments[c];
-    if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
+    const auto& item = arguments[c];
+    if (item == "-" + option || item == "--" + option) {
       ++c;
       return_value = ConvertArgument<T>(arguments[c].c_str());
       break;
@@ -419,8 +419,8 @@ bool CheckArgument(const std::vector<std::string>& arguments, std::string& help,
   // an extra dash in front (e.g. --device).
   auto return_value = false;
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto item = arguments[c];
-    if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
+    const auto& item = arguments[c];
+    if (item == "-" + option || item == "--" + option) {
       ++c;
       return_value = true;
     }
@@ -500,7 +500,7 @@ size_t CeilDiv(const size_t x, const size_t y) { return 1 + ((x - 1) / y); }
 size_t Ceil(const size_t x, const size_t y) { return CeilDiv(x, y) * y; }
 
 // Helper function to determine whether or not 'a' is a multiple of 'b'
-bool IsMultiple(const size_t a, const size_t b) { return ((a / b) * b == a) ? true : false; }
+bool IsMultiple(const size_t a, const size_t b) { return (a / b) * b == a; }
 
 // =================================================================================================
 
@@ -548,11 +548,11 @@ Precision PrecisionValue<double2>() {
 
 // Returns false is this precision is not supported by the device
 template <>
-bool PrecisionSupported<float>(const Device&) {
+bool PrecisionSupported<float>(const Device& /*unused*/) {
   return true;
 }
 template <>
-bool PrecisionSupported<float2>(const Device&) {
+bool PrecisionSupported<float2>(const Device& /*unused*/) {
   return true;
 }
 template <>
@@ -616,7 +616,7 @@ std::string GetDeviceVendor(const Device& device) {
 
 // Mid-level info
 std::string GetDeviceArchitecture(const Device& device) {
-  auto device_architecture = std::string{""};
+  std::string device_architecture;
 #ifdef CUDA_API
   device_architecture = device.NVIDIAComputeCapability();
 #else
@@ -640,7 +640,7 @@ std::string GetDeviceArchitecture(const Device& device) {
 
 // Lowest-level
 std::string GetDeviceName(const Device& device) {
-  auto device_name = std::string{""};
+  std::string device_name;
   if (device.HasExtension(kKhronosAttributesAMD)) {
     device_name = device.AMDBoardName();
   } else {

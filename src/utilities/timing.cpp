@@ -9,8 +9,11 @@
 
 #include "utilities/timing.hpp"
 
+#include <algorithm>
 #include <cstdio>
-#include <exception>
+#include <utility>
+
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -40,9 +43,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
 
     // Make sure the global thread sizes are at least equal to the local sizes
     for (auto i = size_t{0}; i < global.size(); ++i) {
-      if (global[i] < local[i]) {
-        global[i] = local[i];
-      }
+      global[i] = std::max(global[i], local[i]);
     }
   }
 
@@ -64,7 +65,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
 double TimeKernel(const size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
                   const std::vector<size_t>& local, const bool silent) {
   try {
-    const auto time_ms = RunKernelTimed(num_runs, kernel, queue, device, global, local);
+    const auto time_ms = RunKernelTimed(num_runs, kernel, queue, device, std::move(global), local);
     if (!silent) {
       printf(" %9.2lf ms |", time_ms);
     }

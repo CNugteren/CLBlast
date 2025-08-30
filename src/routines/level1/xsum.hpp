@@ -10,7 +10,6 @@
 #ifndef CLBLAST_ROUTINES_XSUM_H_
 #define CLBLAST_ROUTINES_XSUM_H_
 
-#include "routine.hpp"
 #include "routines/level1/xasum.hpp"
 
 namespace clblast {

@@ -12,7 +12,6 @@
 #ifndef CLBLAST_ROUTINES_XHER2K_H_
 #define CLBLAST_ROUTINES_XHER2K_H_
 
-#include "routine.hpp"
 #include "routines/level3/xherk.hpp"
 
 namespace clblast {
@@ -30,10 +29,9 @@ class Xher2k : public Xherk<T, U> {
   Xher2k(Queue& queue, EventPointer event, const std::string& name = "HER2K");
 
   // Templated-precision implementation of the routine
-  void DoHer2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose, const size_t n,
-               const size_t k, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-               const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const U beta,
-               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoHer2k(Layout layout, Triangle triangle, Transpose ab_transpose, size_t n, size_t k, T alpha,
+               const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset,
+               size_t b_ld, U beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld);
 };
 
 // =================================================================================================

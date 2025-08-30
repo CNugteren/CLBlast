@@ -12,7 +12,10 @@
 #include <string>
 #include <vector>
 
+#include "routines/common.hpp"
 #include "routines/level3/xgemm.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

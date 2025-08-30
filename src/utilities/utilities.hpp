@@ -14,7 +14,6 @@
 
 #include <algorithm>
 #include <complex>
-#include <functional>
 #include <iterator>
 #include <random>
 #include <string>
@@ -26,9 +25,6 @@
 #include "clblast_cuda.h"
 #include "cupp11.hpp"
 #endif
-#include "clblast_half.h"
-#include "utilities/clblast_exceptions.hpp"
-#include "utilities/msvc.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -137,7 +133,7 @@ constexpr auto kBufScalarUint = "ScalarUint";
 #ifdef VERBOSE
 inline void log_debug(const std::string& log_string) { printf("[DEBUG] %s\n", log_string.c_str()); }
 #else
-inline void log_debug(const std::string&) {}
+inline void log_debug(const std::string& /*unused*/) {}
 #endif
 
 // =================================================================================================
@@ -170,13 +166,13 @@ T ConstantOne();
 template <typename T>
 T ConstantNegOne();
 template <typename T>
-T Constant(const double val);
+T Constant(double val);
 template <typename T>
 T SmallConstant();
 
 // Returns the absolute value of a scalar (modulus in case of complex numbers)
 template <typename T>
-typename BaseType<T>::Type AbsoluteValue(const T value);
+typename BaseType<T>::Type AbsoluteValue(T value);
 
 // =================================================================================================
 
@@ -258,7 +254,7 @@ struct Arguments {
   size_t step = 1;
   size_t num_steps = 0;
   size_t num_runs = 10;
-  std::vector<std::string> tuner_files = {};
+  std::vector<std::string> tuner_files;
   bool full_statistics = false;
 #ifdef CLBLAST_REF_CUBLAS
   void* cublas_handle;  // cublasHandle_t
@@ -319,12 +315,10 @@ T ConvertArgument(const char* value, T default_value);
 
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
-T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value);
+T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option, T default_value);
 
 // Returns the precision only
-Precision GetPrecision(const std::vector<std::string>& arguments,
-                       const Precision default_precision = Precision::kSingle);
+Precision GetPrecision(const std::vector<std::string>& arguments, Precision default_precision = Precision::kSingle);
 
 // As in "GetArgument", but now only checks whether an argument is given or not
 bool CheckArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option);
@@ -352,21 +346,21 @@ struct RealArg<half> {
   using Type = float;
 };
 template <typename T>
-typename RealArg<T>::Type GetRealArg(const T value);
+typename RealArg<T>::Type GetRealArg(T value);
 
 // =================================================================================================
 
 // Rounding functions
-size_t CeilDiv(const size_t x, const size_t y);
-size_t Ceil(const size_t x, const size_t y);
+size_t CeilDiv(size_t x, size_t y);
+size_t Ceil(size_t x, size_t y);
 
 // Returns whether or not 'a' is a multiple of 'b'
-bool IsMultiple(const size_t a, const size_t b);
+bool IsMultiple(size_t a, size_t b);
 
 // =================================================================================================
 
 // Convert the precision enum into bytes, e.g. a double takes up 8 bytes
-size_t GetBytes(const Precision precision);
+size_t GetBytes(Precision precision);
 
 // Convert the template argument into a precision value
 template <typename T>
@@ -382,7 +376,7 @@ bool PrecisionSupported(const Device& device);
 
 // Retrieves the squared difference, used for example for computing the L2 error
 template <typename T>
-double SquaredDifference(const T val1, const T val2);
+double SquaredDifference(T val1, T val2);
 
 // =================================================================================================
 

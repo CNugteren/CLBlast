@@ -8,13 +8,13 @@
 //
 // =================================================================================================
 
-#include <exception>
-#include <iostream>
 #include <string>
 #include <vector>
 
 #include "test/test_utilities.hpp"
 #include "tuning/routines/routine_tuner.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

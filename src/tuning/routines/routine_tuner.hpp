@@ -13,7 +13,6 @@
 
 #include <assert.h>
 
-#include <exception>
 #include <string>
 #include <vector>
 
@@ -59,7 +58,7 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
 
   // Direct version
   printf("\n* Testing the direct %s routine for m=n=k\n", name.c_str());
-  ForceSelectIndirectFrom<T>(batch_count * to + 1, device, tuner_name, parameter_name);
+  ForceSelectIndirectFrom<T>((batch_count * to) + 1, device, tuner_name, parameter_name);
   const auto direct = TimeRoutine(from, to, step, num_runs, queue, buffers, routine);
 
   // Determining final score and best kernel selection point
@@ -85,7 +84,7 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
     tuning_results["PRECISION"] = static_cast<size_t>(precision);
     scores[i] =
         TuningResult{name + "_kernel_selection",
-                     (relative_score * relative_score) * 100 + epsilon,  // squared for proper default computation
+                     ((relative_score * relative_score) * 100) + epsilon,  // squared for proper default computation
                      tuning_results};
   }
 

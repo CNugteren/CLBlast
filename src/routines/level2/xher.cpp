@@ -11,6 +11,10 @@
 
 #include <string>
 
+#include "routines/common.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/utilities.hpp"
+
 namespace clblast {
 // =================================================================================================
 
@@ -30,7 +34,7 @@ Xher<T, U>::Xher(Queue& queue, EventPointer event, const std::string& name)
 // Specializations to compute alpha of type 'T'
 template <>
 float2 Xher<float2, float>::GetAlpha(const float alpha) {
-  return float2{alpha, 0.0f};
+  return float2{alpha, 0.0F};
 }
 template <>
 double2 Xher<double2, double>::GetAlpha(const double alpha) {

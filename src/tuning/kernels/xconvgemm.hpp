@@ -21,25 +21,25 @@ namespace clblast {
 // Helper functions
 template <typename T>
 size_t OutputHeight(const Arguments<T>& args) {
-  const auto size = args.height + 2 * args.pad_h;
-  const auto padding = args.dilation_h * (args.kernel_h - 1) + 1;
+  const auto size = args.height + (2 * args.pad_h);
+  const auto padding = (args.dilation_h * (args.kernel_h - 1)) + 1;
   if (size >= padding) {
-    return (size - padding) / args.stride_h + 1;
+    return ((size - padding) / args.stride_h) + 1;
   }
   return 1;
 }
 template <typename T>
 size_t OutputWidth(const Arguments<T>& args) {
-  const auto size = args.width + 2 * args.pad_w;
-  const auto padding = args.dilation_w * (args.kernel_w - 1) + 1;
+  const auto size = args.width + (2 * args.pad_w);
+  const auto padding = (args.dilation_w * (args.kernel_w - 1)) + 1;
   if (size >= padding) {
-    return (size - padding) / args.stride_w + 1;
+    return ((size - padding) / args.stride_w) + 1;
   }
   return 1;
 }
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults XConvGemmGetTunerDefaults(const int) {
+TunerDefaults XConvGemmGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgChannels, kArgHeight,     kArgWidth,      kArgKernelH,
                       kArgKernelW,  kArgNumKernels, kArgBatchCount, kArgFraction};
@@ -57,7 +57,7 @@ TunerDefaults XConvGemmGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings XConvGemmGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -111,8 +111,8 @@ TunerSettings XConvGemmGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XConvGemmTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> XConvGemmSetConstraints(const int) {
+void XConvGemmTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> XConvGemmSetConstraints(const int /*unused*/) {
   auto constraints = std::vector<Constraint>();
   auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
   auto MultipleOfXMulY = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1] * v[2]); };
@@ -132,7 +132,7 @@ std::vector<Constraint> XConvGemmSetConstraints(const int) {
   return constraints;
 }
 template <typename T>
-LocalMemSizeInfo XConvGemmComputeLocalMemSize(const int) {
+LocalMemSizeInfo XConvGemmComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t> v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * ((v[0] * (v[0] + v[1]) + v[0] * (v[0] + v[2])));
           },
@@ -141,7 +141,8 @@ LocalMemSizeInfo XConvGemmComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void XConvGemmSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XConvGemmSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                           std::vector<Buffer<T>>& buffers) {
   const auto output_h = OutputHeight(args);
   const auto output_w = OutputWidth(args);
   const auto patch_size = args.kernel_h * args.kernel_w * args.channels;

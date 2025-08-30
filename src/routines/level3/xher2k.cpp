@@ -10,7 +10,6 @@
 #include "routines/level3/xher2k.hpp"
 
 #include <string>
-#include <vector>
 
 namespace clblast {
 // =================================================================================================

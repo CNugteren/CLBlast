@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "test/correctness/tester.hpp"
 

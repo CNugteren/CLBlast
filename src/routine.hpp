@@ -18,8 +18,6 @@
 
 #include "cache.hpp"
 #include "database/database.hpp"
-#include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -32,10 +30,10 @@ class Routine {
   static void InitDatabase(const Device& device, const std::vector<std::string>& kernel_names,
                            const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
                            Databases& db) {
-    const auto platform_id = device.PlatformID();
+    auto* const platform_id = device.PlatformID();
     for (const auto& kernel_name : kernel_names) {
       // Queries the cache to see whether or not the kernel parameter database is already there
-      bool has_db;
+      bool has_db = false;
       db(kernel_name) =
           DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device(), precision, kernel_name}, &has_db);
       if (has_db) {
@@ -55,9 +53,9 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   // NOTE: the caller must provide the same userDatabase for each combination of device, precision
   // and routine list, otherwise the caching logic will break.
-  explicit Routine(Queue& queue, EventPointer event, const std::string& name, const std::vector<std::string>& routines,
-                   const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
-                   std::initializer_list<const char*> source);
+  explicit Routine(Queue& queue, EventPointer event, const std::string& name,
+                   const std::vector<std::string>& kernel_names, Precision precision,
+                   const std::vector<database::DatabaseEntry>& userDatabase, std::initializer_list<const char*> source);
 
   // List of kernel-routine look-ups
   static const std::vector<std::string> routines_axpy;

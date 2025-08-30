@@ -202,7 +202,7 @@ std::vector<Constraint> XgemmSetConstraints(const int V) {
   return constraints;
 }
 template <typename T>
-LocalMemSizeInfo XgemmComputeLocalMemSize(const int) {
+LocalMemSizeInfo XgemmComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t> v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * ((v[0] * v[1] * v[2]) + (v[3] * v[4] * v[5]));
           },
@@ -211,7 +211,8 @@ LocalMemSizeInfo XgemmComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void XgemmSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgemmSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                       std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.k));

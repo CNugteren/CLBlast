@@ -11,6 +11,8 @@
 
 #include "utilities/clblast_exceptions.hpp"
 
+#include "clblast.h"
+
 namespace {
 // =================================================================================================
 
@@ -37,7 +39,7 @@ RuntimeErrorCode::RuntimeErrorCode(StatusCode status, const std::string& subreas
 
 StatusCode DispatchException(const bool silent) {
   const char* message = nullptr;
-  StatusCode status;
+  StatusCode status = StatusCode::kSuccess;
 
   try {
     throw;
@@ -55,7 +57,7 @@ StatusCode DispatchException(const bool silent) {
     status = StatusCode::kUnknownError;
   }
 
-  if (message && !silent) {
+  if ((message != nullptr) && !silent) {
     fprintf(stderr, "CLBlast: %s\n", message);
   }
   return status;
@@ -63,7 +65,7 @@ StatusCode DispatchException(const bool silent) {
 
 StatusCode DispatchExceptionCatchAll(const bool silent) {
   const char* message = nullptr;
-  StatusCode status;
+  StatusCode status = StatusCode::kSuccess;
 
   try {
     throw;
@@ -84,7 +86,7 @@ StatusCode DispatchExceptionCatchAll(const bool silent) {
     status = StatusCode::kUnknownError;
   }
 
-  if (message && !silent) {
+  if ((message != nullptr) && !silent) {
     fprintf(stderr, "CLBlast: %s\n", message);
   }
   return status;

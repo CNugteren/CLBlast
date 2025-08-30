@@ -33,14 +33,14 @@ class Xtrsm : public Xgemm<T> {
   Xtrsm(Queue& queue, EventPointer event, const std::string& name = "TRSM");
 
   // Templated-precision implementation of the routine
-  void DoTrsm(const Layout layout, Side side, Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-              size_t m, size_t n, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld);
+  void DoTrsm(Layout layout, Side side, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t m, size_t n,
+              T alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer,
+              size_t b_offset, size_t b_ld);
 
   // Implementation of the column-major version
-  void TrsmColMajor(const Side side, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                    const size_t m, const size_t n, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset,
-                    const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld);
+  void TrsmColMajor(Side side, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t m, size_t n, T alpha,
+                    const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset,
+                    size_t b_ld);
 };
 
 // =================================================================================================

@@ -26,9 +26,9 @@ class Xgeru : public Xger<T> {
   Xgeru(Queue& queue, EventPointer event, const std::string& name = "GERU");
 
   // Templated-precision implementation of the routine
-  void DoGeru(const Layout layout, const size_t m, const size_t n, const T alpha, const Buffer<T>& x_buffer,
-              const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
-              const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld);
+  void DoGeru(Layout layout, size_t m, size_t n, T alpha, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc,
+              const Buffer<T>& y_buffer, size_t y_offset, size_t y_inc, const Buffer<T>& a_buffer, size_t a_offset,
+              size_t a_ld);
 };
 
 // =================================================================================================

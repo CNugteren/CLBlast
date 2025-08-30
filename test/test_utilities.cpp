@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include "clblast_half.h"
+
 namespace clblast {
 // =================================================================================================
 

@@ -8,6 +8,7 @@
 //
 // =================================================================================================
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -18,10 +19,10 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults XdotGetTunerDefaults(const int) {
+TunerDefaults XdotGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgN};
-  settings.default_n = 2 * 1024 * 1024;
+  settings.default_n = static_cast<size_t>(2 * 1024 * 1024);
   return settings;
 }
 
@@ -47,8 +48,10 @@ TunerSettings XdotGetTunerSettings(const int V, const Arguments<T>& args) {
   settings.outputs = {};  // no output checking
 
   // Sets the base thread configuration
-  settings.global_size = (V == 1) ? std::vector<size_t>{2 * 64} : std::vector<size_t>{1};
-  settings.global_size_ref = (V == 1) ? std::vector<size_t>{2 * 64 * 64} : std::vector<size_t>{64};
+  settings.global_size =
+      (V == 1) ? std::vector<size_t>{static_cast<const unsigned long long>(2 * 64)} : std::vector<size_t>{1};
+  settings.global_size_ref =
+      (V == 1) ? std::vector<size_t>{static_cast<const unsigned long long>(2 * 64 * 64)} : std::vector<size_t>{64};
   settings.local_size = {1};
   settings.local_size_ref = {64};
 
@@ -70,8 +73,8 @@ TunerSettings XdotGetTunerSettings(const int V, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XdotTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> XdotSetConstraints(const int) { return {}; }
+void XdotTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> XdotSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
 LocalMemSizeInfo XdotComputeLocalMemSize(const int V) {
   return {[](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * v[0]; },
