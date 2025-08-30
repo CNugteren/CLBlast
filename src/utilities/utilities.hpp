@@ -115,6 +115,7 @@ constexpr auto kArgAnnMaxTemp = "ann_max_temperature";
 constexpr auto kArgPlatform = "platform";
 constexpr auto kArgDevice = "device";
 constexpr auto kArgPrecision = "precision";
+constexpr auto kArgNumThreads = "threads";
 constexpr auto kArgHelp = "h";
 constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
@@ -265,6 +266,7 @@ struct Arguments {
   // Common arguments
   size_t platform_id = 0;
   size_t device_id = 0;
+  long long extra_threads = 1;
   Precision precision = Precision::kSingle;
   bool print_help = false;
   bool silent = false;
