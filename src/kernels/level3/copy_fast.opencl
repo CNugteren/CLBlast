@@ -40,6 +40,10 @@ void CopyMatrixFast(const int ld,
                     __global const realC* restrict src,
                     __global realC* dest,
                     const real_arg arg_alpha) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(ld % COPY_VW == 0);
+#endif
+
   const real alpha = GetRealArg(arg_alpha);
   #pragma unroll
   for (int _w_one = 0; _w_one < COPY_WPT; _w_one += 1) {

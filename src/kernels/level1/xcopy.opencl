@@ -45,6 +45,11 @@ void Xcopy(const int n,
 void XcopyFast(const int n,
                const __global realV* restrict xgm,
                __global realV* ygm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+  __builtin_assume(n % WGS == 0);
+#endif
   #pragma unroll
   for (int _w = 0; _w < WPT; _w += 1) {
     const int id = _w*get_global_size(0) + get_global_id(0);
