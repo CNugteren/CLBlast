@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <complex>
+#include <functional>
 #include <iterator>
 #include <random>
 #include <string>
@@ -25,6 +26,12 @@
 #include "clblast_cuda.h"
 #include "cupp11.hpp"
 #endif
+
+#include "clblast_half.h"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/msvc.hpp"
+#include "utilities/timing.hpp"
+#include "utilities/compile.hpp"
 
 namespace clblast {
 // =================================================================================================
