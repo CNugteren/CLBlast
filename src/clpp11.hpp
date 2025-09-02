@@ -29,6 +29,8 @@
 //
 // =================================================================================================
 
+// IWYU pragma: private, include "utilities/backend.hpp"
+
 #ifndef CLBLAST_CLPP11_H_
 #define CLBLAST_CLPP11_H_
 
