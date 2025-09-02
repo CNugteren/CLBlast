@@ -67,8 +67,6 @@ void TestMatrixB(const size_t one, const size_t two, const Buffer<T>& buffer, co
 
 template void TestMatrixB(const size_t, const size_t, const Buffer<unsigned short>&, const size_t, const size_t,
                           const bool test_lead_dim);
-template void TestMatrixB(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t,
-                          const bool test_lead_dim);
 template void TestMatrixB(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
                           const bool test_lead_dim);
 template void TestMatrixB(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t,
@@ -94,7 +92,6 @@ void TestMatrixC(const size_t one, const size_t two, const Buffer<T>& buffer, co
   }
 }
 
-template void TestMatrixC(const size_t, const size_t, const Buffer<unsigned short>&, const size_t, const size_t);
 template void TestMatrixC(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t);
 template void TestMatrixC(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t);
 template void TestMatrixC(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t);
@@ -114,7 +111,6 @@ void TestMatrixAP(const size_t n, const Buffer<T>& buffer, const size_t offset) 
   }
 }
 
-template void TestMatrixAP(const size_t, const Buffer<unsigned short>&, const size_t);
 template void TestMatrixAP(const size_t, const Buffer<half>&, const size_t);
 template void TestMatrixAP(const size_t, const Buffer<float>&, const size_t);
 template void TestMatrixAP(const size_t, const Buffer<double>&, const size_t);
@@ -139,7 +135,6 @@ void TestVectorX(const size_t n, const Buffer<T>& buffer, const size_t offset, c
   }
 }
 
-template void TestVectorX(const size_t n, const Buffer<unsigned short>& buffer, const size_t offset, const size_t inc);
 template void TestVectorX(const size_t n, const Buffer<half>& buffer, const size_t offset, const size_t inc);
 template void TestVectorX(const size_t n, const Buffer<float>& buffer, const size_t offset, const size_t inc);
 template void TestVectorX(const size_t n, const Buffer<double>& buffer, const size_t offset, const size_t inc);
@@ -162,7 +157,6 @@ void TestVectorY(const size_t n, const Buffer<T>& buffer, const size_t offset, c
   }
 }
 
-template void TestVectorY(const size_t n, const Buffer<unsigned short>& buffer, const size_t offset, const size_t inc);
 template void TestVectorY(const size_t n, const Buffer<half>& buffer, const size_t offset, const size_t inc);
 template void TestVectorY(const size_t n, const Buffer<float>& buffer, const size_t offset, const size_t inc);
 template void TestVectorY(const size_t n, const Buffer<double>& buffer, const size_t offset, const size_t inc);
@@ -184,7 +178,6 @@ void TestVectorScalar(const size_t n, const Buffer<T>& buffer, const size_t offs
   }
 }
 
-template void TestVectorScalar(const size_t, const Buffer<unsigned short>&, const size_t);
 template void TestVectorScalar(const size_t, const Buffer<half>&, const size_t);
 template void TestVectorScalar(const size_t, const Buffer<float>&, const size_t);
 template void TestVectorScalar(const size_t, const Buffer<double>&, const size_t);
@@ -216,8 +209,6 @@ void TestBatchedMatrixA(const size_t one, const size_t two, const Buffer<T>& buf
   TestMatrixA(one, two, buffer, max_offset, ld, test_lead_dim);
 }
 
-template void TestBatchedMatrixA(const size_t, const size_t, const Buffer<unsigned short>&, const std::vector<size_t>&,
-                                 const size_t, const bool);
 template void TestBatchedMatrixA(const size_t, const size_t, const Buffer<half>&, const std::vector<size_t>&,
                                  const size_t, const bool);
 template void TestBatchedMatrixA(const size_t, const size_t, const Buffer<float>&, const std::vector<size_t>&,
@@ -237,8 +228,6 @@ void TestBatchedMatrixB(const size_t one, const size_t two, const Buffer<T>& buf
   TestMatrixB(one, two, buffer, max_offset, ld, test_lead_dim);
 }
 
-template void TestBatchedMatrixB(const size_t, const size_t, const Buffer<unsigned short>&, const std::vector<size_t>&,
-                                 const size_t, const bool);
 template void TestBatchedMatrixB(const size_t, const size_t, const Buffer<half>&, const std::vector<size_t>&,
                                  const size_t, const bool);
 template void TestBatchedMatrixB(const size_t, const size_t, const Buffer<float>&, const std::vector<size_t>&,
@@ -258,8 +247,6 @@ void TestBatchedMatrixC(const size_t one, const size_t two, const Buffer<T>& buf
   TestMatrixC(one, two, buffer, max_offset, ld);
 }
 
-template void TestBatchedMatrixC(const size_t, const size_t, const Buffer<unsigned short>&, const std::vector<size_t>&,
-                                 const size_t);
 template void TestBatchedMatrixC(const size_t, const size_t, const Buffer<half>&, const std::vector<size_t>&,
                                  const size_t);
 template void TestBatchedMatrixC(const size_t, const size_t, const Buffer<float>&, const std::vector<size_t>&,
@@ -282,10 +269,8 @@ void TestStridedBatchedMatrixA(const size_t one, const size_t two, const Buffer<
   TestMatrixA(one, two, buffer, offset + last_batch_offset, ld, test_lead_dim);
 }
 
-template void TestStridedBatchedMatrixA(const size_t, const size_t, const Buffer<unsigned short>&, const size_t,
-                                        const size_t, const size_t, const size_t, const bool);
-template void TestStridedBatchedMatrixA(const size_t, const size_t, const size_t, const Buffer<half>&, const size_t,
-                                        const size_t, const size_t, const size_t, const bool);
+template void TestStridedBatchedMatrixA(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t,
+                                        const size_t, const size_t, const bool);
 template void TestStridedBatchedMatrixA(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
                                         const size_t, const size_t, const bool);
 template void TestStridedBatchedMatrixA(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t,
@@ -304,8 +289,6 @@ void TestStridedBatchedMatrixB(const size_t one, const size_t two, const Buffer<
   TestMatrixB(one, two, buffer, offset + last_batch_offset, ld, test_lead_dim);
 }
 
-template void TestStridedBatchedMatrixB(const size_t, const size_t, const Buffer<unsigned short>&, const size_t,
-                                        const size_t, const size_t, const size_t, const bool);
 template void TestStridedBatchedMatrixB(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t,
                                         const size_t, const size_t, const bool);
 template void TestStridedBatchedMatrixB(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
@@ -325,8 +308,6 @@ void TestStridedBatchedMatrixC(const size_t one, const size_t two, const Buffer<
   TestMatrixC(one, two, buffer, offset + last_batch_offset, ld);
 }
 
-template void TestStridedBatchedMatrixC(const size_t, const size_t, const Buffer<unsigned short>&, const size_t,
-                                        const size_t, const size_t, const size_t);
 template void TestStridedBatchedMatrixC(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t,
                                         const size_t, const size_t);
 template void TestStridedBatchedMatrixC(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
