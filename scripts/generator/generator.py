@@ -6,6 +6,10 @@
 # Author(s):
 #   Cedric Nugteren <www.cedricnugteren.nl>
 #
+# [WARNING] The Generator Scripts are Deprecated and Will be Removed
+# [WARNING] The Generator Scripts are Deprecated and Will be Removed
+# [WARNING] The Generator Scripts are Deprecated and Will be Removed
+#
 # This script automatically generates the bodies of the following files, creating the full CLBlast API interface and
 # implementation (C, C++, and reference BLAS wrappers):
 #    clblast.h
