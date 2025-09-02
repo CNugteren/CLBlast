@@ -21,14 +21,8 @@
 #include <string>
 #include <vector>
 
-#include "clblast_half.h"                    // IWYU pragma: export
-#include "utilities/android.hpp"             // IWYU pragma: export
-#include "utilities/backend.hpp"             // IWYU pragma: export
-#include "utilities/buffer_test.hpp"         // IWYU pragma: export
-#include "utilities/clblast_exceptions.hpp"  // IWYU pragma: export
-#include "utilities/compile.hpp"             // IWYU pragma: export
-#include "utilities/device_mapping.hpp"      // IWYU pragma: export
-#include "utilities/msvc.hpp"                // IWYU pragma: export
+#include "clblast.h"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
