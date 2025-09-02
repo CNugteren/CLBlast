@@ -28,7 +28,6 @@
 #include "utilities/compile.hpp"             // IWYU pragma: export
 #include "utilities/device_mapping.hpp"      // IWYU pragma: export
 #include "utilities/msvc.hpp"                // IWYU pragma: export
-#include "utilities/timing.hpp"              // IWYU pragma: export
 
 namespace clblast {
 // =================================================================================================
