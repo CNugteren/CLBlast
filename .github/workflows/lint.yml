@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run the generator script
-        run: python scripts/generator/generator.py .
       - name: Install requirements for Ubuntu
         run: |
           sudo apt-get update
