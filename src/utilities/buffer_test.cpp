@@ -37,16 +37,11 @@ void TestMatrixA(const size_t one, const size_t two, const Buffer<T>& buffer, co
   }
 }
 
-template void TestMatrixA(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixA(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixA(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixA(const size_t, const size_t, const Buffer<float2>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixA(const size_t, const size_t, const Buffer<double2>&, const size_t, const size_t,
-                          const bool test_lead_dim);
+template void TestMatrixA(const size_t, const size_t, const Buffer<half>&, const size_t, const size_t, const bool);
+template void TestMatrixA(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t, const bool);
+template void TestMatrixA(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t, const bool);
+template void TestMatrixA(const size_t, const size_t, const Buffer<float2>&, const size_t, const size_t, const bool);
+template void TestMatrixA(const size_t, const size_t, const Buffer<double2>&, const size_t, const size_t, const bool);
 
 // Tests matrix 'B' for validity
 template <typename T>
@@ -66,15 +61,11 @@ void TestMatrixB(const size_t one, const size_t two, const Buffer<T>& buffer, co
 }
 
 template void TestMatrixB(const size_t, const size_t, const Buffer<unsigned short>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixB(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixB(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixB(const size_t, const size_t, const Buffer<float2>&, const size_t, const size_t,
-                          const bool test_lead_dim);
-template void TestMatrixB(const size_t, const size_t, const Buffer<double2>&, const size_t, const size_t,
-                          const bool test_lead_dim);
+                          const bool);
+template void TestMatrixB(const size_t, const size_t, const Buffer<float>&, const size_t, const size_t, const bool);
+template void TestMatrixB(const size_t, const size_t, const Buffer<double>&, const size_t, const size_t, const bool);
+template void TestMatrixB(const size_t, const size_t, const Buffer<float2>&, const size_t, const size_t, const bool);
+template void TestMatrixB(const size_t, const size_t, const Buffer<double2>&, const size_t, const size_t, const bool);
 
 // Tests matrix 'C' for validity
 template <typename T>
