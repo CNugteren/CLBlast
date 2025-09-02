@@ -58,14 +58,14 @@
 #define CL_USE_DEPRECATED_OPENCL_2_0_APIS  // to disable deprecation warnings
 #endif
 #if defined(__APPLE__) || defined(__MACOSX)
-#include <OpenCL/opencl.h>
+#include <OpenCL/opencl.h>  // IWYU pragma: export
 #else
-#include <CL/opencl.h>
+#include <CL/opencl.h>  // IWYU pragma: export
 #endif
 
 // Android support (missing C++11 functions to_string, stod, and stoi)
 #ifdef __ANDROID__
-#include "utilities/android.hpp"
+#include "utilities/android.hpp"  // IWYU pragma: export
 #endif
 
 // Exception classes

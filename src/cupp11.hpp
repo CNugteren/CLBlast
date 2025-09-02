@@ -41,8 +41,8 @@
 
 // CUDA
 #define CUDA_NO_HALF  // Incompatible with CLBlast's definition; TODO: resolve this
-#include <cuda.h>     // CUDA driver API
-#include <nvrtc.h>    // NVIDIA runtime compilation API
+#include <cuda.h>     // IWYU pragma: export // CUDA driver API
+#include <nvrtc.h>    // IWYU pragma: export // NVIDIA runtime compilation API
 
 // Exception classes
 #include "cxpp11_common.hpp"

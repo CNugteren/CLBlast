@@ -10,7 +10,10 @@
 #include "utilities/timing.hpp"
 
 #include <cstdio>
-#include <exception>
+#include <vector>
+
+#include "clblast.h"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
