@@ -45,6 +45,120 @@ Xgemm<T>::Xgemm(Queue& queue, EventPointer event, const std::string& name)
 
 // =================================================================================================
 
+template <typename T>
+size_t Xgemm<T>::GetTempSize(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                             const size_t m, const size_t n, const size_t k, const size_t a_offset, const size_t a_ld,
+                             const size_t b_offset, const size_t b_ld, const size_t c_offset, const size_t c_ld,
+                             const size_t mwg, const size_t nwg, const size_t kwg, const size_t gemm_kernel_id) {
+  // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
+  bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
+  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  ProcessArguments(layout, a_transpose, b_transpose, m, n, k, a_one, a_two, b_one, b_two, c_one, c_two, a_do_transpose,
+                   b_do_transpose, c_do_transpose, a_conjugate, b_conjugate, gemm_kernel_id);
+
+  // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
+  // whether the matrices need to be rotated or not for the kernel.
+  size_t a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i;
+  CalculateInternalDimensions(m, n, k, mwg, nwg, kwg, a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i,
+                              gemm_kernel_id);
+
+  // Determines whether or not temporary matrices are needed
+  auto a_no_temp = NoTempBuffer(a_one, a_one_i, a_two, a_two_i, a_ld, a_offset, a_do_transpose, a_conjugate);
+  auto b_no_temp = NoTempBuffer(b_one, b_one_i, b_two, b_two_i, b_ld, b_offset, b_do_transpose, b_conjugate);
+  auto c_no_temp = NoTempBuffer(c_one, c_one_i, c_two, c_two_i, c_ld, c_offset, c_do_transpose, false);
+
+  // Computes the sizes and offsets for (optional) temporary buffers for the 3 matrices
+  auto b_temp_offset = size_t{0};
+  auto c_temp_offset = size_t{0};
+  return ComputeTempSize(a_no_temp, b_no_temp, c_no_temp, a_one_i * a_two_i, b_one_i * b_two_i, c_one_i * c_two_i,
+                         b_temp_offset, c_temp_offset);
+}
+
+template <typename T>
+bool Xgemm<T>::UseDirectKernel(const size_t m, const size_t n, const size_t k, const size_t min_indirect_size) {
+  const auto m_n_k =
+      static_cast<unsigned long long>(m) * static_cast<unsigned long long>(n) * static_cast<unsigned long long>(k);
+  const auto min_indirect_size_ll = static_cast<unsigned long long>(min_indirect_size);
+  const auto min_indirect_size_e3 = min_indirect_size_ll * min_indirect_size_ll * min_indirect_size_ll;
+  return (m_n_k < min_indirect_size_e3);
+}
+
+template <typename T>
+void Xgemm<T>::ProcessArguments(const Layout layout, const Transpose a_transpose, const Transpose b_transpose,
+                                const size_t m, const size_t n, const size_t k, size_t& a_one, size_t& a_two,
+                                size_t& b_one, size_t& b_two, size_t& c_one, size_t& c_two, bool& a_do_transpose,
+                                bool& b_do_transpose, bool& c_do_transpose, bool& a_conjugate, bool& b_conjugate,
+                                const size_t gemm_kernel_id) {
+  // Makes sure all dimensions are larger than zero
+  if ((m == 0) || (n == 0) || (k == 0)) {
+    throw BLASError(StatusCode::kInvalidDimension);
+  }
+
+  // Computes whether or not the matrices are transposed in memory. This is based on their layout
+  // (row or column-major) and whether or not they are requested to be pre-transposed. Note
+  // that the Xgemm kernel expects either matrices A and C (in case of row-major) or B (in case of
+  // col-major) to be transformed, so transposing requirements are not the same as whether or not
+  // the matrix is actually transposed in memory.
+  const auto a_rotated = (layout == Layout::kColMajor && a_transpose != Transpose::kNo) ||
+                         (layout == Layout::kRowMajor && a_transpose == Transpose::kNo);
+  const auto b_rotated = (layout == Layout::kColMajor && b_transpose != Transpose::kNo) ||
+                         (layout == Layout::kRowMajor && b_transpose == Transpose::kNo);
+  const auto c_rotated = (layout == Layout::kRowMajor);
+  a_do_transpose = a_rotated != a_want_rotated_(gemm_kernel_id);
+  b_do_transpose = b_rotated != b_want_rotated_(gemm_kernel_id);
+  c_do_transpose = c_rotated != c_want_rotated_(gemm_kernel_id);
+
+  // In case of complex data-types, the transpose can also become a conjugate transpose
+  a_conjugate = (a_transpose == Transpose::kConjugate);
+  b_conjugate = (b_transpose == Transpose::kConjugate);
+
+  // Computes the first and second dimensions of the 3 matrices taking into account whether the
+  // matrices are rotated or not
+  a_one = (a_rotated) ? k : m;
+  a_two = (a_rotated) ? m : k;
+  b_one = (b_rotated) ? n : k;
+  b_two = (b_rotated) ? k : n;
+  c_one = (c_rotated) ? n : m;
+  c_two = (c_rotated) ? m : n;
+}
+
+template <typename T>
+size_t Xgemm<T>::ComputeTempSize(const bool a_no_temp, const bool b_no_temp, const bool c_no_temp, const size_t a_size,
+                                 const size_t b_size, const size_t c_size, size_t& b_temp_offset,
+                                 size_t& c_temp_offset) {
+  auto temp_size = size_t{0};
+  if (!a_no_temp) {
+    temp_size += a_size;
+  }
+  if (!b_no_temp) {
+    b_temp_offset = temp_size;
+    temp_size += b_size;
+  }
+  if (!c_no_temp) {
+    c_temp_offset = temp_size;
+    temp_size += c_size;
+  }
+  return temp_size;
+}
+
+template <typename T>
+void Xgemm<T>::CalculateInternalDimensions(const size_t m, const size_t n, const size_t k, const size_t mwg,
+                                           const size_t nwg, const size_t kwg, size_t& a_one_i, size_t& a_two_i,
+                                           size_t& b_one_i, size_t& b_two_i, size_t& c_one_i, size_t& c_two_i,
+                                           const size_t gemm_kernel_id) {
+  const auto global_divider_one = c_want_rotated_(gemm_kernel_id) ? nwg : mwg;
+  const auto global_divider_two = c_want_rotated_(gemm_kernel_id) ? mwg : nwg;
+  const auto m_ceiled = Ceil(m, global_divider_one);
+  const auto n_ceiled = Ceil(n, global_divider_two);
+  const auto k_ceiled = Ceil(k, kwg);
+  a_one_i = (a_want_rotated_(gemm_kernel_id)) ? k_ceiled : m_ceiled;
+  a_two_i = (a_want_rotated_(gemm_kernel_id)) ? m_ceiled : k_ceiled;
+  b_one_i = (b_want_rotated_(gemm_kernel_id)) ? n_ceiled : k_ceiled;
+  b_two_i = (b_want_rotated_(gemm_kernel_id)) ? k_ceiled : n_ceiled;
+  c_one_i = (c_want_rotated_(gemm_kernel_id)) ? n_ceiled : m_ceiled;
+  c_two_i = (c_want_rotated_(gemm_kernel_id)) ? m_ceiled : n_ceiled;
+}
+
 // The main routine
 template <typename T>
 void Xgemm<T>::DoGemm(const Layout layout, const Transpose a_transpose, const Transpose b_transpose, const size_t m,
