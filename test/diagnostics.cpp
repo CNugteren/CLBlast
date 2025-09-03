@@ -61,7 +61,7 @@ void OpenCLDiagnostics(int argc, char* argv[]) {
   for (auto i = size_t{0}; i < max_work_item_sizes.size(); ++i) {
     printf("* - Max work item size #%zu       %zu\n", i, max_work_item_sizes[i]);
   }
-  printf("* Local memory size             %zuKB\n", device.LocalMemSize());
+  printf("* Local memory size             %lu KB\n", device.LocalMemSize());
   printf("* Extensions:\n%s\n", device.Capabilities().c_str());
 
   // Simple OpenCL benchmarking
