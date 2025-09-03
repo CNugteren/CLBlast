@@ -37,6 +37,8 @@ class Xherk : public Routine {
               EventPointer final_event, const bool diagonal_to_zero);
 };
 
+extern template class Xherk<float2, float>;
+extern template class Xherk<double2, double>;
 // =================================================================================================
 }  // namespace clblast
 

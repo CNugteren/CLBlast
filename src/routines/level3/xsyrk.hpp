@@ -38,6 +38,11 @@ class Xsyrk : public Routine {
               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld, EventPointer final_event);
 };
 
+extern template class Xsyrk<half>;
+extern template class Xsyrk<float>;
+extern template class Xsyrk<double>;
+extern template class Xsyrk<float2>;
+extern template class Xsyrk<double2>;
 // =================================================================================================
 }  // namespace clblast
 

@@ -31,6 +31,11 @@ class Xspr2 : public Xher2<T> {
               const size_t y_inc, const Buffer<T>& ap_buffer, const size_t ap_offset);
 };
 
+extern template class Xspr2<half>;
+extern template class Xspr2<float>;
+extern template class Xspr2<double>;
+extern template class Xspr2<float2>;
+extern template class Xspr2<double2>;
 // =================================================================================================
 }  // namespace clblast
 

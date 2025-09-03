@@ -31,6 +31,11 @@ class Xgeru : public Xger<T> {
               const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld);
 };
 
+extern template class Xgeru<half>;
+extern template class Xgeru<float>;
+extern template class Xgeru<double>;
+extern template class Xgeru<float2>;
+extern template class Xgeru<double2>;
 // =================================================================================================
 }  // namespace clblast
 

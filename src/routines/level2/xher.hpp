@@ -31,6 +31,11 @@ class Xher : public Routine {
              const size_t a_ld, const bool packed = false);
 };
 
+extern template class Xher<half, half>;
+extern template class Xher<float, float>;
+extern template class Xher<double, double>;
+extern template class Xher<float2, float>;
+extern template class Xher<double2, double>;
 // =================================================================================================
 }  // namespace clblast
 

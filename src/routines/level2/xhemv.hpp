@@ -33,6 +33,11 @@ class Xhemv : public Xgemv<T> {
               const size_t x_inc, const T beta, const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
+extern template class Xhemv<half>;
+extern template class Xhemv<float>;
+extern template class Xhemv<double>;
+extern template class Xhemv<float2>;
+extern template class Xhemv<double2>;
 // =================================================================================================
 }  // namespace clblast
 

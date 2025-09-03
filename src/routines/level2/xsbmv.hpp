@@ -34,6 +34,11 @@ class Xsbmv : public Xgemv<T> {
               const size_t y_inc);
 };
 
+extern template class Xsbmv<half>;
+extern template class Xsbmv<float>;
+extern template class Xsbmv<double>;
+extern template class Xsbmv<float2>;
+extern template class Xsbmv<double2>;
 // =================================================================================================
 }  // namespace clblast
 

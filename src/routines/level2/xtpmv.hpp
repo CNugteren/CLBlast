@@ -35,6 +35,11 @@ class Xtpmv : public Xgemv<T> {
               const size_t x_offset, const size_t x_inc);
 };
 
+extern template class Xtpmv<half>;
+extern template class Xtpmv<float>;
+extern template class Xtpmv<double>;
+extern template class Xtpmv<float2>;
+extern template class Xtpmv<double2>;
 // =================================================================================================
 }  // namespace clblast
 
