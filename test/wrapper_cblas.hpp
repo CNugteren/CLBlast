@@ -16,7 +16,6 @@
 
 #include "clblast.h"
 #include "clblast_half.h"
-#include "openblas_config.h"
 #include "test/test_utilities.hpp"
 
 extern "C" {
