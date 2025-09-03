@@ -12,14 +12,17 @@
 #ifndef CLBLAST_ROUTINE_H_
 #define CLBLAST_ROUTINE_H_
 
+#include <initializer_list>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "cache.hpp"
+#include "clblast.h"
 #include "database/database.hpp"
-#include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
+#include "database/database_structure.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

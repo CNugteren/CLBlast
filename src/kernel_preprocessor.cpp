@@ -22,11 +22,18 @@
 #include "kernel_preprocessor.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdio>
+#include <functional>
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "cxpp11_common.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
