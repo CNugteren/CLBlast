@@ -16,7 +16,9 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <vector>
 
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

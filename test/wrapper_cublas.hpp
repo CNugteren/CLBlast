@@ -14,7 +14,11 @@
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 
+#include <cstddef>
+
+#include "clblast.h"
 #include "utilities/utilities.hpp"
+
 
 namespace clblast {
 
