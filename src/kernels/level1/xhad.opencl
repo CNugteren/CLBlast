@@ -98,6 +98,10 @@ void Xhad(const int n, const real_arg arg_alpha, const real_arg arg_beta,
 void XhadFaster(const int n, const real_arg arg_alpha, const real_arg arg_beta,
                 const __global realV* restrict xgm, const __global realV* restrict ygm,
                 __global realV* zgm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+#endif
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
@@ -129,6 +133,11 @@ void XhadFaster(const int n, const real_arg arg_alpha, const real_arg arg_beta,
 void XhadFastest(const int n, const real_arg arg_alpha, const real_arg arg_beta,
                  const __global realV* restrict xgm, const __global realV* restrict ygm,
                  __global realV* zgm) {
+#if __has_builtin(__builtin_assume)
+  __builtin_assume(n % VW == 0);
+  __builtin_assume(n % WPT == 0);
+  __builtin_assume(n % WGS == 0);
+#endif
   const real alpha = GetRealArg(arg_alpha);
   const real beta = GetRealArg(arg_beta);
 
