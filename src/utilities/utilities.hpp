@@ -22,7 +22,9 @@
 #include <vector>
 
 #include "clblast.h"
+#include "utilities/android.hpp"  // IWYU pragma: export
 #include "utilities/backend.hpp"
+#include "utilities/msvc.hpp"  // IWYU pragma: export
 
 namespace clblast {
 // =================================================================================================
