@@ -12,10 +12,20 @@
 
 #include "routines/level3/xtrsm.hpp"
 
+#include <algorithm>
+#include <cstddef>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "clblast.h"
+#include "routines/common.hpp"
+#include "routines/level3/xgemm.hpp"
 #include "routines/levelx/xinvert.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
