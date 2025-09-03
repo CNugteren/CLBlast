@@ -8,13 +8,25 @@
 //
 // =================================================================================================
 
-#include <exception>
-#include <iostream>
+#include <algorithm>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "CL/cl.h"
+#include "clblast.h"
+#include "cxpp11_common.hpp"
 #include "test/test_utilities.hpp"
+#include "tuning/configurations.hpp"
 #include "tuning/routines/routine_tuner.hpp"
+#include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/timing.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

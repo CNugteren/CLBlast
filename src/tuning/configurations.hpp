@@ -18,7 +18,7 @@
 #include <utility>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
