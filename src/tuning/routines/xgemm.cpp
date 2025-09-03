@@ -17,7 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include "CL/cl.h"
 #include "clblast.h"
 #include "cxpp11_common.hpp"
 #include "test/test_utilities.hpp"

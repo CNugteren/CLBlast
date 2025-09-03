@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "CL/cl.h"
 #include "database/database.hpp"
 #include "routine.hpp"
 #include "routines/level1/xamax.hpp"
