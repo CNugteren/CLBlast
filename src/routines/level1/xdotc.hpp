@@ -31,6 +31,11 @@ class Xdotc : public Xdot<T> {
               const size_t y_inc);
 };
 
+extern template class Xdotc<half>;
+extern template class Xdotc<float>;
+extern template class Xdotc<double>;
+extern template class Xdotc<float2>;
+extern template class Xdotc<double2>;
 // =================================================================================================
 }  // namespace clblast
 

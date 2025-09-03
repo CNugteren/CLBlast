@@ -27,6 +27,11 @@ class Xcopy : public Routine {
               const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
+extern template class Xcopy<half>;
+extern template class Xcopy<float>;
+extern template class Xcopy<double>;
+extern template class Xcopy<float2>;
+extern template class Xcopy<double2>;
 // =================================================================================================
 }  // namespace clblast
 

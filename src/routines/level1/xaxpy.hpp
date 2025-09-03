@@ -27,6 +27,11 @@ class Xaxpy : public Routine {
               const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
+extern template class Xaxpy<half>;
+extern template class Xaxpy<float>;
+extern template class Xaxpy<double>;
+extern template class Xaxpy<float2>;
+extern template class Xaxpy<double2>;
 // =================================================================================================
 }  // namespace clblast
 
