@@ -31,11 +31,6 @@ class Xsyr2 : public Xher2<T> {
               const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld);
 };
 
-extern template class Xsyr2<half>;
-extern template class Xsyr2<float>;
-extern template class Xsyr2<double>;
-extern template class Xsyr2<float2>;
-extern template class Xsyr2<double2>;
 // =================================================================================================
 }  // namespace clblast
 

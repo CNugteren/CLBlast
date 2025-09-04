@@ -36,11 +36,6 @@ class Xgemv : public Routine {
               const size_t kl, const size_t ku);
 };
 
-extern template class Xgemv<half>;
-extern template class Xgemv<float>;
-extern template class Xgemv<double>;
-extern template class Xgemv<float2>;
-extern template class Xgemv<double2>;
 // =================================================================================================
 }  // namespace clblast
 

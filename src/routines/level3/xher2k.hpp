@@ -36,8 +36,6 @@ class Xher2k : public Xherk<T, U> {
                const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
 
-extern template class Xher2k<float2, float>;
-extern template class Xher2k<double2, double>;
 // =================================================================================================
 }  // namespace clblast
 

@@ -28,11 +28,6 @@ class Xger : public Routine {
              const size_t y_inc, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld);
 };
 
-extern template class Xger<half>;
-extern template class Xger<float>;
-extern template class Xger<double>;
-extern template class Xger<float2>;
-extern template class Xger<double2>;
 // =================================================================================================
 }  // namespace clblast
 

@@ -43,11 +43,6 @@ class Xtrsm : public Xgemm<T> {
                     const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld);
 };
 
-extern template class Xtrsm<half>;
-extern template class Xtrsm<float>;
-extern template class Xtrsm<double>;
-extern template class Xtrsm<float2>;
-extern template class Xtrsm<double2>;
 // =================================================================================================
 }  // namespace clblast
 

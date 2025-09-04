@@ -30,11 +30,6 @@ class Xhpr : public Xher<T, U> {
              const size_t x_offset, const size_t x_inc, const Buffer<T>& ap_buffer, const size_t ap_offset);
 };
 
-extern template class Xhpr<half, half>;
-extern template class Xhpr<float, float>;
-extern template class Xhpr<double, double>;
-extern template class Xhpr<float2, float>;
-extern template class Xhpr<double2, double>;
 // =================================================================================================
 }  // namespace clblast
 

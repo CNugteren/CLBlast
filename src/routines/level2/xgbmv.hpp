@@ -34,11 +34,6 @@ class Xgbmv : public Xgemv<T> {
               const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
-extern template class Xgbmv<half>;
-extern template class Xgbmv<float>;
-extern template class Xgbmv<double>;
-extern template class Xgbmv<float2>;
-extern template class Xgbmv<double2>;
 // =================================================================================================
 }  // namespace clblast
 
