@@ -19,7 +19,6 @@
 #include "clblast.h"
 #include "utilities/utilities.hpp"
 
-
 namespace clblast {
 
 // Conversions from CLBlast types

@@ -74,7 +74,6 @@
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 
-
 namespace clblast {
 
 // =================================================================================================

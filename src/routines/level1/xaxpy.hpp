@@ -16,7 +16,6 @@
 #include "routine.hpp"
 #include "utilities/backend.hpp"
 
-
 namespace clblast {
 // =================================================================================================
 
