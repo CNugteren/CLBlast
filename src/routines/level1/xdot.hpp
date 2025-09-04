@@ -28,11 +28,6 @@ class Xdot : public Routine {
              const size_t y_inc, const bool do_conjugate = false);
 };
 
-extern template class Xdot<half>;
-extern template class Xdot<float>;
-extern template class Xdot<double>;
-extern template class Xdot<float2>;
-extern template class Xdot<double2>;
 // =================================================================================================
 }  // namespace clblast
 

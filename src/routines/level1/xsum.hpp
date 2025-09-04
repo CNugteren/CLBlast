@@ -34,11 +34,6 @@ class Xsum : public Xasum<T> {
   }
 };
 
-extern template class Xsum<half>;
-extern template class Xsum<float>;
-extern template class Xsum<double>;
-extern template class Xsum<float2>;
-extern template class Xsum<double2>;
 // =================================================================================================
 }  // namespace clblast
 

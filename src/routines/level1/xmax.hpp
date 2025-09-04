@@ -34,11 +34,6 @@ class Xmax : public Xamax<T> {
   }
 };
 
-extern template class Xmax<half>;
-extern template class Xmax<float>;
-extern template class Xmax<double>;
-extern template class Xmax<float2>;
-extern template class Xmax<double2>;
 // =================================================================================================
 }  // namespace clblast
 

@@ -31,11 +31,6 @@ class Xdotu : public Xdot<T> {
               const size_t y_inc);
 };
 
-extern template class Xdotu<half>;
-extern template class Xdotu<float>;
-extern template class Xdotu<double>;
-extern template class Xdotu<float2>;
-extern template class Xdotu<double2>;
 // =================================================================================================
 }  // namespace clblast
 
