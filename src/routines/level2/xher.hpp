@@ -31,6 +31,7 @@ class Xher : public Routine {
              const size_t a_ld, const bool packed = false);
 };
 
+
 // =================================================================================================
 }  // namespace clblast
 

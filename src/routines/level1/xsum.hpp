@@ -33,6 +33,11 @@ class Xsum : public Xasum<T> {
     DoAsum(n, sum_buffer, sum_offset, x_buffer, x_offset, x_inc);
   }
 };
+extern template class Xsum<half>;
+extern template class Xsum<float>;
+extern template class Xsum<double>;
+extern template class Xsum<float2>;
+extern template class Xsum<double2>;
 
 // =================================================================================================
 }  // namespace clblast

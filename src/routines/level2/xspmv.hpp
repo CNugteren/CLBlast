@@ -32,6 +32,10 @@ class Xspmv : public Xgemv<T> {
               const size_t ap_offset, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
               const T beta, const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
+extern template class Xspmv<half>;
+extern template class Xspmv<float>;
+extern template class Xspmv<double>;
+
 
 // =================================================================================================
 }  // namespace clblast

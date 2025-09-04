@@ -33,6 +33,11 @@ class Xmax : public Xamax<T> {
     DoAmax(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc);
   }
 };
+extern template class Xmax<half>;
+extern template class Xmax<float>;
+extern template class Xmax<double>;
+extern template class Xmax<float2>;
+extern template class Xmax<double2>;
 
 // =================================================================================================
 }  // namespace clblast

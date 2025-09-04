@@ -29,6 +29,10 @@ class Xspr : public Xher<T, T> {
   void DoSpr(const Layout layout, const Triangle triangle, const size_t n, const T alpha, const Buffer<T>& x_buffer,
              const size_t x_offset, const size_t x_inc, const Buffer<T>& ap_buffer, const size_t ap_offset);
 };
+extern template class Xspr<half>;
+extern template class Xspr<float>;
+extern template class Xspr<double>;
+
 
 // =================================================================================================
 }  // namespace clblast

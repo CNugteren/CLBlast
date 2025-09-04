@@ -27,6 +27,12 @@ class Xomatcopy : public Routine {
                   const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const Buffer<T>& b_buffer,
                   const size_t b_offset, const size_t b_ld);
 };
+extern template class Xomatcopy<half>;
+extern template class Xomatcopy<float>;
+extern template class Xomatcopy<double>;
+extern template class Xomatcopy<float2>;
+extern template class Xomatcopy<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

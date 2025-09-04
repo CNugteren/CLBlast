@@ -39,6 +39,12 @@ class Xtrmm : public Xgemm<T> {
               const size_t a_offset, const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset,
               const size_t b_ld);
 };
+extern template class Xtrmm<half>;
+extern template class Xtrmm<float>;
+extern template class Xtrmm<double>;
+extern template class Xtrmm<float2>;
+extern template class Xtrmm<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

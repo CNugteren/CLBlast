@@ -51,6 +51,12 @@ class XgemmBatched : public Routine {
                          const bool c_do_transpose, const bool a_conjugate, const bool b_conjugate,
                          const size_t batch_count);
 };
+extern template class XgemmBatched<half>;
+extern template class XgemmBatched<float>;
+extern template class XgemmBatched<double>;
+extern template class XgemmBatched<float2>;
+extern template class XgemmBatched<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

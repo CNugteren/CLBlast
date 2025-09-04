@@ -29,6 +29,12 @@ class XaxpyBatched : public Routine {
                      const std::vector<size_t>& x_offsets, const size_t x_inc, const Buffer<T>& y_buffer,
                      const std::vector<size_t>& y_offsets, const size_t y_inc, const size_t batch_count);
 };
+extern template class XaxpyBatched<half>;
+extern template class XaxpyBatched<float>;
+extern template class XaxpyBatched<double>;
+extern template class XaxpyBatched<float2>;
+extern template class XaxpyBatched<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

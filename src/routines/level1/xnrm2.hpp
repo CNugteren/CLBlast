@@ -26,6 +26,12 @@ class Xnrm2 : public Routine {
   void DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t nrm2_offset, const Buffer<T>& x_buffer,
               const size_t x_offset, const size_t x_inc);
 };
+extern template class Xnrm2<half>;
+extern template class Xnrm2<float>;
+extern template class Xnrm2<double>;
+extern template class Xnrm2<float2>;
+extern template class Xnrm2<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

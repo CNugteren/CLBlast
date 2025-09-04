@@ -30,6 +30,10 @@ class Xsyr : public Xher<T, T> {
              const size_t x_offset, const size_t x_inc, const Buffer<T>& a_buffer, const size_t a_offset,
              const size_t a_ld);
 };
+extern template class Xsyr<half>;
+extern template class Xsyr<float>;
+extern template class Xsyr<double>;
+
 
 // =================================================================================================
 }  // namespace clblast

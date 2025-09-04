@@ -26,6 +26,12 @@ class Xswap : public Routine {
   void DoSwap(const size_t n, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
               const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
+extern template class Xswap<half>;
+extern template class Xswap<float>;
+extern template class Xswap<double>;
+extern template class Xswap<float2>;
+extern template class Xswap<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

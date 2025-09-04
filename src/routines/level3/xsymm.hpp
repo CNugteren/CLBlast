@@ -40,6 +40,12 @@ class Xsymm : public Xgemm<T> {
               const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
+extern template class Xsymm<half>;
+extern template class Xsymm<float>;
+extern template class Xsymm<double>;
+extern template class Xsymm<float2>;
+extern template class Xsymm<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

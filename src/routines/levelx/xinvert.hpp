@@ -26,6 +26,12 @@ class Xinvert : public Routine {
                                   const size_t block_size, const Buffer<T>& src, const size_t offset,
                                   const size_t ld_src, Buffer<T>& dest);
 };
+extern template class Xinvert<half>;
+extern template class Xinvert<float>;
+extern template class Xinvert<double>;
+extern template class Xinvert<float2>;
+extern template class Xinvert<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

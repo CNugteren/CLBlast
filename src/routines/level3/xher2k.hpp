@@ -36,6 +36,7 @@ class Xher2k : public Xherk<T, U> {
                const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
 
+
 // =================================================================================================
 }  // namespace clblast
 

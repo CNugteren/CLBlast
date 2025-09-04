@@ -30,6 +30,12 @@ class Xim2col : public Routine {
                 const Buffer<T>& im_buffer, const size_t im_offset, const Buffer<T>& col_buffer,
                 const size_t col_offset);
 };
+extern template class Xim2col<half>;
+extern template class Xim2col<float>;
+extern template class Xim2col<double>;
+extern template class Xim2col<float2>;
+extern template class Xim2col<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

@@ -30,6 +30,9 @@ class Xdotu : public Xdot<T> {
               const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
               const size_t y_inc);
 };
+extern template class Xdotu<float2>;
+extern template class Xdotu<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast

@@ -35,6 +35,12 @@ class Xsyr2k : public Xsyrk<T> {
                const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
                const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
+extern template class Xsyr2k<half>;
+extern template class Xsyr2k<float>;
+extern template class Xsyr2k<double>;
+extern template class Xsyr2k<float2>;
+extern template class Xsyr2k<double2>;
+
 
 // =================================================================================================
 }  // namespace clblast
