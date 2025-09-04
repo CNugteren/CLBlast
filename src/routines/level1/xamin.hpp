@@ -34,6 +34,12 @@ class Xamin : public Xamax<T> {
   }
 };
 
+extern template class Xamin<half>;
+extern template class Xamin<float>;
+extern template class Xamin<double>;
+extern template class Xamin<float2>;
+extern template class Xamin<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

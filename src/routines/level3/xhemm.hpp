@@ -39,6 +39,9 @@ class Xhemm : public Xgemm<T> {
               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
 };
 
+extern template class Xhemm<float2>;
+extern template class Xhemm<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

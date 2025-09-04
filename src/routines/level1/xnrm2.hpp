@@ -27,6 +27,12 @@ class Xnrm2 : public Routine {
               const size_t x_offset, const size_t x_inc);
 };
 
+extern template class Xnrm2<half>;
+extern template class Xnrm2<float>;
+extern template class Xnrm2<double>;
+extern template class Xnrm2<float2>;
+extern template class Xnrm2<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

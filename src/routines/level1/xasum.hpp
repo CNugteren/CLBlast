@@ -27,6 +27,12 @@ class Xasum : public Routine {
               const size_t x_offset, const size_t x_inc);
 };
 
+extern template class Xasum<half>;
+extern template class Xasum<float>;
+extern template class Xasum<double>;
+extern template class Xasum<float2>;
+extern template class Xasum<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

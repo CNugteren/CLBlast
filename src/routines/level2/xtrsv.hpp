@@ -45,6 +45,12 @@ class Xtrsv : public Xgemv<T> {
                     const size_t offset_x, const size_t x_inc, EventPointer event);
 };
 
+extern template class Xtrsv<half>;
+extern template class Xtrsv<float>;
+extern template class Xtrsv<double>;
+extern template class Xtrsv<float2>;
+extern template class Xtrsv<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

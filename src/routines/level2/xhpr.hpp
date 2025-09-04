@@ -30,6 +30,7 @@ class Xhpr : public Xher<T, U> {
              const size_t x_offset, const size_t x_inc, const Buffer<T>& ap_buffer, const size_t ap_offset);
 };
 
+
 // =================================================================================================
 }  // namespace clblast
 

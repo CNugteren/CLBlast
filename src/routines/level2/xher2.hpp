@@ -29,6 +29,12 @@ class Xher2 : public Routine {
               const bool packed = false);
 };
 
+extern template class Xher2<half>;
+extern template class Xher2<float>;
+extern template class Xher2<double>;
+extern template class Xher2<float2>;
+extern template class Xher2<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

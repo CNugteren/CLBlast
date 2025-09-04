@@ -172,6 +172,12 @@ class Xgemm : public Routine {
                   const bool a_conjugate, const bool b_conjugate);
 };
 
+extern template class Xgemm<half>;
+extern template class Xgemm<float>;
+extern template class Xgemm<double>;
+extern template class Xgemm<float2>;
+extern template class Xgemm<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

@@ -37,6 +37,7 @@ class Xherk : public Routine {
               EventPointer final_event, const bool diagonal_to_zero);
 };
 
+
 // =================================================================================================
 }  // namespace clblast
 

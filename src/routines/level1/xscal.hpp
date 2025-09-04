@@ -26,6 +26,12 @@ class Xscal : public Routine {
   void DoScal(const size_t n, const T alpha, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc);
 };
 
+extern template class Xscal<half>;
+extern template class Xscal<float>;
+extern template class Xscal<double>;
+extern template class Xscal<float2>;
+extern template class Xscal<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

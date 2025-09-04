@@ -28,6 +28,12 @@ class Xhad : public Routine {
              const Buffer<T>& z_buffer, const size_t z_offset, const size_t z_inc);
 };
 
+extern template class Xhad<half>;
+extern template class Xhad<float>;
+extern template class Xhad<double>;
+extern template class Xhad<float2>;
+extern template class Xhad<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

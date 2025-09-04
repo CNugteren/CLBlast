@@ -38,6 +38,12 @@ class Xconvgemm : public Routine {
   const ConvGemmMethod method_;
 };
 
+extern template class Xconvgemm<half>;
+extern template class Xconvgemm<float>;
+extern template class Xconvgemm<double>;
+extern template class Xconvgemm<float2>;
+extern template class Xconvgemm<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

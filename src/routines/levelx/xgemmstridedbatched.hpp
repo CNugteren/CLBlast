@@ -51,6 +51,12 @@ class XgemmStridedBatched : public Routine {
                          const bool a_conjugate, const bool b_conjugate, const size_t batch_count);
 };
 
+extern template class XgemmStridedBatched<half>;
+extern template class XgemmStridedBatched<float>;
+extern template class XgemmStridedBatched<double>;
+extern template class XgemmStridedBatched<float2>;
+extern template class XgemmStridedBatched<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 

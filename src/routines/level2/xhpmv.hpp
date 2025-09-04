@@ -33,6 +33,9 @@ class Xhpmv : public Xgemv<T> {
               const T beta, const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
 };
 
+extern template class Xhpmv<float2>;
+extern template class Xhpmv<double2>;
+
 // =================================================================================================
 }  // namespace clblast
 
