@@ -36,7 +36,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle, const 
                             const Diagonal diagonal, const size_t n, const Buffer<T>& a_buffer, const size_t a_offset,
                             const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_inc,
                             const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc, EventPointer event) {
-  if (n > db_["TRSV_BLOCK_SIZE"]) {
+  if (n > getDatabase()["TRSV_BLOCK_SIZE"]) {
     throw BLASError(StatusCode::kUnexpectedError);
   };
 
@@ -54,7 +54,7 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle, const 
 
   // Retrieves the kernel from the compiled binary
   const auto kernel_name = (is_upper) ? "trsv_backward" : "trsv_forward";
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n));
@@ -72,9 +72,9 @@ void Xtrsv<T>::Substitution(const Layout layout, const Triangle triangle, const 
   kernel.SetArgument(12, static_cast<int>(do_conjugate));
 
   // Launches the kernel
-  const auto local = std::vector<size_t>{db_["TRSV_BLOCK_SIZE"]};
-  const auto global = std::vector<size_t>{Ceil(n, db_["TRSV_BLOCK_SIZE"])};
-  RunKernel(kernel, queue_, device_, global, local, event);
+  const auto local = std::vector<size_t>{getDatabase()["TRSV_BLOCK_SIZE"]};
+  const auto global = std::vector<size_t>{Ceil(n, getDatabase()["TRSV_BLOCK_SIZE"])};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, event);
 }
 
 // =================================================================================================
@@ -90,7 +90,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
   }
 
   // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
-  if (device_.MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
+  if (getDevice().MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
     throw RuntimeErrorCode(StatusCode::kNotImplemented);
   }
 
@@ -103,14 +103,14 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
   const auto x_offset = b_offset;
   const auto x_inc = b_inc;
   const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
-  auto x_buffer = Buffer<T>(context_, x_size);
-  b_buffer.CopyTo(queue_, x_size, x_buffer);
+  auto x_buffer = Buffer<T>(getContext(), x_size);
+  b_buffer.CopyTo(getQueue(), x_size, x_buffer);
 
   // Fills the output buffer with zeros
   auto eventWaitList = std::vector<Event>();
   auto fill_vector_event = Event();
-  FillVector(queue_, device_, program_, fill_vector_event.pointer(), eventWaitList, n, x_inc, x_offset, x_buffer,
-             ConstantZero<T>(), 16);
+  FillVector(getQueue(), getDevice(), getProgram(), fill_vector_event.pointer(), eventWaitList, n, x_inc, x_offset,
+             x_buffer, ConstantZero<T>(), 16);
   fill_vector_event.WaitForCompletion();
 
   // Derives properties based on the arguments
@@ -121,8 +121,8 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
 
   // Loops over the blocks
   auto col = n;  // the initial column position
-  for (auto i = size_t{0}; i < n; i += db_["TRSV_BLOCK_SIZE"]) {
-    const auto block_size = std::min(db_["TRSV_BLOCK_SIZE"], n - i);
+  for (auto i = size_t{0}; i < n; i += getDatabase()["TRSV_BLOCK_SIZE"]) {
+    const auto block_size = std::min(getDatabase()["TRSV_BLOCK_SIZE"], n - i);
 
     // Sets the next column position
     col = (is_upper) ? col - block_size : i;
@@ -138,7 +138,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
       const auto gemv_m = (a_transpose == Transpose::kNo) ? block_size : i;
       const auto gemv_n = (a_transpose == Transpose::kNo) ? i : block_size;
       auto gemv_event = Event();
-      auto gemv = Xgemv<T>(queue_, gemv_event.pointer());
+      auto gemv = Xgemv<T>(getQueue(), gemv_event.pointer());
       gemv.DoGemv(layout, a_transpose, gemv_m, gemv_n, ConstantOne<T>(), a_buffer, a_offset + extra_offset_a, a_ld,
                   x_buffer, x_offset + extra_offset_x, x_inc, ConstantOne<T>(), x_buffer, x_offset + extra_offset_b,
                   x_inc);
@@ -153,7 +153,7 @@ void Xtrsv<T>::DoTrsv(const Layout layout, const Triangle triangle, const Transp
   }
 
   // Retrieves the results
-  x_buffer.CopyToAsync(queue_, x_size, b_buffer, event_);
+  x_buffer.CopyToAsync(getQueue(), x_size, b_buffer, getEvent());
 }
 
 // =================================================================================================

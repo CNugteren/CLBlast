@@ -27,7 +27,7 @@ template <typename T>
 class Xsyr2k : public Xsyrk<T> {
  public:
   // Uses methods and variables the regular Xsyrk routine
-  using Xsyrk<T>::event_;
+  using Xsyrk<T>::getEvent();
   using Xsyrk<T>::SyrkAB;
 
   // Constructor

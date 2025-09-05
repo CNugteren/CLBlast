@@ -67,7 +67,7 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   EuclidGCD(static_cast<int>(stride_w), static_cast<int>(dilation_w), stride_bez_w, dilation_bez_w, gcd_w);
 
   // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(height));
@@ -95,11 +95,11 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   kernel.SetArgument(22, static_cast<int>(im_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil((width - 1) / gcd_w + 1, db_["COPY_DIMX"]);
-  const auto h_ceiled = Ceil((height - 1) / gcd_h + 1, db_["COPY_DIMY"]);
+  const auto w_ceiled = Ceil((width - 1) / gcd_w + 1, getDatabase()["COPY_DIMX"]);
+  const auto h_ceiled = Ceil((height - 1) / gcd_h + 1, getDatabase()["COPY_DIMY"]);
   const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
-  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  const auto local = std::vector<size_t>{getDatabase()["COPY_DIMX"], getDatabase()["COPY_DIMY"]};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

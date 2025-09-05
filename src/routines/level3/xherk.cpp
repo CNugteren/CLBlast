@@ -59,7 +59,7 @@ void Xherk<T, U>::DoHerk(const Layout layout, const Triangle triangle, const Tra
   const auto complex_alpha = T{alpha, static_cast<U>(0.0)};
   const auto complex_beta = T{beta, static_cast<U>(0.0)};
   HerkAB(layout, triangle, a_transpose, b_transpose, n, k, complex_alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset,
-         b_ld, complex_beta, c_buffer, c_offset, c_ld, event_, true);
+         b_ld, complex_beta, c_buffer, c_offset, c_ld, getEvent(), true);
 }
 
 template <typename T, typename U>
@@ -73,7 +73,7 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   bool a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2;
   size_t a_one, a_two, b_one, b_two, c_one, c_two;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, n, n, k, a_one, a_two, b_one, b_two, c_one, c_two,
-                             a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2, db_["GEMMK"]);
+                             a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2, getDatabase()["GEMMK"]);
 
   // Determines whether to apply the conjugate transpose to matrix B (argument: no transpose) or
   // to matrix A (argument: conjugate transpose)
@@ -91,15 +91,15 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   TestMatrixC(n, n, c_buffer, c_offset, c_ld);
 
   // Calculates the ceiled versions of n and k
-  auto n_ceiled = Ceil(Ceil(n, db_["MWG"]), db_["NWG"]);
-  auto k_ceiled = Ceil(k, db_["KWG"] * db_["KREG"]);
+  auto n_ceiled = Ceil(Ceil(n, getDatabase()["MWG"]), getDatabase()["NWG"]);
+  auto k_ceiled = Ceil(k, getDatabase()["KWG"] * getDatabase()["KREG"]);
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
   // whether the matrices need to be rotated or not for the kernel.
-  const auto a_one_i = (Xgemm<T>::a_want_rotated_(db_["GEMMK"])) ? k_ceiled : n_ceiled;
-  const auto a_two_i = (Xgemm<T>::a_want_rotated_(db_["GEMMK"])) ? n_ceiled : k_ceiled;
-  const auto b_one_i = (!Xgemm<T>::b_want_rotated_(db_["GEMMK"])) ? k_ceiled : n_ceiled;
-  const auto b_two_i = (!Xgemm<T>::b_want_rotated_(db_["GEMMK"])) ? n_ceiled : k_ceiled;
+  const auto a_one_i = (Xgemm<T>::a_want_rotated_(getDatabase()["GEMMK"])) ? k_ceiled : n_ceiled;
+  const auto a_two_i = (Xgemm<T>::a_want_rotated_(getDatabase()["GEMMK"])) ? n_ceiled : k_ceiled;
+  const auto b_one_i = (!Xgemm<T>::b_want_rotated_(getDatabase()["GEMMK"])) ? k_ceiled : n_ceiled;
+  const auto b_two_i = (!Xgemm<T>::b_want_rotated_(getDatabase()["GEMMK"])) ? n_ceiled : k_ceiled;
 
   // Decides which kernel to run: the upper-triangular or lower-triangular version
   auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
@@ -111,9 +111,9 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
       Xgemm<T>::NoTempBuffer(b_one, b_one_i, b_two, b_two_i, b_ld, b_offset, b_do_transpose, b_conjugate);
 
   // Creates the temporary matrices
-  auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, a_one_i * a_two_i);
-  auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, b_one_i * b_two_i);
-  auto c_temp = Buffer<T>(context_, n_ceiled * n_ceiled);
+  auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(getContext(), a_one_i * a_two_i);
+  auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(getContext(), b_one_i * b_two_i);
+  auto c_temp = Buffer<T>(getContext(), n_ceiled * n_ceiled);
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
@@ -124,29 +124,29 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   // case nothing has to be done, these kernels can be skipped. Two copies are created.
   if (!a_no_temp) {
     auto eventProcessA = Event();
-    PadCopyTransposeMatrix(queue_, device_, db_, eventProcessA.pointer(), emptyEventList, a_one, a_two, a_ld, a_offset,
-                           a_buffer, a_one_i, a_two_i, a_one_i, 0, a_temp, ConstantOne<T>(), program_, true,
-                           a_do_transpose, a_conjugate);
+    PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), eventProcessA.pointer(), emptyEventList, a_one,
+                           a_two, a_ld, a_offset, a_buffer, a_one_i, a_two_i, a_one_i, 0, a_temp, ConstantOne<T>(),
+                           getProgram(), true, a_do_transpose, a_conjugate);
     eventWaitList.push_back(eventProcessA);
   }
   if (!b_no_temp) {
     auto eventProcessB = Event();
-    PadCopyTransposeMatrix(queue_, device_, db_, eventProcessB.pointer(), emptyEventList, b_one, b_two, b_ld, b_offset,
-                           b_buffer, b_one_i, b_two_i, b_one_i, 0, b_temp, ConstantOne<T>(), program_, true,
-                           b_do_transpose, b_conjugate);
+    PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), eventProcessB.pointer(), emptyEventList, b_one,
+                           b_two, b_ld, b_offset, b_buffer, b_one_i, b_two_i, b_one_i, 0, b_temp, ConstantOne<T>(),
+                           getProgram(), true, b_do_transpose, b_conjugate);
     eventWaitList.push_back(eventProcessB);
   }
 
   // Furthermore, also creates a (possibly padded) copy of matrix C, since it is not allowed to
   // modify the other triangle.
   auto eventProcessC = Event();
-  PadCopyTransposeMatrix(queue_, device_, db_, eventProcessC.pointer(), emptyEventList, n, n, c_ld, c_offset, c_buffer,
-                         n_ceiled, n_ceiled, n_ceiled, 0, c_temp, ConstantOne<T>(), program_, true, c_do_transpose,
-                         false);
+  PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), eventProcessC.pointer(), emptyEventList, n, n, c_ld,
+                         c_offset, c_buffer, n_ceiled, n_ceiled, n_ceiled, 0, c_temp, ConstantOne<T>(), getProgram(),
+                         true, c_do_transpose, false);
   eventWaitList.push_back(eventProcessC);
 
   // Retrieves the XgemmUpper or XgemmLower kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n_ceiled));
@@ -158,21 +158,22 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   kernel.SetArgument(6, c_temp());
 
   // Computes the global and local thread sizes
-  auto global = std::vector<size_t>{(n_ceiled * db_["MDIMC"]) / db_["MWG"], (n_ceiled * db_["NDIMC"]) / db_["NWG"]};
-  auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"]};
+  auto global = std::vector<size_t>{(n_ceiled * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
+                                    (n_ceiled * getDatabase()["NDIMC"]) / getDatabase()["NWG"]};
+  auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"]};
 
   // Launches the kernel
   auto eventKernel = Event();
-  RunKernel(kernel, queue_, device_, global, local, eventKernel.pointer(), eventWaitList);
+  RunKernel(kernel, getQueue(), getDevice(), global, local, eventKernel.pointer(), eventWaitList);
   eventWaitList.push_back(eventKernel);
 
   // Runs the post-processing kernel
-  const auto upper =
-      Xgemm<T>::c_want_rotated_(db_["GEMMK"]) ? (triangle == Triangle::kLower) : (triangle == Triangle::kUpper);
+  const auto upper = Xgemm<T>::c_want_rotated_(getDatabase()["GEMMK"]) ? (triangle == Triangle::kLower)
+                                                                       : (triangle == Triangle::kUpper);
   const auto lower = !upper;
-  PadCopyTransposeMatrix(queue_, device_, db_, final_event, eventWaitList, n_ceiled, n_ceiled, n_ceiled, 0, c_temp, n,
-                         n, c_ld, c_offset, c_buffer, ConstantOne<T>(), program_, false, c_do_transpose, false, upper,
-                         lower, diagonal_to_zero);
+  PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), final_event, eventWaitList, n_ceiled, n_ceiled,
+                         n_ceiled, 0, c_temp, n, n, c_ld, c_offset, c_buffer, ConstantOne<T>(), getProgram(), false,
+                         c_do_transpose, false, upper, lower, diagonal_to_zero);
 }
 
 // =================================================================================================

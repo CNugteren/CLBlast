@@ -51,15 +51,23 @@ void Xaxpy<T>::DoAxpy(const size_t n, const T alpha, const Buffer<T>& x_buffer, 
   TestVectorY(n, y_buffer, y_offset, y_inc);
 
   // Determines whether or not the fast-version can be used
-  const auto use_faster_kernel =
-      (x_offset == 0) && (x_inc == 1) && (y_offset == 0) && (y_inc == 1) && IsMultiple(n, db_["WPT"] * db_["VW"]);
-  const auto use_fastest_kernel = use_faster_kernel && IsMultiple(n, db_["WGS"] * db_["WPT"] * db_["VW"]);
+  const auto use_faster_kernel = (x_offset == 0) && (x_inc == 1) && (y_offset == 0) && (y_inc == 1) &&
+                                 IsMultiple(n, getDatabase()["WPT"] * getDatabase()["VW"]);
+  const auto use_fastest_kernel =
+      use_faster_kernel && IsMultiple(n, getDatabase()["WGS"] * getDatabase()["WPT"] * getDatabase()["VW"]);
 
   // If possible, run the fast-version of the kernel
-  const auto kernel_name = (use_fastest_kernel) ? "XaxpyFastest" : (use_faster_kernel) ? "XaxpyFaster" : "Xaxpy";
+  const char* kernel_name = nullptr;
+  if (use_fastest_kernel) {
+    kernel_name = "XaxpyFastest";
+  } else if (use_faster_kernel) {
+    kernel_name = "XaxpyFaster";
+  } else {
+    kernel_name = "Xaxpy";
+  }
 
   // Retrieves the Xaxpy kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   if (use_faster_kernel || use_fastest_kernel) {
@@ -80,18 +88,19 @@ void Xaxpy<T>::DoAxpy(const size_t n, const T alpha, const Buffer<T>& x_buffer, 
 
   // Launches the kernel
   if (use_fastest_kernel) {
-    auto global = std::vector<size_t>{CeilDiv(n, db_["WPT"] * db_["VW"])};
-    auto local = std::vector<size_t>{db_["WGS"]};
-    RunKernel(kernel, queue_, device_, global, local, event_);
+    auto global = std::vector<size_t>{CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"])};
+    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   } else if (use_faster_kernel) {
-    auto global = std::vector<size_t>{Ceil(CeilDiv(n, db_["WPT"] * db_["VW"]), db_["WGS"])};
-    auto local = std::vector<size_t>{db_["WGS"]};
-    RunKernel(kernel, queue_, device_, global, local, event_);
+    auto global =
+        std::vector<size_t>{Ceil(CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"]), getDatabase()["WGS"])};
+    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   } else {
-    const auto n_ceiled = Ceil(n, db_["WGS"] * db_["WPT"]);
-    auto global = std::vector<size_t>{n_ceiled / db_["WPT"]};
-    auto local = std::vector<size_t>{db_["WGS"]};
-    RunKernel(kernel, queue_, device_, global, local, event_);
+    const auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
+    auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"]};
+    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   }
 }
 

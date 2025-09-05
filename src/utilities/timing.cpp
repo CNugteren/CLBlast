@@ -9,6 +9,7 @@
 
 #include "utilities/timing.hpp"
 
+#include <algorithm>
 #include <cstdio>
 #include <vector>
 
@@ -35,7 +36,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
       }
     }
     auto local_size = size_t{1};
-    for (auto& item : local) {
+    for (const auto& item : local) {
       local_size *= item;
     }
     if (local_size > device.MaxWorkGroupSize()) {
@@ -44,9 +45,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
 
     // Make sure the global thread sizes are at least equal to the local sizes
     for (auto i = size_t{0}; i < global.size(); ++i) {
-      if (global[i] < local[i]) {
-        global[i] = local[i];
-      }
+      global[i] = std::max(global[i], local[i]);
     }
   }
 

@@ -27,12 +27,12 @@ template <typename T>
 class Xtrsv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::queue_;
-  using Xgemv<T>::context_;
-  using Xgemv<T>::device_;
-  using Xgemv<T>::db_;
-  using Xgemv<T>::program_;
-  using Xgemv<T>::event_;
+  using Xgemv<T>::getQueue;();
+  using Xgemv<T>::getContext;();
+  using Xgemv<T>::getDevice;();
+  using Xgemv<T>::getDatabase;();
+  using Xgemv<T>::getProgram;();
+  using Xgemv<T>::getEvent;();
   using Xgemv<T>::DoGemv;
 
   // Constructor

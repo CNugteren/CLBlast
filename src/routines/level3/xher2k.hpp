@@ -27,7 +27,7 @@ template <typename T, typename U>
 class Xher2k : public Xherk<T, U> {
  public:
   // Uses methods and variables the regular Xherk routine
-  using Xherk<T, U>::event_;
+  using Xherk<T, U>::getEvent;();
   using Xherk<T, U>::HerkAB;
 
   // Constructor

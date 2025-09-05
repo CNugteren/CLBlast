@@ -58,7 +58,7 @@ void Xim2col<T>::DoIm2col(const KernelMode kernel_mode, const size_t channels, c
   const auto col_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
 
   // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(height));
@@ -80,11 +80,11 @@ void Xim2col<T>::DoIm2col(const KernelMode kernel_mode, const size_t channels, c
   kernel.SetArgument(16, static_cast<int>(col_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil(col_w, db_["COPY_DIMX"]);
-  const auto h_ceiled = Ceil(col_h, db_["COPY_DIMY"]);
+  const auto w_ceiled = Ceil(col_w, getDatabase()["COPY_DIMX"]);
+  const auto h_ceiled = Ceil(col_h, getDatabase()["COPY_DIMY"]);
   const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
-  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  const auto local = std::vector<size_t>{getDatabase()["COPY_DIMX"], getDatabase()["COPY_DIMY"]};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

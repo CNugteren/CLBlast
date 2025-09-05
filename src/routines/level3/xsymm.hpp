@@ -29,11 +29,11 @@ class Xsymm : public Xgemm<T> {
  public:
   // Uses methods and variables the regular Xgemm routine
   using Xgemm<T>::routine_name_;
-  using Xgemm<T>::queue_;
-  using Xgemm<T>::context_;
-  using Xgemm<T>::device_;
-  using Xgemm<T>::program_;
-  using Xgemm<T>::db_;
+  using Xgemm<T>::getQueue;();
+  using Xgemm<T>::getContext();
+  using Xgemm<T>::getDevice();
+  using Xgemm<T>::getProgram();
+  using Xgemm<T>::getDatabase();
   using Xgemm<T>::DoGemm;
 
   // Constructor

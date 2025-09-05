@@ -79,6 +79,7 @@ StatusCode ClearCache() {
 template <typename Real, typename Complex>
 void FillCacheForPrecision(Queue& queue) {
   try {
+    // NOLINTBEGIN
     // Runs all the level 1 set-up functions
     Xswap<Real>(queue, nullptr);
     Xswap<Complex>(queue, nullptr);
@@ -153,6 +154,7 @@ void FillCacheForPrecision(Queue& queue) {
     // Runs all the non-BLAS set-up functions
     Xomatcopy<Real>(queue, nullptr);
     Xomatcopy<Complex>(queue, nullptr);
+    // NOLINTEND
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
@@ -187,8 +189,7 @@ StatusCode RetrieveParameters(const RawDeviceID device, const std::string& kerne
   try {
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto platform_id = device_cpp.PlatformID();
-    const auto device_name = GetDeviceName(device_cpp);
+    auto* const platform_id = device_cpp.PlatformID();
 
     // Retrieves the database values
     auto in_cache = false;
@@ -216,8 +217,7 @@ StatusCode OverrideParameters(const RawDeviceID device, const std::string& kerne
   try {
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto platform_id = device_cpp.PlatformID();
-    const auto device_name = GetDeviceName(device_cpp);
+    auto* const platform_id = device_cpp.PlatformID();
 
     // Retrieves the current database values to verify whether the new ones are complete
     auto in_cache = false;
@@ -236,14 +236,11 @@ StatusCode OverrideParameters(const RawDeviceID device, const std::string& kerne
 
     // Retrieves the names and values separately and in the same order as the existing database
     auto parameter_values = database::Params{0};
-    auto i = size_t{0};
-    for (const auto& current_param : current_parameter_names) {
-      if (parameters.find(current_param) == parameters.end()) {
+    for (size_t i = 0; i < current_parameter_names.size(); ++i) {
+      if (parameters.find(current_parameter_names[i]) == parameters.end()) {
         return StatusCode::kMissingOverrideParameter;
       }
-      const auto parameter_value = parameters.at(current_param);
-      parameter_values[i] = parameter_value;
-      ++i;
+      parameter_values[i] = parameters.at(current_parameter_names[i]);
     }
 
     // Creates a small custom database based on the provided parameters

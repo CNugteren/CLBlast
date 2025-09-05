@@ -27,8 +27,8 @@ template <typename T>
 class Xtrmv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::queue_;
-  using Xgemv<T>::context_;
+  using Xgemv<T>::getQueue;();
+  using Xgemv<T>::getContext;();
   using Xgemv<T>::MatVec;
 
   // Constructor
