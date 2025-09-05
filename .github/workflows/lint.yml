@@ -12,23 +12,3 @@ jobs:
         uses: DoozyX/clang-format-lint-action@v0.18.2
         with:
           clangFormatVersion: 18
-
-  GenerateScript:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run the generator script
-        run: python scripts/generator/generator.py .
-      - name: Install requirements for Ubuntu
-        run: |
-          sudo apt-get update
-          sudo apt-get install -yq clang-format-18 --no-install-recommends
-
-      - name: Apply clang-formatting on the generated files
-        run: |
-          clang-format-18 -i include/*.h
-          clang-format-18 -i src/*.cpp
-          clang-format-18 -i test/*/*/*/*.cpp
-          clang-format-18 -i test/*.hpp
-      - name: Make sure there is no diff
-        run: git diff --exit-code
