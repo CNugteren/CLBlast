@@ -33,9 +33,9 @@ class Xsymv : public Xgemv<T> {
   Xsymv(Queue& queue, EventPointer event, const std::string& name = "SYMV");
 
   // Templated-precision implementation of the routine
-  void DoSymv(Layout layout, Triangle triangle, size_t n, T alpha, const Buffer<T>& a_buffer,
-              size_t a_offset, size_t a_ld, const Buffer<T>& x_buffer, size_t x_offset,
-              size_t x_inc, T beta, const Buffer<T>& y_buffer, size_t y_offset, size_t y_inc);
+  void DoSymv(Layout layout, Triangle triangle, size_t n, T alpha, const Buffer<T>& a_buffer, size_t a_offset,
+              size_t a_ld, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc, T beta, const Buffer<T>& y_buffer,
+              size_t y_offset, size_t y_inc);
 };
 
 // =================================================================================================

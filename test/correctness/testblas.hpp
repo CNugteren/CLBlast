@@ -16,9 +16,9 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
 
 #include "clblast.h"
 #include "routine.hpp"

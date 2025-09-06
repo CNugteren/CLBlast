@@ -35,9 +35,9 @@ class Xtbmv : public Xgemv<T> {
   Xtbmv(Queue& queue, EventPointer event, const std::string& name = "TBMV");
 
   // Templated-precision implementation of the routine
-  void DoTbmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal,
-              size_t n, size_t k, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld,
-              const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc);
+  void DoTbmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, size_t k,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc);
 };
 
 // =================================================================================================

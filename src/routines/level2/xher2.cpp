@@ -21,10 +21,6 @@
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
-#include "routines/common.hpp"
-#include "utilities/buffer_test.hpp"
-#include "utilities/utilities.hpp"
-
 namespace clblast {
 // =================================================================================================
 

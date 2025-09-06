@@ -35,9 +35,8 @@ class Xtpmv : public Xgemv<T> {
   Xtpmv(Queue& queue, EventPointer event, const std::string& name = "TPMV");
 
   // Templated-precision implementation of the routine
-  void DoTpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal,
-              size_t n, const Buffer<T>& ap_buffer, size_t ap_offset, const Buffer<T>& x_buffer,
-              size_t x_offset, size_t x_inc);
+  void DoTpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n,
+              const Buffer<T>& ap_buffer, size_t ap_offset, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc);
 };
 
 // =================================================================================================
