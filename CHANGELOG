@@ -3,7 +3,6 @@ Development version (next version)
 - Applied clang-format code style formatting
 - Added tuned parameters for many devices (see doc/tuning.md)
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
-- Fixed 1 compilation warning in tests from test/wrapper_cblas.hpp
 - Removed all generator scripts for the API
 
 Version 1.6.3
