@@ -10,7 +10,11 @@
 #ifndef CLBLAST_ROUTINES_XDOTU_H_
 #define CLBLAST_ROUTINES_XDOTU_H_
 
+#include <cstddef>
+#include <string>
+
 #include "routines/level1/xdot.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

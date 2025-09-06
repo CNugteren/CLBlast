@@ -13,11 +13,18 @@
 
 #include <assert.h>
 
-#include <exception>
+#include <algorithm>
+#include <cstddef>
+#include <cstdio>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "clblast.h"
+#include "cxpp11_common.hpp"
+#include "tuning/configurations.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

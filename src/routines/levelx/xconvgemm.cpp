@@ -11,10 +11,18 @@
 
 #include <assert.h>
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
+#include "routines/common.hpp"
 #include "routines/levelx/xim2col.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

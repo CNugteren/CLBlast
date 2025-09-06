@@ -9,10 +9,17 @@
 
 #include "routines/level3/xsyrk.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
+#include "routines/common.hpp"
 #include "routines/level3/xgemm.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

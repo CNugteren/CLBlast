@@ -11,8 +11,17 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "clblast.h"
+#include "clblast_half.h"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

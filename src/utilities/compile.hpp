@@ -11,10 +11,12 @@
 #ifndef CLBLAST_UTILITIES_COMPILE_H_
 #define CLBLAST_UTILITIES_COMPILE_H_
 
+#include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

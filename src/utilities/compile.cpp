@@ -7,11 +7,16 @@
 //
 // =================================================================================================
 
-#include <chrono>
+#include <cstddef>
+#include <cstdio>
+#include <memory>
+#include <string>
 #include <vector>
 
+#include "clblast.h"
 #include "kernel_preprocessor.hpp"
-#include "routines/common.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

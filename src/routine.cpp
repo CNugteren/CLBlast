@@ -9,10 +9,20 @@
 
 #include "routine.hpp"
 
-#include <chrono>
 #include <cstdlib>
+#include <initializer_list>
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+#include "cache.hpp"
+#include "clblast.h"
+#include "database/database_structure.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/compile.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

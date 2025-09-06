@@ -10,7 +10,12 @@
 #ifndef CLBLAST_ROUTINES_XGERU_H_
 #define CLBLAST_ROUTINES_XGERU_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level2/xger.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

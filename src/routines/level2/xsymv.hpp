@@ -12,7 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XSYMV_H_
 #define CLBLAST_ROUTINES_XSYMV_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level2/xgemv.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

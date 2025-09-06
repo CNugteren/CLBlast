@@ -11,17 +11,16 @@
 #ifndef CLBLAST_TUNING_TUNING_H_
 #define CLBLAST_TUNING_TUNING_H_
 
-#include <algorithm>
-#include <chrono>
+#include <cstddef>
 #include <functional>
-#include <random>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include "clblast.h"
 #include "tuning/configurations.hpp"
-#include "utilities/compile.hpp"
-#include "utilities/timing.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

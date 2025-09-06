@@ -7,10 +7,14 @@
 //
 // =================================================================================================
 
+#include <cstddef>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "tuning/configurations.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

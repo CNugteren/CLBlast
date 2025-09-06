@@ -9,8 +9,18 @@
 
 #include "routines/level2/xtrsv.hpp"
 
+#include <algorithm>
+#include <cstddef>
 #include <string>
 #include <vector>
+
+#include "clblast.h"
+#include "routines/common.hpp"
+#include "routines/level2/xgemv.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

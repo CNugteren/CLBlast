@@ -11,7 +11,12 @@
 #ifndef CLBLAST_ROUTINES_XTRSM_H_
 #define CLBLAST_ROUTINES_XTRSM_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level3/xgemm.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

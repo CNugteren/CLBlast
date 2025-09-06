@@ -10,7 +10,11 @@
 #ifndef CLBLAST_ROUTINES_XCOPY_H_
 #define CLBLAST_ROUTINES_XCOPY_H_
 
+#include <cstddef>
+#include <string>
+
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
