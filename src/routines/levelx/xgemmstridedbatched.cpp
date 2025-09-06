@@ -9,12 +9,17 @@
 
 #include "routines/levelx/xgemmstridedbatched.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
 #include "routines/level3/xgemm.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -71,8 +76,8 @@ void XgemmStridedBatched<T>::DoGemmStridedBatched(const Layout layout, const Tra
   }
 
   // Two methods to choose from, select which one to run
-  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
-  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
+  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, getDatabase()["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : getDatabase()["GEMMK"];
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
   bool a_do_transpose = false;
@@ -120,9 +125,9 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(
     const bool a_conjugate, const bool b_conjugate, const size_t a_one, const size_t a_two, const size_t b_one,
     const size_t b_two, const size_t c_one, const size_t c_two, const size_t batch_count) {
   // Calculates the ceiled versions of m, n, and k
-  const auto m_ceiled = Ceil(Ceil(m, db_["MWG"]), db_["VWM"]);
-  const auto n_ceiled = Ceil(Ceil(n, db_["NWG"]), db_["VWN"]);
-  const auto k_ceiled = Ceil(Ceil(k, db_["KWG"]), db_["VWM"]);
+  const auto m_ceiled = Ceil(Ceil(m, getDatabase()["MWG"]), getDatabase()["VWM"]);
+  const auto n_ceiled = Ceil(Ceil(n, getDatabase()["NWG"]), getDatabase()["VWN"]);
+  const auto k_ceiled = Ceil(Ceil(k, getDatabase()["KWG"]), getDatabase()["VWM"]);
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
   // whether the matrices need to be rotated or not for the kernel.
@@ -132,8 +137,8 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(
   size_t b_two_i = 0;
   size_t c_one_i = 0;
   size_t c_two_i = 0;
-  Xgemm<T>::CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"], a_one_i, a_two_i, b_one_i, b_two_i,
-                                        c_one_i, c_two_i, db_["GEMMK"]);
+  Xgemm<T>::CalculateInternalDimensions(m, n, k, getDatabase()["MWG"], getDatabase()["NWG"], getDatabase()["KWG"],
+                                        a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i, getDatabase()["GEMMK"]);
 
   // Determines whether or not temporary matrices are needed
   auto a_no_temp = a_one == a_one_i && a_two == a_two_i && a_ld == a_one && !a_do_transpose && !a_conjugate;
@@ -141,9 +146,9 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(
   auto c_no_temp = c_one == c_one_i && c_two == c_two_i && c_ld == c_one && !c_do_transpose;
 
   // Creates the temporary matrices
-  const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, batch_count * a_one_i * a_two_i);
-  const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, batch_count * b_one_i * b_two_i);
-  const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, batch_count * c_one_i * c_two_i);
+  const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(getContext(), batch_count * a_one_i * a_two_i);
+  const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(getContext(), batch_count * b_one_i * b_two_i);
+  const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(getContext(), batch_count * c_one_i * c_two_i);
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
@@ -154,34 +159,35 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(
   // case nothing has to be done, these kernels can be skipped.
   if (!a_no_temp) {
     auto eventProcessA = Event();
-    PadCopyTransposeMatrixStridedBatched(queue_, device_, db_, eventProcessA.pointer(), emptyEventList, a_one, a_two,
-                                         a_ld, a_offset, a_stride, a_buffer, a_one_i, a_two_i, a_one_i, 0,
-                                         a_one_i * a_two_i, a_temp, program_, true, a_do_transpose, a_conjugate,
-                                         batch_count);
+    PadCopyTransposeMatrixStridedBatched(getQueue(), getDevice(), getDatabase(), eventProcessA.pointer(),
+                                         emptyEventList, a_one, a_two, a_ld, a_offset, a_stride, a_buffer, a_one_i,
+                                         a_two_i, a_one_i, 0, a_one_i * a_two_i, a_temp, getProgram(), true,
+                                         a_do_transpose, a_conjugate, batch_count);
     eventWaitList.push_back(eventProcessA);
   }
 
   // As above, but now for matrix B
   if (!b_no_temp) {
     auto eventProcessB = Event();
-    PadCopyTransposeMatrixStridedBatched(queue_, device_, db_, eventProcessB.pointer(), emptyEventList, b_one, b_two,
-                                         b_ld, b_offset, b_stride, b_buffer, b_one_i, b_two_i, b_one_i, 0,
-                                         b_one_i * b_two_i, b_temp, program_, true, b_do_transpose, b_conjugate,
-                                         batch_count);
+    PadCopyTransposeMatrixStridedBatched(getQueue(), getDevice(), getDatabase(), eventProcessB.pointer(),
+                                         emptyEventList, b_one, b_two, b_ld, b_offset, b_stride, b_buffer, b_one_i,
+                                         b_two_i, b_one_i, 0, b_one_i * b_two_i, b_temp, getProgram(), true,
+                                         b_do_transpose, b_conjugate, batch_count);
     eventWaitList.push_back(eventProcessB);
   }
 
   // As above, but now for matrix C
   if (!c_no_temp) {
     auto eventProcessC = Event();
-    PadCopyTransposeMatrixStridedBatched(queue_, device_, db_, eventProcessC.pointer(), emptyEventList, c_one, c_two,
-                                         c_ld, c_offset, c_stride, c_buffer, c_one_i, c_two_i, c_one_i, 0,
-                                         c_one_i * c_two_i, c_temp, program_, true, c_do_transpose, false, batch_count);
+    PadCopyTransposeMatrixStridedBatched(getQueue(), getDevice(), getDatabase(), eventProcessC.pointer(),
+                                         emptyEventList, c_one, c_two, c_ld, c_offset, c_stride, c_buffer, c_one_i,
+                                         c_two_i, c_one_i, 0, c_one_i * c_two_i, c_temp, getProgram(), true,
+                                         c_do_transpose, false, batch_count);
     eventWaitList.push_back(eventProcessC);
   }
 
   // Retrieves the Xgemm kernel from the compiled binary
-  auto kernel = Kernel(program_, "XgemmStridedBatched");
+  auto kernel = Kernel(getProgram(), "XgemmStridedBatched");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m_ceiled));
@@ -200,21 +206,21 @@ void XgemmStridedBatched<T>::BatchedGemmIndirect(
   kernel.SetArgument(13, static_cast<int>(c_two_i));
 
   // Computes the global and local thread sizes
-  const auto global =
-      std::vector<size_t>{(c_one_i * db_["MDIMC"]) / db_["MWG"], (c_two_i * db_["NDIMC"]) / db_["NWG"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"], 1};
+  const auto global = std::vector<size_t>{(c_one_i * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
+                                          (c_two_i * getDatabase()["NDIMC"]) / getDatabase()["NWG"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"], 1};
 
   // Launches the kernel
   auto eventKernel = Event();
-  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
-  RunKernel(kernel, queue_, device_, global, local, eventPointer, eventWaitList);
+  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : getEvent();
+  RunKernel(kernel, getQueue(), getDevice(), global, local, eventPointer, eventWaitList);
 
   // Runs the post-processing kernel if needed
   if (!c_no_temp) {
     eventWaitList.push_back(eventKernel);
-    PadCopyTransposeMatrixStridedBatched(queue_, device_, db_, event_, eventWaitList, c_one_i, c_two_i, c_one_i, 0,
-                                         c_one_i * c_two_i, c_temp, c_one, c_two, c_ld, c_offset, c_stride, c_buffer,
-                                         program_, false, c_do_transpose, false, batch_count);
+    PadCopyTransposeMatrixStridedBatched(getQueue(), getDevice(), getDatabase(), getEvent(), eventWaitList, c_one_i,
+                                         c_two_i, c_one_i, 0, c_one_i * c_two_i, c_temp, c_one, c_two, c_ld, c_offset,
+                                         c_stride, c_buffer, getProgram(), false, c_do_transpose, false, batch_count);
   }
 }
 
@@ -229,9 +235,21 @@ void XgemmStridedBatched<T>::BatchedGemmDirect(
     const size_t c_stride, const bool a_do_transpose, const bool b_do_transpose, const bool c_do_transpose,
     const bool a_conjugate, const bool b_conjugate, const size_t batch_count) {
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectStridedBatchedTT" : "XgemmDirectStridedBatchedTN")
-                                     : (b_do_transpose ? "XgemmDirectStridedBatchedNT" : "XgemmDirectStridedBatchedNN");
-  auto kernel = Kernel(program_, name);
+  const char* name = nullptr;
+  if (a_do_transpose) {
+    if (b_do_transpose) {
+      name = "XgemmDirectStridedBatchedTT";
+    } else {
+      name = "XgemmDirectStridedBatchedTN";
+    }
+  } else {
+    if (b_do_transpose) {
+      name = "XgemmDirectStridedBatchedNT";
+    } else {
+      name = "XgemmDirectStridedBatchedNN";
+    }
+  }
+  auto kernel = Kernel(getProgram(), name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m));
@@ -256,14 +274,14 @@ void XgemmStridedBatched<T>::BatchedGemmDirect(
   kernel.SetArgument(19, static_cast<int>(b_conjugate));
 
   // Computes the global and local thread sizes
-  const auto m_ceiled = Ceil(m, db_["WGD"]);
-  const auto n_ceiled = Ceil(n, db_["WGD"]);
-  const auto global = std::vector<size_t>{(m_ceiled * db_["MDIMCD"]) / db_["WGD"],
-                                          (n_ceiled * db_["NDIMCD"]) / db_["WGD"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"], 1};
+  const auto m_ceiled = Ceil(m, getDatabase()["WGD"]);
+  const auto n_ceiled = Ceil(n, getDatabase()["WGD"]);
+  const auto global = std::vector<size_t>{(m_ceiled * getDatabase()["MDIMCD"]) / getDatabase()["WGD"],
+                                          (n_ceiled * getDatabase()["NDIMCD"]) / getDatabase()["WGD"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMCD"], getDatabase()["NDIMCD"], 1};
 
   // Launches the kernel
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

@@ -12,7 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XCONVGEMM_H_
 #define CLBLAST_ROUTINES_XCONVGEMM_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -34,7 +39,7 @@ class Xconvgemm : public Routine {
                   const Buffer<T>& result_buffer, size_t result_offset);
 
  private:
-  const ConvGemmMethod method_;
+  ConvGemmMethod method_;
 };
 
 // =================================================================================================

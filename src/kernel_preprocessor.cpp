@@ -22,8 +22,12 @@
 #include "kernel_preprocessor.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdio>
+#include <functional>
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -47,7 +51,7 @@ struct compare_longer_string {
 };
 
 using DefinesIntMap = std::map<std::string, int, compare_longer_string>;
-using DefinesStringMap = std::map<std::string, std::string, std::greater<std::string>>;
+using DefinesStringMap = std::map<std::string, std::string, std::greater<>>;
 
 void RaiseError(const std::string& source_line, const std::string& exception_message) {
   printf("[OpenCL pre-processor] Error in source line: %s\n", source_line.c_str());

@@ -13,11 +13,12 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <ratio>
 #include <utility>
 #include <vector>
 
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
-#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -63,7 +64,7 @@ std::vector<Timing> TimeRoutine(const size_t from, const size_t to, const size_t
     } catch (...) {
       const auto status_code = DispatchExceptionCatchAll(true);
       printf("  error %-5d |\n", static_cast<int>(status_code));
-      timings.push_back({value, -1.0});  // invalid
+      timings.emplace_back(value, -1.0);  // invalid
     }
   }
   printf("x--------x--------------x\n");

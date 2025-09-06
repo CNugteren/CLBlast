@@ -3,6 +3,8 @@ Development version (next version)
 - Applied clang-format code style formatting
 - Added tuned parameters for many devices (see doc/tuning.md)
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
+- Removed all generator scripts for the API
+- Added include what you use (IWYU) with Clangd Include Cleaner
 
 Version 1.6.3
 - Fixed a bug in the GEMMK=1 kernel (with 2D register tiling) when MWG!=NWG

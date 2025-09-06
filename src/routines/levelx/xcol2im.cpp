@@ -9,10 +9,15 @@
 
 #include "routines/levelx/xcol2im.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -37,7 +42,8 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
                           const size_t dilation_w, const Buffer<T>& col_buffer, const size_t col_offset,
                           const Buffer<T>& im_buffer, const size_t im_offset) {
   // Flip the output along kernel_h and kernel_w, or not.
-  const auto kernel_name = (kernel_mode == KernelMode::kConvolution) ? "Xcol2imKernelFlip" : "Xcol2imKernelNormal";
+  const auto* const kernel_name =
+      (kernel_mode == KernelMode::kConvolution) ? "Xcol2imKernelFlip" : "Xcol2imKernelNormal";
 
   // Makes sure all dimensions are larger than zero
   if ((channels == 0) || (height == 0) || (width == 0)) {
@@ -62,7 +68,7 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   EuclidGCD(static_cast<int>(stride_w), static_cast<int>(dilation_w), stride_bez_w, dilation_bez_w, gcd_w);
 
   // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(height));
@@ -90,11 +96,11 @@ void Xcol2im<T>::DoCol2im(const KernelMode kernel_mode, const size_t channels, c
   kernel.SetArgument(22, static_cast<int>(im_offset));
 
   // Launches the kernel
-  const auto w_ceiled = Ceil(((width - 1) / gcd_w) + 1, db_["COPY_DIMX"]);
-  const auto h_ceiled = Ceil(((height - 1) / gcd_h) + 1, db_["COPY_DIMY"]);
+  const auto w_ceiled = Ceil(((width - 1) / gcd_w) + 1, getDatabase()["COPY_DIMX"]);
+  const auto h_ceiled = Ceil(((height - 1) / gcd_h) + 1, getDatabase()["COPY_DIMY"]);
   const auto global = std::vector<size_t>{w_ceiled, h_ceiled * channels};
-  const auto local = std::vector<size_t>{db_["COPY_DIMX"], db_["COPY_DIMY"]};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  const auto local = std::vector<size_t>{getDatabase()["COPY_DIMX"], getDatabase()["COPY_DIMY"]};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

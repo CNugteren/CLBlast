@@ -12,7 +12,10 @@
 #ifndef CLBLAST_EXCEPTIONS_H_
 #define CLBLAST_EXCEPTIONS_H_
 
-#include "utilities/utilities.hpp"
+#include <stdexcept>
+#include <string>
+
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

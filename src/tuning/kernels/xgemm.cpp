@@ -9,7 +9,12 @@
 
 #include "tuning/kernels/xgemm.hpp"
 
+#include <cstdio>
+
+#include "clblast.h"
+#include "tuning/tuning.hpp"
 #include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
 using half = clblast::half;

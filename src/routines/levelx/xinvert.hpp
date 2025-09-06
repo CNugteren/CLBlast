@@ -10,7 +10,12 @@
 #ifndef CLBLAST_ROUTINES_XINVERT_H_
 #define CLBLAST_ROUTINES_XINVERT_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -22,9 +27,8 @@ class Xinvert : public Routine {
   Xinvert(Queue& queue, EventPointer event, const std::string& name = "INVERT");
 
   // Inverts diagonal square blocks of a matrix
-  void InvertMatrixDiagonalBlocks(const Layout layout, const Triangle triangle, const Diagonal diag, const size_t n,
-                                  const size_t block_size, const Buffer<T>& src, const size_t offset,
-                                  const size_t ld_src, Buffer<T>& dest);
+  void InvertMatrixDiagonalBlocks(Layout layout, Triangle triangle, Diagonal diag, size_t n, size_t block_size,
+                                  const Buffer<T>& src, size_t offset, size_t ld_src, Buffer<T>& dest);
 };
 
 // =================================================================================================

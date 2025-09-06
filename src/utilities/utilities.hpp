@@ -14,24 +14,16 @@
 
 #include <algorithm>
 #include <complex>
-#include <functional>
+#include <cstddef>
 #include <iterator>
 #include <random>
+#include <sstream>
 #include <string>
+#include <vector>
 
-#ifdef OPENCL_API
 #include "clblast.h"
-#include "clpp11.hpp"
-#elif CUDA_API
-#include "clblast_cuda.h"
-#include "cupp11.hpp"
-#endif
-
-#include "clblast_half.h"
-#include "utilities/clblast_exceptions.hpp"
-#include "utilities/msvc.hpp"
-#include "utilities/timing.hpp"
-#include "utilities/compile.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/msvc.hpp"  // IWYU pragma: export
 
 namespace clblast {
 // =================================================================================================

@@ -9,7 +9,14 @@
 
 #include "routines/level2/xtpmv.hpp"
 
+#include <cstddef>
 #include <string>
+
+#include "clblast.h"
+#include "routines/level2/xgemv.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -27,12 +34,12 @@ void Xtpmv<T>::DoTpmv(const Layout layout, const Triangle triangle, const Transp
                       const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc) {
   // Creates a copy of X: a temporary scratch buffer
   const auto x_size = (1 + (n - 1) * x_inc) + x_offset;
-  auto scratch_buffer = Buffer<T>(context_, x_size);
-  x_buffer.CopyTo(queue_, x_size, scratch_buffer);
+  auto scratch_buffer = Buffer<T>(getContext(), x_size);
+  x_buffer.CopyTo(getQueue(), x_size, scratch_buffer);
 
   // The data is either in the upper or lower triangle
-  size_t is_upper = static_cast<size_t>((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                                        (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+  auto is_upper = static_cast<size_t>((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
+                                      (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Adds '2' to the parameter if the diagonal is unit
   auto parameter = (diagonal == Diagonal::kUnit) ? is_upper + 2 : is_upper;

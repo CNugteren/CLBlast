@@ -6,10 +6,59 @@
 //
 // =================================================================================================
 
+#include <cstddef>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "cache.hpp"
-#include "routines/routines.hpp"
+#include "clblast.h"
+#include "database/database_structure.hpp"
+#include "routines/level1/xamax.hpp"
+#include "routines/level1/xasum.hpp"
+#include "routines/level1/xaxpy.hpp"
+#include "routines/level1/xcopy.hpp"
+#include "routines/level1/xdot.hpp"
+#include "routines/level1/xdotc.hpp"
+#include "routines/level1/xdotu.hpp"
+#include "routines/level1/xmax.hpp"
+#include "routines/level1/xmin.hpp"
+#include "routines/level1/xnrm2.hpp"
+#include "routines/level1/xscal.hpp"
+#include "routines/level1/xsum.hpp"
+#include "routines/level1/xswap.hpp"
+#include "routines/level2/xgbmv.hpp"
+#include "routines/level2/xgemv.hpp"
+#include "routines/level2/xger.hpp"
+#include "routines/level2/xgerc.hpp"
+#include "routines/level2/xgeru.hpp"
+#include "routines/level2/xhbmv.hpp"
+#include "routines/level2/xhemv.hpp"
+#include "routines/level2/xher.hpp"
+#include "routines/level2/xher2.hpp"
+#include "routines/level2/xhpmv.hpp"
+#include "routines/level2/xhpr.hpp"
+#include "routines/level2/xhpr2.hpp"
+#include "routines/level2/xsbmv.hpp"
+#include "routines/level2/xspmv.hpp"
+#include "routines/level2/xspr.hpp"
+#include "routines/level2/xspr2.hpp"
+#include "routines/level2/xsymv.hpp"
+#include "routines/level2/xsyr.hpp"
+#include "routines/level2/xsyr2.hpp"
+#include "routines/level2/xtbmv.hpp"
+#include "routines/level2/xtpmv.hpp"
+#include "routines/level2/xtrmv.hpp"
+#include "routines/level3/xgemm.hpp"
+#include "routines/level3/xhemm.hpp"
+#include "routines/level3/xher2k.hpp"
+#include "routines/level3/xherk.hpp"
+#include "routines/level3/xsymm.hpp"
+#include "routines/level3/xsyr2k.hpp"
+#include "routines/level3/xsyrk.hpp"
+#include "routines/level3/xtrmm.hpp"
+#include "routines/levelx/xomatcopy.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -31,6 +80,7 @@ StatusCode ClearCache() {
 template <typename Real, typename Complex>
 void FillCacheForPrecision(Queue& queue) {
   try {
+    // NOLINTBEGIN
     // Runs all the level 1 set-up functions
     Xswap<Real>(queue, nullptr);
     Xswap<Complex>(queue, nullptr);
@@ -105,6 +155,7 @@ void FillCacheForPrecision(Queue& queue) {
     // Runs all the non-BLAS set-up functions
     Xomatcopy<Real>(queue, nullptr);
     Xomatcopy<Complex>(queue, nullptr);
+    // NOLINTEND
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
@@ -140,8 +191,7 @@ StatusCode RetrieveParameters(const RawDeviceID device, const std::string& kerne
   try {
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto platform_id = device_cpp.PlatformID();
-    const auto device_name = GetDeviceName(device_cpp);
+    auto* const platform_id = device_cpp.PlatformID();
 
     // Retrieves the database values
     auto in_cache = false;
@@ -169,8 +219,7 @@ StatusCode OverrideParameters(const RawDeviceID device, const std::string& kerne
   try {
     // Retrieves the device name
     const auto device_cpp = Device(device);
-    const auto platform_id = device_cpp.PlatformID();
-    const auto device_name = GetDeviceName(device_cpp);
+    auto* const platform_id = device_cpp.PlatformID();
 
     // Retrieves the current database values to verify whether the new ones are complete
     auto in_cache = false;
@@ -189,14 +238,11 @@ StatusCode OverrideParameters(const RawDeviceID device, const std::string& kerne
 
     // Retrieves the names and values separately and in the same order as the existing database
     auto parameter_values = database::Params{0};
-    auto i = size_t{0};
-    for (const auto& current_param : current_parameter_names) {
-      if (parameters.find(current_param) == parameters.end()) {
+    for (size_t i = 0; i < current_parameter_names.size(); ++i) {
+      if (parameters.find(current_parameter_names[i]) == parameters.end()) {
         return StatusCode::kMissingOverrideParameter;
       }
-      const auto parameter_value = parameters.at(current_param);
-      parameter_values[i] = parameter_value;
-      ++i;
+      parameter_values[i] = parameters.at(current_parameter_names[i]);
     }
 
     // Creates a small custom database based on the provided parameters

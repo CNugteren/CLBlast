@@ -9,11 +9,16 @@
 
 #include "routines/level3/xhemm.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
 #include "routines/common.hpp"
+#include "routines/level3/xgemm.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -47,14 +52,14 @@ void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle trian
   // default) and on whether we are dealing with an upper or lower triangle of the hermitian matrix
   bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  auto kernel_name = (is_upper) ? "HermUpperToSquared" : "HermLowerToSquared";
+  const auto* kernel_name = (is_upper) ? "HermUpperToSquared" : "HermLowerToSquared";
 
   // Temporary buffer for a copy of the hermitian matrix
-  auto temp_herm = Buffer<T>(context_, k * k);
+  auto temp_herm = Buffer<T>(getContext(), k * k);
 
   // Creates a general matrix from the hermitian matrix to be able to run the regular Xgemm
   // routine afterwards
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the arguments for the hermitian-to-squared kernel
   kernel.SetArgument(0, static_cast<int>(k));
@@ -68,11 +73,11 @@ void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle trian
 
   // Uses the common padding kernel's thread configuration. This is allowed, since the
   // hermitian-to-squared kernel uses the same parameters.
-  auto global = std::vector<size_t>{Ceil(CeilDiv(k, db_["PAD_WPTX"]), db_["PAD_DIMX"]),
-                                    Ceil(CeilDiv(k, db_["PAD_WPTY"]), db_["PAD_DIMY"])};
-  auto local = std::vector<size_t>{db_["PAD_DIMX"], db_["PAD_DIMY"]};
+  auto global = std::vector<size_t>{Ceil(CeilDiv(k, getDatabase()["PAD_WPTX"]), getDatabase()["PAD_DIMX"]),
+                                    Ceil(CeilDiv(k, getDatabase()["PAD_WPTY"]), getDatabase()["PAD_DIMY"])};
+  auto local = std::vector<size_t>{getDatabase()["PAD_DIMX"], getDatabase()["PAD_DIMY"]};
   auto kernelEvent = Event();
-  RunKernel(kernel, queue_, device_, global, local, kernelEvent.pointer());
+  RunKernel(kernel, getQueue(), getDevice(), global, local, kernelEvent.pointer());
 
   // Synchronize now: 'DoGemm' does not accept a list of events to wait for
   kernelEvent.WaitForCompletion();

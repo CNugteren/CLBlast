@@ -9,11 +9,16 @@
 
 #include "routines/levelx/xomatcopy.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -68,8 +73,9 @@ void Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_transpose, 
   TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
 
   auto emptyEventList = std::vector<Event>();
-  PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList, a_one, a_two, a_ld, a_offset, a_buffer, b_one,
-                         b_two, b_ld, b_offset, b_buffer, alpha, program_, false, transpose, conjugate);
+  PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), getEvent(), emptyEventList, a_one, a_two, a_ld,
+                         a_offset, a_buffer, b_one, b_two, b_ld, b_offset, b_buffer, alpha, getProgram(), false,
+                         transpose, conjugate);
 }
 
 // =================================================================================================

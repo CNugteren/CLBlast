@@ -12,7 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XHER2K_H_
 #define CLBLAST_ROUTINES_XHER2K_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level3/xherk.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -22,7 +27,7 @@ template <typename T, typename U>
 class Xher2k : public Xherk<T, U> {
  public:
   // Uses methods and variables the regular Xherk routine
-  using Xherk<T, U>::event_;
+  using Xherk<T, U>::getEvent;
   using Xherk<T, U>::HerkAB;
 
   // Constructor

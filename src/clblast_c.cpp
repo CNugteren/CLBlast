@@ -9,8 +9,8 @@
 
 #include "clblast_c.h"
 
+#include <cstddef>
 #include <string>
-#include <unordered_map>
 
 #include "clblast.h"
 #include "utilities/clblast_exceptions.hpp"

@@ -12,7 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XTPMV_H_
 #define CLBLAST_ROUTINES_XTPMV_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level2/xgemv.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -22,16 +27,17 @@ template <typename T>
 class Xtpmv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::queue_;
-  using Xgemv<T>::context_;
+  using Xgemv<T>::getQueue;
+  using Xgemv<T>::getContext;
   using Xgemv<T>::MatVec;
 
   // Constructor
   Xtpmv(Queue& queue, EventPointer event, const std::string& name = "TPMV");
 
   // Templated-precision implementation of the routine
-  void DoTpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n,
-              const Buffer<T>& ap_buffer, size_t ap_offset, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc);
+  void DoTpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal,
+              size_t n, const Buffer<T>& ap_buffer, size_t ap_offset, const Buffer<T>& x_buffer,
+              size_t x_offset, size_t x_inc);
 };
 
 // =================================================================================================

@@ -11,12 +11,14 @@
 #ifndef CLBLAST_TUNING_CONFIGURATIONS_H_
 #define CLBLAST_TUNING_CONFIGURATIONS_H_
 
+#include <cstddef>
 #include <functional>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

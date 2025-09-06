@@ -10,11 +10,21 @@
 #include "routine.hpp"
 
 #include <cstdlib>
+#include <initializer_list>
+#include <memory>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
+#include "cache.hpp"
+#include "clblast.h"
+#include "database/database.hpp"
+#include "database/database_structure.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/compile.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -51,18 +61,18 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
 // =================================================================================================
 
 // The constructor does all heavy work, errors are returned as exceptions
-Routine::Routine(Queue& queue, EventPointer event, const std::string& name,
-                 const std::vector<std::string>& kernel_names, const Precision precision,
-                 const std::vector<database::DatabaseEntry>& userDatabase, std::initializer_list<const char*> source)
+Routine::Routine(Queue& queue, EventPointer event, std::string name, const std::vector<std::string>& routines,
+                 const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
+                 std::initializer_list<const char*> source)
     : precision_(precision),
-      routine_name_(name),
-      kernel_names_(kernel_names),
+      routine_name_(std::move(name)),
+      kernel_names_(routines),
       queue_(queue),
       event_(event),
       context_(queue_.GetContext()),
       device_(queue_.GetDevice()),
-      db_(kernel_names) {
-  InitDatabase(device_, kernel_names, precision, userDatabase, db_);
+      db_(routines) {
+  InitDatabase(device_, routines, precision, userDatabase, db_);
   InitProgram(source);
 }
 
@@ -85,7 +95,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   auto options = std::vector<std::string>();
   auto* const environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
   if (environment_variable != nullptr) {
-    options.push_back(std::string(environment_variable));
+    options.emplace_back(environment_variable);
   }
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
@@ -138,6 +148,5 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
                                  std::shared_ptr<Program>{program_});
 }
-
 // =================================================================================================
 }  // namespace clblast

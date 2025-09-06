@@ -9,11 +9,16 @@
 
 #include "routines/level1/xasum.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -44,12 +49,12 @@ void Xasum<T>::DoAsum(const size_t n, const Buffer<T>& asum_buffer, const size_t
   TestVectorScalar(1, asum_buffer, asum_offset);
 
   // Retrieves the Xasum kernels from the compiled binary
-  auto kernel1 = Kernel(program_, "Xasum");
-  auto kernel2 = Kernel(program_, "XasumEpilogue");
+  auto kernel1 = Kernel(getProgram(), "Xasum");
+  auto kernel2 = Kernel(getProgram(), "XasumEpilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2 * db_["WGS2"];
-  auto temp_buffer = Buffer<T>(context_, temp_size);
+  auto temp_size = 2 * getDatabase()["WGS2"];
+  auto temp_buffer = Buffer<T>(getContext(), temp_size);
 
   // Sets the kernel arguments
   kernel1.SetArgument(0, static_cast<int>(n));
@@ -62,10 +67,10 @@ void Xasum<T>::DoAsum(const size_t n, const Buffer<T>& asum_buffer, const size_t
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
-  auto local1 = std::vector<size_t>{db_["WGS1"]};
+  auto global1 = std::vector<size_t>{getDatabase()["WGS1"] * temp_size};
+  auto local1 = std::vector<size_t>{getDatabase()["WGS1"]};
   auto kernelEvent = Event();
-  RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
+  RunKernel(kernel1, getQueue(), getDevice(), global1, local1, kernelEvent.pointer());
   eventWaitList.push_back(kernelEvent);
 
   // Sets the arguments for the epilogue kernel
@@ -74,9 +79,9 @@ void Xasum<T>::DoAsum(const size_t n, const Buffer<T>& asum_buffer, const size_t
   kernel2.SetArgument(2, static_cast<int>(asum_offset));
 
   // Launches the epilogue kernel
-  auto global2 = std::vector<size_t>{db_["WGS2"]};
-  auto local2 = std::vector<size_t>{db_["WGS2"]};
-  RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
+  auto global2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  auto local2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  RunKernel(kernel2, getQueue(), getDevice(), global2, local2, getEvent(), eventWaitList);
 }
 
 // =================================================================================================

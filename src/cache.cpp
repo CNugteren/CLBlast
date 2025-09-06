@@ -9,10 +9,13 @@
 
 #include "cache.hpp"
 
+#include <memory>
 #include <mutex>
 #include <string>
+#include <utility>
 
 #include "database/database.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

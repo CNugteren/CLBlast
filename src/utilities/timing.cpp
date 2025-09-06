@@ -11,8 +11,10 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <utility>
+#include <vector>
 
+#include "clblast.h"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
@@ -34,7 +36,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
       }
     }
     auto local_size = size_t{1};
-    for (auto& item : local) {
+    for (const auto& item : local) {
       local_size *= item;
     }
     if (local_size > device.MaxWorkGroupSize()) {

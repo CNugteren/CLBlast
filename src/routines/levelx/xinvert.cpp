@@ -14,11 +14,16 @@
 
 #include <assert.h>
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -50,18 +55,18 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   }
 
   // Some parts of this kernel are not tunable and thus require some minimal OpenCL properties
-  if (device_.MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
+  if (getDevice().MaxWorkGroupSize() < 16) {  // minimum of total local work size of 16
     throw RuntimeErrorCode(StatusCode::kNotImplemented);
   }
 
   // Helper variables
-  const auto internal_block_size = static_cast<size_t>(db_["INTERNAL_BLOCK_SIZE"]);
+  const auto internal_block_size = static_cast<size_t>(getDatabase()["INTERNAL_BLOCK_SIZE"]);
   if (internal_block_size != 16) {
     throw RuntimeErrorCode(StatusCode::kNotImplemented);  // e.g. Apple CPU OpenCL with a WGS of 1
   }  // when barriers are present
   const auto num_blocks = CeilDiv(n, block_size);
   const auto num_internal_blocks = CeilDiv(n, internal_block_size);
-  const auto unit_diagonal = (diag == Diagonal::kUnit) ? true : false;
+  const auto unit_diagonal = diag == Diagonal::kUnit;
 
   // This routine only supports block sizes which are a multiple of the internal block size and
   // block sizes up to and including 128
@@ -77,17 +82,17 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // default) and on whether we are dealing with an upper or lower triangle of the triangular matrix
   const bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                          (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  const auto name_postfix = (is_upper) ? "Upper" : "Lower";
+  const auto* const name_postfix = (is_upper) ? "Upper" : "Lower";
 
   // Fills the output buffer with zeros
   auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(queue_, device_, program_, fill_matrix_event.pointer(), event_wait_list, block_size,
+  FillMatrix(getQueue(), getDevice(), getProgram(), fill_matrix_event.pointer(), event_wait_list, block_size,
              num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(), 16);
   event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
-  auto kernel = Kernel(program_, "InvertDiagonalBlock");
+  auto kernel = Kernel(getProgram(), "InvertDiagonalBlock");
   kernel.SetArgument(0, static_cast<int>(n));
   kernel.SetArgument(1, src());
   kernel.SetArgument(2, static_cast<int>(offset));
@@ -99,8 +104,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   const auto local_invert = std::vector<size_t>{internal_block_size};
   const auto global_invert = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
-  auto base_kernel_event_pointer = (internal_block_size == block_size) ? event_ : base_kernel_event.pointer();
-  RunKernel(kernel, queue_, device_, global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
+  auto base_kernel_event_pointer = (internal_block_size == block_size) ? getEvent() : base_kernel_event.pointer();
+  RunKernel(kernel, getQueue(), getDevice(), global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
   if (internal_block_size == block_size) {
     event_wait_list.push_back(base_kernel_event);
   }
@@ -120,7 +125,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
                                             Ceil(npages * (current_size / 16) * local[1], local[1])};
 
     // Part 1
-    auto kernel1 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
+    auto kernel1 = Kernel(getProgram(), "TripleMatMul" + ToString(current_size) + "Part1" + name_postfix);
     kernel1.SetArgument(0, static_cast<int>(n));
     kernel1.SetArgument(1, src());
     kernel1.SetArgument(2, static_cast<int>(offset));
@@ -130,20 +135,20 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     kernel1.SetArgument(6, static_cast<int>(npages));
     kernel1.SetArgument(7, static_cast<int>(block_size));
     auto kernel1_event = Event();
-    RunKernel(kernel1, queue_, device_, global, local, kernel1_event.pointer(), event_wait_list);
+    RunKernel(kernel1, getQueue(), getDevice(), global, local, kernel1_event.pointer(), event_wait_list);
     event_wait_list.push_back(kernel1_event);
 
     // Part 2
     const bool is_last_kernel = (current_size * 2 >= block_size);
-    auto kernel2 = Kernel(program_, "TripleMatMul" + ToString(current_size) + "Part2" + name_postfix);
+    auto kernel2 = Kernel(getProgram(), "TripleMatMul" + ToString(current_size) + "Part2" + name_postfix);
     kernel2.SetArgument(0, static_cast<int>(n));
     kernel2.SetArgument(1, dest());
     kernel2.SetArgument(2, static_cast<int>(current_size));
     kernel2.SetArgument(3, static_cast<int>(npages));
     kernel2.SetArgument(4, static_cast<int>(block_size));
     auto kernel2_event = Event();
-    auto kernel2_event_pointer = (is_last_kernel) ? event_ : kernel2_event.pointer();
-    RunKernel(kernel2, queue_, device_, global, local, kernel2_event_pointer, event_wait_list);
+    auto kernel2_event_pointer = (is_last_kernel) ? getEvent() : kernel2_event.pointer();
+    RunKernel(kernel2, getQueue(), getDevice(), global, local, kernel2_event_pointer, event_wait_list);
     if (!is_last_kernel) {
       event_wait_list.push_back(kernel2_event);
     }

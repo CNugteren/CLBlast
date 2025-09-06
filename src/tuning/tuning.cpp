@@ -11,14 +11,24 @@
 #include "tuning/tuning.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <cstdio>
+#include <cstdlib>
+#include <functional>
+#include <mutex>
 #include <random>
+#include <ratio>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <utility>
 #include <vector>
 
+#include "clblast.h"
+#include "tuning/configurations.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/compile.hpp"
 #include "utilities/timing.hpp"

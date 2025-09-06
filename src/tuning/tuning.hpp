@@ -11,8 +11,10 @@
 #ifndef CLBLAST_TUNING_TUNING_H_
 #define CLBLAST_TUNING_TUNING_H_
 
+#include <cstddef>
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 

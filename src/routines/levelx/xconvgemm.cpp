@@ -9,14 +9,18 @@
 
 #include "routines/levelx/xconvgemm.hpp"
 
-#include <assert.h>
-
+#include <cassert>
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "routines/common.hpp"
 #include "routines/levelx/xim2col.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -73,11 +77,11 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
 
   // Possible approach: im2col + GEMM
   //      result = GEMM(im2col(image), kernel)
-  auto col_buffer = Buffer<T>(context_, 0);  // nullptr, will be optionally created later
+  auto col_buffer = Buffer<T>(getContext(), 0);  // nullptr, will be optionally created later
   if (method_ == ConvGemmMethod::kWithIm2Col) {
     // Temporary col matrix
     const auto col_size = (method_ == ConvGemmMethod::kWithIm2Col) ? patch_size * num_patches * batch_count : 1;
-    col_buffer = Buffer<T>(context_, col_size);
+    col_buffer = Buffer<T>(getContext(), col_size);
 
     // Loops over each batch
     for (auto batch_id = size_t{0}; batch_id < batch_count; ++batch_id) {
@@ -85,7 +89,7 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
       const auto im_batch_offset = (batch_id * channels * height * width) + im_offset;
       const auto col_batch_offset = batch_id * patch_size * num_patches;
       auto im2col_event = Event();
-      auto im2col = Xim2col<T>(queue_, im2col_event.pointer());
+      auto im2col = Xim2col<T>(getQueue(), im2col_event.pointer());
       im2col.DoIm2col(kernel_mode, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w,
                       dilation_h, dilation_w, im_buffer, im_batch_offset, col_buffer, col_batch_offset);
       im2col_event.WaitForCompletion();
@@ -108,10 +112,17 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   }
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const std::string kernel_name = (method_ == ConvGemmMethod::kWithIm2Col)    ? "Xconvgemm"
-                                  : (kernel_mode == KernelMode::kConvolution) ? "XconvgemmFlip"
-                                                                              : "XconvgemmNormal";
-  auto kernel = Kernel(program_, kernel_name);
+  std::string kernel_name;
+  if (method_ == ConvGemmMethod::kWithIm2Col) {
+    kernel_name = "Xconvgemm";
+  } else {
+    if (kernel_mode == KernelMode::kConvolution) {
+      kernel_name = "XconvgemmFlip";
+    } else {
+      kernel_name = "XconvgemmNormal";
+    }
+  }
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(num_patches));
@@ -146,14 +157,14 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   }
 
   // Computes the global and local thread sizes
-  const auto m_ceiled = Ceil(num_patches, db_["WGD"]);
-  const auto n_ceiled = Ceil(num_kernels, db_["WGD"]);
-  const auto global = std::vector<size_t>{(m_ceiled * db_["MDIMCD"]) / db_["WGD"],
-                                          (n_ceiled * db_["NDIMCD"]) / db_["WGD"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"], 1};
+  const auto m_ceiled = Ceil(num_patches, getDatabase()["WGD"]);
+  const auto n_ceiled = Ceil(num_kernels, getDatabase()["WGD"]);
+  const auto global = std::vector<size_t>{(m_ceiled * getDatabase()["MDIMCD"]) / getDatabase()["WGD"],
+                                          (n_ceiled * getDatabase()["NDIMCD"]) / getDatabase()["WGD"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMCD"], getDatabase()["NDIMCD"], 1};
 
   // Launches the kernel
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

@@ -9,7 +9,17 @@
 
 #include "routines/level2/xher.hpp"
 
+#include <cstddef>
 #include <string>
+#include <vector>
+
+#include "clblast.h"
+#include "routine.hpp"
+#include "routines/common.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 #include "routines/common.hpp"
 #include "utilities/buffer_test.hpp"
@@ -87,7 +97,7 @@ void Xher<T, U>::DoHer(const Layout layout, const Triangle triangle, const size_
   const auto matching_alpha = GetAlpha(alpha);
 
   // Retrieves the kernel from the compiled binary
-  auto kernel = Kernel(program_, "Xher");
+  auto kernel = Kernel(getProgram(), "Xher");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n));
@@ -102,11 +112,11 @@ void Xher<T, U>::DoHer(const Layout layout, const Triangle triangle, const size_
   kernel.SetArgument(9, static_cast<int>(is_rowmajor));
 
   // Launches the kernel
-  auto global_one = Ceil(CeilDiv(n, db_["WPT"]), db_["WGS1"]);
-  auto global_two = Ceil(CeilDiv(n, db_["WPT"]), db_["WGS2"]);
+  auto global_one = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS1"]);
+  auto global_two = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS2"]);
   auto global = std::vector<size_t>{global_one, global_two};
-  auto local = std::vector<size_t>{db_["WGS1"], db_["WGS2"]};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  auto local = std::vector<size_t>{getDatabase()["WGS1"], getDatabase()["WGS2"]};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

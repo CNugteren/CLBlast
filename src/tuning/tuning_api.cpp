@@ -9,11 +9,18 @@
 // =================================================================================================
 
 #include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <ctime>
 #include <random>
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include "clblast.h"
+#include "tuning/configurations.hpp"
 #include "tuning/kernels/copy_fast.hpp"
 #include "tuning/kernels/copy_pad.hpp"
 #include "tuning/kernels/invert.hpp"
@@ -26,9 +33,11 @@
 #include "tuning/kernels/xgemv.hpp"
 #include "tuning/kernels/xger.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/compile.hpp"
 #include "utilities/timing.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
