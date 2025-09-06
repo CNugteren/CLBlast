@@ -286,7 +286,7 @@ void XgemmBatched<T>::BatchedGemmDirect(const size_t m, const size_t n, const si
     }
   } else {
     if (b_do_transpose) {
-      name = "XgemmDirectBatchendNT";
+      name = "XgemmDirectBatchedNT";
     } else {
       name = "XgemmDirectBatchedNN";
     }
