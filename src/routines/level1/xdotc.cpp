@@ -9,8 +9,12 @@
 
 #include "routines/level1/xdotc.hpp"
 
+#include <cstddef>
 #include <string>
-#include <vector>
+
+#include "routines/level1/xdot.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

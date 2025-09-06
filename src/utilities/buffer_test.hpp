@@ -12,9 +12,12 @@
 #define CLBLAST_BUFFER_TEST_H_
 
 #include <algorithm>
+#include <cstddef>
+#include <stdexcept>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================

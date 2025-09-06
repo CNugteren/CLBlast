@@ -14,8 +14,6 @@
 
 #include <string>
 
-#include "utilities/utilities.hpp"
-
 namespace clblast {
 // =================================================================================================
 

@@ -11,6 +11,8 @@
 #ifndef CLBLAST_CLBLAST_C_H_
 #define CLBLAST_CLBLAST_C_H_
 
+#include <stddef.h>
+
 // Includes the normal OpenCL C header
 #ifndef CL_TARGET_OPENCL_VERSION
 #define CL_TARGET_OPENCL_VERSION 110

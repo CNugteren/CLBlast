@@ -9,11 +9,13 @@
 
 #include "cache.hpp"
 
+#include <memory>
 #include <mutex>
 #include <string>
-#include <vector>
+#include <utility>
 
 #include "database/database.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -90,8 +92,9 @@ void Cache<Key, Value>::RemoveBySubset(const Key& key) {
     const auto current_key = (*it).first;
     if ((std::get<I1>(key) == std::get<I1>(current_key)) && (std::get<I2>(key) == std::get<I2>(current_key))) {
       it = cache_.erase(it);
-    } else
+    } else {
       ++it;
+    }
   }
 }
 

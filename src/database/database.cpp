@@ -9,9 +9,15 @@
 
 #include "database/database.hpp"
 
+#include <cstddef>
 #include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
+#include "clblast.h"
 #include "database/apple_cpu_fallback.hpp"
+#include "database/database_structure.hpp"
 #include "database/kernels/copy/copy.hpp"
 #include "database/kernels/gemm_routine/gemm_routine.hpp"
 #include "database/kernels/invert/invert.hpp"
@@ -28,6 +34,8 @@
 #include "database/kernels/xgemv_fast/xgemv_fast.hpp"
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot.hpp"
 #include "database/kernels/xger/xger.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -214,7 +222,7 @@ database::Parameters Database::Search(const std::string& this_kernel, const std:
   for (auto& db : this_database) {
     if ((db.kernel == this_kernel) && (db.precision == this_precision || db.precision == Precision::kAny)) {
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters =
+      auto parameters =
           SearchVendorAndType(this_vendor, this_type, this_device, this_architecture, db.vendors, db.parameter_names);
       if (parameters.size() != 0) {
         return parameters;
@@ -291,7 +299,7 @@ database::Parameters Database::SearchDevice(const std::string& target_device,
 }
 
 // Helper to convert from database format to proper types
-std::string Database::CharArrayToString(const database::Name char_array) const {
+std::string Database::CharArrayToString(const database::Name char_array) {
   auto result = std::string(char_array.data());
   result.erase(result.find_last_not_of(" \t\n\r\f\v") + 1);
   return result;

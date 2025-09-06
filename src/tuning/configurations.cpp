@@ -10,8 +10,10 @@
 
 #include "tuning/configurations.hpp"
 
-#include <string>
+#include <cstddef>
 #include <vector>
+
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -101,12 +103,8 @@ bool ValidConfiguration(const Configuration& config, const size_t local_mem_max,
   for (auto& item : local) {
     local_size *= item;
   }
-  if (local_size > max_work_group_size) {
-    return false;
-  }
 
-  // Everything was OK: this configuration is valid
-  return true;
+  return local_size < max_work_group_size;
 }
 
 // Multiplies and/or dividers a thread configuration (local/global)

@@ -13,12 +13,16 @@
 #ifndef CLBLAST_DATABASE_H_
 #define CLBLAST_DATABASE_H_
 
+#include <cstddef>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "clblast.h"
 #include "database/database_structure.hpp"
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -38,7 +42,7 @@ class Database {
   Database() = default;
 
   // The constructor with a user-provided database overlay (potentially an empty vector)
-  explicit Database(const Device& device, const std::string& kernel_name, const Precision precision,
+  explicit Database(const Device& device, const std::string& kernel_name, Precision precision,
                     const std::vector<database::DatabaseEntry>& overlay);
 
   // Accessor of values by key
@@ -57,7 +61,7 @@ class Database {
   // Search method functions, returning a set of parameters (possibly empty)
   database::Parameters Search(const std::string& this_kernel, const std::string& this_vendor,
                               const std::string& this_type, const std::string& this_device,
-                              const std::string& this_architecture, const Precision this_precision,
+                              const std::string& this_architecture, Precision this_precision,
                               const std::vector<database::DatabaseEntry>& db) const;
   database::Parameters SearchDevice(const std::string& target_device,
                                     const std::vector<database::DatabaseDevice>& devices,
@@ -71,7 +75,7 @@ class Database {
                                            const std::vector<std::string>& parameter_names) const;
 
   // Helper to convert from database format to proper types
-  std::string CharArrayToString(const database::Name char_array) const;
+  static std::string CharArrayToString(database::Name char_array);
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<database::Parameters> parameters_;

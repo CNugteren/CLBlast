@@ -10,11 +10,15 @@
 #ifndef CLBLAST_CACHE_H_
 #define CLBLAST_CACHE_H_
 
+#include <functional>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
+#include <tuple>
 
-#include "utilities/utilities.hpp"
+#include "clblast.h"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

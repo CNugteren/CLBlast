@@ -17,11 +17,15 @@
 #ifndef CLBLAST_TEST_PERFORMANCE_CLIENT_H_
 #define CLBLAST_TEST_PERFORMANCE_CLIENT_H_
 
+#include <cstddef>
+#include <functional>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include "clblast.h"
 #include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
 
 // The libraries to test
 #ifdef CLBLAST_REF_CLBLAS

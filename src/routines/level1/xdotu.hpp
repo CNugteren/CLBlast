@@ -10,7 +10,11 @@
 #ifndef CLBLAST_ROUTINES_XDOTU_H_
 #define CLBLAST_ROUTINES_XDOTU_H_
 
+#include <cstddef>
+#include <string>
+
 #include "routines/level1/xdot.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -26,9 +30,8 @@ class Xdotu : public Xdot<T> {
   Xdotu(Queue& queue, EventPointer event, const std::string& name = "DOTU");
 
   // Templated-precision implementation of the routine
-  void DoDotu(const size_t n, const Buffer<T>& dot_buffer, const size_t dot_offset, const Buffer<T>& x_buffer,
-              const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
-              const size_t y_inc);
+  void DoDotu(size_t n, const Buffer<T>& dot_buffer, size_t dot_offset, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc, const Buffer<T>& y_buffer, size_t y_offset, size_t y_inc);
 };
 
 // =================================================================================================

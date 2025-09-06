@@ -10,17 +10,20 @@
 //
 // =================================================================================================
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
+#include "tuning/configurations.hpp"
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults XgemvGetTunerDefaults(const int) {
+TunerDefaults XgemvGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha, kArgBeta};
   settings.default_m = 2048;
@@ -92,7 +95,7 @@ TunerSettings XgemvGetTunerSettings(const int V, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XgemvTestValidArguments(const int, const Arguments<T>&) {}
+void XgemvTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
 std::vector<Constraint> XgemvSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   if (V == 2 || V == 3) {

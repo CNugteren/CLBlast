@@ -11,12 +11,24 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <numeric>
 #include <random>
+#include <ratio>
+#include <stdexcept>
 #include <string>
 #include <tuning/tuning.hpp>
 #include <utility>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
+#include "test/test_utilities.hpp"
+#include "test/wrapper_cuda.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

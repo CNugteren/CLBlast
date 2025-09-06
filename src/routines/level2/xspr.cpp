@@ -9,7 +9,13 @@
 
 #include "routines/level2/xspr.hpp"
 
+#include <cstddef>
 #include <string>
+
+#include "clblast.h"
+#include "routines/level2/xher.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

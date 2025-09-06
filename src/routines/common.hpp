@@ -12,11 +12,13 @@
 #ifndef CLBLAST_ROUTINES_COMMON_H_
 #define CLBLAST_ROUTINES_COMMON_H_
 
+#include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "database/database.hpp"
-#include "utilities/compile.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -30,15 +32,15 @@ void RunKernel(Kernel& kernel, Queue& queue, const Device& device, std::vector<s
 
 // Sets all elements of a matrix to a constant value
 template <typename T>
-void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
-                const std::vector<Event>& waitForEvents, const size_t m, const size_t n, const size_t ld,
-                const size_t offset, const Buffer<T>& dest, const T constant_value, const size_t local_size);
+void FillMatrix(Queue& queue, const Device& device, std::shared_ptr<Program> program, EventPointer event,
+                const std::vector<Event>& waitForEvents, size_t m, size_t n, size_t ld, size_t offset,
+                const Buffer<T>& dest, T constant_value, size_t local_size);
 
 // Sets all elements of a vector to a constant value
 template <typename T>
-void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
-                const std::vector<Event>& waitForEvents, const size_t n, const size_t inc, const size_t offset,
-                const Buffer<T>& dest, const T constant_value, const size_t local_size);
+void FillVector(Queue& queue, const Device& device, std::shared_ptr<Program> program, EventPointer event,
+                const std::vector<Event>& waitForEvents, size_t n, size_t inc, size_t offset, const Buffer<T>& dest,
+                T constant_value, size_t local_size);
 
 // =================================================================================================
 
@@ -53,9 +55,8 @@ void PadCopyTransposeMatrix(Queue& queue, const Device& device, const Databases&
                             const bool do_pad, const bool do_transpose, const bool do_conjugate,
                             const bool upper = false, const bool lower = false, const bool diagonal_imag_zero = false) {
   // Determines whether or not the fast-version could potentially be used
-  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (do_conjugate == false) && (src_one == dest_one) &&
-                         (src_two == dest_two) && (src_ld == dest_ld) && (upper == false) && (lower == false) &&
-                         (diagonal_imag_zero == false);
+  auto use_fast_kernel = (src_offset == 0) && (dest_offset == 0) && (!do_conjugate) && (src_one == dest_one) &&
+                         (src_two == dest_two) && (src_ld == dest_ld) && (!upper) && (!lower) && (!diagonal_imag_zero);
 
   // Determines the right kernel
   auto kernel_name = std::string{};

@@ -12,7 +12,10 @@
 #ifndef CLBLAST_EXCEPTIONS_H_
 #define CLBLAST_EXCEPTIONS_H_
 
-#include "utilities/utilities.hpp"
+#include <stdexcept>
+#include <string>
+
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -33,8 +36,8 @@ class RuntimeErrorCode : public ErrorCode<RuntimeError, StatusCode> {
 // =================================================================================================
 
 // Handles (most of the) runtime exceptions and converts them to StatusCode
-StatusCode DispatchException(const bool silent = false);
-StatusCode DispatchExceptionCatchAll(const bool silent = false);
+StatusCode DispatchException(bool silent = false);
+StatusCode DispatchExceptionCatchAll(bool silent = false);
 
 // Handles remaining exceptions and converts them to StatusCode::kUnhandledError
 StatusCode DispatchExceptionForC();

@@ -12,8 +12,10 @@
 #include "clblast_netlib_c.h"
 
 #include <cstdlib>
+#include <stdexcept>
 
 #include "clblast.h"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace

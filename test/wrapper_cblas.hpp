@@ -11,6 +11,13 @@
 #ifndef CLBLAST_TEST_WRAPPER_CBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CBLAS_H_
 
+#include <cstddef>
+#include <vector>
+
+#include "clblast.h"
+#include "clblast_half.h"
+#include "test/test_utilities.hpp"
+
 extern "C" {
 #ifdef CLBLAST_REF_CBLAS_MKL
 #include <mkl_cblas.h>
@@ -19,6 +26,7 @@ extern "C" {
 #endif
 }
 
+#include "clblast_half.h"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

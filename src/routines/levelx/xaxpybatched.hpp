@@ -10,9 +10,12 @@
 #ifndef CLBLAST_ROUTINES_XAXPYBATCHED_H_
 #define CLBLAST_ROUTINES_XAXPYBATCHED_H_
 
+#include <cstddef>
+#include <string>
 #include <vector>
 
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -25,9 +28,9 @@ class XaxpyBatched : public Routine {
   XaxpyBatched(Queue& queue, EventPointer event, const std::string& name = "AXPYBATCHED");
 
   // Templated-precision implementation of the routine
-  void DoAxpyBatched(const size_t n, const std::vector<T>& alphas, const Buffer<T>& x_buffer,
-                     const std::vector<size_t>& x_offsets, const size_t x_inc, const Buffer<T>& y_buffer,
-                     const std::vector<size_t>& y_offsets, const size_t y_inc, const size_t batch_count);
+  void DoAxpyBatched(size_t n, const std::vector<T>& alphas, const Buffer<T>& x_buffer,
+                     const std::vector<size_t>& x_offsets, size_t x_inc, const Buffer<T>& y_buffer,
+                     const std::vector<size_t>& y_offsets, size_t y_inc, size_t batch_count);
 };
 
 // =================================================================================================

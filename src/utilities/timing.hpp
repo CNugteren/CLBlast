@@ -13,10 +13,12 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <ratio>
 #include <utility>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -36,11 +38,11 @@ double TimeFunction(const size_t num_runs, F const& function) {
 
 // =================================================================================================
 
-double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const Device& device,
-                      std::vector<size_t> global, const std::vector<size_t>& local);
+double RunKernelTimed(size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
+                      const std::vector<size_t>& local);
 
-double TimeKernel(const size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
-                  const std::vector<size_t>& local, const bool silent = false);
+double TimeKernel(size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
+                  const std::vector<size_t>& local, bool silent = false);
 
 // =================================================================================================
 
@@ -62,7 +64,7 @@ std::vector<Timing> TimeRoutine(const size_t from, const size_t to, const size_t
     } catch (...) {
       const auto status_code = DispatchExceptionCatchAll(true);
       printf("  error %-5d |\n", static_cast<int>(status_code));
-      timings.push_back({value, -1.0});  // invalid
+      timings.emplace_back(value, -1.0);  // invalid
     }
   }
   printf("x--------x--------------x\n");

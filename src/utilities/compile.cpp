@@ -7,11 +7,16 @@
 //
 // =================================================================================================
 
-#include <chrono>
+#include <cstddef>
+#include <cstdio>
+#include <memory>
+#include <string>
 #include <vector>
 
+#include "clblast.h"
 #include "kernel_preprocessor.hpp"
-#include "routines/common.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -22,7 +27,7 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
                                            const Context& context, std::vector<std::string>& options,
                                            const size_t run_preprocessor,  // 0: platform dependent, 1: always, 2: never
                                            const bool silent) {
-  auto header_string = std::string{""};
+  std::string header_string;
 
   header_string += "#define PRECISION " + ToString(static_cast<int>(precision)) + "\n";
 

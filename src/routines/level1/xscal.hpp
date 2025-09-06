@@ -10,7 +10,11 @@
 #ifndef CLBLAST_ROUTINES_XSCAL_H_
 #define CLBLAST_ROUTINES_XSCAL_H_
 
+#include <cstddef>
+#include <string>
+
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -23,7 +27,7 @@ class Xscal : public Routine {
   Xscal(Queue& queue, EventPointer event, const std::string& name = "SCAL");
 
   // Templated-precision implementation of the routine
-  void DoScal(const size_t n, const T alpha, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoScal(size_t n, T alpha, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc);
 };
 
 // =================================================================================================

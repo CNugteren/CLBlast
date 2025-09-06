@@ -12,7 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XGBMV_H_
 #define CLBLAST_ROUTINES_XGBMV_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level2/xgemv.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -28,10 +33,9 @@ class Xgbmv : public Xgemv<T> {
   Xgbmv(Queue& queue, EventPointer event, const std::string& name = "GBMV");
 
   // Templated-precision implementation of the routine
-  void DoGbmv(const Layout layout, const Transpose a_transpose, const size_t m, const size_t n, const size_t kl,
-              const size_t ku, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc, const T beta,
-              const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoGbmv(Layout layout, Transpose a_transpose, size_t m, size_t n, size_t kl, size_t ku, T alpha,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc, T beta, const Buffer<T>& y_buffer, size_t y_offset, size_t y_inc);
 };
 
 // =================================================================================================

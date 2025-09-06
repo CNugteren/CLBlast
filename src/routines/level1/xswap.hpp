@@ -10,7 +10,11 @@
 #ifndef CLBLAST_ROUTINES_XSWAP_H_
 #define CLBLAST_ROUTINES_XSWAP_H_
 
+#include <cstddef>
+#include <string>
+
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -23,8 +27,8 @@ class Xswap : public Routine {
   Xswap(Queue& queue, EventPointer event, const std::string& name = "SWAP");
 
   // Templated-precision implementation of the routine
-  void DoSwap(const size_t n, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
-              const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc);
+  void DoSwap(size_t n, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc, const Buffer<T>& y_buffer,
+              size_t y_offset, size_t y_inc);
 };
 
 // =================================================================================================

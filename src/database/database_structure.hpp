@@ -11,6 +11,7 @@
 #define CLBLAST_DATABASE_DATABASE_STRUCTURE_H_
 
 #include <array>
+#include <cstddef>
 #include <map>
 #include <string>
 #include <vector>
