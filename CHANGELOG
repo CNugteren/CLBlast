@@ -5,6 +5,7 @@ Development version (next version)
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
 - Removed all generator scripts for the API
 - Added include what you use (IWYU) with Clangd Include Cleaner
+- Applied clang-tidy with several checks
 
 Version 1.6.3
 - Fixed a bug in the GEMMK=1 kernel (with 2D register tiling) when MWG!=NWG
