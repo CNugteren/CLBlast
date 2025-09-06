@@ -9,8 +9,7 @@
 
 #include "routines/levelx/xconvgemm.hpp"
 
-#include <assert.h>
-
+#include <cassert>
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -65,12 +64,12 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   }
 
   // Sets the output height and width
-  const auto size_h = height + 2 * pad_h;
-  const auto padding_h = dilation_h * (kernel_h - 1) + 1;
-  const auto output_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
-  const auto size_w = width + 2 * pad_w;
-  const auto padding_w = dilation_w * (kernel_w - 1) + 1;
-  const auto output_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
+  const auto size_h = height + (2 * pad_h);
+  const auto padding_h = (dilation_h * (kernel_h - 1)) + 1;
+  const auto output_h = (size_h >= padding_h) ? ((size_h - padding_h) / stride_h) + 1 : 1;
+  const auto size_w = width + (2 * pad_w);
+  const auto padding_w = (dilation_w * (kernel_w - 1)) + 1;
+  const auto output_w = (size_w >= padding_w) ? ((size_w - padding_w) / stride_w) + 1 : 1;
 
   // Sets other useful variables
   const auto patch_size = kernel_h * kernel_w * channels;
@@ -87,7 +86,7 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
     // Loops over each batch
     for (auto batch_id = size_t{0}; batch_id < batch_count; ++batch_id) {
       // im2col
-      const auto im_batch_offset = batch_id * channels * height * width + im_offset;
+      const auto im_batch_offset = (batch_id * channels * height * width) + im_offset;
       const auto col_batch_offset = batch_id * patch_size * num_patches;
       auto im2col_event = Event();
       auto im2col = Xim2col<T>(getQueue(), im2col_event.pointer());
@@ -109,13 +108,20 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
     } else {
       // TODO: check for valid image tensor
     }
-    TestMatrixC(num_patches, num_kernels, result_buffer, result_offset + result_stride * batch, num_patches);
+    TestMatrixC(num_patches, num_kernels, result_buffer, result_offset + (result_stride * batch), num_patches);
   }
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const std::string kernel_name = (method_ == ConvGemmMethod::kWithIm2Col)    ? "Xconvgemm"
-                                  : (kernel_mode == KernelMode::kConvolution) ? "XconvgemmFlip"
-                                                                              : "XconvgemmNormal";
+  std::string kernel_name;
+  if (method_ == ConvGemmMethod::kWithIm2Col) {
+    kernel_name = "Xconvgemm";
+  } else {
+    if (kernel_mode == KernelMode::kConvolution) {
+      kernel_name = "XconvgemmFlip";
+    } else {
+      kernel_name = "XconvgemmNormal";
+    }
+  }
   auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
@@ -129,7 +135,7 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   kernel.SetArgument(7, static_cast<int>(result_stride));
   if (method_ == ConvGemmMethod::kWithIm2Col) {
     kernel.SetArgument(8, col_buffer());
-    kernel.SetArgument(9, static_cast<int>(0));
+    kernel.SetArgument(9, 0);
     kernel.SetArgument(10, static_cast<int>(col_stride));
   }
   if (method_ == ConvGemmMethod::kSingleKernel) {

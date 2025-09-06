@@ -52,7 +52,7 @@ void Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle trian
   // default) and on whether we are dealing with an upper or lower triangle of the symmetric matrix
   bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  auto kernel_name = (is_upper) ? "SymmUpperToSquared" : "SymmLowerToSquared";
+  const auto* kernel_name = (is_upper) ? "SymmUpperToSquared" : "SymmLowerToSquared";
 
   // Temporary buffer for a copy of the symmetric matrix
   auto temp_symm = Buffer<T>(getContext(), k * k);
@@ -68,7 +68,7 @@ void Xsymm<T>::DoSymm(const Layout layout, const Side side, const Triangle trian
   kernel.SetArgument(3, a_buffer());
   kernel.SetArgument(4, static_cast<int>(k));
   kernel.SetArgument(5, static_cast<int>(k));
-  kernel.SetArgument(6, static_cast<int>(0));
+  kernel.SetArgument(6, 0);
   kernel.SetArgument(7, temp_symm());
 
   // Uses the common padding kernel's thread configuration. This is allowed, since the

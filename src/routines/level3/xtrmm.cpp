@@ -54,7 +54,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
   TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
 
   // Creates a copy of B to avoid overwriting input in GEMM while computing output
-  const auto b_size = (b_ld * (b_two - 1) + b_one + b_offset);
+  const auto b_size = ((b_ld * (b_two - 1)) + b_one + b_offset);
   auto b_buffer_copy = Buffer<T>(getContext(), b_size);
   b_buffer.CopyTo(getQueue(), b_size, b_buffer_copy);
 
@@ -62,10 +62,10 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
   // default) and on whether we are dealing with an upper or lower triangle of the triangular matrix
   bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  auto kernel_name = (is_upper) ? "TriaUpperToSquared" : "TriaLowerToSquared";
+  const auto* kernel_name = (is_upper) ? "TriaUpperToSquared" : "TriaLowerToSquared";
 
   // Determines whether or not the triangular matrix is unit-diagonal
-  auto unit_diagonal = (diagonal == Diagonal::kUnit) ? true : false;
+  auto unit_diagonal = diagonal == Diagonal::kUnit;
 
   // Temporary buffer for a copy of the triangular matrix
   auto temp_triangular = Buffer<T>(getContext(), k * k);
@@ -81,7 +81,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
   kernel.SetArgument(3, a_buffer());
   kernel.SetArgument(4, static_cast<int>(k));
   kernel.SetArgument(5, static_cast<int>(k));
-  kernel.SetArgument(6, static_cast<int>(0));
+  kernel.SetArgument(6, 0);
   kernel.SetArgument(7, temp_triangular());
   kernel.SetArgument(8, static_cast<int>(unit_diagonal));
 

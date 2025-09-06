@@ -27,27 +27,26 @@ template <typename T>
 class Xtrsv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::getQueue;();
-  using Xgemv<T>::getContext;();
-  using Xgemv<T>::getDevice;();
-  using Xgemv<T>::getDatabase;();
-  using Xgemv<T>::getProgram;();
-  using Xgemv<T>::getEvent;();
+  using Xgemv<T>::getQueue;
+  using Xgemv<T>::getContext;
+  using Xgemv<T>::getDevice;
+  using Xgemv<T>::getDatabase;
+  using Xgemv<T>::getProgram;
+  using Xgemv<T>::getEvent;
   using Xgemv<T>::DoGemv;
 
   // Constructor
   Xtrsv(Queue& queue, EventPointer event, const std::string& name = "TRSV");
 
   // Templated-precision implementation of the routine
-  void DoTrsv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-              const size_t n, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoTrsv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset,
+              size_t b_inc);
 
   // Performs forward or backward substitution on a small triangular matrix
-  void Substitution(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-                    const size_t n, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-                    const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_inc, const Buffer<T>& x_buffer,
-                    const size_t offset_x, const size_t x_inc, EventPointer event);
+  void Substitution(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n,
+                    const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset,
+                    size_t b_inc, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc, EventPointer event);
 };
 
 // =================================================================================================

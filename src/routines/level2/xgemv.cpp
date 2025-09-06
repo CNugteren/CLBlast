@@ -93,10 +93,10 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose, const si
   TestVectorY(m_real, y_buffer, y_offset, y_inc);
 
   // Determines whether or not the fast-version can be used
-  fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
+  fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && !a_conjugate &&
                 IsMultiple(m, getDatabase()["WGS2"] * getDatabase()["WPT2"]) && IsMultiple(n, getDatabase()["WGS2"]) &&
                 IsMultiple(a_ld, getDatabase()["VW2"]);
-  fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
+  fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && !a_conjugate &&
                     IsMultiple(m, getDatabase()["WGS3"] * getDatabase()["WPT3"]) &&
                     IsMultiple(n, getDatabase()["WGS3"]) && IsMultiple(a_ld, getDatabase()["VW3"]);
 

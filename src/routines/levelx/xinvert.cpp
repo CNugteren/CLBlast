@@ -66,7 +66,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   }  // when barriers are present
   const auto num_blocks = CeilDiv(n, block_size);
   const auto num_internal_blocks = CeilDiv(n, internal_block_size);
-  const auto unit_diagonal = (diag == Diagonal::kUnit) ? true : false;
+  const auto unit_diagonal = diag == Diagonal::kUnit;
 
   // This routine only supports block sizes which are a multiple of the internal block size and
   // block sizes up to and including 128
@@ -82,14 +82,14 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   // default) and on whether we are dealing with an upper or lower triangle of the triangular matrix
   const bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                          (triangle == Triangle::kLower && layout == Layout::kRowMajor));
-  const auto name_postfix = (is_upper) ? "Upper" : "Lower";
+  const auto* const name_postfix = (is_upper) ? "Upper" : "Lower";
 
   // Fills the output buffer with zeros
-  auto getEvent() wait_list = std::vector<Event>();
+  auto event_wait_list = std::vector<Event>();
   auto fill_matrix_event = Event();
-  FillMatrix(getQueue(), getDevice(), getProgram(), fill_matrix_event.pointer(), getEvent() wait_list, block_size,
+  FillMatrix(getQueue(), getDevice(), getProgram(), fill_matrix_event.pointer(), event_wait_list, block_size,
              num_blocks * block_size, block_size, 0, dest, ConstantZero<T>(), 16);
-  getEvent() wait_list.push_back(fill_matrix_event);
+  event_wait_list.push_back(fill_matrix_event);
 
   // Inverts the diagonal IB by IB inner blocks of the matrix: one block per work-group
   auto kernel = Kernel(getProgram(), "InvertDiagonalBlock");
@@ -104,11 +104,10 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   const auto local_invert = std::vector<size_t>{internal_block_size};
   const auto global_invert = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
-  auto base_kernel_getEvent() pointer = (internal_block_size == block_size) ? getEvent() : base_kernel_event.pointer();
-  RunKernel(kernel, getQueue(), getDevice(), global_invert, local_invert, base_kernel_getEvent() pointer,
-            getEvent() wait_list);
+  auto base_kernel_event_pointer = (internal_block_size == block_size) ? getEvent() : base_kernel_event.pointer();
+  RunKernel(kernel, getQueue(), getDevice(), global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
   if (internal_block_size == block_size) {
-    getEvent() wait_list.push_back(base_kernel_event);
+    event_wait_list.push_back(base_kernel_event);
   }
 
   // Builds up block_size x block_size blocks. For example, internal_block_size=16:
@@ -136,8 +135,8 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     kernel1.SetArgument(6, static_cast<int>(npages));
     kernel1.SetArgument(7, static_cast<int>(block_size));
     auto kernel1_event = Event();
-    RunKernel(kernel1, getQueue(), getDevice(), global, local, kernel1_event.pointer(), getEvent() wait_list);
-    getEvent() wait_list.push_back(kernel1_event);
+    RunKernel(kernel1, getQueue(), getDevice(), global, local, kernel1_event.pointer(), event_wait_list);
+    event_wait_list.push_back(kernel1_event);
 
     // Part 2
     const bool is_last_kernel = (current_size * 2 >= block_size);
@@ -148,10 +147,10 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     kernel2.SetArgument(3, static_cast<int>(npages));
     kernel2.SetArgument(4, static_cast<int>(block_size));
     auto kernel2_event = Event();
-    auto kernel2_getEvent() pointer = (is_last_kernel) ? getEvent() : kernel2_event.pointer();
-    RunKernel(kernel2, getQueue(), getDevice(), global, local, kernel2_getEvent() pointer, getEvent() wait_list);
+    auto kernel2_event_pointer = (is_last_kernel) ? getEvent() : kernel2_event.pointer();
+    RunKernel(kernel2, getQueue(), getDevice(), global, local, kernel2_event_pointer, event_wait_list);
     if (!is_last_kernel) {
-      getEvent() wait_list.push_back(kernel2_event);
+      event_wait_list.push_back(kernel2_event);
     }
 
     // Exit in case we reach beyond the bounds of the input matrix

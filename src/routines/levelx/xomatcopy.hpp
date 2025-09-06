@@ -28,9 +28,8 @@ class Xomatcopy : public Routine {
   Xomatcopy(Queue& queue, EventPointer event, const std::string& name = "OMATCOPY");
 
   // Templated-precision implementation of the routine
-  void DoOmatcopy(const Layout layout, const Transpose a_transpose, const size_t m, const size_t n, const T alpha,
-                  const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const Buffer<T>& b_buffer,
-                  const size_t b_offset, const size_t b_ld);
+  void DoOmatcopy(Layout layout, Transpose a_transpose, size_t m, size_t n, T alpha, const Buffer<T>& a_buffer,
+                  size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset, size_t b_ld);
 };
 
 // =================================================================================================

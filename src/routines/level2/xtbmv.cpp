@@ -39,8 +39,8 @@ void Xtbmv<T>::DoTbmv(const Layout layout, const Triangle triangle, const Transp
   x_buffer.CopyTo(getQueue(), x_size, scratch_buffer);
 
   // The data is either in the upper or lower triangle
-  size_t is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                     (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+  auto is_upper = static_cast<size_t>((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
+                                      (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Adds '2' to the parameter if the diagonal is unit
   auto parameter = (diagonal == Diagonal::kUnit) ? is_upper + 2 : is_upper;

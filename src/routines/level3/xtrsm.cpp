@@ -92,7 +92,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle, const Tran
   TestMatrixB(m, n, b_buffer, b_offset, b_ld);
 
   // Creates a copy of B to avoid overwriting input in GEMM while computing output
-  const auto b_size = b_ld * (n - 1) + m + b_offset;
+  const auto b_size = (b_ld * (n - 1)) + m + b_offset;
   const auto x_one = m;
   const auto x_two = n;
   const auto x_size = b_size;
@@ -141,7 +141,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle, const Tran
         }
 
         const auto this_a_offset =
-            (a_transpose == Transpose::kNo) ? (i + block_size) + i * a_ld : i + (block_size + i) * a_ld;
+            (a_transpose == Transpose::kNo) ? (i + block_size) + (i * a_ld) : i + ((block_size + i) * a_ld);
         auto gemm2_event = Event();
         auto gemm2 = Xgemm<T>(getQueue(), gemm2_event.pointer());
         gemm2.DoGemm(Layout::kColMajor, a_transpose, Transpose::kNo, m - i - block_size, n, block_size,
@@ -191,8 +191,8 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle, const Tran
         auto gemm1_event = Event();
         auto gemm1 = Xgemm<T>(getQueue(), gemm1_event.pointer());
         gemm1.DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose, m, current_block_size, current_block_size,
-                     gemm_alpha, b_buffer, b_offset + i * b_ld, b_ld, a_inv_buffer, i * block_size, block_size,
-                     ConstantZero<T>(), x_buffer, x_offset + i * x_ld, x_ld);
+                     gemm_alpha, b_buffer, b_offset + (i * b_ld), b_ld, a_inv_buffer, i * block_size, block_size,
+                     ConstantZero<T>(), x_buffer, x_offset + (i * x_ld), x_ld);
         gemm1_event.WaitForCompletion();
         if (i - static_cast<int>(block_size) < 0) {
           break;
@@ -202,7 +202,7 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle, const Tran
         auto gemm2_event = Event();
         auto gemm2 = Xgemm<T>(getQueue(), gemm2_event.pointer());
         gemm2.DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose, m, i, current_block_size, ConstantNegOne<T>(),
-                     x_buffer, x_offset + i * x_ld, x_ld, a_buffer, this_a_offset + a_offset, a_ld, gemm_alpha,
+                     x_buffer, x_offset + (i * x_ld), x_ld, a_buffer, this_a_offset + a_offset, a_ld, gemm_alpha,
                      b_buffer, b_offset, b_ld);
         gemm2_event.WaitForCompletion();
       }
@@ -216,20 +216,20 @@ void Xtrsm<T>::TrsmColMajor(const Side side, const Triangle triangle, const Tran
         auto gemm1_event = Event();
         auto gemm1 = Xgemm<T>(getQueue(), gemm1_event.pointer());
         gemm1.DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose, m, current_block_size, current_block_size,
-                     gemm_alpha, b_buffer, b_offset + i * b_ld, b_ld, a_inv_buffer, i * block_size, block_size,
-                     ConstantZero<T>(), x_buffer, x_offset + i * x_ld, x_ld);
+                     gemm_alpha, b_buffer, b_offset + (i * b_ld), b_ld, a_inv_buffer, i * block_size, block_size,
+                     ConstantZero<T>(), x_buffer, x_offset + (i * x_ld), x_ld);
         gemm1_event.WaitForCompletion();
         if (i + block_size >= n) {
           break;
         }
 
         const auto this_a_offset =
-            (a_transpose == Transpose::kNo) ? i + (block_size + i) * a_ld : (i + block_size) + i * a_ld;
+            (a_transpose == Transpose::kNo) ? i + ((block_size + i) * a_ld) : (i + block_size) + (i * a_ld);
         auto gemm2_event = Event();
         auto gemm2 = Xgemm<T>(getQueue(), gemm2_event.pointer());
         gemm2.DoGemm(Layout::kColMajor, Transpose::kNo, a_transpose, m, n - i - block_size, block_size,
-                     ConstantNegOne<T>(), x_buffer, x_offset + i * x_ld, x_ld, a_buffer, this_a_offset + a_offset, a_ld,
-                     gemm_alpha, b_buffer, b_offset + (i + block_size) * b_ld, b_ld);
+                     ConstantNegOne<T>(), x_buffer, x_offset + (i * x_ld), x_ld, a_buffer, this_a_offset + a_offset,
+                     a_ld, gemm_alpha, b_buffer, b_offset + ((i + block_size) * b_ld), b_ld);
         gemm2_event.WaitForCompletion();
       }
     }

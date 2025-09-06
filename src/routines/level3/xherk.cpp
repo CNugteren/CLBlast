@@ -70,8 +70,17 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
                          const size_t c_offset, const size_t c_ld, EventPointer final_event,
                          const bool diagonal_to_zero) {
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
-  bool a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2;
-  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  bool a_do_transpose = false;
+  bool b_do_transpose = false;
+  bool c_do_transpose = false;
+  bool dummy1 = false;
+  bool dummy2 = false;
+  size_t a_one = 0;
+  size_t a_two = 0;
+  size_t b_one = 0;
+  size_t b_two = 0;
+  size_t c_one = 0;
+  size_t c_two = 0;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, n, n, k, a_one, a_two, b_one, b_two, c_one, c_two,
                              a_do_transpose, b_do_transpose, c_do_transpose, dummy1, dummy2, getDatabase()["GEMMK"]);
 
@@ -102,7 +111,7 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   const auto b_two_i = (!Xgemm<T>::b_want_rotated_(getDatabase()["GEMMK"])) ? n_ceiled : k_ceiled;
 
   // Decides which kernel to run: the upper-triangular or lower-triangular version
-  auto kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
+  const auto* kernel_name = (triangle == Triangle::kUpper) ? "XgemmUpper" : "XgemmLower";
 
   // Determines whether or not temporary matrices are needed
   const auto a_no_temp =

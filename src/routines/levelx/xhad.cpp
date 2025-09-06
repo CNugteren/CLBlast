@@ -60,7 +60,16 @@ void Xhad<T>::DoHad(const size_t n, const T alpha, const Buffer<T>& x_buffer, co
       use_faster_kernel && IsMultiple(n, getDatabase()["WGS"] * getDatabase()["WPT"] * getDatabase()["VW"]);
 
   // If possible, run the fast-version of the kernel
-  const auto kernel_name = (use_fastest_kernel) ? "XhadFastest" : (use_faster_kernel) ? "XhadFaster" : "Xhad";
+  const char* kernel_name = nullptr;
+  if (use_fastest_kernel) {
+    kernel_name = "XhadFastest";
+  } else {
+    if (use_faster_kernel) {
+      kernel_name = "XhadFaster";
+    } else {
+      kernel_name = "Xhad";
+    }
+  }
 
   // Retrieves the Xhad kernel from the compiled binary
   auto kernel = Kernel(getProgram(), kernel_name);

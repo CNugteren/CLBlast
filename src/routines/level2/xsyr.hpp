@@ -31,9 +31,9 @@ class Xsyr : public Xher<T, T> {
   Xsyr(Queue& queue, EventPointer event, const std::string& name = "SYR");
 
   // Templated-precision implementation of the routine
-  void DoSyr(const Layout layout, const Triangle triangle, const size_t n, const T alpha, const Buffer<T>& x_buffer,
-             const size_t x_offset, const size_t x_inc, const Buffer<T>& a_buffer, const size_t a_offset,
-             const size_t a_ld);
+  void DoSyr(Layout layout, Triangle triangle, size_t n, T alpha, const Buffer<T>& x_buffer,
+             size_t x_offset, size_t x_inc, const Buffer<T>& a_buffer, size_t a_offset,
+             size_t a_ld);
 };
 
 // =================================================================================================
