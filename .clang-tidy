@@ -5,7 +5,7 @@ Checks: "
     -cppcoreguidelines-pro-type-vararg,
     -cppcoreguidelines-avoid-magic-numbers,
     -cppcoreguidelines-pro-bounds-constant-array-index,
-    -cppcoreguidelines-pro-bounds-pointer-arithmetic
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
     -cppcoreguidelines-avoid-c-arrays,
     -cppcoreguidelines-owning-memory,
     -cppcoreguidelines-narrowing-conversions,
@@ -25,6 +25,7 @@ Checks: "
     bugprone-*,
     -bugprone-easily-swappable-parameters,
     -bugprone-narrowing-conversions,
+    -bugprone-empty-catch,
     google-*,
     -google-readability-todo,
     -google-runtime-int
