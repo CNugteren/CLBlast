@@ -14,6 +14,7 @@
 #include <cstdlib>
 
 #include "clblast.h"
+#include "clpp11.hpp"
 #include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
@@ -3913,6 +3914,48 @@ void cblas_zcol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
   im_buffer.Read(queue, im_size, reinterpret_cast<double2*>(im));
+}
+
+// Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+template <typename T>
+void CLBlastMinmaxCommon(const size_t n, unsigned int* imax, unsigned int* imin, const T* x, const size_t x_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+
+  auto imax_buffer = clblast::Buffer<unsigned int>(context, 1);
+  auto imin_buffer = clblast::Buffer<unsigned int>(context, 1);
+  auto x_buffer = clblast::Buffer<T>(context, n * x_inc);
+
+  imax_buffer.Write(queue, 1, imax);
+  imin_buffer.Write(queue, 1, imin);
+  x_buffer.Write(queue, n, x);
+
+  auto queue_cl = queue();
+  auto s = clblast::Minmax<T>(n, imax_buffer(), 0, imin_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl, nullptr);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+
+  imax_buffer.Read(queue, 1, imax);
+  imin_buffer.Read(queue, 1, imin);
+}
+
+void PUBLIC_API CLBlastSminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
+                               const size_t x_inc) {
+  CLBlastMinmaxCommon<float>(n, imax, imin, x, x_inc);
+}
+void PUBLIC_API CLBlastDminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
+                               const size_t x_inc) {
+  CLBlastMinmaxCommon<double>(n, imax, imin, x, x_inc);
+}
+void PUBLIC_API CLBlastCminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc) {
+  CLBlastMinmaxCommon<float2>(n, imax, imin, (const float2*)x, x_inc);
+}
+void PUBLIC_API CLBlastZminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc) {
+  CLBlastMinmaxCommon<double2>(n, imax, imin, (const double2*)x, x_inc);
 }
 
 // =================================================================================================

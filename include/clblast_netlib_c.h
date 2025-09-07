@@ -580,6 +580,16 @@ void PUBLIC_API cblas_zcol2im(const CLBlastKernelMode kernel_mode, const int cha
                               const int stride_h, const int stride_w, const int dilation_h, const int dilation_w,
                               const void* col, void* im);
 
+// Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+void PUBLIC_API CLBlastSminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
+                               const size_t x_inc);
+void PUBLIC_API CLBlastDminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
+                               const size_t x_inc);
+void PUBLIC_API CLBlastCminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc);
+void PUBLIC_API CLBlastZminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc);
+
 // =================================================================================================
 
 #ifdef __cplusplus
