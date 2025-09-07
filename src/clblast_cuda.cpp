@@ -1807,6 +1807,24 @@ template StatusCode PUBLIC_API GemmStridedBatched<half>(const Layout, const Tran
                                                         CUdeviceptr, const size_t, const size_t, const size_t,
                                                         const size_t, const CUcontext, const CUdevice);
 
+// Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+template <typename T>
+StatusCode PUBLIC_API Minmax(const size_t n, CUdeviceptr imax_buffer, const size_t imax_offset, CUdeviceptr imin_buffer,
+                             const size_t imin_offset, const CUdeviceptr x_buffer, const size_t x_offset,
+                             const size_t x_inc, const CUcontext context, const CUdevice device) {
+  try {
+    const auto context_cpp = Context(context);
+    const auto device_cpp = Device(device);
+    auto queue_cpp = Queue(context_cpp, device_cpp);
+    auto routine = Xminmax<T>(queue_cpp, nullptr);
+    routine.DoMinmax(n, Buffer<unsigned int>(imax_buffer), imax_offset, Buffer<unsigned int>(imin_buffer), imin_offset,
+                     Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)

@@ -13,7 +13,9 @@
 
 #include <string>
 
+#include "routines/levelx/xminmax.hpp"
 #include "routines/routines.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 
@@ -1668,6 +1670,33 @@ template StatusCode PUBLIC_API GemmStridedBatched<half>(const Layout, const Tran
                                                         const size_t, const size_t, const size_t, const half, cl_mem,
                                                         const size_t, const size_t, const size_t, const size_t,
                                                         cl_command_queue*, cl_event*);
+
+// Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+template <typename T>
+StatusCode PUBLIC_API Minmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                             const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                             cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xminmax<T>(queue_cpp, event);
+    routine.DoMinmax(n, Buffer<unsigned int>(imax_buffer), imax_offset, Buffer<unsigned int>(imin_buffer), imin_offset,
+                     Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+
+template StatusCode PUBLIC_API Minmax<half>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                            const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Minmax<float>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                             const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Minmax<double>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                              const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Minmax<float2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                              const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Minmax<double2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                               const size_t, const size_t, cl_command_queue*, cl_event*);
 
 // =================================================================================================
 
