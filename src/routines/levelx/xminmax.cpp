@@ -75,4 +75,10 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   auto local2 = std::vector<size_t>{db_["WGS2"]};
   RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
 }
+
+template class Xminmax<half>;
+template class Xminmax<float>;
+template class Xminmax<double>;
+template class Xminmax<float2>;
+template class Xminmax<double2>;
 }  // namespace clblast
