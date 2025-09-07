@@ -35,7 +35,7 @@ void Xminmax(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global real* restrict mgm, __global unsigned int* igm) {
   __local singlereal maxlm[WGS1];
-  __local signlereal minlm[WGS1];
+  __local singlereal minlm[WGS1];
   __local unsigned int imaxlm[WGS1];
   __local unsigned int iminlm[WGS1];
 
@@ -67,7 +67,7 @@ void Xminmax(const int n,
     #ifdef ABSOLUTE
       singlereal xmin = -fabs(x);
       x = fabs(x);
-    #else defined(ROUTINE_MIN) // non-absolute minimum version
+    #else
       singlereal xmin = -x;
     #endif
 
@@ -123,7 +123,7 @@ void Xminmax(const int n,
 void XminmaxEpilogue(const __global singlereal* restrict mgm,
                    const __global unsigned int* restrict igm,
                    __global unsigned int* imax, const int imax_offset,
-                   __global unsinged int* imin, const int imin_offset) {
+                   __global unsigned int* imin, const int imin_offset) {
   __local singlereal maxlm[WGS2];
   __local singlereal minlm[WGS2];
   __local unsigned int imaxlm[WGS2];
