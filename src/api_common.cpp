@@ -103,6 +103,8 @@ void FillCacheForPrecision(Queue& queue) {
     // Runs all the non-BLAS set-up functions
     Xomatcopy<Real>(queue, nullptr);
     Xomatcopy<Complex>(queue, nullptr);
+    Xminmax<Real>(queue, nullptr);
+    Xminmax<Complex>(queue, nullptr);
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
