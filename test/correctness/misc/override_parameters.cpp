@@ -147,7 +147,7 @@ size_t RunOverrideTests(int argc, char* argv[], const bool silent, const std::st
   device_c.Write(queue, host_c.size(), host_c);
   auto dummy = Buffer<T>(context, 1);
   auto dummy_scalar = Buffer<unsigned int>(context, 1);
-  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, device_temp, dummy, dummy_scalar};
+  auto buffers = Buffers<T>{dummy, dummy, device_a, device_b, device_c, device_temp, dummy, dummy_scalar, dummy_scalar};
 
   // Loops over the valid combinations: run before and run afterwards
   fprintf(stdout, "* Testing OverrideParameters for '%s'\n", routine_name.c_str());
