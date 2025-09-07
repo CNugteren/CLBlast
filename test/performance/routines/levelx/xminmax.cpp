@@ -9,7 +9,6 @@
 
 #include "test/performance/client.hpp"
 
-
 // Main function (not within the clblast namespace)
 int main(int argc, char* argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
