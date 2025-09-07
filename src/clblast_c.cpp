@@ -13,6 +13,7 @@
 #include <unordered_map>
 
 #include "clblast.h"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
@@ -2915,6 +2916,66 @@ CLBlastStatusCode CLBlastHgemmStridedBatched(const CLBlastLayout layout, const C
         static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
         static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha, a_buffer, a_offset, a_ld, a_stride, b_buffer,
         b_offset, b_ld, b_stride, beta, c_buffer, c_offset, c_ld, c_stride, batch_count, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastSminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Minmax<float>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                 x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastDminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Minmax<double>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                  x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastCminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Minmax<float2>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                  x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastZminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Minmax<double2>(
+        n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastHminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Minmax<half>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                x_buffer, x_offset, x_inc, queue, event));
   } catch (...) {
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
