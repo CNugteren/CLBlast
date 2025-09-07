@@ -12,9 +12,6 @@
 #ifndef CLBLAST_TEST_ROUTINES_XMINMAX_H_
 #define CLBLAST_TEST_ROUTINES_XMINMAX_H_
 
-#include "CL/cl.h"
-#include "clblast.h"
-#include "clpp11.hpp"
 #include "test/routines/common.hpp"
 #include "test/test_utilities.hpp"
 #include "utilities/utilities.hpp"

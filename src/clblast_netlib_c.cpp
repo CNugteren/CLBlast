@@ -14,7 +14,6 @@
 #include <cstdlib>
 
 #include "clblast.h"
-#include "clpp11.hpp"
 #include "utilities/utilities.hpp"
 
 // Shortcuts to the clblast namespace
