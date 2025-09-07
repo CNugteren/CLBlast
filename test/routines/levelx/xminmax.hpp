@@ -14,7 +14,9 @@
 
 #include "CL/cl.h"
 #include "clblast.h"
+#include "clpp11.hpp"
 #include "test/routines/common.hpp"
+#include "test/test_utilities.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -107,12 +109,18 @@ class TestXminmax {
 // and CLBlas
 #ifdef CLBLAST_REF_CBLAS
   static StatusCode RunReference2(const Arguments<T>& args, BuffersHost<T>& buffers_host, Queue& queue) {
-    Buffers<T> buffers;
-    buffers.x_vec = Buffer<T>{queue.GetContext(), GetSizeX(args)};
-    buffers.scalar_uint = Buffer<unsigned int>{queue.GetContext(), GetSizeImax(args)};
-    buffers.second_scalar_uint = Buffer<unsigned int>{queue.GetContext(), GetSizeImin(args)};
+    auto context = queue.GetContext();
+    Buffers<T> buffers{Buffer<T>{queue.GetContext(), GetSizeX(args)},
+                       CreateInvalidBuffer<T>(context, 0),
+                       CreateInvalidBuffer<T>(context, 0),
+                       CreateInvalidBuffer<T>(context, 0),
+                       CreateInvalidBuffer<T>(context, 0),
+                       CreateInvalidBuffer<T>(context, 0),
+                       CreateInvalidBuffer<T>(context, 0),
+                       Buffer<unsigned int>{queue.GetContext(), GetSizeImax(args)},
+                       Buffer<unsigned int>{queue.GetContext(), GetSizeImin(args)}};
     HostToDevice(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
-    return RunReference1(args, buffers);
+    return RunReference1(args, buffers, queue);
   }
 #endif
 

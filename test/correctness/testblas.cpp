@@ -132,6 +132,7 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     auto ap_mat2 = Buffer<T>(context_, args.ap_size);
     auto scalar2 = Buffer<T>(context_, args.scalar_size);
     auto scalar_uint2 = Buffer<unsigned int>(context_, args.scalar_size);
+    auto second_scalar_uint2 = Buffer<unsigned int>(context_, args.second_scalar_size);
     x_vec2.Write(queue_, args.x_size, x_source_);
     y_vec2.Write(queue_, args.y_size, y_source_);
     a_mat2.Write(queue_, args.a_size, a_source_);
@@ -139,7 +140,8 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     c_mat2.Write(queue_, args.c_size, c_source_);
     ap_mat2.Write(queue_, args.ap_size, ap_source_);
     scalar2.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2};
+    auto buffers2 =
+        Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2, second_scalar_uint2};
 
     // Runs CLBlast
     if (verbose_) {
@@ -167,6 +169,7 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     auto ap_mat1 = Buffer<T>(context_, args.ap_size);
     auto scalar1 = Buffer<T>(context_, args.scalar_size);
     auto scalar_uint1 = Buffer<unsigned int>(context_, args.scalar_size);
+    auto second_scalar_uint1 = Buffer<unsigned int>(context_, args.second_scalar_size);
     x_vec1.Write(queue_, args.x_size, x_source_);
     y_vec1.Write(queue_, args.y_size, y_source_);
     a_mat1.Write(queue_, args.a_size, a_source_);
@@ -174,7 +177,8 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     c_mat1.Write(queue_, args.c_size, c_source_);
     ap_mat1.Write(queue_, args.ap_size, ap_source_);
     scalar1.Write(queue_, args.scalar_size, scalar_source_);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1};
+    auto buffers1 =
+        Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1, second_scalar_uint1};
 
     // Runs the reference code
     if (verbose_) {
@@ -315,8 +319,11 @@ void TestBlas<T, U>::TestInvalid(std::vector<Arguments<U>>& test_vector, const s
     auto ap_mat2 = CreateInvalidBuffer<T>(context_, args.ap_size);
     auto scalar2 = CreateInvalidBuffer<T>(context_, args.scalar_size);
     auto scalar_uint2 = CreateInvalidBuffer<unsigned int>(context_, args.scalar_size);
-    auto buffers1 = Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1};
-    auto buffers2 = Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2};
+    auto second_scalar_uint2 = CreateInvalidBuffer<unsigned int>(context_, args.scalar_size);
+    auto buffers1 =
+        Buffers<T>{x_vec1, y_vec1, a_mat1, b_mat1, c_mat1, ap_mat1, scalar1, scalar_uint1, second_scalar_uint2};
+    auto buffers2 =
+        Buffers<T>{x_vec2, y_vec2, a_mat2, b_mat2, c_mat2, ap_mat2, scalar2, scalar_uint2, second_scalar_uint2};
 
     // Runs CLBlast
     if (verbose_) {
