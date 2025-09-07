@@ -110,15 +110,15 @@ class TestXminmax {
 #ifdef CLBLAST_REF_CBLAS
   static StatusCode RunReference2(const Arguments<T>& args, BuffersHost<T>& buffers_host, Queue& queue) {
     auto context = queue.GetContext();
-    Buffers<T> buffers{Buffer<T>{queue.GetContext(), GetSizeX(args)},
+    Buffers<T> buffers{Buffer<T>{queue.GetContext(), buffers_host.x_vec.size()},
                        CreateInvalidBuffer<T>(context, 0),
                        CreateInvalidBuffer<T>(context, 0),
                        CreateInvalidBuffer<T>(context, 0),
                        CreateInvalidBuffer<T>(context, 0),
                        CreateInvalidBuffer<T>(context, 0),
                        CreateInvalidBuffer<T>(context, 0),
-                       Buffer<unsigned int>{queue.GetContext(), GetSizeImax(args)},
-                       Buffer<unsigned int>{queue.GetContext(), GetSizeImin(args)}};
+                       Buffer<unsigned int>{queue.GetContext(), buffers_host.scalar_uint.size()},
+                       Buffer<unsigned int>{queue.GetContext(), buffers_host.second_scalar_uint.size()}};
     HostToDevice(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
     return RunReference1(args, buffers, queue);
   }
