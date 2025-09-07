@@ -56,7 +56,7 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
+  auto global1 = std::vector<size_t>{(db_["WGS1"] * temp_size) / 2};
   auto local1 = std::vector<size_t>{db_["WGS1"]};
   auto kernelEvent = Event();
   RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
