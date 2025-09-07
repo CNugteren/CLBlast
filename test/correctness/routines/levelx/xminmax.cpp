@@ -12,7 +12,7 @@
 // Main function (not within the clblast namespace)
 int main(int argc, char* argv[]) {
   auto errors = size_t{0};
-  errors += clblast::RunTests<clblast::TestXminmax<float>, float, float>(argc, argv, false, "iSAMINMAX");
+  errors += clblast::RunTests<clblast::TestXminmax<float>, float, float>(argc, argv, false, "iSMINMAX");
   errors += clblast::RunTests<clblast::TestXminmax<double>, double, double>(argc, argv, true, "iDMINMAX");
   errors += clblast::RunTests<clblast::TestXminmax<clblast::float2>, clblast::float2, clblast::float2>(argc, argv, true,
                                                                                                        "iCMINMAX");
