@@ -140,12 +140,12 @@ void XminmaxEpilogue(const __global singlereal* restrict mgm,
     imaxlm[lid] = igm[lid];
   }
   if (mgm[lid + (WGS2 * 3)] > mgm[lid + (WGS2 * 2)]) {
-    maxlm[lid] = mgm[lid + (WGS2 * 3)];
-    imaxlm[lid] = igm[lid + (WGS2 * 3)];
+    minlm[lid] = mgm[lid + (WGS2 * 3)];
+    iminlm[lid] = igm[lid + (WGS2 * 3)];
   }
   else {
-    maxlm[lid] = mgm[lid + (WGS2 * 2)];
-    imaxlm[lid] = igm[lid + (WGS2 * 2)];
+    minlm[lid] = mgm[lid + (WGS2 * 2)];
+    iminlm[lid] = igm[lid + (WGS2 * 2)];
   }
   barrier(CLK_LOCAL_MEM_FENCE);
 
