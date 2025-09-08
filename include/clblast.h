@@ -109,9 +109,6 @@ enum class StatusCode {
   kInsufficientMemoryC = -1009,  // Matrix C's OpenCL buffer is too small
   kInsufficientMemoryX = -1008,  // Vector X's OpenCL buffer is too small
   kInsufficientMemoryY = -1007,  // Vector Y's OpenCL buffer is too small
-  kInvalidVectorZ = -1006,       // Vector Z is not a valid OpenCL buffer
-  kInvalidIncrementZ = -1005,    // Increment of vector Z cannot be zero
-  kInsufficientMemoryZ = -1004,  // Vector Z's OpenCL buffer is too small
 
   // Custom additional status codes for CLBlast
   kInsufficientMemoryTemp = -2050,    // Temporary buffer provided to GEMM routine is too small
@@ -126,6 +123,9 @@ enum class StatusCode {
   kDatabaseError = -2041,             // Entry for the device was not found in the database
   kUnknownError = -2040,              // A catch-all error code representing an unspecified error
   kUnexpectedError = -2039,           // A catch-all error code representing an unexpected exception
+  kInvalidVectorZ = -2038,            // Vector Z is not a valid OpenCL buffer
+  kInvalidIncrementZ = -2037,         // Increment of vector Z cannot be zero
+  kInsufficientMemoryZ = -2036,       // Vector Z's OpenCL buffer is too small
 };
 
 // Matrix layout and transpose types
