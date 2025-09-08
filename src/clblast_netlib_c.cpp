@@ -3917,7 +3917,7 @@ void cblas_zcol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
 
 // Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
 template <typename T>
-void CLBlastMinmaxCommon(const size_t n, unsigned int* imax, unsigned int* imin, const T* x, const size_t x_inc) {
+void cblas_minmax_common(const size_t n, unsigned int* imax, unsigned int* imin, const T* x, const size_t x_inc) {
   OPTIONAL_STATIC auto device = get_device();
   OPTIONAL_STATIC auto context = clblast::Context(device);
   auto queue = clblast::Queue(context, device);
@@ -3940,21 +3940,21 @@ void CLBlastMinmaxCommon(const size_t n, unsigned int* imax, unsigned int* imin,
   imin_buffer.Read(queue, 1, imin);
 }
 
-void PUBLIC_API CLBlastSminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
-                               const size_t x_inc) {
-  CLBlastMinmaxCommon<float>(n, imax, imin, x, x_inc);
+void PUBLIC_API cblas_sminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
+                              const size_t x_inc) {
+  cblas_minmax_common<float>(n, imax, imin, x, x_inc);
 }
-void PUBLIC_API CLBlastDminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
+void PUBLIC_API clblas_dminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
                                const size_t x_inc) {
-  CLBlastMinmaxCommon<double>(n, imax, imin, x, x_inc);
+  cblas_minmax_common<double>(n, imax, imin, x, x_inc);
 }
-void PUBLIC_API CLBlastCminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+void PUBLIC_API clblas_cminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
                                const size_t x_inc) {
-  CLBlastMinmaxCommon<float2>(n, imax, imin, (const float2*)x, x_inc);
+  cblas_minmax_common<float2>(n, imax, imin, (const float2*)x, x_inc);
 }
-void PUBLIC_API CLBlastZminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+void PUBLIC_API clblas_zminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
                                const size_t x_inc) {
-  CLBlastMinmaxCommon<double2>(n, imax, imin, (const double2*)x, x_inc);
+  cblas_minmax_common<double2>(n, imax, imin, (const double2*)x, x_inc);
 }
 
 // =================================================================================================
