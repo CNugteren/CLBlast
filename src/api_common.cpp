@@ -76,41 +76,57 @@ StatusCode ClearCache() {
   return StatusCode::kSuccess;
 }
 
+template <typename Type>
+void FillCacheForPrecision(Queue& queue) {
+  try {
+    // Runs all the level 1 set-up functions that support all precisions
+    Xswap<Type>(queue, nullptr);
+    Xscal<Type>(queue, nullptr);
+    Xcopy<Type>(queue, nullptr);
+    Xaxpy<Type>(queue, nullptr);
+    Xdot<Type>(queue, nullptr);
+    Xnrm2<Type>(queue, nullptr);
+    Xasum<Type>(queue, nullptr);
+    Xsum<Type>(queue, nullptr);
+    Xamax<Type>(queue, nullptr);
+    Xmax<Type>(queue, nullptr);
+    Xmin<Type>(queue, nullptr);
+
+    // Runs all the level 2 set-up functions that support all precisions
+    Xgemv<Type>(queue, nullptr);
+    Xgbmv<Type>(queue, nullptr);
+    Xtrmv<Type>(queue, nullptr);
+    Xtbmv<Type>(queue, nullptr);
+    Xtpmv<Type>(queue, nullptr);
+
+    // Runs all the level 3 set-up functions that support all precisions
+    Xgemm<Type>(queue, nullptr);
+    Xsymm<Type>(queue, nullptr);
+    Xsyrk<Type>(queue, nullptr);
+    Xsyr2k<Type>(queue, nullptr);
+    Xtrmm<Type>(queue, nullptr);
+
+    // Runs all the non-BLAS set-up functions
+    Xomatcopy<Type>(queue, nullptr);
+
+  } catch (const RuntimeErrorCode& e) {
+    if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
+      throw;
+    }
+  }
+}
+
 template <typename Real, typename Complex>
 void FillCacheForPrecision(Queue& queue) {
   try {
-    // Runs all the level 1 set-up functions
-    Xswap<Real>(queue, nullptr);
-    Xswap<Complex>(queue, nullptr);
-    Xswap<Real>(queue, nullptr);
-    Xswap<Complex>(queue, nullptr);
-    Xscal<Real>(queue, nullptr);
-    Xscal<Complex>(queue, nullptr);
-    Xcopy<Real>(queue, nullptr);
-    Xcopy<Complex>(queue, nullptr);
-    Xaxpy<Real>(queue, nullptr);
-    Xaxpy<Complex>(queue, nullptr);
-    Xdot<Real>(queue, nullptr);
+    FillCacheForPrecision<Real>(queue);
+    FillCacheForPrecision<Complex>(queue);
+
+    // Runs all the level 1 set-up functions that don't support all precisions
     Xdotu<Complex>(queue, nullptr);
     Xdotc<Complex>(queue, nullptr);
-    Xnrm2<Real>(queue, nullptr);
-    Xnrm2<Complex>(queue, nullptr);
-    Xasum<Real>(queue, nullptr);
-    Xasum<Complex>(queue, nullptr);
-    Xsum<Real>(queue, nullptr);
-    Xsum<Complex>(queue, nullptr);
-    Xamax<Real>(queue, nullptr);
-    Xamax<Complex>(queue, nullptr);
-    Xmax<Real>(queue, nullptr);
-    Xmax<Complex>(queue, nullptr);
-    Xmin<Real>(queue, nullptr);
-    Xmin<Complex>(queue, nullptr);
 
-    // Runs all the level 2 set-up functions
-    Xgemv<Real>(queue, nullptr);
-    Xgemv<Complex>(queue, nullptr);
-    Xgbmv<Real>(queue, nullptr);
-    Xgbmv<Complex>(queue, nullptr);
+    // Runs all the level 2 set-up functions that don't support all precisions
     Xhemv<Complex>(queue, nullptr);
     Xhbmv<Complex>(queue, nullptr);
     Xhpmv<Complex>(queue, nullptr);
@@ -119,10 +135,6 @@ void FillCacheForPrecision(Queue& queue) {
     Xspmv<Real>(queue, nullptr);
     Xtrmv<Real>(queue, nullptr);
     Xtrmv<Complex>(queue, nullptr);
-    Xtbmv<Real>(queue, nullptr);
-    Xtbmv<Complex>(queue, nullptr);
-    Xtpmv<Real>(queue, nullptr);
-    Xtpmv<Complex>(queue, nullptr);
     Xger<Real>(queue, nullptr);
     Xgeru<Complex>(queue, nullptr);
     Xgerc<Complex>(queue, nullptr);
@@ -135,24 +147,11 @@ void FillCacheForPrecision(Queue& queue) {
     Xsyr2<Real>(queue, nullptr);
     Xspr2<Real>(queue, nullptr);
 
-    // Runs all the level 3 set-up functions
-    Xgemm<Real>(queue, nullptr);
-    Xgemm<Complex>(queue, nullptr);
-    Xsymm<Real>(queue, nullptr);
-    Xsymm<Complex>(queue, nullptr);
+    // Runs all the level 3 set-up functions that don't support all precisions
     Xhemm<Complex>(queue, nullptr);
-    Xsyrk<Real>(queue, nullptr);
-    Xsyrk<Complex>(queue, nullptr);
     Xherk<Complex, Real>(queue, nullptr);
-    Xsyr2k<Real>(queue, nullptr);
-    Xsyr2k<Complex>(queue, nullptr);
     Xher2k<Complex, Real>(queue, nullptr);
-    Xtrmm<Real>(queue, nullptr);
-    Xtrmm<Complex>(queue, nullptr);
-
-    // Runs all the non-BLAS set-up functions
-    Xomatcopy<Real>(queue, nullptr);
-    Xomatcopy<Complex>(queue, nullptr);
+    Xspr2<Real>(queue, nullptr);
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
@@ -162,7 +161,6 @@ void FillCacheForPrecision(Queue& queue) {
 }
 
 // Fills the cache with all binaries for a specific device
-// TODO: Add half-precision FP16 set-up calls
 StatusCode FillCache(const RawDeviceID device) {
   try {
     // Creates a sample context and queue to match the normal routine calling conventions
@@ -170,6 +168,7 @@ StatusCode FillCache(const RawDeviceID device) {
     auto context = Context(device_cpp);
     auto queue = Queue(context, device_cpp);
 
+    FillCacheForPrecision<half>(queue);
     FillCacheForPrecision<float, float2>(queue);
     FillCacheForPrecision<double, double2>(queue);
 
