@@ -77,6 +77,9 @@ enum class StatusCode {
   kDatabaseError = -2041,             // Entry for the device was not found in the database
   kUnknownError = -2040,              // A catch-all error code representing an unspecified error
   kUnexpectedError = -2039,           // A catch-all error code representing an unexpected exception
+  kInvalidVectorZ = -2038,            // Vector Z is not a valid OpenCL buffer
+  kInvalidIncrementZ = -2037,         // Increment of vector Z cannot be zero
+  kInsufficientMemoryZ = -2036,       // Vector Z's OpenCL buffer is too small
 };
 
 // Matrix layout and transpose types
