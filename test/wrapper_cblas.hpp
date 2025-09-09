@@ -338,21 +338,23 @@ void cblasXasum(const size_t n, std::vector<half>& asum_buffer, const size_t asu
 // Forwards the Netlib BLAS calls for iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 void cblasXamax(const size_t n, std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<float>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  imax_buffer[imax_offset] = cblas_isamax(static_cast<int>(n), &x_buffer[x_offset], static_cast<int>(x_inc));
+  imax_buffer[imax_offset] =
+      static_cast<unsigned int>(cblas_isamax(static_cast<int>(n), &x_buffer[x_offset], static_cast<int>(x_inc)));
 }
 void cblasXamax(const size_t n, std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<double>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  imax_buffer[imax_offset] = cblas_idamax(static_cast<int>(n), &x_buffer[x_offset], static_cast<int>(x_inc));
+  imax_buffer[imax_offset] =
+      static_cast<unsigned int>(cblas_idamax(static_cast<int>(n), &x_buffer[x_offset], static_cast<int>(x_inc)));
 }
 void cblasXamax(const size_t n, std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<float2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  imax_buffer[imax_offset] =
-      cblas_icamax(static_cast<int>(n), reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = static_cast<unsigned int>(
+      cblas_icamax(static_cast<int>(n), reinterpret_cast<const float*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXamax(const size_t n, std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<double2>& x_buffer, const size_t x_offset, const size_t x_inc) {
-  imax_buffer[imax_offset] =
-      cblas_izamax(static_cast<int>(n), reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc));
+  imax_buffer[imax_offset] = static_cast<unsigned int>(
+      cblas_izamax(static_cast<int>(n), reinterpret_cast<const double*>(&x_buffer[x_offset]), static_cast<int>(x_inc)));
 }
 void cblasXamax(const size_t n, std::vector<unsigned int>& imax_buffer, const size_t imax_offset,
                 const std::vector<half>& x_buffer, const size_t x_offset, const size_t x_inc) {

@@ -124,6 +124,9 @@ typedef enum CLBlastStatusCode_ {
   CLBlastDatabaseError = -2041,             // Entry for the device was not found in the database
   CLBlastUnknownError = -2040,              // A catch-all error code representing an unspecified error
   CLBlastUnexpectedError = -2039,           // A catch-all error code representing an unexpected exception
+  CLBlastInvalidVectorZ = -2038,            // Vector Z is not a valid OpenCL buffer
+  CLBlastInvalidIncrementZ = -2037,         // Increment of vector Z cannot be zero
+  CLBlastInsufficientMemoryZ = -2036,       // Vector Z's OpenCL buffer is too small
 } CLBlastStatusCode;
 
 // Matrix layout and transpose types

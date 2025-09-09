@@ -4,6 +4,7 @@ Development version (next version)
 - Added tuned parameters for many devices (see doc/tuning.md)
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
 - Removed all generator scripts for the API
+- Added 3 new error codes for vector Z in routine XHAD
 - Added include what you use (IWYU) with Clangd Include Cleaner
 
 Version 1.6.3
