@@ -119,6 +119,22 @@ void TestVectorY(const size_t n, const Buffer<T>& buffer, const size_t offset, c
   }
 }
 
+// Tests vector 'Z' for validity
+template <typename T>
+void TestVectorZ(const size_t n, const Buffer<T>& buffer, const size_t offset, const size_t inc) {
+  if (inc == 0) {
+    throw BLASError(StatusCode::kInvalidIncrementZ);
+  }
+  try {
+    const auto required_size = ((n - 1) * inc + 1 + offset) * sizeof(T);
+    if (buffer.GetSize() < required_size) {
+      throw BLASError(StatusCode::kInsufficientMemoryZ);
+    }
+  } catch (const Error<std::runtime_error>& e) {
+    throw BLASError(StatusCode::kInvalidVectorZ, e.what());
+  }
+}
+
 // =================================================================================================
 
 // Tests vector 'scalar' for validity
