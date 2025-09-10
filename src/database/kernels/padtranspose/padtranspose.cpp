@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/padtranspose/padtranspose.hpp"
-
 #include "database/kernels/padtranspose/padtranspose_16.hpp"
 #include "database/kernels/padtranspose/padtranspose_32.hpp"
 #include "database/kernels/padtranspose/padtranspose_3232.hpp"

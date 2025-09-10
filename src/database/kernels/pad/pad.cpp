@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/pad/pad.hpp"
-
 #include "database/kernels/pad/pad_16.hpp"
 #include "database/kernels/pad/pad_32.hpp"
 #include "database/kernels/pad/pad_3232.hpp"

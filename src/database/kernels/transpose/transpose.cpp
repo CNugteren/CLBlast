@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/transpose/transpose.hpp"
-
 #include "database/kernels/transpose/transpose_16.hpp"
 #include "database/kernels/transpose/transpose_32.hpp"
 #include "database/kernels/transpose/transpose_3232.hpp"

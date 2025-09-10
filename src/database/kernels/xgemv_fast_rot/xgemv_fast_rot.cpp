@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot.hpp"
-
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot_16.hpp"
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot_32.hpp"
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot_3232.hpp"

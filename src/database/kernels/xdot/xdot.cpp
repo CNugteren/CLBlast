@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/xdot/xdot.hpp"
-
 #include "database/kernels/xdot/xdot_16.hpp"
 #include "database/kernels/xdot/xdot_32.hpp"
 #include "database/kernels/xdot/xdot_3232.hpp"

@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/trsv_routine/trsv_routine.hpp"
-
 #include "database/kernels/trsv_routine/trsv_routine_16.hpp"
 #include "database/kernels/trsv_routine/trsv_routine_32.hpp"
 #include "database/kernels/trsv_routine/trsv_routine_3232.hpp"

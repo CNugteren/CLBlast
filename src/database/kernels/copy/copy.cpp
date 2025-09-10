@@ -8,7 +8,6 @@
 // =================================================================================================
 
 #include "database/kernels/copy/copy.hpp"
-
 #include "database/kernels/copy/copy_16.hpp"
 #include "database/kernels/copy/copy_32.hpp"
 #include "database/kernels/copy/copy_3232.hpp"
