@@ -92,7 +92,7 @@ def get_cpp_device_vendor(vendor, device_type):
 
 def get_cpp_family_includes(family, precisions):
     result = "\n"
-    result += "#include \"database/kernels/%s/%s.hpp\"\n" % (family, family)
+    result += "#include \"database/kernels/%s/%s.hpp\"\n\n" % (family, family)
     for precision in precisions:
         result += "#include \"database/kernels/%s/%s_%s.hpp\"\n" % (family, family, precision)
     return result
