@@ -14,4 +14,3 @@
 #include "database/kernels/gemm_routine/gemm_routine_3232.hpp"
 #include "database/kernels/gemm_routine/gemm_routine_64.hpp"
 #include "database/kernels/gemm_routine/gemm_routine_6464.hpp"
-

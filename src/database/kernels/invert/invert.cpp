@@ -14,4 +14,3 @@
 #include "database/kernels/invert/invert_3232.hpp"
 #include "database/kernels/invert/invert_64.hpp"
 #include "database/kernels/invert/invert_6464.hpp"
-
