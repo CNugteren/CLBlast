@@ -8,8 +8,10 @@
 // =================================================================================================
 
 #include "database/kernels/invert/invert.hpp"
+
 #include "database/kernels/invert/invert_16.hpp"
 #include "database/kernels/invert/invert_32.hpp"
 #include "database/kernels/invert/invert_3232.hpp"
 #include "database/kernels/invert/invert_64.hpp"
 #include "database/kernels/invert/invert_6464.hpp"
+

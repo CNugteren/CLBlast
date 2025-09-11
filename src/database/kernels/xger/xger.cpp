@@ -8,6 +8,7 @@
 // =================================================================================================
 
 #include "database/kernels/xger/xger.hpp"
+
 #include "database/kernels/xger/xger_16.hpp"
 #include "database/kernels/xger/xger_32.hpp"
 #include "database/kernels/xger/xger_3232.hpp"

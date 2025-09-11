@@ -8,6 +8,7 @@
 // =================================================================================================
 
 #include "database/kernels/xgemv_fast/xgemv_fast.hpp"
+
 #include "database/kernels/xgemv_fast/xgemv_fast_16.hpp"
 #include "database/kernels/xgemv_fast/xgemv_fast_32.hpp"
 #include "database/kernels/xgemv_fast/xgemv_fast_3232.hpp"
