@@ -55,6 +55,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce GTX 1650
     - GeForce GTX 1650 Ti
     - GeForce GTX 1650 Super
+    - GeForce RTX 2050
     - GeForce RTX 2060
     - GeForce RTX 2070 with Max-Q
     - GeForce RTX 2070 Super
@@ -72,6 +73,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce RTX 3060
     - GeForce RTX 3060 Laptop
     - GeForce RTX 3070
+    - GeForce RTX 3070 Laptop
     - GeForce RTX 3070 Ti Laptop
     - GeForce RTX 3080
     - GeForce RTX 3080 Laptop
@@ -88,6 +90,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce RTX 4080
     - GeForce RTX 4090
   - SM 12.0:
+    - GeForce RTX 5070 Ti
     - GeForce RTX 5080
 * AMD GPUs:
   - Turks:
@@ -115,6 +118,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - Radeon RX 590 GME
   - Vega:
     - Radeon RX Vega
+  - gfx90c:
+    - Radeon Graphics
   - gfx902:
     - Radeon RX Vega
     - Radeon RX Vega 10
@@ -139,6 +144,8 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - gfx1035:
     - Radeon 680M
     - Ryzen 4600G APU
+  - gfx1036:
+    - Radeon Graphics
   - gfx1100:
     - Radeon RX 7900 XTX
   - gfx1101:
@@ -159,10 +166,12 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - HD Graphics Haswell Ultrabook GT2 Mobile
   - HD Graphics IvyBridge M GT2
   - HD Graphics Skylake ULT GT2
+  - UHD Graphics
   - UHD Graphics 620
   - UHD Graphics 630
   - UHD Graphics 770
   - Iris
+  - Iris Plus Graphics 640
   - Iris Pro
   - Iris Xe Graphics
   - RaptorLake-S Mobile Graphics
@@ -192,6 +201,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Qualcomm Adreno 640 GPU
   - Qualcomm Adreno 650 GPU
   - Qualcomm Adreno 730 GPU
+  - Qualcomm Adreno 735
   - Qualcomm Adreno 740 GPU
   - Intel MIC
   - Imagination PowerVR B-Series BXE-4-32
