@@ -57,6 +57,10 @@ const DatabaseEntry InvertComplexDouble = {
           { Name{"AMD Radeon Graphics                               "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1036", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1100", {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -108,6 +112,8 @@ const DatabaseEntry InvertComplexDouble = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics                             "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
@@ -116,6 +122,7 @@ const DatabaseEntry InvertComplexDouble = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
@@ -176,6 +183,7 @@ const DatabaseEntry InvertComplexDouble = {
           { Name{"NVIDIA GeForce RTX 3060                           "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070                           "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3070 Laptop GPU                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

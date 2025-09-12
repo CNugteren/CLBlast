@@ -91,6 +91,10 @@ const DatabaseEntry XgerComplexSingle = {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 64, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1036", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 32, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1100", {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 16, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -183,8 +187,10 @@ const DatabaseEntry XgerComplexSingle = {
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 512, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 16, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 4, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 32, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 16, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics                             "}, Params{ 128, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 8, 8, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 8, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Iris Pro                                          "}, Params{ 16, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -203,6 +209,7 @@ const DatabaseEntry XgerComplexSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
@@ -279,11 +286,12 @@ const DatabaseEntry XgerComplexSingle = {
         } },
         { "SM8.6", {
           { Name{"NVIDIA GeForce RTX 2050                           "}, Params{ 4, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"NVIDIA GeForce RTX 3050 Laptop GPU                "}, Params{ 16, 32, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3050 Laptop GPU                "}, Params{ 4, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 8, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060                           "}, Params{ 8, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 4, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070                           "}, Params{ 8, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3070 Laptop GPU                "}, Params{ 16, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 8, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 4, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 4, 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -321,6 +329,10 @@ const DatabaseEntry XgerComplexSingle = {
         { "OpenCL C 2.0 Adreno(TM) 650", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 256, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 256, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 735", {
+          { Name{"QUALCOMM Adreno(TM) 735                           "}, Params{ 256, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 256, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

@@ -91,6 +91,10 @@ const DatabaseEntry XgerSingle = {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 8, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1036", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 128, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1100", {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 32, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -185,8 +189,10 @@ const DatabaseEntry XgerSingle = {
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 128, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 64, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 16, 32, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics                             "}, Params{ 32, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 16, 16, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 16, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Iris Pro                                          "}, Params{ 64, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -205,8 +211,9 @@ const DatabaseEntry XgerSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 32, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 16, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 16, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 128, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 256, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -287,6 +294,7 @@ const DatabaseEntry XgerSingle = {
           { Name{"NVIDIA GeForce RTX 3060                           "}, Params{ 8, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 32, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070                           "}, Params{ 8, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3070 Laptop GPU                "}, Params{ 16, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 16, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 4, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 8, 16, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -328,6 +336,10 @@ const DatabaseEntry XgerSingle = {
         { "OpenCL C 3.0 Adreno(TM) 730", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 64, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 735", {
+          { Name{"QUALCOMM Adreno(TM) 735                           "}, Params{ 8, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "OpenCL C 3.0 Adreno(TM) 740", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 32, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },

@@ -91,6 +91,10 @@ const DatabaseEntry CopyComplexSingle = {
           { Name{"AMD Radeon(TM) Graphics                           "}, Params{ 16, 8, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1036", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 32, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 32, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1100", {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 16, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -184,8 +188,10 @@ const DatabaseEntry CopyComplexSingle = {
           { Name{"Intel(R) HD Graphics Haswell Ultrabook GT2 Mobile "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics IvyBridge M GT2              "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 8, 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 8, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 32, 8, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 32, 16, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics                             "}, Params{ 32, 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 8, 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 32, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Iris                                              "}, Params{ 16, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -206,8 +212,9 @@ const DatabaseEntry CopyComplexSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 8, 32, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 8, 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 16, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 32, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 16, 16, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -283,19 +290,20 @@ const DatabaseEntry CopyComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 16, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM8.6", {
-          { Name{"NVIDIA GeForce RTX 2050                           "}, Params{ 8, 16, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"NVIDIA GeForce RTX 3050 Laptop GPU                "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 2050                           "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3050 Laptop GPU                "}, Params{ 8, 8, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3050 Ti Laptop GPU             "}, Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060                           "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3060 Laptop GPU                "}, Params{ 8, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070                           "}, Params{ 8, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"NVIDIA GeForce RTX 3070 Laptop GPU                "}, Params{ 8, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3070 Ti Laptop GPU             "}, Params{ 8, 8, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080                           "}, Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080 Laptop GPU                "}, Params{ 8, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3080 Ti                        "}, Params{ 8, 8, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA GeForce RTX 3090                           "}, Params{ 8, 8, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"NVIDIA RTX A6000                                  "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 16, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 16, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "SM8.9", {
           { Name{"NVIDIA GeForce RTX 4050 Laptop GPU                "}, Params{ 8, 8, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -327,12 +335,16 @@ const DatabaseEntry CopyComplexSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 735", {
+          { Name{"QUALCOMM Adreno(TM) 735                           "}, Params{ 8, 16, 8, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 16, 8, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 8, 16, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 8, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

@@ -49,6 +49,10 @@ const DatabaseEntry XgemvFastRotHalf = {
           { Name{"AMD Radeon Graphics                               "}, Params{ 8, 64, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 64, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "gfx1036", {
+          { Name{"AMD Radeon Graphics                               "}, Params{ 2, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "gfx1100", {
           { Name{"Radeon RX 7900 XTX                                "}, Params{ 4, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 4, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -107,11 +111,13 @@ const DatabaseEntry XgemvFastRotHalf = {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 8, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 8, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 8, 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 8, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) Iris(R) Xe Graphics                      "}, Params{ 4, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) RaptorLake-S Mobile Graphics Controller  "}, Params{ 2, 64, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Intel(R) UHD Graphics                             "}, Params{ 8, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 620                         "}, Params{ 8, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Intel(R) UHD Graphics 770                         "}, Params{ 2, 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 64, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 128, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -133,6 +139,10 @@ const DatabaseEntry XgemvFastRotHalf = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 8, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 735", {
+          { Name{"QUALCOMM Adreno(TM) 735                           "}, Params{ 8, 64, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 64, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
         { "OpenCL C 3.0 Adreno(TM) 740", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 2, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -142,7 +152,7 @@ const DatabaseEntry XgemvFastRotHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 8, 32, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
