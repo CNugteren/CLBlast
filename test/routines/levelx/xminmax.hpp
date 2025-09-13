@@ -30,7 +30,7 @@ class TestXminmax {
   static std::vector<std::string> GetOptions() {
     return {kArgN, kArgImaxOffset, kArgIminOffset, kArgXOffset, kArgXInc};
   }
-  static std::vector<std::string> BuffersIn() { return {kBufScalarUint, kBufSecondScalarUint, kBufVecX}; }
+  static std::vector<std::string> BuffersIn() { return {kBufVecX, kBufScalarUint, kBufSecondScalarUint}; }
   static std::vector<std::string> BuffersOut() { return {kBufScalarUint, kBufSecondScalarUint}; }
 
   // Describes how to obtain the sizes of the buffers
