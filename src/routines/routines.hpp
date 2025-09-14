@@ -1,0 +1,76 @@
+
+// =================================================================================================
+// This file is part of the CLBlast project. Author(s):
+//   Cedric Nugteren <www.cedricnugteren.nl>
+//
+// This file contains all the includes of all the routines in CLBlast.
+//
+// =================================================================================================
+
+#ifndef CLBLAST_ROUTINES_ROUTINES_H_
+#define CLBLAST_ROUTINES_ROUTINES_H_
+
+// BLAS level-1 includes
+#include "routines/level1/xamax.hpp"  // IWYU pragma: export
+#include "routines/level1/xamin.hpp"  // IWYU pragma: export | non-BLAS routine
+#include "routines/level1/xasum.hpp"  // IWYU pragma: export
+#include "routines/level1/xaxpy.hpp"  // IWYU pragma: export
+#include "routines/level1/xcopy.hpp"  // IWYU pragma: export
+#include "routines/level1/xdot.hpp"   // IWYU pragma: export
+#include "routines/level1/xdotc.hpp"  // IWYU pragma: export
+#include "routines/level1/xdotu.hpp"  // IWYU pragma: export
+#include "routines/level1/xmax.hpp"   // IWYU pragma: export | non-BLAS routine
+#include "routines/level1/xmin.hpp"   // IWYU pragma: export | non-BLAS routine
+#include "routines/level1/xnrm2.hpp"  // IWYU pragma: export
+#include "routines/level1/xscal.hpp"  // IWYU pragma: export
+#include "routines/level1/xsum.hpp"   // IWYU pragma: export | non-BLAS routine
+#include "routines/level1/xswap.hpp"  // IWYU pragma: export
+
+// BLAS level-2 includes
+#include "routines/level2/xgbmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xgemv.hpp"  // IWYU pragma: export
+#include "routines/level2/xger.hpp"   // IWYU pragma: export
+#include "routines/level2/xgerc.hpp"  // IWYU pragma: export
+#include "routines/level2/xgeru.hpp"  // IWYU pragma: export
+#include "routines/level2/xhbmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xhemv.hpp"  // IWYU pragma: export
+#include "routines/level2/xher.hpp"   // IWYU pragma: export
+#include "routines/level2/xher2.hpp"  // IWYU pragma: export
+#include "routines/level2/xhpmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xhpr.hpp"   // IWYU pragma: export
+#include "routines/level2/xhpr2.hpp"  // IWYU pragma: export
+#include "routines/level2/xsbmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xspmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xspr.hpp"   // IWYU pragma: export
+#include "routines/level2/xspr2.hpp"  // IWYU pragma: export
+#include "routines/level2/xsymv.hpp"  // IWYU pragma: export
+#include "routines/level2/xsyr.hpp"   // IWYU pragma: export
+#include "routines/level2/xsyr2.hpp"  // IWYU pragma: export
+#include "routines/level2/xtbmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xtpmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xtrmv.hpp"  // IWYU pragma: export
+#include "routines/level2/xtrsv.hpp"  // IWYU pragma: export
+
+// BLAS level-3 includes
+#include "routines/level3/xgemm.hpp"   // IWYU pragma: export
+#include "routines/level3/xhemm.hpp"   // IWYU pragma: export
+#include "routines/level3/xher2k.hpp"  // IWYU pragma: export
+#include "routines/level3/xherk.hpp"   // IWYU pragma: export
+#include "routines/level3/xsymm.hpp"   // IWYU pragma: export
+#include "routines/level3/xsyr2k.hpp"  // IWYU pragma: export
+#include "routines/level3/xsyrk.hpp"   // IWYU pragma: export
+#include "routines/level3/xtrmm.hpp"   // IWYU pragma: export
+#include "routines/level3/xtrsm.hpp"   // IWYU pragma: export
+
+// Level-x includes (non-BLAS)
+#include "routines/levelx/xaxpybatched.hpp"         // IWYU pragma: export
+#include "routines/levelx/xcol2im.hpp"              // IWYU pragma: export
+#include "routines/levelx/xconvgemm.hpp"            // IWYU pragma: export
+#include "routines/levelx/xgemmbatched.hpp"         // IWYU pragma: export
+#include "routines/levelx/xgemmstridedbatched.hpp"  // IWYU pragma: export
+#include "routines/levelx/xhad.hpp"                 // IWYU pragma: export
+#include "routines/levelx/xim2col.hpp"              // IWYU pragma: export
+#include "routines/levelx/xomatcopy.hpp"            // IWYU pragma: export
+
+// CLBLAST_ROUTINES_ROUTINES_H_
+#endif
