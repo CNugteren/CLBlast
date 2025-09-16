@@ -117,7 +117,9 @@ class TestXminmax {
                        Buffer<unsigned int>{queue.GetContext(), buffers_host.scalar_uint.size()},
                        Buffer<unsigned int>{queue.GetContext(), buffers_host.second_scalar_uint.size()}};
     HostToDevice(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
-    return RunReference1(args, buffers, queue);
+    auto status = RunReference1(args, buffers, queue);
+    DeviceToHost(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
+    return status;
   }
 #endif
 
