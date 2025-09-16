@@ -270,6 +270,7 @@ set(HEADERS  # such that they can be discovered by IDEs such as CLion and Visual
   src/routines/level1/xmin.hpp
   src/routines/level1/xsum.hpp
   src/routines/common.hpp
+  src/routines/routines.hpp
   src/utilities/buffer_test.hpp
   src/utilities/compile.hpp
   src/utilities/clblast_exceptions.hpp
