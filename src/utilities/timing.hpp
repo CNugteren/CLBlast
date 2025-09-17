@@ -13,10 +13,12 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <ratio>
 #include <utility>
 #include <vector>
 
-#include "utilities/utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 // =================================================================================================

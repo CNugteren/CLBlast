@@ -10,9 +10,12 @@
 #ifndef CLBLAST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 #define CLBLAST_ROUTINES_XGEMMSTRIDEDBATCHED_H_
 
-#include <vector>
+#include <cstddef>
+#include <string>
 
+#include "clblast.h"
 #include "routine.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

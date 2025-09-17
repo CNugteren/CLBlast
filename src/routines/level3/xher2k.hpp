@@ -12,8 +12,12 @@
 #ifndef CLBLAST_ROUTINES_XHER2K_H_
 #define CLBLAST_ROUTINES_XHER2K_H_
 
-#include "routine.hpp"
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routines/level3/xherk.hpp"
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================
