@@ -11,9 +11,15 @@
 
 #include "clblast_cuda.h"
 
+#include <complex>
+#include <cstddef>
 #include <string>
 
+#include "clblast.h"
+#include "database/database.hpp"
 #include "routines/routines.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 
 namespace clblast {
 

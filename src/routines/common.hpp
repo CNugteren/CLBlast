@@ -12,11 +12,13 @@
 #ifndef CLBLAST_ROUTINES_COMMON_H_
 #define CLBLAST_ROUTINES_COMMON_H_
 
+#include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "database/database.hpp"
-#include "utilities/compile.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

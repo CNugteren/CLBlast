@@ -10,6 +10,7 @@
 #ifndef CLBLAST_ROUTINES_ROUTINES_H_
 #define CLBLAST_ROUTINES_ROUTINES_H_
 
+// IWYU pragma: begin_exports
 // BLAS level-1 includes
 #include "routines/level1/xamax.hpp"
 #include "routines/level1/xamin.hpp"  // non-BLAS routine
@@ -71,6 +72,7 @@
 #include "routines/levelx/xhad.hpp"
 #include "routines/levelx/xim2col.hpp"
 #include "routines/levelx/xomatcopy.hpp"
+// IWYU pragma: end_exports
 
 // CLBLAST_ROUTINES_ROUTINES_H_
 #endif

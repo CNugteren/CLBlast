@@ -11,9 +11,16 @@
 
 #include "clblast.h"
 
+#include <complex>
+#include <cstddef>
 #include <string>
+#include <vector>
 
+#include "database/database.hpp"
 #include "routines/routines.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 

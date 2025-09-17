@@ -9,9 +9,15 @@
 
 #include "database/database.hpp"
 
+#include <cstddef>
 #include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
+#include "clblast.h"
 #include "database/apple_cpu_fallback.hpp"
+#include "database/database_structure.hpp"
 #include "database/kernels/copy/copy.hpp"
 #include "database/kernels/gemm_routine/gemm_routine.hpp"
 #include "database/kernels/invert/invert.hpp"
@@ -28,6 +34,8 @@
 #include "database/kernels/xgemv_fast/xgemv_fast.hpp"
 #include "database/kernels/xgemv_fast_rot/xgemv_fast_rot.hpp"
 #include "database/kernels/xger/xger.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

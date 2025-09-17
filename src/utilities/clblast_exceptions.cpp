@@ -11,6 +11,14 @@
 
 #include "utilities/clblast_exceptions.hpp"
 
+#include <cstdio>
+#include <exception>
+#include <stdexcept>
+#include <string>
+
+#include "clblast.h"
+#include "utilities/backend.hpp"
+
 namespace {
 // =================================================================================================
 

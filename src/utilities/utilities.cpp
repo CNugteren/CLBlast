@@ -9,13 +9,19 @@
 
 #include "utilities/utilities.hpp"
 
-#include <chrono>
 #include <cmath>
+#include <cstddef>
+#include <cstdlib>
 #include <iomanip>
+#include <ios>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "clblast_half.h"
+#include "utilities/backend.hpp"
 #include "utilities/device_mapping.hpp"
 
 namespace clblast {

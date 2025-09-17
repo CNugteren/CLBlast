@@ -6,10 +6,17 @@
 //
 // =================================================================================================
 
+#include <cstddef>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "cache.hpp"
+#include "clblast.h"
+#include "database/database_structure.hpp"
 #include "routines/routines.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
