@@ -12,8 +12,12 @@
 #ifndef CLBLAST_TEST_ROUTINES_XMINMAX_H_
 #define CLBLAST_TEST_ROUTINES_XMINMAX_H_
 
-#include "test/routines/common.hpp"
+#include <cstddef>
+#include <string>
+#include <vector>
+
 #include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {

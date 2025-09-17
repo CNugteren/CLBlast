@@ -9,8 +9,16 @@
 
 #include "routines/levelx/xminmax.hpp"
 
+#include <cstddef>
 #include <string>
 #include <vector>
+
+#include "routine.hpp"
+#include "routines/common.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/buffer_test.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 template <typename T>

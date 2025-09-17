@@ -12,10 +12,8 @@
 #define CLBLAST_TEST_UTILITIES_H_
 
 #include <cstdlib>
-#include <fstream>
-#include <iterator>
-#include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "utilities/backend.hpp"

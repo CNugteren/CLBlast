@@ -7,7 +7,10 @@
 
 #include "test/routines/levelx/xminmax.hpp"
 
+#include <cstddef>
+
 #include "test/correctness/testblas.hpp"
+#include "utilities/utilities.hpp"
 
 // Main function (not within the clblast namespace)
 int main(int argc, char* argv[]) {
