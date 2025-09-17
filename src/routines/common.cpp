@@ -9,7 +9,6 @@
 
 #include "routines/common.hpp"
 
-#include <algorithm>
 #include <cstddef>
 #include <memory>
 #include <vector>

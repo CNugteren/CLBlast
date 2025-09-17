@@ -9,7 +9,8 @@
 
 #include "routines/levelx/xconvgemm.hpp"
 
-#include <cassert>
+#include <assert.h>
+
 #include <cstddef>
 #include <string>
 #include <vector>

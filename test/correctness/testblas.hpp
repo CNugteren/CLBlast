@@ -16,7 +16,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
-#include <functional>
 #include <string>
 #include <vector>
 
