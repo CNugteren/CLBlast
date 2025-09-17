@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "clblast.h"
-#include "routine.hpp"
 #include "test/test_utilities.hpp"
 #include "test/wrapper_cuda.hpp"
 #include "utilities/backend.hpp"

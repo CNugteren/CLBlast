@@ -10,9 +10,19 @@
 #include "test/correctness/testblas.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdio>
 #include <iostream>
 #include <random>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <vector>
 
+#include "clblast.h"
+#include "test/correctness/tester.hpp"
+#include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
