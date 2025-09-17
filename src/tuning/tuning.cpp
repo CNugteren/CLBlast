@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-#include "clblast.h"
+
 #include "tuning/configurations.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"

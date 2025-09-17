@@ -12,6 +12,10 @@
 #ifndef CLBLAST_CLBLAST_H_
 #define CLBLAST_CLBLAST_H_
 
+#ifdef CLBLAST_BUILDING_CLBLAST
+// IWYU pragma: private, include "utilities/backend.hpp"
+#endif
+
 #include <cstdlib>        // For size_t
 #include <string>         // For OverrideParameters function
 #include <unordered_map>  // For OverrideParameters function

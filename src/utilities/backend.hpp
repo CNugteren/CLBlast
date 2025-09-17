@@ -2,7 +2,7 @@
 #define CLBLAST_BACKEND_HPP_
 
 #ifdef OPENCL_API
-#include "clblast.h"   // IWYU pragma: export
+   // IWYU pragma: export
 #include "clpp11.hpp"  // IWYU pragma: export
 #elif CUDA_API
 #include "clblast_cuda.h"  // IWYU pragma: export

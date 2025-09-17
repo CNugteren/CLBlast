@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "clblast.h"
+
 #include "utilities/backend.hpp"
 
 namespace {

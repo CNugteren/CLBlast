@@ -19,7 +19,7 @@
 #include <utility>
 #include <vector>
 
-#include "clblast.h"
+
 #include "tuning/configurations.hpp"
 #include "tuning/kernels/copy_fast.hpp"
 #include "tuning/kernels/copy_pad.hpp"

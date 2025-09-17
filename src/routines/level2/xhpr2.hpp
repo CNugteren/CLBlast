@@ -13,7 +13,7 @@
 #include <cstddef>
 #include <string>
 
-#include "clblast.h"
+
 #include "routines/level2/xher2.hpp"
 #include "utilities/backend.hpp"
 

@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
+
 #include "utilities/backend.hpp"
 #include "utilities/msvc.hpp"  // IWYU pragma: export
 

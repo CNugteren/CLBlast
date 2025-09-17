@@ -19,7 +19,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "clblast.h"
+
 #include "database/database_structure.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"

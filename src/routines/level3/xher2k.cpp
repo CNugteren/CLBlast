@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <string>
 
-#include "clblast.h"
+
 #include "routines/level3/xherk.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
