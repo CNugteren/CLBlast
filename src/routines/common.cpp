@@ -13,7 +13,6 @@
 #include <memory>
 #include <vector>
 
-
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"

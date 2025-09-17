@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 
-
 #include "kernel_preprocessor.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"

@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-
 #include "routine.hpp"
 #include "routines/common.hpp"
 #include "routines/levelx/xim2col.hpp"

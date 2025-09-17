@@ -9,7 +9,6 @@
 
 #include "tuning/kernels/copy_pad.hpp"
 
-
 #include "tuning/tuning.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"

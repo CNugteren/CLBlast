@@ -13,7 +13,6 @@
 #include <cstddef>
 #include <string>
 
-
 #include "routines/level2/xher2.hpp"
 #include "utilities/backend.hpp"
 

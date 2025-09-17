@@ -13,7 +13,6 @@
 #include <cstddef>
 #include <string>
 
-
 #include "routine.hpp"
 #include "utilities/backend.hpp"
 

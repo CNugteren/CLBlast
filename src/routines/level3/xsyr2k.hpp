@@ -15,7 +15,6 @@
 #include <cstddef>
 #include <string>
 
-
 #include "routines/level3/xsyrk.hpp"
 #include "utilities/backend.hpp"
 

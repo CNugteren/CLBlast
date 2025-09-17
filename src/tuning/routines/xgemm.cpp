@@ -17,7 +17,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "cxpp11_common.hpp"
 #include "test/test_utilities.hpp"
 #include "tuning/configurations.hpp"

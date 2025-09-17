@@ -18,7 +18,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "routines/common.hpp"
 #include "routines/level3/xgemm.hpp"
 #include "routines/levelx/xinvert.hpp"

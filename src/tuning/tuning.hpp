@@ -18,7 +18,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "tuning/configurations.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"

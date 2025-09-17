@@ -19,7 +19,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "tuning/configurations.hpp"
 #include "tuning/kernels/copy_fast.hpp"
 #include "tuning/kernels/copy_pad.hpp"

@@ -16,7 +16,6 @@
 #include <stdexcept>
 #include <string>
 
-
 #include "utilities/backend.hpp"
 
 namespace {

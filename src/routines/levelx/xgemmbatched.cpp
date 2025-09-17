@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 
-
 #include "routine.hpp"
 #include "routines/common.hpp"
 #include "routines/level3/xgemm.hpp"

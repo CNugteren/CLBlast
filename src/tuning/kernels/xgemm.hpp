@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-
 #include "tuning/configurations.hpp"
 #include "tuning/tuning.hpp"
 #include "utilities/backend.hpp"

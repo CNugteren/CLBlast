@@ -12,7 +12,6 @@
 #include <cstddef>
 #include <string>
 
-
 #include "routines/level2/xger.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
