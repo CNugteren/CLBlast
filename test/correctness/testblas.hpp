@@ -14,9 +14,13 @@
 #define CLBLAST_TEST_CORRECTNESS_TESTBLAS_H_
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdio>
 #include <string>
 #include <vector>
 
+#include "clblast.h"
+#include "routine.hpp"
 #include "test/correctness/tester.hpp"
 #include "utilities/utilities.hpp"
 

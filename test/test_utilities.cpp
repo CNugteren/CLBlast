@@ -11,6 +11,10 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
+#include <cstdio>
+#include <fstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

@@ -10,7 +10,14 @@
 #ifndef CLBLAST_ROUTINES_XGEMM_H_
 #define CLBLAST_ROUTINES_XGEMM_H_
 
+#include <cstddef>
+#include <string>
+
+#include "clblast.h"
 #include "routine.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/clblast_exceptions.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

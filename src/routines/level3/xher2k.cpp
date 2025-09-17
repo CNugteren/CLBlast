@@ -9,8 +9,13 @@
 
 #include "routines/level3/xher2k.hpp"
 
+#include <cstddef>
 #include <string>
-#include <vector>
+
+#include "clblast.h"
+#include "routines/level3/xherk.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================

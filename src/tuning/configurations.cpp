@@ -10,8 +10,10 @@
 
 #include "tuning/configurations.hpp"
 
-#include <string>
+#include <cstddef>
 #include <vector>
+
+#include "utilities/backend.hpp"
 
 namespace clblast {
 // =================================================================================================

@@ -13,6 +13,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace clblast {
 // A special namespace to hold all the global constant variables
