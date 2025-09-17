@@ -19,10 +19,10 @@
 #include <unordered_map>
 #include <vector>
 
-
 #include "database/database_structure.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
+
 
 namespace clblast {
 // =================================================================================================
