@@ -1,3 +1,12 @@
+
+// =================================================================================================
+// This file is part of the CLBlast project. Author(s):
+//   Cedric Nugteren <www.cedricnugteren.nl>, Ekansh Jain
+//
+// This file decides which backend to use for the library (OpenCL or CUDA)
+//
+// =================================================================================================
+
 #ifndef CLBLAST_BACKEND_HPP_
 #define CLBLAST_BACKEND_HPP_
 
