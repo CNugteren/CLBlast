@@ -12,7 +12,6 @@
 #include <cstddef>
 #include <string>
 
-#include "clblast.h"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 

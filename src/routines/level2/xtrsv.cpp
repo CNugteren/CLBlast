@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
 #include "routines/common.hpp"
 #include "routines/level2/xgemv.hpp"
 #include "utilities/backend.hpp"

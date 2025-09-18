@@ -16,7 +16,6 @@
 #include <cstddef>
 #include <string>
 
-#include "clblast.h"
 #include "routines/level3/xgemm.hpp"
 #include "utilities/backend.hpp"
 

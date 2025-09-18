@@ -17,7 +17,6 @@
 #include <string>
 #include <tuple>
 
-#include "clblast.h"
 #include "utilities/backend.hpp"
 
 namespace clblast {

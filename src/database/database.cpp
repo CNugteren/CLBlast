@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
 #include "database/apple_cpu_fallback.hpp"
 #include "database/database_structure.hpp"
 #include "database/kernels/copy/copy.hpp"

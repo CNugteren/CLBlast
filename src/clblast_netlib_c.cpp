@@ -14,7 +14,6 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#include "clblast.h"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 

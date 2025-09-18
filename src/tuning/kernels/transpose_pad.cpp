@@ -9,7 +9,6 @@
 
 #include "tuning/kernels/transpose_pad.hpp"
 
-#include "clblast.h"
 #include "tuning/tuning.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
