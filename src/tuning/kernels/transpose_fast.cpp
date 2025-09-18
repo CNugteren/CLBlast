@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
             clblast::TransposeTestValidArguments<double2>, clblast::TransposeSetConstraints,
             clblast::TransposeComputeLocalMemSize<double2>, clblast::TransposeSetArguments<double2>);
         break;
+      case clblast::Precision::kAny:
+        break;
     }
     return 0;
   } catch (...) {

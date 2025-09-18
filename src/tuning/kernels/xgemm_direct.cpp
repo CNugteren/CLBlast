@@ -54,6 +54,8 @@ void StartVariation(int argc, char* argv[]) {
           clblast::XgemmDirectTestValidArguments<double2>, clblast::XgemmDirectSetConstraints,
           clblast::XgemmDirectComputeLocalMemSize<double2>, clblast::XgemmDirectSetArguments<double2>);
       break;
+    case clblast::Precision::kAny:
+      break;
   }
 }
 
