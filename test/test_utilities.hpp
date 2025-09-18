@@ -12,10 +12,8 @@
 #define CLBLAST_TEST_UTILITIES_H_
 
 #include <cstdlib>
-#include <fstream>
-#include <iterator>
-#include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "utilities/backend.hpp"
@@ -56,6 +54,7 @@ struct Buffers {
   Buffer<T> ap_mat;
   Buffer<T> scalar;
   Buffer<unsigned int> scalar_uint;
+  Buffer<unsigned int> second_scalar_uint;
 };
 template <typename T>
 struct BuffersHost {
@@ -67,6 +66,7 @@ struct BuffersHost {
   std::vector<T> ap_mat;
   std::vector<T> scalar;
   std::vector<unsigned int> scalar_uint;
+  std::vector<unsigned int> second_scalar_uint;
 };
 
 // =================================================================================================
