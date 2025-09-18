@@ -122,6 +122,7 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     args.c_size += kCanarySize;
     args.ap_size += kCanarySize;
     args.scalar_size += kCanarySize;
+    args.second_scalar_size += kCanarySize;
 
     // Prints the current test configuration
     if (verbose_) {
