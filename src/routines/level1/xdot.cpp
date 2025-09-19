@@ -51,12 +51,12 @@ void Xdot<T>::DoDot(const size_t n, const Buffer<T>& dot_buffer, const size_t do
   TestVectorScalar(1, dot_buffer, dot_offset);
 
   // Retrieves the Xdot kernels from the compiled binary
-  auto kernel1 = Kernel(program_, "Xdot");
-  auto kernel2 = Kernel(program_, "XdotEpilogue");
+  auto kernel1 = Kernel(getProgram(), "Xdot");
+  auto kernel2 = Kernel(getProgram(), "XdotEpilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2 * db_["WGS2"];
-  auto temp_buffer = Buffer<T>(context_, temp_size);
+  auto temp_size = 2 * getDatabase()["WGS2"];
+  auto temp_buffer = Buffer<T>(getContext(), temp_size);
 
   // Sets the kernel arguments
   kernel1.SetArgument(0, static_cast<int>(n));
@@ -73,10 +73,10 @@ void Xdot<T>::DoDot(const size_t n, const Buffer<T>& dot_buffer, const size_t do
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
-  auto local1 = std::vector<size_t>{db_["WGS1"]};
+  auto global1 = std::vector<size_t>{getDatabase()["WGS1"] * temp_size};
+  auto local1 = std::vector<size_t>{getDatabase()["WGS1"]};
   auto kernelEvent = Event();
-  RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
+  RunKernel(kernel1, getQueue(), getDevice(), global1, local1, kernelEvent.pointer());
   eventWaitList.push_back(kernelEvent);
 
   // Sets the arguments for the epilogue kernel
@@ -85,9 +85,9 @@ void Xdot<T>::DoDot(const size_t n, const Buffer<T>& dot_buffer, const size_t do
   kernel2.SetArgument(2, static_cast<int>(dot_offset));
 
   // Launches the epilogue kernel
-  auto global2 = std::vector<size_t>{db_["WGS2"]};
-  auto local2 = std::vector<size_t>{db_["WGS2"]};
-  RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
+  auto global2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  auto local2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  RunKernel(kernel2, getQueue(), getDevice(), global2, local2, getEvent(), eventWaitList);
 }
 
 // =================================================================================================

@@ -11,6 +11,8 @@
 #ifndef CLBLAST_TEST_WRAPPER_CBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CBLAS_H_
 
+// IWYU pragma: private, include "routines/common.hpp"
+
 #include <cstddef>
 #include <vector>
 
@@ -26,6 +28,7 @@ extern "C" {
 #endif
 }
 
+#include "clblast_half.h"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -41,6 +44,7 @@ CBLAS_SIDE convertToCBLAS(const Side v) { return (v == Side::kLeft) ? CblasLeft 
 
 // OpenBLAS is not fully Netlib CBLAS compatible
 #ifdef OPENBLAS_VERSION
+#include <openblas_config.h>
 using return_pointer_float = openblas_complex_float*;
 using return_pointer_double = openblas_complex_double*;
 #else

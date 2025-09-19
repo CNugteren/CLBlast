@@ -49,6 +49,8 @@ int main(int argc, char* argv[]) {
                                 clblast::XaxpyTestValidArguments<double2>, clblast::XaxpySetConstraints,
                                 clblast::XaxpyComputeLocalMemSize<double2>, clblast::XaxpySetArguments<double2>);
         break;
+      case clblast::Precision::kAny:
+        break;
     }
     return 0;
   } catch (...) {

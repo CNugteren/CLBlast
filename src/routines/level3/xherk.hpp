@@ -30,16 +30,15 @@ class Xherk : public Routine {
   Xherk(Queue& queue, EventPointer event, const std::string& name = "HERK");
 
   // Templated-precision implementation of the routine
-  void DoHerk(const Layout layout, const Triangle triangle, const Transpose a_transpose, const size_t n, const size_t k,
-              const U alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const U beta,
-              const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoHerk(Layout layout, Triangle triangle, Transpose a_transpose, size_t n, size_t k, U alpha,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, U beta, const Buffer<T>& c_buffer,
+              size_t c_offset, size_t c_ld);
 
   // Helper function to be reused for HER2K
-  void HerkAB(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Transpose b_transpose,
-              const size_t n, const size_t k, const T complex_alpha, const Buffer<T>& a_buffer, const size_t a_offset,
-              const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld,
-              const T complex_beta, const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld,
-              EventPointer final_event, const bool diagonal_to_zero);
+  void HerkAB(Layout layout, Triangle triangle, Transpose a_transpose, Transpose b_transpose, size_t n, size_t k,
+              T complex_alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer,
+              size_t b_offset, size_t b_ld, T complex_beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld,
+              EventPointer final_event, bool diagonal_to_zero);
 };
 
 // =================================================================================================

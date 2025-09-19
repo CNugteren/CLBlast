@@ -36,7 +36,7 @@ void RunKernel(Kernel& kernel, Queue& queue, const Device& device, std::vector<s
       }
     }
     auto local_size = size_t{1};
-    for (auto& item : local) {
+    for (const auto& item : local) {
       local_size *= item;
     }
     if (local_size > device.MaxWorkGroupSize()) {
@@ -46,9 +46,7 @@ void RunKernel(Kernel& kernel, Queue& queue, const Device& device, std::vector<s
 
     // Make sure the global thread sizes are at least equal to the local sizes
     for (auto i = size_t{0}; i < global.size(); ++i) {
-      if (global[i] < local[i]) {
-        global[i] = local[i];
-      }
+      global[i] = std::max(global[i], local[i]);
     }
 
     // Verify that the global thread sizes are a multiple of the local sizes

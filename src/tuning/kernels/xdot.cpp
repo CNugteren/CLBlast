@@ -50,6 +50,8 @@ void StartVariation(int argc, char* argv[]) {
                               clblast::XdotTestValidArguments<double2>, clblast::XdotSetConstraints,
                               clblast::XdotComputeLocalMemSize<double2>, clblast::XdotSetArguments<double2>);
       break;
+    case clblast::Precision::kAny:
+      break;
   }
 }
 

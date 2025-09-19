@@ -49,6 +49,8 @@ int main(int argc, char* argv[]) {
                                 clblast::PadTestValidArguments<double2>, clblast::PadSetConstraints,
                                 clblast::PadComputeLocalMemSize<double2>, clblast::PadSetArguments<double2>);
         break;
+      case clblast::Precision::kAny:
+        break;
     }
     return 0;
   } catch (...) {

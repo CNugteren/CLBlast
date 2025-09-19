@@ -225,6 +225,8 @@ int main(int argc, char* argv[]) {
       case clblast::Precision::kComplexDouble:
         clblast::TuneXgemm<double2>(argc, argv);
         break;
+      case clblast::Precision::kAny:
+        break;
     }
     return 0;
   } catch (...) {

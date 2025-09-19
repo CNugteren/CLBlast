@@ -10,12 +10,15 @@
 #ifndef CLBLAST_TEST_WRAPPER_CUDA_H_
 #define CLBLAST_TEST_WRAPPER_CUDA_H_
 
+// IWYU pragma: private, include "routines/common.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "clblast_half.h"
 #include "utilities/utilities.hpp"
 
 #ifdef CLBLAST_REF_CUBLAS

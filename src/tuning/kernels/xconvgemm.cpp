@@ -41,6 +41,10 @@ void StartVariation(int argc, char* argv[]) {
                              clblast::XConvGemmSetConstraints, clblast::XConvGemmComputeLocalMemSize<double>,
                              clblast::XConvGemmSetArguments<double>);
       break;
+    case clblast::Precision::kComplexSingle:
+    case clblast::Precision::kComplexDouble:
+    case clblast::Precision::kAny:
+      break;
   }
 }
 

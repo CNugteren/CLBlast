@@ -50,6 +50,8 @@ int main(int argc, char* argv[]) {
                                 clblast::InvertSetConstraints, clblast::InvertComputeLocalMemSize<double2>,
                                 clblast::InvertSetArguments<double2>);
         break;
+      case clblast::Precision::kAny:
+        break;
     }
     return 0;
   } catch (...) {
