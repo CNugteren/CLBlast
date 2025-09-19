@@ -10,6 +10,8 @@
 #ifndef CLBLAST_TEST_WRAPPER_CUDA_H_
 #define CLBLAST_TEST_WRAPPER_CUDA_H_
 
+// IWYU pragma: private, include "routines/common.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <stdexcept>

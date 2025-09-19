@@ -12,8 +12,15 @@
 #ifndef CLBLAST_TEST_ROUTINES_XOMATCOPY_H_
 #define CLBLAST_TEST_ROUTINES_XOMATCOPY_H_
 
+#include <cstddef>
+#include <string>
+#include <vector>
+
 #include "clblast_half.h"
 #include "test/routines/common.hpp"
+#include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -24,8 +31,8 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
   const auto a_rotated = (args.layout == Layout::kRowMajor);
   const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
                          (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
-  const auto a_base = (a_rotated) ? args.a_ld * (args.m - 1) + args.n : args.a_ld * (args.n - 1) + args.m;
-  const auto b_base = (b_rotated) ? args.b_ld * (args.m - 1) + args.n : args.b_ld * (args.n - 1) + args.m;
+  const auto a_base = (a_rotated) ? (args.a_ld * (args.m - 1)) + args.n : (args.a_ld * (args.n - 1)) + args.m;
+  const auto b_base = (b_rotated) ? (args.b_ld * (args.m - 1)) + args.n : (args.b_ld * (args.n - 1)) + args.m;
   if ((args.m == 0) || (args.n == 0)) {
     return StatusCode::kInvalidDimension;
   }
@@ -49,8 +56,8 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
       const auto a_two = (a_rotated) ? id1 : id2;
       const auto b_one = (b_rotated) ? id2 : id1;
       const auto b_two = (b_rotated) ? id1 : id2;
-      const auto a_index = a_two * args.a_ld + a_one + args.a_offset;
-      const auto b_index = b_two * args.b_ld + b_one + args.b_offset;
+      const auto a_index = (a_two * args.a_ld) + a_one + args.a_offset;
+      const auto b_index = (b_two * args.b_ld) + b_one + args.b_offset;
       auto a_value = buffers_host.a_mat[a_index];
       if (args.a_transpose == Transpose::kConjugate) {
         a_value = ComplexConjugate(a_value);
@@ -106,17 +113,17 @@ class TestXomatcopy {
   static size_t GetSizeA(const Arguments<T>& args) {
     const auto a_rotated = (args.layout == Layout::kRowMajor);
     const auto a_two = (a_rotated) ? args.m : args.n;
-    return a_two * args.a_ld + args.a_offset;
+    return (a_two * args.a_ld) + args.a_offset;
   }
   static size_t GetSizeB(const Arguments<T>& args) {
     const auto b_rotated = (args.layout == Layout::kColMajor && args.a_transpose != Transpose::kNo) ||
                            (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
     const auto b_two = (b_rotated) ? args.n : args.m;
-    return b_two * args.b_ld + args.b_offset;
+    return (b_two * args.b_ld) + args.b_offset;
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T>& args, Queue&) {
+  static void SetSizes(Arguments<T>& args, Queue& /*unused*/) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
   }
@@ -124,17 +131,18 @@ class TestXomatcopy {
   // Describes what the default values of the leading dimensions of the matrices are
   static size_t DefaultLDA(const Arguments<T>& args) { return args.n; }
   static size_t DefaultLDB(const Arguments<T>& args) { return args.m; }
-  static size_t DefaultLDC(const Arguments<T>&) { return 1; }  // N/A for this routine
+  static size_t DefaultLDC(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
 
   // Describes which transpose options are relevant for this routine
   using Transposes = std::vector<Transpose>;
   static Transposes GetATransposes(const Transposes& all) { return all; }
-  static Transposes GetBTransposes(const Transposes&) { return {}; }  // N/A for this routine
+  static Transposes GetBTransposes(const Transposes& /*unused*/) { return {}; }  // N/A for this routine
 
   // Describes how to prepare the input data
-  static void PrepareData(const Arguments<T>&, Queue&, const int, std::vector<T>&, std::vector<T>&, std::vector<T>&,
-                          std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&) {
-  }  // N/A for this routine
+  static void PrepareData(const Arguments<T>& /*unused*/, Queue& /*unused*/, const int /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/) {}  // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T>& args, Buffers<T>& buffers, Queue& queue) {
@@ -166,10 +174,12 @@ class TestXomatcopy {
     return status;
   }
 
-  static StatusCode RunReference2(const Arguments<T>& args, BuffersHost<T>& buffers_host, Queue&) {
+  static StatusCode RunReference2(const Arguments<T>& args, BuffersHost<T>& buffers_host, Queue& /*unused*/) {
     return RunReference(args, buffers_host);
   }
-  static StatusCode RunReference3(const Arguments<T>&, BuffersCUDA<T>&, Queue&) { return StatusCode::kUnknownError; }
+  static StatusCode RunReference3(const Arguments<T>& /*unused*/, BuffersCUDA<T>& /*unused*/, Queue& /*unused*/) {
+    return StatusCode::kUnknownError;
+  }
 
   // Describes how to download the results of the computation (more importantly: which buffer)
   static std::vector<T> DownloadResult(const Arguments<T>& args, Buffers<T>& buffers, Queue& queue) {
@@ -186,7 +196,7 @@ class TestXomatcopy {
                            (args.layout == Layout::kRowMajor && args.a_transpose == Transpose::kNo);
     const auto b_one = (b_rotated) ? id2 : id1;
     const auto b_two = (b_rotated) ? id1 : id2;
-    return b_two * args.b_ld + b_one + args.b_offset;
+    return (b_two * args.b_ld) + b_one + args.b_offset;
   }
 
   // Describes how to compute performance metrics
