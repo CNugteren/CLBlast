@@ -9,9 +9,6 @@
 //
 // =================================================================================================
 
-#ifdef CLBLAST_BUILDING_CLBLAST
-#undef CLBLAST_BUILDING_CLBLAST
-#endif
 #include "clblast_cuda.h"
 
 #include <complex>

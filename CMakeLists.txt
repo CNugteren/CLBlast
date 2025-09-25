@@ -343,9 +343,6 @@ target_include_directories(clblast PUBLIC
                            $<INSTALL_INTERFACE:include>
                            ${API_INCLUDE_DIRS})
 
-# Tells CLBlast Includes that they are being used for internal usage
-target_compile_definitions(clblast PRIVATE CLBLAST_BUILDING_CLBLAST)
-
 # Sets the proper __declspec(dllexport) keyword for Visual Studio when the library is built
 if(MSVC)
   if(BUILD_SHARED_LIBS)

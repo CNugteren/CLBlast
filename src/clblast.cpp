@@ -9,10 +9,6 @@
 //
 // =================================================================================================
 
-#ifdef CLBLAST_BUILDING_CLBLAST
-#undef CLBLAST_BUILDING_CLBLAST
-#endif
-
 #include "clblast.h"
 
 #include <complex>
