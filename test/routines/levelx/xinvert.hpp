@@ -12,8 +12,14 @@
 #ifndef CLBLAST_TEST_ROUTINES_XINVERT_H_
 #define CLBLAST_TEST_ROUTINES_XINVERT_H_
 
-#include "src/routines/levelx/xinvert.hpp"
+#include <cstddef>
+#include <string>
+#include <vector>
+
 #include "test/routines/common.hpp"
+#include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
+#include "utilities/utilities.hpp"
 
 namespace clblast {
 // =================================================================================================
@@ -40,13 +46,13 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
   // Start at zero
   for (size_t i = 0; i < args.m; ++i) {
     for (size_t j = 0; j < args.n; ++j) {
-      buffers_host.b_mat[j * args.m + i] = T{0.0};
+      buffers_host.b_mat[(j * args.m) + i] = T{0.0};
     }
   }
 
   // Loops over the amount of diagonal blocks of size args.m by args.m each
   for (auto block_id = size_t{0}; block_id < num_blocks; ++block_id) {
-    const auto a_offset = block_id * (block_size + a_ld * block_size) + args.a_offset;
+    const auto a_offset = (block_id * (block_size + a_ld * block_size)) + args.a_offset;
     const auto b_offset = block_id * block_size * block_size;
 
     // Inverts the diagonal elements of the matrix
@@ -54,13 +60,13 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
       auto a_value = T{1.0};
       if (args.diagonal == Diagonal::kNonUnit) {
         if (i + block_id * block_size < args.n) {
-          if (buffers_host.a_mat[i * a_ld + i + a_offset] == T{0.0}) {
+          if (buffers_host.a_mat[(i * a_ld) + i + a_offset] == T{0.0}) {
             return StatusCode::kUnknownError;
           }
-          a_value = T{1.0} / buffers_host.a_mat[i * a_ld + i + a_offset];
+          a_value = T{1.0} / buffers_host.a_mat[(i * a_ld) + i + a_offset];
         }
       }
-      buffers_host.b_mat[i * b_ld + i + b_offset] = a_value;
+      buffers_host.b_mat[(i * b_ld) + i + b_offset] = a_value;
     }
 
     // Inverts the upper triangle row by row
@@ -71,11 +77,11 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
           for (auto k = i + 1; k <= j; ++k) {
             auto a_value = T{0.0};
             if ((i + block_id * block_size < args.n) && (k + block_id * block_size < args.n)) {
-              a_value = buffers_host.a_mat[k * a_ld + i + a_offset];
+              a_value = buffers_host.a_mat[(k * a_ld) + i + a_offset];
             }
-            sum += a_value * buffers_host.b_mat[j * b_ld + k + b_offset];
+            sum += a_value * buffers_host.b_mat[(j * b_ld) + k + b_offset];
           }
-          buffers_host.b_mat[j * b_ld + i + b_offset] = -sum * buffers_host.b_mat[i * b_ld + i + b_offset];
+          buffers_host.b_mat[(j * b_ld) + i + b_offset] = -sum * buffers_host.b_mat[(i * b_ld) + i + b_offset];
         }
       }
     }
@@ -88,11 +94,11 @@ StatusCode RunReference(const Arguments<T>& args, BuffersHost<T>& buffers_host) 
           for (auto k = j; k < i; ++k) {
             auto a_value = T{0.0};
             if ((i + block_id * block_size < args.n) && (k + block_id * block_size < args.n)) {
-              a_value = buffers_host.a_mat[k * a_ld + i + a_offset];
+              a_value = buffers_host.a_mat[(k * a_ld) + i + a_offset];
             }
-            sum += a_value * buffers_host.b_mat[j * b_ld + k + b_offset];
+            sum += a_value * buffers_host.b_mat[(j * b_ld) + k + b_offset];
           }
-          buffers_host.b_mat[j * b_ld + i + b_offset] = -sum * buffers_host.b_mat[i * b_ld + i + b_offset];
+          buffers_host.b_mat[(j * b_ld) + i + b_offset] = -sum * buffers_host.b_mat[(i * b_ld) + i + b_offset];
         }
       }
     }
@@ -140,7 +146,7 @@ class TestXinvert {
   static std::vector<std::string> BuffersOut() { return {kBufMatB}; }
 
   // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeA(const Arguments<T>& args) { return args.n * args.a_ld + args.a_offset; }
+  static size_t GetSizeA(const Arguments<T>& args) { return (args.n * args.a_ld) + args.a_offset; }
   static size_t GetSizeB(const Arguments<T>& args) {
     const auto block_size = args.m;
     const auto num_blocks = CeilDiv(args.n, block_size);
@@ -148,25 +154,26 @@ class TestXinvert {
   }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T>& args, Queue&) {
+  static void SetSizes(Arguments<T>& args, Queue& /*unused*/) {
     args.a_size = GetSizeA(args);
     args.b_size = GetSizeB(args);
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
   static size_t DefaultLDA(const Arguments<T>& args) { return args.n; }
-  static size_t DefaultLDB(const Arguments<T>&) { return 1; }  // N/A for this routine
-  static size_t DefaultLDC(const Arguments<T>&) { return 1; }  // N/A for this routine
+  static size_t DefaultLDB(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
+  static size_t DefaultLDC(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
 
   // Describes which omatcopyose options are relevant for this routine
   using Transposes = std::vector<Transpose>;
-  static Transposes GetATransposes(const Transposes&) { return {}; }  // N/A for this routine
-  static Transposes GetBTransposes(const Transposes&) { return {}; }  // N/A for this routine
+  static Transposes GetATransposes(const Transposes& /*unused*/) { return {}; }  // N/A for this routine
+  static Transposes GetBTransposes(const Transposes& /*unused*/) { return {}; }  // N/A for this routine
 
   // Describes how to prepare the input data
-  static void PrepareData(const Arguments<T>&, Queue&, const int, std::vector<T>&, std::vector<T>&, std::vector<T>&,
-                          std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&) {
-  }  // N/A for this routine
+  static void PrepareData(const Arguments<T>& /*unused*/, Queue& /*unused*/, const int /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/) {}  // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T>& args, Buffers<T>& buffers, Queue& queue) {
@@ -218,7 +225,7 @@ class TestXinvert {
   static size_t ResultID1(const Arguments<T>& args) { return args.m; }
   static size_t ResultID2(const Arguments<T>& args) { return Ceil(args.n, args.m); }
   static size_t GetResultIndex(const Arguments<T>& args, const size_t id1, const size_t id2) {
-    return id1 * Ceil(args.n, args.m) + id2;
+    return (id1 * Ceil(args.n, args.m)) + id2;
   }
 
   // Describes how to compute performance metrics

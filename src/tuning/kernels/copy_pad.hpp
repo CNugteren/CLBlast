@@ -20,7 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults PadGetTunerDefaults(const int) {
+TunerDefaults PadGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -30,7 +30,7 @@ TunerDefaults PadGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings PadGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings PadGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -77,16 +77,16 @@ TunerSettings PadGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void PadTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> PadSetConstraints(const int) { return {}; }
+void PadTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> PadSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo PadComputeLocalMemSize(const int) {
+LocalMemSizeInfo PadComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void PadSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void PadSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.m));
