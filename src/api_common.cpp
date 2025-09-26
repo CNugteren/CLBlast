@@ -64,6 +64,7 @@ void FillCacheForPrecision(Queue& queue) {
 
     // Runs all the non-BLAS set-up functions
     Xomatcopy<Type>(queue, nullptr);
+    Xminmax<Type>(queue, nullptr);
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
@@ -107,7 +108,6 @@ void FillCacheForPrecision(Queue& queue) {
     Xhemm<Complex>(queue, nullptr);
     Xherk<Complex, Real>(queue, nullptr);
     Xher2k<Complex, Real>(queue, nullptr);
-    Xspr2<Real>(queue, nullptr);
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {

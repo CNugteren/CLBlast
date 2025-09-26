@@ -18,7 +18,6 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
 #include "clblast_half.h"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
@@ -95,6 +94,9 @@ void DeviceToHost(const Arguments<U>& args, Buffers<T>& buffers, BuffersHost<T>&
     } else if (name == kBufScalarUint) {
       buffers_host.scalar_uint = std::vector<unsigned int>(args.scalar_size, 0);
       buffers.scalar_uint.Read(queue, args.scalar_size, buffers_host.scalar_uint);
+    } else if (name == kBufSecondScalarUint) {
+      buffers_host.second_scalar_uint = std::vector<unsigned int>(args.second_scalar_size, 0);
+      buffers.second_scalar_uint.Read(queue, args.second_scalar_size, buffers_host.second_scalar_uint);
     } else {
       throw std::runtime_error("Invalid buffer name");
     }
@@ -121,6 +123,8 @@ void HostToDevice(const Arguments<U>& args, Buffers<T>& buffers, BuffersHost<T>&
       buffers.scalar.Write(queue, args.scalar_size, buffers_host.scalar);
     } else if (name == kBufScalarUint) {
       buffers.scalar_uint.Write(queue, args.scalar_size, buffers_host.scalar_uint);
+    } else if (name == kBufSecondScalarUint) {
+      buffers.second_scalar_uint.Write(queue, args.second_scalar_size, buffers_host.second_scalar_uint);
     } else {
       throw std::runtime_error("Invalid buffer name");
     }

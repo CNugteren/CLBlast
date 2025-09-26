@@ -2487,6 +2487,69 @@ def gemmStridedBatched(queue, m, n, k, batch_count, a, b, c, a_ld, b_ld, c_ld, a
     return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
+# Vector scaling: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+####################################################################################################
+
+cdef extern from "clblast_c.h":
+    CLBlastStatusCode CLBlastSminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                      cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                      const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                      cl_event* event);
+    CLBlastStatusCode CLBlastDminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                      cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                      const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                      cl_event* event);
+    CLBlastStatusCode CLBlastCminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                      cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                      const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                      cl_event* event);
+    CLBlastStatusCode CLBlastZminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                      cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                      const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                      cl_event* event);
+    CLBlastStatusCode CLBlastHminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                      cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                      const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                      cl_event* event);
+
+def minmax(queue, n, imax, imin, x, x_inc = 1, imax_offset = 0, imin_offset = 0, x_offset = 0):
+    """
+    xMINMAX: Min and Max of a Vector
+    """
+
+    dtype = check_dtype([x], ["float32", "float64", "complex64", "complex128", "float16"])
+    check_dtype([imax], ["uint16", "uint32", "uint64"])
+    check_vector(x, "x")
+    check_matrix(imax, "imax")
+    check_dtype([imin], ["uint16", "uint32", "uint64"])
+    check_matrix(imin, "imin")
+
+    cdef cl_mem imax_buffer = <cl_mem><ptrdiff_t>imax.base_data.int_ptr
+    cdef cl_mem imin_buffer = <cl_mem><ptrdiff_t>imin.base.data.int_ptr
+    cdef cl_mem x_buffer = <cl_mem><ptrdiff_t>x.base_data.int_ptr
+
+    cdef cl_command_queue command_queue = <cl_command_queue><ptrdiff_t>queue.int_ptr
+    cdef cl_event event = NULL
+
+    cdef CLBlastStatusCode err
+    if dtype == np.dtype("float32"):
+        err = CLBlastSminmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float64"):
+        err = CLBlastDminmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex64"):
+        err = CLBlastCminmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("complex128"):
+        err = CLBlastZminmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    elif dtype == np.dtype("float16"):
+        err = CLBlastHminmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, &command_queue, &event)
+    else:
+        raise ValueError("PyCLBlast: Unrecognized data-type '%s'" % dtype)
+
+    if err != CLBlastSuccess:
+        raise RuntimeError("PyCLBlast: 'CLBlastXminmax' failed: %s" % get_status_message(err))
+    return cl.Event.from_int_ptr(<ptrdiff_t>event)
+
+####################################################################################################
 # Overrides the parameters
 ####################################################################################################
 
