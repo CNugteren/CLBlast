@@ -15,7 +15,6 @@
 #include <utility>
 #include <vector>
 
-#include "clblast.h"
 #include "cxpp11_common.hpp"
 #include "tuning/configurations.hpp"
 #include "tuning/tuning.hpp"
