@@ -15,7 +15,6 @@
 #include <cstddef>
 #include <string>
 
-#include "clblast.h"
 #include "database/database.hpp"
 #include "routines/routines.hpp"
 #include "utilities/backend.hpp"
