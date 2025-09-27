@@ -71,6 +71,7 @@
 #include "routines/levelx/xgemmstridedbatched.hpp"
 #include "routines/levelx/xhad.hpp"
 #include "routines/levelx/xim2col.hpp"
+#include "routines/levelx/xminmax.hpp"
 #include "routines/levelx/xomatcopy.hpp"
 // IWYU pragma: end_exports
 
