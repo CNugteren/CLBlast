@@ -27,8 +27,8 @@ namespace clblast {
 template <typename T>
 class TestXminmax {
  public:
-  // Although it is a non-BLAS routine, it can still be tested against the Xmin and Xmax provided by CLBlast
-  static size_t BLASLevel() { return 1; }
+  // To test, it runs against the custom implementations of Xmin and Xmax provided by the CLBlast library
+  static size_t BLASLevel() { return 4; }
 
   // The list of arguments relevant for this routine
   static std::vector<std::string> GetOptions() {
