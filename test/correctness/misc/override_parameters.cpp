@@ -16,7 +16,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "clblast.h"
 #include "test/routines/level3/xgemm.hpp"
 #include "test/test_utilities.hpp"
 #include "utilities/backend.hpp"
