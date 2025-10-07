@@ -2487,7 +2487,7 @@ def gemmStridedBatched(queue, m, n, k, batch_count, a, b, c, a_ld, b_ld, c_ld, a
     return cl.Event.from_int_ptr(<ptrdiff_t>event)
 
 ####################################################################################################
-# Vector scaling: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+# Index of minimum and maximum value in a vector: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
 ####################################################################################################
 
 cdef extern from "clblast_c.h":
