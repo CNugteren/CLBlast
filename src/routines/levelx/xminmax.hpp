@@ -35,5 +35,4 @@ class Xminmax : public Routine {
 // =================================================================================================
 }  // namespace clblast
 
-// CLBLAST_ROUTINES_XOMATCOPY_H_
 #endif
