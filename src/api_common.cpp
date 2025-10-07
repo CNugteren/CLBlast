@@ -108,6 +108,7 @@ void FillCacheForPrecision(Queue& queue) {
     Xhemm<Complex>(queue, nullptr);
     Xherk<Complex, Real>(queue, nullptr);
     Xher2k<Complex, Real>(queue, nullptr);
+    Xspr2<Real>(queue, nullptr);
 
   } catch (const RuntimeErrorCode& e) {
     if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
