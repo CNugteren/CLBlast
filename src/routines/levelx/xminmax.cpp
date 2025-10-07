@@ -36,6 +36,8 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   // Makes sure all dimensions are larger than zero
   if (n == 0) {
     throw BLASError(StatusCode::kInvalidDimension);
+  } else if (db_["WGS1"] % 2 != 0 || db_["WGS2"] % 2 != 0) {
+    throw BLASError(StatusCode::kNotImplemented);
   }
 
   // Tests the vectors for validity
