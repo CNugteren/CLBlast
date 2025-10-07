@@ -48,7 +48,7 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   auto kernel2 = Kernel(program_, "XminmaxEpilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2 * db_["WGS2"];
+  auto temp_size = 4 * db_["WGS2"];
   auto temp_buffer1 = Buffer<T>(context_, temp_size);
   auto temp_buffer2 = Buffer<unsigned int>(context_, temp_size);
 
@@ -64,8 +64,8 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{(db_["WGS1"] * temp_size) / 4};
-  auto local1 = std::vector<size_t>{db_["WGS1"] / 2};
+  auto global1 = std::vector<size_t>{(db_["WGS1"] * temp_size) / 2};
+  auto local1 = std::vector<size_t>{db_["WGS1"]};
   auto kernelEvent = Event();
   RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
   eventWaitList.push_back(kernelEvent);
@@ -79,8 +79,8 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   kernel2.SetArgument(5, static_cast<int>(imin_offset));
 
   // Launches the epilogue kernel
-  auto global2 = std::vector<size_t>{db_["WGS2"] / 2};
-  auto local2 = std::vector<size_t>{db_["WGS2"] / 2};
+  auto global2 = std::vector<size_t>{db_["WGS2"]};
+  auto local2 = std::vector<size_t>{db_["WGS2"]};
   RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
 }
 

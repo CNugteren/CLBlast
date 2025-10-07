@@ -34,10 +34,10 @@ R"(
 void Xminmax(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global real* restrict mgm, __global unsigned int* igm) {
-  __local singlereal maxlm[WGS1 / 2];
-  __local singlereal minlm[WGS1 / 2];
-  __local unsigned int imaxlm[WGS1 / 2];
-  __local unsigned int iminlm[WGS1 / 2];
+  __local singlereal maxlm[WGS1];
+  __local singlereal minlm[WGS1];
+  __local unsigned int imaxlm[WGS1];
+  __local unsigned int iminlm[WGS1];
 
   const int lid = get_local_id(0);
   const int wgid = get_group_id(0);
@@ -124,10 +124,10 @@ void XminmaxEpilogue(const __global singlereal* restrict mgm,
                    const __global unsigned int* restrict igm,
                    __global unsigned int* imax, const int imax_offset,
                    __global unsigned int* imin, const int imin_offset) {
-  __local singlereal maxlm[WGS2 / 2];
-  __local singlereal minlm[WGS2 / 2];
-  __local unsigned int imaxlm[WGS2 / 2];
-  __local unsigned int iminlm[WGS2 / 2];
+  __local singlereal maxlm[WGS2];
+  __local singlereal minlm[WGS2];
+  __local unsigned int imaxlm[WGS2];
+  __local unsigned int iminlm[WGS2];
   const int lid = get_local_id(0);
 
   // Performs the first step of the reduction while loading the data
