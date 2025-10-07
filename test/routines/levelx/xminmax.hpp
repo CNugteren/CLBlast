@@ -144,9 +144,8 @@ class TestXminmax {
     // type 'T' (float/double/float2/double2/half), we store the results into T instead.
     // The values might then become meaningless, but a comparison for testing should still
     // be valid to verify correctness.
-    auto result_as_T = static_cast<T>(result_uint[0]);
     std::vector<T> result(args.scalar_size + args.second_scalar_size);
-    result[0] = result_as_T;
+    result[0] = static_cast<T>(result_uint[0]);;
     result[1] = static_cast<T>(second_result_uint[0]);
     return result;
   }
