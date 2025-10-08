@@ -37,6 +37,7 @@ class Xaminmax : public Xminmax<T> {
     DoMinmax(n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc);
   }
 };
+
 // =================================================================================================
 }  // namespace clblast
 

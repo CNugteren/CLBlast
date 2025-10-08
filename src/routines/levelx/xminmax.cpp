@@ -21,6 +21,9 @@
 #include "utilities/utilities.hpp"
 
 namespace clblast {
+// =================================================================================================
+
+// Constructor: forwards to base class constructor
 template <typename T>
 Xminmax<T>::Xminmax(Queue& queue, EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {},
@@ -29,6 +32,9 @@ Xminmax<T>::Xminmax(Queue& queue, EventPointer event, const std::string& name)
               }) {
 }
 
+// =================================================================================================
+
+// The main routine
 template <typename T>
 void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffer, const size_t imax_offset,
                           const Buffer<unsigned int>& imin_buffer, const size_t imin_offset, const Buffer<T>& x_buffer,
@@ -86,9 +92,14 @@ void Xminmax<T>::DoMinmax(const size_t n, const Buffer<unsigned int>& imax_buffe
   RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
 }
 
+// =================================================================================================
+
+// Compiles the templated class
 template class Xminmax<half>;
 template class Xminmax<float>;
 template class Xminmax<double>;
 template class Xminmax<float2>;
 template class Xminmax<double2>;
+
+// =================================================================================================
 }  // namespace clblast
