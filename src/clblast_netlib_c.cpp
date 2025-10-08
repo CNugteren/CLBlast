@@ -3974,7 +3974,7 @@ void cblas_aminmax_common(const size_t n, unsigned int* imax, unsigned int* imin
   x_buffer.Write(queue, n, x);
 
   auto queue_cl = queue();
-  auto s = clblast::Minmax<T>(n, imax_buffer(), 0, imin_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl, nullptr);
+  auto s = clblast::Aminmax<T>(n, imax_buffer(), 0, imin_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl, nullptr);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }

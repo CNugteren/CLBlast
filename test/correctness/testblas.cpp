@@ -19,7 +19,6 @@
 #include <type_traits>
 #include <vector>
 
-#include "clblast.h"
 #include "test/correctness/tester.hpp"
 #include "test/test_utilities.hpp"
 #include "utilities/backend.hpp"

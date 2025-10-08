@@ -1703,7 +1703,7 @@ template StatusCode PUBLIC_API Minmax<float2>(const size_t, cl_mem, const size_t
 template StatusCode PUBLIC_API Minmax<double2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
                                                const size_t, const size_t, cl_command_queue*, cl_event*);
 
-// Absolute version of Minmax: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
 template <typename T>
 StatusCode PUBLIC_API Aminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
                               const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset,
