@@ -3,7 +3,7 @@
 // This file is part of the CLBlast project. Author(s):
 //   Ekansh Jain
 //
-// This file contains the Xminmax kernel. It implements index of (absolute) min/max computation using
+// This file contains the Xminmax kernel. It implements index of (ROUTINE_AMINMAX) min/max computation using
 // reduction kernels. Reduction is split in two parts. In the first (main) kernel the X vector is
 // loaded, followed by a per-thread and a per-workgroup reduction. The second (epilogue) kernel
 // is executed with a single workgroup only, computing the final result.
@@ -47,7 +47,7 @@ void Xminmax(const int n,
   const int num_groups = get_num_groups(0);
 
   // Performs loading and the first steps of the reduction
-  #ifdef ABSOLUTE
+  #ifdef ROUTINE_AMINMAX
     singlereal max = ZERO;
     singlereal min = SMALLEST;
   #else
@@ -67,7 +67,7 @@ void Xminmax(const int n,
       singlereal x = xgm[x_index];
     #endif
 
-    #ifdef ABSOLUTE
+    #ifdef ROUTINE_AMINMAX
       singlereal xmin = -fabs(x);
       x = fabs(x);
     #else

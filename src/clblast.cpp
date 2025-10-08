@@ -1703,6 +1703,33 @@ template StatusCode PUBLIC_API Minmax<float2>(const size_t, cl_mem, const size_t
 template StatusCode PUBLIC_API Minmax<double2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
                                                const size_t, const size_t, cl_command_queue*, cl_event*);
 
+// Absolute version of Minmax: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+template <typename T>
+StatusCode PUBLIC_API Aminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                              const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset,
+                              const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xaminmax<T>(queue_cpp, event);
+    routine.DoAminmax(n, Buffer<unsigned int>(imax_buffer), imax_offset, Buffer<unsigned int>(imin_buffer), imin_offset,
+                      Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+
+template StatusCode PUBLIC_API Aminmax<half>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                             const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Aminmax<float>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                              const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Aminmax<double>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                               const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Aminmax<float2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                               const size_t, const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Aminmax<double2>(const size_t, cl_mem, const size_t, cl_mem, const size_t, const cl_mem,
+                                                const size_t, const size_t, cl_command_queue*, cl_event*);
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)

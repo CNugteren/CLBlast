@@ -64,6 +64,7 @@
 #include "routines/level3/xtrsm.hpp"
 
 // Level-x includes (non-BLAS)
+#include "routines/levelx/xaminmax.hpp"
 #include "routines/levelx/xaxpybatched.hpp"
 #include "routines/levelx/xcol2im.hpp"
 #include "routines/levelx/xconvgemm.hpp"
@@ -73,6 +74,7 @@
 #include "routines/levelx/xim2col.hpp"
 #include "routines/levelx/xminmax.hpp"
 #include "routines/levelx/xomatcopy.hpp"
+
 // IWYU pragma: end_exports
 
 // CLBLAST_ROUTINES_ROUTINES_H_
