@@ -590,6 +590,16 @@ void PUBLIC_API cblas_cminmax(const size_t n, unsigned int* imax, unsigned int* 
 void PUBLIC_API cblas_zminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
                               const size_t x_inc);
 
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+void PUBLIC_API cblas_saminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
+                               const size_t x_inc);
+void PUBLIC_API cblas_daminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
+                               const size_t x_inc);
+void PUBLIC_API cblas_caminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc);
+void PUBLIC_API cblas_zaminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                               const size_t x_inc);
+
 // =================================================================================================
 
 #ifdef __cplusplus

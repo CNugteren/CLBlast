@@ -2982,6 +2982,68 @@ CLBlastStatusCode PUBLIC_API CLBlastHminmax(const size_t n, cl_mem imax_buffer, 
 
 // =================================================================================================
 
+CLBlastStatusCode PUBLIC_API CLBlastSaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Aminmax<float>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                  x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastDaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Aminmax<double>(
+        n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastCaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Aminmax<float2>(
+        n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastZaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Aminmax<double2>(
+        n, imax_buffer, imax_offset, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+CLBlastStatusCode PUBLIC_API CLBlastHaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Aminmax<half>(n, imax_buffer, imax_offset, imin_buffer, imin_offset,
+                                                                 x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+// =================================================================================================
+
 // GEMM with temporary buffer (optional, for advanced users)
 CLBlastStatusCode CLBlastSgemmWithTempBuffer(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
                                              const CLBlastTranspose b_transpose, const size_t m, const size_t n,

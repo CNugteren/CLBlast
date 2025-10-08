@@ -3958,4 +3958,46 @@ void PUBLIC_API clblas_zminmax(const size_t n, unsigned int* imax, unsigned int*
   cblas_minmax_common<double2>(n, imax, imin, (const double2*)x, x_inc);
 }
 
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+template <typename T>
+void cblas_aminmax_common(const size_t n, unsigned int* imax, unsigned int* imin, const T* x, const size_t x_inc) {
+  OPTIONAL_STATIC auto device = get_device();
+  OPTIONAL_STATIC auto context = clblast::Context(device);
+  auto queue = clblast::Queue(context, device);
+
+  auto imax_buffer = clblast::Buffer<unsigned int>(context, 1);
+  auto imin_buffer = clblast::Buffer<unsigned int>(context, 1);
+  auto x_buffer = clblast::Buffer<T>(context, n * x_inc);
+
+  imax_buffer.Write(queue, 1, imax);
+  imin_buffer.Write(queue, 1, imin);
+  x_buffer.Write(queue, n, x);
+
+  auto queue_cl = queue();
+  auto s = clblast::Minmax<T>(n, imax_buffer(), 0, imin_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl, nullptr);
+  if (s != clblast::StatusCode::kSuccess) {
+    throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
+  }
+
+  imax_buffer.Read(queue, 1, imax);
+  imin_buffer.Read(queue, 1, imin);
+}
+
+void PUBLIC_API cblas_saminmax(const size_t n, unsigned int* imax, unsigned int* imin, const float* x,
+                               const size_t x_inc) {
+  cblas_aminmax_common<float>(n, imax, imin, x, x_inc);
+}
+void PUBLIC_API clblas_daminmax(const size_t n, unsigned int* imax, unsigned int* imin, const double* x,
+                                const size_t x_inc) {
+  cblas_aminmax_common<double>(n, imax, imin, x, x_inc);
+}
+void PUBLIC_API clblas_caminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                                const size_t x_inc) {
+  cblas_aminmax_common<float2>(n, imax, imin, (const float2*)x, x_inc);
+}
+void PUBLIC_API clblas_zaminmax(const size_t n, unsigned int* imax, unsigned int* imin, const void* x,
+                                const size_t x_inc) {
+  cblas_aminmax_common<double2>(n, imax, imin, (const double2*)x, x_inc);
+}
+
 // =================================================================================================

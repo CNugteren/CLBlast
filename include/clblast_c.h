@@ -1391,6 +1391,28 @@ CLBlastStatusCode PUBLIC_API CLBlastHminmax(const size_t n, cl_mem imax_buffer, 
                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
                                             cl_event* event);
 
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+CLBlastStatusCode PUBLIC_API CLBlastSaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                             cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                             const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                             cl_event* event);
+
 // =================================================================================================
 // General matrix-matrix multiplication with temporary buffer from user (optional, for advanced users):
 // SGEMM/DGEMM/CGEMM/ZGEMM/HGEMM
