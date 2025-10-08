@@ -523,6 +523,13 @@ StatusCode PUBLIC_API Minmax(const size_t n, CUdeviceptr imax_buffer, const size
                              const size_t imin_offset, const CUdeviceptr x_buffer, const size_t x_offset,
                              const size_t x_inc, const CUcontext context, const CUdevice device);
 
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+template <typename T>
+StatusCode PUBLIC_API Aminmax(const size_t n, CUdeviceptr imax_buffer, const size_t imax_offset,
+                              CUdeviceptr imin_buffer, const size_t imin_offset, const CUdeviceptr x_buffer,
+                              const size_t x_offset, const size_t x_inc, const CUcontext context,
+                              const CUdevice device);
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)

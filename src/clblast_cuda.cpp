@@ -1830,6 +1830,25 @@ StatusCode PUBLIC_API Minmax(const size_t n, CUdeviceptr imax_buffer, const size
   }
 }
 
+// Absolute version of Min: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+template <typename T>
+StatusCode PUBLIC_API Aminmax(const size_t n, CUdeviceptr imax_buffer, const size_t imax_offset,
+                              CUdeviceptr imin_buffer, const size_t imin_offset, const CUdeviceptr x_buffer,
+                              const size_t x_offset, const size_t x_inc, const CUcontext context,
+                              const CUdevice device) {
+  try {
+    const auto context_cpp = Context(context);
+    const auto device_cpp = Device(device);
+    auto queue_cpp = Queue(context_cpp, device_cpp);
+    auto routine = Xaminmax<T>(queue_cpp, nullptr);
+    routine.DoAminmax(n, Buffer<unsigned int>(imax_buffer), imax_offset, Buffer<unsigned int>(imin_buffer), imin_offset,
+                      Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)
