@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 
-#include "clblast.h"
 #include "clblast_half.h"
 #include "utilities/backend.hpp"
 #include "utilities/device_mapping.hpp"

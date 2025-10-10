@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "cache.hpp"
-#include "clblast.h"
 #include "database/database.hpp"
 #include "database/database_structure.hpp"
 #include "utilities/backend.hpp"
