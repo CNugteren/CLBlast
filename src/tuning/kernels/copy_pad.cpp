@@ -10,6 +10,7 @@
 #include "tuning/kernels/copy_pad.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         clblast::Tuner<double2>(argc, argv, 0, clblast::PadGetTunerDefaults, clblast::PadGetTunerSettings<double2>,
                                 clblast::PadTestValidArguments<double2>, clblast::PadSetConstraints,
                                 clblast::PadComputeLocalMemSize<double2>, clblast::PadSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

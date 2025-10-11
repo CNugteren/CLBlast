@@ -20,7 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults CopyGetTunerDefaults(const int) {
+TunerDefaults CopyGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -30,7 +30,7 @@ TunerDefaults CopyGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings CopyGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings CopyGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -77,16 +77,16 @@ TunerSettings CopyGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void CopyTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> CopySetConstraints(const int) { return {}; }
+void CopyTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> CopySetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo CopyComputeLocalMemSize(const int) {
+LocalMemSizeInfo CopyComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void CopySetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void CopySetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, buffers[2]());  // 2 == A matrix
   kernel.SetArgument(2, buffers[3]());  // 3 == B matrix

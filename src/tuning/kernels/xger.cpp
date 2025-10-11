@@ -10,6 +10,7 @@
 #include "tuning/kernels/xger.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         clblast::Tuner<double2>(argc, argv, 0, clblast::XgerGetTunerDefaults, clblast::XgerGetTunerSettings<double2>,
                                 clblast::XgerTestValidArguments<double2>, clblast::XgerSetConstraints,
                                 clblast::XgerComputeLocalMemSize<double2>, clblast::XgerSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

@@ -12,6 +12,7 @@
 #include <cstdio>
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -49,6 +50,8 @@ void StartVariation(int argc, char* argv[]) {
       clblast::Tuner<double2>(argc, argv, V, clblast::XgemmGetTunerDefaults, clblast::XgemmGetTunerSettings<double2>,
                               clblast::XgemmTestValidArguments<double2>, clblast::XgemmSetConstraints,
                               clblast::XgemmComputeLocalMemSize<double2>, clblast::XgemmSetArguments<double2>);
+      break;
+    case clblast::Precision::kAny:
       break;
   }
 }

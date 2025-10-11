@@ -340,12 +340,6 @@ StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const G
     return StatusCode::kNoHalfPrecision;
   }
 
-  // Retrieves properties
-  const auto device_type = GetDeviceType(device);
-  const auto device_vendor = GetDeviceVendor(device);
-  const auto device_architecture = GetDeviceArchitecture(device);
-  const auto device_name = GetDeviceName(device);
-
   // Creates input buffers with random data. Adds a 'canary' region to detect buffer overflows.
   const auto buffer_sizes = std::vector<size_t>{settings.size_x + kCanarySize, settings.size_y + kCanarySize,
                                                 settings.size_a + kCanarySize, settings.size_b + kCanarySize,
@@ -426,7 +420,7 @@ StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const G
           SetThreadConfiguration(configuration, settings.local_size, settings.mul_local, settings.div_local);
 
       // Sets the parameters for this configuration
-      auto kernel_source = std::string{""};
+      std::string kernel_source;
       for (const auto& parameter : configuration) {
         kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
       }

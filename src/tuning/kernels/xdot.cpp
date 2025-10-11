@@ -11,6 +11,7 @@
 #include "tuning/kernels/xdot.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -48,6 +49,8 @@ void StartVariation(int argc, char* argv[]) {
       clblast::Tuner<double2>(argc, argv, V, clblast::XdotGetTunerDefaults, clblast::XdotGetTunerSettings<double2>,
                               clblast::XdotTestValidArguments<double2>, clblast::XdotSetConstraints,
                               clblast::XdotComputeLocalMemSize<double2>, clblast::XdotSetArguments<double2>);
+      break;
+    case clblast::Precision::kAny:
       break;
   }
 }

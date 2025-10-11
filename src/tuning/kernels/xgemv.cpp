@@ -10,6 +10,7 @@
 #include "tuning/kernels/xgemv.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -47,6 +48,8 @@ void StartVariation(int argc, char* argv[]) {
       clblast::Tuner<double2>(argc, argv, V, clblast::XgemvGetTunerDefaults, clblast::XgemvGetTunerSettings<double2>,
                               clblast::XgemvTestValidArguments<double2>, clblast::XgemvSetConstraints,
                               clblast::XgemvComputeLocalMemSize<double2>, clblast::XgemvSetArguments<double2>);
+      break;
+    case clblast::Precision::kAny:
       break;
   }
 }

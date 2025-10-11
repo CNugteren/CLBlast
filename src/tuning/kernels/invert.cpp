@@ -10,6 +10,7 @@
 #include "tuning/kernels/invert.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -48,6 +49,8 @@ int main(int argc, char* argv[]) {
                                 clblast::InvertGetTunerSettings<double2>, clblast::InvertTestValidArguments<double2>,
                                 clblast::InvertSetConstraints, clblast::InvertComputeLocalMemSize<double2>,
                                 clblast::InvertSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

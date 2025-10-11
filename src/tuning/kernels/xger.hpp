@@ -20,7 +20,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults XgerGetTunerDefaults(const int) {
+TunerDefaults XgerGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgM, kArgN, kArgAlpha};
   settings.default_m = 1024;
@@ -30,7 +30,7 @@ TunerDefaults XgerGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings XgerGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -76,16 +76,16 @@ TunerSettings XgerGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XgerTestValidArguments(const int, const Arguments<T>&) {}
-std::vector<Constraint> XgerSetConstraints(const int) { return {}; }
+void XgerTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
+std::vector<Constraint> XgerSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo XgerComputeLocalMemSize(const int) {
+LocalMemSizeInfo XgerComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void XgerSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgerSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, GetRealArg(args.alpha));

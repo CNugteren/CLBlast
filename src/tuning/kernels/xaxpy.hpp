@@ -21,16 +21,16 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults XaxpyGetTunerDefaults(const int) {
+TunerDefaults XaxpyGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgN, kArgAlpha};
-  settings.default_n = 4096 * 1024;
+  settings.default_n = static_cast<size_t>(4096 * 1024);
   return settings;
 }
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings XaxpyGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings XaxpyGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -75,20 +75,21 @@ TunerSettings XaxpyGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void XaxpyTestValidArguments(const int, const Arguments<T>& args) {
+void XaxpyTestValidArguments(const int /*unused*/, const Arguments<T>& args) {
   if (!IsMultiple(args.n, 64)) {
     throw std::runtime_error("'XaxpyFastest' requires 'n' to be a multiple of WGS*WPT*VW");
   }
 }
-std::vector<Constraint> XaxpySetConstraints(const int) { return {}; }
+std::vector<Constraint> XaxpySetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo XaxpyComputeLocalMemSize(const int) {
+LocalMemSizeInfo XaxpyComputeLocalMemSize(const int /*unused*/) {
   return {[](std::vector<size_t>) -> size_t { return 0; }, {}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void XaxpySetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XaxpySetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                       std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.n));
   kernel.SetArgument(1, GetRealArg(args.alpha));
   kernel.SetArgument(2, buffers[0]());  // 0 == X vector

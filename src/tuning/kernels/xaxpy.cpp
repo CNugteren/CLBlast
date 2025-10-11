@@ -10,6 +10,7 @@
 #include "tuning/kernels/xaxpy.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         clblast::Tuner<double2>(argc, argv, 0, clblast::XaxpyGetTunerDefaults, clblast::XaxpyGetTunerSettings<double2>,
                                 clblast::XaxpyTestValidArguments<double2>, clblast::XaxpySetConstraints,
                                 clblast::XaxpyComputeLocalMemSize<double2>, clblast::XaxpySetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

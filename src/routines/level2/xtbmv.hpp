@@ -26,17 +26,17 @@ template <typename T>
 class Xtbmv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::queue_;
-  using Xgemv<T>::context_;
+  using Xgemv<T>::getQueue;
+  using Xgemv<T>::getContext;
   using Xgemv<T>::MatVec;
 
   // Constructor
   Xtbmv(Queue& queue, EventPointer event, const std::string& name = "TBMV");
 
   // Templated-precision implementation of the routine
-  void DoTbmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-              const size_t n, const size_t k, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-              const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc);
+  void DoTbmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, size_t k,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc);
 };
 
 // =================================================================================================

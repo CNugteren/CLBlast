@@ -10,6 +10,7 @@
 #include "tuning/kernels/transpose_fast.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -52,6 +53,8 @@ int main(int argc, char* argv[]) {
             argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double2>,
             clblast::TransposeTestValidArguments<double2>, clblast::TransposeSetConstraints,
             clblast::TransposeComputeLocalMemSize<double2>, clblast::TransposeSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

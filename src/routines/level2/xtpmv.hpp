@@ -26,17 +26,16 @@ template <typename T>
 class Xtpmv : public Xgemv<T> {
  public:
   // Uses the generic matrix-vector routine
-  using Xgemv<T>::queue_;
-  using Xgemv<T>::context_;
+  using Xgemv<T>::getQueue;
+  using Xgemv<T>::getContext;
   using Xgemv<T>::MatVec;
 
   // Constructor
   Xtpmv(Queue& queue, EventPointer event, const std::string& name = "TPMV");
 
   // Templated-precision implementation of the routine
-  void DoTpmv(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Diagonal diagonal,
-              const size_t n, const Buffer<T>& ap_buffer, const size_t ap_offset, const Buffer<T>& x_buffer,
-              const size_t x_offset, const size_t x_inc);
+  void DoTpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n,
+              const Buffer<T>& ap_buffer, size_t ap_offset, const Buffer<T>& x_buffer, size_t x_offset, size_t x_inc);
 };
 
 // =================================================================================================

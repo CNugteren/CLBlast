@@ -10,6 +10,7 @@
 #include "tuning/kernels/xconvgemm.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -39,6 +40,10 @@ void StartVariation(int argc, char* argv[]) {
                              clblast::XConvGemmGetTunerSettings<double>, clblast::XConvGemmTestValidArguments<double>,
                              clblast::XConvGemmSetConstraints, clblast::XConvGemmComputeLocalMemSize<double>,
                              clblast::XConvGemmSetArguments<double>);
+      break;
+    case clblast::Precision::kComplexSingle:
+    case clblast::Precision::kComplexDouble:
+    case clblast::Precision::kAny:
       break;
   }
 }

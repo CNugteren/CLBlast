@@ -10,6 +10,7 @@
 #include "tuning/kernels/transpose_pad.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -52,6 +53,8 @@ int main(int argc, char* argv[]) {
             argc, argv, 0, clblast::PadtransposeGetTunerDefaults, clblast::PadtransposeGetTunerSettings<double2>,
             clblast::PadtransposeTestValidArguments<double2>, clblast::PadtransposeSetConstraints,
             clblast::PadtransposeComputeLocalMemSize<double2>, clblast::PadtransposeSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

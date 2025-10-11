@@ -10,6 +10,7 @@
 #include "tuning/kernels/copy_fast.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         clblast::Tuner<double2>(argc, argv, 0, clblast::CopyGetTunerDefaults, clblast::CopyGetTunerSettings<double2>,
                                 clblast::CopyTestValidArguments<double2>, clblast::CopySetConstraints,
                                 clblast::CopyComputeLocalMemSize<double2>, clblast::CopySetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

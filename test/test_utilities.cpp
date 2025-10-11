@@ -162,13 +162,13 @@ template void HostToDevice(const Arguments<double2>&, Buffers<double2>&, Buffers
 // Conversion between half and single-precision
 std::vector<float> HalfToFloatBuffer(const std::vector<half>& source) {
   auto result = std::vector<float>(source.size());
-  for (auto i = size_t(0); i < source.size(); ++i) {
+  for (auto i = static_cast<size_t>(0); i < source.size(); ++i) {
     result[i] = HalfToFloat(source[i]);
   }
   return result;
 }
 void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& source) {
-  for (auto i = size_t(0); i < source.size(); ++i) {
+  for (auto i = static_cast<size_t>(0); i < source.size(); ++i) {
     result[i] = FloatToHalf(source[i]);
   }
 }
@@ -283,8 +283,8 @@ void GetBestParametersFromJSONFile(const std::string& file_name, BestParametersC
         if (params_split.size() != 2) {
           break;
         }
-        const auto parameter_name = params_split[0];
-        const auto parameter_value = static_cast<size_t>(std::stoi(params_split[1].c_str()));
+        const auto& parameter_name = params_split[0];
+        const auto parameter_value = static_cast<size_t>(std::stoi(params_split[1]));
         if (parameter_name != "PRECISION") {
           printf("%s=%zu ", parameter_name.c_str(), parameter_value);
           parameters[parameter_name] = parameter_value;

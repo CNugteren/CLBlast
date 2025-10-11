@@ -10,6 +10,7 @@
 #include "tuning/kernels/xgemm_direct.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -52,6 +53,8 @@ void StartVariation(int argc, char* argv[]) {
           argc, argv, V, clblast::XgemmDirectGetTunerDefaults, clblast::XgemmDirectGetTunerSettings<double2>,
           clblast::XgemmDirectTestValidArguments<double2>, clblast::XgemmDirectSetConstraints,
           clblast::XgemmDirectComputeLocalMemSize<double2>, clblast::XgemmDirectSetArguments<double2>);
+      break;
+    case clblast::Precision::kAny:
       break;
   }
 }
