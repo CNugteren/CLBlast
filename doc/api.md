@@ -3275,7 +3275,7 @@ Finds the index of the absolute minimum and maximum of a vector in the same rout
 C++ API:
 ```
 template <typename T>
-StatusCode PUBLIC_API Aminmaxs(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+StatusCode PUBLIC_API Aminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
                              const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                              cl_command_queue* queue, cl_event* event);
 ```
