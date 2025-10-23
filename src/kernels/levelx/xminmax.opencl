@@ -23,8 +23,8 @@ R"(
   #define WGS2 64     // The local work-group size of the epilogue kernel
 #endif
 
-#define NEW_WGS1 WGS1 / 2
-#define NEW_WGS2 WGS2 / 2
+#define HALF_WGS1 WGS1 / 2
+#define HALF_WGS2 WGS2 / 2
 
 // =================================================================================================
 
@@ -32,15 +32,15 @@ R"(
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
 #else
-  __kernel __attribute__((reqd_work_group_size(NEW_WGS1, 1, 1)))
+  __kernel __attribute__((reqd_work_group_size(HALF_WGS1, 1, 1)))
 #endif
 void Xminmax(const int n,
            const __global real* restrict xgm, const int x_offset, const int x_inc,
            __global real* restrict mgm, __global unsigned int* igm) {
-  __local singlereal maxlm[NEW_WGS1];
-  __local singlereal minlm[NEW_WGS1];
-  __local unsigned int imaxlm[NEW_WGS1];
-  __local unsigned int iminlm[NEW_WGS1];
+  __local singlereal maxlm[HALF_WGS1];
+  __local singlereal minlm[HALF_WGS1];
+  __local unsigned int imaxlm[HALF_WGS1];
+  __local unsigned int iminlm[HALF_WGS1];
 
   const int lid = get_local_id(0);
   const int wgid = get_group_id(0);
@@ -58,7 +58,7 @@ void Xminmax(const int n,
   unsigned int imax = 0;
   unsigned int imin = 0;
 
-  int id = wgid*NEW_WGS1 + lid;
+  int id = wgid*HALF_WGS1 + lid;
   while (id < n) {
     const int x_index = id*x_inc + x_offset;
     #if PRECISION == 3232 || PRECISION == 6464
@@ -82,7 +82,7 @@ void Xminmax(const int n,
       min = xmin;
       imin = id;
     }
-    id += NEW_WGS1*num_groups;
+    id += HALF_WGS1*num_groups;
   }
   maxlm[lid] = max;
   imaxlm[lid] = imax;
@@ -91,7 +91,7 @@ void Xminmax(const int n,
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  for (int s=NEW_WGS1/2; s>0; s=s>>1) {
+  for (int s=HALF_WGS1/2; s>0; s=s>>1) {
     if (lid < s) {
       if (maxlm[lid + s] > maxlm[lid]) {
         maxlm[lid] = maxlm[lid + s];
@@ -108,9 +108,9 @@ void Xminmax(const int n,
   // Stores the per-workgroup result
   if (lid == 0) {
     mgm[wgid] = maxlm[0];
-    mgm[wgid + (NEW_WGS2 * 2)] = minlm[0];
+    mgm[wgid + (HALF_WGS2 * 2)] = minlm[0];
     igm[wgid] = imaxlm[0];
-    igm[wgid + (NEW_WGS2 * 2)] = iminlm[0];
+    igm[wgid + (HALF_WGS2 * 2)] = iminlm[0];
   }
 }
 
@@ -121,39 +121,39 @@ void Xminmax(const int n,
 #if RELAX_WORKGROUP_SIZE == 1
   __kernel
 #else
-  __kernel __attribute__((reqd_work_group_size(NEW_WGS2, 1, 1)))
+  __kernel __attribute__((reqd_work_group_size(HALF_WGS2, 1, 1)))
 #endif
 void XminmaxEpilogue(const __global singlereal* restrict mgm,
                    const __global unsigned int* restrict igm,
                    __global unsigned int* imax, const int imax_offset,
                    __global unsigned int* imin, const int imin_offset) {
-  __local singlereal maxlm[NEW_WGS2];
-  __local singlereal minlm[NEW_WGS2];
-  __local unsigned int imaxlm[NEW_WGS2];
-  __local unsigned int iminlm[NEW_WGS2];
+  __local singlereal maxlm[HALF_WGS2];
+  __local singlereal minlm[HALF_WGS2];
+  __local unsigned int imaxlm[HALF_WGS2];
+  __local unsigned int iminlm[HALF_WGS2];
   const int lid = get_local_id(0);
 
   // Performs the first step of the reduction while loading the data
-  if (mgm[lid + NEW_WGS2] > mgm[lid]) {
-    maxlm[lid] = mgm[lid + NEW_WGS2];
-    imaxlm[lid] = igm[lid + NEW_WGS2];
+  if (mgm[lid + HALF_WGS2] > mgm[lid]) {
+    maxlm[lid] = mgm[lid + HALF_WGS2];
+    imaxlm[lid] = igm[lid + HALF_WGS2];
   }
   else {
     maxlm[lid] = mgm[lid];
     imaxlm[lid] = igm[lid];
   }
-  if (mgm[lid + (NEW_WGS2 * 3)] > mgm[lid + (NEW_WGS2 * 2)]) {
-    minlm[lid] = mgm[lid + (NEW_WGS2 * 3)];
-    iminlm[lid] = igm[lid + (NEW_WGS2 * 3)];
+  if (mgm[lid + (HALF_WGS2 * 3)] > mgm[lid + (HALF_WGS2 * 2)]) {
+    minlm[lid] = mgm[lid + (HALF_WGS2 * 3)];
+    iminlm[lid] = igm[lid + (HALF_WGS2 * 3)];
   }
   else {
-    minlm[lid] = mgm[lid + (NEW_WGS2 * 2)];
-    iminlm[lid] = igm[lid + (NEW_WGS2 * 2)];
+    minlm[lid] = mgm[lid + (HALF_WGS2 * 2)];
+    iminlm[lid] = igm[lid + (HALF_WGS2 * 2)];
   }
   barrier(CLK_LOCAL_MEM_FENCE);
 
   // Performs reduction in local memory
-  for (int s=NEW_WGS2/2; s>0; s=s>>1) {
+  for (int s=HALF_WGS2/2; s>0; s=s>>1) {
     if (lid < s) {
       if (maxlm[lid + s] > maxlm[lid]) {
         maxlm[lid] = maxlm[lid + s];
