@@ -6,7 +6,6 @@
 //
 // =================================================================================================
 
-#include <cstddef>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -32,8 +31,9 @@ StatusCode ClearCache() {
   return StatusCode::kSuccess;
 }
 
+// NOLINTBEGIN(bugprone-unused-raii)
 template <typename Type>
-void FillCacheForPrecision(Queue& queue) {
+static void FillCacheForPrecision(Queue& queue) {
   try {
     // Runs all the level 1 set-up functions that support all precisions
     Xswap<Type>(queue, nullptr);
@@ -73,7 +73,7 @@ void FillCacheForPrecision(Queue& queue) {
 }
 
 template <typename Real, typename Complex>
-void FillCacheForPrecision(Queue& queue) {
+static void FillCacheForPrecision(Queue& queue) {
   try {
     FillCacheForPrecision<Real>(queue);
     FillCacheForPrecision<Complex>(queue);

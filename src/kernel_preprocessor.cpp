@@ -35,6 +35,8 @@
 #include "cxpp11_common.hpp"
 #include "utilities/utilities.hpp"
 
+constexpr bool enable_pp_debug = false;
+
 namespace clblast {
 // =================================================================================================
 
@@ -670,6 +672,11 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
   }
 
   // Debugging
+  if (enable_pp_debug) {
+    for (auto i = size_t{0}; i < lines.size(); ++i) {
+      printf("[%zu] %s\n", i, lines[i].c_str());
+    }
+  }
 
   return processed_kernel;
 }
