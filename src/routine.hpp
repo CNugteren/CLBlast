@@ -57,7 +57,7 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   // NOTE: the caller must provide the same userDatabase for each combination of device, precision
   // and routine list, otherwise the caching logic will break.
-  Routine(Queue& queue, EventPointer event, std::string name, const std::vector<std::string>& routines,
+  Routine(const Queue& queue, EventPointer event, std::string name, const std::vector<std::string>& routines,
           Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
           std::initializer_list<const char*> source);
 

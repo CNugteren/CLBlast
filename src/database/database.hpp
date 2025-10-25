@@ -62,9 +62,9 @@ class Database {
                               const std::string& this_type, const std::string& this_device,
                               const std::string& this_architecture, Precision this_precision,
                               const std::vector<database::DatabaseEntry>& db) const;
-  database::Parameters SearchDevice(const std::string& target_device,
+  static database::Parameters SearchDevice(const std::string& target_device,
                                     const std::vector<database::DatabaseDevice>& devices,
-                                    const std::vector<std::string>& parameter_names) const;
+                                    const std::vector<std::string>& parameter_names);
   database::Parameters SearchArchitecture(const std::string& target_architecture, const std::string& this_device,
                                           const std::vector<database::DatabaseArchitecture>& architectures,
                                           const std::vector<std::string>& parameter_names) const;
@@ -74,7 +74,7 @@ class Database {
                                            const std::vector<std::string>& parameter_names) const;
 
   // Helper to convert from database format to proper types
-  static std::string CharArrayToString(database::Name char_array);
+  static std::string CharArrayToString(const database::Name& char_array);
 
   // Found parameters suitable for this device/kernel
   std::shared_ptr<database::Parameters> parameters_;

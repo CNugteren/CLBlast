@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemm<T>::Xgemm(Queue& queue, EventPointer event, const std::string& name)
+Xgemm<T>::Xgemm(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose", "Xgemm", "XgemmDirect", "GemmRoutine"},
               PrecisionValue<T>(), {},
               {
@@ -233,7 +233,7 @@ void Xgemm<T>::GemmIndirect(const size_t m, const size_t n, const size_t k, cons
 
   // Launches the kernel
   auto eventKernel = Event();
-  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : getEvent();
+  const auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : getEvent();
   RunKernel(kernel, getQueue(), getDevice(), global, local, eventPointer, eventWaitList);
 
   // Runs the post-processing kernel if needed

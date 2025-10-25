@@ -24,7 +24,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xcol2im<T>::Xcol2im(Queue& queue, EventPointer event, const std::string& name)
+Xcol2im<T>::Xcol2im(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/levelx/col2im.opencl"

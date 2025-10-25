@@ -25,7 +25,7 @@ class Error : public Base {
  public:
   // Perfect forwarding of the constructor since "using Base::Base" is not supported by VS 2013
   template <typename... Args>
-  Error(Args&&... args) : Base(std::forward<Args>(args)...) {}
+  explicit Error(Args&&... args) : Base(std::forward<Args>(args)...) {}
 };
 
 // =================================================================================================
@@ -36,15 +36,14 @@ class DeviceError : public Error<std::runtime_error> {
   // Perfect forwarding of the constructor since "using Error<std::runtime_error>::Error" is not
   // supported by VS 2013
   template <typename... Args>
-  DeviceError(Args&&... args) : Error<std::runtime_error>(std::forward<Args>(args)...) {}
+  explicit DeviceError(Args&&... args) : Error<std::runtime_error>(std::forward<Args>(args)...) {}
 
   static std::string TrimCallString(const char* where) {
     const char* paren = strchr(where, '(');
-    if (paren) {
-      return std::string(where, paren);
-    } else {
-      return std::string(where);
+    if (paren != nullptr) {
+      return {where, paren};
     }
+    return {where};
   }
 };
 
@@ -59,7 +58,7 @@ class RuntimeError : public Error<std::runtime_error> {
 // =================================================================================================
 
 // Represents a generic logic error (aka failed assertion)
-class LogicError : public Error<std::logic_error> {
+class LogicError final : public Error<std::logic_error> {
  public:
   explicit LogicError(const std::string& reason) : Error("Internal logic error: " + reason) {}
 };

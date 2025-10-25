@@ -23,7 +23,7 @@ using double2 = clblast::double2;
 
 // Function to tune a specific variation V (not within the clblast namespace)
 template <int V>
-void StartVariation(int argc, char* argv[]) {
+void StartVariation(const int argc, char* argv[]) {
   const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
   switch (clblast::GetPrecision(command_line_args)) {
     case clblast::Precision::kHalf:
@@ -57,7 +57,7 @@ void StartVariation(int argc, char* argv[]) {
 }
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   try {
     printf("* (1/4) Tuning main GEMM kernel (GEMMK == 0) for fixed set of parameters\n\n");
     StartVariation<1>(argc, argv);

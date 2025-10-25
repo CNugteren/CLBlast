@@ -31,8 +31,8 @@ template <typename T>
 bool IsCloseToZero(const T value) {
   return (value > -SmallConstant<T>()) && (value < SmallConstant<T>());
 }
-template bool IsCloseToZero<float>(const float);
-template bool IsCloseToZero<double>(const double);
+template bool IsCloseToZero<float>(float);
+template bool IsCloseToZero<double>(double);
 template <>
 bool IsCloseToZero(const half value) {
   return IsCloseToZero(HalfToFloat(value));
@@ -53,9 +53,9 @@ template <typename T>
 T ComplexConjugate(const T value) {
   return value;
 }
-template half ComplexConjugate(const half);
-template float ComplexConjugate(const float);
-template double ComplexConjugate(const double);
+template half ComplexConjugate(half);
+template float ComplexConjugate(float);
+template double ComplexConjugate(double);
 template <>
 float2 ComplexConjugate(const float2 value) {
   return float2{value.real(), -value.imag()};
@@ -175,20 +175,20 @@ void FloatToHalfBuffer(std::vector<half>& result, const std::vector<float>& sour
 
 // As above, but now for OpenCL data-types instead of std::vectors
 #ifdef OPENCL_API
-Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, RawCommandQueue queue_raw) {
+Buffer<float> HalfToFloatBuffer(const Buffer<half>& source, const RawCommandQueue queue_raw) {
   const auto size = source.GetSize() / sizeof(half);
-  auto queue = Queue(queue_raw);
-  auto context = queue.GetContext();
+  const auto queue = Queue(queue_raw);
+  const auto context = queue.GetContext();
   auto source_cpu = std::vector<half>(size);
   source.Read(queue, size, source_cpu);
-  auto result_cpu = HalfToFloatBuffer(source_cpu);
+  const auto result_cpu = HalfToFloatBuffer(source_cpu);
   auto result = Buffer<float>(context, size);
   result.Write(queue, size, result_cpu);
   return result;
 }
-void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, RawCommandQueue queue_raw) {
+void FloatToHalfBuffer(Buffer<half>& result, const Buffer<float>& source, const RawCommandQueue queue_raw) {
   const auto size = source.GetSize() / sizeof(float);
-  auto queue = Queue(queue_raw);
+  const auto queue = Queue(queue_raw);
   auto context = queue.GetContext();
   auto source_cpu = std::vector<float>(size);
   source.Read(queue, size, source_cpu);

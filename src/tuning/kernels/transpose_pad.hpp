@@ -79,7 +79,7 @@ void PadtransposeTestValidArguments(const int /*unused*/, const Arguments<T>& /*
 std::vector<Constraint> PadtransposeSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
 LocalMemSizeInfo PadtransposeComputeLocalMemSize(const int /*unused*/) {
-  return {[](std::vector<size_t> v) -> size_t {
+  return {[](const std::vector<size_t>& v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * (v[1] * v[0]) * (v[1] * v[0] + v[2]);
           },
           {"PADTRA_TILE", "PADTRA_WPT", "PADTRA_PAD"}};

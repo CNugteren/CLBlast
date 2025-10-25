@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xnrm2<T>::Xnrm2(Queue& queue, EventPointer event, const std::string& name)
+Xnrm2<T>::Xnrm2(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/xnrm2.opencl"
@@ -66,8 +66,8 @@ void Xnrm2<T>::DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{getDatabase()["WGS1"] * temp_size};
-  auto local1 = std::vector<size_t>{getDatabase()["WGS1"]};
+  const auto global1 = std::vector<size_t>{getDatabase()["WGS1"] * temp_size};
+  const auto local1 = std::vector<size_t>{getDatabase()["WGS1"]};
   auto kernelEvent = Event();
   RunKernel(kernel1, getQueue(), getDevice(), global1, local1, kernelEvent.pointer());
   eventWaitList.push_back(kernelEvent);
@@ -78,8 +78,8 @@ void Xnrm2<T>::DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t
   kernel2.SetArgument(2, static_cast<int>(nrm2_offset));
 
   // Launches the epilogue kernel
-  auto global2 = std::vector<size_t>{getDatabase()["WGS2"]};
-  auto local2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  const auto global2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  const auto local2 = std::vector<size_t>{getDatabase()["WGS2"]};
   RunKernel(kernel2, getQueue(), getDevice(), global2, local2, getEvent(), eventWaitList);
 }
 

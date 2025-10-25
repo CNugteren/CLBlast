@@ -19,7 +19,7 @@
 namespace clblast {
 // =================================================================================================
 
-double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const Device& device,
+double RunKernelTimed(const size_t num_runs, const Kernel& kernel, const Queue& queue, const Device& device,
                       std::vector<size_t> global, const std::vector<size_t>& local) {
   auto event = Event();
 

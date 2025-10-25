@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xher2<T>::Xher2(Queue& queue, EventPointer event, const std::string& name)
+Xher2<T>::Xher2(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level2/level2.opencl"
@@ -80,10 +80,10 @@ void Xher2<T>::DoHer2(const Layout layout, const Triangle triangle, const size_t
   kernel.SetArgument(12, static_cast<int>(is_rowmajor));
 
   // Launches the kernel
-  auto global_one = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS1"]);
-  auto global_two = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS2"]);
-  auto global = std::vector<size_t>{global_one, global_two};
-  auto local = std::vector<size_t>{getDatabase()["WGS1"], getDatabase()["WGS2"]};
+  const auto global_one = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS1"]);
+  const auto global_two = Ceil(CeilDiv(n, getDatabase()["WPT"]), getDatabase()["WGS2"]);
+  const auto global = std::vector<size_t>{global_one, global_two};
+  const auto local = std::vector<size_t>{getDatabase()["WGS1"], getDatabase()["WGS2"]};
   RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 

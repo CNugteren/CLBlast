@@ -120,7 +120,7 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
 
   // Outputs the results as JSON to disk, including some meta-data
   const auto precision_string = std::to_string(static_cast<size_t>(precision));
-  auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", family_name},
+  const auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", family_name},
                                                                    {"precision", precision_string},
                                                                    {"arg_from", ToString(from)},
                                                                    {"arg_to", ToString(to)},

@@ -26,7 +26,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XgemmBatched<T>::XgemmBatched(Queue& queue, EventPointer event, const std::string& name)
+XgemmBatched<T>::XgemmBatched(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose", "Xgemm", "XgemmDirect", "GemmRoutine"},
               PrecisionValue<T>(), {},
               {

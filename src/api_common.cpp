@@ -120,8 +120,8 @@ static void FillCacheForPrecision(Queue& queue) {
 StatusCode FillCache(const RawDeviceID device) {
   try {
     // Creates a sample context and queue to match the normal routine calling conventions
-    auto device_cpp = Device(device);
-    auto context = Context(device_cpp);
+    const auto device_cpp = Device(device);
+    const auto context = Context(device_cpp);
     auto queue = Queue(context, device_cpp);
 
     FillCacheForPrecision<half>(queue);

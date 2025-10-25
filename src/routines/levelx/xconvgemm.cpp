@@ -28,7 +28,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xconvgemm<T>::Xconvgemm(Queue& queue, EventPointer event, const std::string& name, const ConvGemmMethod method)
+Xconvgemm<T>::Xconvgemm(Queue& queue, const EventPointer event, const std::string& name, const ConvGemmMethod method)
     : Routine(queue, event, name, {"Xconvgemm"}, PrecisionValue<T>(), {},
               {
                   (method == ConvGemmMethod::kWithIm2Col) ? "#define CONVGEMM_WITH_IM2COL\n" : "",

@@ -278,7 +278,7 @@ std::string ToString(T value);
 
 // String splitting by a delimiter
 template <typename Out>
-void split(const std::string& s, char delimiter, Out result) {
+void split(const std::string& s, const char delimiter, Out result) {
   std::stringstream ss(s);
   std::string item;
   while (std::getline(ss, item, delimiter)) {
@@ -287,14 +287,14 @@ void split(const std::string& s, char delimiter, Out result) {
 }
 
 // See above
-inline std::vector<std::string> split(const std::string& s, char delimiter) {
+inline std::vector<std::string> split(const std::string& s, const char delimiter) {
   std::vector<std::string> elements;
   split(s, delimiter, std::back_inserter(elements));
   return elements;
 }
 
 // String character removal
-inline void remove_character(std::string& str, char to_be_removed) {
+inline void remove_character(std::string& str, const char to_be_removed) {
   str.erase(std::remove(str.begin(), str.end(), to_be_removed), str.end());
 }
 

@@ -27,7 +27,7 @@ std::string to_string(T value) {
   return os.str();
 }
 inline double stod(const std::string& value) { return std::atof(value.c_str()); }
-inline int stoi(const std::string& str, std::size_t* pos = 0, int base = 10) {
+inline int stoi(const std::string& str, std::size_t* pos = 0, const int base = 10) {
   char* p_end;
   const auto result = std::strtol(str.c_str(), &p_end, base);
   return result;

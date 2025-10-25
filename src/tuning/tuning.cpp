@@ -39,10 +39,10 @@ namespace clblast {
 void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device, const Platform& platform,
                               const std::vector<std::pair<std::string, std::string>>& metadata,
                               const std::vector<TuningResult>& tuning_results) {
-  auto num_results = tuning_results.size();
+  const auto num_results = tuning_results.size();
   printf("* Writing a total of %zu results to '%s'\n", num_results, filename.c_str());
 
-  auto file = fopen(filename.c_str(), "w");
+  const auto file = fopen(filename.c_str(), "w");
   fprintf(file, "{\n");
   for (auto& datum : metadata) {
     fprintf(file, "  \"%s\": \"%s\",\n", datum.first.c_str(), datum.second.c_str());
@@ -70,7 +70,7 @@ void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device,
 
     // Loops over all the parameters for this result
     fprintf(file, "      \"parameters\": {");
-    auto num_configs = result.config.size();
+    const auto num_configs = result.config.size();
     auto p = size_t{0};
     for (const auto& parameter : result.config) {
       fprintf(file, "\"%s\": %zu", parameter.first.c_str(), parameter.second);
@@ -114,7 +114,7 @@ struct ThreadInfo {
 };
 
 template <typename... Args>
-inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
+void addPrintInfo(std::string& str, const char* format, Args&&... args) {
   const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
   const auto original_size = str.size();
   str.resize(original_size + size);
@@ -123,7 +123,7 @@ inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
 
 template <typename T>
 void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations,
-                             size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
+                             const size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
                              const Context& context, const size_t num_threads) {
 #if defined(_WIN32)
   const std::string kPrintError;
@@ -373,7 +373,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     // Make sure that the global worksize is a multiple of the local
     for (auto i = size_t{0}; i < global.size(); ++i) {
       while ((global[i] / local[i]) * local[i] != global[i]) {
-        global[i]++;
+        ++global[i];
       }
     }
     if (local.size() > 1 && global.size() > 1) {
@@ -589,23 +589,23 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 }
 
 // Compiles the above function
-template void Tuner<half>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<half>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                           GetTunerSettingsFunc<half> GetTunerSettings, TestValidArgumentsFunc<half> TestValidArguments,
                           SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<half> ComputeLocalMemSize,
                           SetArgumentsFunc<half> SetArguments);
-template void Tuner<float>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<float>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                            GetTunerSettingsFunc<float> GetTunerSettings,
                            TestValidArgumentsFunc<float> TestValidArguments, SetConstraintsFunc SetConstraints,
                            ComputeLocalMemSizeFunc<float> ComputeLocalMemSize, SetArgumentsFunc<float> SetArguments);
-template void Tuner<double>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<double>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                             GetTunerSettingsFunc<double> GetTunerSettings,
                             TestValidArgumentsFunc<double> TestValidArguments, SetConstraintsFunc SetConstraints,
                             ComputeLocalMemSizeFunc<double> ComputeLocalMemSize, SetArgumentsFunc<double> SetArguments);
-template void Tuner<float2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<float2>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                             GetTunerSettingsFunc<float2> GetTunerSettings,
                             TestValidArgumentsFunc<float2> TestValidArguments, SetConstraintsFunc SetConstraints,
                             ComputeLocalMemSizeFunc<float2> ComputeLocalMemSize, SetArgumentsFunc<float2> SetArguments);
-template void Tuner<double2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<double2>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                              GetTunerSettingsFunc<double2> GetTunerSettings,
                              TestValidArgumentsFunc<double2> TestValidArguments, SetConstraintsFunc SetConstraints,
                              ComputeLocalMemSizeFunc<double2> ComputeLocalMemSize,

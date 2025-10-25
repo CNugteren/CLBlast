@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(Queue& queue, EventPointer event, const std::string& name)
+Xgemv<T>::Xgemv(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level2/xgemv.opencl"
@@ -139,8 +139,8 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose, const si
   kernel.SetArgument(17, static_cast<int>(ku));         // only used for banded matrices
 
   // Launches the kernel
-  auto global = std::vector<size_t>{global_size};
-  auto local = std::vector<size_t>{local_size};
+  const auto global = std::vector<size_t>{global_size};
+  const auto local = std::vector<size_t>{local_size};
   RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 

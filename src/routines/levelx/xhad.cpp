@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xhad<T>::Xhad(Queue& queue, EventPointer event, const std::string& name)
+Xhad<T>::Xhad(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
@@ -98,18 +98,18 @@ void Xhad<T>::DoHad(const size_t n, const T alpha, const Buffer<T>& x_buffer, co
 
   // Launches the kernel
   if (use_fastest_kernel) {
-    auto global = std::vector<size_t>{CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"])};
-    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    const auto global = std::vector<size_t>{CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"])};
+    const auto local = std::vector<size_t>{getDatabase()["WGS"]};
     RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   } else if (use_faster_kernel) {
-    auto global =
+    const auto global =
         std::vector<size_t>{Ceil(CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"]), getDatabase()["WGS"])};
-    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    const auto local = std::vector<size_t>{getDatabase()["WGS"]};
     RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   } else {
     const auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
-    auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"]};
-    auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    const auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"]};
+    const auto local = std::vector<size_t>{getDatabase()["WGS"]};
     RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   }
 }

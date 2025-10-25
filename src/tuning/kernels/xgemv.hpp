@@ -99,11 +99,11 @@ void XgemvTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*
 std::vector<Constraint> XgemvSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
   if (V == 2 || V == 3) {
-    auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
+    auto MultipleOfX = [](const std::vector<size_t>& v) { return IsMultiple(v[0], v[1]); };
     constraints.push_back({MultipleOfX, {"WPT" + std::to_string(V), "VW" + std::to_string(V)}});
   }
   if (V == 3) {
-    auto LargerOrEqual = [](std::vector<size_t> v) { return v[0] >= v[1]; };
+    auto LargerOrEqual = [](const std::vector<size_t>& v) { return v[0] >= v[1]; };
     constraints.push_back({LargerOrEqual, {"WGS" + std::to_string(V), "WPT" + std::to_string(V)}});
   }
   return constraints;
@@ -114,14 +114,14 @@ LocalMemSizeInfo XgemvComputeLocalMemSize(const int V) {
     return {[V](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * v[0]; },
             {"WGS" + std::to_string(V)}};
   }
-  return {[V](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * (v[0] + v[1] * v[2]); },
+  return {[V](const std::vector<size_t>& v) -> size_t { return GetBytes(PrecisionValue<T>()) * (v[0] + v[1] * v[2]); },
           {"WGS3", "WPT3", "WGS3"}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
 void XgemvSetArguments(const int V, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
-  auto a_rotated = (V == 3) ? 1 : 0;
+  const auto a_rotated = (V == 3) ? 1 : 0;
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, GetRealArg(args.alpha));

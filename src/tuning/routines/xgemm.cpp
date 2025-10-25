@@ -115,7 +115,7 @@ void TuneGemmSingleSize(const Platform& platform, const Device& device, const Co
 
   // Outputs the results as JSON to disk, including some meta-data
   const auto precision_string = std::to_string(static_cast<size_t>(PrecisionValue<T>()));
-  auto metadata = std::vector<std::pair<std::string, std::string>>{
+  const auto metadata = std::vector<std::pair<std::string, std::string>>{
       {"kernel_family", "gemm_routine_single_size"},
       {"precision", precision_string},
       {"arg_m", ToString(m)},
@@ -129,8 +129,8 @@ void TuneGemmSingleSize(const Platform& platform, const Device& device, const Co
 // =================================================================================================
 
 template <typename T>
-void TuneXgemm(int argc, char* argv[]) {
-  auto command_line_args = RetrieveCommandLineArguments(argc, argv);
+void TuneXgemm(const int argc, char* argv[]) {
+  const auto command_line_args = RetrieveCommandLineArguments(argc, argv);
   auto help = std::string{"* Options given/available:\n"};
   const auto platform_id =
       GetArgument(command_line_args, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
@@ -205,7 +205,7 @@ using float2 = clblast::float2;
 using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   try {
     const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
     switch (clblast::GetPrecision(command_line_args)) {

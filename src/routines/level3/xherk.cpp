@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T, typename U>
-Xherk<T, U>::Xherk(Queue& queue, EventPointer event, const std::string& name)
+Xherk<T, U>::Xherk(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose", "Xgemm"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level3/level3.opencl"
@@ -166,9 +166,9 @@ void Xherk<T, U>::HerkAB(const Layout layout, const Triangle triangle, const Tra
   kernel.SetArgument(6, c_temp());
 
   // Computes the global and local thread sizes
-  auto global = std::vector<size_t>{(n_ceiled * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
+  const auto global = std::vector<size_t>{(n_ceiled * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
                                     (n_ceiled * getDatabase()["NDIMC"]) / getDatabase()["NWG"]};
-  auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"]};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"]};
 
   // Launches the kernel
   auto eventKernel = Event();

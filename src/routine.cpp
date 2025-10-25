@@ -58,9 +58,9 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
 // =================================================================================================
 
 // The constructor does all heavy work, errors are returned as exceptions
-Routine::Routine(Queue& queue, EventPointer event, std::string name, const std::vector<std::string>& routines,
+Routine::Routine(const Queue& queue, const EventPointer event, std::string name, const std::vector<std::string>& routines,
                  const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
-                 std::initializer_list<const char*> source)
+                 const std::initializer_list<const char*> source)
     : precision_(precision),
       routine_name_(std::move(name)),
       kernel_names_(routines),
@@ -73,7 +73,7 @@ Routine::Routine(Queue& queue, EventPointer event, std::string name, const std::
   InitProgram(source);
 }
 
-void Routine::InitProgram(std::initializer_list<const char*> source) {
+void Routine::InitProgram(const std::initializer_list<const char*> source) {
   // Determines the identifier for this particular routine call
   auto routine_info = routine_name_;
   for (const auto& kernel_name : kernel_names_) {

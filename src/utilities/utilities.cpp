@@ -111,8 +111,8 @@ template <typename T>
 T Constant(const double val) {
   return static_cast<T>(val);
 }
-template float Constant<float>(const double);
-template double Constant<double>(const double);
+template float Constant<float>(double);
+template double Constant<double>(double);
 template <>
 half Constant(const double val) {
   return FloatToHalf(static_cast<float>(val));
@@ -151,8 +151,8 @@ template <typename T>
 typename BaseType<T>::Type AbsoluteValue(const T value) {
   return std::fabs(value);
 }
-template float AbsoluteValue<float>(const float);
-template double AbsoluteValue<double>(const double);
+template float AbsoluteValue<float>(float);
+template double AbsoluteValue<double>(double);
 template <>
 half AbsoluteValue(const half value) {
   return FloatToHalf(std::fabs(HalfToFloat(value)));
@@ -182,13 +182,13 @@ std::string ToString(T value) {
 template std::string ToString<int>(int value);
 template std::string ToString<size_t>(size_t value);
 template <>
-std::string ToString(float value) {
+std::string ToString(const float value) {
   std::ostringstream result;
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
 }
 template <>
-std::string ToString(double value) {
+std::string ToString(const double value) {
   std::ostringstream result;
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
@@ -200,17 +200,17 @@ std::string ToString<std::string>(std::string value) {
 
 // If not possible directly: special cases for complex data-types
 template <>
-std::string ToString(float2 value) {
+std::string ToString(const float2 value) {
   return ToString(value.real()) + "+" + ToString(value.imag()) + "i";
 }
 template <>
-std::string ToString(double2 value) {
+std::string ToString(const double2 value) {
   return ToString(value.real()) + "+" + ToString(value.imag()) + "i";
 }
 
 // If not possible directly: special case for half-precision
 template <>
-std::string ToString(half value) {
+std::string ToString(const half value) {
   return std::to_string(HalfToFloat(value));
 }
 
@@ -297,7 +297,7 @@ std::string ToString(StatusCode value) {
 
 // Retrieves the command-line arguments in a C++ fashion. Also adds command-line arguments from
 // pre-defined environmental variables
-std::vector<std::string> RetrieveCommandLineArguments(int argc, char* argv[]) {
+std::vector<std::string> RetrieveCommandLineArguments(const int argc, char* argv[]) {
   // Regular command-line arguments
   auto command_line_args = std::vector<std::string>();
   for (auto i = 0; i < argc; ++i) {
@@ -342,12 +342,12 @@ double ConvertArgument(const char* value) {
 }
 template <>
 float2 ConvertArgument(const char* value) {
-  auto val = static_cast<float>(std::stod(value));
+  const auto val = static_cast<float>(std::stod(value));
   return float2{val, val};
 }
 template <>
 double2 ConvertArgument(const char* value) {
-  auto val = std::stod(value);
+  const auto val = std::stod(value);
   return double2{val, val};
 }
 
@@ -386,27 +386,23 @@ T GetArgument(const std::vector<std::string>& arguments, std::string& help, cons
 }
 
 // Compiles the above function
-template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, const int);
-template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, const size_t);
-template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, const half);
-template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float);
-template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
-template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
-template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, int);
+template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, size_t);
+template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, half);
+template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, float);
+template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, double);
+template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, float2);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, double2);
 template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&,
-                                              const std::string);
-template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
-template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Transpose);
-template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);
-template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Triangle);
-template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Diagonal);
-template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Precision);
+                                              std::string);
+template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, Layout);
+template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&, Transpose);
+template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, Side);
+template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&, Triangle);
+template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&, Diagonal);
+template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&, Precision);
 template KernelMode GetArgument<KernelMode>(const std::vector<std::string>&, std::string&, const std::string&,
-                                            const KernelMode);
+                                            KernelMode);
 
 // =================================================================================================
 
@@ -583,8 +579,8 @@ double SquaredDifference(const T val1, const T val2) {
 }
 
 // Compiles the default case for standard data-types
-template double SquaredDifference<float>(const float, const float);
-template double SquaredDifference<double>(const double, const double);
+template double SquaredDifference<float>(float, float);
+template double SquaredDifference<double>(double, double);
 
 // Specialisations for non-standard data-types
 template <>
@@ -660,7 +656,7 @@ std::string GetDeviceName(const Device& device) {
 
   for (auto& removal : device_mapping::kDeviceRemovals) {  // removing certain things
     if (device_name.find(removal) != std::string::npos) {
-      auto start_position_to_erase = device_name.find(removal);
+      const auto start_position_to_erase = device_name.find(removal);
       device_name.erase(start_position_to_erase, removal.length());
     }
   }

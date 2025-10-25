@@ -117,9 +117,9 @@ template <typename T>
 void XConvGemmTestValidArguments(const int /*unused*/, const Arguments<T>& /*unused*/) {}
 std::vector<Constraint> XConvGemmSetConstraints(const int /*unused*/) {
   auto constraints = std::vector<Constraint>();
-  auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-  auto MultipleOfXMulY = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1] * v[2]); };
-  auto MultipleOfXMulYDivZ = [](std::vector<size_t> v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
+  auto MultipleOfX = [](const std::vector<size_t>& v) { return IsMultiple(v[0], v[1]); };
+  auto MultipleOfXMulY = [](const std::vector<size_t>& v) { return IsMultiple(v[0], v[1] * v[2]); };
+  auto MultipleOfXMulYDivZ = [](const std::vector<size_t>& v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
   // Requirement for unrolling the WGD loop
   constraints.push_back({MultipleOfX, {"WGD", "KWID"}});
   // Required for integer MWID and NWID
@@ -136,7 +136,7 @@ std::vector<Constraint> XConvGemmSetConstraints(const int /*unused*/) {
 }
 template <typename T>
 LocalMemSizeInfo XConvGemmComputeLocalMemSize(const int /*unused*/) {
-  return {[](std::vector<size_t> v) -> size_t {
+  return {[](const std::vector<size_t>& v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * ((v[0] * (v[0] + v[1]) + v[0] * (v[0] + v[2])));
           },
           {"WGD", "PADA", "PADB"}};

@@ -18,8 +18,8 @@
 namespace clblast {
 // =================================================================================================
 
-void OpenCLDiagnostics(int argc, char* argv[]) {
-  auto arguments = RetrieveCommandLineArguments(argc, argv);
+void OpenCLDiagnostics(const int argc, char* argv[]) {
+  const auto arguments = RetrieveCommandLineArguments(argc, argv);
 
   // Retrieves the arguments
   auto help = std::string{"Options given/available:\n"};
@@ -33,7 +33,7 @@ void OpenCLDiagnostics(int argc, char* argv[]) {
   const auto platform = Platform(platform_id);
   const auto device = Device(platform, device_id);
   const auto context = Context(device);
-  auto queue = Queue(context, device);
+  const auto queue = Queue(context, device);
 
   // Finds device information
   const auto device_type = GetDeviceType(device);
@@ -82,7 +82,7 @@ void OpenCLDiagnostics(int argc, char* argv[]) {
 }  // namespace clblast
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   clblast::OpenCLDiagnostics(argc, argv);
   return 0;
 }

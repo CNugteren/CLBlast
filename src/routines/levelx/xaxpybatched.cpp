@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XaxpyBatched<T>::XaxpyBatched(Queue& queue, EventPointer event, const std::string& name)
+XaxpyBatched<T>::XaxpyBatched(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
@@ -87,9 +87,9 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T>& alphas
   kernel.SetArgument(7, static_cast<int>(y_inc));
 
   // Launches the kernel
-  auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
-  auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"], batch_count};
-  auto local = std::vector<size_t>{getDatabase()["WGS"], 1};
+  const auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
+  const auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["WGS"], 1};
   RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 

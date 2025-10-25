@@ -103,17 +103,17 @@ void print_separator(size_t parameters_size);
 
 // =================================================================================================
 
-using GetTunerDefaultsFunc = std::function<TunerDefaults(const int V)>;
+using GetTunerDefaultsFunc = std::function<TunerDefaults(int V)>;
 template <typename T>
-using GetTunerSettingsFunc = std::function<TunerSettings(const int V, const Arguments<T>& args)>;
+using GetTunerSettingsFunc = std::function<TunerSettings(int V, const Arguments<T>& args)>;
 template <typename T>
-using TestValidArgumentsFunc = std::function<void(const int V, const Arguments<T>& args)>;
-using SetConstraintsFunc = std::function<std::vector<Constraint>(const int V)>;
+using TestValidArgumentsFunc = std::function<void(int V, const Arguments<T>& args)>;
+using SetConstraintsFunc = std::function<std::vector<Constraint>(int V)>;
 template <typename T>
-using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(const int V)>;
+using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(int V)>;
 template <typename T>
 using SetArgumentsFunc =
-    std::function<void(const int V, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers)>;
+    std::function<void(int V, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers)>;
 
 // Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
 // the results. Used for all types of kernel families. Note that this is a header-only function so

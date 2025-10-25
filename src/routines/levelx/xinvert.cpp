@@ -30,7 +30,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xinvert<T>::Xinvert(Queue& queue, EventPointer event, const std::string& name)
+Xinvert<T>::Xinvert(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Invert"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level3/level3.opencl"
@@ -103,7 +103,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
   const auto local_invert = std::vector<size_t>{internal_block_size};
   const auto global_invert = std::vector<size_t>{num_internal_blocks * internal_block_size};
   auto base_kernel_event = Event();
-  auto base_kernel_event_pointer = (internal_block_size == block_size) ? getEvent() : base_kernel_event.pointer();
+  const auto base_kernel_event_pointer = (internal_block_size == block_size) ? getEvent() : base_kernel_event.pointer();
   RunKernel(kernel, getQueue(), getDevice(), global_invert, local_invert, base_kernel_event_pointer, event_wait_list);
   if (internal_block_size == block_size) {
     event_wait_list.push_back(base_kernel_event);
@@ -146,7 +146,7 @@ void Xinvert<T>::InvertMatrixDiagonalBlocks(const Layout layout, const Triangle 
     kernel2.SetArgument(3, static_cast<int>(npages));
     kernel2.SetArgument(4, static_cast<int>(block_size));
     auto kernel2_event = Event();
-    auto kernel2_event_pointer = (is_last_kernel) ? getEvent() : kernel2_event.pointer();
+    const auto kernel2_event_pointer = (is_last_kernel) ? getEvent() : kernel2_event.pointer();
     RunKernel(kernel2, getQueue(), getDevice(), global, local, kernel2_event_pointer, event_wait_list);
     if (!is_last_kernel) {
       event_wait_list.push_back(kernel2_event);

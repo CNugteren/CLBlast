@@ -49,7 +49,7 @@ void Xhemm<T>::DoHemm(const Layout layout, const Side side, const Triangle trian
 
   // Determines which kernel to run based on the layout (the Xgemm kernel assumes column-major as
   // default) and on whether we are dealing with an upper or lower triangle of the hermitian matrix
-  bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
+  const bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
                    (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   const auto* kernel_name = (is_upper) ? "HermUpperToSquared" : "HermLowerToSquared";
 

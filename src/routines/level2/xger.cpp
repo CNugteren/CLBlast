@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xger<T>::Xger(Queue& queue, EventPointer event, const std::string& name)
+Xger<T>::Xger(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xger"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level2/level2.opencl"
@@ -75,10 +75,10 @@ void Xger<T>::DoGer(const Layout layout, const size_t m, const size_t n, const T
   kernel.SetArgument(12, static_cast<int>(a_is_rowmajor));
 
   // Launches the kernel
-  auto a_one_ceiled = Ceil(CeilDiv(a_one, getDatabase()["WPT"]), getDatabase()["WGS1"]);
-  auto a_two_ceiled = Ceil(CeilDiv(a_two, getDatabase()["WPT"]), getDatabase()["WGS2"]);
-  auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
-  auto local = std::vector<size_t>{getDatabase()["WGS1"], getDatabase()["WGS2"]};
+  const auto a_one_ceiled = Ceil(CeilDiv(a_one, getDatabase()["WPT"]), getDatabase()["WGS1"]);
+  const auto a_two_ceiled = Ceil(CeilDiv(a_two, getDatabase()["WPT"]), getDatabase()["WGS2"]);
+  const auto global = std::vector<size_t>{a_one_ceiled, a_two_ceiled};
+  const auto local = std::vector<size_t>{getDatabase()["WGS1"], getDatabase()["WGS2"]};
   RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
