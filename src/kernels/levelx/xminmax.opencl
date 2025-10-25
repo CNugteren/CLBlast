@@ -23,6 +23,9 @@ R"(
   #define WGS2 64     // The local work-group size of the epilogue kernel
 #endif
 
+// Splits work group size into half to prevent too much local memory usage, only works if work group size is divisble
+// by 2. It should be fine for most use cases since the tuner only tests multiples of 2:
+// src/tuning/kernels/xdot.hpp#L64
 #define HALF_WGS1 WGS1 / 2
 #define HALF_WGS2 WGS2 / 2
 
