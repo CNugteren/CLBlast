@@ -63,7 +63,7 @@ void RaiseError(const std::string& source_line, const std::string& exception_mes
 // =================================================================================================
 
 bool HasOnlyDigits(const std::string& str) {
-  if (str == "") {
+  if (str.empty()) {
     return false;
   }
   return str.find_first_not_of(" 0123456789") == std::string::npos;
@@ -253,7 +253,7 @@ void ArrayToRegister(std::string& source_line, const DefinesIntMap& defines,
         const auto left_split = split(source_line, '(');
         auto arguments = left_split.size() >= 2 ? left_split[1] : source_line;
         const auto right_split = split(arguments, ')');
-        arguments = right_split.size() >= 1 ? right_split[0] : arguments;
+        arguments = !right_split.empty() ? right_split[0] : arguments;
         const auto comma_split = split(arguments, ',');
         for (auto j = size_t{0}; j < comma_split.size(); ++j) {
           if (comma_split[j].find(array_name_map.first + "[") != std::string::npos) {
@@ -263,7 +263,7 @@ void ArrayToRegister(std::string& source_line, const DefinesIntMap& defines,
               RaiseError(source_line, "Mis-formatted array declaration #A");
             }
             const auto right_square_split = split(left_square_split[1], ']');
-            if (right_square_split.size() < 1) {
+            if (right_square_split.empty()) {
               RaiseError(source_line, "Mis-formatted array declaration #B");
             }
             const auto& array_index_string = right_square_split[0];
@@ -335,7 +335,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
   auto defines_string = DefinesStringMap();
 
   // Parse the input string into a vector of lines
-  const auto max_depth_defines = 30;
+  constexpr auto max_depth_defines = 30;
   auto disabled = std::vector<unsigned int>(max_depth_defines, 0);
   auto depth = size_t{0};
   std::stringstream source_stream(source);
@@ -383,7 +383,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
     // Not in a disabled-block
     if (!is_disabled) {
       // Skip empty lines
-      if (line == "") {
+      if (line.empty()) {
         continue;
       }
 
@@ -545,7 +545,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
 // Third pass: unroll loops and perform actual array-to-register promotion
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
                                                const DefinesIntMap& defines,
-                                               std::unordered_map<std::string, size_t>& arrays_to_registers,
+                                               const std::unordered_map<std::string, size_t>& arrays_to_registers,
                                                const bool array_to_register_promotion) {
   auto lines = std::vector<std::string>();
 
