@@ -11,6 +11,8 @@
 #ifndef CLBLAST_TEST_WRAPPER_CLBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CLBLAS_H_
 
+// IWYU pragma: private, include "routines/common.hpp"
+
 #include <clBLAS.h>
 
 #include <cstddef>

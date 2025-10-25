@@ -31,15 +31,15 @@ class Xsyrk : public Routine {
   Xsyrk(Queue& queue, EventPointer event, const std::string& name = "SYRK");
 
   // Templated-precision implementation of the routine
-  void DoSyrk(const Layout layout, const Triangle triangle, const Transpose a_transpose, const size_t n, const size_t k,
-              const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld, const T beta,
-              const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoSyrk(Layout layout, Triangle triangle, Transpose a_transpose, size_t n, size_t k, T alpha,
+              const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, T beta, const Buffer<T>& c_buffer,
+              size_t c_offset, size_t c_ld);
 
   // Helper function to be reused for SYR2K
-  void SyrkAB(const Layout layout, const Triangle triangle, const Transpose a_transpose, const Transpose b_transpose,
-              const size_t n, const size_t k, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset,
-              const size_t a_ld, const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
-              const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld, EventPointer final_event);
+  void SyrkAB(Layout layout, Triangle triangle, Transpose a_transpose, Transpose b_transpose, size_t n, size_t k,
+              T alpha, const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer,
+              size_t b_offset, size_t b_ld, T beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld,
+              EventPointer final_event);
 };
 
 // =================================================================================================

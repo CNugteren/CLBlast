@@ -43,7 +43,7 @@ const std::string kDeviceTypeCPU = "CPU";
 const std::string kDeviceTypeGPU = "GPU";
 const std::string kDeviceTypeAccelerator = "accelerator";
 const std::string kDeviceTypeAll = "default";
-const Name kDeviceNameDefault = {"default                                           "};
+constexpr Name kDeviceNameDefault = {"default                                           "};
 
 struct DatabaseDevice {
   Name name;

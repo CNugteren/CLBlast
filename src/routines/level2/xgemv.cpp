@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xgemv<T>::Xgemv(Queue& queue, EventPointer event, const std::string& name)
+Xgemv<T>::Xgemv(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xgemv", "XgemvFast", "XgemvFastRot", "TrsvRoutine"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level2/xgemv.opencl"
@@ -92,30 +92,31 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose, const si
   TestVectorY(m_real, y_buffer, y_offset, y_inc);
 
   // Determines whether or not the fast-version can be used
-  fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && (a_conjugate == 0) &&
-                IsMultiple(m, db_["WGS2"] * db_["WPT2"]) && IsMultiple(n, db_["WGS2"]) && IsMultiple(a_ld, db_["VW2"]);
-  fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && (a_conjugate == 0) &&
-                    IsMultiple(m, db_["WGS3"] * db_["WPT3"]) && IsMultiple(n, db_["WGS3"]) &&
-                    IsMultiple(a_ld, db_["VW3"]);
+  fast_kernel = fast_kernel && (a_offset == 0) && (a_rotated == 0) && !a_conjugate &&
+                IsMultiple(m, getDatabase()["WGS2"] * getDatabase()["WPT2"]) && IsMultiple(n, getDatabase()["WGS2"]) &&
+                IsMultiple(a_ld, getDatabase()["VW2"]);
+  fast_kernel_rot = fast_kernel_rot && (a_offset == 0) && (a_rotated == 1) && !a_conjugate &&
+                    IsMultiple(m, getDatabase()["WGS3"] * getDatabase()["WPT3"]) &&
+                    IsMultiple(n, getDatabase()["WGS3"]) && IsMultiple(a_ld, getDatabase()["VW3"]);
 
   // If possible, run the fast-version (rotated or non-rotated) of the kernel
   auto kernel_name = std::string{"Xgemv"};
-  const auto m_ceiled = Ceil(m_real, db_["WGS1"] * db_["WPT1"]);
-  auto global_size = m_ceiled / db_["WPT1"];
-  auto local_size = db_["WGS1"];
+  const auto m_ceiled = Ceil(m_real, getDatabase()["WGS1"] * getDatabase()["WPT1"]);
+  auto global_size = m_ceiled / getDatabase()["WPT1"];
+  auto local_size = getDatabase()["WGS1"];
   if (fast_kernel) {
     kernel_name = "XgemvFast";
-    global_size = m_real / db_["WPT2"];
-    local_size = db_["WGS2"];
+    global_size = m_real / getDatabase()["WPT2"];
+    local_size = getDatabase()["WGS2"];
   }
   if (fast_kernel_rot) {
     kernel_name = "XgemvFastRot";
     global_size = m_real;
-    local_size = db_["WGS3"];
+    local_size = getDatabase()["WGS3"];
   }
 
   // Retrieves the Xgemv kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m_real));
@@ -138,9 +139,9 @@ void Xgemv<T>::MatVec(const Layout layout, const Transpose a_transpose, const si
   kernel.SetArgument(17, static_cast<int>(ku));         // only used for banded matrices
 
   // Launches the kernel
-  auto global = std::vector<size_t>{global_size};
-  auto local = std::vector<size_t>{local_size};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  const auto global = std::vector<size_t>{global_size};
+  const auto local = std::vector<size_t>{local_size};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

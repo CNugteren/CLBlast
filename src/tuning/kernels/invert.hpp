@@ -21,7 +21,7 @@ namespace clblast {
 // =================================================================================================
 
 // Settings for this kernel (default command-line arguments)
-TunerDefaults InvertGetTunerDefaults(const int) {
+TunerDefaults InvertGetTunerDefaults(const int /*unused*/) {
   auto settings = TunerDefaults();
   settings.options = {kArgN, kArgM, kArgK};
   settings.default_n = 128;  // dimension of input matrix 'n'
@@ -32,7 +32,7 @@ TunerDefaults InvertGetTunerDefaults(const int) {
 
 // Settings for this kernel (general)
 template <typename T>
-TunerSettings InvertGetTunerSettings(const int, const Arguments<T>& args) {
+TunerSettings InvertGetTunerSettings(const int /*unused*/, const Arguments<T>& args) {
   auto settings = TunerSettings();
 
   // Identification of the kernel
@@ -80,21 +80,22 @@ TunerSettings InvertGetTunerSettings(const int, const Arguments<T>& args) {
 
 // Tests for valid arguments
 template <typename T>
-void InvertTestValidArguments(const int, const Arguments<T>& args) {
+void InvertTestValidArguments(const int /*unused*/, const Arguments<T>& args) {
   if (!(args.k == 16)) {
     throw std::runtime_error("'TripleMatMul16Part1Lower' requires 'k' to be 16");
   }
 }
-std::vector<Constraint> InvertSetConstraints(const int) { return {}; }
+std::vector<Constraint> InvertSetConstraints(const int /*unused*/) { return {}; }
 template <typename T>
-LocalMemSizeInfo InvertComputeLocalMemSize(const int) {
-  return {[](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * (16 + v[0]) * 16; },
+LocalMemSizeInfo InvertComputeLocalMemSize(const int /*unused*/) {
+  return {[](const std::vector<size_t>& v) -> size_t { return GetBytes(PrecisionValue<T>()) * (16 + v[0]) * 16; },
           {"LOCALPAD"}};
 }
 
 // Sets the kernel's arguments
 template <typename T>
-void InvertSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void InvertSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                        std::vector<Buffer<T>>& buffers) {
   const auto num_pages = CeilDiv(args.n, args.k * 2);  // CeilDiv(n, current_size*2)
   kernel.SetArgument(0, static_cast<int>(args.n));     // n
   kernel.SetArgument(1, buffers[2]());                 // 2 == A matrix

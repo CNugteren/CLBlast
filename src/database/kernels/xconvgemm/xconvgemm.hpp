@@ -18,5 +18,5 @@ extern const DatabaseEntry XconvgemmComplexSingle;
 extern const DatabaseEntry XconvgemmDouble;
 extern const DatabaseEntry XconvgemmComplexDouble;
 
-} // namespace database
-} // namespace clblast
+}  // namespace database
+}  // namespace clblast

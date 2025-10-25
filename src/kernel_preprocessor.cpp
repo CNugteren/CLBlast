@@ -35,6 +35,8 @@
 #include "cxpp11_common.hpp"
 #include "utilities/utilities.hpp"
 
+constexpr bool enable_pp_debug = false;
+
 namespace clblast {
 // =================================================================================================
 
@@ -61,7 +63,7 @@ void RaiseError(const std::string& source_line, const std::string& exception_mes
 // =================================================================================================
 
 bool HasOnlyDigits(const std::string& str) {
-  if (str == "") {
+  if (str.empty()) {
     return false;
   }
   return str.find_first_not_of(" 0123456789") == std::string::npos;
@@ -70,7 +72,7 @@ bool HasOnlyDigits(const std::string& str) {
 // Simple unsigned integer math parser
 int ParseMath(const std::string& str) {
   // Handles brackets
-  if (str.find(")") != std::string::npos) {
+  if (str.find(')') != std::string::npos) {
     const auto split_close = split(str, ')');
     const auto split_end = split(split_close[0], '(');
     if (split_end.size() < 2) {
@@ -184,7 +186,7 @@ bool EvaluateCondition(std::string condition, const DefinesIntMap& defines, cons
   if (not_defined_pos != std::string::npos) {
     const auto contents = condition.substr(not_defined_pos + 9);
     const auto not_defined_split = split(contents, ')');
-    const auto not_defined_val = not_defined_split[0];
+    const auto& not_defined_val = not_defined_split[0];
     return (defines_string.find(not_defined_val) == defines_string.end());
   }
 
@@ -193,7 +195,7 @@ bool EvaluateCondition(std::string condition, const DefinesIntMap& defines, cons
   if (defined_pos != std::string::npos) {
     const auto contents = condition.substr(defined_pos + 8);
     const auto defined_split = split(contents, ')');
-    const auto defined_val = defined_split[0];
+    const auto& defined_val = defined_split[0];
     return (defines_string.find(defined_val) != defines_string.end());
   }
 
@@ -251,7 +253,7 @@ void ArrayToRegister(std::string& source_line, const DefinesIntMap& defines,
         const auto left_split = split(source_line, '(');
         auto arguments = left_split.size() >= 2 ? left_split[1] : source_line;
         const auto right_split = split(arguments, ')');
-        arguments = right_split.size() >= 1 ? right_split[0] : arguments;
+        arguments = !right_split.empty() ? right_split[0] : arguments;
         const auto comma_split = split(arguments, ',');
         for (auto j = size_t{0}; j < comma_split.size(); ++j) {
           if (comma_split[j].find(array_name_map.first + "[") != std::string::npos) {
@@ -261,10 +263,10 @@ void ArrayToRegister(std::string& source_line, const DefinesIntMap& defines,
               RaiseError(source_line, "Mis-formatted array declaration #A");
             }
             const auto right_square_split = split(left_square_split[1], ']');
-            if (right_square_split.size() < 1) {
+            if (right_square_split.empty()) {
               RaiseError(source_line, "Mis-formatted array declaration #B");
             }
-            auto array_index_string = right_square_split[0];
+            const auto& array_index_string = right_square_split[0];
             const auto array_index = StringToDigit(array_index_string, source_line);
 
             // Creates the new string
@@ -333,11 +335,11 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
   auto defines_string = DefinesStringMap();
 
   // Parse the input string into a vector of lines
-  const auto max_depth_defines = 30;
+  constexpr auto max_depth_defines = 30;
   auto disabled = std::vector<unsigned int>(max_depth_defines, 0);
   auto depth = size_t{0};
   std::stringstream source_stream(source);
-  auto line = std::string{""};
+  std::string line;
   while (std::getline(source_stream, line)) {
     // printf("[@%zu] disabled=%d '%s'\n", depth, disabled[depth], line.c_str());
 
@@ -381,7 +383,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
     // Not in a disabled-block
     if (!is_disabled) {
       // Skip empty lines
-      if (line == "") {
+      if (line.empty()) {
         continue;
       }
 
@@ -398,7 +400,7 @@ std::vector<std::string> PreprocessDefinesAndComments(const std::string& source,
       const auto define_pos = line.find("#define ");
       if (define_pos != std::string::npos) {
         const auto define = line.substr(define_pos + 8);  // length of "#define "
-        const auto value_pos = define.find(" ");
+        const auto value_pos = define.find(' ');
         auto value = define.substr(value_pos + 1);
         const auto name = define.substr(0, value_pos);
         SubstituteDefines(defines_int, value);
@@ -526,7 +528,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       if (array_name_split.size() < 2) {
         RaiseError(line, "Mis-formatted array declaration #2");
       }
-      const auto array_name = array_name_split[array_name_split.size() - 1];
+      const auto& array_name = array_name_split[array_name_split.size() - 1];
       arrays_to_registers[array_name] = array_size;
       // TODO: bracket count not used currently for scope checking
       continue;
@@ -543,7 +545,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
 // Third pass: unroll loops and perform actual array-to-register promotion
 std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& source_lines,
                                                const DefinesIntMap& defines,
-                                               std::unordered_map<std::string, size_t>& arrays_to_registers,
+                                               const std::unordered_map<std::string, size_t>& arrays_to_registers,
                                                const bool array_to_register_promotion) {
   auto lines = std::vector<std::string>();
 
@@ -580,8 +582,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       }
 
       // Retrieves loop information (and checks for assumptions)
-      const auto variable_type = line_split[0];
-      const auto variable_name = line_split[1];
+      const auto& variable_name = line_split[1];
       if (variable_name != line_split[4]) {
         RaiseError(line, "Mis-formatted for-loop #2");
       }
@@ -602,7 +603,7 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       const auto loop_start = StringToDigit(loop_start_string, line);
       const auto loop_end = StringToDigit(loop_end_string, line);
       const auto loop_increment = StringToDigit(loop_increment_string, line);
-      auto indent = std::string{""};
+      std::string indent;
       for (auto i = size_t{0}; i < for_pos; ++i) {
         indent += " ";
       }
@@ -665,17 +666,18 @@ std::string PreprocessKernelSource(const std::string& kernel_source) {
   lines = PreprocessUnrollLoops(lines, defines, arrays_to_registers, true);
 
   // Gather the results
-  auto processed_kernel = std::string{""};
+  std::string processed_kernel;
   for (const auto& line : lines) {
     processed_kernel += line + "\n";
   }
 
   // Debugging
-  if (false) {
+  if (enable_pp_debug) {
     for (auto i = size_t{0}; i < lines.size(); ++i) {
       printf("[%zu] %s\n", i, lines[i].c_str());
     }
   }
+
   return processed_kernel;
 }
 

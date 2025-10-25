@@ -34,10 +34,10 @@ class Routine {
   static void InitDatabase(const Device& device, const std::vector<std::string>& kernel_names,
                            const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
                            Databases& db) {
-    const auto platform_id = device.PlatformID();
+    auto* const platform_id = device.PlatformID();
     for (const auto& kernel_name : kernel_names) {
       // Queries the cache to see whether or not the kernel parameter database is already there
-      bool has_db;
+      bool has_db = false;
       db(kernel_name) =
           DatabaseCache::Instance().Get(DatabaseKeyRef{platform_id, device(), precision, kernel_name}, &has_db);
       if (has_db) {
@@ -57,9 +57,9 @@ class Routine {
   // All heavy preparation work is done inside this constructor.
   // NOTE: the caller must provide the same userDatabase for each combination of device, precision
   // and routine list, otherwise the caching logic will break.
-  explicit Routine(Queue& queue, EventPointer event, const std::string& name, const std::vector<std::string>& routines,
-                   const Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
-                   std::initializer_list<const char*> source);
+  Routine(const Queue& queue, EventPointer event, std::string name, const std::vector<std::string>& routines,
+          Precision precision, const std::vector<database::DatabaseEntry>& userDatabase,
+          std::initializer_list<const char*> source);
 
   // List of kernel-routine look-ups
   static const std::vector<std::string> routines_axpy;
@@ -76,18 +76,32 @@ class Routine {
   void InitProgram(std::initializer_list<const char*> source);
 
  protected:
+  Precision getPrecision() const noexcept { return precision_; };
+
+  const std::string& getRoutineName() const noexcept { return routine_name_; }
+  const std::vector<std::string>& getKernelNames() const noexcept { return kernel_names_; }
+
+  Queue& getQueue() noexcept { return queue_; }
+  EventPointer getEvent() const noexcept { return event_; }
+  const Context& getContext() const noexcept { return context_; }
+  const Device& getDevice() const noexcept { return device_; }
+
+  std::shared_ptr<Program>& getProgram() noexcept { return program_; }
+  Databases& getDatabase() noexcept { return db_; }
+
   // Non-static variable for the precision
-  const Precision precision_;
+ private:
+  Precision precision_;
 
   // The routine's name and the corresponding kernels
-  const std::string routine_name_;
-  const std::vector<std::string> kernel_names_;
+  std::string routine_name_;
+  std::vector<std::string> kernel_names_;
 
   // The OpenCL objects, accessible only from derived classes
   Queue queue_;
   EventPointer event_;
-  const Context context_;
-  const Device device_;
+  Context context_;
+  Device device_;
 
   // Compiled program (either retrieved from cache or compiled in slow path)
   std::shared_ptr<Program> program_;

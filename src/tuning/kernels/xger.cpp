@@ -10,6 +10,7 @@
 #include "tuning/kernels/xger.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -19,7 +20,7 @@ using float2 = clblast::float2;
 using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   try {
     const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
     switch (clblast::GetPrecision(command_line_args)) {
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         clblast::Tuner<double2>(argc, argv, 0, clblast::XgerGetTunerDefaults, clblast::XgerGetTunerSettings<double2>,
                                 clblast::XgerTestValidArguments<double2>, clblast::XgerSetConstraints,
                                 clblast::XgerComputeLocalMemSize<double2>, clblast::XgerSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

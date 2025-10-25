@@ -159,13 +159,13 @@ bool TestKernel(const Device& device, const Context& context, const std::string&
 
 // =================================================================================================
 
-size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precision precision) {
+size_t RunPreprocessor(const int argc, char* argv[], const bool silent, const Precision precision) {
   auto errors = size_t{0};
   auto passed = size_t{0};
 
   // Retrieves the arguments
   auto help = std::string{"Options given/available:\n"};
-  auto arguments = RetrieveCommandLineArguments(argc, argv);
+  const auto arguments = RetrieveCommandLineArguments(argc, argv);
   const auto platform_id =
       GetArgument(arguments, help, kArgPlatform, ConvertArgument(std::getenv("CLBLAST_PLATFORM"), size_t{0}));
   const auto device_id =
@@ -354,7 +354,7 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
 }  // namespace clblast
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunPreprocessor(argc, argv, false, clblast::Precision::kSingle);
   errors += clblast::RunPreprocessor(argc, argv, true, clblast::Precision::kComplexDouble);

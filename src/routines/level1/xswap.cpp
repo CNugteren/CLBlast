@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xswap<T>::Xswap(Queue& queue, EventPointer event, const std::string& name)
+Xswap<T>::Xswap(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
@@ -50,14 +50,14 @@ void Xswap<T>::DoSwap(const size_t n, const Buffer<T>& x_buffer, const size_t x_
   TestVectorY(n, y_buffer, y_offset, y_inc);
 
   // Determines whether or not the fast-version can be used
-  bool use_fast_kernel = (x_offset == 0) && (x_inc == 1) && (y_offset == 0) && (y_inc == 1) &&
-                         IsMultiple(n, db_["WGS"] * db_["WPT"] * db_["VW"]);
+  const bool use_fast_kernel = (x_offset == 0) && (x_inc == 1) && (y_offset == 0) && (y_inc == 1) &&
+                               IsMultiple(n, getDatabase()["WGS"] * getDatabase()["WPT"] * getDatabase()["VW"]);
 
   // If possible, run the fast-version of the kernel
-  auto kernel_name = (use_fast_kernel) ? "XswapFast" : "Xswap";
+  const auto* kernel_name = (use_fast_kernel) ? "XswapFast" : "Xswap";
 
   // Retrieves the Xswap kernel from the compiled binary
-  auto kernel = Kernel(program_, kernel_name);
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   if (use_fast_kernel) {
@@ -76,14 +76,14 @@ void Xswap<T>::DoSwap(const size_t n, const Buffer<T>& x_buffer, const size_t x_
 
   // Launches the kernel
   if (use_fast_kernel) {
-    auto global = std::vector<size_t>{CeilDiv(n, db_["WPT"] * db_["VW"])};
-    auto local = std::vector<size_t>{db_["WGS"]};
-    RunKernel(kernel, queue_, device_, global, local, event_);
+    const auto global = std::vector<size_t>{CeilDiv(n, getDatabase()["WPT"] * getDatabase()["VW"])};
+    const auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   } else {
-    auto n_ceiled = Ceil(n, db_["WGS"] * db_["WPT"]);
-    auto global = std::vector<size_t>{n_ceiled / db_["WPT"]};
-    auto local = std::vector<size_t>{db_["WGS"]};
-    RunKernel(kernel, queue_, device_, global, local, event_);
+    const auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
+    const auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"]};
+    const auto local = std::vector<size_t>{getDatabase()["WGS"]};
+    RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
   }
 }
 

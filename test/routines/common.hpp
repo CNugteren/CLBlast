@@ -10,21 +10,17 @@
 #ifndef CLBLAST_TEST_ROUTINES_COMMON_H_
 #define CLBLAST_TEST_ROUTINES_COMMON_H_
 
-#include <string>
-#include <vector>
-
-#include "test/test_utilities.hpp"
-#include "utilities/utilities.hpp"
+#include "../test_utilities.hpp"
 
 #ifdef CLBLAST_REF_CLBLAS
-#include "test/wrapper_clblas.hpp"
+#include "test/wrapper_clblas.hpp"  // IWYU pragma: export
 #endif
 #ifdef CLBLAST_REF_CBLAS
-#include "test/wrapper_cblas.hpp"
+#include "test/wrapper_cblas.hpp"  // IWYU pragma: export
 #endif
-#include "test/wrapper_cuda.hpp"
+#include "test/wrapper_cuda.hpp"  // IWYU pragma: export
 #ifdef CLBLAST_REF_CUBLAS
-#include "test/wrapper_cublas.hpp"
+#include "test/wrapper_cublas.hpp"  // IWYU pragma: export
 #endif
 
 // =================================================================================================

@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XaxpyBatched<T>::XaxpyBatched(Queue& queue, EventPointer event, const std::string& name)
+XaxpyBatched<T>::XaxpyBatched(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xaxpy"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/level1.opencl"
@@ -66,15 +66,15 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T>& alphas
     x_offsets_int[batch] = static_cast<int>(x_offsets[batch]);
     y_offsets_int[batch] = static_cast<int>(y_offsets[batch]);
   }
-  auto x_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  auto y_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  auto alphas_device = Buffer<T>(context_, BufferAccess::kReadWrite, batch_count);
-  x_offsets_device.Write(queue_, batch_count, x_offsets_int);
-  y_offsets_device.Write(queue_, batch_count, y_offsets_int);
-  alphas_device.Write(queue_, batch_count, alphas);
+  auto x_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto y_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto alphas_device = Buffer<T>(getContext(), BufferAccess::kReadWrite, batch_count);
+  x_offsets_device.Write(getQueue(), batch_count, x_offsets_int);
+  y_offsets_device.Write(getQueue(), batch_count, y_offsets_int);
+  alphas_device.Write(getQueue(), batch_count, alphas);
 
   // Retrieves the Xaxpy kernel from the compiled binary
-  auto kernel = Kernel(program_, "XaxpyBatched");
+  auto kernel = Kernel(getProgram(), "XaxpyBatched");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(n));
@@ -87,10 +87,10 @@ void XaxpyBatched<T>::DoAxpyBatched(const size_t n, const std::vector<T>& alphas
   kernel.SetArgument(7, static_cast<int>(y_inc));
 
   // Launches the kernel
-  auto n_ceiled = Ceil(n, db_["WGS"] * db_["WPT"]);
-  auto global = std::vector<size_t>{n_ceiled / db_["WPT"], batch_count};
-  auto local = std::vector<size_t>{db_["WGS"], 1};
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  const auto n_ceiled = Ceil(n, getDatabase()["WGS"] * getDatabase()["WPT"]);
+  const auto global = std::vector<size_t>{n_ceiled / getDatabase()["WPT"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["WGS"], 1};
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

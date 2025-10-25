@@ -27,8 +27,8 @@ class Xasum : public Routine {
   Xasum(Queue& queue, EventPointer event, const std::string& name = "ASUM");
 
   // Templated-precision implementation of the routine
-  void DoAsum(const size_t n, const Buffer<T>& asum_buffer, const size_t asum_offset, const Buffer<T>& x_buffer,
-              const size_t x_offset, const size_t x_inc);
+  void DoAsum(size_t n, const Buffer<T>& asum_buffer, size_t asum_offset, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc);
 };
 
 // =================================================================================================

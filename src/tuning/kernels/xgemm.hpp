@@ -159,10 +159,10 @@ void XgemmTestValidArguments(const int V, const Arguments<T>& args) {
 }
 std::vector<Constraint> XgemmSetConstraints(const int V) {
   auto constraints = std::vector<Constraint>();
-  auto IsEqual = [](std::vector<size_t> v) { return v[0] == v[1]; };
-  auto MultipleOfX = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1]); };
-  auto MultipleOfXMulY = [](std::vector<size_t> v) { return IsMultiple(v[0], v[1] * v[2]); };
-  auto MultipleOfXMulYDivZ = [](std::vector<size_t> v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
+  auto IsEqual = [](const std::vector<size_t>& v) { return v[0] == v[1]; };
+  auto MultipleOfX = [](const std::vector<size_t>& v) { return IsMultiple(v[0], v[1]); };
+  auto MultipleOfXMulY = [](const std::vector<size_t>& v) { return IsMultiple(v[0], v[1] * v[2]); };
+  auto MultipleOfXMulYDivZ = [](const std::vector<size_t>& v) { return IsMultiple(v[0], (v[1] * v[2]) / v[3]); };
 
   // Requirement for unrolling the KWG loop
   constraints.push_back({MultipleOfX, {"KWG", "KWI"}});
@@ -206,8 +206,8 @@ std::vector<Constraint> XgemmSetConstraints(const int V) {
   return constraints;
 }
 template <typename T>
-LocalMemSizeInfo XgemmComputeLocalMemSize(const int) {
-  return {[](std::vector<size_t> v) -> size_t {
+LocalMemSizeInfo XgemmComputeLocalMemSize(const int /*unused*/) {
+  return {[](const std::vector<size_t>& v) -> size_t {
             return GetBytes(PrecisionValue<T>()) * ((v[0] * v[1] * v[2]) + (v[3] * v[4] * v[5]));
           },
           {"SA", "KWG", "MWG", "SB", "KWG", "NWG"}};
@@ -215,7 +215,8 @@ LocalMemSizeInfo XgemmComputeLocalMemSize(const int) {
 
 // Sets the kernel's arguments
 template <typename T>
-void XgemmSetArguments(const int, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers) {
+void XgemmSetArguments(const int /*unused*/, Kernel& kernel, const Arguments<T>& args,
+                       std::vector<Buffer<T>>& buffers) {
   kernel.SetArgument(0, static_cast<int>(args.m));
   kernel.SetArgument(1, static_cast<int>(args.n));
   kernel.SetArgument(2, static_cast<int>(args.k));

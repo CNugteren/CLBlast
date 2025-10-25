@@ -26,17 +26,16 @@ template <typename T>
 class Xsyr2k : public Xsyrk<T> {
  public:
   // Uses methods and variables the regular Xsyrk routine
-  using Xsyrk<T>::event_;
+  using Xsyrk<T>::getEvent;
   using Xsyrk<T>::SyrkAB;
 
   // Constructor
   Xsyr2k(Queue& queue, EventPointer event, const std::string& name = "SYR2K");
 
   // Templated-precision implementation of the routine
-  void DoSyr2k(const Layout layout, const Triangle triangle, const Transpose ab_transpose, const size_t n,
-               const size_t k, const T alpha, const Buffer<T>& a_buffer, const size_t a_offset, const size_t a_ld,
-               const Buffer<T>& b_buffer, const size_t b_offset, const size_t b_ld, const T beta,
-               const Buffer<T>& c_buffer, const size_t c_offset, const size_t c_ld);
+  void DoSyr2k(Layout layout, Triangle triangle, Transpose ab_transpose, size_t n, size_t k, T alpha,
+               const Buffer<T>& a_buffer, size_t a_offset, size_t a_ld, const Buffer<T>& b_buffer, size_t b_offset,
+               size_t b_ld, T beta, const Buffer<T>& c_buffer, size_t c_offset, size_t c_ld);
 };
 
 // =================================================================================================
