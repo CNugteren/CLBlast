@@ -3211,6 +3211,118 @@ Arguments to CONVGEMM:
 
 
 
+xMINMAX: Combined version of xMin and xMax
+-------------
+
+Finds the index of the minimum and maximum of a vector in the same routine.
+
+C++ API:
+```
+template <typename T>
+StatusCode PUBLIC_API Minmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                             const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                             cl_command_queue* queue, cl_event* event);
+```
+
+C API:
+```
+CLBlastStatusCode PUBLIC_API CLBlastSminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+```
+
+Arguments to MINMAX:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
+* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
+* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
+* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for MINMAX:
+
+* The tuned/default parameters for WGS1 and WGS2 must be divisible by 2
+
+
+
+xAMINMAX: Combined version of xAmin and xAmax
+-------------
+
+Finds the index of the absolute minimum and maximum of a vector in the same routine.
+
+C++ API:
+```
+template <typename T>
+StatusCode PUBLIC_API Aminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                             const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                             cl_command_queue* queue, cl_event* event);
+```
+
+C API:
+```
+CLBlastStatusCode PUBLIC_API CLBlastSaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastCaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastZaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHaminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset,
+                                            cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
+                                            const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
+                                            cl_event* event);
+```
+
+Arguments to AMINMAX:
+
+* `const size_t n`: Integer size argument. This value must be positive.
+* `cl_mem imax_buffer`: OpenCL buffer to store the output imax vector.
+* `const size_t imax_offset`: The offset in elements from the start of the output imax vector.
+* `cl_mem imin_buffer`: OpenCL buffer to store the output imin vector.
+* `const size_t imin_offset`: The offset in elements from the start of the output imin vector.
+* `const cl_mem x_buffer`: OpenCL buffer to store the input x vector.
+* `const size_t x_offset`: The offset in elements from the start of the input x vector.
+* `const size_t x_inc`: Stride/increment of the input x vector. This value must be greater than 0.
+* `cl_command_queue* queue`: Pointer to an OpenCL command queue associated with a context and device to execute the routine on.
+* `cl_event* event`: Pointer to an OpenCL event to be able to wait for completion of the routine's OpenCL kernel(s). This is an optional argument.
+
+Requirements for AMINMAX:
+
+* The tuned/default parameters for WGS1 and WGS2 must be divisible by 2
+
+
+
 xAXPYBATCHED: Batched version of AXPY
 -------------
 
