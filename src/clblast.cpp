@@ -30,25 +30,27 @@ namespace clblast {
 
 // Generate givens plane rotation: SROTG/DROTG
 template <typename T>
-StatusCode Rotg(cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/,
+StatusCode Rotg(cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/,
+                cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/,
                 cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
-template StatusCode PUBLIC_API Rotg<float>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Rotg<double>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotg<float>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotg<double>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t,
+                                            cl_command_queue*, cl_event*);
 
 // Generate modified givens plane rotation: SROTMG/DROTMG
 template <typename T>
-StatusCode Rotmg(cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/,
-                 const size_t /*unused*/, cl_command_queue* /*unused*/, cl_event* /*unused*/) {
+StatusCode Rotmg(cl_mem /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/,
+                 cl_mem /*unused*/, const size_t /*unused*/, const cl_mem /*unused*/, const size_t /*unused*/,
+                 cl_mem /*unused*/, const size_t /*unused*/, cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Rotmg<float>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem,
-                                            size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Rotmg<double>(cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem, size_t, cl_mem,
-                                             size_t, cl_command_queue*,
-                                             cl_event*);
+                                             size_t, cl_command_queue*, cl_event*);
 
 // Apply givens plane rotation: SROT/DROT
 template <typename T>
@@ -56,8 +58,10 @@ StatusCode Rot(const size_t, cl_mem, const size_t, const size_t, cl_mem, const s
                cl_command_queue*, cl_event*) {
   return StatusCode::kNotImplemented;
 }
-template StatusCode PUBLIC_API Rot<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float, float, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Rot<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double, double, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rot<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float, float,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rot<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double, double,
+                                           cl_command_queue*, cl_event*);
 
 // Apply modified givens plane rotation: SROTM/DROTM
 template <typename T>
@@ -65,8 +69,10 @@ StatusCode Rotm(const size_t, cl_mem, const size_t, const size_t, cl_mem, const 
                 const size_t, cl_command_queue*, cl_event*) {
   return StatusCode::kNotImplemented;
 }
-template StatusCode PUBLIC_API Rotm<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Rotm<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotm<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Rotm<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t,
+                                            cl_command_queue*, cl_event*);
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
@@ -81,11 +87,16 @@ StatusCode Swap(const size_t n, cl_mem x_buffer, const size_t x_offset, const si
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Swap<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Swap<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Swap<float2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Swap<double2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Swap<half>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Swap<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Swap<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Swap<float2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Swap<double2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Swap<half>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                          cl_event*);
 
 // Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 template <typename T>
@@ -100,16 +111,11 @@ StatusCode Scal(const size_t n, const T alpha, cl_mem x_buffer, const size_t x_o
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Scal<float>(size_t, float, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Scal<double>(size_t, double, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Scal<float2>(size_t, float2, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Scal<double2>(size_t, double2, cl_mem, size_t, size_t,
-                                             cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Scal<half>(size_t, half, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<float>(size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<double>(size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<float2>(size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<double2>(size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Scal<half>(size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 template <typename T>
@@ -124,11 +130,16 @@ StatusCode Copy(const size_t n, const cl_mem x_buffer, const size_t x_offset, co
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Copy<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Copy<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Copy<float2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Copy<double2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Copy<half>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Copy<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Copy<double>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Copy<float2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Copy<double2>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Copy<half>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                          cl_event*);
 
 // Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
@@ -143,14 +154,16 @@ StatusCode Axpy(const size_t n, const T alpha, const cl_mem x_buffer, const size
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Axpy<float>(size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Axpy<double>(size_t, double, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Axpy<float2>(size_t, float2, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Axpy<double2>(size_t, double2, cl_mem, size_t, size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Axpy<half>(size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<float>(size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<double>(size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<float2>(size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<double2>(size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Axpy<half>(size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Dot product of two vectors: SDOT/DDOT/HDOT
 template <typename T>
@@ -167,9 +180,12 @@ StatusCode Dot(const size_t n, cl_mem dot_buffer, const size_t dot_offset, const
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Dot<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Dot<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Dot<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dot<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dot<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dot<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                         cl_command_queue*, cl_event*);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
 template <typename T>
@@ -186,10 +202,10 @@ StatusCode Dotu(const size_t n, cl_mem dot_buffer, const size_t dot_offset, cons
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Dotu<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
-template StatusCode PUBLIC_API Dotu<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                             cl_event*);
+template StatusCode PUBLIC_API Dotu<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dotu<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
 
 // Dot product of two complex vectors, one conjugated: CDOTC/ZDOTC
 template <typename T>
@@ -206,10 +222,10 @@ StatusCode Dotc(const size_t n, cl_mem dot_buffer, const size_t dot_offset, cons
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Dotc<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
-template StatusCode PUBLIC_API Dotc<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                             cl_event*);
+template StatusCode PUBLIC_API Dotc<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Dotc<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
 
 // Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 template <typename T>
@@ -224,13 +240,15 @@ StatusCode Nrm2(const size_t n, cl_mem nrm2_buffer, const size_t nrm2_offset, co
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Nrm2<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Nrm2<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Nrm2<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Nrm2<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Nrm2<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Nrm2<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Nrm2<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Nrm2<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Nrm2<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Nrm2<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 template <typename T>
@@ -245,13 +263,15 @@ StatusCode Asum(const size_t n, cl_mem asum_buffer, const size_t asum_offset, co
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Asum<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Asum<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Asum<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Asum<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Asum<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Asum<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Asum<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Asum<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Asum<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Asum<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 template <typename T>
@@ -266,15 +286,14 @@ StatusCode Sum(const size_t n, cl_mem sum_buffer, const size_t sum_offset, const
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Sum<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Sum<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Sum<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Sum<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Sum<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                         cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Sum<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Sum<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Sum<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Sum<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
@@ -289,13 +308,15 @@ StatusCode Amax(const size_t n, const cl_mem imax_buffer, const size_t imax_offs
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Amax<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amax<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amax<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amax<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amax<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amax<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Amax<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Amax<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Amax<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Amax<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
 template <typename T>
@@ -310,13 +331,15 @@ StatusCode Amin(const size_t n, const cl_mem imin_buffer, const size_t imin_offs
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Amin<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amin<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amin<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amin<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Amin<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Amin<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Amin<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Amin<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Amin<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
+template StatusCode PUBLIC_API Amin<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
@@ -331,15 +354,14 @@ StatusCode Max(const size_t n, const cl_mem imax_buffer, const size_t imax_offse
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Max<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Max<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Max<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Max<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Max<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                         cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Max<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Max<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Max<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Max<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 template <typename T>
@@ -354,15 +376,14 @@ StatusCode Min(const size_t n, const cl_mem imin_buffer, const size_t imin_offse
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Min<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Min<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Min<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Min<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Min<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t,
-                                         cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<float>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Min<double>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Min<float2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
+template StatusCode PUBLIC_API Min<double2>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
+template StatusCode PUBLIC_API Min<half>(size_t, cl_mem, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
@@ -385,20 +406,18 @@ StatusCode Gemv(const Layout layout, const Transpose a_transpose, const size_t m
   }
 }
 template StatusCode PUBLIC_API Gemv<float>(Layout, Transpose, size_t, size_t, float, cl_mem, size_t, size_t, cl_mem,
-                                           size_t, size_t, float, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gemv<double>(Layout, Transpose, size_t, size_t, double, cl_mem, size_t, size_t, cl_mem,
-                                            size_t, size_t, double, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Gemv<float2>(Layout, Transpose, size_t, size_t, float2, cl_mem, size_t, size_t, cl_mem,
-                                            size_t, size_t, float2, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Gemv<double2>(Layout, Transpose, size_t, size_t, double2, cl_mem, size_t, size_t, cl_mem,
-                                             size_t, size_t, double2, cl_mem, size_t, size_t,
-                                             cl_command_queue*, cl_event*);
+                                             size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
 template StatusCode PUBLIC_API Gemv<half>(Layout, Transpose, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem,
-                                          size_t, size_t, half, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
@@ -417,15 +436,20 @@ StatusCode Gbmv(const Layout layout, const Transpose a_transpose, const size_t m
   }
 }
 template StatusCode PUBLIC_API Gbmv<float>(Layout, Transpose, size_t, size_t, size_t, size_t, float, cl_mem, size_t,
-                                           size_t, cl_mem, size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                           size_t, cl_mem, size_t, size_t, float, cl_mem, size_t, size_t,
+                                           cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gbmv<double>(Layout, Transpose, size_t, size_t, size_t, size_t, double, cl_mem, size_t,
-                                            size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gbmv<float2>(Layout, Transpose, size_t, size_t, size_t, size_t, float2, cl_mem, size_t,
-                                            size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gbmv<double2>(Layout, Transpose, size_t, size_t, size_t, size_t, double2, cl_mem, size_t,
-                                             size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gbmv<half>(Layout, Transpose, size_t, size_t, size_t, size_t, half, cl_mem, size_t,
-                                          size_t, cl_mem, size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                          size_t, cl_mem, size_t, size_t, half, cl_mem, size_t, size_t,
+                                          cl_command_queue*, cl_event*);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -444,11 +468,9 @@ StatusCode Hemv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hemv<float2>(Layout, Triangle, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t, float2, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Hemv<double2>(Layout, Triangle, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                             size_t, double2, cl_mem, size_t, size_t, cl_command_queue*,
-                                             cl_event*);
+                                             size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Hermitian banded matrix-vector multiplication: CHBMV/ZHBMV
 template <typename T>
@@ -467,11 +489,11 @@ StatusCode Hbmv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hbmv<float2>(Layout, Triangle, size_t, size_t, float2, cl_mem, size_t, size_t, cl_mem,
-                                            size_t, size_t, float2, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Hbmv<double2>(Layout, Triangle, size_t, size_t, double2, cl_mem, size_t, size_t, cl_mem,
-                                             size_t, size_t, double2, cl_mem, size_t, size_t,
-                                             cl_command_queue*, cl_event*);
+                                             size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
 
 // Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
 template <typename T>
@@ -489,11 +511,9 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hpmv<float2>(Layout, Triangle, size_t, float2, cl_mem, size_t, cl_mem, size_t, size_t,
-                                            float2,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Hpmv<double2>(Layout, Triangle, size_t, double2, cl_mem, size_t, cl_mem, size_t, size_t,
-                                             double2,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 template <typename T>
@@ -512,11 +532,9 @@ StatusCode Symv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Symv<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
-                                           size_t, float, cl_mem, size_t, size_t, cl_command_queue*,
-                                           cl_event*);
+                                           size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Symv<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t, double, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Symv<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t,
                                           size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -537,14 +555,12 @@ StatusCode Sbmv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Sbmv<float>(Layout, Triangle, size_t, size_t, float, cl_mem, size_t, size_t, cl_mem,
-                                           size_t, size_t, float, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Sbmv<double>(Layout, Triangle, size_t, size_t, double, cl_mem, size_t, size_t, cl_mem,
-                                            size_t, size_t, double, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Sbmv<half>(Layout, Triangle, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem,
-                                          size_t, size_t, half, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
@@ -564,9 +580,9 @@ StatusCode Spmv(const Layout layout, const Triangle triangle, const size_t n, co
 template StatusCode PUBLIC_API Spmv<float>(Layout, Triangle, size_t, float, cl_mem, size_t, cl_mem, size_t, size_t,
                                            float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Spmv<double>(Layout, Triangle, size_t, double, cl_mem, size_t, cl_mem, size_t, size_t,
-                                            double,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Spmv<half>(Layout, Triangle, size_t, half, cl_mem, size_t, cl_mem, size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spmv<half>(Layout, Triangle, size_t, half, cl_mem, size_t, cl_mem, size_t, size_t, half,
+                                          cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
@@ -583,14 +599,16 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Trmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                           cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem,
-                                          size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, size_t, cl_command_queue*, cl_event*);
 
 // Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
@@ -614,9 +632,9 @@ template StatusCode PUBLIC_API Tbmv<double>(Layout, Triangle, Transpose, Diagona
 template StatusCode PUBLIC_API Tbmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t,
                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tbmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Tbmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Tbmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t, size_t,
+                                          cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
@@ -634,19 +652,15 @@ StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_
   }
 }
 template StatusCode PUBLIC_API Tpmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                           size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                            size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                            size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
                                              size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem, size_t,
-                                          size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, cl_command_queue*, cl_event*);
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
@@ -663,11 +677,14 @@ StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Trsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Trsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                           cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Trsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, size_t,
+                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Solves a banded triangular system of equations: STBSV/DTBSV/CTBSV/ZTBSV
 template <typename T>
@@ -682,8 +699,7 @@ template StatusCode PUBLIC_API Tbsv<double>(Layout, Triangle, Transpose, Diagona
 template StatusCode PUBLIC_API Tbsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t,
                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tbsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Solves a packed triangular system of equations: STPSV/DTPSV/CTPSV/ZTPSV
 template <typename T>
@@ -692,14 +708,11 @@ StatusCode Tpsv(const Layout, const Triangle, const Transpose, const Diagonal, c
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Tpsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                           size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                            size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
-                                            size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Tpsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,
                                              size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -719,10 +732,12 @@ StatusCode Ger(const Layout layout, const size_t m, const size_t n, const T alph
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Ger<float>(Layout, size_t, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Ger<float>(Layout, size_t, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                          cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Ger<double>(Layout, size_t, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Ger<half>(Layout, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Ger<half>(Layout, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
+                                         cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
@@ -741,11 +756,9 @@ StatusCode Geru(const Layout layout, const size_t m, const size_t n, const T alp
   }
 }
 template StatusCode PUBLIC_API Geru<float2>(Layout, size_t, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Geru<double2>(Layout, size_t, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // General rank-1 complex conjugated matrix update: CGERC/ZGERC
 template <typename T>
@@ -764,11 +777,9 @@ StatusCode Gerc(const Layout layout, const size_t m, const size_t n, const T alp
   }
 }
 template StatusCode PUBLIC_API Gerc<float2>(Layout, size_t, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Gerc<double2>(Layout, size_t, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Hermitian rank-1 matrix update: CHER/ZHER
 template <typename T>
@@ -786,11 +797,9 @@ StatusCode Her(const Layout layout, const Triangle triangle, const size_t n, con
   }
 }
 template StatusCode PUBLIC_API Her<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
-                                          size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Her<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
-                                           size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, cl_command_queue*, cl_event*);
 
 // Hermitian packed rank-1 matrix update: CHPR/ZHPR
 template <typename T>
@@ -807,10 +816,10 @@ StatusCode Hpr(const Layout layout, const Triangle triangle, const size_t n, con
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Hpr<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*,
-                                          cl_event*);
-template StatusCode PUBLIC_API Hpr<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*,
-                                           cl_event*);
+template StatusCode PUBLIC_API Hpr<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Hpr<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
+                                           cl_command_queue*, cl_event*);
 
 // Hermitian rank-2 matrix update: CHER2/ZHER2
 template <typename T>
@@ -829,11 +838,9 @@ StatusCode Her2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Her2<float2>(Layout, Triangle, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Her2<double2>(Layout, Triangle, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
 template <typename T>
@@ -852,11 +859,9 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hpr2<float2>(Layout, Triangle, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Hpr2<double2>(Layout, Triangle, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t,
-                                             size_t,
-                                             cl_mem, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 
 // Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 template <typename T>
@@ -874,11 +879,9 @@ StatusCode Syr(const Layout layout, const Triangle triangle, const size_t n, con
   }
 }
 template StatusCode PUBLIC_API Syr<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
-                                          size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
-                                           size_t,
-                                           cl_command_queue*, cl_event*);
+                                           size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t,
                                          cl_command_queue*, cl_event*);
 
@@ -896,12 +899,12 @@ StatusCode Spr(const Layout layout, const Triangle triangle, const size_t n, con
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Spr<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*,
-                                          cl_event*);
-template StatusCode PUBLIC_API Spr<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*,
-                                           cl_event*);
-template StatusCode PUBLIC_API Spr<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, cl_command_queue*,
-                                         cl_event*);
+template StatusCode PUBLIC_API Spr<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
+                                          cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
+                                           cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Spr<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t,
+                                         cl_command_queue*, cl_event*);
 
 // Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 template <typename T>
@@ -922,8 +925,7 @@ StatusCode Syr2(const Layout layout, const Triangle triangle, const size_t n, co
 template StatusCode PUBLIC_API Syr2<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr2<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr2<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t,
                                           size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -946,8 +948,7 @@ StatusCode Spr2(const Layout layout, const Triangle triangle, const size_t n, co
 template StatusCode PUBLIC_API Spr2<float>(Layout, Triangle, size_t, float, cl_mem, size_t, size_t, cl_mem, size_t,
                                            size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Spr2<double>(Layout, Triangle, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t,
-                                            size_t,
-                                            cl_mem, size_t, cl_command_queue*, cl_event*);
+                                            size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Spr2<half>(Layout, Triangle, size_t, half, cl_mem, size_t, size_t, cl_mem, size_t,
                                           size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 
@@ -976,15 +977,20 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
   }
 }
 template StatusCode PUBLIC_API Gemm<float>(Layout, Transpose, Transpose, size_t, size_t, size_t, float, cl_mem, size_t,
-                                           size_t, cl_mem, size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*, cl_mem);
+                                           size_t, cl_mem, size_t, size_t, float, cl_mem, size_t, size_t,
+                                           cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, double, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*, cl_mem);
+                                            size_t, size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, float2, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*, cl_mem);
+                                            size_t, size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t,
+                                            cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t, double2, cl_mem,
-                                             size_t, size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*, cl_mem);
+                                             size_t, size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*, cl_mem);
 template StatusCode PUBLIC_API Gemm<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, half, cl_mem, size_t,
-                                          size_t, cl_mem, size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*, cl_mem);
+                                          size_t, cl_mem, size_t, size_t, half, cl_mem, size_t, size_t,
+                                          cl_command_queue*, cl_event*, cl_mem);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -1003,17 +1009,19 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle, c
   }
 }
 template StatusCode PUBLIC_API Symm<float>(Layout, Side, Triangle, size_t, size_t, float, cl_mem, size_t, size_t,
-                                           cl_mem, size_t, size_t, float, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_mem, size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
 template StatusCode PUBLIC_API Symm<double>(Layout, Side, Triangle, size_t, size_t, double, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Symm<float2>(Layout, Side, Triangle, size_t, size_t, float2, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Symm<double2>(Layout, Side, Triangle, size_t, size_t, double2, cl_mem, size_t, size_t,
-                                             cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
 template StatusCode PUBLIC_API Symm<half>(Layout, Side, Triangle, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem,
-                                          size_t, size_t, half, cl_mem, size_t, size_t,
-                                          cl_command_queue*, cl_event*);
+                                          size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Hermitian matrix-matrix multiplication: CHEMM/ZHEMM
 template <typename T>
@@ -1032,9 +1040,11 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle, c
   }
 }
 template StatusCode PUBLIC_API Hemm<float2>(Layout, Side, Triangle, size_t, size_t, float2, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Hemm<double2>(Layout, Side, Triangle, size_t, size_t, double2, cl_mem, size_t, size_t,
-                                             cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*,
+                                             cl_event*);
 
 // Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 template <typename T>
@@ -1055,14 +1065,11 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
 template StatusCode PUBLIC_API Syrk<float>(Layout, Triangle, Transpose, size_t, size_t, float, cl_mem, size_t, size_t,
                                            float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syrk<double>(Layout, Triangle, Transpose, size_t, size_t, double, cl_mem, size_t, size_t,
-                                            double,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syrk<float2>(Layout, Triangle, Transpose, size_t, size_t, float2, cl_mem, size_t, size_t,
-                                            float2,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syrk<double2>(Layout, Triangle, Transpose, size_t, size_t, double2, cl_mem, size_t,
-                                             size_t, double2,
-                                             cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syrk<half>(Layout, Triangle, Transpose, size_t, size_t, half, cl_mem, size_t, size_t,
                                           half, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -1085,8 +1092,7 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
 template StatusCode PUBLIC_API Herk<float>(Layout, Triangle, Transpose, size_t, size_t, float, cl_mem, size_t, size_t,
                                            float, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Herk<double>(Layout, Triangle, Transpose, size_t, size_t, double, cl_mem, size_t, size_t,
-                                            double,
-                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                            double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 template <typename T>
@@ -1105,17 +1111,20 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
   }
 }
 template StatusCode PUBLIC_API Syr2k<float>(Layout, Triangle, Transpose, size_t, size_t, float, cl_mem, size_t, size_t,
-                                            cl_mem, size_t, size_t, float, cl_mem, size_t, size_t,
-                                            cl_command_queue*, cl_event*);
+                                            cl_mem, size_t, size_t, float, cl_mem, size_t, size_t, cl_command_queue*,
+                                            cl_event*);
 template StatusCode PUBLIC_API Syr2k<double>(Layout, Triangle, Transpose, size_t, size_t, double, cl_mem, size_t,
-                                             size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr2k<float2>(Layout, Triangle, Transpose, size_t, size_t, float2, cl_mem, size_t,
-                                             size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                             size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t,
+                                             cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr2k<double2>(Layout, Triangle, Transpose, size_t, size_t, double2, cl_mem, size_t,
-                                              size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                              size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t,
+                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Syr2k<half>(Layout, Triangle, Transpose, size_t, size_t, half, cl_mem, size_t, size_t,
-                                           cl_mem, size_t, size_t, half, cl_mem, size_t, size_t,
-                                           cl_command_queue*, cl_event*);
+                                           cl_mem, size_t, size_t, half, cl_mem, size_t, size_t, cl_command_queue*,
+                                           cl_event*);
 
 // Rank-2K update of a hermitian matrix: CHER2K/ZHER2K
 template <typename T, typename U>
@@ -1134,12 +1143,11 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
   }
 }
 template StatusCode PUBLIC_API Her2k<float2, float>(Layout, Triangle, Transpose, size_t, size_t, float2, cl_mem, size_t,
-                                                    size_t, cl_mem, size_t, size_t, float,
-                                                    cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+                                                    size_t, cl_mem, size_t, size_t, float, cl_mem, size_t, size_t,
+                                                    cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Her2k<double2, double>(Layout, Triangle, Transpose, size_t, size_t, double2, cl_mem,
                                                       size_t, size_t, cl_mem, size_t, size_t, double, cl_mem, size_t,
-                                                      size_t,
-                                                      cl_command_queue*, cl_event*);
+                                                      size_t, cl_command_queue*, cl_event*);
 
 // Triangular matrix-matrix multiplication: STRMM/DTRMM/CTRMM/ZTRMM/HTRMM
 template <typename T>
@@ -1158,20 +1166,16 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
   }
 }
 template StatusCode PUBLIC_API Trmm<float>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, float, cl_mem,
-                                           size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                           cl_event*);
+                                           size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trmm<double>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, double, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trmm<float2>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, float2, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trmm<double2>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, double2,
                                              cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
                                              cl_event*);
 template StatusCode PUBLIC_API Trmm<half>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, half, cl_mem,
-                                          size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                          cl_event*);
+                                          size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
@@ -1190,14 +1194,11 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
   }
 }
 template StatusCode PUBLIC_API Trsm<float>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, float, cl_mem,
-                                           size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                           cl_event*);
+                                           size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trsm<double>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, double, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trsm<float2>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, float2, cl_mem,
-                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
-                                            cl_event*);
+                                            size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Trsm<double2>(Layout, Side, Triangle, Transpose, Diagonal, size_t, size_t, double2,
                                              cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*,
                                              cl_event*);
@@ -1223,9 +1224,12 @@ StatusCode Had(const size_t n, const T alpha, const cl_mem x_buffer, const size_
 }
 template StatusCode PUBLIC_API Had<float>(size_t, float, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float, cl_mem,
                                           size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Had<double>(size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Had<float2>(size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Had<double2>(size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double2, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double>(size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double,
+                                           cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<float2>(size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float2,
+                                           cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Had<double2>(size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, double2,
+                                            cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Had<half>(size_t, half, cl_mem, size_t, size_t, cl_mem, size_t, size_t, half, cl_mem,
                                          size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -1246,9 +1250,12 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose, const size
 }
 template StatusCode PUBLIC_API Omatcopy<float>(Layout, Transpose, size_t, size_t, float, cl_mem, size_t, size_t, cl_mem,
                                                size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Omatcopy<double>(Layout, Transpose, size_t, size_t, double, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Omatcopy<float2>(Layout, Transpose, size_t, size_t, float2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API Omatcopy<double2>(Layout, Transpose, size_t, size_t, double2, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<double>(Layout, Transpose, size_t, size_t, double, cl_mem, size_t, size_t,
+                                                cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<float2>(Layout, Transpose, size_t, size_t, float2, cl_mem, size_t, size_t,
+                                                cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Omatcopy<double2>(Layout, Transpose, size_t, size_t, double2, cl_mem, size_t, size_t,
+                                                 cl_mem, size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Omatcopy<half>(Layout, Transpose, size_t, size_t, half, cl_mem, size_t, size_t, cl_mem,
                                               size_t, size_t, cl_command_queue*, cl_event*);
 
@@ -1270,15 +1277,20 @@ StatusCode Im2col(const KernelMode kernel_mode, const size_t channels, const siz
   }
 }
 template StatusCode PUBLIC_API Im2col<float>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                             size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                             size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*,
+                                             cl_event*);
 template StatusCode PUBLIC_API Im2col<double>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Im2col<float2>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Im2col<double2>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                               size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                               size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                               cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Im2col<half>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                            size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                            size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*,
+                                            cl_event*);
 
 // Col2im function (non-BLAS function): SCOL2IM/DCOL2IM/CCOL2IM/ZCOL2IM/HCOL2IM
 template <typename T>
@@ -1298,15 +1310,20 @@ StatusCode Col2im(const KernelMode kernel_mode, const size_t channels, const siz
   }
 }
 template StatusCode PUBLIC_API Col2im<float>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                             size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                             size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*,
+                                             cl_event*);
 template StatusCode PUBLIC_API Col2im<double>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Col2im<float2>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                              size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                              cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Col2im<double2>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                               size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                               size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t,
+                                               cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Col2im<half>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
-                                            size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
+                                            size_t, size_t, size_t, cl_mem, size_t, cl_mem, size_t, cl_command_queue*,
+                                            cl_event*);
 
 // Batched convolution as GEMM (non-BLAS function): SCONVGEMM/DCONVGEMM/HCONVGEMM
 template <typename T>
@@ -1329,15 +1346,13 @@ StatusCode Convgemm(const KernelMode kernel_mode, const size_t channels, const s
 }
 template StatusCode PUBLIC_API Convgemm<float>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                                size_t, size_t, size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem,
-                                               size_t, cl_mem, size_t,
-                                               cl_command_queue*, cl_event*);
+                                               size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Convgemm<double>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                                 size_t, size_t, size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem,
                                                 size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API Convgemm<half>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                               size_t, size_t, size_t, size_t, size_t, size_t, cl_mem, size_t, cl_mem,
-                                              size_t, cl_mem, size_t,
-                                              cl_command_queue*, cl_event*);
+                                              size_t, cl_mem, size_t, cl_command_queue*, cl_event*);
 
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 template <typename T>
@@ -1362,18 +1377,16 @@ StatusCode AxpyBatched(const size_t n, const T* alphas, const cl_mem x_buffer, c
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API AxpyBatched<float>(size_t, const float*, cl_mem, const size_t*, size_t,
-                                                  cl_mem, const size_t*, size_t, size_t, cl_command_queue*,
-                                                  cl_event*);
-template StatusCode PUBLIC_API AxpyBatched<double>(size_t, const double*, cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t, size_t,
-                                                   cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API AxpyBatched<float2>(size_t, const float2*, cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t, size_t,
-                                                   cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API AxpyBatched<double2>(size_t, const double2*, cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t, size_t,
-                                                    cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API AxpyBatched<half>(size_t, const half*, cl_mem, const size_t*, size_t,
-                                                 cl_mem, const size_t*, size_t, size_t, cl_command_queue*,
-                                                 cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<float>(size_t, const float*, cl_mem, const size_t*, size_t, cl_mem,
+                                                  const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double>(size_t, const double*, cl_mem, const size_t*, size_t, cl_mem,
+                                                   const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<float2>(size_t, const float2*, cl_mem, const size_t*, size_t, cl_mem,
+                                                   const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<double2>(size_t, const double2*, cl_mem, const size_t*, size_t, cl_mem,
+                                                    const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API AxpyBatched<half>(size_t, const half*, cl_mem, const size_t*, size_t, cl_mem,
+                                                 const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
 
 // Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
 template <typename T>
@@ -1406,21 +1419,24 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
   }
 }
 template StatusCode PUBLIC_API GemmBatched<float>(Layout, Transpose, Transpose, size_t, size_t, size_t, const float*,
-                                                  cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t, const float*,
-                                                  cl_mem, const size_t*, size_t, size_t, cl_command_queue*,
-                                                  cl_event*);
+                                                  cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t,
+                                                  const float*, cl_mem, const size_t*, size_t, size_t,
+                                                  cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmBatched<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, const double*,
-                                                   cl_mem,
-                                                   const size_t*, size_t, cl_mem, const size_t*, size_t, const double*, cl_mem, const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
+                                                   cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t,
+                                                   const double*, cl_mem, const size_t*, size_t, size_t,
+                                                   cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmBatched<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, const float2*,
-                                                   cl_mem,
-                                                   const size_t*, size_t, cl_mem, const size_t*, size_t, const float2*, cl_mem, const size_t*, size_t, size_t, cl_command_queue*, cl_event*);
-template StatusCode PUBLIC_API GemmBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t, const double2*, cl_mem,
-                                                    const size_t*, size_t, cl_mem, const size_t*, size_t, const double2*, cl_mem, const size_t*,
+                                                   cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t,
+                                                   const float2*, cl_mem, const size_t*, size_t, size_t,
+                                                   cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API GemmBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t,
+                                                    const double2*, cl_mem, const size_t*, size_t, cl_mem,
+                                                    const size_t*, size_t, const double2*, cl_mem, const size_t*,
                                                     size_t, size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmBatched<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, const half*,
-                                                 cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t, const half*,
-                                                 cl_mem, const size_t*, size_t, size_t, cl_command_queue*,
+                                                 cl_mem, const size_t*, size_t, cl_mem, const size_t*, size_t,
+                                                 const half*, cl_mem, const size_t*, size_t, size_t, cl_command_queue*,
                                                  cl_event*);
 
 // StridedBatched version of GEMM:
@@ -1449,21 +1465,20 @@ template StatusCode PUBLIC_API GemmStridedBatched<float>(Layout, Transpose, Tran
                                                          cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmStridedBatched<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, double,
                                                           cl_mem, size_t, size_t, size_t, cl_mem, size_t, size_t,
-                                                          size_t, double,
-                                                          cl_mem, size_t, size_t, size_t, size_t, cl_command_queue*, cl_event*);
+                                                          size_t, double, cl_mem, size_t, size_t, size_t, size_t,
+                                                          cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmStridedBatched<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, float2,
                                                           cl_mem, size_t, size_t, size_t, cl_mem, size_t, size_t,
-                                                          size_t, float2,
-                                                          cl_mem, size_t, size_t, size_t, size_t, cl_command_queue*, cl_event*);
+                                                          size_t, float2, cl_mem, size_t, size_t, size_t, size_t,
+                                                          cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmStridedBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t,
                                                            double2, cl_mem, size_t, size_t, size_t, cl_mem, size_t,
-                                                           size_t, size_t, double2,
-                                                           cl_mem, size_t, size_t, size_t,
+                                                           size_t, size_t, double2, cl_mem, size_t, size_t, size_t,
                                                            size_t, cl_command_queue*, cl_event*);
 template StatusCode PUBLIC_API GemmStridedBatched<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, half,
                                                         cl_mem, size_t, size_t, size_t, cl_mem, size_t, size_t, size_t,
-                                                        half, cl_mem, size_t, size_t, size_t, size_t,
-                                                        cl_command_queue*, cl_event*);
+                                                        half, cl_mem, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                        cl_event*);
 
 // =================================================================================================
 
@@ -1496,20 +1511,20 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
   }
 }
 template StatusCode PUBLIC_API GemmTempBufferSize<float>(Layout, Transpose, Transpose, size_t, size_t, size_t, size_t,
-                                                         size_t, size_t, size_t, size_t, size_t,
-                                                         cl_command_queue*, size_t&);
+                                                         size_t, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                         size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, size_t,
-                                                          size_t, size_t, size_t, size_t, size_t,
-                                                          cl_command_queue*, size_t&);
+                                                          size_t, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                          size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, size_t,
-                                                          size_t, size_t, size_t, size_t, size_t,
-                                                          cl_command_queue*, size_t&);
+                                                          size_t, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                          size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t, size_t,
-                                                           size_t, size_t, size_t, size_t, size_t,
-                                                           cl_command_queue*, size_t&);
+                                                           size_t, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                           size_t&);
 template StatusCode PUBLIC_API GemmTempBufferSize<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, size_t,
-                                                        size_t, size_t, size_t, size_t, size_t,
-                                                        cl_command_queue*, size_t&);
+                                                        size_t, size_t, size_t, size_t, size_t, cl_command_queue*,
+                                                        size_t&);
 
 // =================================================================================================
 }  // namespace clblast

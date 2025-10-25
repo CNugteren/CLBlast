@@ -164,10 +164,14 @@ StatusCode TuneXgemm(RawCommandQueue* queue, const size_t m, const size_t n, con
 }
 template StatusCode PUBLIC_API TuneXgemm<half>(RawCommandQueue*, size_t, size_t, size_t, double,
                                                std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemm<float>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemm<double>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemm<float2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemm<double2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemm<float>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemm<double>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                 std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemm<float2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                 std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemm<double2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                  std::unordered_map<std::string, size_t>&);
 
 template <typename T>
 StatusCode TuneXgemmDirect(RawCommandQueue* queue, const size_t m, const size_t n, const size_t k,
@@ -182,11 +186,16 @@ StatusCode TuneXgemmDirect(RawCommandQueue* queue, const size_t m, const size_t 
                      XgemmDirectTestValidArguments<T>, XgemmDirectSetConstraints, XgemmDirectComputeLocalMemSize<T>,
                      XgemmDirectSetArguments<T>, parameters);
 }
-template StatusCode PUBLIC_API TuneXgemmDirect<half>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemmDirect<float>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemmDirect<double>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemmDirect<float2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneXgemmDirect<double2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemmDirect<half>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                     std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemmDirect<float>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                      std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemmDirect<double>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                       std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemmDirect<float2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                       std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneXgemmDirect<double2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                        std::unordered_map<std::string, size_t>&);
 
 template <typename T>
 StatusCode TuneCopy(RawCommandQueue* queue, const size_t m, const size_t n, const double fraction,
@@ -290,11 +299,16 @@ StatusCode TuneInvert(RawCommandQueue* queue, const size_t m, const size_t n, co
   return TunerAPI<T>(queue_cpp, args, 0, InvertGetTunerDefaults, InvertGetTunerSettings<T>, InvertTestValidArguments<T>,
                      InvertSetConstraints, InvertComputeLocalMemSize<T>, InvertSetArguments<T>, parameters);
 }
-template StatusCode PUBLIC_API TuneInvert<half>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneInvert<float>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneInvert<double>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneInvert<float2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
-template StatusCode PUBLIC_API TuneInvert<double2>(RawCommandQueue*, size_t, size_t, size_t, double, std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneInvert<half>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneInvert<float>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                 std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneInvert<double>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                  std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneInvert<float2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                  std::unordered_map<std::string, size_t>&);
+template StatusCode PUBLIC_API TuneInvert<double2>(RawCommandQueue*, size_t, size_t, size_t, double,
+                                                   std::unordered_map<std::string, size_t>&);
 
 // =================================================================================================
 
@@ -471,30 +485,26 @@ template StatusCode TunerAPI<half>(Queue& queue, const Arguments<half>& args, in
                                    TestValidArgumentsFunc<half> TestValidArguments, SetConstraintsFunc SetConstraints,
                                    ComputeLocalMemSizeFunc<half> ComputeLocalMemSize,
                                    SetArgumentsFunc<half> SetArguments, std::unordered_map<std::string, size_t>&);
-template StatusCode TunerAPI<float>(
-    Queue& queue, const Arguments<float>& args, int V,
+template StatusCode TunerAPI<float>(Queue& queue, const Arguments<float>& args, int V,
                                     GetTunerDefaultsFunc GetTunerDefaults, GetTunerSettingsFunc<float> GetTunerSettings,
                                     TestValidArgumentsFunc<float> TestValidArguments, SetConstraintsFunc SetConstraints,
                                     ComputeLocalMemSizeFunc<float> ComputeLocalMemSize,
                                     SetArgumentsFunc<float> SetArguments, std::unordered_map<std::string, size_t>&);
-template StatusCode TunerAPI<double>(
-    Queue& queue, const Arguments<double>& args, int V,
+template StatusCode TunerAPI<double>(Queue& queue, const Arguments<double>& args, int V,
                                      GetTunerDefaultsFunc GetTunerDefaults,
                                      GetTunerSettingsFunc<double> GetTunerSettings,
                                      TestValidArgumentsFunc<double> TestValidArguments,
                                      SetConstraintsFunc SetConstraints,
                                      ComputeLocalMemSizeFunc<double> ComputeLocalMemSize,
                                      SetArgumentsFunc<double> SetArguments, std::unordered_map<std::string, size_t>&);
-template StatusCode TunerAPI<float2>(
-    Queue& queue, const Arguments<float2>& args, int V,
+template StatusCode TunerAPI<float2>(Queue& queue, const Arguments<float2>& args, int V,
                                      GetTunerDefaultsFunc GetTunerDefaults,
                                      GetTunerSettingsFunc<float2> GetTunerSettings,
                                      TestValidArgumentsFunc<float2> TestValidArguments,
                                      SetConstraintsFunc SetConstraints,
                                      ComputeLocalMemSizeFunc<float2> ComputeLocalMemSize,
                                      SetArgumentsFunc<float2> SetArguments, std::unordered_map<std::string, size_t>&);
-template StatusCode TunerAPI<double2>(
-    Queue& queue, const Arguments<double2>& args, int V,
+template StatusCode TunerAPI<double2>(Queue& queue, const Arguments<double2>& args, int V,
                                       GetTunerDefaultsFunc GetTunerDefaults,
                                       GetTunerSettingsFunc<double2> GetTunerSettings,
                                       TestValidArgumentsFunc<double2> TestValidArguments,

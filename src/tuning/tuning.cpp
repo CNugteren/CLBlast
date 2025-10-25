@@ -123,8 +123,8 @@ void addPrintInfo(std::string& str, const char* format, Args&&... args) {
 
 template <typename T>
 void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations,
-                             const size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
-                             const Context& context, const size_t num_threads) {
+                             const size_t id, const TunerSettings& settings, const Arguments<T>& args,
+                             const Device& device, const Context& context, const size_t num_threads) {
 #if defined(_WIN32)
   const std::string kPrintError;
   const std::string kPrintSuccess;

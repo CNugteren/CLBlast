@@ -50,7 +50,7 @@ void Xscal<T>::DoScal(const size_t n, const T alpha, const Buffer<T>& x_buffer, 
 
   // Determines whether or not the fast-version can be used
   const bool use_fast_kernel = (x_offset == 0) && (x_inc == 1) &&
-                         IsMultiple(n, getDatabase()["WGS"] * getDatabase()["WPT"] * getDatabase()["VW"]);
+                               IsMultiple(n, getDatabase()["WGS"] * getDatabase()["WPT"] * getDatabase()["VW"]);
 
   // If possible, run the fast-version of the kernel
   const auto* kernel_name = (use_fast_kernel) ? "XscalFast" : "Xscal";

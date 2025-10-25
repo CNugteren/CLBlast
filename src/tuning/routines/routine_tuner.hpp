@@ -121,13 +121,13 @@ void TuneKernelSelection(const Platform& platform, const Device& device, const C
   // Outputs the results as JSON to disk, including some meta-data
   const auto precision_string = std::to_string(static_cast<size_t>(precision));
   const auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", family_name},
-                                                                   {"precision", precision_string},
-                                                                   {"arg_from", ToString(from)},
-                                                                   {"arg_to", ToString(to)},
-                                                                   {"arg_step", ToString(step)},
-                                                                   {"best_kernel", best_result.name},
-                                                                   {"best_time", ToString(best_result.score)},
-                                                                   {"best_parameters", best_string}};
+                                                                         {"precision", precision_string},
+                                                                         {"arg_from", ToString(from)},
+                                                                         {"arg_to", ToString(to)},
+                                                                         {"arg_step", ToString(step)},
+                                                                         {"best_kernel", best_result.name},
+                                                                         {"best_time", ToString(best_result.score)},
+                                                                         {"best_parameters", best_string}};
   PrintTimingsToFileAsJSON("clblast_" + family_name + "_" + precision_string + ".json", device, platform, metadata,
                            scores);
 }

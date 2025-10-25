@@ -25,9 +25,10 @@ using double2 = clblast::double2;
 // =================================================================================================
 
 // ROTG
-CLBlastStatusCode CLBlastSrotg(const cl_mem sa_buffer, const size_t sa_offset, const cl_mem sb_buffer, const size_t sb_offset, const cl_mem sc_buffer, const size_t sc_offset,
-                               const cl_mem ss_buffer, const size_t ss_offset,
-                               cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastSrotg(const cl_mem sa_buffer, const size_t sa_offset, const cl_mem sb_buffer,
+                               const size_t sb_offset, const cl_mem sc_buffer, const size_t sc_offset,
+                               const cl_mem ss_buffer, const size_t ss_offset, cl_command_queue* queue,
+                               cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotg<float>(sa_buffer, sa_offset, sb_buffer, sb_offset, sc_buffer,
                                                                sc_offset, ss_buffer, ss_offset, queue, event));
@@ -35,9 +36,10 @@ CLBlastStatusCode CLBlastSrotg(const cl_mem sa_buffer, const size_t sa_offset, c
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDrotg(const cl_mem sa_buffer, const size_t sa_offset, const cl_mem sb_buffer, const size_t sb_offset, const cl_mem sc_buffer, const size_t sc_offset,
-                               const cl_mem ss_buffer, const size_t ss_offset,
-                               cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDrotg(const cl_mem sa_buffer, const size_t sa_offset, const cl_mem sb_buffer,
+                               const size_t sb_offset, const cl_mem sc_buffer, const size_t sc_offset,
+                               const cl_mem ss_buffer, const size_t ss_offset, cl_command_queue* queue,
+                               cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotg<double>(sa_buffer, sa_offset, sb_buffer, sb_offset, sc_buffer,
                                                                 sc_offset, ss_buffer, ss_offset, queue, event));
@@ -47,9 +49,10 @@ CLBlastStatusCode CLBlastDrotg(const cl_mem sa_buffer, const size_t sa_offset, c
 }
 
 // ROTMG
-CLBlastStatusCode CLBlastSrotmg(const cl_mem sd1_buffer, const size_t sd1_offset, const cl_mem sd2_buffer, const size_t sd2_offset, const cl_mem sx1_buffer, const size_t sx1_offset, const cl_mem sy1_buffer,
-                                const size_t sy1_offset, const cl_mem sparam_buffer, const size_t sparam_offset,
-                                cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastSrotmg(const cl_mem sd1_buffer, const size_t sd1_offset, const cl_mem sd2_buffer,
+                                const size_t sd2_offset, const cl_mem sx1_buffer, const size_t sx1_offset,
+                                const cl_mem sy1_buffer, const size_t sy1_offset, const cl_mem sparam_buffer,
+                                const size_t sparam_offset, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotmg<float>(sd1_buffer, sd1_offset, sd2_buffer, sd2_offset,
                                                                 sx1_buffer, sx1_offset, sy1_buffer, sy1_offset,
@@ -58,9 +61,10 @@ CLBlastStatusCode CLBlastSrotmg(const cl_mem sd1_buffer, const size_t sd1_offset
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDrotmg(const cl_mem sd1_buffer, const size_t sd1_offset, const cl_mem sd2_buffer, const size_t sd2_offset, const cl_mem sx1_buffer, const size_t sx1_offset, const cl_mem sy1_buffer,
-                                const size_t sy1_offset, const cl_mem sparam_buffer, const size_t sparam_offset,
-                                cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDrotmg(const cl_mem sd1_buffer, const size_t sd1_offset, const cl_mem sd2_buffer,
+                                const size_t sd2_offset, const cl_mem sx1_buffer, const size_t sx1_offset,
+                                const cl_mem sy1_buffer, const size_t sy1_offset, const cl_mem sparam_buffer,
+                                const size_t sparam_offset, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotmg<double>(sd1_buffer, sd1_offset, sd2_buffer, sd2_offset,
                                                                  sx1_buffer, sx1_offset, sy1_buffer, sy1_offset,
@@ -95,8 +99,8 @@ CLBlastStatusCode CLBlastDrot(const size_t n, const cl_mem x_buffer, const size_
 // ROTM
 CLBlastStatusCode CLBlastSrotm(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               const cl_mem sparam_buffer,
-                               const size_t sparam_offset, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem sparam_buffer, const size_t sparam_offset, cl_command_queue* queue,
+                               cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotm<float>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc,
                                                                sparam_buffer, sparam_offset, queue, event));
@@ -106,8 +110,8 @@ CLBlastStatusCode CLBlastSrotm(const size_t n, const cl_mem x_buffer, const size
 }
 CLBlastStatusCode CLBlastDrotm(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
-                               const cl_mem sparam_buffer,
-                               const size_t sparam_offset, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem sparam_buffer, const size_t sparam_offset, cl_command_queue* queue,
+                               cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Rotm<double>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc,
                                                                 sparam_buffer, sparam_offset, queue, event));
@@ -118,8 +122,8 @@ CLBlastStatusCode CLBlastDrotm(const size_t n, const cl_mem x_buffer, const size
 
 // SWAP
 CLBlastStatusCode CLBlastSswap(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Swap<float>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -128,8 +132,8 @@ CLBlastStatusCode CLBlastSswap(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastDswap(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Swap<double>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -138,8 +142,8 @@ CLBlastStatusCode CLBlastDswap(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastCswap(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Swap<float2>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -148,8 +152,8 @@ CLBlastStatusCode CLBlastCswap(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastZswap(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Swap<double2>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -158,8 +162,8 @@ CLBlastStatusCode CLBlastZswap(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastHswap(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Swap<half>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -214,8 +218,8 @@ CLBlastStatusCode CLBlastHscal(const size_t n, const cl_half alpha, const cl_mem
 
 // COPY
 CLBlastStatusCode CLBlastScopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Copy<float>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -224,8 +228,8 @@ CLBlastStatusCode CLBlastScopy(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastDcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Copy<double>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -234,8 +238,8 @@ CLBlastStatusCode CLBlastDcopy(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastCcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Copy<float2>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -244,8 +248,8 @@ CLBlastStatusCode CLBlastCcopy(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastZcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Copy<double2>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -254,8 +258,8 @@ CLBlastStatusCode CLBlastZcopy(const size_t n, const cl_mem x_buffer, const size
   }
 }
 CLBlastStatusCode CLBlastHcopy(const size_t n, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Copy<half>(n, x_buffer, x_offset, x_inc, y_buffer, y_offset, y_inc, queue, event));
@@ -393,8 +397,9 @@ CLBlastStatusCode CLBlastZdotc(const size_t n, const cl_mem dot_buffer, const si
 }
 
 // NRM2
-CLBlastStatusCode CLBlastSnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastSnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Nrm2<float>(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -402,8 +407,9 @@ CLBlastStatusCode CLBlastSnrm2(const size_t n, const cl_mem nrm2_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Nrm2<double>(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -411,8 +417,9 @@ CLBlastStatusCode CLBlastDnrm2(const size_t n, const cl_mem nrm2_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastScnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastScnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Nrm2<float2>(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -420,8 +427,9 @@ CLBlastStatusCode CLBlastScnrm2(const size_t n, const cl_mem nrm2_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDznrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDznrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Nrm2<double2>(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -429,8 +437,9 @@ CLBlastStatusCode CLBlastDznrm2(const size_t n, const cl_mem nrm2_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastHnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastHnrm2(const size_t n, const cl_mem nrm2_buffer, const size_t nrm2_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Nrm2<half>(n, nrm2_buffer, nrm2_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -440,8 +449,9 @@ CLBlastStatusCode CLBlastHnrm2(const size_t n, const cl_mem nrm2_buffer, const s
 }
 
 // ASUM
-CLBlastStatusCode CLBlastSasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastSasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Asum<float>(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -449,8 +459,9 @@ CLBlastStatusCode CLBlastSasum(const size_t n, const cl_mem asum_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Asum<double>(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -458,8 +469,9 @@ CLBlastStatusCode CLBlastDasum(const size_t n, const cl_mem asum_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastScasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastScasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Asum<float2>(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -467,8 +479,9 @@ CLBlastStatusCode CLBlastScasum(const size_t n, const cl_mem asum_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastDzasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastDzasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Asum<double2>(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -476,8 +489,9 @@ CLBlastStatusCode CLBlastDzasum(const size_t n, const cl_mem asum_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastHasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastHasum(const size_t n, const cl_mem asum_buffer, const size_t asum_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Asum<half>(n, asum_buffer, asum_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -534,8 +548,9 @@ CLBlastStatusCode CLBlastHsum(const size_t n, const cl_mem sum_buffer, const siz
 }
 
 // AMAX
-CLBlastStatusCode CLBlastiSamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiSamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amax<float>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -543,8 +558,9 @@ CLBlastStatusCode CLBlastiSamax(const size_t n, const cl_mem imax_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiDamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiDamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amax<double>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -552,8 +568,9 @@ CLBlastStatusCode CLBlastiDamax(const size_t n, const cl_mem imax_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiCamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiCamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amax<float2>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -561,8 +578,9 @@ CLBlastStatusCode CLBlastiCamax(const size_t n, const cl_mem imax_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiZamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiZamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amax<double2>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -570,8 +588,9 @@ CLBlastStatusCode CLBlastiZamax(const size_t n, const cl_mem imax_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiHamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiHamax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amax<half>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -581,8 +600,9 @@ CLBlastStatusCode CLBlastiHamax(const size_t n, const cl_mem imax_buffer, const 
 }
 
 // AMIN
-CLBlastStatusCode CLBlastiSamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiSamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amin<float>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -590,8 +610,9 @@ CLBlastStatusCode CLBlastiSamin(const size_t n, const cl_mem imin_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiDamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiDamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amin<double>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -599,8 +620,9 @@ CLBlastStatusCode CLBlastiDamin(const size_t n, const cl_mem imin_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiCamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiCamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amin<float2>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -608,8 +630,9 @@ CLBlastStatusCode CLBlastiCamin(const size_t n, const cl_mem imin_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiZamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiZamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amin<double2>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -617,8 +640,9 @@ CLBlastStatusCode CLBlastiZamin(const size_t n, const cl_mem imin_buffer, const 
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiHamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                                const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiHamin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Amin<half>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -628,8 +652,9 @@ CLBlastStatusCode CLBlastiHamin(const size_t n, const cl_mem imin_buffer, const 
 }
 
 // MAX
-CLBlastStatusCode CLBlastiSmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiSmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Max<float>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -637,8 +662,9 @@ CLBlastStatusCode CLBlastiSmax(const size_t n, const cl_mem imax_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiDmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiDmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Max<double>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -646,8 +672,9 @@ CLBlastStatusCode CLBlastiDmax(const size_t n, const cl_mem imax_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiCmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiCmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Max<float2>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -655,8 +682,9 @@ CLBlastStatusCode CLBlastiCmax(const size_t n, const cl_mem imax_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiZmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiZmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Max<double2>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -664,8 +692,9 @@ CLBlastStatusCode CLBlastiZmax(const size_t n, const cl_mem imax_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiHmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiHmax(const size_t n, const cl_mem imax_buffer, const size_t imax_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Max<half>(n, imax_buffer, imax_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -675,8 +704,9 @@ CLBlastStatusCode CLBlastiHmax(const size_t n, const cl_mem imax_buffer, const s
 }
 
 // MIN
-CLBlastStatusCode CLBlastiSmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiSmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Min<float>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -684,8 +714,9 @@ CLBlastStatusCode CLBlastiSmin(const size_t n, const cl_mem imin_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiDmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiDmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Min<double>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -693,8 +724,9 @@ CLBlastStatusCode CLBlastiDmin(const size_t n, const cl_mem imin_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiCmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiCmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Min<float2>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -702,8 +734,9 @@ CLBlastStatusCode CLBlastiCmin(const size_t n, const cl_mem imin_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiZmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiZmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Min<double2>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -711,8 +744,9 @@ CLBlastStatusCode CLBlastiZmin(const size_t n, const cl_mem imin_buffer, const s
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }
 }
-CLBlastStatusCode CLBlastiHmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset, const cl_mem x_buffer,
-                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+CLBlastStatusCode CLBlastiHmin(const size_t n, const cl_mem imin_buffer, const size_t imin_offset,
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Min<half>(n, imin_buffer, imin_offset, x_buffer, x_offset, x_inc, queue, event));
@@ -867,8 +901,8 @@ CLBlastStatusCode CLBlastHgbmv(const CLBlastLayout layout, const CLBlastTranspos
 CLBlastStatusCode CLBlastChemv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
@@ -881,8 +915,8 @@ CLBlastStatusCode CLBlastChemv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastZhemv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
@@ -927,8 +961,8 @@ CLBlastStatusCode CLBlastZhbmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastChpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_float2 alpha, const cl_mem ap_buffer, const size_t ap_offset,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_float2 beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
@@ -941,8 +975,8 @@ CLBlastStatusCode CLBlastChpmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastZhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_double2 alpha, const cl_mem ap_buffer, const size_t ap_offset,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_double2 beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
@@ -957,8 +991,8 @@ CLBlastStatusCode CLBlastZhpmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastSsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const float alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const float beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Symv(
         static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha, a_buffer, a_offset,
@@ -970,8 +1004,8 @@ CLBlastStatusCode CLBlastSsymv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastDsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const double alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Symv(
         static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha, a_buffer, a_offset,
@@ -983,8 +1017,8 @@ CLBlastStatusCode CLBlastDsymv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastHsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_half alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_half beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Symv(
         static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha, a_buffer, a_offset,
@@ -1051,8 +1085,8 @@ CLBlastStatusCode CLBlastSspmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastDspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const double alpha, const cl_mem ap_buffer, const size_t ap_offset,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const double beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha,
@@ -1064,8 +1098,8 @@ CLBlastStatusCode CLBlastDspmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastHspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                                const cl_half alpha, const cl_mem ap_buffer, const size_t ap_offset,
                                const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, const cl_half beta,
-                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem y_buffer, const size_t y_offset, const size_t y_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha,
@@ -1146,8 +1180,8 @@ CLBlastStatusCode CLBlastHtrmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastStbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1160,8 +1194,8 @@ CLBlastStatusCode CLBlastStbmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastDtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1174,8 +1208,8 @@ CLBlastStatusCode CLBlastDtbmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastCtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1188,8 +1222,8 @@ CLBlastStatusCode CLBlastCtbmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastZtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbmv<double2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1202,8 +1236,8 @@ CLBlastStatusCode CLBlastZtbmv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastHtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbmv<half>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1217,8 +1251,8 @@ CLBlastStatusCode CLBlastHtbmv(const CLBlastLayout layout, const CLBlastTriangle
 // TPMV
 CLBlastStatusCode CLBlastStpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1230,8 +1264,8 @@ CLBlastStatusCode CLBlastStpmv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastDtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1243,8 +1277,8 @@ CLBlastStatusCode CLBlastDtpmv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastCtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1256,8 +1290,8 @@ CLBlastStatusCode CLBlastCtpmv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastZtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpmv<double2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1269,8 +1303,8 @@ CLBlastStatusCode CLBlastZtpmv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastHtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpmv<half>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1339,8 +1373,8 @@ CLBlastStatusCode CLBlastZtrsv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastStbsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1353,8 +1387,8 @@ CLBlastStatusCode CLBlastStbsv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastDtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1367,8 +1401,8 @@ CLBlastStatusCode CLBlastDtbsv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastCtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1381,8 +1415,8 @@ CLBlastStatusCode CLBlastCtbsv(const CLBlastLayout layout, const CLBlastTriangle
 CLBlastStatusCode CLBlastZtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
                                const size_t k, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
-                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc, cl_command_queue* queue,
-                               cl_event* event) {
+                               const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                               cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tbsv<double2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1396,8 +1430,8 @@ CLBlastStatusCode CLBlastZtbsv(const CLBlastLayout layout, const CLBlastTriangle
 // TPSV
 CLBlastStatusCode CLBlastStpsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1409,8 +1443,8 @@ CLBlastStatusCode CLBlastStpsv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastDtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1422,8 +1456,8 @@ CLBlastStatusCode CLBlastDtpsv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastCtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1435,8 +1469,8 @@ CLBlastStatusCode CLBlastCtpsv(const CLBlastLayout layout, const CLBlastTriangle
 }
 CLBlastStatusCode CLBlastZtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle,
                                const CLBlastTranspose a_transpose, const CLBlastDiagonal diagonal, const size_t n,
-                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer, const size_t x_offset,
-                               const size_t x_inc, cl_command_queue* queue, cl_event* event) {
+                               const cl_mem ap_buffer, const size_t ap_offset, const cl_mem x_buffer,
+                               const size_t x_offset, const size_t x_inc, cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Tpsv<double2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -1566,7 +1600,8 @@ CLBlastStatusCode CLBlastZher(const CLBlastLayout layout, const CLBlastTriangle 
 // HPR
 CLBlastStatusCode CLBlastChpr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                               const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue, cl_event* event) {
+                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
+                              cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Hpr(static_cast<clblast::Layout>(layout),
                                                        static_cast<clblast::Triangle>(triangle), n, alpha, x_buffer,
@@ -1577,7 +1612,8 @@ CLBlastStatusCode CLBlastChpr(const CLBlastLayout layout, const CLBlastTriangle 
 }
 CLBlastStatusCode CLBlastZhpr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                               const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue, cl_event* event) {
+                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
+                              cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Hpr(static_cast<clblast::Layout>(layout),
                                                        static_cast<clblast::Triangle>(triangle), n, alpha, x_buffer,
@@ -1684,7 +1720,8 @@ CLBlastStatusCode CLBlastHsyr(const CLBlastLayout layout, const CLBlastTriangle 
 // SPR
 CLBlastStatusCode CLBlastSspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                               const float alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue, cl_event* event) {
+                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
+                              cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Spr(static_cast<clblast::Layout>(layout),
                                                        static_cast<clblast::Triangle>(triangle), n, alpha, x_buffer,
@@ -1695,7 +1732,8 @@ CLBlastStatusCode CLBlastSspr(const CLBlastLayout layout, const CLBlastTriangle 
 }
 CLBlastStatusCode CLBlastDspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                               const double alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue, cl_event* event) {
+                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
+                              cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Spr(static_cast<clblast::Layout>(layout),
                                                        static_cast<clblast::Triangle>(triangle), n, alpha, x_buffer,
@@ -1706,7 +1744,8 @@ CLBlastStatusCode CLBlastDspr(const CLBlastLayout layout, const CLBlastTriangle 
 }
 CLBlastStatusCode CLBlastHspr(const CLBlastLayout layout, const CLBlastTriangle triangle, const size_t n,
                               const cl_half alpha, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
-                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue, cl_event* event) {
+                              const cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
+                              cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Spr(static_cast<clblast::Layout>(layout),
                                                        static_cast<clblast::Triangle>(triangle), n, alpha, x_buffer,
@@ -2110,8 +2149,8 @@ CLBlastStatusCode CLBlastCsyr2k(const CLBlastLayout layout, const CLBlastTriangl
                                 const CLBlastTranspose ab_transpose, const size_t n, const size_t k,
                                 const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_float2 beta,
-                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
-                                cl_event* event) {
+                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Syr2k(
         static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -2125,8 +2164,8 @@ CLBlastStatusCode CLBlastZsyr2k(const CLBlastLayout layout, const CLBlastTriangl
                                 const CLBlastTranspose ab_transpose, const size_t n, const size_t k,
                                 const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_double2 beta,
-                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
-                                cl_event* event) {
+                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(clblast::Syr2k(
         static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -2140,8 +2179,8 @@ CLBlastStatusCode CLBlastHsyr2k(const CLBlastLayout layout, const CLBlastTriangl
                                 const CLBlastTranspose ab_transpose, const size_t n, const size_t k,
                                 const cl_half alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const cl_half beta,
-                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
-                                cl_event* event) {
+                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Syr2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -2157,8 +2196,8 @@ CLBlastStatusCode CLBlastCher2k(const CLBlastLayout layout, const CLBlastTriangl
                                 const CLBlastTranspose ab_transpose, const size_t n, const size_t k,
                                 const cl_float2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const float beta,
-                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
-                                cl_event* event) {
+                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Her2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -2172,8 +2211,8 @@ CLBlastStatusCode CLBlastZher2k(const CLBlastLayout layout, const CLBlastTriangl
                                 const CLBlastTranspose ab_transpose, const size_t n, const size_t k,
                                 const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                                 const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const double beta,
-                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
-                                cl_event* event) {
+                                const cl_mem c_buffer, const size_t c_offset, const size_t c_ld,
+                                cl_command_queue* queue, cl_event* event) {
   try {
     return static_cast<CLBlastStatusCode>(
         clblast::Her2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
@@ -2725,9 +2764,8 @@ CLBlastStatusCode CLBlastSgemmBatched(const CLBlastLayout layout, const CLBlastT
                                       const size_t k, const float* alphas, const cl_mem a_buffer,
                                       const size_t* a_offsets, const size_t a_ld, const cl_mem b_buffer,
                                       const size_t* b_offsets, const size_t b_ld, const float* betas,
-                                      const cl_mem c_buffer,
-                                      const size_t* c_offsets, const size_t c_ld, const size_t batch_count,
-                                      cl_command_queue* queue, cl_event* event) {
+                                      const cl_mem c_buffer, const size_t* c_offsets, const size_t c_ld,
+                                      const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<float>();
   auto betas_cpp = std::vector<float>();
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
@@ -2748,9 +2786,8 @@ CLBlastStatusCode CLBlastDgemmBatched(const CLBlastLayout layout, const CLBlastT
                                       const size_t k, const double* alphas, const cl_mem a_buffer,
                                       const size_t* a_offsets, const size_t a_ld, const cl_mem b_buffer,
                                       const size_t* b_offsets, const size_t b_ld, const double* betas,
-                                      const cl_mem c_buffer,
-                                      const size_t* c_offsets, const size_t c_ld, const size_t batch_count,
-                                      cl_command_queue* queue, cl_event* event) {
+                                      const cl_mem c_buffer, const size_t* c_offsets, const size_t c_ld,
+                                      const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<double>();
   auto betas_cpp = std::vector<double>();
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {
@@ -2815,9 +2852,8 @@ CLBlastStatusCode CLBlastHgemmBatched(const CLBlastLayout layout, const CLBlastT
                                       const size_t k, const cl_half* alphas, const cl_mem a_buffer,
                                       const size_t* a_offsets, const size_t a_ld, const cl_mem b_buffer,
                                       const size_t* b_offsets, const size_t b_ld, const cl_half* betas,
-                                      const cl_mem c_buffer,
-                                      const size_t* c_offsets, const size_t c_ld, const size_t batch_count,
-                                      cl_command_queue* queue, cl_event* event) {
+                                      const cl_mem c_buffer, const size_t* c_offsets, const size_t c_ld,
+                                      const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   auto alphas_cpp = std::vector<half>();
   auto betas_cpp = std::vector<half>();
   for (auto batch = size_t{0}; batch < batch_count; ++batch) {

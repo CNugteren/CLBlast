@@ -60,7 +60,7 @@ void Xtrmm<T>::DoTrmm(const Layout layout, const Side side, const Triangle trian
   // Determines which kernel to run based on the layout (the Xgemm kernel assumes column-major as
   // default) and on whether we are dealing with an upper or lower triangle of the triangular matrix
   const bool is_upper = ((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                   (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+                         (triangle == Triangle::kLower && layout == Layout::kRowMajor));
   const auto* kernel_name = (is_upper) ? "TriaUpperToSquared" : "TriaLowerToSquared";
 
   // Determines whether or not the triangular matrix is unit-diagonal

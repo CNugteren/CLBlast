@@ -191,12 +191,11 @@ void PadCopyTransposeMatrixBatched(Queue& queue, const Device& device, const Dat
 // Batched version of the above
 template <typename T>
 void PadCopyTransposeMatrixStridedBatched(Queue& queue, const Device& device, const Databases& db,
-                                          const EventPointer event,
-                                          const std::vector<Event>& waitForEvents, const size_t src_one,
-                                          const size_t src_two, const size_t src_ld, const size_t src_offset,
-                                          const size_t src_stride, const Buffer<T>& src, const size_t dest_one,
-                                          const size_t dest_two, const size_t dest_ld, const size_t dest_offset,
-                                          const size_t dest_stride, const Buffer<T>& dest,
+                                          const EventPointer event, const std::vector<Event>& waitForEvents,
+                                          const size_t src_one, const size_t src_two, const size_t src_ld,
+                                          const size_t src_offset, const size_t src_stride, const Buffer<T>& src,
+                                          const size_t dest_one, const size_t dest_two, const size_t dest_ld,
+                                          const size_t dest_offset, const size_t dest_stride, const Buffer<T>& dest,
                                           const std::shared_ptr<Program> program, const bool do_pad,
                                           const bool do_transpose, const bool do_conjugate, const size_t batch_count) {
   // Determines the right kernel

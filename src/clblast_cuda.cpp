@@ -65,8 +65,10 @@ StatusCode Rotm(const size_t, CUdeviceptr, const size_t, const size_t, CUdevicep
                 CUdeviceptr, const size_t, const CUcontext, const CUdevice) {
   return StatusCode::kNotImplemented;
 }
-template StatusCode PUBLIC_API Rotm<float>(size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Rotm<double>(size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Rotm<float>(size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
+                                           CUdeviceptr, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Rotm<double>(size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
+                                            CUdeviceptr, size_t, CUcontext, CUdevice);
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
@@ -158,20 +160,15 @@ StatusCode Axpy(const size_t n, const T alpha, const CUdeviceptr x_buffer, const
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Axpy<float>(size_t, float, CUdeviceptr, size_t, size_t,
-                                           CUdeviceptr, size_t, size_t,
+template StatusCode PUBLIC_API Axpy<float>(size_t, float, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                            CUcontext, CUdevice);
-template StatusCode PUBLIC_API Axpy<double>(size_t, double, CUdeviceptr, size_t, size_t,
-                                            CUdeviceptr, size_t, size_t,
+template StatusCode PUBLIC_API Axpy<double>(size_t, double, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                             CUcontext, CUdevice);
-template StatusCode PUBLIC_API Axpy<float2>(size_t, float2, CUdeviceptr, size_t, size_t,
-                                            CUdeviceptr, size_t, size_t,
+template StatusCode PUBLIC_API Axpy<float2>(size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                             CUcontext, CUdevice);
-template StatusCode PUBLIC_API Axpy<double2>(size_t, double2, CUdeviceptr, size_t, size_t,
-                                             CUdeviceptr, size_t, size_t,
+template StatusCode PUBLIC_API Axpy<double2>(size_t, double2, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                              CUcontext, CUdevice);
-template StatusCode PUBLIC_API Axpy<half>(size_t, half, CUdeviceptr, size_t, size_t,
-                                          CUdeviceptr, size_t, size_t,
+template StatusCode PUBLIC_API Axpy<half>(size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                           CUcontext, CUdevice);
 
 // Dot product of two vectors: SDOT/DDOT/HDOT
@@ -562,8 +559,7 @@ StatusCode Hpmv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hpmv<float2>(Layout, Triangle, size_t, float2, CUdeviceptr, size_t, CUdeviceptr, size_t,
-                                            size_t, float2,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, float2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Hpmv<double2>(Layout, Triangle, size_t, double2, CUdeviceptr, size_t, CUdeviceptr,
                                              size_t, size_t, double2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
@@ -639,14 +635,11 @@ StatusCode Spmv(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Spmv<float>(Layout, Triangle, size_t, float, CUdeviceptr, size_t, CUdeviceptr, size_t,
-                                           size_t, float,
-                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                           size_t, float, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Spmv<double>(Layout, Triangle, size_t, double, CUdeviceptr, size_t, CUdeviceptr, size_t,
-                                            size_t, double,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, double, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Spmv<half>(Layout, Triangle, size_t, half, CUdeviceptr, size_t, CUdeviceptr, size_t,
-                                          size_t, half,
-                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                          size_t, half, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
@@ -666,11 +659,16 @@ StatusCode Trmv(const Layout layout, const Triangle triangle, const Transpose a_
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Trmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
@@ -697,8 +695,7 @@ template StatusCode PUBLIC_API Tbmv<double>(Layout, Triangle, Transpose, Diagona
 template StatusCode PUBLIC_API Tbmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, CUdeviceptr, size_t,
                                             size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Tbmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, CUdeviceptr, size_t,
-                                             size_t,
-                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                             size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Tbmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, CUdeviceptr, size_t,
                                           size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
@@ -719,11 +716,16 @@ StatusCode Tpmv(const Layout layout, const Triangle triangle, const Transpose a_
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Tpmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpmv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpmv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpmv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpmv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpmv<half>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
@@ -743,10 +745,14 @@ StatusCode Trsv(const Layout layout, const Triangle triangle, const Transpose a_
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Trsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Trsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Trsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, size_t,
+                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Solves a banded triangular system of equations: STBSV/DTBSV/CTBSV/ZTBSV
 template <typename T>
@@ -762,8 +768,7 @@ template StatusCode PUBLIC_API Tbsv<double>(Layout, Triangle, Transpose, Diagona
 template StatusCode PUBLIC_API Tbsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, CUdeviceptr, size_t,
                                             size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Tbsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, CUdeviceptr, size_t,
-                                             size_t,
-                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                             size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Solves a packed triangular system of equations: STPSV/DTPSV/CTPSV/ZTPSV
 template <typename T>
@@ -771,10 +776,14 @@ StatusCode Tpsv(const Layout, const Triangle, const Transpose, const Diagonal, c
                 const size_t, CUdeviceptr, const size_t, const size_t, const CUcontext, const CUdevice) {
   return StatusCode::kNotImplemented;
 }
-template StatusCode PUBLIC_API Tpsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Tpsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpsv<double>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpsv<float2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Tpsv<double2>(Layout, Triangle, Transpose, Diagonal, size_t, CUdeviceptr, size_t,
+                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // General rank-1 matrix update: SGER/DGER/HGER
 template <typename T>
@@ -795,14 +804,11 @@ StatusCode Ger(const Layout layout, const size_t m, const size_t n, const T alph
   }
 }
 template StatusCode PUBLIC_API Ger<float>(Layout, size_t, size_t, float, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                          size_t, size_t,
-                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                          size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Ger<double>(Layout, size_t, size_t, double, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                           size_t, size_t,
-                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                           size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Ger<half>(Layout, size_t, size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t,
-                                         size_t,
-                                         CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                         size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
@@ -823,11 +829,9 @@ StatusCode Geru(const Layout layout, const size_t m, const size_t n, const T alp
   }
 }
 template StatusCode PUBLIC_API Geru<float2>(Layout, size_t, size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Geru<double2>(Layout, size_t, size_t, double2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                             size_t, size_t,
-                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                             size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // General rank-1 complex conjugated matrix update: CGERC/ZGERC
 template <typename T>
@@ -848,11 +852,9 @@ StatusCode Gerc(const Layout layout, const size_t m, const size_t n, const T alp
   }
 }
 template StatusCode PUBLIC_API Gerc<float2>(Layout, size_t, size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Gerc<double2>(Layout, size_t, size_t, double2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                             size_t, size_t,
-                                             CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                             size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Hermitian rank-1 matrix update: CHER/ZHER
 template <typename T>
@@ -917,8 +919,7 @@ StatusCode Her2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Her2<float2>(Layout, Triangle, size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Her2<double2>(Layout, Triangle, size_t, double2, CUdeviceptr, size_t, size_t,
                                              CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext,
                                              CUdevice);
@@ -942,8 +943,7 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Hpr2<float2>(Layout, Triangle, size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Hpr2<double2>(Layout, Triangle, size_t, double2, CUdeviceptr, size_t, size_t,
                                              CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 
@@ -1013,14 +1013,11 @@ StatusCode Syr2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Syr2<float>(Layout, Triangle, size_t, float, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                           size_t, size_t,
-                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                           size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syr2<double>(Layout, Triangle, size_t, double, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syr2<half>(Layout, Triangle, size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                          size_t, size_t,
-                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                          size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 template <typename T>
@@ -1041,14 +1038,11 @@ StatusCode Spr2(const Layout layout, const Triangle triangle, const size_t n, co
   }
 }
 template StatusCode PUBLIC_API Spr2<float>(Layout, Triangle, size_t, float, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                           size_t, size_t,
-                                           CUdeviceptr, size_t, CUcontext, CUdevice);
+                                           size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Spr2<double>(Layout, Triangle, size_t, double, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                            size_t, size_t,
-                                            CUdeviceptr, size_t, CUcontext, CUdevice);
+                                            size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Spr2<half>(Layout, Triangle, size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr,
-                                          size_t, size_t,
-                                          CUdeviceptr, size_t, CUcontext, CUdevice);
+                                          size_t, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
@@ -1172,19 +1166,15 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
   }
 }
 template StatusCode PUBLIC_API Syrk<float>(Layout, Triangle, Transpose, size_t, size_t, float, CUdeviceptr, size_t,
-                                           size_t, float,
-                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                           size_t, float, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syrk<double>(Layout, Triangle, Transpose, size_t, size_t, double, CUdeviceptr, size_t,
-                                            size_t, double,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, double, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syrk<float2>(Layout, Triangle, Transpose, size_t, size_t, float2, CUdeviceptr, size_t,
-                                            size_t, float2,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, float2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syrk<double2>(Layout, Triangle, Transpose, size_t, size_t, double2, CUdeviceptr, size_t,
                                              size_t, double2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Syrk<half>(Layout, Triangle, Transpose, size_t, size_t, half, CUdeviceptr, size_t,
-                                          size_t, half,
-                                          CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                          size_t, half, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 template <typename T>
@@ -1205,11 +1195,9 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
   }
 }
 template StatusCode PUBLIC_API Herk<float>(Layout, Triangle, Transpose, size_t, size_t, float, CUdeviceptr, size_t,
-                                           size_t, float,
-                                           CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                           size_t, float, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Herk<double>(Layout, Triangle, Transpose, size_t, size_t, double, CUdeviceptr, size_t,
-                                            size_t, double,
-                                            CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                            size_t, double, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 template <typename T>
@@ -1367,7 +1355,8 @@ template StatusCode PUBLIC_API Had<float2>(size_t, float2, CUdeviceptr, size_t, 
                                            float2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Had<double2>(size_t, double2, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t,
                                             double2, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Had<half>(size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, half, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Had<half>(size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, half,
+                                         CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
@@ -1386,13 +1375,16 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose, const size
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API Omatcopy<float>(Layout, Transpose, size_t, size_t, float, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Omatcopy<double>(Layout, Transpose, size_t, size_t, double, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Omatcopy<float2>(Layout, Transpose, size_t, size_t, float2, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Omatcopy<float>(Layout, Transpose, size_t, size_t, float, CUdeviceptr, size_t, size_t,
+                                               CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Omatcopy<double>(Layout, Transpose, size_t, size_t, double, CUdeviceptr, size_t, size_t,
+                                                CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Omatcopy<float2>(Layout, Transpose, size_t, size_t, float2, CUdeviceptr, size_t, size_t,
+                                                CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Omatcopy<double2>(Layout, Transpose, size_t, size_t, double2, CUdeviceptr, size_t,
-                                                 size_t,
-                                                 CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API Omatcopy<half>(Layout, Transpose, size_t, size_t, half, CUdeviceptr, size_t, size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+                                                 size_t, CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API Omatcopy<half>(Layout, Transpose, size_t, size_t, half, CUdeviceptr, size_t, size_t,
+                                              CUdeviceptr, size_t, size_t, CUcontext, CUdevice);
 
 // Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
 template <typename T>
@@ -1488,12 +1480,10 @@ StatusCode Convgemm(const KernelMode kernel_mode, const size_t channels, const s
 }
 template StatusCode PUBLIC_API Convgemm<float>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                                size_t, size_t, size_t, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                               CUdeviceptr, size_t,
-                                               CUdeviceptr, size_t, CUcontext, CUdevice);
+                                               CUdeviceptr, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Convgemm<double>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                                 size_t, size_t, size_t, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                                CUdeviceptr, size_t,
-                                                CUdeviceptr, size_t, CUcontext, CUdevice);
+                                                CUdeviceptr, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API Convgemm<half>(KernelMode, size_t, size_t, size_t, size_t, size_t, size_t, size_t,
                                               size_t, size_t, size_t, size_t, size_t, size_t, CUdeviceptr, size_t,
                                               CUdeviceptr, size_t, CUdeviceptr, size_t, CUcontext, CUdevice);
@@ -1523,11 +1513,16 @@ StatusCode AxpyBatched(const size_t n, const T* alphas, const CUdeviceptr x_buff
     return DispatchException();
   }
 }
-template StatusCode PUBLIC_API AxpyBatched<float>(size_t, const float*, CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API AxpyBatched<double>(size_t, const double*, CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API AxpyBatched<float2>(size_t, const float2*, CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API AxpyBatched<double2>(size_t, const double2*, CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
-template StatusCode PUBLIC_API AxpyBatched<half>(size_t, const half*, CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API AxpyBatched<float>(size_t, const float*, CUdeviceptr, const size_t*, size_t, CUdeviceptr,
+                                                  const size_t*, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API AxpyBatched<double>(size_t, const double*, CUdeviceptr, const size_t*, size_t,
+                                                   CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API AxpyBatched<float2>(size_t, const float2*, CUdeviceptr, const size_t*, size_t,
+                                                   CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API AxpyBatched<double2>(size_t, const double2*, CUdeviceptr, const size_t*, size_t,
+                                                    CUdeviceptr, const size_t*, size_t, size_t, CUcontext, CUdevice);
+template StatusCode PUBLIC_API AxpyBatched<half>(size_t, const half*, CUdeviceptr, const size_t*, size_t, CUdeviceptr,
+                                                 const size_t*, size_t, size_t, CUcontext, CUdevice);
 
 // Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
 template <typename T>
@@ -1562,26 +1557,24 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
   }
 }
 template StatusCode PUBLIC_API GemmBatched<float>(Layout, Transpose, Transpose, size_t, size_t, size_t, const float*,
-                                                  CUdeviceptr,
-                                                  const size_t*, size_t, CUdeviceptr, const size_t*,
+                                                  CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*,
                                                   size_t, const float*, CUdeviceptr, const size_t*, size_t, size_t,
                                                   CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmBatched<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, const double*,
-                                                   CUdeviceptr,
-                                                   const size_t*, size_t, CUdeviceptr, const size_t*,
+                                                   CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*,
                                                    size_t, const double*, CUdeviceptr, const size_t*, size_t, size_t,
                                                    CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmBatched<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, const float2*,
-                                                   CUdeviceptr,
-                                                   const size_t*, size_t, CUdeviceptr, const size_t*,
+                                                   CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*,
                                                    size_t, const float2*, CUdeviceptr, const size_t*, size_t, size_t,
                                                    CUcontext, CUdevice);
-template StatusCode PUBLIC_API GemmBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t, const double2*, CUdeviceptr,
-                                                    const size_t*, size_t, CUdeviceptr, const size_t*, size_t, const double2*, CUdeviceptr, const size_t*,
+template StatusCode PUBLIC_API GemmBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t,
+                                                    const double2*, CUdeviceptr, const size_t*, size_t, CUdeviceptr,
+                                                    const size_t*, size_t, const double2*, CUdeviceptr, const size_t*,
                                                     size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmBatched<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, const half*,
-                                                 CUdeviceptr,
-                                                 const size_t*, size_t, CUdeviceptr, const size_t*, size_t, const half*, CUdeviceptr, const size_t*, size_t, size_t, CUcontext,
+                                                 CUdeviceptr, const size_t*, size_t, CUdeviceptr, const size_t*, size_t,
+                                                 const half*, CUdeviceptr, const size_t*, size_t, size_t, CUcontext,
                                                  CUdevice);
 
 // StridedBatched version of GEMM:
@@ -1609,28 +1602,23 @@ StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, 
 }
 template StatusCode PUBLIC_API GemmStridedBatched<float>(Layout, Transpose, Transpose, size_t, size_t, size_t, float,
                                                          CUdeviceptr, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                                         size_t, size_t, float,
-                                                         CUdeviceptr, size_t, size_t, size_t,
+                                                         size_t, size_t, float, CUdeviceptr, size_t, size_t, size_t,
                                                          size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmStridedBatched<double>(Layout, Transpose, Transpose, size_t, size_t, size_t, double,
                                                           CUdeviceptr, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                                          size_t, size_t, double,
-                                                          CUdeviceptr, size_t, size_t, size_t,
+                                                          size_t, size_t, double, CUdeviceptr, size_t, size_t, size_t,
                                                           size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmStridedBatched<float2>(Layout, Transpose, Transpose, size_t, size_t, size_t, float2,
                                                           CUdeviceptr, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                                          size_t, size_t, float2,
-                                                          CUdeviceptr, size_t, size_t, size_t,
+                                                          size_t, size_t, float2, CUdeviceptr, size_t, size_t, size_t,
                                                           size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmStridedBatched<double2>(Layout, Transpose, Transpose, size_t, size_t, size_t,
                                                            double2, CUdeviceptr, size_t, size_t, size_t, CUdeviceptr,
-                                                           size_t, size_t, size_t, double2,
-                                                           CUdeviceptr, size_t, size_t,
+                                                           size_t, size_t, size_t, double2, CUdeviceptr, size_t, size_t,
                                                            size_t, size_t, CUcontext, CUdevice);
 template StatusCode PUBLIC_API GemmStridedBatched<half>(Layout, Transpose, Transpose, size_t, size_t, size_t, half,
                                                         CUdeviceptr, size_t, size_t, size_t, CUdeviceptr, size_t,
-                                                        size_t, size_t, half,
-                                                        CUdeviceptr, size_t, size_t, size_t,
+                                                        size_t, size_t, half, CUdeviceptr, size_t, size_t, size_t,
                                                         size_t, CUcontext, CUdevice);
 
 // =================================================================================================

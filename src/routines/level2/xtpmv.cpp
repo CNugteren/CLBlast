@@ -38,7 +38,7 @@ void Xtpmv<T>::DoTpmv(const Layout layout, const Triangle triangle, const Transp
 
   // The data is either in the upper or lower triangle
   const auto is_upper = static_cast<size_t>((triangle == Triangle::kUpper && layout != Layout::kRowMajor) ||
-                                      (triangle == Triangle::kLower && layout == Layout::kRowMajor));
+                                            (triangle == Triangle::kLower && layout == Layout::kRowMajor));
 
   // Adds '2' to the parameter if the diagonal is unit
   auto parameter = (diagonal == Diagonal::kUnit) ? is_upper + 2 : is_upper;

@@ -160,7 +160,7 @@ void Xsyrk<T>::SyrkAB(const Layout layout, const Triangle triangle, const Transp
 
   // Computes the global and local thread sizes
   const auto global = std::vector<size_t>{(n_ceiled * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
-                                    (n_ceiled * getDatabase()["NDIMC"]) / getDatabase()["NWG"]};
+                                          (n_ceiled * getDatabase()["NDIMC"]) / getDatabase()["NWG"]};
   const auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"]};
 
   // Launches the kernel

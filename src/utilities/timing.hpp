@@ -38,8 +38,8 @@ double TimeFunction(const size_t num_runs, F const& function) {
 
 // =================================================================================================
 
-double RunKernelTimed(size_t num_runs, const Kernel& kernel, const Queue& queue, const Device& device, std::vector<size_t> global,
-                      const std::vector<size_t>& local);
+double RunKernelTimed(size_t num_runs, const Kernel& kernel, const Queue& queue, const Device& device,
+                      std::vector<size_t> global, const std::vector<size_t>& local);
 
 double TimeKernel(size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
                   const std::vector<size_t>& local, bool silent = false);

@@ -158,22 +158,20 @@ StatusCode Rotg(cl_mem sa_buffer, size_t sa_offset, cl_mem sb_buffer, size_t sb_
 
 // Generate modified givens plane rotation: SROTMG/DROTMG
 template <typename T>
-StatusCode Rotmg(cl_mem sd1_buffer, size_t sd1_offset, cl_mem sd2_buffer, size_t sd2_offset,
-                 cl_mem sx1_buffer,
-                 size_t sx1_offset, cl_mem sy1_buffer, size_t sy1_offset,
-                 cl_mem sparam_buffer, size_t sparam_offset, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Rotmg(cl_mem sd1_buffer, size_t sd1_offset, cl_mem sd2_buffer, size_t sd2_offset, cl_mem sx1_buffer,
+                 size_t sx1_offset, cl_mem sy1_buffer, size_t sy1_offset, cl_mem sparam_buffer, size_t sparam_offset,
+                 cl_command_queue* queue, cl_event* event = nullptr);
 
 // Apply givens plane rotation: SROT/DROT
 template <typename T>
 StatusCode Rot(size_t n, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem y_buffer, size_t y_offset, size_t y_inc,
-               T cos, T sin, cl_command_queue* queue,
-               cl_event* event = nullptr);
+               T cos, T sin, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Apply modified givens plane rotation: SROTM/DROTM
 template <typename T>
 StatusCode Rotm(size_t n, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem y_buffer, size_t y_offset,
-                size_t y_inc, cl_mem sparam_buffer, size_t sparam_offset,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                size_t y_inc, cl_mem sparam_buffer, size_t sparam_offset, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // Swap two vectors: SSWAP/DSWAP/CSWAP/ZSWAP/HSWAP
 template <typename T>
@@ -182,8 +180,8 @@ StatusCode Swap(size_t n, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem
 
 // Vector scaling: SSCAL/DSCAL/CSCAL/ZSCAL/HSCAL
 template <typename T>
-StatusCode Scal(size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Scal(size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // Vector copy: SCOPY/DCOPY/CCOPY/ZCOPY/HCOPY
 template <typename T>
@@ -192,16 +190,13 @@ StatusCode Copy(size_t n, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem
 
 // Vector-times-constant plus vector: SAXPY/DAXPY/CAXPY/ZAXPY/HAXPY
 template <typename T>
-StatusCode Axpy(size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset,
-                size_t y_inc, cl_command_queue* queue,
-                cl_event* event = nullptr);
+StatusCode Axpy(size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem y_buffer, size_t y_offset,
+                size_t y_inc, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Dot product of two vectors: SDOT/DDOT/HDOT
 template <typename T>
 StatusCode Dot(size_t n, cl_mem dot_buffer, size_t dot_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-               cl_mem y_buffer, size_t y_offset, size_t y_inc,
-               cl_command_queue* queue, cl_event* event = nullptr);
+               cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Dot product of two complex vectors: CDOTU/ZDOTU
 template <typename T>
@@ -215,31 +210,38 @@ StatusCode Dotc(size_t n, cl_mem dot_buffer, size_t dot_offset, cl_mem x_buffer,
 
 // Euclidian norm of a vector: SNRM2/DNRM2/ScNRM2/DzNRM2/HNRM2
 template <typename T>
-StatusCode Nrm2(size_t n, cl_mem nrm2_buffer, size_t nrm2_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Nrm2(size_t n, cl_mem nrm2_buffer, size_t nrm2_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Absolute sum of values in a vector: SASUM/DASUM/ScASUM/DzASUM/HASUM
 template <typename T>
-StatusCode Asum(size_t n, cl_mem asum_buffer, size_t asum_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Asum(size_t n, cl_mem asum_buffer, size_t asum_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Sum of values in a vector (non-BLAS function): SSUM/DSUM/ScSUM/DzSUM/HSUM
 template <typename T>
-StatusCode Sum(size_t n, cl_mem sum_buffer, size_t sum_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Sum(size_t n, cl_mem sum_buffer, size_t sum_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
 
 // Index of absolute maximum value in a vector: iSAMAX/iDAMAX/iCAMAX/iZAMAX/iHAMAX
 template <typename T>
-StatusCode Amax(size_t n, cl_mem imax_buffer, size_t imax_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Amax(size_t n, cl_mem imax_buffer, size_t imax_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Index of absolute minimum value in a vector (non-BLAS function): iSAMIN/iDAMIN/iCAMIN/iZAMIN/iHAMIN
 template <typename T>
-StatusCode Amin(size_t n, cl_mem imin_buffer, size_t imin_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Amin(size_t n, cl_mem imin_buffer, size_t imin_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Index of maximum value in a vector (non-BLAS function): iSMAX/iDMAX/iCMAX/iZMAX/iHMAX
 template <typename T>
-StatusCode Max(size_t n, cl_mem imax_buffer, size_t imax_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Max(size_t n, cl_mem imax_buffer, size_t imax_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
 
 // Index of minimum value in a vector (non-BLAS function): iSMIN/iDMIN/iCMIN/iZMIN/iHMIN
 template <typename T>
-StatusCode Min(size_t n, cl_mem imin_buffer, size_t imin_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Min(size_t n, cl_mem imin_buffer, size_t imin_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
@@ -254,7 +256,8 @@ StatusCode Gemv(Layout layout, Transpose a_transpose, size_t m, size_t n, T alph
 // General banded matrix-vector multiplication: SGBMV/DGBMV/CGBMV/ZGBMV/HGBMV
 template <typename T>
 StatusCode Gbmv(Layout layout, Transpose a_transpose, size_t m, size_t n, size_t kl, size_t ku, T alpha,
-                cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta, cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_command_queue* queue, cl_event* event = nullptr);
+                cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta,
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Hermitian matrix-vector multiplication: CHEMV/ZHEMV
 template <typename T>
@@ -271,9 +274,8 @@ StatusCode Hbmv(Layout layout, Triangle triangle, size_t n, size_t k, T alpha, c
 // Hermitian packed matrix-vector multiplication: CHPMV/ZHPMV
 template <typename T>
 StatusCode Hpmv(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem ap_buffer, size_t ap_offset,
-                cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta, cl_mem y_buffer, size_t y_offset, size_t y_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Symmetric matrix-vector multiplication: SSYMV/DSYMV/HSYMV
 template <typename T>
@@ -290,105 +292,106 @@ StatusCode Sbmv(Layout layout, Triangle triangle, size_t n, size_t k, T alpha, c
 // Symmetric packed matrix-vector multiplication: SSPMV/DSPMV/HSPMV
 template <typename T>
 StatusCode Spmv(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem ap_buffer, size_t ap_offset,
-                cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem x_buffer, size_t x_offset, size_t x_inc, T beta, cl_mem y_buffer, size_t y_offset, size_t y_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Triangular matrix-vector multiplication: STRMV/DTRMV/CTRMV/ZTRMV/HTRMV
 template <typename T>
 StatusCode Trmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, cl_mem a_buffer,
-                size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+                size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // Triangular banded matrix-vector multiplication: STBMV/DTBMV/CTBMV/ZTBMV/HTBMV
 template <typename T>
 StatusCode Tbmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, size_t k,
-                cl_mem a_buffer, size_t a_offset, size_t a_ld,
-                cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Triangular packed matrix-vector multiplication: STPMV/DTPMV/CTPMV/ZTPMV/HTPMV
 template <typename T>
 StatusCode Tpmv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, cl_mem ap_buffer,
-                size_t ap_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+                size_t ap_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // Solves a triangular system of equations: STRSV/DTRSV/CTRSV/ZTRSV
 template <typename T>
 StatusCode Trsv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, cl_mem a_buffer,
-                size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+                size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // Solves a banded triangular system of equations: STBSV/DTBSV/CTBSV/ZTBSV
 template <typename T>
 StatusCode Tbsv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, size_t k,
-                cl_mem a_buffer, size_t a_offset, size_t a_ld,
-                cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Solves a packed triangular system of equations: STPSV/DTPSV/CTPSV/ZTPSV
 template <typename T>
 StatusCode Tpsv(Layout layout, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t n, cl_mem ap_buffer,
-                size_t ap_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue, cl_event* event = nullptr);
+                size_t ap_offset, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_command_queue* queue,
+                cl_event* event = nullptr);
 
 // General rank-1 matrix update: SGER/DGER/HGER
 template <typename T>
 StatusCode Ger(Layout layout, size_t m, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-               cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue,
-               cl_event* event = nullptr);
+               cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
+               cl_command_queue* queue, cl_event* event = nullptr);
 
 // General rank-1 complex matrix update: CGERU/ZGERU
 template <typename T>
 StatusCode Geru(Layout layout, size_t m, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // General rank-1 complex conjugated matrix update: CGERC/ZGERC
 template <typename T>
 StatusCode Gerc(Layout layout, size_t m, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Hermitian rank-1 matrix update: CHER/ZHER
 template <typename T>
-StatusCode Her(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
-               cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Her(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Hermitian packed rank-1 matrix update: CHPR/ZHPR
 template <typename T>
-StatusCode Hpr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem ap_buffer, size_t ap_offset,
-               cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Hpr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_mem ap_buffer, size_t ap_offset, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Hermitian rank-2 matrix update: CHER2/ZHER2
 template <typename T>
 StatusCode Her2(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Hermitian packed rank-2 matrix update: CHPR2/ZHPR2
 template <typename T>
 StatusCode Hpr2(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem ap_buffer, size_t ap_offset, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem ap_buffer, size_t ap_offset,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Symmetric rank-1 matrix update: SSYR/DSYR/HSYR
 template <typename T>
-StatusCode Syr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
-               cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Syr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Symmetric packed rank-1 matrix update: SSPR/DSPR/HSPR
 template <typename T>
-StatusCode Spr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem ap_buffer, size_t ap_offset,
-               cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode Spr(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
+               cl_mem ap_buffer, size_t ap_offset, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Symmetric rank-2 matrix update: SSYR2/DSYR2/HSYR2
 template <typename T>
 StatusCode Syr2(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem a_buffer, size_t a_offset, size_t a_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Symmetric packed rank-2 matrix update: SSPR2/DSPR2/HSPR2
 template <typename T>
 StatusCode Spr2(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc,
-                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem ap_buffer, size_t ap_offset, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                cl_mem y_buffer, size_t y_offset, size_t y_inc, cl_mem ap_buffer, size_t ap_offset,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
 // BLAS level-3 (matrix-matrix) routines
@@ -398,8 +401,8 @@ StatusCode Spr2(Layout layout, Triangle triangle, size_t n, T alpha, cl_mem x_bu
 template <typename T>
 StatusCode Gemm(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k, T alpha,
                 cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem b_buffer, size_t b_offset, size_t b_ld, T beta,
-                cl_mem c_buffer, size_t c_offset, size_t c_ld, cl_command_queue* queue,
-                cl_event* event = nullptr, cl_mem temp_buffer = nullptr);
+                cl_mem c_buffer, size_t c_offset, size_t c_ld, cl_command_queue* queue, cl_event* event = nullptr,
+                cl_mem temp_buffer = nullptr);
 
 // Symmetric matrix-matrix multiplication: SSYMM/DSYMM/CSYMM/ZSYMM/HSYMM
 template <typename T>
@@ -416,14 +419,14 @@ StatusCode Hemm(Layout layout, Side side, Triangle triangle, size_t m, size_t n,
 // Rank-K update of a symmetric matrix: SSYRK/DSYRK/CSYRK/ZSYRK/HSYRK
 template <typename T>
 StatusCode Syrk(Layout layout, Triangle triangle, Transpose a_transpose, size_t n, size_t k, T alpha, cl_mem a_buffer,
-                size_t a_offset, size_t a_ld, T beta, cl_mem c_buffer, size_t c_offset, size_t c_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                size_t a_offset, size_t a_ld, T beta, cl_mem c_buffer, size_t c_offset, size_t c_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Rank-K update of a hermitian matrix: CHERK/ZHERK
 template <typename T>
 StatusCode Herk(Layout layout, Triangle triangle, Transpose a_transpose, size_t n, size_t k, T alpha, cl_mem a_buffer,
-                size_t a_offset, size_t a_ld, T beta, cl_mem c_buffer, size_t c_offset, size_t c_ld, cl_command_queue* queue,
-                cl_event* event = nullptr);
+                size_t a_offset, size_t a_ld, T beta, cl_mem c_buffer, size_t c_offset, size_t c_ld,
+                cl_command_queue* queue, cl_event* event = nullptr);
 
 // Rank-2K update of a symmetric matrix: SSYR2K/DSYR2K/CSYR2K/ZSYR2K/HSYR2K
 template <typename T>
@@ -441,15 +444,13 @@ StatusCode Her2k(Layout layout, Triangle triangle, Transpose ab_transpose, size_
 template <typename T>
 StatusCode Trmm(Layout layout, Side side, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t m,
                 size_t n, T alpha, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem b_buffer, size_t b_offset,
-                size_t b_ld,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                size_t b_ld, cl_command_queue* queue, cl_event* event = nullptr);
 
 // Solves a triangular system of equations: STRSM/DTRSM/CTRSM/ZTRSM
 template <typename T>
 StatusCode Trsm(Layout layout, Side side, Triangle triangle, Transpose a_transpose, Diagonal diagonal, size_t m,
                 size_t n, T alpha, cl_mem a_buffer, size_t a_offset, size_t a_ld, cl_mem b_buffer, size_t b_offset,
-                size_t b_ld,
-                cl_command_queue* queue, cl_event* event = nullptr);
+                size_t b_ld, cl_command_queue* queue, cl_event* event = nullptr);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
@@ -458,12 +459,14 @@ StatusCode Trsm(Layout layout, Side side, Triangle triangle, Transpose a_transpo
 // Element-wise vector product (Hadamard): SHAD/DHAD/CHAD/ZHAD/HHAD
 template <typename T>
 StatusCode Had(size_t n, T alpha, cl_mem x_buffer, size_t x_offset, size_t x_inc, cl_mem y_buffer, size_t y_offset,
-               size_t y_inc, T beta, cl_mem z_buffer, size_t z_offset, size_t z_inc, cl_command_queue* queue, cl_event* event = nullptr);
+               size_t y_inc, T beta, cl_mem z_buffer, size_t z_offset, size_t z_inc, cl_command_queue* queue,
+               cl_event* event = nullptr);
 
 // Scaling and out-place transpose/copy (non-BLAS function): SOMATCOPY/DOMATCOPY/COMATCOPY/ZOMATCOPY/HOMATCOPY
 template <typename T>
 StatusCode Omatcopy(Layout layout, Transpose a_transpose, size_t m, size_t n, T alpha, cl_mem a_buffer, size_t a_offset,
-                    size_t a_ld, cl_mem b_buffer, size_t b_offset, size_t b_ld, cl_command_queue* queue, cl_event* event = nullptr);
+                    size_t a_ld, cl_mem b_buffer, size_t b_offset, size_t b_ld, cl_command_queue* queue,
+                    cl_event* event = nullptr);
 
 // Im2col function (non-BLAS function): SIM2COL/DIM2COL/CIM2COL/ZIM2COL/HIM2COL
 template <typename T>
@@ -484,16 +487,20 @@ template <typename T>
 StatusCode Convgemm(KernelMode kernel_mode, size_t channels, size_t height, size_t width, size_t kernel_h,
                     size_t kernel_w, size_t pad_h, size_t pad_w, size_t stride_h, size_t stride_w, size_t dilation_h,
                     size_t dilation_w, size_t num_kernels, size_t batch_count, cl_mem im_buffer, size_t im_offset,
-                    cl_mem kernel_buffer, size_t kernel_offset, cl_mem result_buffer, size_t result_offset, cl_command_queue* queue, cl_event* event = nullptr);
+                    cl_mem kernel_buffer, size_t kernel_offset, cl_mem result_buffer, size_t result_offset,
+                    cl_command_queue* queue, cl_event* event = nullptr);
 
 // Batched version of AXPY: SAXPYBATCHED/DAXPYBATCHED/CAXPYBATCHED/ZAXPYBATCHED/HAXPYBATCHED
 template <typename T>
-StatusCode AxpyBatched(size_t n, const T* alphas, cl_mem x_buffer, const size_t* x_offsets, size_t x_inc, cl_mem y_buffer, const size_t* y_offsets, size_t y_inc, size_t batch_count, cl_command_queue* queue, cl_event* event = nullptr);
+StatusCode AxpyBatched(size_t n, const T* alphas, cl_mem x_buffer, const size_t* x_offsets, size_t x_inc,
+                       cl_mem y_buffer, const size_t* y_offsets, size_t y_inc, size_t batch_count,
+                       cl_command_queue* queue, cl_event* event = nullptr);
 
 // Batched version of GEMM: SGEMMBATCHED/DGEMMBATCHED/CGEMMBATCHED/ZGEMMBATCHED/HGEMMBATCHED
 template <typename T>
-StatusCode GemmBatched(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k, const T* alphas, cl_mem a_buffer, const size_t* a_offsets, size_t a_ld, cl_mem b_buffer, const size_t* b_offsets, size_t b_ld,
-                       const T* betas, cl_mem c_buffer, const size_t* c_offsets,
+StatusCode GemmBatched(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k,
+                       const T* alphas, cl_mem a_buffer, const size_t* a_offsets, size_t a_ld, cl_mem b_buffer,
+                       const size_t* b_offsets, size_t b_ld, const T* betas, cl_mem c_buffer, const size_t* c_offsets,
                        size_t c_ld, size_t batch_count, cl_command_queue* queue, cl_event* event = nullptr);
 
 // StridedBatched version of GEMM:
@@ -501,9 +508,9 @@ StatusCode GemmBatched(Layout layout, Transpose a_transpose, Transpose b_transpo
 template <typename T>
 StatusCode GemmStridedBatched(Layout layout, Transpose a_transpose, Transpose b_transpose, size_t m, size_t n, size_t k,
                               T alpha, cl_mem a_buffer, size_t a_offset, size_t a_ld, size_t a_stride, cl_mem b_buffer,
-                              size_t b_offset, size_t b_ld, size_t b_stride, T beta,
-                              cl_mem c_buffer, size_t c_offset,
-                              size_t c_ld, size_t c_stride, size_t batch_count, cl_command_queue* queue, cl_event* event = nullptr);
+                              size_t b_offset, size_t b_ld, size_t b_stride, T beta, cl_mem c_buffer, size_t c_offset,
+                              size_t c_ld, size_t c_stride, size_t batch_count, cl_command_queue* queue,
+                              cl_event* event = nullptr);
 
 // =================================================================================================
 
@@ -563,7 +570,8 @@ StatusCode TuneXgemm(cl_command_queue* queue, size_t m, size_t n, size_t k, doub
 
 // Tunes the "XgemmDiret" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
 template <typename T>
-StatusCode TuneXgemmDirect(cl_command_queue* queue, size_t m, size_t n, size_t k, double fraction, std::unordered_map<std::string, size_t>& parameters);
+StatusCode TuneXgemmDirect(cl_command_queue* queue, size_t m, size_t n, size_t k, double fraction,
+                           std::unordered_map<std::string, size_t>& parameters);
 
 // Tunes the "Copy" kernel, used for most level-3 routines such as XGEMM, XSYMM, and XHER2K
 template <typename T>

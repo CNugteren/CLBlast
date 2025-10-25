@@ -102,25 +102,19 @@ void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Progra
 }
 
 // Compiles the above function
-template void FillMatrix<half>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                               const std::vector<Event>&,
-                               size_t, size_t, size_t, size_t,
-                               const Buffer<half>&, half, size_t);
+template void FillMatrix<half>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer, const std::vector<Event>&,
+                               size_t, size_t, size_t, size_t, const Buffer<half>&, half, size_t);
 template void FillMatrix<float>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                const std::vector<Event>&, size_t, size_t, size_t, size_t,
-                                const Buffer<float>&, float,
+                                const std::vector<Event>&, size_t, size_t, size_t, size_t, const Buffer<float>&, float,
                                 size_t);
 template void FillMatrix<double>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                 const std::vector<Event>&, size_t, size_t, size_t, size_t,
-                                 const Buffer<double>&,
+                                 const std::vector<Event>&, size_t, size_t, size_t, size_t, const Buffer<double>&,
                                  double, size_t);
 template void FillMatrix<float2>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                 const std::vector<Event>&, size_t, size_t, size_t, size_t,
-                                 const Buffer<float2>&,
+                                 const std::vector<Event>&, size_t, size_t, size_t, size_t, const Buffer<float2>&,
                                  float2, size_t);
 template void FillMatrix<double2>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                  const std::vector<Event>&, size_t, size_t, size_t, size_t,
-                                  const Buffer<double2>&,
+                                  const std::vector<Event>&, size_t, size_t, size_t, size_t, const Buffer<double2>&,
                                   double2, size_t);
 
 // Sets all elements of a vector to a constant value
@@ -140,23 +134,18 @@ void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Progra
 }
 
 // Compiles the above function
-template void FillVector<half>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                               const std::vector<Event>&,
+template void FillVector<half>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer, const std::vector<Event>&,
                                size_t, size_t, size_t, const Buffer<half>&, half, size_t);
 template void FillVector<float>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                const std::vector<Event>&, size_t, size_t, size_t,
-                                const Buffer<float>&, float, size_t);
+                                const std::vector<Event>&, size_t, size_t, size_t, const Buffer<float>&, float, size_t);
 template void FillVector<double>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                 const std::vector<Event>&, size_t, size_t, size_t,
-                                 const Buffer<double>&, double,
+                                 const std::vector<Event>&, size_t, size_t, size_t, const Buffer<double>&, double,
                                  size_t);
 template void FillVector<float2>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                 const std::vector<Event>&, size_t, size_t, size_t,
-                                 const Buffer<float2>&, float2,
+                                 const std::vector<Event>&, size_t, size_t, size_t, const Buffer<float2>&, float2,
                                  size_t);
 template void FillVector<double2>(Queue&, const Device&, std::shared_ptr<Program>, EventPointer,
-                                  const std::vector<Event>&, size_t, size_t, size_t,
-                                  const Buffer<double2>&, double2,
+                                  const std::vector<Event>&, size_t, size_t, size_t, const Buffer<double2>&, double2,
                                   size_t);
 
 // =================================================================================================

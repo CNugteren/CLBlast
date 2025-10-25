@@ -118,8 +118,8 @@ void cblas_srotmg(float* sd1, float* sd2, float* sx1, const float sy1, float* sp
   sx1_buffer.Write(queue, sx1_size, reinterpret_cast<float*>(sx1));
   sparam_buffer.Write(queue, sparam_size, reinterpret_cast<float*>(sparam));
   auto queue_cl = queue();
-  const auto s = clblast::Rotmg<float>(sd1_buffer(), 0, sd2_buffer(), 0, sx1_buffer(), 0, sy1_buffer(), 0, sparam_buffer(), 0,
-                                 &queue_cl);
+  const auto s = clblast::Rotmg<float>(sd1_buffer(), 0, sd2_buffer(), 0, sx1_buffer(), 0, sy1_buffer(), 0,
+                                       sparam_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -150,8 +150,8 @@ void cblas_drotmg(double* sd1, double* sd2, double* sx1, const double sy1, doubl
   sx1_buffer.Write(queue, sx1_size, reinterpret_cast<double*>(sx1));
   sparam_buffer.Write(queue, sparam_size, reinterpret_cast<double*>(sparam));
   auto queue_cl = queue();
-  const auto s = clblast::Rotmg<double>(sd1_buffer(), 0, sd2_buffer(), 0, sx1_buffer(), 0, sy1_buffer(), 0, sparam_buffer(),
-                                  0, &queue_cl);
+  const auto s = clblast::Rotmg<double>(sd1_buffer(), 0, sd2_buffer(), 0, sx1_buffer(), 0, sy1_buffer(), 0,
+                                        sparam_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1403,8 +1403,9 @@ void cblas_chemv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float2*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1428,8 +1429,9 @@ void cblas_zhemv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double2*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Hemv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1508,8 +1510,9 @@ void cblas_chpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float2*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1532,8 +1535,9 @@ void cblas_zhpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double2*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Hpmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1559,8 +1563,9 @@ void cblas_ssymv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Symv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Symv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1584,8 +1589,9 @@ void cblas_dsymv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Symv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Symv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1664,8 +1670,9 @@ void cblas_sspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<float*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1688,8 +1695,9 @@ void cblas_dspmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   y_buffer.Write(queue, y_size, reinterpret_cast<double*>(y));
   auto queue_cl = queue();
-  const auto s = clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
+  const auto s =
+      clblast::Spmv(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
+                    ap_buffer(), 0, x_buffer(), 0, x_inc, beta_cpp, y_buffer(), 0, y_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1710,9 +1718,10 @@ void cblas_strmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                           a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1731,9 +1740,10 @@ void cblas_dtrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1751,9 +1761,10 @@ void cblas_ctrmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1795,9 +1806,10 @@ void cblas_stbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n, k,
+                           a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1816,9 +1828,10 @@ void cblas_dtbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1837,9 +1850,10 @@ void cblas_ctbmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1881,9 +1895,10 @@ void cblas_stpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpmv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                           ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1901,9 +1916,10 @@ void cblas_dtpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpmv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1921,9 +1937,10 @@ void cblas_ctpmv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpmv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1965,9 +1982,10 @@ void cblas_strsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                           a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -1986,9 +2004,10 @@ void cblas_dtrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2006,9 +2025,10 @@ void cblas_ctrsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Trsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Trsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2050,9 +2070,10 @@ void cblas_stbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n, k,
+                           a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2071,9 +2092,10 @@ void cblas_dtbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2092,9 +2114,10 @@ void cblas_ctbsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tbsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            k, a_buffer(), 0, a_ld, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2136,9 +2159,10 @@ void cblas_stpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpsv<float>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                           static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                           ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2156,9 +2180,10 @@ void cblas_dtpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const double*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<double*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpsv<double>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2176,9 +2201,10 @@ void cblas_ctpsv(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   ap_buffer.Write(queue, ap_size, reinterpret_cast<const float2*>(ap));
   x_buffer.Write(queue, x_size, reinterpret_cast<float2*>(x));
   auto queue_cl = queue();
-  const auto s = clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                                 static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal),
-                                 n, ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
+  const auto s =
+      clblast::Tpsv<float2>(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
+                            static_cast<clblast::Transpose>(a_transpose), static_cast<clblast::Diagonal>(diagonal), n,
+                            ap_buffer(), 0, x_buffer(), 0, x_inc, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2223,8 +2249,8 @@ void cblas_sger(const CLBlastLayout layout, const int m, const int n, const floa
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<float*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Ger(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                        y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Ger(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                              0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2246,8 +2272,8 @@ void cblas_dger(const CLBlastLayout layout, const int m, const int n, const doub
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<double*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Ger(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                        y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Ger(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                              0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2271,8 +2297,8 @@ void cblas_cgeru(const CLBlastLayout layout, const int m, const int n, const voi
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<float2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Geru(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                         y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Geru(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                               0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2294,8 +2320,8 @@ void cblas_zgeru(const CLBlastLayout layout, const int m, const int n, const voi
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<double2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Geru(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                         y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Geru(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                               0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2319,8 +2345,8 @@ void cblas_cgerc(const CLBlastLayout layout, const int m, const int n, const voi
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<float2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Gerc(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                         y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Gerc(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                               0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2342,8 +2368,8 @@ void cblas_zgerc(const CLBlastLayout layout, const int m, const int n, const voi
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<double2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Gerc(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0,
-                         y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Gerc(static_cast<clblast::Layout>(layout), m, n, alpha_cpp, x_buffer(), 0, x_inc, y_buffer(),
+                               0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2364,8 +2390,8 @@ void cblas_cher(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<float2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Her(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Her(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2384,8 +2410,8 @@ void cblas_zher(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<double2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Her(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Her(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2406,8 +2432,8 @@ void cblas_chpr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const float2*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float2*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Hpr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Hpr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2426,8 +2452,8 @@ void cblas_zhpr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const double2*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double2*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Hpr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Hpr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2451,8 +2477,8 @@ void cblas_cher2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<float2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Her2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Her2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2474,8 +2500,8 @@ void cblas_zher2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<double2*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Her2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Her2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2499,8 +2525,8 @@ void cblas_chpr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const float2*>(y));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float2*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Hpr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Hpr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2522,8 +2548,8 @@ void cblas_zhpr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const double2*>(y));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double2*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Hpr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Hpr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2544,8 +2570,8 @@ void cblas_ssyr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<float*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Syr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Syr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2564,8 +2590,8 @@ void cblas_dsyr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   a_buffer.Write(queue, a_size, reinterpret_cast<double*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Syr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Syr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2586,8 +2612,8 @@ void cblas_sspr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const float*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Spr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Spr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2606,8 +2632,8 @@ void cblas_dspr(const CLBlastLayout layout, const CLBlastTriangle triangle, cons
   x_buffer.Write(queue, x_size, reinterpret_cast<const double*>(x));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Spr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                        x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Spr(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                              alpha_cpp, x_buffer(), 0, x_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2631,8 +2657,8 @@ void cblas_ssyr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<float*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Syr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Syr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2654,8 +2680,8 @@ void cblas_dsyr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
   a_buffer.Write(queue, a_size, reinterpret_cast<double*>(a));
   auto queue_cl = queue();
-  const auto s = clblast::Syr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
+  const auto s = clblast::Syr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, a_buffer(), 0, a_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2679,8 +2705,8 @@ void cblas_sspr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const float*>(y));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<float*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Spr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Spr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2702,8 +2728,8 @@ void cblas_dspr2(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   y_buffer.Write(queue, y_size, reinterpret_cast<const double*>(y));
   ap_buffer.Write(queue, ap_size, reinterpret_cast<double*>(ap));
   auto queue_cl = queue();
-  const auto s = clblast::Spr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n, alpha_cpp,
-                         x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
+  const auto s = clblast::Spr2(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle), n,
+                               alpha_cpp, x_buffer(), 0, x_inc, y_buffer(), 0, y_inc, ap_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2740,8 +2766,8 @@ void cblas_sgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
   c_buffer.Write(queue, c_size, reinterpret_cast<float*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Gemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                         b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2772,8 +2798,8 @@ void cblas_dgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
   c_buffer.Write(queue, c_size, reinterpret_cast<double*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Gemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                         b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2804,8 +2830,8 @@ void cblas_cgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Gemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                         b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2836,8 +2862,8 @@ void cblas_zgemm(const CLBlastLayout layout, const CLBlastTranspose a_transpose,
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Gemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                         b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(b_transpose), m, n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2864,8 +2890,8 @@ void cblas_ssymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<float*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Symm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2890,8 +2916,8 @@ void cblas_dsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<double*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Symm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2916,8 +2942,8 @@ void cblas_csymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Symm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2942,8 +2968,8 @@ void cblas_zsymm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Symm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2970,8 +2996,8 @@ void cblas_chemm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Hemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -2996,8 +3022,8 @@ void cblas_zhemm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Hemm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3024,8 +3050,8 @@ void cblas_ssyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<float*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syrk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3050,8 +3076,8 @@ void cblas_dsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<double*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syrk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3076,8 +3102,8 @@ void cblas_csyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syrk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3102,8 +3128,8 @@ void cblas_zsyrk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syrk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3130,8 +3156,8 @@ void cblas_cherk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Herk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3156,8 +3182,8 @@ void cblas_zherk(const CLBlastLayout layout, const CLBlastTriangle triangle, con
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Herk(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                         static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld, beta_cpp,
-                         c_buffer(), 0, c_ld, &queue_cl);
+                               static_cast<clblast::Transpose>(a_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                               beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3190,8 +3216,8 @@ void cblas_ssyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<float*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syr2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3222,8 +3248,8 @@ void cblas_dsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<double*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syr2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3254,8 +3280,8 @@ void cblas_csyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syr2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3286,8 +3312,8 @@ void cblas_zsyr2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Syr2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3320,8 +3346,8 @@ void cblas_cher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<float2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Her2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3352,8 +3378,8 @@ void cblas_zher2k(const CLBlastLayout layout, const CLBlastTriangle triangle, co
   c_buffer.Write(queue, c_size, reinterpret_cast<double2*>(c));
   auto queue_cl = queue();
   const auto s = clblast::Her2k(static_cast<clblast::Layout>(layout), static_cast<clblast::Triangle>(triangle),
-                          static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
-                          b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
+                                static_cast<clblast::Transpose>(ab_transpose), n, k, alpha_cpp, a_buffer(), 0, a_ld,
+                                b_buffer(), 0, b_ld, beta_cpp, c_buffer(), 0, c_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3376,9 +3402,9 @@ void cblas_strmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trmm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3399,9 +3425,9 @@ void cblas_dtrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trmm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3422,9 +3448,9 @@ void cblas_ctrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trmm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3445,9 +3471,9 @@ void cblas_ztrmm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trmm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3470,9 +3496,9 @@ void cblas_strsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trsm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3493,9 +3519,9 @@ void cblas_dtrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trsm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3516,9 +3542,9 @@ void cblas_ctrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trsm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3539,9 +3565,9 @@ void cblas_ztrsm(const CLBlastLayout layout, const CLBlastSide side, const CLBla
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));
   auto queue_cl = queue();
   const auto s = clblast::Trsm(static_cast<clblast::Layout>(layout), static_cast<clblast::Side>(side),
-                         static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
-                         static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0,
-                         b_ld, &queue_cl);
+                               static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
+                               static_cast<clblast::Diagonal>(diagonal), m, n, alpha_cpp, a_buffer(), 0, a_ld,
+                               b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3667,8 +3693,8 @@ void cblas_somatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
   a_buffer.Write(queue, a_size, reinterpret_cast<const float*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float*>(b));
   auto queue_cl = queue();
-  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose), m, n,
-                             alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
+  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
+                                   m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3690,8 +3716,8 @@ void cblas_domatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
   a_buffer.Write(queue, a_size, reinterpret_cast<const double*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double*>(b));
   auto queue_cl = queue();
-  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose), m, n,
-                             alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
+  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
+                                   m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3713,8 +3739,8 @@ void cblas_comatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
   a_buffer.Write(queue, a_size, reinterpret_cast<const float2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<float2*>(b));
   auto queue_cl = queue();
-  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose), m, n,
-                             alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
+  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
+                                   m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3736,8 +3762,8 @@ void cblas_zomatcopy(const CLBlastLayout layout, const CLBlastTranspose a_transp
   a_buffer.Write(queue, a_size, reinterpret_cast<const double2*>(a));
   b_buffer.Write(queue, b_size, reinterpret_cast<double2*>(b));
   auto queue_cl = queue();
-  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose), m, n,
-                             alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
+  const auto s = clblast::Omatcopy(static_cast<clblast::Layout>(layout), static_cast<clblast::Transpose>(a_transpose),
+                                   m, n, alpha_cpp, a_buffer(), 0, a_ld, b_buffer(), 0, b_ld, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3758,9 +3784,9 @@ void cblas_sim2col(const CLBlastKernelMode kernel_mode, const int channels, cons
   im_buffer.Write(queue, im_size, reinterpret_cast<const float*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<float*>(col));
   auto queue_cl = queue();
-  const auto s = clblast::Im2col<float>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                  kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, im_buffer(), 0,
-                                  col_buffer(), 0, &queue_cl);
+  const auto s = clblast::Im2col<float>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                        kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                        im_buffer(), 0, col_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3779,9 +3805,9 @@ void cblas_dim2col(const CLBlastKernelMode kernel_mode, const int channels, cons
   im_buffer.Write(queue, im_size, reinterpret_cast<const double*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<double*>(col));
   auto queue_cl = queue();
-  const auto s = clblast::Im2col<double>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                   kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, im_buffer(), 0,
-                                   col_buffer(), 0, &queue_cl);
+  const auto s = clblast::Im2col<double>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                         kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                         im_buffer(), 0, col_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3800,9 +3826,9 @@ void cblas_cim2col(const CLBlastKernelMode kernel_mode, const int channels, cons
   im_buffer.Write(queue, im_size, reinterpret_cast<const float2*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<float2*>(col));
   auto queue_cl = queue();
-  const auto s = clblast::Im2col<float2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                   kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, im_buffer(), 0,
-                                   col_buffer(), 0, &queue_cl);
+  const auto s = clblast::Im2col<float2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                         kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                         im_buffer(), 0, col_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3821,9 +3847,9 @@ void cblas_zim2col(const CLBlastKernelMode kernel_mode, const int channels, cons
   im_buffer.Write(queue, im_size, reinterpret_cast<const double2*>(im));
   col_buffer.Write(queue, col_size, reinterpret_cast<double2*>(col));
   auto queue_cl = queue();
-  const auto s = clblast::Im2col<double2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                    kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, im_buffer(), 0,
-                                    col_buffer(), 0, &queue_cl);
+  const auto s = clblast::Im2col<double2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                          kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                          im_buffer(), 0, col_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3844,9 +3870,9 @@ void cblas_scol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
   col_buffer.Write(queue, col_size, reinterpret_cast<const float*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<float*>(im));
   auto queue_cl = queue();
-  const auto s = clblast::Col2im<float>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                  kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, col_buffer(), 0,
-                                  im_buffer(), 0, &queue_cl);
+  const auto s = clblast::Col2im<float>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                        kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                        col_buffer(), 0, im_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3865,9 +3891,9 @@ void cblas_dcol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
   col_buffer.Write(queue, col_size, reinterpret_cast<const double*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<double*>(im));
   auto queue_cl = queue();
-  const auto s = clblast::Col2im<double>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                   kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, col_buffer(), 0,
-                                   im_buffer(), 0, &queue_cl);
+  const auto s = clblast::Col2im<double>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                         kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                         col_buffer(), 0, im_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3886,9 +3912,9 @@ void cblas_ccol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
   col_buffer.Write(queue, col_size, reinterpret_cast<const float2*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<float2*>(im));
   auto queue_cl = queue();
-  const auto s = clblast::Col2im<float2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                   kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, col_buffer(), 0,
-                                   im_buffer(), 0, &queue_cl);
+  const auto s = clblast::Col2im<float2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                         kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                         col_buffer(), 0, im_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
@@ -3907,9 +3933,9 @@ void cblas_zcol2im(const CLBlastKernelMode kernel_mode, const int channels, cons
   col_buffer.Write(queue, col_size, reinterpret_cast<const double2*>(col));
   im_buffer.Write(queue, im_size, reinterpret_cast<double2*>(im));
   auto queue_cl = queue();
-  const auto s = clblast::Col2im<double2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width, kernel_h,
-                                    kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w, col_buffer(), 0,
-                                    im_buffer(), 0, &queue_cl);
+  const auto s = clblast::Col2im<double2>(static_cast<clblast::KernelMode>(kernel_mode), channels, height, width,
+                                          kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w, dilation_h, dilation_w,
+                                          col_buffer(), 0, im_buffer(), 0, &queue_cl);
   if (s != clblast::StatusCode::kSuccess) {
     throw std::runtime_error("CLBlast returned with error code " + clblast::ToString(s));
   }
