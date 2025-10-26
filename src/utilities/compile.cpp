@@ -120,7 +120,7 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
     SetOpenCLKernelStandard(device, options);
     program->Build(device, options);
   } catch (const CLCudaAPIBuildError& e) {
-    if (program->StatusIsCompilationWarningOrError(e.status()) && !silent) {
+    if (clblast::Program::StatusIsCompilationWarningOrError(e.status()) && !silent) {
       fprintf(stdout, "OpenCL compiler error/warning:\n%s\n", program->GetBuildInfo(device).c_str());
     }
     throw;

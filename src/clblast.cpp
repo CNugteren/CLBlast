@@ -54,8 +54,8 @@ template StatusCode PUBLIC_API Rotmg<double>(cl_mem, size_t, cl_mem, size_t, cl_
 
 // Apply givens plane rotation: SROT/DROT
 template <typename T>
-StatusCode Rot(const size_t, cl_mem, const size_t, const size_t, cl_mem, const size_t, const size_t, const T, const T,
-               cl_command_queue*, cl_event*) {
+StatusCode Rot(const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, const T /*unused*/, const T /*unused*/,
+               cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Rot<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, float, float,
@@ -65,8 +65,8 @@ template StatusCode PUBLIC_API Rot<double>(size_t, cl_mem, size_t, size_t, cl_me
 
 // Apply modified givens plane rotation: SROTM/DROTM
 template <typename T>
-StatusCode Rotm(const size_t, cl_mem, const size_t, const size_t, cl_mem, const size_t, const size_t, cl_mem,
-                const size_t, cl_command_queue*, cl_event*) {
+StatusCode Rotm(const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, cl_mem /*unused*/,
+                const size_t /*unused*/, cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Rotm<float>(size_t, cl_mem, size_t, size_t, cl_mem, size_t, size_t, cl_mem, size_t,
@@ -688,8 +688,8 @@ template StatusCode PUBLIC_API Trsv<double2>(Layout, Triangle, Transpose, Diagon
 
 // Solves a banded triangular system of equations: STBSV/DTBSV/CTBSV/ZTBSV
 template <typename T>
-StatusCode Tbsv(const Layout, const Triangle, const Transpose, const Diagonal, const size_t, const size_t, const cl_mem,
-                const size_t, const size_t, cl_mem, const size_t, const size_t, cl_command_queue*, cl_event*) {
+StatusCode Tbsv(const Layout /*unused*/, const Triangle /*unused*/, const Transpose /*unused*/, const Diagonal /*unused*/, const size_t /*unused*/, const size_t /*unused*/, const cl_mem /*unused*/,
+                const size_t /*unused*/, const size_t /*unused*/, cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Tbsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, size_t, cl_mem, size_t,
@@ -703,8 +703,8 @@ template StatusCode PUBLIC_API Tbsv<double2>(Layout, Triangle, Transpose, Diagon
 
 // Solves a packed triangular system of equations: STPSV/DTPSV/CTPSV/ZTPSV
 template <typename T>
-StatusCode Tpsv(const Layout, const Triangle, const Transpose, const Diagonal, const size_t, const cl_mem, const size_t,
-                cl_mem, const size_t, const size_t, cl_command_queue*, cl_event*) {
+StatusCode Tpsv(const Layout /*unused*/, const Triangle /*unused*/, const Transpose /*unused*/, const Diagonal /*unused*/, const size_t /*unused*/, const cl_mem /*unused*/, const size_t /*unused*/,
+                cl_mem /*unused*/, const size_t /*unused*/, const size_t /*unused*/, cl_command_queue* /*unused*/, cl_event* /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 template StatusCode PUBLIC_API Tpsv<float>(Layout, Triangle, Transpose, Diagonal, size_t, cl_mem, size_t, cl_mem,

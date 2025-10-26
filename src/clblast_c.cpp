@@ -8,6 +8,7 @@
 // =================================================================================================
 
 #include "clblast_c.h"
+#include "clblast.h"
 
 #include <cstddef>
 #include <string>

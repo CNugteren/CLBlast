@@ -10,12 +10,11 @@
 #ifndef CLBLAST_CACHE_H_
 #define CLBLAST_CACHE_H_
 
-#include <functional>
-#include <map>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <tuple>
+#include <map>
 
 #include "utilities/backend.hpp"
 

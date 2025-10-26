@@ -37,7 +37,6 @@
 // C++
 #include <assert.h>
 
-#include <algorithm>  // std::copy
 #include <cstdio>     // fprintf, stderr
 #include <cstring>    // std::strlen
 #include <memory>     // std::shared_ptr
@@ -139,7 +138,7 @@ class Event {
     CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr));
     auto time_end = cl_ulong{0};
     CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr));
-    return static_cast<float>(time_end - time_start) * 1.0e-6f;
+    return static_cast<float>(time_end - time_start) * 1.0e-6F;
   }
 
   // Accessor to the private data-member
@@ -369,9 +368,9 @@ class Device {
   std::string AdrenoVersion() const {
     if (IsQualcomm()) {
       return GetInfoString(CL_DEVICE_OPENCL_C_VERSION);
-    } else {
+    }  
       return std::string{""};
-    }
+   
   }
 
   // Retrieves the above extra information (if present)
@@ -381,9 +380,9 @@ class Device {
     }
     if (HasExtension("cl_nv_device_attribute_query")) {
       return NVIDIAComputeCapability();
-    } else {
+    }  
       return std::string{""};
-    }
+   
   }
 
   // Accessor to the private data-member
@@ -583,21 +582,21 @@ class Queue {
   }
 
   // Synchronizes the queue
-  void Finish(Event&) const { Finish(); }
+  void Finish(Event& /*unused*/) const { Finish(); }
   void Finish() const { CheckError(clFinish(*queue_)); }
 
   // Retrieves the corresponding context or device
   Context GetContext() const {
     auto bytes = size_t{0};
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, 0, nullptr, &bytes));
-    cl_context result;
+    cl_context result = nullptr;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, bytes, &result, nullptr));
     return Context(result);
   }
   Device GetDevice() const {
     auto bytes = size_t{0};
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, 0, nullptr, &bytes));
-    cl_device_id result;
+    cl_device_id result = nullptr;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, bytes, &result, nullptr));
     return Device(result);
   }
@@ -616,7 +615,7 @@ template <typename T>
 class BufferHost {
  public:
   // Regular constructor with memory management
-  explicit BufferHost(const Context&, const size_t size) : buffer_(new std::vector<T>(size)) {}
+  explicit BufferHost(const Context& /*unused*/, const size_t size) : buffer_(new std::vector<T>(size)) {}
 
   // Retrieves the actual allocated size in bytes
   size_t GetSize() const { return buffer_->size() * sizeof(T); }
@@ -857,7 +856,7 @@ class Kernel {
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
     for (auto& waitEvent : waitForEvents) {
-      if (waitEvent()) {
+      if (waitEvent() != nullptr) {
         waitForEventsPlain.push_back(waitEvent());
       }
     }

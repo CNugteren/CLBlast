@@ -695,8 +695,8 @@ void EuclidGCD(int a, int b, int& p, int& q, int& r) {
     const int q_2 = q_1;
     p_1 = p;
     q_1 = q;
-    p = p_2 - p_1 * (a / b);
-    q = q_2 - q_1 * (a / b);
+    p = p_2 - (p_1 * (a / b));
+    q = q_2 - (q_1 * (a / b));
     a = b;
     b = c;
   }
