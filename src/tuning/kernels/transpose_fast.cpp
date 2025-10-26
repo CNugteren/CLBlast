@@ -9,6 +9,7 @@
 
 #include "tuning/kernels/transpose_fast.hpp"
 
+#include "clblast.h"
 #include "tuning/tuning.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
