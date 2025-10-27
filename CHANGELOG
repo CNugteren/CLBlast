@@ -6,6 +6,7 @@ Development version (next version)
 - Removed all generator scripts for the API
 - Added 3 new error codes for vector Z in routine XHAD
 - Added include what you use (IWYU) with Clangd Include Cleaner
+- Added a Xminmax and Xaminmax routine
 
 Version 1.6.3
 - Fixed a bug in the GEMMK=1 kernel (with 2D register tiling) when MWG!=NWG
