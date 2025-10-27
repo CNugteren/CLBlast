@@ -9,6 +9,7 @@
 
 #include "cache.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 #include <string>
