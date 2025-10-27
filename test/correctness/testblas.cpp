@@ -10,9 +10,19 @@
 #include "test/correctness/testblas.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdio>
 #include <iostream>
 #include <random>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <vector>
 
+#include "clblast.h"
+#include "test/correctness/tester.hpp"
+#include "test/test_utilities.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"
 
 namespace clblast {
@@ -70,17 +80,17 @@ TestBlas<T, U>::TestBlas(const std::vector<std::string>& arguments, const bool s
   const auto max_batch_count = *std::max_element(kBatchCounts.begin(), kBatchCounts.end());
 
   // Creates test input data. Adds a 'canary' region to detect buffer overflows
-  x_source_.resize(max_batch_count * std::max(max_vec, max_matvec) * max_inc + max_offset + kCanarySize);
-  y_source_.resize(max_batch_count * std::max(max_vec, max_matvec) * max_inc + max_offset + kCanarySize);
-  a_source_.resize(max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec) + max_offset +
+  x_source_.resize((max_batch_count * std::max(max_vec, max_matvec) * max_inc) + max_offset + kCanarySize);
+  y_source_.resize((max_batch_count * std::max(max_vec, max_matvec) * max_inc) + max_offset + kCanarySize);
+  a_source_.resize((max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec)) + max_offset +
                    kCanarySize);
-  b_source_.resize(max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec) + max_offset +
+  b_source_.resize((max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec)) + max_offset +
                    kCanarySize);
-  c_source_.resize(max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec) + max_offset +
+  c_source_.resize((max_batch_count * std::max(max_mat, max_matvec) * std::max(max_ld, max_matvec)) + max_offset +
                    kCanarySize);
-  ap_source_.resize(max_batch_count * std::max(max_mat, max_matvec) * std::max(max_mat, max_matvec) + max_offset +
+  ap_source_.resize((max_batch_count * std::max(max_mat, max_matvec) * std::max(max_mat, max_matvec)) + max_offset +
                     kCanarySize);
-  scalar_source_.resize(max_batch_count * std::max(max_mat, max_matvec) + max_offset + kCanarySize);
+  scalar_source_.resize((max_batch_count * std::max(max_mat, max_matvec)) + max_offset + kCanarySize);
   std::mt19937 mt(kSeed);
   std::uniform_real_distribution<double> dist(kTestDataLowerLimit, kTestDataUpperLimit);
   PopulateVector(x_source_, mt, dist);
@@ -228,14 +238,14 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
           }
           if (verbose_) {
             if (get_id2_(args) == 1) {
-              std::cout << std::endl << "   Error at index " << id1 << ": ";
+              std::cout << '\n' << "   Error at index " << id1 << ": ";
             } else {
-              std::cout << std::endl << "   Error at " << id1 << "," << id2 << ": ";
+              std::cout << '\n' << "   Error at " << id1 << "," << id2 << ": ";
             }
             std::cout << " " << ToString(result1[index]) << " (reference) versus ";
             std::cout << " " << ToString(result2[index]) << " (CLBlast)";
             if (l2error < kErrorMarginL2) {
-              std::cout << " - error suppressed by a low total L2 error" << std::endl;
+              std::cout << " - error suppressed by a low total L2 error" << '\n';
             }
           }
         }
@@ -251,9 +261,9 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
         errors++;
         if (verbose_) {
           if (get_id2_(args) == 1) {
-            std::cout << std::endl << "   Buffer overflow index " << index << ": ";
+            std::cout << '\n' << "   Buffer overflow index " << index << ": ";
           } else {
-            std::cout << std::endl << "   Buffer overflow " << index << ": ";
+            std::cout << '\n' << "   Buffer overflow " << index << ": ";
           }
           std::cout << " " << ToString(result1[index]) << " (reference) versus ";
           std::cout << " " << ToString(result2[index]) << " (CLBlast)";
@@ -267,7 +277,7 @@ void TestBlas<T, U>::TestRegular(std::vector<Arguments<U>>& test_vector, const s
     }
 
     // Tests the error count (should be zero)
-    TestErrorCount(errors, get_id1_(args) * get_id2_(args) + kCanarySize, args);
+    TestErrorCount(errors, (get_id1_(args) * get_id2_(args)) + kCanarySize, args);
   }
   TestEnd();
 }
