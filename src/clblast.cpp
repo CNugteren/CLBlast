@@ -955,10 +955,12 @@ StatusCode Hpr(const Layout layout, const Triangle triangle, const size_t n, con
                const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xhpr<std::complex<T>, T>(queue_cpp, event);
     routine.DoHpr(layout, triangle, n, alpha, Buffer<std::complex<T>>(x_buffer), x_offset, x_inc,
                   Buffer<std::complex<T>>(ap_buffer), ap_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -978,10 +980,12 @@ StatusCode Her2(const Layout layout, const Triangle triangle, const size_t n, co
                 const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xher2<T>(queue_cpp, event);
     routine.DoHer2(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(y_buffer), y_offset,
                    y_inc, Buffer<T>(a_buffer), a_offset, a_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1001,10 +1005,12 @@ StatusCode Hpr2(const Layout layout, const Triangle triangle, const size_t n, co
                 const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xhpr2<T>(queue_cpp, event);
     routine.DoHpr2(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(y_buffer), y_offset,
                    y_inc, Buffer<T>(ap_buffer), ap_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1023,10 +1029,12 @@ StatusCode Syr(const Layout layout, const Triangle triangle, const size_t n, con
                const size_t x_offset, const size_t x_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
                cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xsyr<T>(queue_cpp, event);
     routine.DoSyr(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(a_buffer), a_offset,
                   a_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1048,9 +1056,11 @@ StatusCode Spr(const Layout layout, const Triangle triangle, const size_t n, con
                const size_t x_offset, const size_t x_inc, cl_mem ap_buffer, const size_t ap_offset,
                cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xspr<T>(queue_cpp, event);
     routine.DoSpr(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(ap_buffer), ap_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1073,10 +1083,12 @@ StatusCode Syr2(const Layout layout, const Triangle triangle, const size_t n, co
                 const size_t y_inc, cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xsyr2<T>(queue_cpp, event);
     routine.DoSyr2(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(y_buffer), y_offset,
                    y_inc, Buffer<T>(a_buffer), a_offset, a_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1099,10 +1111,12 @@ StatusCode Spr2(const Layout layout, const Triangle triangle, const size_t n, co
                 const size_t y_inc, cl_mem ap_buffer, const size_t ap_offset, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xspr2<T>(queue_cpp, event);
     routine.DoSpr2(layout, triangle, n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(y_buffer), y_offset,
                    y_inc, Buffer<T>(ap_buffer), ap_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1130,6 +1144,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
                 cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue, cl_event* event,
                 cl_mem temp_buffer) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xgemm<T>(queue_cpp, event);
     const auto temp_buffer_provided = temp_buffer != nullptr;
@@ -1137,6 +1152,7 @@ StatusCode Gemm(const Layout layout, const Transpose a_transpose, const Transpos
     routine.DoGemm(layout, a_transpose, b_transpose, m, n, k, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(b_buffer), b_offset, b_ld, beta, Buffer<T>(c_buffer), c_offset, c_ld, temp_buffer_cpp,
                    temp_buffer_provided);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1170,10 +1186,12 @@ StatusCode Symm(const Layout layout, const Side side, const Triangle triangle, c
                 const size_t b_offset, const size_t b_ld, const T beta, cl_mem c_buffer, const size_t c_offset,
                 const size_t c_ld, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xsymm<T>(queue_cpp, event);
     routine.DoSymm(layout, side, triangle, m, n, alpha, Buffer<T>(a_buffer), a_offset, a_ld, Buffer<T>(b_buffer),
                    b_offset, b_ld, beta, Buffer<T>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1207,10 +1225,12 @@ StatusCode Hemm(const Layout layout, const Side side, const Triangle triangle, c
                 const size_t b_offset, const size_t b_ld, const T beta, cl_mem c_buffer, const size_t c_offset,
                 const size_t c_ld, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xhemm<T>(queue_cpp, event);
     routine.DoHemm(layout, side, triangle, m, n, alpha, Buffer<T>(a_buffer), a_offset, a_ld, Buffer<T>(b_buffer),
                    b_offset, b_ld, beta, Buffer<T>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1232,10 +1252,12 @@ StatusCode Syrk(const Layout layout, const Triangle triangle, const Transpose a_
                 const T beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xsyrk<T>(queue_cpp, event);
     routine.DoSyrk(layout, triangle, a_transpose, n, k, alpha, Buffer<T>(a_buffer), a_offset, a_ld, beta,
                    Buffer<T>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1264,10 +1286,12 @@ StatusCode Herk(const Layout layout, const Triangle triangle, const Transpose a_
                 const T beta, cl_mem c_buffer, const size_t c_offset, const size_t c_ld, cl_command_queue* queue,
                 cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xherk<std::complex<T>, T>(queue_cpp, event);
     routine.DoHerk(layout, triangle, a_transpose, n, k, alpha, Buffer<std::complex<T>>(a_buffer), a_offset, a_ld, beta,
                    Buffer<std::complex<T>>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1287,10 +1311,12 @@ StatusCode Syr2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const T beta, cl_mem c_buffer,
                  const size_t c_offset, const size_t c_ld, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xsyr2k<T>(queue_cpp, event);
     routine.DoSyr2k(layout, triangle, ab_transpose, n, k, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                     Buffer<T>(b_buffer), b_offset, b_ld, beta, Buffer<T>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1324,10 +1350,12 @@ StatusCode Her2k(const Layout layout, const Triangle triangle, const Transpose a
                  const cl_mem b_buffer, const size_t b_offset, const size_t b_ld, const U beta, cl_mem c_buffer,
                  const size_t c_offset, const size_t c_ld, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xher2k<T, U>(queue_cpp, event);
     routine.DoHer2k(layout, triangle, ab_transpose, n, k, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                     Buffer<T>(b_buffer), b_offset, b_ld, beta, Buffer<T>(c_buffer), c_offset, c_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1350,10 +1378,12 @@ StatusCode Trmm(const Layout layout, const Side side, const Triangle triangle, c
                 const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xtrmm<T>(queue_cpp, event);
     routine.DoTrmm(layout, side, triangle, a_transpose, diagonal, m, n, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(b_buffer), b_offset, b_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1387,10 +1417,12 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
                 const size_t a_offset, const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                 cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xtrsm<T>(queue_cpp, event);
     routine.DoTrsm(layout, side, triangle, a_transpose, diagonal, m, n, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                    Buffer<T>(b_buffer), b_offset, b_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1423,10 +1455,12 @@ StatusCode Had(const size_t n, const T alpha, const cl_mem x_buffer, const size_
                const cl_mem y_buffer, const size_t y_offset, const size_t y_inc, const T beta, cl_mem z_buffer,
                const size_t z_offset, const size_t z_inc, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xhad<T>(queue_cpp, event);
     routine.DoHad(n, alpha, Buffer<T>(x_buffer), x_offset, x_inc, Buffer<T>(y_buffer), y_offset, y_inc, beta,
                   Buffer<T>(z_buffer), z_offset, z_inc);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1454,10 +1488,12 @@ StatusCode Omatcopy(const Layout layout, const Transpose a_transpose, const size
                     const cl_mem a_buffer, const size_t a_offset, const size_t a_ld, cl_mem b_buffer,
                     const size_t b_offset, const size_t b_ld, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xomatcopy<T>(queue_cpp, event);
     routine.DoOmatcopy(layout, a_transpose, m, n, alpha, Buffer<T>(a_buffer), a_offset, a_ld, Buffer<T>(b_buffer),
                        b_offset, b_ld);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1487,10 +1523,12 @@ StatusCode Im2col(const KernelMode kernel_mode, const size_t channels, const siz
                   const cl_mem im_buffer, const size_t im_offset, cl_mem col_buffer, const size_t col_offset,
                   cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xim2col<T>(queue_cpp, event);
     routine.DoIm2col(kernel_mode, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w,
                      dilation_h, dilation_w, Buffer<T>(im_buffer), im_offset, Buffer<T>(col_buffer), col_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1525,10 +1563,12 @@ StatusCode Col2im(const KernelMode kernel_mode, const size_t channels, const siz
                   const cl_mem col_buffer, const size_t col_offset, cl_mem im_buffer, const size_t im_offset,
                   cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xcol2im<T>(queue_cpp, event);
     routine.DoCol2im(kernel_mode, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w,
                      dilation_h, dilation_w, Buffer<T>(col_buffer), col_offset, Buffer<T>(im_buffer), im_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1564,11 +1604,13 @@ StatusCode Convgemm(const KernelMode kernel_mode, const size_t channels, const s
                     const cl_mem kernel_buffer, const size_t kernel_offset, cl_mem result_buffer,
                     const size_t result_offset, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = Xconvgemm<T>(queue_cpp, event);
     routine.DoConvgemm(kernel_mode, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w,
                        dilation_h, dilation_w, num_kernels, batch_count, Buffer<T>(im_buffer), im_offset,
                        Buffer<T>(kernel_buffer), kernel_offset, Buffer<T>(result_buffer), result_offset);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1596,6 +1638,7 @@ StatusCode AxpyBatched(const size_t n, const T* alphas, const cl_mem x_buffer, c
                        const size_t x_inc, cl_mem y_buffer, const size_t* y_offsets, const size_t y_inc,
                        const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = XaxpyBatched<T>(queue_cpp, event);
     auto alphas_cpp = std::vector<T>();
@@ -1608,6 +1651,7 @@ StatusCode AxpyBatched(const size_t n, const T* alphas, const cl_mem x_buffer, c
     }
     routine.DoAxpyBatched(n, alphas_cpp, Buffer<T>(x_buffer), x_offsets_cpp, x_inc, Buffer<T>(y_buffer), y_offsets_cpp,
                           y_inc, batch_count);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1637,6 +1681,7 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
                        const T* betas, cl_mem c_buffer, const size_t* c_offsets, const size_t c_ld,
                        const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = XgemmBatched<T>(queue_cpp, event);
     auto alphas_cpp = std::vector<T>();
@@ -1654,6 +1699,7 @@ StatusCode GemmBatched(const Layout layout, const Transpose a_transpose, const T
     routine.DoGemmBatched(layout, a_transpose, b_transpose, m, n, k, alphas_cpp, Buffer<T>(a_buffer), a_offsets_cpp,
                           a_ld, Buffer<T>(b_buffer), b_offsets_cpp, b_ld, betas_cpp, Buffer<T>(c_buffer), c_offsets_cpp,
                           c_ld, batch_count);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1695,11 +1741,13 @@ StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, 
                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
                               const size_t batch_count, cl_command_queue* queue, cl_event* event) {
   try {
+    clRetainCommandQueue(queue);
     auto queue_cpp = Queue(*queue);
     auto routine = XgemmStridedBatched<T>(queue_cpp, event);
     routine.DoGemmStridedBatched(layout, a_transpose, b_transpose, m, n, k, alpha, Buffer<T>(a_buffer), a_offset, a_ld,
                                  a_stride, Buffer<T>(b_buffer), b_offset, b_ld, b_stride, beta, Buffer<T>(c_buffer),
                                  c_offset, c_ld, c_stride, batch_count);
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
@@ -1745,6 +1793,7 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
                               const size_t b_offset, const size_t b_ld, const size_t c_offset, const size_t c_ld,
                               cl_command_queue* queue, size_t& temp_buffer_size) {
   try {
+    clRetainCommandQueue(queue);
     // Retrieves the tuning database
     const auto queue_cpp = Queue(*queue);
     const auto device = queue_cpp.GetDevice();
@@ -1761,6 +1810,7 @@ StatusCode GemmTempBufferSize(const Layout layout, const Transpose a_transpose, 
                                 c_ld, db["MWG"], db["NWG"], db["KWG"] * db["KREG"], db["GEMMK"]);
     }
     temp_buffer_size *= sizeof(T);  // translate from num-elements to bytes
+    clReleaseCommandQueue(queue);
     return StatusCode::kSuccess;
   } catch (...) {
     return DispatchException();
