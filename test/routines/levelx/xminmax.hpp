@@ -38,30 +38,32 @@ class TestXminmax {
   static std::vector<std::string> BuffersOut() { return {kBufScalarUint, kBufSecondScalarUint}; }
 
   // Describes how to obtain the sizes of the buffers
-  static size_t GetSizeX(const Arguments<T>& args) { return args.n * args.x_inc + args.x_offset; }
+  static size_t GetSizeX(const Arguments<T>& args) { return (args.n * args.x_inc) + args.x_offset; }
   static size_t GetSizeImax(const Arguments<T>& args) { return args.imax_offset + 1; }
   static size_t GetSizeImin(const Arguments<T>& args) { return args.imin_offset + 1; }
 
   // Describes how to set the sizes of all the buffers
-  static void SetSizes(Arguments<T>& args, Queue&) {
+  static void SetSizes(Arguments<T>& args, Queue& /*unused*/) {
     args.x_size = GetSizeX(args);
-    args.scalar_size = GetSizeImax(args) + GetSizeImin(args);
+    args.scalar_size = GetSizeImax(args);
+    args.second_scalar_size = GetSizeImin(args);
   }
 
   // Describes what the default values of the leading dimensions of the matrices are
-  static size_t DefaultLDA(const Arguments<T>&) { return 1; }  // N/A for this routine
-  static size_t DefaultLDB(const Arguments<T>&) { return 1; }  // N/A for this routine
-  static size_t DefaultLDC(const Arguments<T>&) { return 1; }  // N/A for this routine
+  static size_t DefaultLDA(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
+  static size_t DefaultLDB(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
+  static size_t DefaultLDC(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
 
   // Describes which transpose options are relevant for this routine
   using Transposes = std::vector<Transpose>;
-  static Transposes GetATransposes(const Transposes&) { return {}; }  // N/A for this routine
-  static Transposes GetBTransposes(const Transposes&) { return {}; }  // N/A for this routine
+  static Transposes GetATransposes(const Transposes& /*unused*/) { return {}; }  // N/A for this routine
+  static Transposes GetBTransposes(const Transposes& /*unused*/) { return {}; }  // N/A for this routine
 
   // Describes how to prepare the input data
-  static void PrepareData(const Arguments<T>&, Queue&, const int, std::vector<T>&, std::vector<T>&, std::vector<T>&,
-                          std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&) {
-  }  // N/A for this routine
+  static void PrepareData(const Arguments<T>& /*unused*/, Queue& /*unused*/, const int /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/, std::vector<T>& /*unused*/, std::vector<T>& /*unused*/,
+                          std::vector<T>& /*unused*/) {}  // N/A for this routine
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T>& args, Buffers<T>& buffers, Queue& queue) {
@@ -151,9 +153,11 @@ class TestXminmax {
   }
 
   // Describes how to compute the indices of the result buffer
-  static size_t ResultID1(const Arguments<T>&) { return 1; }  // N/A for this routine
-  static size_t ResultID2(const Arguments<T>&) { return 1; }  // N/A for this routine
-  static size_t GetResultIndex(const Arguments<T>& args, const size_t, const size_t) { return args.imax_offset; }
+  static size_t ResultID1(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
+  static size_t ResultID2(const Arguments<T>& /*unused*/) { return 1; }  // N/A for this routine
+  static size_t GetResultIndex(const Arguments<T>& args, const size_t /*unused*/, const size_t /*unused*/) {
+    return args.imax_offset;
+  }
 
   // Describes how to compute performance metrics
   static size_t GetFlops(const Arguments<T>& args) { return args.n * 2; }
