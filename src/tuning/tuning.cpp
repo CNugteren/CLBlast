@@ -39,10 +39,10 @@ namespace clblast {
 void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device, const Platform& platform,
                               const std::vector<std::pair<std::string, std::string>>& metadata,
                               const std::vector<TuningResult>& tuning_results) {
-  auto num_results = tuning_results.size();
+  const auto num_results = tuning_results.size();
   printf("* Writing a total of %zu results to '%s'\n", num_results, filename.c_str());
 
-  auto file = fopen(filename.c_str(), "w");
+  const auto file = fopen(filename.c_str(), "w");
   fprintf(file, "{\n");
   for (auto& datum : metadata) {
     fprintf(file, "  \"%s\": \"%s\",\n", datum.first.c_str(), datum.second.c_str());
@@ -70,7 +70,7 @@ void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device,
 
     // Loops over all the parameters for this result
     fprintf(file, "      \"parameters\": {");
-    auto num_configs = result.config.size();
+    const auto num_configs = result.config.size();
     auto p = size_t{0};
     for (const auto& parameter : result.config) {
       fprintf(file, "\"%s\": %zu", parameter.first.c_str(), parameter.second);
@@ -114,7 +114,7 @@ struct ThreadInfo {
 };
 
 template <typename... Args>
-inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
+void addPrintInfo(std::string& str, const char* format, Args&&... args) {
   const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
   const auto original_size = str.size();
   str.resize(original_size + size);
@@ -123,17 +123,15 @@ inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
 
 template <typename T>
 void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<clblast::Configuration>& configurations,
-                             size_t id, const TunerSettings& settings, const Arguments<T>& args, const Device& device,
-                             const Context& context, const size_t num_threads) {
+                             const size_t id, const TunerSettings& settings, const Arguments<T>& args,
+                             const Device& device, const Context& context, const size_t num_threads) {
 #if defined(_WIN32)
-  const std::string kPrintError = "";
-  const std::string kPrintSuccess = "";
-  const std::string kPrintMessage = "";
-  const std::string kPrintEnd = "";
+  const std::string kPrintError;
+  const std::string kPrintSuccess;
+  const std::string kPrintEnd;
 #else
   const std::string kPrintError = "\x1b[31m";
   const std::string kPrintSuccess = "\x1b[32m";
-  const std::string kPrintMessage = "\x1b[1m";
   const std::string kPrintEnd = "\x1b[0m";
 #endif
   for (size_t config_id = id; config_id < configurations.size(); config_id += num_threads) {
@@ -168,7 +166,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
       info.local = std::move(local);
 
       // Sets the parameters for this configuration
-      auto kernel_source = std::string{""};
+      std::string kernel_source;
       for (const auto& parameter : configuration) {
         kernel_source += "#define " + parameter.first + " " + ToString(parameter.second) + "\n";
       }
@@ -211,10 +209,10 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
 // Constants holding start and end strings for terminal-output in colour
 #if defined(_WIN32)
-  const std::string kPrintError = "";
-  const std::string kPrintSuccess = "";
-  const std::string kPrintMessage = "";
-  const std::string kPrintEnd = "";
+  const std::string kPrintError;
+  const std::string kPrintSuccess;
+  const std::string kPrintMessage;
+  const std::string kPrintEnd;
 #else
   const std::string kPrintError = "\x1b[31m";
   const std::string kPrintSuccess = "\x1b[32m";
@@ -303,10 +301,6 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     printf("* Unsupported precision, skipping this tuning run\n\n");
     return;
   }
-  const auto device_type = GetDeviceType(device);
-  const auto device_vendor = GetDeviceVendor(device);
-  const auto device_architecture = GetDeviceArchitecture(device);
-  const auto device_name = GetDeviceName(device);
 
   // Creates input buffers with random data. Adds a 'canary' region to detect buffer overflows.
   const auto buffer_sizes = std::vector<size_t>{settings.size_x + kCanarySize, settings.size_y + kCanarySize,
@@ -379,7 +373,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     // Make sure that the global worksize is a multiple of the local
     for (auto i = size_t{0}; i < global.size(); ++i) {
       while ((global[i] / local[i]) * local[i] != global[i]) {
-        global[i]++;
+        ++global[i];
       }
     }
     if (local.size() > 1 && global.size() > 1) {
@@ -531,7 +525,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   printf("* Found best result %.2lf ms", best_time_ms);
   printf(": %.1lf %s\n", settings.metric_amount / (best_time_ms * 1.0e6), settings.performance_unit.c_str());
   printf("* Best parameters: ");
-  auto best_string = std::string{""};
+  std::string best_string;
   auto i = size_t{0};
   for (const auto& config : best_configuration->config) {
     best_string += "" + config.first + "=" + ToString(config.second);
@@ -595,23 +589,23 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 }
 
 // Compiles the above function
-template void Tuner<half>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<half>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                           GetTunerSettingsFunc<half> GetTunerSettings, TestValidArgumentsFunc<half> TestValidArguments,
                           SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<half> ComputeLocalMemSize,
                           SetArgumentsFunc<half> SetArguments);
-template void Tuner<float>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<float>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                            GetTunerSettingsFunc<float> GetTunerSettings,
                            TestValidArgumentsFunc<float> TestValidArguments, SetConstraintsFunc SetConstraints,
                            ComputeLocalMemSizeFunc<float> ComputeLocalMemSize, SetArgumentsFunc<float> SetArguments);
-template void Tuner<double>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<double>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                             GetTunerSettingsFunc<double> GetTunerSettings,
                             TestValidArgumentsFunc<double> TestValidArguments, SetConstraintsFunc SetConstraints,
                             ComputeLocalMemSizeFunc<double> ComputeLocalMemSize, SetArgumentsFunc<double> SetArguments);
-template void Tuner<float2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<float2>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                             GetTunerSettingsFunc<float2> GetTunerSettings,
                             TestValidArgumentsFunc<float2> TestValidArguments, SetConstraintsFunc SetConstraints,
                             ComputeLocalMemSizeFunc<float2> ComputeLocalMemSize, SetArgumentsFunc<float2> SetArguments);
-template void Tuner<double2>(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+template void Tuner<double2>(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
                              GetTunerSettingsFunc<double2> GetTunerSettings,
                              TestValidArgumentsFunc<double2> TestValidArguments, SetConstraintsFunc SetConstraints,
                              ComputeLocalMemSizeFunc<double2> ComputeLocalMemSize,

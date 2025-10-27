@@ -18,5 +18,5 @@ extern const DatabaseEntry XaxpyComplexSingle;
 extern const DatabaseEntry XaxpyDouble;
 extern const DatabaseEntry XaxpyComplexDouble;
 
-} // namespace database
-} // namespace clblast
+}  // namespace database
+}  // namespace clblast

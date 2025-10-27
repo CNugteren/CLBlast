@@ -37,13 +37,12 @@
 // C++
 #include <assert.h>
 
-#include <algorithm>  // std::copy
-#include <cstdio>     // fprintf, stderr
-#include <cstring>    // std::strlen
-#include <memory>     // std::shared_ptr
-#include <numeric>    // std::accumulate
-#include <string>     // std::string
-#include <vector>     // std::vector
+#include <cstdio>   // fprintf, stderr
+#include <cstring>  // std::strlen
+#include <memory>   // std::shared_ptr
+#include <numeric>  // std::accumulate
+#include <string>   // std::string
+#include <vector>   // std::vector
 
 // OpenCL
 #ifndef CL_TARGET_OPENCL_VERSION
@@ -77,9 +76,9 @@ namespace clblast {
 // =================================================================================================
 
 // Represents a runtime error returned by an OpenCL API function
-class CLCudaAPIError : public ErrorCode<DeviceError, cl_int> {
+class CLCudaAPIError final : public ErrorCode<DeviceError, cl_int> {
  public:
-  explicit CLCudaAPIError(cl_int status, const std::string& where)
+  explicit CLCudaAPIError(const cl_int status, const std::string& where)
       : ErrorCode(status, where, "OpenCL error: " + where + ": " + std::to_string(static_cast<int>(status))) {}
 
   static void Check(const cl_int status, const std::string& where) {
@@ -116,7 +115,7 @@ class Event {
 
   // Regular constructor with memory management
   explicit Event()
-      : event_(new cl_event, [](cl_event* e) {
+      : event_(new cl_event, [](const cl_event* e) {
           if (*e) {
             CheckErrorDtor(clReleaseEvent(*e));
           }
@@ -134,12 +133,12 @@ class Event {
   // However, in our case the reply size is fixed to be cl_ulong, so we are not affected.
   float GetElapsedTime() const {
     WaitForCompletion();
-    const auto bytes = sizeof(cl_ulong);
+    constexpr auto bytes = sizeof(cl_ulong);
     auto time_start = cl_ulong{0};
     CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_START, bytes, &time_start, nullptr));
     auto time_end = cl_ulong{0};
     CheckError(clGetEventProfilingInfo(*event_, CL_PROFILING_COMMAND_END, bytes, &time_end, nullptr));
-    return static_cast<float>(time_end - time_start) * 1.0e-6f;
+    return static_cast<float>(time_end - time_start) * 1.0e-6F;
   }
 
   // Accessor to the private data-member
@@ -235,7 +234,7 @@ class Device {
 
   // Initialize the device. Note that this constructor can throw exceptions!
   explicit Device(const Platform& platform, const size_t device_id) {
-    auto num_devices = platform.NumDevices();
+    const auto num_devices = platform.NumDevices();
     if (num_devices == 0) {
       throw RuntimeError("Device: no devices found");
     }
@@ -256,14 +255,14 @@ class Device {
     std::string version_string = Version().substr(7);
     // Space separates the end of the OpenCL version number from the beginning of the
     // vendor-specific information.
-    size_t next_whitespace = version_string.find(' ');
-    size_t version = (size_t)(100.0 * std::stod(version_string.substr(0, next_whitespace)));
+    const size_t next_whitespace = version_string.find(' ');
+    const size_t version = static_cast<size_t>(100.0 * std::stod(version_string.substr(0, next_whitespace)));
     return version;
   }
   std::string Vendor() const { return GetInfoString(CL_DEVICE_VENDOR); }
   std::string Name() const { return GetInfoString(CL_DEVICE_NAME); }
   std::string Type() const {
-    auto type = GetInfo<cl_device_type>(CL_DEVICE_TYPE);
+    const auto type = GetInfo<cl_device_type>(CL_DEVICE_TYPE);
     switch (type) {
       case CL_DEVICE_TYPE_CPU:
         return "CPU";
@@ -301,8 +300,8 @@ class Device {
   unsigned long MaxAllocSize() const {
     return static_cast<unsigned long>(GetInfo<cl_ulong>(CL_DEVICE_MAX_MEM_ALLOC_SIZE));
   }
-  size_t MemoryClock() const { return 0; }     // Not exposed in OpenCL
-  size_t MemoryBusWidth() const { return 0; }  // Not exposed in OpenCL
+  static size_t MemoryClock() { return 0; }     // Not exposed in OpenCL
+  static size_t MemoryBusWidth() { return 0; }  // Not exposed in OpenCL
 
   // Configuration-validity checks
   bool IsLocalMemoryValid(const cl_ulong local_mem_usage) const { return (local_mem_usage <= LocalMemSize()); }
@@ -369,9 +368,8 @@ class Device {
   std::string AdrenoVersion() const {
     if (IsQualcomm()) {
       return GetInfoString(CL_DEVICE_OPENCL_C_VERSION);
-    } else {
-      return std::string{""};
     }
+    return std::string{""};
   }
 
   // Retrieves the above extra information (if present)
@@ -381,9 +379,8 @@ class Device {
     }
     if (HasExtension("cl_nv_device_attribute_query")) {
       return NVIDIAComputeCapability();
-    } else {
-      return std::string{""};
     }
+    return std::string{""};
   }
 
   // Accessor to the private data-member
@@ -433,7 +430,7 @@ class Context {
 
   // Regular constructor with memory management
   explicit Context(const Device& device)
-      : context_(new cl_context, [](cl_context* c) {
+      : context_(new cl_context, [](const cl_context* c) {
           if (*c) {
             CheckErrorDtor(clReleaseContext(*c));
           }
@@ -500,19 +497,19 @@ class Program {
   }
 
   // Compiles the device program and checks whether or not there are any warnings/errors
-  void Build(const Device& device, std::vector<std::string>& options) {
-    auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
+  void Build(const Device& device, std::vector<std::string>& options) const {
+    const auto options_string = std::accumulate(options.begin(), options.end(), std::string{" "});
     const cl_device_id dev = device();
     CheckError(clBuildProgram(program_, 1, &dev, options_string.c_str(), nullptr, nullptr));
   }
 
   // Confirms whether a certain status code is an actual compilation error or warning
-  bool StatusIsCompilationWarningOrError(const cl_int status) const { return (status == CL_BUILD_PROGRAM_FAILURE); }
+  static bool StatusIsCompilationWarningOrError(const cl_int status) { return (status == CL_BUILD_PROGRAM_FAILURE); }
 
   // Retrieves the warning/error message from the compiler (if any)
   std::string GetBuildInfo(const Device& device) const {
     auto bytes = size_t{0};
-    auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
+    constexpr auto query = cl_program_build_info{CL_PROGRAM_BUILD_LOG};
     CheckError(clGetProgramBuildInfo(program_, device(), query, 0, nullptr, &bytes));
     auto result = std::string{};
     result.resize(bytes);
@@ -571,7 +568,7 @@ class Queue {
 
   // Regular constructor with memory management
   explicit Queue(const Context& context, const Device& device)
-      : queue_(new cl_command_queue, [](cl_command_queue* s) {
+      : queue_(new cl_command_queue, [](const cl_command_queue* s) {
           if (*s) {
             CheckErrorDtor(clReleaseCommandQueue(*s));
           }
@@ -583,21 +580,21 @@ class Queue {
   }
 
   // Synchronizes the queue
-  void Finish(Event&) const { Finish(); }
+  void Finish(Event& /*unused*/) const { Finish(); }
   void Finish() const { CheckError(clFinish(*queue_)); }
 
   // Retrieves the corresponding context or device
   Context GetContext() const {
     auto bytes = size_t{0};
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, 0, nullptr, &bytes));
-    cl_context result;
+    cl_context result = nullptr;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_CONTEXT, bytes, &result, nullptr));
     return Context(result);
   }
   Device GetDevice() const {
     auto bytes = size_t{0};
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, 0, nullptr, &bytes));
-    cl_device_id result;
+    cl_device_id result = nullptr;
     CheckError(clGetCommandQueueInfo(*queue_, CL_QUEUE_DEVICE, bytes, &result, nullptr));
     return Device(result);
   }
@@ -616,7 +613,7 @@ template <typename T>
 class BufferHost {
  public:
   // Regular constructor with memory management
-  explicit BufferHost(const Context&, const size_t size) : buffer_(new std::vector<T>(size)) {}
+  explicit BufferHost(const Context& /*unused*/, const size_t size) : buffer_(new std::vector<T>(size)) {}
 
   // Retrieves the actual allocated size in bytes
   size_t GetSize() const { return buffer_->size() * sizeof(T); }
@@ -650,7 +647,7 @@ class Buffer {
   // become a stub containing a nullptr
   explicit Buffer(const Context& context, const BufferAccess access, const size_t size)
       : buffer_(new cl_mem,
-                [access, size](cl_mem* m) {
+                [access, size](const cl_mem* m) {
                   if (access != BufferAccess::kNotOwned && size > 0) {
                     CheckError(clReleaseMemObject(*m));
                   }
@@ -676,7 +673,7 @@ class Buffer {
   template <typename Iterator>
   explicit Buffer(const Context& context, const Queue& queue, Iterator start, Iterator end)
       : Buffer(context, BufferAccess::kReadWrite, static_cast<size_t>(end - start)) {
-    auto size = static_cast<size_t>(end - start);
+    const auto size = static_cast<size_t>(end - start);
     auto pointer = &*start;
     CheckError(clEnqueueWriteBuffer(queue(), *buffer_, CL_FALSE, 0, size * sizeof(T), pointer, 0, nullptr, nullptr));
     queue.Finish();
@@ -747,7 +744,7 @@ class Buffer {
 
   // Copies the contents of this buffer into another device buffer
   void CopyToAsync(const Queue& queue, const size_t size, const Buffer<T>& destination,
-                   EventPointer event = nullptr) const {
+                   const EventPointer event = nullptr) const {
     CheckError(clEnqueueCopyBuffer(queue(), *buffer_, destination(), 0, 0, size * sizeof(T), 0, nullptr, event));
   }
   void CopyTo(const Queue& queue, const size_t size, const Buffer<T>& destination) const {
@@ -757,7 +754,7 @@ class Buffer {
 
   // Retrieves the actual allocated size in bytes
   size_t GetSize() const {
-    const auto bytes = sizeof(size_t);
+    constexpr auto bytes = sizeof(size_t);
     auto result = size_t{0};
     CheckError(clGetMemObjectInfo(*buffer_, CL_MEM_SIZE, bytes, &result, nullptr));
     return result;
@@ -780,9 +777,9 @@ class Kernel {
   explicit Kernel(const cl_kernel kernel) : kernel_(new cl_kernel) { *kernel_ = kernel; }
 
   // Regular constructor with memory management
-  explicit Kernel(const std::shared_ptr<Program> program, const std::string& name)
+  explicit Kernel(const std::shared_ptr<Program>& program, const std::string& name)
       : kernel_(new cl_kernel,
-                [](cl_kernel* k) {
+                [](const cl_kernel* k) {
                   if (*k) {
                     CheckErrorDtor(clReleaseKernel(*k));
                   }
@@ -827,8 +824,8 @@ class Kernel {
 
   // Retrieves the amount of local memory used per work-group for this kernel
   unsigned long LocalMemUsage(const Device& device) const {
-    const auto bytes = sizeof(cl_ulong);
-    auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
+    constexpr auto bytes = sizeof(cl_ulong);
+    constexpr auto query = cl_kernel_work_group_info{CL_KERNEL_LOCAL_MEM_SIZE};
     auto result = cl_ulong{0};
     CheckError(clGetKernelWorkGroupInfo(*kernel_, device(), query, bytes, &result, nullptr));
     return static_cast<unsigned long>(result);
@@ -846,18 +843,18 @@ class Kernel {
 
   // Launches a kernel onto the specified queue
   void Launch(const Queue& queue, const std::vector<size_t>& global, const std::vector<size_t>& local,
-              EventPointer event) {
+              const EventPointer event) const {
     CheckError(clEnqueueNDRangeKernel(queue(), *kernel_, static_cast<cl_uint>(global.size()), nullptr, global.data(),
                                       local.data(), 0, nullptr, event));
   }
 
   // As above, but with an event waiting list
   void Launch(const Queue& queue, const std::vector<size_t>& global, const std::vector<size_t>& local,
-              EventPointer event, const std::vector<Event>& waitForEvents) {
+              const EventPointer event, const std::vector<Event>& waitForEvents) {
     // Builds a plain version of the events waiting list
     auto waitForEventsPlain = std::vector<cl_event>();
     for (auto& waitEvent : waitForEvents) {
-      if (waitEvent()) {
+      if (waitEvent() != nullptr) {
         waitForEventsPlain.push_back(waitEvent());
       }
     }

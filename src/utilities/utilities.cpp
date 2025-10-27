@@ -35,11 +35,11 @@ template float GetScalar<float>();
 template double GetScalar<double>();
 template <>
 half GetScalar() {
-  return FloatToHalf(2.0f);
+  return FloatToHalf(2.0F);
 }
 template <>
 float2 GetScalar() {
-  return {2.0f, 0.5f};
+  return {2.0F, 0.5F};
 }
 template <>
 double2 GetScalar() {
@@ -55,11 +55,11 @@ template float ConstantZero<float>();
 template double ConstantZero<double>();
 template <>
 half ConstantZero() {
-  return FloatToHalf(0.0f);
+  return FloatToHalf(0.0F);
 }
 template <>
 float2 ConstantZero() {
-  return {0.0f, 0.0f};
+  return {0.0F, 0.0F};
 }
 template <>
 double2 ConstantZero() {
@@ -75,11 +75,11 @@ template float ConstantOne<float>();
 template double ConstantOne<double>();
 template <>
 half ConstantOne() {
-  return FloatToHalf(1.0f);
+  return FloatToHalf(1.0F);
 }
 template <>
 float2 ConstantOne() {
-  return {1.0f, 0.0f};
+  return {1.0F, 0.0F};
 }
 template <>
 double2 ConstantOne() {
@@ -95,11 +95,11 @@ template float ConstantNegOne<float>();
 template double ConstantNegOne<double>();
 template <>
 half ConstantNegOne() {
-  return FloatToHalf(-1.0f);
+  return FloatToHalf(-1.0F);
 }
 template <>
 float2 ConstantNegOne() {
-  return {-1.0f, 0.0f};
+  return {-1.0F, 0.0F};
 }
 template <>
 double2 ConstantNegOne() {
@@ -111,15 +111,15 @@ template <typename T>
 T Constant(const double val) {
   return static_cast<T>(val);
 }
-template float Constant<float>(const double);
-template double Constant<double>(const double);
+template float Constant<float>(double);
+template double Constant<double>(double);
 template <>
 half Constant(const double val) {
   return FloatToHalf(static_cast<float>(val));
 }
 template <>
 float2 Constant(const double val) {
-  return {static_cast<float>(val), 0.0f};
+  return {static_cast<float>(val), 0.0F};
 }
 template <>
 double2 Constant(const double val) {
@@ -135,11 +135,11 @@ template float SmallConstant<float>();
 template double SmallConstant<double>();
 template <>
 half SmallConstant() {
-  return FloatToHalf(1e-4f);
+  return FloatToHalf(1e-4F);
 }
 template <>
 float2 SmallConstant() {
-  return {1e-4f, 0.0f};
+  return {1e-4F, 0.0F};
 }
 template <>
 double2 SmallConstant() {
@@ -151,25 +151,25 @@ template <typename T>
 typename BaseType<T>::Type AbsoluteValue(const T value) {
   return std::fabs(value);
 }
-template float AbsoluteValue<float>(const float);
-template double AbsoluteValue<double>(const double);
+template float AbsoluteValue<float>(float);
+template double AbsoluteValue<double>(double);
 template <>
 half AbsoluteValue(const half value) {
   return FloatToHalf(std::fabs(HalfToFloat(value)));
 }
 template <>
 float AbsoluteValue(const float2 value) {
-  if (value.real() == 0.0f && value.imag() == 0.0f) {
-    return 0.0f;
+  if (value.real() == 0.0F && value.imag() == 0.0F) {
+    return 0.0F;
   }
-  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+  return std::sqrt((value.real() * value.real()) + (value.imag() * value.imag()));
 }
 template <>
 double AbsoluteValue(const double2 value) {
   if (value.real() == 0.0 && value.imag() == 0.0) {
     return 0.0;
   }
-  return std::sqrt(value.real() * value.real() + value.imag() * value.imag());
+  return std::sqrt((value.real() * value.real()) + (value.imag() * value.imag()));
 }
 
 // =================================================================================================
@@ -182,13 +182,13 @@ std::string ToString(T value) {
 template std::string ToString<int>(int value);
 template std::string ToString<size_t>(size_t value);
 template <>
-std::string ToString(float value) {
+std::string ToString(const float value) {
   std::ostringstream result;
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
 }
 template <>
-std::string ToString(double value) {
+std::string ToString(const double value) {
   std::ostringstream result;
   result << std::fixed << std::setprecision(2) << value;
   return result.str();
@@ -200,17 +200,17 @@ std::string ToString<std::string>(std::string value) {
 
 // If not possible directly: special cases for complex data-types
 template <>
-std::string ToString(float2 value) {
+std::string ToString(const float2 value) {
   return ToString(value.real()) + "+" + ToString(value.imag()) + "i";
 }
 template <>
-std::string ToString(double2 value) {
+std::string ToString(const double2 value) {
   return ToString(value.real()) + "+" + ToString(value.imag()) + "i";
 }
 
 // If not possible directly: special case for half-precision
 template <>
-std::string ToString(half value) {
+std::string ToString(const half value) {
   return std::to_string(HalfToFloat(value));
 }
 
@@ -297,7 +297,7 @@ std::string ToString(StatusCode value) {
 
 // Retrieves the command-line arguments in a C++ fashion. Also adds command-line arguments from
 // pre-defined environmental variables
-std::vector<std::string> RetrieveCommandLineArguments(int argc, char* argv[]) {
+std::vector<std::string> RetrieveCommandLineArguments(const int argc, char* argv[]) {
   // Regular command-line arguments
   auto command_line_args = std::vector<std::string>();
   for (auto i = 0; i < argc; ++i) {
@@ -338,16 +338,16 @@ float ConvertArgument(const char* value) {
 }
 template <>
 double ConvertArgument(const char* value) {
-  return static_cast<double>(std::stod(value));
+  return std::stod(value);
 }
 template <>
 float2 ConvertArgument(const char* value) {
-  auto val = static_cast<float>(std::stod(value));
+  const auto val = static_cast<float>(std::stod(value));
   return float2{val, val};
 }
 template <>
 double2 ConvertArgument(const char* value) {
-  auto val = static_cast<double>(std::stod(value));
+  const auto val = std::stod(value);
   return double2{val, val};
 }
 
@@ -366,13 +366,13 @@ template std::string ConvertArgument(const char* value, std::string default_valu
 // default value in case the option is not found in the argument string.
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value) {
+              const T default_value) {  // NOLINT
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = static_cast<T>(default_value);
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto item = arguments[c];
-    if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
+    const auto& item = arguments[c];
+    if (item == "-" + option || item == "--" + option) {
       ++c;
       return_value = ConvertArgument<T>(arguments[c].c_str());
       break;
@@ -386,27 +386,23 @@ T GetArgument(const std::vector<std::string>& arguments, std::string& help, cons
 }
 
 // Compiles the above function
-template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, const int);
-template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, const size_t);
-template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, const half);
-template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float);
-template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
-template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
-template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, int);
+template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, size_t);
+template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, half);
+template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, float);
+template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, double);
+template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, float2);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, double2);
 template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&,
-                                              const std::string);
-template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
-template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Transpose);
-template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);
-template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Triangle);
-template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Diagonal);
-template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Precision);
+                                              std::string);
+template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, Layout);
+template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&, Transpose);
+template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, Side);
+template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&, Triangle);
+template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&, Diagonal);
+template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&, Precision);
 template KernelMode GetArgument<KernelMode>(const std::vector<std::string>&, std::string&, const std::string&,
-                                            const KernelMode);
+                                            KernelMode);
 
 // =================================================================================================
 
@@ -424,8 +420,8 @@ bool CheckArgument(const std::vector<std::string>& arguments, std::string& help,
   // an extra dash in front (e.g. --device).
   auto return_value = false;
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto item = arguments[c];
-    if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
+    const auto& item = arguments[c];
+    if (item == "-" + option || item == "--" + option) {
       ++c;
       return_value = true;
     }
@@ -505,7 +501,7 @@ size_t CeilDiv(const size_t x, const size_t y) { return 1 + ((x - 1) / y); }
 size_t Ceil(const size_t x, const size_t y) { return CeilDiv(x, y) * y; }
 
 // Helper function to determine whether or not 'a' is a multiple of 'b'
-bool IsMultiple(const size_t a, const size_t b) { return ((a / b) * b == a) ? true : false; }
+bool IsMultiple(const size_t a, const size_t b) { return (a / b) * b == a; }
 
 // =================================================================================================
 
@@ -553,11 +549,11 @@ Precision PrecisionValue<double2>() {
 
 // Returns false is this precision is not supported by the device
 template <>
-bool PrecisionSupported<float>(const Device&) {
+bool PrecisionSupported<float>(const Device& /*unused*/) {
   return true;
 }
 template <>
-bool PrecisionSupported<float2>(const Device&) {
+bool PrecisionSupported<float2>(const Device& /*unused*/) {
   return true;
 }
 template <>
@@ -583,8 +579,8 @@ double SquaredDifference(const T val1, const T val2) {
 }
 
 // Compiles the default case for standard data-types
-template double SquaredDifference<float>(const float, const float);
-template double SquaredDifference<double>(const double, const double);
+template double SquaredDifference<float>(float, float);
+template double SquaredDifference<double>(double, double);
 
 // Specialisations for non-standard data-types
 template <>
@@ -621,7 +617,7 @@ std::string GetDeviceVendor(const Device& device) {
 
 // Mid-level info
 std::string GetDeviceArchitecture(const Device& device) {
-  auto device_architecture = std::string{""};
+  std::string device_architecture;
 #ifdef CUDA_API
   device_architecture = device.NVIDIAComputeCapability();
 #else
@@ -645,7 +641,7 @@ std::string GetDeviceArchitecture(const Device& device) {
 
 // Lowest-level
 std::string GetDeviceName(const Device& device) {
-  auto device_name = std::string{""};
+  std::string device_name;
   if (device.HasExtension(kKhronosAttributesAMD)) {
     device_name = device.AMDBoardName();
   } else {
@@ -660,7 +656,7 @@ std::string GetDeviceName(const Device& device) {
 
   for (auto& removal : device_mapping::kDeviceRemovals) {  // removing certain things
     if (device_name.find(removal) != std::string::npos) {
-      auto start_position_to_erase = device_name.find(removal);
+      const auto start_position_to_erase = device_name.find(removal);
       device_name.erase(start_position_to_erase, removal.length());
     }
   }
@@ -699,8 +695,8 @@ void EuclidGCD(int a, int b, int& p, int& q, int& r) {
     const int q_2 = q_1;
     p_1 = p;
     q_1 = q;
-    p = p_2 - p_1 * (a / b);
-    q = q_2 - q_1 * (a / b);
+    p = p_2 - (p_1 * (a / b));
+    q = q_2 - (q_1 * (a / b));
     a = b;
     b = c;
   }

@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xnrm2<T>::Xnrm2(Queue& queue, EventPointer event, const std::string& name)
+Xnrm2<T>::Xnrm2(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Xdot"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level1/xnrm2.opencl"
@@ -48,12 +48,12 @@ void Xnrm2<T>::DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t
   TestVectorScalar(1, nrm2_buffer, nrm2_offset);
 
   // Retrieves the Xnrm2 kernels from the compiled binary
-  auto kernel1 = Kernel(program_, "Xnrm2");
-  auto kernel2 = Kernel(program_, "Xnrm2Epilogue");
+  auto kernel1 = Kernel(getProgram(), "Xnrm2");
+  auto kernel2 = Kernel(getProgram(), "Xnrm2Epilogue");
 
   // Creates the buffer for intermediate values
-  auto temp_size = 2 * db_["WGS2"];
-  auto temp_buffer = Buffer<T>(context_, temp_size);
+  auto temp_size = 2 * getDatabase()["WGS2"];
+  auto temp_buffer = Buffer<T>(getContext(), temp_size);
 
   // Sets the kernel arguments
   kernel1.SetArgument(0, static_cast<int>(n));
@@ -66,10 +66,10 @@ void Xnrm2<T>::DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t
   auto eventWaitList = std::vector<Event>();
 
   // Launches the main kernel
-  auto global1 = std::vector<size_t>{db_["WGS1"] * temp_size};
-  auto local1 = std::vector<size_t>{db_["WGS1"]};
+  const auto global1 = std::vector<size_t>{getDatabase()["WGS1"] * temp_size};
+  const auto local1 = std::vector<size_t>{getDatabase()["WGS1"]};
   auto kernelEvent = Event();
-  RunKernel(kernel1, queue_, device_, global1, local1, kernelEvent.pointer());
+  RunKernel(kernel1, getQueue(), getDevice(), global1, local1, kernelEvent.pointer());
   eventWaitList.push_back(kernelEvent);
 
   // Sets the arguments for the epilogue kernel
@@ -78,9 +78,9 @@ void Xnrm2<T>::DoNrm2(const size_t n, const Buffer<T>& nrm2_buffer, const size_t
   kernel2.SetArgument(2, static_cast<int>(nrm2_offset));
 
   // Launches the epilogue kernel
-  auto global2 = std::vector<size_t>{db_["WGS2"]};
-  auto local2 = std::vector<size_t>{db_["WGS2"]};
-  RunKernel(kernel2, queue_, device_, global2, local2, event_, eventWaitList);
+  const auto global2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  const auto local2 = std::vector<size_t>{getDatabase()["WGS2"]};
+  RunKernel(kernel2, getQueue(), getDevice(), global2, local2, getEvent(), eventWaitList);
 }
 
 // =================================================================================================

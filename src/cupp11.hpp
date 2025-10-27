@@ -696,7 +696,7 @@ class Kernel {
   explicit Kernel(const CUfunction kernel) : name_("unknown"), kernel_(kernel) {}
 
   // Regular constructor with memory management
-  explicit Kernel(const std::shared_ptr<Program> program, const std::string& name) : name_(name) {
+  explicit Kernel(const std::shared_ptr<Program>& program, const std::string& name) : name_(name) {
     CheckError(cuModuleGetFunction(&kernel_, program->GetModule(), name.c_str()));
   }
 

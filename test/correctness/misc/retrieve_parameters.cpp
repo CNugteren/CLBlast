@@ -18,8 +18,8 @@ namespace clblast {
 // =================================================================================================
 
 template <typename T>
-size_t RunRetrieveParametersTests(int argc, char* argv[], const bool silent, const std::string& routine_name) {
-  auto arguments = RetrieveCommandLineArguments(argc, argv);
+size_t RunRetrieveParametersTests(const int argc, char* argv[], const bool silent, const std::string& routine_name) {
+  const auto arguments = RetrieveCommandLineArguments(argc, argv);
   auto errors = size_t{0};
   auto passed = size_t{0};
 
@@ -35,7 +35,7 @@ size_t RunRetrieveParametersTests(int argc, char* argv[], const bool silent, con
   const auto kernel_name = std::string{"Xgemm"};
   const auto expected_parameters = std::vector<std::string>{"KWG", "KWI", "MDIMA", "MDIMC", "MWG",  "NDIMB", "NDIMC",
                                                             "NWG", "SA",  "SB",    "STRM",  "STRN", "VWM",   "VWN"};
-  const auto expected_max_value = size_t{16384};
+  constexpr auto expected_max_value = size_t{16384};
 
   // Prints the help message (command-line arguments)
   if (!silent) {
@@ -80,7 +80,7 @@ size_t RunRetrieveParametersTests(int argc, char* argv[], const bool silent, con
 }  // namespace clblast
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   auto errors = size_t{0};
   errors += clblast::RunRetrieveParametersTests<float>(argc, argv, false, "SGEMM");
   errors += clblast::RunRetrieveParametersTests<clblast::float2>(argc, argv, true, "CGEMM");

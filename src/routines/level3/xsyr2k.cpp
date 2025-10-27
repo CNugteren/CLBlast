@@ -42,7 +42,7 @@ void Xsyr2k<T>::DoSyr2k(const Layout layout, const Triangle triangle, const Tran
   // Swaps the arguments for matrices A and B, and sets 'beta' to 1
   auto one = ConstantOne<T>();
   SyrkAB(layout, triangle, ab_transpose, negated_ab_transpose, n, k, alpha, b_buffer, b_offset, b_ld, a_buffer,
-         a_offset, a_ld, one, c_buffer, c_offset, c_ld, event_);
+         a_offset, a_ld, one, c_buffer, c_offset, c_ld, getEvent());
 }
 
 // =================================================================================================

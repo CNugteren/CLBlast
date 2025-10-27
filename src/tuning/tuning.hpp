@@ -28,7 +28,7 @@ namespace clblast {
 // Structures for the tuners with all the default settings
 struct TunerDefaults {
   // The list of arguments relevant for this routine
-  std::vector<std::string> options = {};
+  std::vector<std::string> options;
 
   // Default sizes
   size_t default_m = 1;
@@ -64,20 +64,20 @@ struct TunerSettings {
   size_t size_temp = 1;
 
   // Inputs and outputs (X:0, Y:1, A:2, B:3, C:4, temp:5)
-  std::vector<size_t> inputs = {};
-  std::vector<size_t> outputs = {};
+  std::vector<size_t> inputs;
+  std::vector<size_t> outputs;
 
   // Sets the base thread configuration
-  std::vector<size_t> global_size = {};
-  std::vector<size_t> global_size_ref = {};
-  std::vector<size_t> local_size = {};
-  std::vector<size_t> local_size_ref = {};
+  std::vector<size_t> global_size;
+  std::vector<size_t> global_size_ref;
+  std::vector<size_t> local_size;
+  std::vector<size_t> local_size_ref;
 
   // Transforms the thread configuration based on the parameters
-  TransformVector mul_local = {};
-  TransformVector div_local = {};
-  TransformVector mul_global = {};
-  TransformVector div_global = {};
+  TransformVector mul_local;
+  TransformVector div_local;
+  TransformVector mul_global;
+  TransformVector div_global;
 
   // Sets the tuning parameters and their possible values
   std::vector<Parameter> parameters;
@@ -99,37 +99,37 @@ void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device,
                               const std::vector<std::pair<std::string, std::string>>& metadata,
                               const std::vector<TuningResult>& tuning_results);
 
-void print_separator(const size_t parameters_size);
+void print_separator(size_t parameters_size);
 
 // =================================================================================================
 
-using GetTunerDefaultsFunc = std::function<TunerDefaults(const int V)>;
+using GetTunerDefaultsFunc = std::function<TunerDefaults(int V)>;
 template <typename T>
-using GetTunerSettingsFunc = std::function<TunerSettings(const int V, const Arguments<T>& args)>;
+using GetTunerSettingsFunc = std::function<TunerSettings(int V, const Arguments<T>& args)>;
 template <typename T>
-using TestValidArgumentsFunc = std::function<void(const int V, const Arguments<T>& args)>;
-using SetConstraintsFunc = std::function<std::vector<Constraint>(const int V)>;
+using TestValidArgumentsFunc = std::function<void(int V, const Arguments<T>& args)>;
+using SetConstraintsFunc = std::function<std::vector<Constraint>(int V)>;
 template <typename T>
-using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(const int V)>;
+using ComputeLocalMemSizeFunc = std::function<LocalMemSizeInfo(int V)>;
 template <typename T>
 using SetArgumentsFunc =
-    std::function<void(const int V, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers)>;
+    std::function<void(int V, Kernel& kernel, const Arguments<T>& args, std::vector<Buffer<T>>& buffers)>;
 
 // Function to get command-line argument, set-up the input buffers, configure the tuner, and collect
 // the results. Used for all types of kernel families. Note that this is a header-only function so
 // that it is automatically compiled for the various kernels (given as the 'C' template argument).
 template <typename T>
-void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDefaults,
+void Tuner(int argc, char* argv[], int V, GetTunerDefaultsFunc GetTunerDefaults,
            GetTunerSettingsFunc<T> GetTunerSettings, TestValidArgumentsFunc<T> TestValidArguments,
            SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
            SetArgumentsFunc<T> SetArguments);
 
 // Function to run the tuners through the CLBlast API, no I/O
 template <typename T>
-StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-                    const GetTunerSettingsFunc<T> GetTunerSettings, const TestValidArgumentsFunc<T> TestValidArguments,
-                    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
-                    const SetArgumentsFunc<T> SetArguments, std::unordered_map<std::string, size_t>& parameters);
+StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, int V, GetTunerDefaultsFunc GetTunerDefaults,
+                    GetTunerSettingsFunc<T> GetTunerSettings, TestValidArgumentsFunc<T> TestValidArguments,
+                    SetConstraintsFunc SetConstraints, ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
+                    SetArgumentsFunc<T> SetArguments, std::unordered_map<std::string, size_t>& parameters);
 
 // =================================================================================================
 }  // namespace clblast

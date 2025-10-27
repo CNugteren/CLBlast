@@ -9,7 +9,6 @@
 
 #include "database/database.hpp"
 
-#include <cstddef>
 #include <list>
 #include <memory>
 #include <string>
@@ -58,7 +57,7 @@ Database::Database(const Device& device, const std::string& kernel_name, const P
                    const std::vector<database::DatabaseEntry>& overlay)
     : parameters_(std::make_shared<database::Parameters>()) {
   // Initializes the static variable on first use. At this point we are sure all global variables are initialized
-  if (database.size() == 0) {
+  if (database.empty()) {
     database = std::vector<database::DatabaseEntry>{database::XaxpyHalf,
                                                     database::XaxpySingle,
                                                     database::XaxpyDouble,
@@ -195,7 +194,7 @@ std::string Database::GetDefines() const {
 // ... or just the values as string
 std::string Database::GetValuesString() const {
   std::string defines{};
-  for (auto& parameter : *parameters_) {
+  for (const auto& parameter : *parameters_) {
     defines += "_" + ToString(parameter.second);
   }
   return defines;
@@ -221,7 +220,7 @@ database::Parameters Database::Search(const std::string& this_kernel, const std:
   for (auto& db : this_database) {
     if ((db.kernel == this_kernel) && (db.precision == this_precision || db.precision == Precision::kAny)) {
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters =
+      auto parameters =
           SearchVendorAndType(this_vendor, this_type, this_device, this_architecture, db.vendors, db.parameter_names);
       if (parameters.size() != 0) {
         return parameters;
@@ -275,7 +274,7 @@ database::Parameters Database::SearchArchitecture(const std::string& target_arch
 
 database::Parameters Database::SearchDevice(const std::string& target_device,
                                             const std::vector<database::DatabaseDevice>& devices,
-                                            const std::vector<std::string>& parameter_names) const {
+                                            const std::vector<std::string>& parameter_names) {
   for (auto& device : devices) {
     const auto device_name = CharArrayToString(device.name);
     // Cuts off 'target_device' string at 50 since the database cuts off as well
@@ -298,7 +297,7 @@ database::Parameters Database::SearchDevice(const std::string& target_device,
 }
 
 // Helper to convert from database format to proper types
-std::string Database::CharArrayToString(const database::Name char_array) const {
+std::string Database::CharArrayToString(const database::Name& char_array) {
   auto result = std::string(char_array.data());
   result.erase(result.find_last_not_of(" \t\n\r\f\v") + 1);
   return result;

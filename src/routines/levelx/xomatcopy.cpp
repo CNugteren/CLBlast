@@ -25,7 +25,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xomatcopy<T>::Xomatcopy(Queue& queue, EventPointer event, const std::string& name)
+Xomatcopy<T>::Xomatcopy(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose"}, PrecisionValue<T>(), {},
               {
 #include "../../kernels/level3/level3.opencl"
@@ -72,8 +72,9 @@ void Xomatcopy<T>::DoOmatcopy(const Layout layout, const Transpose a_transpose, 
   TestMatrixB(b_one, b_two, b_buffer, b_offset, b_ld);
 
   auto emptyEventList = std::vector<Event>();
-  PadCopyTransposeMatrix(queue_, device_, db_, event_, emptyEventList, a_one, a_two, a_ld, a_offset, a_buffer, b_one,
-                         b_two, b_ld, b_offset, b_buffer, alpha, program_, false, transpose, conjugate);
+  PadCopyTransposeMatrix(getQueue(), getDevice(), getDatabase(), getEvent(), emptyEventList, a_one, a_two, a_ld,
+                         a_offset, a_buffer, b_one, b_two, b_ld, b_offset, b_buffer, alpha, getProgram(), false,
+                         transpose, conjugate);
 }
 
 // =================================================================================================

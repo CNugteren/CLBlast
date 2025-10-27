@@ -10,6 +10,7 @@
 #include "tuning/kernels/transpose_fast.hpp"
 
 #include "tuning/tuning.hpp"
+#include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/utilities.hpp"
 
@@ -19,7 +20,7 @@ using float2 = clblast::float2;
 using double2 = clblast::double2;
 
 // Main function (not within the clblast namespace)
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
   try {
     const auto command_line_args = clblast::RetrieveCommandLineArguments(argc, argv);
     switch (clblast::GetPrecision(command_line_args)) {
@@ -52,6 +53,8 @@ int main(int argc, char* argv[]) {
             argc, argv, 0, clblast::TransposeGetTunerDefaults, clblast::TransposeGetTunerSettings<double2>,
             clblast::TransposeTestValidArguments<double2>, clblast::TransposeSetConstraints,
             clblast::TransposeComputeLocalMemSize<double2>, clblast::TransposeSetArguments<double2>);
+        break;
+      case clblast::Precision::kAny:
         break;
     }
     return 0;

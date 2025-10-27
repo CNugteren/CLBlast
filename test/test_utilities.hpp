@@ -12,10 +12,8 @@
 #define CLBLAST_TEST_UTILITIES_H_
 
 #include <cstdlib>
-#include <fstream>
-#include <iterator>
-#include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "utilities/backend.hpp"
@@ -41,7 +39,7 @@ constexpr auto kArgVerbose = "verbose";
 
 // Returns whether a scalar is close to zero
 template <typename T>
-bool IsCloseToZero(const T value);
+bool IsCloseToZero(T value);
 
 // =================================================================================================
 
@@ -72,14 +70,7 @@ struct BuffersHost {
 // =================================================================================================
 
 template <typename T>
-T ComplexConjugate(const T value);
-
-// =================================================================================================
-
-// Converts a value (e.g. an integer) to a string. This also covers special cases for CLBlast
-// data-types such as the Layout and Transpose data-types.
-template <typename T>
-std::string ToString(T value);
+T ComplexConjugate(T value);
 
 // =================================================================================================
 
@@ -125,10 +116,10 @@ Buffer<T> CreateInvalidBuffer(const Context& context, const size_t size) {
 using BestParameters = std::unordered_map<std::string, size_t>;
 using BestParametersCollection = std::unordered_map<std::string, BestParameters>;
 
-void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names, const RawDeviceID device,
-                                     const Precision precision);
+void OverrideParametersFromJSONFiles(const std::vector<std::string>& file_names, RawDeviceID device,
+                                     Precision precision);
 void GetBestParametersFromJSONFile(const std::string& file_name, BestParametersCollection& all_parameters,
-                                   const Precision precision);
+                                   Precision precision);
 
 // =================================================================================================
 }  // namespace clblast

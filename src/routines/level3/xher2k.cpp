@@ -44,7 +44,7 @@ void Xher2k<T, U>::DoHer2k(const Layout layout, const Triangle triangle, const T
   auto conjugate_alpha = T{alpha.real(), -alpha.imag()};
   auto complex_one = T{static_cast<U>(1.0), static_cast<U>(0.0)};
   HerkAB(layout, triangle, ab_transpose, negated_ab_transpose, n, k, conjugate_alpha, b_buffer, b_offset, b_ld,
-         a_buffer, a_offset, a_ld, complex_one, c_buffer, c_offset, c_ld, event_, true);
+         a_buffer, a_offset, a_ld, complex_one, c_buffer, c_offset, c_ld, getEvent(), true);
 }
 
 // =================================================================================================

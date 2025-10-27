@@ -11,6 +11,8 @@
 #ifndef CLBLAST_TEST_WRAPPER_CUBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CUBLAS_H_
 
+// IWYU pragma: private, include "routines/common.hpp"
+
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 

@@ -30,9 +30,9 @@ class Xspr2 : public Xher2<T> {
   Xspr2(Queue& queue, EventPointer event, const std::string& name = "SPR2");
 
   // Templated-precision implementation of the routine
-  void DoSpr2(const Layout layout, const Triangle triangle, const size_t n, const T alpha, const Buffer<T>& x_buffer,
-              const size_t x_offset, const size_t x_inc, const Buffer<T>& y_buffer, const size_t y_offset,
-              const size_t y_inc, const Buffer<T>& ap_buffer, const size_t ap_offset);
+  void DoSpr2(Layout layout, Triangle triangle, size_t n, T alpha, const Buffer<T>& x_buffer, size_t x_offset,
+              size_t x_inc, const Buffer<T>& y_buffer, size_t y_offset, size_t y_inc, const Buffer<T>& ap_buffer,
+              size_t ap_offset);
 };
 
 // =================================================================================================

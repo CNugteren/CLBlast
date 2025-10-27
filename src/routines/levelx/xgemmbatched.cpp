@@ -26,7 +26,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-XgemmBatched<T>::XgemmBatched(Queue& queue, EventPointer event, const std::string& name)
+XgemmBatched<T>::XgemmBatched(Queue& queue, const EventPointer event, const std::string& name)
     : Routine(queue, event, name, {"Copy", "Pad", "Transpose", "Padtranspose", "Xgemm", "XgemmDirect", "GemmRoutine"},
               PrecisionValue<T>(), {},
               {
@@ -69,12 +69,21 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   }
 
   // Two methods to choose from, select which one to run
-  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, db_["XGEMM_MIN_INDIRECT_SIZE"]);
-  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : db_["GEMMK"];
+  const auto do_gemm_direct = Xgemm<T>::UseDirectKernel(m, n, k, getDatabase()["XGEMM_MIN_INDIRECT_SIZE"]);
+  const auto gemm_kernel_id = (do_gemm_direct) ? 0 : getDatabase()["GEMMK"];
 
   // Computes the transpose/conjugate options and sets the a/b/c sizes based on that
-  bool a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate;
-  size_t a_one, a_two, b_one, b_two, c_one, c_two;
+  bool a_do_transpose = false;
+  bool b_do_transpose = false;
+  bool c_do_transpose = false;
+  bool a_conjugate = false;
+  bool b_conjugate = false;
+  size_t a_one = 0;
+  size_t a_two = 0;
+  size_t b_one = 0;
+  size_t b_two = 0;
+  size_t c_one = 0;
+  size_t c_two = 0;
   Xgemm<T>::ProcessArguments(layout, a_transpose, b_transpose, m, n, k, a_one, a_two, b_one, b_two, c_one, c_two,
                              a_do_transpose, b_do_transpose, c_do_transpose, a_conjugate, b_conjugate, gemm_kernel_id);
 
@@ -84,10 +93,10 @@ void XgemmBatched<T>::DoGemmBatched(const Layout layout, const Transpose a_trans
   TestBatchedMatrixC(c_one, c_two, c_buffer, c_offsets, c_ld);
 
   // Upload the scalar arguments to the device
-  auto alphas_device = Buffer<T>(context_, BufferAccess::kReadWrite, batch_count);
-  auto betas_device = Buffer<T>(context_, BufferAccess::kReadWrite, batch_count);
-  alphas_device.Write(queue_, batch_count, alphas);
-  betas_device.Write(queue_, batch_count, betas);
+  auto alphas_device = Buffer<T>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto betas_device = Buffer<T>(getContext(), BufferAccess::kReadWrite, batch_count);
+  alphas_device.Write(getQueue(), batch_count, alphas);
+  betas_device.Write(getQueue(), batch_count, betas);
 
   // Converts the offset to integers
   auto a_offsets_int = std::vector<int>(batch_count);
@@ -125,15 +134,20 @@ void XgemmBatched<T>::BatchedGemmIndirect(
     const bool a_conjugate, const bool b_conjugate, const size_t a_one, const size_t a_two, const size_t b_one,
     const size_t b_two, const size_t c_one, const size_t c_two, const size_t batch_count) {
   // Calculates the ceiled versions of m, n, and k
-  const auto m_ceiled = Ceil(Ceil(m, db_["MWG"]), db_["VWM"]);
-  const auto n_ceiled = Ceil(Ceil(n, db_["NWG"]), db_["VWN"]);
-  const auto k_ceiled = Ceil(Ceil(k, db_["KWG"]), db_["VWM"]);
+  const auto m_ceiled = Ceil(Ceil(m, getDatabase()["MWG"]), getDatabase()["VWM"]);
+  const auto n_ceiled = Ceil(Ceil(n, getDatabase()["NWG"]), getDatabase()["VWN"]);
+  const auto k_ceiled = Ceil(Ceil(k, getDatabase()["KWG"]), getDatabase()["VWM"]);
 
   // Computes the first and second "internal" (ceiled) dimensions of the 3 matrices taking into account
   // whether the matrices need to be rotated or not for the kernel.
-  size_t a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i;
-  Xgemm<T>::CalculateInternalDimensions(m, n, k, db_["MWG"], db_["NWG"], db_["KWG"], a_one_i, a_two_i, b_one_i, b_two_i,
-                                        c_one_i, c_two_i, db_["GEMMK"]);
+  size_t a_one_i = 0;
+  size_t a_two_i = 0;
+  size_t b_one_i = 0;
+  size_t b_two_i = 0;
+  size_t c_one_i = 0;
+  size_t c_two_i = 0;
+  Xgemm<T>::CalculateInternalDimensions(m, n, k, getDatabase()["MWG"], getDatabase()["NWG"], getDatabase()["KWG"],
+                                        a_one_i, a_two_i, b_one_i, b_two_i, c_one_i, c_two_i, getDatabase()["GEMMK"]);
 
   // Sets the "internal" offsets, i.e. the perfect offsets
   auto a_offsets_i = std::vector<int>(batch_count);
@@ -153,9 +167,9 @@ void XgemmBatched<T>::BatchedGemmIndirect(
   auto c_no_temp = c_one == c_one_i && c_two == c_two_i && c_ld == c_one && c_offsets == c_offsets_i && !c_do_transpose;
 
   // Creates the temporary matrices
-  const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(context_, batch_count * a_one_i * a_two_i);
-  const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(context_, batch_count * b_one_i * b_two_i);
-  const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(context_, batch_count * c_one_i * c_two_i);
+  const auto a_temp = (a_no_temp) ? a_buffer : Buffer<T>(getContext(), batch_count * a_one_i * a_two_i);
+  const auto b_temp = (b_no_temp) ? b_buffer : Buffer<T>(getContext(), batch_count * b_one_i * b_two_i);
+  const auto c_temp = (c_no_temp) ? c_buffer : Buffer<T>(getContext(), batch_count * c_one_i * c_two_i);
 
   // Events of all kernels (including pre/post processing kernels)
   auto eventWaitList = std::vector<Event>();
@@ -165,45 +179,47 @@ void XgemmBatched<T>::BatchedGemmIndirect(
   // to fill it up until it reaches a certain multiple of size (kernel parameter dependent). In
   // case nothing has to be done, these kernels can be skipped.
   if (!a_no_temp) {
-    auto a_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-    auto a_offsets_i_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-    a_offsets_device.Write(queue_, batch_count, a_offsets);
-    a_offsets_i_device.Write(queue_, batch_count, a_offsets_i);
+    auto a_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+    auto a_offsets_i_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+    a_offsets_device.Write(getQueue(), batch_count, a_offsets);
+    a_offsets_i_device.Write(getQueue(), batch_count, a_offsets_i);
     auto eventProcessA = Event();
-    PadCopyTransposeMatrixBatched(queue_, device_, db_, eventProcessA.pointer(), emptyEventList, a_one, a_two, a_ld,
-                                  a_offsets_device, a_buffer, a_one_i, a_two_i, a_one_i, a_offsets_i_device, a_temp,
-                                  program_, true, a_do_transpose, a_conjugate, batch_count);
+    PadCopyTransposeMatrixBatched(getQueue(), getDevice(), getDatabase(), eventProcessA.pointer(), emptyEventList,
+                                  a_one, a_two, a_ld, a_offsets_device, a_buffer, a_one_i, a_two_i, a_one_i,
+                                  a_offsets_i_device, a_temp, getProgram(), true, a_do_transpose, a_conjugate,
+                                  batch_count);
     eventWaitList.push_back(eventProcessA);
   }
 
   // As above, but now for matrix B
   if (!b_no_temp) {
-    auto b_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-    auto b_offsets_i_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-    b_offsets_device.Write(queue_, batch_count, b_offsets);
-    b_offsets_i_device.Write(queue_, batch_count, b_offsets_i);
+    auto b_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+    auto b_offsets_i_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+    b_offsets_device.Write(getQueue(), batch_count, b_offsets);
+    b_offsets_i_device.Write(getQueue(), batch_count, b_offsets_i);
     auto eventProcessB = Event();
-    PadCopyTransposeMatrixBatched(queue_, device_, db_, eventProcessB.pointer(), emptyEventList, b_one, b_two, b_ld,
-                                  b_offsets_device, b_buffer, b_one_i, b_two_i, b_one_i, b_offsets_i_device, b_temp,
-                                  program_, true, b_do_transpose, b_conjugate, batch_count);
+    PadCopyTransposeMatrixBatched(getQueue(), getDevice(), getDatabase(), eventProcessB.pointer(), emptyEventList,
+                                  b_one, b_two, b_ld, b_offsets_device, b_buffer, b_one_i, b_two_i, b_one_i,
+                                  b_offsets_i_device, b_temp, getProgram(), true, b_do_transpose, b_conjugate,
+                                  batch_count);
     eventWaitList.push_back(eventProcessB);
   }
 
   // As above, but now for matrix C
-  auto c_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  auto c_offsets_i_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
+  auto c_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto c_offsets_i_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
   if (!c_no_temp) {
-    c_offsets_device.Write(queue_, batch_count, c_offsets);
-    c_offsets_i_device.Write(queue_, batch_count, c_offsets_i);
+    c_offsets_device.Write(getQueue(), batch_count, c_offsets);
+    c_offsets_i_device.Write(getQueue(), batch_count, c_offsets_i);
     auto eventProcessC = Event();
-    PadCopyTransposeMatrixBatched(queue_, device_, db_, eventProcessC.pointer(), emptyEventList, c_one, c_two, c_ld,
-                                  c_offsets_device, c_buffer, c_one_i, c_two_i, c_one_i, c_offsets_i_device, c_temp,
-                                  program_, true, c_do_transpose, false, batch_count);
+    PadCopyTransposeMatrixBatched(getQueue(), getDevice(), getDatabase(), eventProcessC.pointer(), emptyEventList,
+                                  c_one, c_two, c_ld, c_offsets_device, c_buffer, c_one_i, c_two_i, c_one_i,
+                                  c_offsets_i_device, c_temp, getProgram(), true, c_do_transpose, false, batch_count);
     eventWaitList.push_back(eventProcessC);
   }
 
   // Retrieves the Xgemm kernel from the compiled binary
-  auto kernel = Kernel(program_, "XgemmBatched");
+  auto kernel = Kernel(getProgram(), "XgemmBatched");
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m_ceiled));
@@ -222,21 +238,21 @@ void XgemmBatched<T>::BatchedGemmIndirect(
   kernel.SetArgument(13, static_cast<int>(c_two_i));
 
   // Computes the global and local thread sizes
-  const auto global =
-      std::vector<size_t>{(c_one_i * db_["MDIMC"]) / db_["MWG"], (c_two_i * db_["NDIMC"]) / db_["NWG"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMC"], db_["NDIMC"], 1};
+  const auto global = std::vector<size_t>{(c_one_i * getDatabase()["MDIMC"]) / getDatabase()["MWG"],
+                                          (c_two_i * getDatabase()["NDIMC"]) / getDatabase()["NWG"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMC"], getDatabase()["NDIMC"], 1};
 
   // Launches the kernel
   auto eventKernel = Event();
-  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : event_;
-  RunKernel(kernel, queue_, device_, global, local, eventPointer, eventWaitList);
+  auto eventPointer = (!c_no_temp) ? eventKernel.pointer() : getEvent();
+  RunKernel(kernel, getQueue(), getDevice(), global, local, eventPointer, eventWaitList);
 
   // Runs the post-processing kernel if needed
   if (!c_no_temp) {
     eventWaitList.push_back(eventKernel);
-    PadCopyTransposeMatrixBatched(queue_, device_, db_, event_, eventWaitList, c_one_i, c_two_i, c_one_i,
-                                  c_offsets_i_device, c_temp, c_one, c_two, c_ld, c_offsets_device, c_buffer, program_,
-                                  false, c_do_transpose, false, batch_count);
+    PadCopyTransposeMatrixBatched(getQueue(), getDevice(), getDatabase(), getEvent(), eventWaitList, c_one_i, c_two_i,
+                                  c_one_i, c_offsets_i_device, c_temp, c_one, c_two, c_ld, c_offsets_device, c_buffer,
+                                  getProgram(), false, c_do_transpose, false, batch_count);
   }
 }
 
@@ -252,17 +268,29 @@ void XgemmBatched<T>::BatchedGemmDirect(const size_t m, const size_t n, const si
                                         const bool b_do_transpose, const bool c_do_transpose, const bool a_conjugate,
                                         const bool b_conjugate, const size_t batch_count) {
   // Uploads the offsets to the device
-  auto a_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  auto b_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  auto c_offsets_device = Buffer<int>(context_, BufferAccess::kReadWrite, batch_count);
-  a_offsets_device.Write(queue_, batch_count, a_offsets);
-  b_offsets_device.Write(queue_, batch_count, b_offsets);
-  c_offsets_device.Write(queue_, batch_count, c_offsets);
+  auto a_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto b_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  auto c_offsets_device = Buffer<int>(getContext(), BufferAccess::kReadWrite, batch_count);
+  a_offsets_device.Write(getQueue(), batch_count, a_offsets);
+  b_offsets_device.Write(getQueue(), batch_count, b_offsets);
+  c_offsets_device.Write(getQueue(), batch_count, c_offsets);
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectBatchedTT" : "XgemmDirectBatchedTN")
-                                     : (b_do_transpose ? "XgemmDirectBatchedNT" : "XgemmDirectBatchedNN");
-  auto kernel = Kernel(program_, name);
+  const char* name = nullptr;
+  if (a_do_transpose) {
+    if (b_do_transpose) {
+      name = "XgemmDirectBatchedTT";
+    } else {
+      name = "XgemmDirectBatchedTN";
+    }
+  } else {
+    if (b_do_transpose) {
+      name = "XgemmDirectBatchedNT";
+    } else {
+      name = "XgemmDirectBatchedNN";
+    }
+  }
+  auto kernel = Kernel(getProgram(), name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(m));
@@ -284,14 +312,14 @@ void XgemmBatched<T>::BatchedGemmDirect(const size_t m, const size_t n, const si
   kernel.SetArgument(16, static_cast<int>(b_conjugate));
 
   // Computes the global and local thread sizes
-  const auto m_ceiled = Ceil(m, db_["WGD"]);
-  const auto n_ceiled = Ceil(n, db_["WGD"]);
-  const auto global = std::vector<size_t>{(m_ceiled * db_["MDIMCD"]) / db_["WGD"],
-                                          (n_ceiled * db_["NDIMCD"]) / db_["WGD"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"], 1};
+  const auto m_ceiled = Ceil(m, getDatabase()["WGD"]);
+  const auto n_ceiled = Ceil(n, getDatabase()["WGD"]);
+  const auto global = std::vector<size_t>{(m_ceiled * getDatabase()["MDIMCD"]) / getDatabase()["WGD"],
+                                          (n_ceiled * getDatabase()["NDIMCD"]) / getDatabase()["WGD"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMCD"], getDatabase()["NDIMCD"], 1};
 
   // Launches the kernel
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

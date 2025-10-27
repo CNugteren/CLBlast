@@ -10,7 +10,6 @@
 #ifndef CLBLAST_CACHE_H_
 #define CLBLAST_CACHE_H_
 
-#include <functional>
 #include <map>
 #include <memory>
 #include <mutex>

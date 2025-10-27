@@ -18,5 +18,5 @@ extern const DatabaseEntry PadComplexSingle;
 extern const DatabaseEntry PadDouble;
 extern const DatabaseEntry PadComplexDouble;
 
-} // namespace database
-} // namespace clblast
+}  // namespace database
+}  // namespace clblast

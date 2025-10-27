@@ -32,7 +32,7 @@ void Xgbmv<T>::DoGbmv(const Layout layout, const Transpose a_transpose, const si
                       const size_t a_ld, const Buffer<T>& x_buffer, const size_t x_offset, const size_t x_inc,
                       const T beta, const Buffer<T>& y_buffer, const size_t y_offset, const size_t y_inc) {
   // Reverses the upper and lower band count
-  auto rotated = (layout == Layout::kRowMajor);
+  const auto rotated = (layout == Layout::kRowMajor);
   auto kl_real = (rotated) ? ku : kl;
   auto ku_real = (rotated) ? kl : ku;
 

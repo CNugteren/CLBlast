@@ -28,7 +28,7 @@ namespace clblast {
 
 // Constructor: forwards to base class constructor
 template <typename T>
-Xconvgemm<T>::Xconvgemm(Queue& queue, EventPointer event, const std::string& name, const ConvGemmMethod method)
+Xconvgemm<T>::Xconvgemm(Queue& queue, const EventPointer event, const std::string& name, const ConvGemmMethod method)
     : Routine(queue, event, name, {"Xconvgemm"}, PrecisionValue<T>(), {},
               {
                   (method == ConvGemmMethod::kWithIm2Col) ? "#define CONVGEMM_WITH_IM2COL\n" : "",
@@ -64,12 +64,12 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   }
 
   // Sets the output height and width
-  const auto size_h = height + 2 * pad_h;
-  const auto padding_h = dilation_h * (kernel_h - 1) + 1;
-  const auto output_h = (size_h >= padding_h) ? (size_h - padding_h) / stride_h + 1 : 1;
-  const auto size_w = width + 2 * pad_w;
-  const auto padding_w = dilation_w * (kernel_w - 1) + 1;
-  const auto output_w = (size_w >= padding_w) ? (size_w - padding_w) / stride_w + 1 : 1;
+  const auto size_h = height + (2 * pad_h);
+  const auto padding_h = (dilation_h * (kernel_h - 1)) + 1;
+  const auto output_h = (size_h >= padding_h) ? ((size_h - padding_h) / stride_h) + 1 : 1;
+  const auto size_w = width + (2 * pad_w);
+  const auto padding_w = (dilation_w * (kernel_w - 1)) + 1;
+  const auto output_w = (size_w >= padding_w) ? ((size_w - padding_w) / stride_w) + 1 : 1;
 
   // Sets other useful variables
   const auto patch_size = kernel_h * kernel_w * channels;
@@ -77,19 +77,19 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
 
   // Possible approach: im2col + GEMM
   //      result = GEMM(im2col(image), kernel)
-  auto col_buffer = Buffer<T>(context_, 0);  // nullptr, will be optionally created later
+  auto col_buffer = Buffer<T>(getContext(), 0);  // nullptr, will be optionally created later
   if (method_ == ConvGemmMethod::kWithIm2Col) {
     // Temporary col matrix
     const auto col_size = (method_ == ConvGemmMethod::kWithIm2Col) ? patch_size * num_patches * batch_count : 1;
-    col_buffer = Buffer<T>(context_, col_size);
+    col_buffer = Buffer<T>(getContext(), col_size);
 
     // Loops over each batch
     for (auto batch_id = size_t{0}; batch_id < batch_count; ++batch_id) {
       // im2col
-      const auto im_batch_offset = batch_id * channels * height * width + im_offset;
+      const auto im_batch_offset = (batch_id * channels * height * width) + im_offset;
       const auto col_batch_offset = batch_id * patch_size * num_patches;
       auto im2col_event = Event();
-      auto im2col = Xim2col<T>(queue_, im2col_event.pointer());
+      auto im2col = Xim2col<T>(getQueue(), im2col_event.pointer());
       im2col.DoIm2col(kernel_mode, channels, height, width, kernel_h, kernel_w, pad_h, pad_w, stride_h, stride_w,
                       dilation_h, dilation_w, im_buffer, im_batch_offset, col_buffer, col_batch_offset);
       im2col_event.WaitForCompletion();
@@ -108,14 +108,21 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
     } else {
       // TODO: check for valid image tensor
     }
-    TestMatrixC(num_patches, num_kernels, result_buffer, result_offset + result_stride * batch, num_patches);
+    TestMatrixC(num_patches, num_kernels, result_buffer, result_offset + (result_stride * batch), num_patches);
   }
 
   // Retrieves the proper XgemmDirect kernel from the compiled binary
-  const std::string kernel_name = (method_ == ConvGemmMethod::kWithIm2Col)    ? "Xconvgemm"
-                                  : (kernel_mode == KernelMode::kConvolution) ? "XconvgemmFlip"
-                                                                              : "XconvgemmNormal";
-  auto kernel = Kernel(program_, kernel_name);
+  std::string kernel_name;
+  if (method_ == ConvGemmMethod::kWithIm2Col) {
+    kernel_name = "Xconvgemm";
+  } else {
+    if (kernel_mode == KernelMode::kConvolution) {
+      kernel_name = "XconvgemmFlip";
+    } else {
+      kernel_name = "XconvgemmNormal";
+    }
+  }
+  auto kernel = Kernel(getProgram(), kernel_name);
 
   // Sets the kernel arguments
   kernel.SetArgument(0, static_cast<int>(num_patches));
@@ -128,7 +135,7 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   kernel.SetArgument(7, static_cast<int>(result_stride));
   if (method_ == ConvGemmMethod::kWithIm2Col) {
     kernel.SetArgument(8, col_buffer());
-    kernel.SetArgument(9, static_cast<int>(0));
+    kernel.SetArgument(9, 0);
     kernel.SetArgument(10, static_cast<int>(col_stride));
   }
   if (method_ == ConvGemmMethod::kSingleKernel) {
@@ -150,14 +157,14 @@ void Xconvgemm<T>::DoConvgemm(const KernelMode kernel_mode, const size_t channel
   }
 
   // Computes the global and local thread sizes
-  const auto m_ceiled = Ceil(num_patches, db_["WGD"]);
-  const auto n_ceiled = Ceil(num_kernels, db_["WGD"]);
-  const auto global = std::vector<size_t>{(m_ceiled * db_["MDIMCD"]) / db_["WGD"],
-                                          (n_ceiled * db_["NDIMCD"]) / db_["WGD"], batch_count};
-  const auto local = std::vector<size_t>{db_["MDIMCD"], db_["NDIMCD"], 1};
+  const auto m_ceiled = Ceil(num_patches, getDatabase()["WGD"]);
+  const auto n_ceiled = Ceil(num_kernels, getDatabase()["WGD"]);
+  const auto global = std::vector<size_t>{(m_ceiled * getDatabase()["MDIMCD"]) / getDatabase()["WGD"],
+                                          (n_ceiled * getDatabase()["NDIMCD"]) / getDatabase()["WGD"], batch_count};
+  const auto local = std::vector<size_t>{getDatabase()["MDIMCD"], getDatabase()["NDIMCD"], 1};
 
   // Launches the kernel
-  RunKernel(kernel, queue_, device_, global, local, event_);
+  RunKernel(kernel, getQueue(), getDevice(), global, local, getEvent());
 }
 
 // =================================================================================================

@@ -58,22 +58,23 @@ const std::unordered_map<std::string, const std::vector<std::string>> Routine::r
 // =================================================================================================
 
 // The constructor does all heavy work, errors are returned as exceptions
-Routine::Routine(Queue& queue, EventPointer event, const std::string& name,
-                 const std::vector<std::string>& kernel_names, const Precision precision,
-                 const std::vector<database::DatabaseEntry>& userDatabase, std::initializer_list<const char*> source)
+Routine::Routine(const Queue& queue, const EventPointer event, std::string name,
+                 const std::vector<std::string>& routines, const Precision precision,
+                 const std::vector<database::DatabaseEntry>& userDatabase,
+                 const std::initializer_list<const char*> source)
     : precision_(precision),
-      routine_name_(name),
-      kernel_names_(kernel_names),
+      routine_name_(std::move(name)),
+      kernel_names_(routines),
       queue_(queue),
       event_(event),
       context_(queue_.GetContext()),
       device_(queue_.GetDevice()),
-      db_(kernel_names) {
-  InitDatabase(device_, kernel_names, precision, userDatabase, db_);
+      db_(routines) {
+  InitDatabase(device_, routines, precision, userDatabase, db_);
   InitProgram(source);
 }
 
-void Routine::InitProgram(std::initializer_list<const char*> source) {
+void Routine::InitProgram(const std::initializer_list<const char*> source) {
   // Determines the identifier for this particular routine call
   auto routine_info = routine_name_;
   for (const auto& kernel_name : kernel_names_) {
@@ -82,7 +83,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   log_debug(routine_info);
 
   // Queries the cache to see whether or not the program (context-specific) is already there
-  bool has_program;
+  bool has_program = false;
   program_ = ProgramCache::Instance().Get(ProgramKeyRef{context_(), device_(), precision_, routine_info}, &has_program);
   if (has_program) {
     return;
@@ -90,16 +91,16 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
 
   // Sets the build options from an environmental variable (if set)
   auto options = std::vector<std::string>();
-  const auto environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
+  auto* const environment_variable = std::getenv("CLBLAST_BUILD_OPTIONS");
   if (environment_variable != nullptr) {
-    options.push_back(std::string(environment_variable));
+    options.emplace_back(environment_variable);
   }
 
   // Queries the cache to see whether or not the binary (device-specific) is already there. If it
   // is, a program is created and stored in the cache
   const auto device_name = GetDeviceName(device_);
-  const auto platform_id = device_.PlatformID();
-  bool has_binary;
+  auto* const platform_id = device_.PlatformID();
+  bool has_binary = false;
   auto binary =
       BinaryCache::Instance().Get(BinaryKeyRef{platform_id, precision_, routine_info, device_name}, &has_binary);
   if (has_binary) {
@@ -126,7 +127,7 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   }
 
   // Collects the parameters for this device in the form of defines
-  auto source_string = std::string{""};
+  std::string source_string;
   for (const auto& kernel_name : kernel_names_) {
     source_string += db_(kernel_name).GetDefines();
   }
@@ -145,6 +146,5 @@ void Routine::InitProgram(std::initializer_list<const char*> source) {
   ProgramCache::Instance().Store(ProgramKey{context_(), device_(), precision_, routine_info},
                                  std::shared_ptr<Program>{program_});
 }
-
 // =================================================================================================
 }  // namespace clblast

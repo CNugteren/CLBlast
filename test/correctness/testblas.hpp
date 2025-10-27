@@ -13,14 +13,13 @@
 #ifndef CLBLAST_TEST_CORRECTNESS_TESTBLAS_H_
 #define CLBLAST_TEST_CORRECTNESS_TESTBLAS_H_
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdio>
+#include <functional>
 #include <string>
 #include <vector>
 
 #include "clblast.h"
-#include "routine.hpp"
 #include "test/correctness/tester.hpp"
 #include "test/test_utilities.hpp"
 #include "utilities/backend.hpp"
@@ -94,10 +93,10 @@ class TestBlas : public Tester<T, U> {
   using ResultIterator = std::function<size_t(const Arguments<U>&)>;
 
   // Constructor, initializes the base class tester and input data
-  TestBlas(const std::vector<std::string>& arguments, const bool silent, const std::string& name,
-           const std::vector<std::string>& options, const DataPrepare prepare_data, const Routine run_routine,
-           const Routine run_reference1, const Routine run_reference2, const ResultGet get_result,
-           const ResultIndex get_index, const ResultIterator get_id1, const ResultIterator get_id2);
+  TestBlas(const std::vector<std::string>& arguments, bool silent, const std::string& name,
+           const std::vector<std::string>& options, DataPrepare prepare_data, Routine run_routine,
+           Routine run_reference1, Routine run_reference2, ResultGet get_result, ResultIndex get_index,
+           ResultIterator get_id1, ResultIterator get_id2);
 
   // The test functions, taking no inputs
   void TestRegular(std::vector<Arguments<U>>& test_vector, const std::string& name);
@@ -163,7 +162,7 @@ const std::vector<size_t> TestBlas<T, U>::kInvalidIncrements = {0, 1};
 template <typename T, typename U>
 const size_t TestBlas<T, U>::kBufferSize = 64;
 template <typename T, typename U>
-const std::vector<size_t> TestBlas<T, U>::kMatSizes = {0, kBufferSize* kBufferSize - 1, kBufferSize* kBufferSize};
+const std::vector<size_t> TestBlas<T, U>::kMatSizes = {0, (kBufferSize * kBufferSize) - 1, kBufferSize* kBufferSize};
 template <typename T, typename U>
 const std::vector<size_t> TestBlas<T, U>::kVecSizes = {0, kBufferSize - 1, kBufferSize};
 
@@ -181,7 +180,7 @@ const std::vector<Diagonal> TestBlas<T, U>::kDiagonals = {Diagonal::kUnit, Diago
 
 // Bogus reference function, in case a comparison library is not available
 template <typename T, typename U, typename BufferType>
-static StatusCode ReferenceNotAvailable(const Arguments<U>&, BufferType&, Queue&) {
+static StatusCode ReferenceNotAvailable(const Arguments<U>& /*unused*/, BufferType& /*unused*/, Queue& /*unused*/) {
   return StatusCode::kNotImplemented;
 }
 
