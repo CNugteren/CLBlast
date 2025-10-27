@@ -37,12 +37,12 @@
 // C++
 #include <assert.h>
 
-#include <cstdio>     // fprintf, stderr
-#include <cstring>    // std::strlen
-#include <memory>     // std::shared_ptr
-#include <numeric>    // std::accumulate
-#include <string>     // std::string
-#include <vector>     // std::vector
+#include <cstdio>   // fprintf, stderr
+#include <cstring>  // std::strlen
+#include <memory>   // std::shared_ptr
+#include <numeric>  // std::accumulate
+#include <string>   // std::string
+#include <vector>   // std::vector
 
 // OpenCL
 #ifndef CL_TARGET_OPENCL_VERSION
@@ -368,9 +368,8 @@ class Device {
   std::string AdrenoVersion() const {
     if (IsQualcomm()) {
       return GetInfoString(CL_DEVICE_OPENCL_C_VERSION);
-    }  
-      return std::string{""};
-   
+    }
+    return std::string{""};
   }
 
   // Retrieves the above extra information (if present)
@@ -380,9 +379,8 @@ class Device {
     }
     if (HasExtension("cl_nv_device_attribute_query")) {
       return NVIDIAComputeCapability();
-    }  
-      return std::string{""};
-   
+    }
+    return std::string{""};
   }
 
   // Accessor to the private data-member
