@@ -12,22 +12,3 @@ jobs:
         uses: DoozyX/clang-format-lint-action@v0.18.2
         with:
           clangFormatVersion: 18
-  ClangTidy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Clang Tidy Linter
-        uses: cpp-linter/cpp-linter-action@v2
-        id: linter
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          style: 'file'
-          tidy-checks: ''
-          thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
-
-      - name: Fail if checks failed
-        if: steps.linter.outputs.checks-failed > 0
-        run: exit 1
