@@ -33,6 +33,8 @@ jobs:
           tidy-checks: '' 
           style: 'file' 
           extra-args: '-p=build'
+          thread-comments: update
+          no-lgtm: false
 
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
