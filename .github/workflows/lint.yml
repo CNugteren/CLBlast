@@ -1,14 +1,35 @@
 name: Lint
 
 on:
-  pull_request: {}
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
-  ClangFormat:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: clang-format lint
-        uses: DoozyX/clang-format-lint-action@v0.18.2
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yq ninja-build ocl-icd-opencl-dev opencl-c-headers libopenblas-dev --no-install-recommends
+
+      - name: Configure CMake
+        run: |
+          export CC=${{ matrix.config.c_compiler }}
+          export CXX=${{ matrix.config.cpp_compiler }}
+          cmake -S . -B build -G Ninja -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run linter
+        uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          clangFormatVersion: 18
+          tidy-checks: '' 
+          style: 'file' 
+          extra-args: '-p=build'
