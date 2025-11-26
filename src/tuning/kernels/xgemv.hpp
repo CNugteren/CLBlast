@@ -111,10 +111,10 @@ std::vector<Constraint> XgemvSetConstraints(const int V) {
 template <typename T>
 LocalMemSizeInfo XgemvComputeLocalMemSize(const int V) {
   if (V == 1 || V == 2) {
-    return {[V](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * v[0]; },
+    return {[](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * v[0]; },
             {"WGS" + std::to_string(V)}};
   }
-  return {[V](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * (v[0] + v[1] * v[2]); },
+  return {[](std::vector<size_t> v) -> size_t { return GetBytes(PrecisionValue<T>()) * (v[0] + v[1] * v[2]); },
           {"WGS3", "WPT3", "WGS3"}};
 }
 
