@@ -366,12 +366,12 @@ template std::string ConvertArgument(const char* value, std::string default_valu
 // default value in case the option is not found in the argument string.
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T &default_value) {
+              const T& default_value) {
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = static_cast<T>(default_value);
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto &item = arguments[c];
+    auto& item = arguments[c];
     if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
       ++c;
       return_value = ConvertArgument<T>(arguments[c].c_str());
@@ -392,7 +392,8 @@ template half GetArgument<half>(const std::vector<std::string>&, std::string&, c
 template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float&);
 template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double&);
 template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2&);
-template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2&);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&,
+                                      const double2&);
 template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&,
                                               const std::string&);
 template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout&);
@@ -424,7 +425,7 @@ bool CheckArgument(const std::vector<std::string>& arguments, std::string& help,
   // an extra dash in front (e.g. --device).
   auto return_value = false;
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto &item = arguments[c];
+    auto& item = arguments[c];
     if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
       ++c;
       return_value = true;
