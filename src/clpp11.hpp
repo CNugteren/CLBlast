@@ -567,7 +567,11 @@ using RawCommandQueue = cl_command_queue;
 class Queue {
  public:
   // Constructor based on the regular OpenCL data-type: memory management is handled elsewhere
-  explicit Queue(const cl_command_queue queue) : queue_(new cl_command_queue) { *queue_ = queue; }
+  explicit Queue(const cl_command_queue queue)
+      : queue_(new cl_command_queue, [](cl_command_queue* q) { clReleaseCommandQueue(*q); }) {
+    clRetainCommandQueue(queue);
+    *queue_ = queue;
+  }
 
   // Regular constructor with memory management
   explicit Queue(const Context& context, const Device& device)
