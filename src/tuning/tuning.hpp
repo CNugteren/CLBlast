@@ -126,10 +126,11 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
 // Function to run the tuners through the CLBlast API, no I/O
 template <typename T>
-StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-                    const GetTunerSettingsFunc<T> GetTunerSettings, const TestValidArgumentsFunc<T> TestValidArguments,
-                    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
-                    const SetArgumentsFunc<T> SetArguments, std::unordered_map<std::string, size_t>& parameters);
+StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+                    const GetTunerSettingsFunc<T>& GetTunerSettings,
+                    const TestValidArgumentsFunc<T>& TestValidArguments, const SetConstraintsFunc& SetConstraints,
+                    const ComputeLocalMemSizeFunc<T>& ComputeLocalMemSize, const SetArgumentsFunc<T>& SetArguments,
+                    std::unordered_map<std::string, size_t>& parameters);
 
 // =================================================================================================
 }  // namespace clblast

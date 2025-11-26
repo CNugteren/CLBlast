@@ -314,7 +314,7 @@ T ConvertArgument(const char* value, T default_value);
 // Basic argument parser, matching patterns in the form of "-option value" and "--option value"
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value);
+              const T& default_value);
 
 // Returns the precision only
 Precision GetPrecision(const std::vector<std::string>& arguments,

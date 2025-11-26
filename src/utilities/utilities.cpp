@@ -386,27 +386,27 @@ T GetArgument(const std::vector<std::string>& arguments, std::string& help, cons
 }
 
 // Compiles the above function
-template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, const int);
-template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, const size_t);
-template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, const half);
-template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float);
-template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
-template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
-template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
+template int GetArgument<int>(const std::vector<std::string>&, std::string&, const std::string&, const int&);
+template size_t GetArgument<size_t>(const std::vector<std::string>&, std::string&, const std::string&, const size_t&);
+template half GetArgument<half>(const std::vector<std::string>&, std::string&, const std::string&, const half&);
+template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float&);
+template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double&);
+template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2&);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2&);
 template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&,
-                                              const std::string);
-template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
+                                              const std::string&);
+template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout&);
 template Transpose GetArgument<Transpose>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Transpose);
-template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side);
+                                          const Transpose&);
+template Side GetArgument<Side>(const std::vector<std::string>&, std::string&, const std::string&, const Side&);
 template Triangle GetArgument<Triangle>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Triangle);
+                                        const Triangle&);
 template Diagonal GetArgument<Diagonal>(const std::vector<std::string>&, std::string&, const std::string&,
-                                        const Diagonal);
+                                        const Diagonal&);
 template Precision GetArgument<Precision>(const std::vector<std::string>&, std::string&, const std::string&,
-                                          const Precision);
+                                          const Precision&);
 template KernelMode GetArgument<KernelMode>(const std::vector<std::string>&, std::string&, const std::string&,
-                                            const KernelMode);
+                                            const KernelMode&);
 
 // =================================================================================================
 
