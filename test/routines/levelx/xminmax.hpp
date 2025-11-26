@@ -12,7 +12,12 @@
 #ifndef CLBLAST_TEST_ROUTINES_XMINMAX_H_
 #define CLBLAST_TEST_ROUTINES_XMINMAX_H_
 
-#include <cstddef>
+#include <clblast.h>
+#include <clblast_half.h>
+
+#include <algorithm>
+#include <cmath>
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -87,44 +92,59 @@ class TestXminmax {
 
   // Note: No CBlas or CLBlas routine exists to compare against so instead it compares against the results of Max and
   // Min routines in CLBlast.
-  static StatusCode RunReference1(const Arguments<T>& args, Buffers<T>& buffers, Queue& queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Max<T>(args.n, buffers.scalar_uint(), args.imax_offset, buffers.x_vec(), args.x_offset, args.x_inc,
-                         &queue_plain, &event);
-    if (status != StatusCode::kSuccess) {
-      return status;
-    }
-    clWaitForEvents(1, &event);
-    clReleaseEvent(event);
+  static StatusCode RunReference1(const Arguments<float>& args, BuffersHost<float>& buffers, Queue& queue) {
+    auto minmax =
+        std::minmax_element(buffers.x_vec.begin() + args.x_offset, buffers.x_vec.begin() + args.x_offset + args.n);
+    buffers.scalar_uint[args.imax_offset] = static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.second));
+    buffers.second_scalar_uint[args.imin_offset] = static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.first));
+    return StatusCode::kSuccess;
+  }
 
-    status = Min<T>(args.n, buffers.second_scalar_uint(), args.imin_offset, buffers.x_vec(), args.x_offset, args.x_inc,
-                    &queue_plain, &event);
-    if (status != StatusCode::kSuccess) {
-      return status;
-    }
-    clWaitForEvents(1, &event);
-    clReleaseEvent(event);
-    return status;
+  // Note: No CBlas or CLBlas routine exists to compare against so instead it compares against the results of Max and
+  // Min routines in CLBlast.
+  static StatusCode RunReference1(const Arguments<double>& args, BuffersHost<double>& buffers, Queue& queue) {
+    auto minmax =
+        std::minmax_element(buffers.x_vec.begin() + args.x_offset, buffers.x_vec.begin() + args.x_offset + args.n);
+    buffers.scalar_uint[args.imax_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.second));
+    buffers.second_scalar_uint[args.imin_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.first));
+    return StatusCode::kSuccess;
+  }
+
+  // Note: No CBlas or CLBlas routine exists to compare against so instead it compares against the results of Max and
+  // Min routines in CLBlast.
+  static StatusCode RunReference1(const Arguments<half>& args, BuffersHost<half>& buffers, Queue& queue) {
+    auto minmax =
+        std::minmax_element(buffers.x_vec.begin() + args.x_offset, buffers.x_vec.begin() + args.x_offset + args.n,
+                            [](half arg1, half arg2) { return HalfToFloat(arg1) < HalfToFloat(arg2); });
+    buffers.scalar_uint[args.imax_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.second));
+    buffers.second_scalar_uint[args.imin_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.first));
+    return StatusCode::kSuccess;
+  }
+
+  // Note: No CBlas or CLBlas routine exists to compare against so instead it compares against the results of Max and
+  // Min routines in CLBlast.
+  static StatusCode RunReference1(const Arguments<T>& args, BuffersHost<T>& buffers, Queue& queue) {
+    auto minmax = std::minmax_element(
+        buffers.x_vec.begin() + args.x_offset, buffers.x_vec.begin() + args.x_offset + args.n,
+        [](const T& arg1, const T& arg2) {
+          return (std::fabs(arg1.real()) + std::fabs(arg1.imag())) < (std::fabs(arg2.real()) + std::fabs(arg2.imag()));
+                                      });
+    buffers.scalar_uint[args.imax_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.second));
+    buffers.second_scalar_uint[args.imin_offset] =
+        static_cast<unsigned int>(std::distance(buffers.x_vec.begin() + args.x_offset, minmax.first));
+    return StatusCode::kSuccess;
   }
 
 // Note: No CBlas routine exists to compare against so intead uses the RunReference1 method which works for both CBlas
 // and CLBlas
 #ifdef CLBLAST_REF_CBLAS
   static StatusCode RunReference2(const Arguments<T>& args, BuffersHost<T>& buffers_host, Queue& queue) {
-    auto context = queue.GetContext();
-    Buffers<T> buffers{Buffer<T>{queue.GetContext(), buffers_host.x_vec.size()},
-                       CreateInvalidBuffer<T>(context, 0),
-                       CreateInvalidBuffer<T>(context, 0),
-                       CreateInvalidBuffer<T>(context, 0),
-                       CreateInvalidBuffer<T>(context, 0),
-                       CreateInvalidBuffer<T>(context, 0),
-                       CreateInvalidBuffer<T>(context, 0),
-                       Buffer<unsigned int>{queue.GetContext(), buffers_host.scalar_uint.size()},
-                       Buffer<unsigned int>{queue.GetContext(), buffers_host.second_scalar_uint.size()}};
-    HostToDevice(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
-    auto status = RunReference1(args, buffers, queue);
-    DeviceToHost(args, buffers, buffers_host, queue, {kBufVecX, kBufScalarUint, kBufSecondScalarUint});
+    auto status = RunReference1(args, buffers_host, queue);
     return status;
   }
 #endif
