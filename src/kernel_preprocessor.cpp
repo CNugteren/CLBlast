@@ -184,7 +184,7 @@ bool EvaluateCondition(std::string condition, const DefinesIntMap& defines, cons
   if (not_defined_pos != std::string::npos) {
     const auto contents = condition.substr(not_defined_pos + 9);
     const auto not_defined_split = split(contents, ')');
-    const auto &not_defined_val = not_defined_split[0];
+    const auto& not_defined_val = not_defined_split[0];
     return (defines_string.find(not_defined_val) == defines_string.end());
   }
 
