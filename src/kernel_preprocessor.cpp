@@ -580,7 +580,6 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
       }
 
       // Retrieves loop information (and checks for assumptions)
-      const auto& variable_type = line_split[0];  // Can we remove this? The usage is commented but maybe debug?
       const auto& variable_name = line_split[1];
       if (variable_name != line_split[4]) {
         RaiseError(line, "Mis-formatted for-loop #2");
