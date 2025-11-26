@@ -167,8 +167,8 @@ class TestXminmax {
     // The values might then become meaningless, but a comparison for testing should still
     // be valid to verify correctness.
     std::vector<T> result(args.scalar_size + args.second_scalar_size);
-    result[0] = static_cast<T>(result_uint[0]);
-    result[1] = static_cast<T>(second_result_uint[0]);
+    result[0] = static_cast<T>(result_uint[args.imax_offset]);
+    result[1] = static_cast<T>(second_result_uint[args.imin_offset]);
     return result;
   }
 
