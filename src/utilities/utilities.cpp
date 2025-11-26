@@ -392,8 +392,7 @@ template half GetArgument<half>(const std::vector<std::string>&, std::string&, c
 template float GetArgument<float>(const std::vector<std::string>&, std::string&, const std::string&, const float);
 template double GetArgument<double>(const std::vector<std::string>&, std::string&, const std::string&, const double);
 template float2 GetArgument<float2>(const std::vector<std::string>&, std::string&, const std::string&, const float2);
-template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&,
-                                      const double2);
+template double2 GetArgument<double2>(const std::vector<std::string>&, std::string&, const std::string&, const double2);
 template std::string GetArgument<std::string>(const std::vector<std::string>&, std::string&, const std::string&,
                                               const std::string);
 template Layout GetArgument<Layout>(const std::vector<std::string>&, std::string&, const std::string&, const Layout);
