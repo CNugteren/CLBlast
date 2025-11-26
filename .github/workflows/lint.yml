@@ -31,10 +31,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tidy-checks: '' 
-          style: 'file' 
-          extra-args: '-p=build'
-          thread-comments: update
-          no-lgtm: false
+          style: 'file'
+          database: 'build'
 
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
