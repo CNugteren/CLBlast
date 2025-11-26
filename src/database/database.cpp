@@ -221,7 +221,7 @@ database::Parameters Database::Search(const std::string& this_kernel, const std:
   for (auto& db : this_database) {
     if ((db.kernel == this_kernel) && (db.precision == this_precision || db.precision == Precision::kAny)) {
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters =
+      auto parameters =
           SearchVendorAndType(this_vendor, this_type, this_device, this_architecture, db.vendors, db.parameter_names);
       if (parameters.size() != 0) {
         return parameters;

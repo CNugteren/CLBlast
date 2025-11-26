@@ -52,7 +52,7 @@ void Xsyrk<T>::DoSyrk(const Layout layout, const Triangle triangle, const Transp
                       const size_t a_ld, const T beta, const Buffer<T>& c_buffer, const size_t c_offset,
                       const size_t c_ld) {
   const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
-  const auto b_buffer = a_buffer;
+  const auto &b_buffer = a_buffer;
   const auto b_offset = a_offset;
   const auto b_ld = a_ld;
   SyrkAB(layout, triangle, a_transpose, b_transpose, n, k, alpha, a_buffer, a_offset, a_ld, b_buffer, b_offset, b_ld,

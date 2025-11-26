@@ -88,7 +88,7 @@ void RunKernel(Kernel& kernel, Queue& queue, const Device& device, std::vector<s
 
 // Sets all elements of a matrix to a constant value
 template <typename T>
-void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
+void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Program> &program, EventPointer event,
                 const std::vector<Event>& waitForEvents, const size_t m, const size_t n, const size_t ld,
                 const size_t offset, const Buffer<T>& dest, const T constant_value, const size_t local_size) {
   auto kernel = Kernel(program, "FillMatrix");
@@ -122,7 +122,7 @@ template void FillMatrix<double2>(Queue&, const Device&, const std::shared_ptr<P
 
 // Sets all elements of a vector to a constant value
 template <typename T>
-void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
+void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Program> &program, EventPointer event,
                 const std::vector<Event>& waitForEvents, const size_t n, const size_t inc, const size_t offset,
                 const Buffer<T>& dest, const T constant_value, const size_t local_size) {
   auto kernel = Kernel(program, "FillVector");

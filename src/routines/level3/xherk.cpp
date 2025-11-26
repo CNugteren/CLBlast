@@ -52,7 +52,7 @@ void Xherk<T, U>::DoHerk(const Layout layout, const Triangle triangle, const Tra
                          const size_t a_ld, const U beta, const Buffer<T>& c_buffer, const size_t c_offset,
                          const size_t c_ld) {
   const auto b_transpose = (a_transpose != Transpose::kNo) ? Transpose::kNo : Transpose::kYes;
-  const auto b_buffer = a_buffer;
+  const auto &b_buffer = a_buffer;
   const auto b_offset = a_offset;
   const auto b_ld = a_ld;
   const auto complex_alpha = T{alpha, static_cast<U>(0.0)};

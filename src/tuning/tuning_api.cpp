@@ -314,10 +314,10 @@ template StatusCode PUBLIC_API TuneInvert<double2>(RawCommandQueue*, const size_
 
 // The main tuner API, similar to the one in tuning.cpp, but without I/O
 template <typename T>
-StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-                    const GetTunerSettingsFunc<T> GetTunerSettings, const TestValidArgumentsFunc<T> TestValidArguments,
-                    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
-                    const SetArgumentsFunc<T> SetArguments, std::unordered_map<std::string, size_t>& parameters) {
+StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc &GetTunerDefaults,
+                    const GetTunerSettingsFunc<T> &GetTunerSettings, const TestValidArgumentsFunc<T> &TestValidArguments,
+                    const SetConstraintsFunc &SetConstraints, const ComputeLocalMemSizeFunc<T> &ComputeLocalMemSize,
+                    const SetArgumentsFunc<T> &SetArguments, std::unordered_map<std::string, size_t>& parameters) {
   // Sets the parameters and platform/device for which to tune (command-line options)
   const TunerDefaults defaults = GetTunerDefaults(V);
   const TunerSettings settings = GetTunerSettings(V, args);
