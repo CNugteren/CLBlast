@@ -88,7 +88,7 @@ void RunKernel(Kernel& kernel, Queue& queue, const Device& device, std::vector<s
 
 // Sets all elements of a matrix to a constant value
 template <typename T>
-void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Program>& program, EventPointer event,
+void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
                 const std::vector<Event>& waitForEvents, const size_t m, const size_t n, const size_t ld,
                 const size_t offset, const Buffer<T>& dest, const T constant_value, const size_t local_size) {
   auto kernel = Kernel(program, "FillMatrix");
@@ -104,25 +104,25 @@ void FillMatrix(Queue& queue, const Device& device, const std::shared_ptr<Progra
 }
 
 // Compiles the above function
-template void FillMatrix<half>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillMatrix<half>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                const std::vector<Event>&, const size_t, const size_t, const size_t, const size_t,
                                const Buffer<half>&, const half, const size_t);
-template void FillMatrix<float>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillMatrix<float>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                 const std::vector<Event>&, const size_t, const size_t, const size_t, const size_t,
                                 const Buffer<float>&, const float, const size_t);
-template void FillMatrix<double>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillMatrix<double>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                  const std::vector<Event>&, const size_t, const size_t, const size_t, const size_t,
                                  const Buffer<double>&, const double, const size_t);
-template void FillMatrix<float2>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillMatrix<float2>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                  const std::vector<Event>&, const size_t, const size_t, const size_t, const size_t,
                                  const Buffer<float2>&, const float2, const size_t);
-template void FillMatrix<double2>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillMatrix<double2>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                   const std::vector<Event>&, const size_t, const size_t, const size_t, const size_t,
                                   const Buffer<double2>&, const double2, const size_t);
 
 // Sets all elements of a vector to a constant value
 template <typename T>
-void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Program>& program, EventPointer event,
+void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Program> program, EventPointer event,
                 const std::vector<Event>& waitForEvents, const size_t n, const size_t inc, const size_t offset,
                 const Buffer<T>& dest, const T constant_value, const size_t local_size) {
   auto kernel = Kernel(program, "FillVector");
@@ -137,19 +137,19 @@ void FillVector(Queue& queue, const Device& device, const std::shared_ptr<Progra
 }
 
 // Compiles the above function
-template void FillVector<half>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillVector<half>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                const std::vector<Event>&, const size_t, const size_t, const size_t, const Buffer<half>&,
                                const half, const size_t);
-template void FillVector<float>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillVector<float>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                 const std::vector<Event>&, const size_t, const size_t, const size_t,
                                 const Buffer<float>&, const float, const size_t);
-template void FillVector<double>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillVector<double>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                  const std::vector<Event>&, const size_t, const size_t, const size_t,
                                  const Buffer<double>&, const double, const size_t);
-template void FillVector<float2>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillVector<float2>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                  const std::vector<Event>&, const size_t, const size_t, const size_t,
                                  const Buffer<float2>&, const float2, const size_t);
-template void FillVector<double2>(Queue&, const Device&, const std::shared_ptr<Program>&, EventPointer,
+template void FillVector<double2>(Queue&, const Device&, const std::shared_ptr<Program>, EventPointer,
                                   const std::vector<Event>&, const size_t, const size_t, const size_t,
                                   const Buffer<double2>&, const double2, const size_t);
 
