@@ -535,6 +535,9 @@ std::vector<std::string> PreprocessUnrollLoops(const std::vector<std::string>& s
     // Regular line
     lines.emplace_back(line);
   }
+
+  (void)brackets; // Suppresses variable unused warning, to be used in TODO above
+
   return lines;
 }
 

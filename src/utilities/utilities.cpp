@@ -366,7 +366,7 @@ template std::string ConvertArgument(const char* value, std::string default_valu
 // default value in case the option is not found in the argument string.
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
-              const T default_value) {
+              const T default_value) { // NOLINT
   // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
   // an extra dash in front (e.g. --device).
   auto return_value = static_cast<T>(default_value);
