@@ -241,7 +241,11 @@ database::Parameters Database::SearchVendorAndType(const std::string& target_ven
                                                    const std::vector<std::string>& parameter_names) const {
   for (auto& vendor : vendors) {
     if ((vendor.name == target_vendor) && (vendor.type == target_type)) {
-      log_debug(std::string("Found architectures of vendor '").append(target_vendor).append("' and type '").append(target_type).append("'"));
+      log_debug(std::string("Found architectures of vendor '")
+                    .append(target_vendor)
+                    .append("' and type '")
+                    .append(target_type)
+                    .append("'"));
 
       // Searches the architecture; if unavailable returns the vendor's default parameters
       auto parameters = SearchArchitecture(this_architecture, this_device, vendor.architectures, parameter_names);
