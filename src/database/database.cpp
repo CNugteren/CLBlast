@@ -221,7 +221,7 @@ database::Parameters Database::Search(const std::string& this_kernel, const std:
   for (auto& db : this_database) {
     if ((db.kernel == this_kernel) && (db.precision == this_precision || db.precision == Precision::kAny)) {
       // Searches for the right vendor and device type, or selects the default if unavailable
-      const auto parameters =
+      auto parameters =
           SearchVendorAndType(this_vendor, this_type, this_device, this_architecture, db.vendors, db.parameter_names);
       if (parameters.size() != 0) {
         return parameters;
@@ -241,7 +241,11 @@ database::Parameters Database::SearchVendorAndType(const std::string& target_ven
                                                    const std::vector<std::string>& parameter_names) const {
   for (auto& vendor : vendors) {
     if ((vendor.name == target_vendor) && (vendor.type == target_type)) {
-      log_debug("Found architectures of vendor '" + target_vendor + "' and type '" + target_type + "'");
+      log_debug(std::string("Found architectures of vendor '")
+                    .append(target_vendor)
+                    .append("' and type '")
+                    .append(target_type)
+                    .append("'"));
 
       // Searches the architecture; if unavailable returns the vendor's default parameters
       auto parameters = SearchArchitecture(this_architecture, this_device, vendor.architectures, parameter_names);

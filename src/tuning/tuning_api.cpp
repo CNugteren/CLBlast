@@ -314,10 +314,11 @@ template StatusCode PUBLIC_API TuneInvert<double2>(RawCommandQueue*, const size_
 
 // The main tuner API, similar to the one in tuning.cpp, but without I/O
 template <typename T>
-StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-                    const GetTunerSettingsFunc<T> GetTunerSettings, const TestValidArgumentsFunc<T> TestValidArguments,
-                    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<T> ComputeLocalMemSize,
-                    const SetArgumentsFunc<T> SetArguments, std::unordered_map<std::string, size_t>& parameters) {
+StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+                    const GetTunerSettingsFunc<T>& GetTunerSettings,
+                    const TestValidArgumentsFunc<T>& TestValidArguments, const SetConstraintsFunc& SetConstraints,
+                    const ComputeLocalMemSizeFunc<T>& ComputeLocalMemSize, const SetArgumentsFunc<T>& SetArguments,
+                    std::unordered_map<std::string, size_t>& parameters) {
   // Sets the parameters and platform/device for which to tune (command-line options)
   const TunerDefaults defaults = GetTunerDefaults(V);
   const TunerSettings settings = GetTunerSettings(V, args);
@@ -486,33 +487,31 @@ StatusCode TunerAPI(Queue& queue, const Arguments<T>& args, const int V, const G
 }
 
 // Compiles the above function
-template StatusCode TunerAPI<half>(Queue& queue, const Arguments<half>& args, const int V,
-                                   const GetTunerDefaultsFunc GetTunerDefaults,
-                                   const GetTunerSettingsFunc<half> GetTunerSettings,
-                                   const TestValidArgumentsFunc<half> TestValidArguments,
-                                   const SetConstraintsFunc SetConstraints,
-                                   const ComputeLocalMemSizeFunc<half> ComputeLocalMemSize,
-                                   const SetArgumentsFunc<half> SetArguments, std::unordered_map<std::string, size_t>&);
+template StatusCode TunerAPI<half>(
+    Queue& queue, const Arguments<half>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+    const GetTunerSettingsFunc<half>& GetTunerSettings, const TestValidArgumentsFunc<half>& TestValidArguments,
+    const SetConstraintsFunc& SetConstraints, const ComputeLocalMemSizeFunc<half>& ComputeLocalMemSize,
+    const SetArgumentsFunc<half>& SetArguments, std::unordered_map<std::string, size_t>&);
 template StatusCode TunerAPI<float>(
-    Queue& queue, const Arguments<float>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-    const GetTunerSettingsFunc<float> GetTunerSettings, const TestValidArgumentsFunc<float> TestValidArguments,
-    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<float> ComputeLocalMemSize,
-    const SetArgumentsFunc<float> SetArguments, std::unordered_map<std::string, size_t>&);
+    Queue& queue, const Arguments<float>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+    const GetTunerSettingsFunc<float>& GetTunerSettings, const TestValidArgumentsFunc<float>& TestValidArguments,
+    const SetConstraintsFunc& SetConstraints, const ComputeLocalMemSizeFunc<float>& ComputeLocalMemSize,
+    const SetArgumentsFunc<float>& SetArguments, std::unordered_map<std::string, size_t>&);
 template StatusCode TunerAPI<double>(
-    Queue& queue, const Arguments<double>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-    const GetTunerSettingsFunc<double> GetTunerSettings, const TestValidArgumentsFunc<double> TestValidArguments,
-    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<double> ComputeLocalMemSize,
-    const SetArgumentsFunc<double> SetArguments, std::unordered_map<std::string, size_t>&);
+    Queue& queue, const Arguments<double>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+    const GetTunerSettingsFunc<double>& GetTunerSettings, const TestValidArgumentsFunc<double>& TestValidArguments,
+    const SetConstraintsFunc& SetConstraints, const ComputeLocalMemSizeFunc<double>& ComputeLocalMemSize,
+    const SetArgumentsFunc<double>& SetArguments, std::unordered_map<std::string, size_t>&);
 template StatusCode TunerAPI<float2>(
-    Queue& queue, const Arguments<float2>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-    const GetTunerSettingsFunc<float2> GetTunerSettings, const TestValidArgumentsFunc<float2> TestValidArguments,
-    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<float2> ComputeLocalMemSize,
-    const SetArgumentsFunc<float2> SetArguments, std::unordered_map<std::string, size_t>&);
+    Queue& queue, const Arguments<float2>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+    const GetTunerSettingsFunc<float2>& GetTunerSettings, const TestValidArgumentsFunc<float2>& TestValidArguments,
+    const SetConstraintsFunc& SetConstraints, const ComputeLocalMemSizeFunc<float2>& ComputeLocalMemSize,
+    const SetArgumentsFunc<float2>& SetArguments, std::unordered_map<std::string, size_t>&);
 template StatusCode TunerAPI<double2>(
-    Queue& queue, const Arguments<double2>& args, const int V, const GetTunerDefaultsFunc GetTunerDefaults,
-    const GetTunerSettingsFunc<double2> GetTunerSettings, const TestValidArgumentsFunc<double2> TestValidArguments,
-    const SetConstraintsFunc SetConstraints, const ComputeLocalMemSizeFunc<double2> ComputeLocalMemSize,
-    const SetArgumentsFunc<double2> SetArguments, std::unordered_map<std::string, size_t>&);
+    Queue& queue, const Arguments<double2>& args, const int V, const GetTunerDefaultsFunc& GetTunerDefaults,
+    const GetTunerSettingsFunc<double2>& GetTunerSettings, const TestValidArgumentsFunc<double2>& TestValidArguments,
+    const SetConstraintsFunc& SetConstraints, const ComputeLocalMemSizeFunc<double2>& ComputeLocalMemSize,
+    const SetArgumentsFunc<double2>& SetArguments, std::unordered_map<std::string, size_t>&);
 
 // =================================================================================================
 }  // namespace clblast

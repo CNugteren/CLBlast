@@ -10,6 +10,7 @@
 #include "utilities/timing.hpp"
 
 #include <cstdio>
+#include <utility>
 #include <vector>
 
 #include "utilities/backend.hpp"
@@ -67,7 +68,7 @@ double RunKernelTimed(const size_t num_runs, Kernel& kernel, Queue& queue, const
 double TimeKernel(const size_t num_runs, Kernel& kernel, Queue& queue, const Device& device, std::vector<size_t> global,
                   const std::vector<size_t>& local, const bool silent) {
   try {
-    const auto time_ms = RunKernelTimed(num_runs, kernel, queue, device, global, local);
+    const auto time_ms = RunKernelTimed(num_runs, kernel, queue, device, std::move(global), local);
     if (!silent) {
       printf(" %9.2lf ms |", time_ms);
     }
