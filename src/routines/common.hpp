@@ -51,7 +51,7 @@ void PadCopyTransposeMatrix(Queue& queue, const Device& device, const Databases&
                             const std::vector<Event>& waitForEvents, const size_t src_one, const size_t src_two,
                             const size_t src_ld, const size_t src_offset, const Buffer<T>& src, const size_t dest_one,
                             const size_t dest_two, const size_t dest_ld, const size_t dest_offset,
-                            const Buffer<T>& dest, const T alpha, const std::shared_ptr<Program> program,
+                            const Buffer<T>& dest, const T alpha, const std::shared_ptr<Program>& program,
                             const bool do_pad, const bool do_transpose, const bool do_conjugate,
                             const bool upper = false, const bool lower = false, const bool diagonal_imag_zero = false) {
   // Determines whether or not the fast-version could potentially be used
@@ -146,7 +146,7 @@ void PadCopyTransposeMatrixBatched(Queue& queue, const Device& device, const Dat
                                    const size_t src_ld, const Buffer<int>& src_offsets, const Buffer<T>& src,
                                    const size_t dest_one, const size_t dest_two, const size_t dest_ld,
                                    const Buffer<int>& dest_offsets, const Buffer<T>& dest,
-                                   const std::shared_ptr<Program> program, const bool do_pad, const bool do_transpose,
+                                   const std::shared_ptr<Program>& program, const bool do_pad, const bool do_transpose,
                                    const bool do_conjugate, const size_t batch_count) {
   // Determines the right kernel
   auto kernel_name = std::string{};
@@ -197,7 +197,7 @@ void PadCopyTransposeMatrixStridedBatched(Queue& queue, const Device& device, co
                                           const size_t src_stride, const Buffer<T>& src, const size_t dest_one,
                                           const size_t dest_two, const size_t dest_ld, const size_t dest_offset,
                                           const size_t dest_stride, const Buffer<T>& dest,
-                                          const std::shared_ptr<Program> program, const bool do_pad,
+                                          const std::shared_ptr<Program>& program, const bool do_pad,
                                           const bool do_transpose, const bool do_conjugate, const size_t batch_count) {
   // Determines the right kernel
   auto kernel_name = std::string{};
