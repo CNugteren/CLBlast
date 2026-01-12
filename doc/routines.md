@@ -90,6 +90,8 @@ In addition, some extra non-BLAS routines are also supported by CLBlast, classif
 | IxAMIN     | ✔ | ✔ | ✔ | ✔ | ✔ | (Similar to IxAMAX, but minimum instead of maximum)
 | IxMAX      | ✔ | ✔ | ✔ | ✔ | ✔ | (Similar to IxAMAX, but not absolute)
 | IxMIN      | ✔ | ✔ | ✔ | ✔ | ✔ | (Similar to IxAMAX, but not absolute and minimum instead of maximum)
+| xMINMAX    | ✔ | ✔ | ✔ | ✔ | ✔ | (Similar to xMIN and xMAX, but combined)
+| xAMINMAX   | ✔ | ✔ | ✔ | ✔ | ✔ | (Similar to xMINMAX, but absolute)
 | xHAD       | ✔ | ✔ | ✔ | ✔ | ✔ | (Hadamard product)
 | xOMATCOPY  | ✔ | ✔ | ✔ | ✔ | ✔ | (Out-of-place copying/transposing/scaling of matrices)
 | xIM2COL    | ✔ | ✔ | ✔ | ✔ | ✔ | (Image to column transform as used to express convolution as GEMM)

@@ -552,6 +552,18 @@ StatusCode GemmStridedBatched(const Layout layout, const Transpose a_transpose, 
                               cl_mem c_buffer, const size_t c_offset, const size_t c_ld, const size_t c_stride,
                               const size_t batch_count, cl_command_queue* queue, cl_event* event = nullptr);
 
+// Combined version of Min and Max: SMINMAX/DMINMAX/CMINMAX/ZMINMAX/HMINMAX
+template <typename T>
+StatusCode PUBLIC_API Minmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                             const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                             cl_command_queue* queue, cl_event* event);
+
+// Absolute version of Minmax: SAMINMAX/DAMINMAX/CAMINMAX/ZAMINMAX/HAMINMAX
+template <typename T>
+StatusCode PUBLIC_API Aminmax(const size_t n, cl_mem imax_buffer, const size_t imax_offset, cl_mem imin_buffer,
+                              const size_t imin_offset, const cl_mem x_buffer, const size_t x_offset,
+                              const size_t x_inc, cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 
 // Retrieves the required size of the temporary buffer for the GEMM kernel (optional)

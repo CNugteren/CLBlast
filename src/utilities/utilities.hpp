@@ -75,6 +75,7 @@ constexpr auto kArgDotOffset = "offdot";
 constexpr auto kArgNrm2Offset = "offnrm2";
 constexpr auto kArgAsumOffset = "offasum";
 constexpr auto kArgImaxOffset = "offimax";
+constexpr auto kArgIminOffset = "offimin";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 constexpr auto kArgBatchCount = "batch_num";
@@ -125,6 +126,7 @@ constexpr auto kBufMatC = "C";
 constexpr auto kBufMatAP = "AP";
 constexpr auto kBufScalar = "Scalar";
 constexpr auto kBufScalarUint = "ScalarUint";
+constexpr auto kBufSecondScalarUint = "SecondScalarUint";
 
 // =================================================================================================
 
@@ -205,6 +207,7 @@ struct Arguments {
   size_t nrm2_offset = 0;
   size_t asum_offset = 0;
   size_t imax_offset = 0;
+  size_t imin_offset = 0;
   T alpha = ConstantOne<T>();
   T beta = ConstantOne<T>();
   // Arguments for im2col and convgemm
@@ -237,6 +240,7 @@ struct Arguments {
   size_t c_size = 1;
   size_t ap_size = 1;
   size_t scalar_size = 1;
+  size_t second_scalar_size = 1;
   // Tuner-specific arguments
   size_t heuristic_selection = 0;
   double fraction = 1.0;
