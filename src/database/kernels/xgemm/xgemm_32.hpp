@@ -134,9 +134,10 @@ const DatabaseEntry XgemmSingle = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
+          { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { Name{"Mali-T628                                         "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
@@ -183,6 +184,7 @@ const DatabaseEntry XgemmSingle = {
         { "default", {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 1, 16, 1, 1, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 2, 8 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 16, 1, 1, 16, 16, 64, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
+          { Name{"Intel(R) Graphics                                 "}, Params{ 0, 1, 32, 2, 32, 32, 128, 16, 8, 64, 0, 0, 0, 0, 1, 4 } },
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 0, 1, 32, 2, 8, 8, 128, 32, 16, 64, 0, 0, 1, 0, 4, 2 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 0, 1, 32, 8, 8, 8, 64, 32, 16, 64, 1, 1, 1, 1, 4, 2 } },
           { Name{"Intel(R) HD Graphics 6000 BroadWell U-Processor GT"}, Params{ 1, 4, 1, 1, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
@@ -214,6 +216,7 @@ const DatabaseEntry XgemmSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 32, 16, 128, 1, 1, 1, 1, 2, 2 } },
           { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 16, 128, 1, 1, 0, 1, 4, 4 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
@@ -340,6 +343,10 @@ const DatabaseEntry XgemmSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
+        { "OpenCL C 2.0 Adreno(TM) 660", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+        } },
         { "OpenCL C 3.0 Adreno(TM) 730", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 128, 0, 0, 1, 0, 2, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 128, 0, 0, 1, 0, 2, 4 } },
@@ -351,6 +358,10 @@ const DatabaseEntry XgemmSingle = {
         { "OpenCL C 3.0 Adreno(TM) 740", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 128, 0, 0, 1, 0, 2, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 128, 0, 0, 1, 0, 2, 4 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 830", {
+          { Name{"QUALCOMM Adreno(TM) 830                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
       }
     },

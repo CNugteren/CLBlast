@@ -130,8 +130,9 @@ const DatabaseEntry XgemmComplexSingle = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
+          { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 4 } },
           { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 4 } },
         } },
       }
     },
@@ -178,6 +179,7 @@ const DatabaseEntry XgemmComplexSingle = {
         { "default", {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 1, 4, 1, 1, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 1, 4, 1, 1, 4, 4, 16, 8, 8, 32, 0, 0, 0, 0, 2, 2 } },
+          { Name{"Intel(R) Graphics                                 "}, Params{ 1, 4, 1, 1, 4, 4, 16, 16, 16, 64, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) HD Graphics 530                          "}, Params{ 0, 1, 16, 8, 8, 16, 64, 32, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"Intel(R) HD Graphics 5500 BroadWell U-Processor GT"}, Params{ 0, 1, 16, 8, 8, 8, 32, 16, 16, 64, 1, 0, 0, 0, 4, 4 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 16, 2, 16, 8, 32, 8, 8, 32, 0, 0, 1, 0, 1, 1 } },
@@ -208,9 +210,10 @@ const DatabaseEntry XgemmComplexSingle = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5060 Laptop GPU                "}, Params{ 0, 1, 16, 2, 16, 8, 64, 8, 16, 64, 1, 1, 1, 1, 1, 4 } },
           { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 0, 1, 16, 2, 32, 8, 128, 32, 32, 128, 1, 1, 1, 1, 1, 2 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 16, 2, 32, 8, 128, 16, 16, 64, 1, 1, 1, 1, 1, 4 } },
-          { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 4, 4, 32, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 8, 8, 32, 4, 4, 32, 0, 0, 0, 0, 4, 4 } },
         } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 0, 1, 16, 2, 16, 16, 32, 32, 16, 128, 0, 1, 1, 1, 2, 2 } },
@@ -330,6 +333,10 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 64, 0, 0, 0, 0, 1, 4 } },
         } },
         { "OpenCL C 2.0 Adreno(TM) 650", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
+        } },
+        { "OpenCL C 2.0 Adreno(TM) 660", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
         } },
