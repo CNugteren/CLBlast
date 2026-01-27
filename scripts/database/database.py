@@ -101,7 +101,7 @@ def main(argv):
     # Parses the path arguments
     database_filename = os.path.join(cl_args.clblast_root, "scripts", "database", "database.json")
     database_best_filename = os.path.join(cl_args.clblast_root, "scripts", "database", "database_best.json")
-    json_files = os.path.join(cl_args.source_folder, "*", "*.json")
+    json_files = os.path.join(cl_args.source_folder, "*.json")
     cpp_database_path = os.path.join(cl_args.clblast_root, "src", "database", "kernels")
 
     # Checks whether the command-line arguments are valid
