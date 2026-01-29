@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Invert32' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/invert/invert.hpp"
 namespace clblast {
 namespace database {
 

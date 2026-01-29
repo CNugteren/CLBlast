@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xgemv6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xgemv/xgemv.hpp"
 namespace clblast {
 namespace database {
 

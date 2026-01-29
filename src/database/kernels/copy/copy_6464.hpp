@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Copy6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/copy/copy.hpp"
 namespace clblast {
 namespace database {
 

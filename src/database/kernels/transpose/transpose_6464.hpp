@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Transpose6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/transpose/transpose.hpp"
 namespace clblast {
 namespace database {
 

@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xgemm_Direct64' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xgemm_direct/xgemm_direct.hpp"
 namespace clblast {
 namespace database {
 

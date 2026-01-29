@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Gemm_Routine32' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/gemm_routine/gemm_routine.hpp"
 namespace clblast {
 namespace database {
 

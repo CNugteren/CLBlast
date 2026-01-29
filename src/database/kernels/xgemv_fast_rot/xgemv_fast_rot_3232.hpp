@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xgemv_Fast_Rot3232' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xgemv_fast_rot/xgemv_fast_rot.hpp"
 namespace clblast {
 namespace database {
 

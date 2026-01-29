@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Pad16' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/pad/pad.hpp"
 namespace clblast {
 namespace database {
 

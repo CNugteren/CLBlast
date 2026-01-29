@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Padtranspose6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/padtranspose/padtranspose.hpp"
 namespace clblast {
 namespace database {
 

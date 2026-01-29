@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Trsv_Routine32' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/trsv_routine/trsv_routine.hpp"
 namespace clblast {
 namespace database {
 

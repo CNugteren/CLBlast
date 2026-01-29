@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xger64' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xger/xger.hpp"
 namespace clblast {
 namespace database {
 

@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xaxpy6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xaxpy/xaxpy.hpp"
 namespace clblast {
 namespace database {
 

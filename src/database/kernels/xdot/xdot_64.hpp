@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xdot64' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xdot/xdot.hpp"
 namespace clblast {
 namespace database {
 
