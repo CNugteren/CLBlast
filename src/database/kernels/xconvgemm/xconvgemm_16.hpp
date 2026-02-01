@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xconvgemm16' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xconvgemm/xconvgemm.hpp"
 namespace clblast {
 namespace database {
 

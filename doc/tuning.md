@@ -90,6 +90,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce RTX 4080
     - GeForce RTX 4090
   - SM 12.0:
+    - GeForce RTX 5060 Laptop
     - GeForce RTX 5070 Ti
     - GeForce RTX 5080
 * AMD GPUs:
@@ -190,6 +191,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Core i7-6770HQ
   - Core i7-12700H
   - Core i9-9980HK
+  - Core Ultra7 255HX
   - Xeon E5-2630 v3
   - Xeon E5-2630 v4
 * Other devices:
@@ -200,11 +202,14 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Qualcomm Adreno 540 GPU
   - Qualcomm Adreno 640 GPU
   - Qualcomm Adreno 650 GPU
+  - Qualcomm Adreno 660 GPU
   - Qualcomm Adreno 730 GPU
   - Qualcomm Adreno 735
   - Qualcomm Adreno 740 GPU
+  - Qualcomm Adreno 830 GPU
   - Intel MIC
   - Imagination PowerVR B-Series BXE-4-32
+  - Imagination PowerVR GX6650
   - Apple M1 GPU
   - Apple M2 Max GPU
 

@@ -169,6 +169,7 @@ def print_cpp_database(database, output_dir):
             full_path = os.path.join(family_path, family_name + "_" + precision + ".hpp")
             with open(full_path, 'w+') as f:
                 f.write(get_cpp_header(family_name, precision))
+                f.write('#include "database/kernels/' + family_name + '/' + family_name + '.hpp"')
                 f.write(get_cpp_header_namespace())
                 f.write(get_cpp_precision(family_name, precision))
 

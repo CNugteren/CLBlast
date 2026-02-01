@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xgemm6464' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xgemm/xgemm.hpp"
 namespace clblast {
 namespace database {
 
@@ -149,6 +149,7 @@ const DatabaseEntry XgemmComplexDouble = {
     { // Intel GPUs
       kDeviceTypeGPU, "Intel", {
         { "default", {
+          { Name{"Intel(R) Graphics                                 "}, Params{ 1, 8, 1, 1, 32, 32, 32, 4, 4, 32, 0, 0, 0, 0, 1, 8 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 1, 1, 1, 1, 8, 8, 32, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) UHD Graphics                             "}, Params{ 1, 1, 1, 1, 8, 8, 32, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
@@ -168,6 +169,7 @@ const DatabaseEntry XgemmComplexDouble = {
     { // NVIDIA GPUs
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
+          { Name{"NVIDIA GeForce RTX 5060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 16, 0, 0, 0, 0, 4, 1 } },
           { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 1, 2, 1, 1, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },

@@ -6,7 +6,7 @@
 // This file populates the database with best-found tuning parameters for the 'Xgemm16' kernels.
 //
 // =================================================================================================
-
+#include "database/kernels/xgemm/xgemm.hpp"
 namespace clblast {
 namespace database {
 
@@ -92,9 +92,10 @@ const DatabaseEntry XgemmHalf = {
     { // ARM GPUs
       kDeviceTypeGPU, "ARM", {
         { "default", {
+          { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 16, 128, 0, 0, 1, 1, 4, 8 } },
           { Name{"Mali-T628                                         "}, Params{ 0, 1, 32, 2, 8, 16, 128, 8, 8, 32, 0, 1, 0, 1, 8, 4 } },
           { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 64, 1, 1, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 1, 1, 0, 0, 4, 4 } },
         } },
       }
     },
@@ -111,6 +112,7 @@ const DatabaseEntry XgemmHalf = {
         { "default", {
           { Name{"Intel(R) Arc(TM) A750 Graphics                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
           { Name{"Intel(R) Arc(TM) A770 Graphics                    "}, Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 2, 4 } },
+          { Name{"Intel(R) Graphics                                 "}, Params{ 0, 1, 32, 2, 8, 32, 64, 32, 8, 128, 0, 0, 0, 0, 2, 2 } },
           { Name{"Intel(R) HD Graphics 620                          "}, Params{ 0, 1, 32, 2, 8, 8, 64, 8, 8, 64, 0, 0, 0, 0, 1, 1 } },
           { Name{"Intel(R) HD Graphics Skylake ULT GT2              "}, Params{ 0, 1, 16, 2, 8, 8, 32, 16, 16, 128, 0, 1, 1, 0, 4, 8 } },
           { Name{"Intel(R) Iris(R) Plus Graphics 640                "}, Params{ 0, 1, 32, 2, 8, 8, 64, 16, 16, 64, 1, 1, 0, 0, 4, 4 } },
@@ -137,6 +139,10 @@ const DatabaseEntry XgemmHalf = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
         } },
+        { "OpenCL C 2.0 Adreno(TM) 660", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 128, 8, 8, 64, 1, 1, 0, 1, 8, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 128, 8, 8, 64, 1, 1, 0, 1, 8, 4 } },
+        } },
         { "OpenCL C 3.0 Adreno(TM) 730", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 128, 0, 0, 0, 1, 2, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 128, 8, 8, 128, 0, 0, 0, 1, 2, 8 } },
@@ -148,6 +154,10 @@ const DatabaseEntry XgemmHalf = {
         { "OpenCL C 3.0 Adreno(TM) 740", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 16, 16, 64, 8, 8, 128, 1, 0, 1, 1, 2, 8 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 830", {
+          { Name{"QUALCOMM Adreno(TM) 830                           "}, Params{ 0, 1, 32, 2, 16, 8, 64, 8, 8, 128, 1, 0, 0, 1, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 64, 8, 8, 128, 1, 0, 0, 1, 4, 4 } },
         } },
       }
     },
