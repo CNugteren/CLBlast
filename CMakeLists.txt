@@ -9,7 +9,6 @@
 #
 # ==================================================================================================
 
-# Technically the minimum is 2.8.11 but to be compatible with CMake 4 this is set to 3.10
 cmake_minimum_required(VERSION 3.10)
 
 # Overrides for MSVC static runtime
@@ -168,10 +167,10 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${clblast_SOURCE_DIR}/cmake/Modules/")
 
 if(OPENCL)
-  # Requires OpenCL. It is found through the included "FindOpenCL.cmake" in CMAKE_MODULE_PATH.
-  find_package(OpenCL REQUIRED)
-  set(API_LIBRARIES ${OPENCL_LIBRARIES})
-  set(API_INCLUDE_DIRS ${OPENCL_INCLUDE_DIRS})
+  # For OpenCL, the "FindOpenCL.cmake" is part of CMake
+  find_package(OpenCL CONFIG REQUIRED)
+  set(API_INCLUDE_DIRS)
+  set(API_LIBRARIES OpenCL::OpenCL OpenCL::Headers)
 elseif(CUDA)
   # For CUDA, the "FindCUDA.cmake" is part of CMake
   find_package(CUDA REQUIRED)
