@@ -91,7 +91,9 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
     - GeForce RTX 4090
   - SM 12.0:
     - GeForce RTX 5060 Laptop
+    - GeForce RTX 5070 Laptop
     - GeForce RTX 5070 Ti
+    - GeForce RTX 5070 Ti Laptop
     - GeForce RTX 5080
 * AMD GPUs:
   - Turks:
@@ -141,6 +143,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - gfx1032:
     - Radeon RX 6600 XT
   - gfx1034:
+    - Radeon RX 6400
     - Radeon RX 6500 XT
   - gfx1035:
     - Radeon 680M
@@ -160,6 +163,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Other:
     - Radeon Pro 450
     - Radeon Pro 580
+    - Radeon RX 590 GME (RustiCL)
 * Intel GPUs:
   - HD Graphics 530
   - HD Graphics 5500 BroadWell U-Processor GT2
@@ -198,15 +202,27 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
   - ARM Mali-G57 MC2 GPU
+  - ARM Mali-G68 MC4 GPU
+  - ARM Mali-G610 MC6 GPU
+  - ARM Mali-G615 MC5 GPU
+  - ARM Mali-G615 MC6 GPU
+  - ARM Mali-G710 MC10 GPU
   - Qualcomm Adreno 330 GPU
   - Qualcomm Adreno 540 GPU
   - Qualcomm Adreno 640 GPU
+  - Qualcomm Adreno 642L GPU
+  - Qualcomm Adreno 644 GPU
   - Qualcomm Adreno 650 GPU
   - Qualcomm Adreno 660 GPU
+  - Qualcomm Adreno 710 GPU
   - Qualcomm Adreno 730 GPU
-  - Qualcomm Adreno 735
+  - Qualcomm Adreno 732 GPU
+  - Qualcomm Adreno 735 GPU
   - Qualcomm Adreno 740 GPU
+  - Qualcomm Adreno 750 GPU
+  - Qualcomm Adreno 825 GPU
   - Qualcomm Adreno 830 GPU
+  - Qualcomm Adreno 840 GPU
   - Intel MIC
   - Imagination PowerVR B-Series BXE-4-32
   - Imagination PowerVR GX6650

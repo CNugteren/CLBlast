@@ -58,6 +58,7 @@ const DatabaseEntry XgemmComplexSingle = {
         { "default", {
           { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 1 } },
+          { Name{"AMD Radeon RX 590 GME (radeonsi, polaris10, ACO, D"}, Params{ 0, 1, 32, 2, 32, 8, 32, 8, 16, 64, 1, 0, 1, 1, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
         } },
         { "gfx1010:xnack-", {
@@ -80,6 +81,7 @@ const DatabaseEntry XgemmComplexSingle = {
         } },
         { "gfx1034", {
           { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 0, 1, 16, 2, 8, 16, 64, 32, 8, 64, 1, 1, 1, 0, 1, 2 } },
+          { Name{"AMD Radeon(TM) RX 6400                            "}, Params{ 0, 1, 16, 2, 16, 16, 64, 16, 16, 64, 1, 1, 1, 1, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 16, 64, 32, 8, 64, 1, 1, 1, 0, 1, 2 } },
         } },
         { "gfx1035", {
@@ -131,6 +133,8 @@ const DatabaseEntry XgemmComplexSingle = {
       kDeviceTypeGPU, "ARM", {
         { "default", {
           { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 0, 0, 0, 0, 2, 4 } },
+          { Name{"Mali-G615 MC6 r1p3                                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 2, 4 } },
+          { Name{"Mali-G68 MC4 r1p1                                 "}, Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 32, 0, 0, 0, 0, 1, 4 } },
           { Name{"Mali-T760                                         "}, Params{ 0, 1, 32, 2, 16, 16, 16, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 32, 0, 0, 0, 0, 1, 4 } },
         } },
@@ -211,9 +215,11 @@ const DatabaseEntry XgemmComplexSingle = {
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
           { Name{"NVIDIA GeForce RTX 5060 Laptop GPU                "}, Params{ 0, 1, 16, 2, 16, 8, 64, 8, 16, 64, 1, 1, 1, 1, 1, 4 } },
+          { Name{"NVIDIA GeForce RTX 5070 Laptop GPU                "}, Params{ 0, 1, 16, 2, 8, 8, 128, 16, 16, 64, 1, 0, 1, 0, 1, 1 } },
           { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 0, 1, 16, 2, 32, 8, 128, 32, 32, 128, 1, 1, 1, 1, 1, 2 } },
+          { Name{"NVIDIA GeForce RTX 5070 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 32, 16, 64, 32, 8, 32, 0, 1, 1, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 16, 2, 32, 8, 128, 16, 16, 64, 1, 1, 1, 1, 1, 4 } },
-          { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 8, 8, 32, 4, 4, 32, 0, 0, 0, 0, 4, 4 } },
+          { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 16, 16, 64, 8, 8, 64, 0, 0, 0, 0, 4, 4 } },
         } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 0, 1, 16, 2, 16, 16, 32, 32, 16, 128, 0, 1, 1, 1, 2, 2 } },
@@ -332,6 +338,14 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 64, 0, 0, 0, 0, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 64, 0, 0, 0, 0, 1, 4 } },
         } },
+        { "OpenCL C 2.0 Adreno(TM) 642L", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 64, 1, 1, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 64, 1, 1, 0, 0, 1, 1 } },
+        } },
+        { "OpenCL C 2.0 Adreno(TM) 644", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
+        } },
         { "OpenCL C 2.0 Adreno(TM) 650", {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
@@ -340,8 +354,20 @@ const DatabaseEntry XgemmComplexSingle = {
           { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 16, 2, 8, 8, 32, 8, 16, 64, 1, 0, 1, 0, 1, 4 } },
         } },
+        { "OpenCL C 3.0 Adreno(TM) 710", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 128, 1, 0, 1, 1, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 128, 1, 0, 1, 1, 1, 4 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 720", {
+          { Name{"QUALCOMM Adreno(TM)                               "}, Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 128, 1, 0, 1, 1, 1, 4 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 8, 32, 32, 32, 128, 1, 0, 1, 1, 1, 4 } },
+        } },
         { "OpenCL C 3.0 Adreno(TM) 735", {
           { Name{"QUALCOMM Adreno(TM) 735                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
+        } },
+        { "OpenCL C 3.0 Adreno(TM) 750", {
+          { Name{"QUALCOMM Adreno(TM) 750                           "}, Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
@@ -349,7 +375,7 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 64, 8, 8, 32, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
