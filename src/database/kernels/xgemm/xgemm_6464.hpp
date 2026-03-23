@@ -49,7 +49,8 @@ const DatabaseEntry XgemmComplexDouble = {
         { "default", {
           { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 1, 2, 1, 1, 16, 16, 32, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 8, 8, 32, 0, 0, 0, 0, 1, 2 } },
+          { Name{"AMD Radeon RX 590 GME (radeonsi, polaris10, ACO, D"}, Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
         { "gfx1010:xnack-", {
           { Name{"AMD Radeon RX 5700                                "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 2, 1 } },
@@ -71,7 +72,8 @@ const DatabaseEntry XgemmComplexDouble = {
         } },
         { "gfx1034", {
           { Name{"AMD Radeon RX 6500 XT                             "}, Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 8, 8, 32, 1, 1, 0, 0, 1, 2 } },
+          { Name{"AMD Radeon(TM) RX 6400                            "}, Params{ 0, 1, 32, 2, 8, 8, 32, 32, 32, 32, 1, 1, 0, 0, 4, 1 } },
+          { kDeviceNameDefault                                        , Params{ 1, 4, 1, 1, 4, 4, 16, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
         } },
         { "gfx1035", {
           { Name{"AMD Radeon Graphics                               "}, Params{ 1, 2, 1, 1, 4, 4, 32, 8, 8, 32, 0, 0, 0, 0, 8, 2 } },
@@ -170,9 +172,11 @@ const DatabaseEntry XgemmComplexDouble = {
       kDeviceTypeGPU, "NVIDIA", {
         { "SM12.0", {
           { Name{"NVIDIA GeForce RTX 5060 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 16, 0, 0, 0, 0, 4, 1 } },
+          { Name{"NVIDIA GeForce RTX 5070 Laptop GPU                "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 5070 Ti                        "}, Params{ 1, 2, 1, 1, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { Name{"NVIDIA GeForce RTX 5070 Ti Laptop GPU             "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 0, 0, 0, 0, 2, 1 } },
           { Name{"NVIDIA GeForce RTX 5080                           "}, Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 32, 1, 1, 0, 0, 1, 2 } },
         } },
         { "SM2.0", {
           { Name{"GeForce GTX 480                                   "}, Params{ 0, 1, 16, 2, 32, 32, 32, 32, 8, 32, 0, 0, 1, 0, 1, 1 } },
@@ -276,14 +280,14 @@ const DatabaseEntry XgemmComplexDouble = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 16, 16, 16, 0, 0, 0, 0, 1, 1 } },
         } },
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 2, 1 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 16, 8, 8, 16, 0, 0, 0, 0, 1, 1 } },
         } },
       }
     },
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 8, 8, 32, 0, 0, 0, 0, 1, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 32, 32, 32, 8, 8, 32, 1, 1, 0, 0, 1, 4 } },
         } },
       }
     },
