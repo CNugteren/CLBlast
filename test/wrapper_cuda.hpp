@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "utilities/utilities.hpp"
+#include "test/test_utilities.hpp"
 
 #ifdef CLBLAST_REF_CUBLAS
 #define CUDA_NO_HALF
