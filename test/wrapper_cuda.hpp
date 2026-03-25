@@ -102,6 +102,7 @@ struct BuffersCUDA {
   T* c_mat = nullptr;
   T* ap_mat = nullptr;
   T* scalar = nullptr;
+  T* scalar_uint = nullptr;
 };
 
 template <typename T, typename U>
@@ -129,6 +130,9 @@ void CUDAToHost(const Arguments<U>& args, BuffersCUDA<T>& buffers, BuffersHost<T
     } else if (name == kBufScalar) {
       buffers_host.scalar = std::vector<T>(args.scalar_size, static_cast<T>(0));
       CUDAToHost(&buffers.scalar, buffers_host.scalar, args.scalar_size);
+    } else if (name == kBufScalarUint) {
+      buffers_host.scalar_uint = std::vector<T>(args.scalar_size, static_cast<T>(0));
+      CUDAToHost(&buffers.scalar_uint, buffers_host.scalar_uint, args.scalar_size);
     } else {
       throw std::runtime_error("Invalid buffer name");
     }
@@ -153,6 +157,8 @@ void HostToCUDA(const Arguments<U>& args, BuffersCUDA<T>& buffers, BuffersHost<T
       HostToCUDA(&buffers.ap_mat, buffers_host.ap_mat, args.ap_size);
     } else if (name == kBufScalar) {
       HostToCUDA(&buffers.scalar, buffers_host.scalar, args.scalar_size);
+    } else if (name == kBufScalarUint) {
+      HostToCUDA(&buffers.scalar_uint, buffers_host.scalar_uint, args.scalar_size);
     } else {
       throw std::runtime_error("Invalid buffer name");
     }
