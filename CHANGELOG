@@ -1,8 +1,13 @@
 Development version (next version)
+- (no changes yet since last release)
+
+Version 1.7.0
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
 - Added 3 new error codes for vector Z in routine XHAD
+- Added `__builtin_assume` support for slightly faster kernels in certain situations
 - Fixed compatibility with CMake 4.0
 - Various code maintenance and style improvements
+- Improved documentation
 - Added tuned parameters for many devices (see doc/tuning.md)
 
 Version 1.6.3
