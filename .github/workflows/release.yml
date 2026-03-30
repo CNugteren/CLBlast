@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         config: [
-          {name: linux, os: ubuntu-20.04, arch: x86_64, c_compiler: gcc-9, cpp_compiler: g++-9},
+          {name: linux, os: ubuntu-22.04, arch: x86_64, c_compiler: gcc, cpp_compiler: g++},
           {name: macos, os: macos-15-intel, arch: x86_64, c_compiler: clang, cpp_compiler: clang++},
         ]
 
