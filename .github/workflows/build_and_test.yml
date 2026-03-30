@@ -17,7 +17,7 @@ jobs:
         ]
     runs-on: ${{ matrix.config.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Install requirements for Ubuntu
       run: |
@@ -69,7 +69,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
