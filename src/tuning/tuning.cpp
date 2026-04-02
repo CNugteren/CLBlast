@@ -113,9 +113,7 @@ struct ThreadInfo {
   std::vector<size_t> local;
 };
 
-inline void addPrintInfo(std::string& str, const char* text) {
-  str += text;
-}
+inline void addPrintInfo(std::string& str, const char* text) { str += text; }
 
 template <typename... Args>
 inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
