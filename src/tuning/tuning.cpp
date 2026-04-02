@@ -148,7 +148,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
       for (const auto& parameter : settings.parameters) {
         addPrintInfo(info.print_info, "%5zu", configuration.at(parameter.first));
       }
-      info.print_info += " |";
+      addPrintInfo(info.print_info, " |");
 
       // Sets the OpenCL thread configuration
       auto global =
@@ -196,7 +196,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
         addPrintInfo(info.print_info, "   %serror code %d%s |", kPrintError.c_str(), static_cast<int>(status_code),
                      kPrintEnd.c_str());
       }
-      info.print_info += " <-- skipping\n";
+      addPrintInfo(info.print_info, " <-- skipping\n");
     }
     info.ready = true;
     info.mtx.unlock();
