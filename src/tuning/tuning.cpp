@@ -114,15 +114,11 @@ struct ThreadInfo {
 };
 
 template <typename... Args>
-void addPrintInfo(std::string& str, const char* format, Args&&... args) {
-  if constexpr (sizeof...(Args) == 0) {
-    str += format;
-  } else {
-    const auto original_size = str.size();
-    const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
-    str.resize(original_size + size);
-    std::snprintf(&str[original_size], size + 1, format, std::forward<Args>(args)...);
-  }
+inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
+  const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
+  const auto original_size = str.size();
+  str.resize(original_size + size);
+  std::snprintf(&str[original_size], size + 1, format, std::forward<Args>(args)...);
 }
 
 template <typename T>
@@ -150,7 +146,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
       for (const auto& parameter : settings.parameters) {
         addPrintInfo(info.print_info, "%5zu", configuration.at(parameter.first));
       }
-      addPrintInfo(info.print_info, " |");
+      info.print_info += " |";
 
       // Sets the OpenCL thread configuration
       auto global =
@@ -198,7 +194,7 @@ void kernelCompilationThread(std::vector<ThreadInfo>& infos, const std::vector<c
         addPrintInfo(info.print_info, "   %serror code %d%s |", kPrintError.c_str(), static_cast<int>(status_code),
                      kPrintEnd.c_str());
       }
-      addPrintInfo(info.print_info, " <-- skipping\n");
+      info.print_info += " <-- skipping\n";
     }
     info.ready = true;
     info.mtx.unlock();
