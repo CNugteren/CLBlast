@@ -113,6 +113,8 @@ struct ThreadInfo {
   std::vector<size_t> local;
 };
 
+inline void addPrintInfo(std::string& str, const char* text) { str += text; }
+
 template <typename... Args>
 inline void addPrintInfo(std::string& str, const char* format, Args&&... args) {
   const auto size = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...);
