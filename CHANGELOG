@@ -1,5 +1,6 @@
 Development version (next version)
-- (no changes yet since last release)
+- Fixes a compiler warning in the tuner
+- Fixes compilation issue in the clBLAS test wrapper
 
 Version 1.7.0
 - Enabled parallel kernel compilation for faster kernel tuning (see doc/tuning.md)
