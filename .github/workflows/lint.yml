@@ -23,7 +23,7 @@ jobs:
           export CC=${{ matrix.config.c_compiler }}
           export CXX=${{ matrix.config.cpp_compiler }}
           cmake -S . -B build -G Ninja -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-          touch /usr/local/include/clBLAS.h  # to make clang-tidy parsing work
+          touch include/clBLAS.h  # to make clang-tidy parsing work
 
       - name: Run linter
         uses: cpp-linter/cpp-linter-action@v2
