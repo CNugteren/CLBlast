@@ -11,7 +11,7 @@
 #ifndef CLBLAST_TEST_WRAPPER_CLBLAS_H_
 #define CLBLAST_TEST_WRAPPER_CLBLAS_H_
 
-#include <clBLAS.h>
+#include <clBLAS.h>  // NOLINT
 
 #include <cstddef>
 
