@@ -115,6 +115,7 @@ constexpr auto kArgQuiet = "q";
 constexpr auto kArgNoAbbreviations = "no_abbrv";
 constexpr auto kArgNumRuns = "runs";
 constexpr auto kArgFullStatistics = "full_statistics";
+constexpr auto kArgResume = "resume";
 
 // The buffer names
 constexpr auto kBufVecX = "X";
@@ -265,6 +266,7 @@ struct Arguments {
   bool print_help = false;
   bool silent = false;
   bool no_abbrv = false;
+  int resume = 0;
 };
 
 // =================================================================================================

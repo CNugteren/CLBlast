@@ -36,6 +36,7 @@ jobs:
           tidy-checks: '' 
           style: 'file'
           database: 'build'
+          extra-args: -I${{ github.workspace }}/build/_deps/nlohmann_json-src
 
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0

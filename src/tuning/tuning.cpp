@@ -21,7 +21,6 @@
 #include <ios>
 #include <mutex>
 #include <nlohmann/json.hpp>
-#include <nlohmann/json_fwd.hpp>
 #include <random>
 #include <ratio>
 #include <sstream>
@@ -32,6 +31,7 @@
 #include <vector>
 
 #include "tuning/configurations.hpp"
+#include "tuning/json_logging.hpp"
 #include "utilities/backend.hpp"
 #include "utilities/clblast_exceptions.hpp"
 #include "utilities/compile.hpp"
@@ -40,6 +40,14 @@
 
 namespace clblast {
 // =================================================================================================
+
+void print_separator(const size_t parameters_size) {
+  printf("x------x-------x");
+  for (auto i = size_t{0}; i < parameters_size; ++i) {
+    printf("-----");
+  }
+  printf("-x-----------------x-----------------x----------------x--------------x--------x-------------------x\n");
+}
 
 void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device, const Platform& platform,
                               const std::vector<std::pair<std::string, std::string>>& metadata,
@@ -89,16 +97,10 @@ void PrintTimingsToFileAsJSON(const std::string& filename, const Device& device,
 
   auto json_dump = json.dump(2);
 
-  fprintf(file, "%s", json_dump.c_str());
-  fclose(file);
-}
-
-void print_separator(const size_t parameters_size) {
-  printf("x------x-------x");
-  for (auto i = size_t{0}; i < parameters_size; ++i) {
-    printf("-----");
+  if (file != nullptr) {
+    fprintf(file, "%s", json_dump.c_str());
+    fclose(file);
   }
-  printf("-x-----------------x-----------------x----------------x--------------x--------x-------------------x\n");
 }
 
 // =================================================================================================
@@ -235,6 +237,7 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
       GetArgument(command_line_args, help, kArgDevice, ConvertArgument(std::getenv("CLBLAST_DEVICE"), size_t{0}));
   args.precision = GetArgument(command_line_args, help, kArgPrecision, Precision::kSingle);
   args.extra_threads = GetArgument(command_line_args, help, kArgNumThreads, 1) - 1;
+  args.resume = GetArgument(command_line_args, help, kArgResume, 0);
   for (auto& o : defaults.options) {
     if (o == kArgM) {
       args.m = GetArgument(command_line_args, help, kArgM, defaults.default_m);
@@ -277,6 +280,9 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
   if (args.fraction < 1) {
     printf("The fraction parameter passed must be greater than 1. Qutting...\n");
+    return;
+  } else if (!(args.resume == 0 || args.resume == 1)) {
+    printf("The resume parameter must either be 0 (default off) or 1 (on).\n");
     return;
   }
 
@@ -329,9 +335,62 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
     device_buffers.push_back(Buffer<T>(context, size));
   }
 
+  // Start logger
+  auto precision_string = std::to_string(static_cast<size_t>(args.precision));
+  auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", settings.kernel_family},
+                                                                   {"precision", precision_string},
+                                                                   {"best_kernel", ""},
+                                                                   {"best_time", ""},
+                                                                   {"best_parameters", ""}};
+  for (auto& o : defaults.options) {
+    if (o == kArgM) {
+      metadata.push_back({"arg_m", ToString(args.m)});
+    }
+    if (o == kArgN) {
+      metadata.push_back({"arg_n", ToString(args.n)});
+    }
+    if (o == kArgK) {
+      metadata.push_back({"arg_k", ToString(args.k)});
+    }
+    if (o == kArgAlpha) {
+      metadata.push_back({"arg_alpha", ToString(args.alpha)});
+    }
+    if (o == kArgBeta) {
+      metadata.push_back({"arg_beta", ToString(args.beta)});
+    }
+    if (o == kArgBatchCount) {
+      metadata.push_back({"arg_batch_count", ToString(args.batch_count)});
+    }
+    if (o == kArgHeight) {
+      metadata.push_back({"arg_height", ToString(args.height)});
+    }
+    if (o == kArgWidth) {
+      metadata.push_back({"arg_width", ToString(args.width)});
+    }
+    if (o == kArgKernelH) {
+      metadata.push_back({"arg_kernel_h", ToString(args.kernel_h)});
+    }
+    if (o == kArgKernelW) {
+      metadata.push_back({"arg_kernel_w", ToString(args.kernel_w)});
+    }
+    if (o == kArgChannels) {
+      metadata.push_back({"arg_channels", ToString(args.channels)});
+    }
+    if (o == kArgNumKernels) {
+      metadata.push_back({"arg_num_kernels", ToString(args.num_kernels)});
+    }
+  }
+
+  JSONLogger logger{"clblast_" + settings.kernel_family + "_" + precision_string + ".json", device, platform, metadata,
+                    args.resume == 1};
+
   // Sets the tunable parameters and their possible values
   auto configurations = SetConfigurations(device, settings.parameters, settings.local_size, settings.mul_local,
                                           settings.div_local, SetConstraints(V), ComputeLocalMemSize(V));
+  for (auto& configuration : configurations) {
+    configuration["PRECISION"] = static_cast<size_t>(args.precision);
+  }
+  remove_existing_configs(configurations, logger);
   printf("* Found %s%zu configuration(s)%s\n", kPrintMessage.c_str(), configurations.size(), kPrintEnd.c_str());
 
   // Select the search method (full search or a random fraction)
@@ -482,8 +541,8 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
 
       // All was OK
       auto& configuration = configurations[config_id];
-      configuration["PRECISION"] = static_cast<size_t>(args.precision);
       results.push_back(TuningResult{settings.kernel_name, time_ms, configuration});
+      logger.add_tuning_result(results.back());
       printf(" %6.1lf |", settings.metric_amount / (time_ms * 1.0e6));
       printf("     %sresults match%s |\n", kPrintSuccess.c_str(), kPrintEnd.c_str());
     } catch (CLCudaAPIBuildError&) {
@@ -544,53 +603,8 @@ void Tuner(int argc, char* argv[], const int V, GetTunerDefaultsFunc GetTunerDef
   }
   printf("%s\n\n", best_string.c_str());
 
-  // Outputs the results as JSON to disk, including some meta-data
-  auto precision_string = std::to_string(static_cast<size_t>(args.precision));
-  auto metadata = std::vector<std::pair<std::string, std::string>>{{"kernel_family", settings.kernel_family},
-                                                                   {"precision", precision_string},
-                                                                   {"best_kernel", best_configuration->name},
-                                                                   {"best_time", ToString(best_configuration->score)},
-                                                                   {"best_parameters", best_string}};
-  for (auto& o : defaults.options) {
-    if (o == kArgM) {
-      metadata.push_back({"arg_m", ToString(args.m)});
-    }
-    if (o == kArgN) {
-      metadata.push_back({"arg_n", ToString(args.n)});
-    }
-    if (o == kArgK) {
-      metadata.push_back({"arg_k", ToString(args.k)});
-    }
-    if (o == kArgAlpha) {
-      metadata.push_back({"arg_alpha", ToString(args.alpha)});
-    }
-    if (o == kArgBeta) {
-      metadata.push_back({"arg_beta", ToString(args.beta)});
-    }
-    if (o == kArgBatchCount) {
-      metadata.push_back({"arg_batch_count", ToString(args.batch_count)});
-    }
-    if (o == kArgHeight) {
-      metadata.push_back({"arg_height", ToString(args.height)});
-    }
-    if (o == kArgWidth) {
-      metadata.push_back({"arg_width", ToString(args.width)});
-    }
-    if (o == kArgKernelH) {
-      metadata.push_back({"arg_kernel_h", ToString(args.kernel_h)});
-    }
-    if (o == kArgKernelW) {
-      metadata.push_back({"arg_kernel_w", ToString(args.kernel_w)});
-    }
-    if (o == kArgChannels) {
-      metadata.push_back({"arg_channels", ToString(args.channels)});
-    }
-    if (o == kArgNumKernels) {
-      metadata.push_back({"arg_num_kernels", ToString(args.num_kernels)});
-    }
-  }
-  PrintTimingsToFileAsJSON("clblast_" + settings.kernel_family + "_" + precision_string + ".json", device, platform,
-                           metadata, results);
+  logger.update_best({"best_kernel", best_configuration->name}, {"best_time", ToString(best_configuration->score)},
+                     {"best_parameters", best_string});
 
   printf("* Completed tuning process\n");
   printf("\n");

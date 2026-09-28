@@ -9,7 +9,7 @@
 #
 # ==================================================================================================
 
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 
 # Overrides for MSVC static runtime
 option(OVERRIDE_MSVC_FLAGS_TO_MT "Override compiler flags for MSVC to build with a static runtime (/MT instead of /MD)" ON)
@@ -413,10 +413,15 @@ if(TUNERS)
   include(FetchContent)
 
   FetchContent_Declare(nlohmann_json
-    GIT_REPOSITORY https://github.com/nlohmann/json
-    GIT_TAG v3.12.0
+    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/_deps/nlohmann_json-src/nlohmann
+    SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/nlohmann_json-src
   )
   FetchContent_MakeAvailable(nlohmann_json)
+  add_library(nlohmann_json INTERFACE)
+  add_library(nlohmann_json::nlohmann_json ALIAS nlohmann_json)
+  target_include_directories(nlohmann_json INTERFACE ${nlohmann_json_SOURCE_DIR})
 
   set(TUNERS_COMMON
       src/utilities/compile.cpp
