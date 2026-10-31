@@ -21,6 +21,7 @@
 #include "routines/level1/xdotc.hpp"
 #include "routines/level1/xdotu.hpp"
 #include "routines/level1/xmax.hpp"  // non-BLAS routine
+#include "routines/level1/xmaxshiftv.hpp"  // non-BLAS routine
 #include "routines/level1/xmin.hpp"  // non-BLAS routine
 #include "routines/level1/xnrm2.hpp"
 #include "routines/level1/xscal.hpp"
@@ -57,6 +58,7 @@
 #include "routines/level3/xhemm.hpp"
 #include "routines/level3/xher2k.hpp"
 #include "routines/level3/xherk.hpp"
+#include "routines/level3/xmaxshiftm.hpp"  // non-BLAS routine
 #include "routines/level3/xsymm.hpp"
 #include "routines/level3/xsyr2k.hpp"
 #include "routines/level3/xsyrk.hpp"

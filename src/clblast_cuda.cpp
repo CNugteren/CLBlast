@@ -439,6 +439,28 @@ template StatusCode PUBLIC_API Min<double2>(const size_t, CUdeviceptr, const siz
 template StatusCode PUBLIC_API Min<half>(const size_t, CUdeviceptr, const size_t, const CUdeviceptr, const size_t,
                                          const size_t, const CUcontext, const CUdevice);
 
+// Subtracts the vector maximum from every element in-place (non-BLAS): SMAXSHIFTV/DMAXSHIFTV/HMAXSHIFTV
+template <typename T>
+StatusCode Maxshiftv(const size_t n, CUdeviceptr x_buffer, const size_t x_offset, const size_t x_inc,
+                     const CUcontext context, const CUdevice device) {
+  try {
+    const auto context_cpp = Context(context);
+    const auto device_cpp = Device(device);
+    auto queue_cpp = Queue(context_cpp, device_cpp);
+    auto routine = Xmaxshiftv<T>(queue_cpp, nullptr);
+    routine.DoMaxshiftv(n, Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+template StatusCode PUBLIC_API Maxshiftv<float>(const size_t, CUdeviceptr, const size_t, const size_t, const CUcontext,
+                                                const CUdevice);
+template StatusCode PUBLIC_API Maxshiftv<double>(const size_t, CUdeviceptr, const size_t, const size_t, const CUcontext,
+                                                 const CUdevice);
+template StatusCode PUBLIC_API Maxshiftv<half>(const size_t, CUdeviceptr, const size_t, const size_t, const CUcontext,
+                                               const CUdevice);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
@@ -1468,6 +1490,28 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const size_t, const size_t, const double2, const CUdeviceptr, const size_t,
                                              const size_t, CUdeviceptr, const size_t, const size_t, const CUcontext,
                                              const CUdevice);
+
+// Subtracts the row maximum from every element of that row in-place (non-BLAS): SMAXSHIFTM/DMAXSHIFTM/HMAXSHIFTM
+template <typename T>
+StatusCode Maxshiftm(const Layout layout, const size_t m, const size_t n, CUdeviceptr a_buffer, const size_t a_offset,
+                     const size_t a_ld, const CUcontext context, const CUdevice device) {
+  try {
+    const auto context_cpp = Context(context);
+    const auto device_cpp = Device(device);
+    auto queue_cpp = Queue(context_cpp, device_cpp);
+    auto routine = Xmaxshiftm<T>(queue_cpp, nullptr);
+    routine.DoMaxshiftm(layout, m, n, Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+template StatusCode PUBLIC_API Maxshiftm<float>(const Layout, const size_t, const size_t, CUdeviceptr, const size_t,
+                                                const size_t, const CUcontext, const CUdevice);
+template StatusCode PUBLIC_API Maxshiftm<double>(const Layout, const size_t, const size_t, CUdeviceptr, const size_t,
+                                                 const size_t, const CUcontext, const CUdevice);
+template StatusCode PUBLIC_API Maxshiftm<half>(const Layout, const size_t, const size_t, CUdeviceptr, const size_t,
+                                               const size_t, const CUcontext, const CUdevice);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
