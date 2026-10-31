@@ -25,6 +25,14 @@ Java: JOCLBlast (3rd party)
 
 JOCLBlast is a 3rd party project providing bindings for Java. It is built on top of JOCL. Details can be found on the [JOCLBlast Github project page](https://github.com/gpu/JOCLBlast).
 
+See below for an alternative way to use CLBlast from Java.
+
+
+Java: TornadoVM (3rd party)
+-------------
+
+TornadoVM provides CLBlast bindings for Java. Details can be found on this [TornadoVM Github issue](https://github.com/beehive-lab/TornadoVM/issues/1125).
+
 
 Nim: nim-CLBlast (3rd party)
 -------------
