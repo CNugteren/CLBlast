@@ -87,7 +87,7 @@ TunerSettings XgemmGetTunerSettings(const int V, const Arguments<T>& args) {
   // Sets the tuning parameters and their possible values
   if (V == 1) {  // Kernel 0: limited subset of tuning parameters - but explorable exhaustively
     settings.parameters = {
-        {"GEMMK", {0}},         {"MWG", {16, 32, 64}},  {"NWG", {16, 32, 64}},  {"KWG", {32}},
+        {"GEMMK", {0}},         {"MWG", {16, 32, 64}},  {"NWG", {16, 32, 64}},  {"KWG", {16, 32}},
         {"MDIMC", {8, 16, 32}}, {"NDIMC", {8, 16, 32}}, {"MDIMA", {8, 16, 32}}, {"NDIMB", {8, 16, 32}},
         {"KWI", {2}},           {"VWM", {1, 2, 4}},     {"VWN", {1, 2, 4}},     {"STRM", {0}},
         {"STRN", {0}},          {"SA", {0, 1}},         {"SB", {0, 1}},         {"KREG", {1}}};
