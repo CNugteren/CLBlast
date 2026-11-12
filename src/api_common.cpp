@@ -116,6 +116,18 @@ void FillCacheForPrecision(Queue& queue) {
   }
 }
 
+template <typename Real>
+void FillCacheForRealPrecision(Queue& queue) {
+  try {
+    Xmaxshiftv<Real>(queue, nullptr);
+    Xmaxshiftm<Real>(queue, nullptr);
+  } catch (const RuntimeErrorCode& e) {
+    if (e.status() != StatusCode::kNoDoublePrecision && e.status() != StatusCode::kNoHalfPrecision) {
+      throw;
+    }
+  }
+}
+
 // Fills the cache with all binaries for a specific device
 StatusCode FillCache(const RawDeviceID device) {
   try {
@@ -127,6 +139,9 @@ StatusCode FillCache(const RawDeviceID device) {
     FillCacheForPrecision<half>(queue);
     FillCacheForPrecision<float, float2>(queue);
     FillCacheForPrecision<double, double2>(queue);
+    FillCacheForRealPrecision<half>(queue);
+    FillCacheForRealPrecision<float>(queue);
+    FillCacheForRealPrecision<double>(queue);
 
   } catch (...) {
     return DispatchException();
