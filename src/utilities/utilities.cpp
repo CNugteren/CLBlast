@@ -367,14 +367,26 @@ template std::string ConvertArgument(const char* value, std::string default_valu
 template <typename T>
 T GetArgument(const std::vector<std::string>& arguments, std::string& help, const std::string& option,
               const T default_value) {  // NOLINT
-  // Parses the argument. Note that this supports both the given option (e.g. -device) and one with
-  // an extra dash in front (e.g. --device).
+  // Parses the argument. Supports both one or two leading dashes, with the value either
+  // following as the next argument or joined with an equals sign.
+  const auto short_option = "-" + option;
+  const auto long_option = "--" + option;
+  const auto short_equals = short_option + "=";
+  const auto long_equals = long_option + "=";
   auto return_value = static_cast<T>(default_value);
   for (auto c = size_t{0}; c < arguments.size(); ++c) {
-    auto& item = arguments[c];
-    if (item.compare("-" + option) == 0 || item.compare("--" + option) == 0) {
+    const auto& item = arguments[c];
+    if (item.compare(short_option) == 0 || item.compare(long_option) == 0) {
       ++c;
       return_value = ConvertArgument<T>(arguments[c].c_str());
+      break;
+    }
+    if (item.compare(0, short_equals.size(), short_equals) == 0) {
+      return_value = ConvertArgument<T>(item.substr(short_equals.size()).c_str());
+      break;
+    }
+    if (item.compare(0, long_equals.size(), long_equals) == 0) {
+      return_value = ConvertArgument<T>(item.substr(long_equals.size()).c_str());
       break;
     }
   }
