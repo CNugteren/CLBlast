@@ -10,6 +10,7 @@ from collections import defaultdict
 
 import database.bests as bests
 import database.clblast as clblast
+import database.db as db
 
 
 def set_identifiers(database, group_by_attributes, identifier_name):
@@ -187,7 +188,8 @@ def get_common_best_parameters(group, group_identifier, verbose, enable_warning)
     common_parameters = get_parameter_names(group[0])  # Parameters of the first section
     for i in range(1, num_devices):
         section_parameters = get_parameter_names(group[i])
-        common_parameters = [p for p in section_parameters if p in common_parameters]  # Intersection of the parameters
+        common_keys = set(db.parameters_key(p) for p in common_parameters)
+        common_parameters = [p for p in section_parameters if db.parameters_key(p) in common_keys]  # Intersection
 
     # Fall back to another method in case there are no shared entries at all across devices
     if len(common_parameters) == 0:
@@ -229,10 +231,11 @@ def get_common_best_parameters(group, group_identifier, verbose, enable_warning)
                 common_parameters.append(parameters)
 
     # Removes entries with parameters which are not common
+    common_keys = set(db.parameters_key(p) for p in common_parameters)
     common_results = []
     for section in group:
         for result in section["results"]:
-            if result["parameters"] in common_parameters:
+            if db.parameters_key(result["parameters"]) in common_keys:
                 common_results.append(result)
 
     # Retrieves the entries with the highest relative performance

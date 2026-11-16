@@ -39,29 +39,29 @@ def add_section(database, new_section):
     return database
 
 
+def parameters_key(parameters):
+    """Returns a hashable version of a parameters dict, for fast look-ups"""
+    return tuple(sorted(parameters.items()))
+
+
 def combine_results(old_results, new_results):
-    """Adds new results to the results JSON list"""
-    for new_result in new_results:
-        old_results = combine_result(old_results, new_result)
-    return old_results
-
-
-def combine_result(old_results, new_result):
-    """Adds a new result to the results JSON list; filters for duplicate entries and saves the best performing one"""
-
-    # Loops over all existing results to test for already existing entries with these parameters
+    """Adds new results to the results JSON list; filters for duplicate entries and saves the best performing one"""
+    old_results_by_key = {}
     for old_result in old_results:
+        old_results_by_key.setdefault(parameters_key(old_result["parameters"]), old_result)
 
-        # Verify whether the results match
-        equal = new_result["parameters"] == old_result["parameters"]
+    for new_result in new_results:
+        key = parameters_key(new_result["parameters"])
 
-        # They match: keep only the one with the minimum execution time
-        if equal:
-            old_result["time"] = min(old_result["time"], new_result["time"])
-            return old_results
+        # Already exists: keep only the one with the minimum execution time
+        if key in old_results_by_key:
+            existing_result = old_results_by_key[key]
+            existing_result["time"] = min(existing_result["time"], new_result["time"])
 
-    # No match found: append a new result
-    old_results.append(new_result)
+        # No match found: append a new result
+        else:
+            old_results.append(new_result)
+            old_results_by_key[key] = new_result
     return old_results
 
 
