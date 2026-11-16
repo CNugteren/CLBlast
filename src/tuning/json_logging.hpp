@@ -59,8 +59,8 @@ class JSONLogger {
     json["platform_version"] = platform.Version().c_str();
     json["device_vendor"] = device.Vendor().c_str();
     json["device_type"] = device.Type().c_str();
-    json["device_core_clock"] = device.CoreClock();
-    json["device_compute_units"] = device.ComputeUnits();
+    json["device_core_clock"] = std::to_string(device.CoreClock());
+    json["device_compute_units"] = std::to_string(device.ComputeUnits());
     json["device_extra_info"] = device.GetExtraInfo().c_str();
     json["results"] = nlohmann::json::array();
 
