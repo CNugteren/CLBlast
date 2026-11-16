@@ -1,4 +1,5 @@
 Development version (next version)
+- Fixes compilation of the CUDA backend and its tests with CUDA 13, and NVRTC kernel compilation
 - Fixes a compiler warning in the tuner
 - Fixes compilation issue in the clBLAS test wrapper
 

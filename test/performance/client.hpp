@@ -23,7 +23,11 @@
 #include <utility>
 #include <vector>
 
+#ifdef OPENCL_API
 #include "clblast.h"
+#elif CUDA_API
+#include "clblast_cuda.h"
+#endif
 #include "test/test_utilities.hpp"
 #include "utilities/backend.hpp"
 

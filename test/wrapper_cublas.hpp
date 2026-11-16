@@ -16,7 +16,11 @@
 
 #include <cstddef>
 
+#ifdef OPENCL_API
 #include "clblast.h"
+#elif CUDA_API
+#include "clblast_cuda.h"
+#endif
 #include "utilities/utilities.hpp"
 
 namespace clblast {

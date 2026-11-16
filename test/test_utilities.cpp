@@ -18,7 +18,11 @@
 #include <string>
 #include <vector>
 
+#ifdef OPENCL_API
 #include "clblast.h"
+#elif CUDA_API
+#include "clblast_cuda.h"
+#endif
 #include "clblast_half.h"
 #include "utilities/backend.hpp"
 #include "utilities/utilities.hpp"

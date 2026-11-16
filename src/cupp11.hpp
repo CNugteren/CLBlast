@@ -381,7 +381,11 @@ class Context {
           }
           delete c;
         }) {
+#if CUDA_VERSION >= 13000
+    CheckError(cuCtxCreate(context_.get(), nullptr, 0, device()));
+#else
     CheckError(cuCtxCreate(context_.get(), 0, device()));
+#endif
   }
 
   // Accessor to the private data-member
@@ -790,7 +794,7 @@ class Kernel {
   CUfunction operator()() { return kernel_; }
 
  private:
-  const std::string name_;
+  std::string name_;
   CUfunction kernel_;
   std::vector<size_t> arguments_indices_;  // Indices of the arguments
   std::vector<char> arguments_data_;       // The arguments data as raw bytes

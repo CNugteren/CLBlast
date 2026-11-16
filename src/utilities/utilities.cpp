@@ -683,6 +683,7 @@ std::string GetDeviceName(const Device& device) {
 // =================================================================================================
 
 void SetOpenCLKernelStandard(const Device& device, std::vector<std::string>& options) {
+#ifdef OPENCL_API
   // Inclusion of one of the following extensions needs OpenCL 1.2 kernels
   if (device.HasExtension(kKhronosIntelSubgroups)) {
     options.push_back("-cl-std=CL1.2");
@@ -691,6 +692,7 @@ void SetOpenCLKernelStandard(const Device& device, std::vector<std::string>& opt
   else {
     options.push_back("-cl-std=CL1.1");
   }
+#endif
 }
 
 // =================================================================================================
