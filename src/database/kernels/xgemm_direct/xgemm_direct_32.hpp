@@ -17,7 +17,7 @@ const DatabaseEntry XgemmDirectSingle = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 2, 8, 8, 32, 32, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 2, 8, 8, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 2, 8, 8, 32, 32, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 2, 8, 8, 32, 32, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 32, 32, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Fiji", {
@@ -45,12 +45,12 @@ const DatabaseEntry XgemmDirectSingle = {
           { Name{"AMD Radeon Pro 450 Compute Engine                 "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon Pro 580 Compute Engine                 "}, Params{ 2, 8, 8, 16, 16, 1, 1, 2, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 590 GME (radeonsi, polaris10, ACO, D"}, Params{ 8, 16, 32, 32, 8, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 16, 16, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1010:xnack-", {
-          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 8, 8, 16, 16, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 8, 16, 8, 16, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 2, 16, 16, 16, 16, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 2, 16, 16, 16, 16, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
@@ -121,6 +121,7 @@ const DatabaseEntry XgemmDirectSingle = {
           { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 8, 16, 16, 8, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G615 MC6 r1p3                                "}, Params{ 2, 8, 8, 8, 8, 1, 0, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G710 MC10 r0p0                               "}, Params{ 2, 8, 8, 8, 8, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-G76 r0p0                                     "}, Params{ 2, 8, 8, 8, 8, 1, 1, 2, 1, 16, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T628                                         "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T760                                         "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
@@ -130,8 +131,9 @@ const DatabaseEntry XgemmDirectSingle = {
     { // Apple GPUs
       kDeviceTypeGPU, "Apple", {
         { "default", {
-          { Name{"Apple M1                                          "}, Params{ 2, 16, 16, 16, 16, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
-          { Name{"Apple M2 Max                                      "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Apple M1                                          "}, Params{ 8, 16, 16, 8, 8, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Apple M2 Max                                      "}, Params{ 2, 16, 16, 16, 8, 0, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Apple M5                                          "}, Params{ 16, 16, 16, 8, 8, 1, 1, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
       }
