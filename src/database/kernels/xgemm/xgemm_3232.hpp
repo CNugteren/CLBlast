@@ -62,7 +62,7 @@ const DatabaseEntry XgemmComplexSingle = {
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 16, 16, 64, 1, 1, 0, 0, 1, 2 } },
         } },
         { "gfx1010:xnack-", {
-          { Name{"AMD Radeon RX 5700                                "}, Params{ 0, 1, 32, 2, 16, 8, 32, 16, 16, 64, 1, 1, 1, 0, 2, 2 } },
+          { Name{"AMD Radeon RX 5700                                "}, Params{ 1, 4, 1, 1, 32, 32, 128, 4, 4, 16, 0, 0, 0, 0, 2, 4 } },
           { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 0, 1, 32, 2, 8, 16, 32, 8, 8, 128, 0, 0, 0, 0, 2, 1 } },
           { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 64, 8, 8, 32, 0, 0, 0, 0, 4, 4 } },
         } },
@@ -143,9 +143,10 @@ const DatabaseEntry XgemmComplexSingle = {
     { // Apple GPUs
       kDeviceTypeGPU, "Apple", {
         { "default", {
-          { Name{"Apple M1                                          "}, Params{ 0, 1, 32, 2, 32, 16, 64, 8, 8, 32, 0, 1, 1, 0, 2, 4 } },
-          { Name{"Apple M2 Max                                      "}, Params{ 0, 1, 32, 2, 8, 8, 32, 8, 16, 32, 0, 1, 0, 1, 1, 2 } },
-          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 8, 8, 32, 8, 16, 32, 0, 1, 0, 1, 1, 2 } },
+          { Name{"Apple M1                                          "}, Params{ 0, 1, 32, 2, 32, 16, 64, 8, 8, 32, 0, 1, 1, 1, 2, 4 } },
+          { Name{"Apple M2 Max                                      "}, Params{ 0, 1, 32, 2, 8, 8, 32, 16, 16, 64, 1, 0, 1, 0, 4, 2 } },
+          { Name{"Apple M5                                          "}, Params{ 1, 2, 1, 1, 16, 16, 32, 4, 4, 32, 0, 0, 0, 0, 2, 2 } },
+          { kDeviceNameDefault                                        , Params{ 0, 1, 32, 2, 16, 16, 32, 16, 16, 32, 1, 1, 0, 0, 2, 2 } },
         } },
       }
     },
