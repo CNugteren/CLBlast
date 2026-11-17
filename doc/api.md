@@ -712,6 +712,78 @@ Arguments to MIN:
 
 
 
+
+xMAXSHIFTV: Subtract the vector maximum (non-BLAS function)
+-------------
+
+Performs `x[i] = x[i] - max(x)` in-place. The maximum is the signed value, not the
+absolute value. Supports half, single, and double precision.
+
+C++ API:
+```cpp
+template <typename T>
+StatusCode Maxshiftv(const size_t n, cl_mem x_buffer,
+                    const size_t x_offset, const size_t x_inc,
+                    cl_command_queue* queue, cl_event* event = nullptr);
+```
+
+C API (same arguments): `CLBlastHmaxshiftv`, `CLBlastSmaxshiftv`, and `CLBlastDmaxshiftv`.
+`n` and `x_inc` must be positive; `x_offset` and `x_inc` are measured in elements.
+Only the selected vector elements are modified. `event`, when provided, signals completion
+of the shift after the two reduction kernels.
+
+xMAXSHIFTM: Subtract each row maximum (non-BLAS function)
+-------------
+
+Performs `A[row, col] = A[row, col] - max(A[row, :])` in-place for an `m` by `n`
+matrix. Supports half, single, and double precision.
+
+C++ API:
+```cpp
+template <typename T>
+StatusCode Maxshiftm(const Layout layout, const size_t m, const size_t n,
+                    cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                    cl_command_queue* queue, cl_event* event = nullptr);
+```
+
+C API: `CLBlastHmaxshiftm`, `CLBlastSmaxshiftm`, and `CLBlastDmaxshiftm`, with the
+same arguments and `CLBlastLayout` for `layout`. `m` and `n` must be positive.
+`a_ld` must be at least `n` for row-major layout or `m` for column-major layout.
+Offsets and leading dimensions are measured in elements. Padding is preserved.
+
+For example, after uploading the inputs to read/write OpenCL buffers:
+
+```c
+/* [1, 3, -2, 7] becomes [-6, -4, -9, 0]. */
+cl_event event = NULL;
+CLBlastStatusCode status = CLBlastSmaxshiftv(4, x_buffer, 0, 1, &queue, &event);
+if (status == CLBlastSuccess) {
+  clWaitForEvents(1, &event);
+  clReleaseEvent(event);
+}
+
+/* Row-major [[1, 3, 2], [-4, -2, -5]] becomes [[-2, 0, -1], [-2, 0, -3]]. */
+event = NULL;
+status = CLBlastSmaxshiftm(CLBlastLayoutRowMajor, 2, 3, a_buffer, 0, 3, &queue, &event);
+if (status == CLBlastSuccess) {
+  clWaitForEvents(1, &event);
+  clReleaseEvent(event);
+}
+```
+
+The input buffers must be ready before calling these APIs. On an out-of-order queue, explicitly
+wait for input uploads or earlier producers. The vector routine orders its three internal kernels
+with events; the matrix routine launches one kernel with one workgroup per row. When no completion
+event is requested, synchronize the queue before consuming the result. Both routines reuse the
+`Xdot` reduction parameters (`WGS1`, `WGS2`) and participate in `FillCache` precompilation.
+
+Both operations ignore NaNs while finding the maximum, as the existing maximum reduction
+does. Subtraction follows floating-point arithmetic, so an infinite maximum can produce
+NaNs (for example, `infinity - infinity`). Half/double precision require device support.
+The CUDA C++ API provides the same operations using context and device arguments in place
+of the OpenCL queue and event.
+
+
 xGEMV: General matrix-vector multiplication
 -------------
 

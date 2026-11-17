@@ -203,6 +203,11 @@ template <typename T>
 StatusCode Min(const size_t n, CUdeviceptr imin_buffer, const size_t imin_offset, const CUdeviceptr x_buffer,
                const size_t x_offset, const size_t x_inc, const CUcontext context, const CUdevice device);
 
+// Subtracts the vector maximum from every element in-place (non-BLAS): SMAXSHIFTV/DMAXSHIFTV/HMAXSHIFTV
+template <typename T>
+StatusCode Maxshiftv(const size_t n, CUdeviceptr x_buffer, const size_t x_offset, const size_t x_inc,
+                     const CUcontext context, const CUdevice device);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
@@ -448,6 +453,11 @@ StatusCode Trsm(const Layout layout, const Side side, const Triangle triangle, c
                 const Diagonal diagonal, const size_t m, const size_t n, const T alpha, const CUdeviceptr a_buffer,
                 const size_t a_offset, const size_t a_ld, CUdeviceptr b_buffer, const size_t b_offset,
                 const size_t b_ld, const CUcontext context, const CUdevice device);
+
+// Subtracts the row maximum from every element of that row in-place (non-BLAS): SMAXSHIFTM/DMAXSHIFTM/HMAXSHIFTM
+template <typename T>
+StatusCode Maxshiftm(const Layout layout, const size_t m, const size_t n, CUdeviceptr a_buffer, const size_t a_offset,
+                     const size_t a_ld, const CUcontext context, const CUdevice device);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)

@@ -721,6 +721,33 @@ CLBlastStatusCode CLBlastiHmin(const size_t n, cl_mem imin_buffer, const size_t 
   }
 }
 
+// In-place maximum shift (real data-types only)
+CLBlastStatusCode CLBlastSmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                    cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Maxshiftv<float>(n, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+CLBlastStatusCode CLBlastDmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                    cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Maxshiftv<double>(n, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+CLBlastStatusCode CLBlastHmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                                    cl_command_queue* queue, cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+        clblast::Maxshiftv<clblast::half>(n, x_buffer, x_offset, x_inc, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
@@ -2318,6 +2345,38 @@ CLBlastStatusCode CLBlastZtrsm(const CLBlastLayout layout, const CLBlastSide sid
                       static_cast<clblast::Triangle>(triangle), static_cast<clblast::Transpose>(a_transpose),
                       static_cast<clblast::Diagonal>(diagonal), m, n, double2{alpha.s[0], alpha.s[1]}, a_buffer,
                       a_offset, a_ld, b_buffer, b_offset, b_ld, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+
+// In-place maximum shift (real data-types only)
+CLBlastStatusCode CLBlastSmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n, cl_mem a_buffer,
+                                    const size_t a_offset, const size_t a_ld, cl_command_queue* queue,
+                                    cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+        clblast::Maxshiftm<float>(static_cast<clblast::Layout>(layout), m, n, a_buffer, a_offset, a_ld, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+CLBlastStatusCode CLBlastDmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n, cl_mem a_buffer,
+                                    const size_t a_offset, const size_t a_ld, cl_command_queue* queue,
+                                    cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(
+        clblast::Maxshiftm<double>(static_cast<clblast::Layout>(layout), m, n, a_buffer, a_offset, a_ld, queue, event));
+  } catch (...) {
+    return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
+  }
+}
+CLBlastStatusCode CLBlastHmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n, cl_mem a_buffer,
+                                    const size_t a_offset, const size_t a_ld, cl_command_queue* queue,
+                                    cl_event* event) {
+  try {
+    return static_cast<CLBlastStatusCode>(clblast::Maxshiftm<clblast::half>(static_cast<clblast::Layout>(layout), m, n,
+                                                                            a_buffer, a_offset, a_ld, queue, event));
   } catch (...) {
     return static_cast<CLBlastStatusCode>(clblast::DispatchExceptionForC());
   }

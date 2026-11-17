@@ -77,6 +77,11 @@ typedef struct { double s0; double s1; double s2; double s3;
 // Replaces OpenCL synchronisation with CUDA synchronisation
 #define barrier(x) __syncthreads()
 
+// OpenCL defines INFINITY without an include; CUDA runtime compilation needs the equivalent constant
+#ifndef INFINITY
+  #define INFINITY __int_as_float(0x7f800000)
+#endif
+
 // =================================================================================================
 
 // End of the C++11 raw string literal

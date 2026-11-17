@@ -142,11 +142,13 @@ bool TestKernel(const Device& device, const Context& context, const std::string&
   auto compiler_options_ref = std::vector<std::string>();
   const auto program_ref =
       CompileFromSource(kernel_source, precision, kernel_name, device, context, compiler_options_ref, 2);
+  const auto kernel_ref = Kernel(program_ref, kernel_name);
 
   // Compiles the same kernel, but now with the pre-processor enabled
   try {
     auto compiler_options = std::vector<std::string>();
     const auto program = CompileFromSource(kernel_source, precision, kernel_name, device, context, compiler_options, 1);
+    const auto kernel = Kernel(program, kernel_name);
     return true;
   } catch (const CLCudaAPIBuildError& e) {
     fprintf(stdout, "* ERROR: Compilation warnings/errors with pre-processed kernel, status %d\n", e.status());
@@ -189,6 +191,28 @@ size_t RunPreprocessor(int argc, char* argv[], const bool silent, const Precisio
     passed++;
   } else {
     errors++;
+  }
+
+  // Real-only maximum-shift kernels, including their reduction epilogue and shift entry points
+  if (precision == Precision::kHalf || precision == Precision::kSingle || precision == Precision::kDouble) {
+    const auto maxshiftv_sources =
+#include "../src/kernels/level1/xmaxshiftv.opencl"
+        ;
+    for (const auto& name : {"Xmaxshiftv", "XmaxshiftvEpilogue", "XmaxshiftvShift"}) {
+      if (TestKernel(device, context, name, maxshiftv_sources, precision)) {
+        passed++;
+      } else {
+        errors++;
+      }
+    }
+    const auto maxshiftm_sources =
+#include "../src/kernels/level3/xmaxshiftm.opencl"
+        ;
+    if (TestKernel(device, context, "Xmaxshiftm", maxshiftm_sources, precision)) {
+      passed++;
+    } else {
+      errors++;
+    }
   }
 
   // XAXPY

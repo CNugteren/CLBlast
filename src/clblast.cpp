@@ -404,6 +404,26 @@ template StatusCode PUBLIC_API Min<double2>(const size_t, cl_mem, const size_t, 
 template StatusCode PUBLIC_API Min<half>(const size_t, cl_mem, const size_t, const cl_mem, const size_t, const size_t,
                                          cl_command_queue*, cl_event*);
 
+// Subtracts the vector maximum from every element in-place (non-BLAS): SMAXSHIFTV/DMAXSHIFTV/HMAXSHIFTV
+template <typename T>
+StatusCode Maxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
+                     cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xmaxshiftv<T>(queue_cpp, event);
+    routine.DoMaxshiftv(n, Buffer<T>(x_buffer), x_offset, x_inc);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+template StatusCode PUBLIC_API Maxshiftv<float>(const size_t, cl_mem, const size_t, const size_t, cl_command_queue*,
+                                                cl_event*);
+template StatusCode PUBLIC_API Maxshiftv<double>(const size_t, cl_mem, const size_t, const size_t, cl_command_queue*,
+                                                 cl_event*);
+template StatusCode PUBLIC_API Maxshiftv<half>(const size_t, cl_mem, const size_t, const size_t, cl_command_queue*,
+                                               cl_event*);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
@@ -1352,6 +1372,26 @@ template StatusCode PUBLIC_API Trsm<double2>(const Layout, const Side, const Tri
                                              const size_t, const size_t, const double2, const cl_mem, const size_t,
                                              const size_t, cl_mem, const size_t, const size_t, cl_command_queue*,
                                              cl_event*);
+
+// Subtracts the row maximum from every element of that row in-place (non-BLAS): SMAXSHIFTM/DMAXSHIFTM/HMAXSHIFTM
+template <typename T>
+StatusCode Maxshiftm(const Layout layout, const size_t m, const size_t n, cl_mem a_buffer, const size_t a_offset,
+                     const size_t a_ld, cl_command_queue* queue, cl_event* event) {
+  try {
+    auto queue_cpp = Queue(*queue);
+    auto routine = Xmaxshiftm<T>(queue_cpp, event);
+    routine.DoMaxshiftm(layout, m, n, Buffer<T>(a_buffer), a_offset, a_ld);
+    return StatusCode::kSuccess;
+  } catch (...) {
+    return DispatchException();
+  }
+}
+template StatusCode PUBLIC_API Maxshiftm<float>(const Layout, const size_t, const size_t, cl_mem, const size_t,
+                                                const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Maxshiftm<double>(const Layout, const size_t, const size_t, cl_mem, const size_t,
+                                                 const size_t, cl_command_queue*, cl_event*);
+template StatusCode PUBLIC_API Maxshiftm<half>(const Layout, const size_t, const size_t, cl_mem, const size_t,
+                                               const size_t, cl_command_queue*, cl_event*);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)

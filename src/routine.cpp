@@ -28,8 +28,8 @@ namespace clblast {
 
 // For each kernel this map contains a list of routines it is used in
 const std::vector<std::string> Routine::routines_axpy = {"AXPY", "COPY", "SCAL", "SWAP"};
-const std::vector<std::string> Routine::routines_dot = {"AMAX", "ASUM", "DOT",  "DOTC", "DOTU",
-                                                        "MAX",  "MIN",  "NRM2", "SUM"};
+const std::vector<std::string> Routine::routines_dot = {"AMAX", "ASUM", "DOT", "DOTC",      "DOTU",     "MAX",
+                                                        "MIN",  "NRM2", "SUM", "MAXSHIFTV", "MAXSHIFTM"};
 const std::vector<std::string> Routine::routines_ger = {"GER",  "GERC", "GERU", "HER", "HER2", "HPR",
                                                         "HPR2", "SPR",  "SPR2", "SYR", "SYR2"};
 const std::vector<std::string> Routine::routines_gemv = {"GBMV", "GEMV", "HBMV", "HEMV", "HPMV", "SBMV",

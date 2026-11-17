@@ -417,6 +417,14 @@ CLBlastStatusCode PUBLIC_API CLBlastiHmin(const size_t n, cl_mem imin_buffer, co
                                           const cl_mem x_buffer, const size_t x_offset, const size_t x_inc,
                                           cl_command_queue* queue, cl_event* event);
 
+// In-place maximum shift (real data-types only)
+CLBlastStatusCode PUBLIC_API CLBlastSmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset,
+                                               const size_t x_inc, cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset,
+                                               const size_t x_inc, cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHmaxshiftv(const size_t n, cl_mem x_buffer, const size_t x_offset,
+                                               const size_t x_inc, cl_command_queue* queue, cl_event* event);
+
 // =================================================================================================
 // BLAS level-2 (matrix-vector) routines
 // =================================================================================================
@@ -1115,6 +1123,17 @@ CLBlastStatusCode PUBLIC_API CLBlastZtrsm(const CLBlastLayout layout, const CLBl
                                           const cl_double2 alpha, const cl_mem a_buffer, const size_t a_offset,
                                           const size_t a_ld, cl_mem b_buffer, const size_t b_offset, const size_t b_ld,
                                           cl_command_queue* queue, cl_event* event);
+
+// In-place maximum shift (real data-types only)
+CLBlastStatusCode PUBLIC_API CLBlastSmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n,
+                                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                               cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastDmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n,
+                                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                               cl_command_queue* queue, cl_event* event);
+CLBlastStatusCode PUBLIC_API CLBlastHmaxshiftm(const CLBlastLayout layout, const size_t m, const size_t n,
+                                               cl_mem a_buffer, const size_t a_offset, const size_t a_ld,
+                                               cl_command_queue* queue, cl_event* event);
 
 // =================================================================================================
 // Extra non-BLAS routines (level-X)
