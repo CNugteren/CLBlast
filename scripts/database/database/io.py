@@ -7,6 +7,7 @@
 
 import re
 import json
+import gzip
 
 try:
     from urllib.request import urlopen  # Python 3
@@ -25,8 +26,12 @@ def download_database(filename, database_url):
 def load_database(filename):
     """Loads a database from disk"""
     print("[database] Loading database from '" + filename + "'")
-    with open(filename) as f:
-        database = json.load(f)
+    if filename.endswith(".gz"):
+        with gzip.open(filename, "rb") as f:
+            database = json.loads(f.read().decode("utf-8"))
+    else:
+        with open(filename) as f:
+            database = json.load(f)
     return decompress_database(database)
 
 
@@ -34,8 +39,14 @@ def save_database(database, filename):
     """Saves a database to disk"""
     compressed_db = compress_database(database)
     print("[database] Saving database to '" + filename + "'")
-    with open(filename, "w") as f:
-        json.dump(compressed_db, f, sort_keys=True, indent=2, separators=(',', ': '))
+    database_string = json.dumps(compressed_db, sort_keys=True, indent=2, separators=(',', ': '))
+    if filename.endswith(".gz"):
+        # The database is too large for GitHub when uncompressed; zero mtime keeps the output reproducible
+        with gzip.GzipFile(filename, "wb", mtime=0) as f:
+            f.write(database_string.encode("utf-8"))
+    else:
+        with open(filename, "w") as f:
+            f.write(database_string)
 
 
 def compress_database(database):

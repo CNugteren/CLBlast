@@ -3,6 +3,7 @@ stash
 .*
 *.pyc
 database.json
+database.json.gz
 database_best.json
 cl.hpp
 opencl.hpp

@@ -6,8 +6,10 @@
 #   Cedric Nugteren <www.cedricnugteren.nl>
 
 import sys
+from collections import defaultdict
 
 import database.clblast as clblast
+import database.db as db
 
 
 def get_best_results(database):
@@ -46,10 +48,10 @@ def get_relative_bests(name, common_results, common_parameters, verbose=False):
         return min(enumerate(iterable), key=lambda x: x[1])[0]
 
     # Computes the sum of the execution times over the different devices
-    performance_sums = []
-    for parameters in common_parameters:
-        performance_sum = sum([r["relative_time"] for r in common_results if r["parameters"] == parameters])
-        performance_sums.append(performance_sum)
+    performance_sums_by_key = defaultdict(float)
+    for result in common_results:
+        performance_sums_by_key[db.parameters_key(result["parameters"])] += result["relative_time"]
+    performance_sums = [performance_sums_by_key[db.parameters_key(p)] for p in common_parameters]
 
     # Retrieves the entry with the lowest time
     best_index = argmin(performance_sums)

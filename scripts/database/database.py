@@ -18,7 +18,7 @@ import database.bests as bests
 import database.defaults as defaults
 
 # Server storing a copy of the database
-DATABASE_SERVER_URL = "https://raw.githubusercontent.com/CNugteren/CLBlast-database/master/database.json"
+DATABASE_SERVER_URL = "https://raw.githubusercontent.com/CNugteren/CLBlast-database/master/database.json.gz"
 
 
 def remove_mismatched_arguments(database):
@@ -99,7 +99,7 @@ def main(argv):
     cl_args = parser.parse_args(argv)
 
     # Parses the path arguments
-    database_filename = os.path.join(cl_args.clblast_root, "scripts", "database", "database.json")
+    database_filename = os.path.join(cl_args.clblast_root, "scripts", "database", "database.json.gz")
     database_best_filename = os.path.join(cl_args.clblast_root, "scripts", "database", "database_best.json")
     json_files = os.path.join(cl_args.source_folder, "*.json")
     cpp_database_path = os.path.join(cl_args.clblast_root, "src", "database", "kernels")
