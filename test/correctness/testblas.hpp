@@ -19,7 +19,11 @@
 #include <string>
 #include <vector>
 
+#ifdef OPENCL_API
 #include "clblast.h"
+#elif CUDA_API
+#include "clblast_cuda.h"
+#endif
 #include "routine.hpp"
 #include "test/correctness/tester.hpp"
 #include "test/test_utilities.hpp"

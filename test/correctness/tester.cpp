@@ -17,7 +17,11 @@
 #include <string>
 #include <vector>
 
+#ifdef OPENCL_API
 #include "clblast.h"
+#elif CUDA_API
+#include "clblast_cuda.h"
+#endif
 #include "clblast_half.h"
 #include "test/test_utilities.hpp"
 #include "utilities/backend.hpp"
@@ -293,7 +297,7 @@ void Tester<T, U>::TestErrorCodes(const StatusCode clblas_status, const StatusCo
   // NOTE: the OpenCL error codes grow downwards without any declared lower bound, hence the magic
   // number. The last error code is atm around -70, but -500 is chosen to be on the safe side.
   if (clblast_status != StatusCode::kSuccess &&
-      (clblast_status > static_cast<StatusCode>(-500) /* matches OpenCL errors (see above) */ ||
+      (static_cast<int>(clblast_status) > -500 /* matches OpenCL errors (see above) */ ||
        clblast_status < StatusCode::kNotImplemented) /* matches CLBlast internal errors */) {
     PrintTestResult(kErrorStatus);
     ReportError({StatusCode::kSuccess, clblast_status, kStatusError, args});
