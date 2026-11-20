@@ -126,10 +126,10 @@ class JSONLogger {
 
   void add_tuning_result(const TuningResult& result) {
     if (!has_result_) {
-      file_.seekp(-(sizeof("]}") - 1), std::ios::end);
+      file_.seekp(-static_cast<std::streamoff>(sizeof("]}") - 1), std::ios::end);
       has_result_ = true;
     } else {
-      file_.seekp(-(sizeof("]}") - 1), std::ios::end);
+      file_.seekp(-static_cast<std::streamoff>(sizeof("]}") - 1), std::ios::end);
       file_ << ',';
     }
 
