@@ -58,18 +58,10 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     for (; kwg < (kSizeK/WGD) * WGD; kwg += WGD) {
 
       // Loads data: off-chip --> local (matrix A and B)
-      if (a_ld % VWMD == 0 && a_offset % VWMD == 0) {
-        GlobalToLocalDirectA(agm, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
-      }
-      else {
-        GlobalToLocalScalarA(agms, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate);
-      }
-      if (b_ld % VWND == 0 && b_offset % VWND == 0) {
-        GlobalToLocalDirectB(bgm, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate);
-      }
-      else {
-        GlobalToLocalScalarB(bgms, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate);
-      }
+      // 修改点 1：A 矩阵加载（原为 GlobalToLocalDirectA / GlobalToLocalScalarA）
+      GlobalToLocalCheckedA(agms, alm, a_ld, a_offset, kwg, a_transpose, a_conjugate, kSizeM, kSizeK);
+      // 修改点 2：B 矩阵加载（原为 GlobalToLocalDirectB / GlobalToLocalScalarB）
+      GlobalToLocalCheckedB(bgms, blm, b_ld, b_offset, kwg, b_transpose, b_conjugate, kSizeN, kSizeK);
       barrier(CLK_LOCAL_MEM_FENCE);
 
       // Loops over all workitem tiles, unrolled by a factor KWID
@@ -105,13 +97,15 @@ INLINE_FUNC void XgemmDirect(const int kSizeM, const int kSizeN, const int kSize
     for (; kwg < kSizeK; ++kwg) {
 
       // Loads data: off-chip --> private (matrix A and B)
+      // 修改点 3：A 矩阵私有加载（原为 GlobalToPrivateDirectA）
       #pragma unroll
       for (int _mi = 0; _mi < MWID; _mi += 1) {
-        apd[_mi] = GlobalToPrivateDirectA(agms, _mi, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate);
+        apd[_mi] = GlobalToPrivateCheckedA(agms, _mi, a_ld, a_offset, idm, kwg, a_transpose, a_conjugate, kSizeM);
       }
+      // 修改点 4：B 矩阵私有加载（原为 GlobalToPrivateDirectB）
       #pragma unroll
       for (int _ni = 0; _ni < NWID; _ni += 1) {
-        bpd[_ni] = GlobalToPrivateDirectB(bgms, _ni, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate);
+        bpd[_ni] = GlobalToPrivateCheckedB(bgms, _ni, b_ld, b_offset, idn, kwg, b_transpose, b_conjugate, kSizeN);
       }
 
       // Performs the accumulation (Cpmd += Apmd * Bpmd)

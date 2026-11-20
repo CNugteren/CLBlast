@@ -292,6 +292,10 @@ class Device {
     if (Name() == "Mali-T628") {
       return true;
     }  // supports fp16 but not cl_khr_fp16 officially
+    // 强制 NVIDIA 和 Apple 设备认为支持 fp16
+    if (IsNVIDIA() || IsApple()) {
+        return true;
+    }
     return HasExtension("cl_khr_fp16");
   }
 
@@ -338,7 +342,9 @@ class Device {
   }
   bool IsARM() const { return Vendor() == "ARM"; }
   bool IsQualcomm() const { return Vendor() == "QUALCOMM"; }
-
+  bool IsApple() const {
+      return Vendor() == "Apple";
+  }
   // Platform specific extensions
   std::string AMDBoardName() const {  // check for 'cl_amd_device_attribute_query' first
 #ifndef CL_DEVICE_BOARD_NAME_AMD
