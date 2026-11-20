@@ -75,6 +75,12 @@ std::shared_ptr<Program> CompileFromSource(const std::string& source_string, con
     }
   }
 
+  if (device.IsGPU() && device.IsAMD() && device.Name().find("gfx1") != std::string::npos &&
+      precision == Precision::kSingle) { // only for Navi cards (gfx1XXX)
+    header_string += "#define USE_SUBGROUP_SHUFFLING 1\n";
+    header_string += "#define SUBGROUP_SHUFFLING_GCN 1\n";
+  }
+
   // For Qualcomm devices, specifying the OpenCL kernel attribute reqd_work_group_size reduces performance.
   // This option compiles without the workgroup size requirement and does not affect correctness.
   if (device.IsQualcomm()) {
