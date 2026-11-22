@@ -17,7 +17,7 @@ const DatabaseEntry XgemvFastRotComplexDouble = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 4, 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 1, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 1, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 4, 16, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 1, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Fiji", {

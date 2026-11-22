@@ -199,10 +199,12 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Xeon E5-2630 v3
   - Xeon E5-2630 v4
 * Other devices:
+  - ARM Mali-T620 MC6 GPU (Panfrost)
   - ARM Mali-T628 GPU
   - ARM Mali-T760 GPU
   - ARM Mali-G57 MC2 GPU
   - ARM Mali-G68 MC4 GPU
+  - ARM Mali-G76 GPU
   - ARM Mali-G610 MC6 GPU
   - ARM Mali-G615 MC5 GPU
   - ARM Mali-G615 MC6 GPU
@@ -228,6 +230,7 @@ The CLBlast library is already tuned for the most commonly used OpenCL devices a
   - Imagination PowerVR GX6650
   - Apple M1 GPU
   - Apple M2 Max GPU
+  - Apple M5 GPU
 
 If your device is not (yet) among this list or if you want to tune CLBlast for specific parameters (e.g. rectangular matrix sizes), you should run the included tuners.
 

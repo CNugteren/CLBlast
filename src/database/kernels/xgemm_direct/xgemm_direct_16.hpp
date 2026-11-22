@@ -17,15 +17,15 @@ const DatabaseEntry XgemmDirectHalf = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 8, 32, 8, 8, 32, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 2, 8, 8, 8, 8, 1, 1, 2, 2, 16, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 2, 16, 16, 16, 16, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 16, 16, 1, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 2, 8, 16, 8, 16, 1, 0, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 16, 16, 1, 1, 1, 1, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "default", {
           { Name{"AMD Radeon RX 590 GME (radeonsi, polaris10, ACO, D"}, Params{ 8, 8, 16, 32, 16, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 2, 4, 32, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1010:xnack-", {
-          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 8, 8, 16, 16, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 8, 16, 8, 16, 1, 0, 2, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 2, 8, 8, 16, 16, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 2, 8, 8, 16, 16, 1, 1, 4, 2, 32, 0, 0, 0, 0, 0, 0 } },
         } },
@@ -99,9 +99,18 @@ const DatabaseEntry XgemmDirectHalf = {
           { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 16, 16, 32, 8, 8, 0, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G615 MC6 r1p3                                "}, Params{ 16, 16, 32, 8, 8, 0, 1, 1, 2, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G710 MC10 r0p0                               "}, Params{ 8, 8, 8, 8, 16, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-G76 r0p0                                     "}, Params{ 8, 8, 16, 8, 16, 0, 1, 2, 2, 64, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T628                                         "}, Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T760                                         "}, Params{ 2, 16, 16, 8, 8, 1, 1, 1, 4, 32, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 2, 1, 32, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
+    { // Apple GPUs
+      kDeviceTypeGPU, "Apple", {
+        { "default", {
+          { Name{"Apple M1                                          "}, Params{ 8, 8, 16, 16, 16, 1, 1, 4, 1, 64, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 8, 8, 16, 16, 16, 1, 1, 4, 1, 64, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
@@ -185,7 +194,7 @@ const DatabaseEntry XgemmDirectHalf = {
     { // Default
       kDeviceTypeAll, "default", {
         { "default", {
-          { kDeviceNameDefault                                        , Params{ 2, 16, 16, 8, 8, 1, 1, 1, 1, 16, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 8, 8, 8, 8, 1, 1, 2, 2, 16, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

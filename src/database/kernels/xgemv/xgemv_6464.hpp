@@ -17,7 +17,7 @@ const DatabaseEntry XgemvComplexDouble = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 32, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Fiji", {

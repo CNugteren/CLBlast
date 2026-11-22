@@ -17,8 +17,8 @@ const DatabaseEntry XaxpyHalf = {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 480                                 "}, Params{ 4, 128, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 2, 128, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 1, 128, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 8, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 2, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 4, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Fiji", {
           { Name{"AMD Radeon 500 Series                             "}, Params{ 2, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -33,9 +33,9 @@ const DatabaseEntry XaxpyHalf = {
           { kDeviceNameDefault                                        , Params{ 4, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1010:xnack-", {
-          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 64, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX 5700                                "}, Params{ 2, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"AMD Radeon RX 5700 XT                             "}, Params{ 4, 64, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { kDeviceNameDefault                                        , Params{ 2, 64, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 2, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "gfx1030", {
           { Name{"AMD Radeon RX 6800 XT                             "}, Params{ 4, 128, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -108,9 +108,18 @@ const DatabaseEntry XaxpyHalf = {
           { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 4, 512, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G615 MC6 r1p3                                "}, Params{ 8, 1024, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G68 MC4 r1p1                                 "}, Params{ 8, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-G76 r0p0                                     "}, Params{ 4, 64, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T628                                         "}, Params{ 8, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-T760                                         "}, Params{ 4, 256, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 8, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
+    { // Apple GPUs
+      kDeviceTypeGPU, "Apple", {
+        { "default", {
+          { Name{"Apple M1                                          "}, Params{ 1, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 1, 64, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },

@@ -17,6 +17,35 @@
 namespace clblast {
 // =================================================================================================
 
+size_t RunGetArgumentTests() {
+  const auto argument_sets = std::vector<std::vector<std::string>>{
+      {"test", "-platform", "7"},
+      {"test", "--platform", "7"},
+      {"test", "-platform=7"},
+      {"test", "--platform=7"},
+  };
+  auto errors = size_t{0};
+  auto passed = size_t{0};
+
+  for (const auto& arguments : argument_sets) {
+    auto help = std::string{};
+    const auto platform_id = GetArgument(arguments, help, kArgPlatform, size_t{0});
+    if (platform_id == size_t{7}) {
+      passed++;
+    } else {
+      errors++;
+    }
+  }
+
+  std::cout << "* Testing command-line argument parsing" << std::endl;
+  std::cout << "    " << passed << " test(s) passed" << std::endl;
+  std::cout << "    " << errors << " test(s) failed" << std::endl;
+  std::cout << std::endl;
+  return errors;
+}
+
+// =================================================================================================
+
 template <typename T>
 size_t RunRetrieveParametersTests(int argc, char* argv[], const bool silent, const std::string& routine_name) {
   auto arguments = RetrieveCommandLineArguments(argc, argv);
@@ -82,6 +111,7 @@ size_t RunRetrieveParametersTests(int argc, char* argv[], const bool silent, con
 // Main function (not within the clblast namespace)
 int main(int argc, char* argv[]) {
   auto errors = size_t{0};
+  errors += clblast::RunGetArgumentTests();
   errors += clblast::RunRetrieveParametersTests<float>(argc, argv, false, "SGEMM");
   errors += clblast::RunRetrieveParametersTests<clblast::float2>(argc, argv, true, "CGEMM");
   if (errors > 0) {

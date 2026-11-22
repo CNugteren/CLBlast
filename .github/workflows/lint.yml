@@ -33,7 +33,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tidy-checks: '' 
+          tidy-checks: ''
+          # The CUDA-only files can't be parsed without the CUDA headers
+          ignore-tidy: '.github|include/clblast_cuda.h|src/cupp11.hpp|src/clblast_cuda.cpp|test/wrapper_cublas.hpp|samples/daxpy_cuda.cpp|samples/sgemm_cuda.cpp'
           style: 'file'
           database: 'build'
           extra-args: -I${{ github.workspace }}/build/_deps/nlohmann_json-src

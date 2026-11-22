@@ -16,7 +16,7 @@ const DatabaseEntry InvertHalf = {
       kDeviceTypeGPU, "AMD", {
         { "Ellesmere", {
           { Name{"AMD Radeon RX 580 2048SP                          "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
-          { Name{"AMD Radeon RX590 GME                              "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"AMD Radeon RX590 GME                              "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
         { "Fiji", {
@@ -102,7 +102,16 @@ const DatabaseEntry InvertHalf = {
           { Name{"Mali-G615 MC5 r1p3                                "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G615 MC6 r1p3                                "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { Name{"Mali-G710 MC10 r0p0                               "}, Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { Name{"Mali-G76 r0p0                                     "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
           { kDeviceNameDefault                                        , Params{ 16, 1, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+        } },
+      }
+    },
+    { // Apple GPUs
+      kDeviceTypeGPU, "Apple", {
+        { "default", {
+          { Name{"Apple M1                                          "}, Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+          { kDeviceNameDefault                                        , Params{ 16, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
         } },
       }
     },
