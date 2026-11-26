@@ -26,6 +26,8 @@ INLINE_FUNC int clblast_get_sub_group_local_id() {
   int ret;
   asm volatile("mov.u32 %0, %%laneid;" : "=r"(ret) );
   return ret;
+  #elif SUBGROUP_SHUFFLING_GCN == 1
+    NAVI_LID()
   #endif 
 }
 
@@ -44,6 +46,10 @@ INLINE_FUNC realN clblast_sub_group_shuffle(realN reg, int src) {
     #else
     asm volatile("shfl.idx.b32 %0, %1, %2, 0x1f;" : "=f"(ret): "f"(reg), "r"(src));
     #endif
+  return ret;
+  #elif SUBGROUP_SHUFFLING_GCN == 1
+  realN ret = reg;
+  NAVI_SHFL(ret, ((src) << 2))
   return ret;
   #endif
 }
